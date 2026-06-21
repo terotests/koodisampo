@@ -73,13 +73,52 @@ export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (
 
 type ToolbarBtn = { key: string; label: string; cls?: string };
 
+export type ElevatorFloorBtn = {
+  key: string;
+  title: string;
+  current?: boolean;
+  hasElevator?: boolean;
+};
+
+export type MobileMapToolbarOptions = {
+  onElevator?: boolean;
+  floors?: ElevatorFloorBtn[];
+};
+
 export function setMobileMapToolbar(
   toolbarEl: HTMLElement,
   onKey: (key: string) => void,
   onReset: () => void,
+  elevator?: MobileMapToolbarOptions,
 ) {
   toolbarEl.className = "toolbar toolbar-mobile";
+  if (elevator?.onElevator) toolbarEl.classList.add("has-elevator");
   toolbarEl.innerHTML = "";
+  document.documentElement.classList.toggle("elevator-open", Boolean(elevator?.onElevator));
+
+  if (elevator?.onElevator && elevator.floors?.length) {
+    const label = document.createElement("div");
+    label.className = "elevator-label";
+    label.textContent = "Hissi — valitse kerros";
+    toolbarEl.appendChild(label);
+
+    const elevRow = document.createElement("div");
+    elevRow.className = "elevator-row";
+    for (const floor of elevator.floors) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "elevator-btn";
+      if (floor.current) btn.classList.add("current");
+      if (floor.hasElevator === false) btn.classList.add("disabled");
+      btn.textContent = floor.key;
+      btn.title = floor.title;
+      btn.addEventListener("click", () => onKey(floor.key));
+      elevRow.appendChild(btn);
+    }
+    toolbarEl.appendChild(elevRow);
+  } else {
+    document.documentElement.classList.remove("elevator-open");
+  }
 
   const dpad = document.createElement("div");
   dpad.className = "dpad";
@@ -136,6 +175,7 @@ export function setMobileToolbar(
   onKey: (key: string) => void,
   onReset: () => void,
 ) {
+  document.documentElement.classList.remove("elevator-open");
   toolbarEl.className = "toolbar toolbar-mobile toolbar-stack";
   toolbarEl.innerHTML = "";
   for (const spec of buttons) {

@@ -72,9 +72,26 @@ export function mountGameUI(game: WebGame) {
       return `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
     }
 
+    function setMapTextView(active: boolean) {
+      const wrap = document.getElementById("map-wrap");
+      if (active) {
+        mapEl?.classList.add("encounter-view");
+        wrap?.classList.add("map-text-view");
+      } else {
+        mapEl?.classList.remove("encounter-view");
+        wrap?.classList.remove("map-text-view");
+      }
+    }
+
     function setMapContent(html: string) {
       if (!mapEl) return;
-      mapEl.innerHTML = isMobileLayout() ? `<div class="mobile-scroll">${html}</div>` : html;
+      if (isMobileLayout()) {
+        setMapTextView(true);
+        mapEl.innerHTML = `<div class="mobile-scroll">${html}</div>`;
+      } else {
+        setMapTextView(false);
+        mapEl.innerHTML = html;
+      }
     }
 
     function renderOverlay(ov, state) {
@@ -213,9 +230,14 @@ export function mountGameUI(game: WebGame) {
       }
     }
 
-    function renderMapToolbar() {
+    function renderMapToolbar(state?: State) {
       if (isMobileLayout()) {
-        if (toolbarEl) setMobileMapToolbar(toolbarEl, sendKey, resetGame);
+        if (toolbarEl) {
+          setMobileMapToolbar(toolbarEl, sendKey, resetGame, {
+            onElevator: state?.onElevator,
+            floors: state?.elevatorFloors,
+          });
+        }
         return;
       }
       setToolbar([
@@ -240,10 +262,11 @@ export function mountGameUI(game: WebGame) {
 
     function renderMobileMap(state: State) {
       updateMobileChrome(state);
+      setMapTextView(false);
       const cropped = cropMapLines(state.lines);
       const mapHtml = `<pre class="map-grid">${cropped.map((line) => colorizeLine(line, state)).join("\n")}</pre>`;
       if (mapEl) mapEl.innerHTML = mapHtml;
-      renderMapToolbar();
+      renderMapToolbar(state);
     }
 
     function render(state) {
