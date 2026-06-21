@@ -1,15 +1,29 @@
 import type { WebGame } from "./boot";
+import {
+  cropMapLines,
+  isMobileLayout,
+  renderHudStats,
+  renderMessageBar,
+  setMobileMapToolbar,
+  setMobileToolbar,
+  syncMobileClass,
+} from "./mobileLayout";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
  type State = any;
 
 export function mountGameUI(game: WebGame) {
   const mapEl = document.getElementById("map");
-    const jsonEl = document.getElementById("json");
-    const metaEl = document.getElementById("meta");
-    const statusEl = document.getElementById("status");
-    const toolbarEl = document.getElementById("toolbar");
-    const hintEl = document.getElementById("hint");
+  const jsonEl = document.getElementById("json");
+  const metaEl = document.getElementById("meta");
+  const statusEl = document.getElementById("status");
+  const toolbarEl = document.getElementById("toolbar");
+  const hintEl = document.getElementById("hint");
+  const hudStatsEl = document.getElementById("hud-stats");
+  const messageBarEl = document.getElementById("message-bar");
+
+  syncMobileClass();
+  window.addEventListener("resize", syncMobileClass);
 
     const BANNER = `╔══════════════════════════════════════════════════╗
 ║  KOODISAMPO — Corporate NetHack (terminaali)   ║
@@ -53,8 +67,18 @@ export function mountGameUI(game: WebGame) {
       }).join("");
     }
 
+    function screenHeader(state: State) {
+      if (isMobileLayout()) return "";
+      return `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
+    }
+
+    function setMapContent(html: string) {
+      if (!mapEl) return;
+      mapEl.innerHTML = isMobileLayout() ? `<div class="mobile-scroll">${html}</div>` : html;
+    }
+
     function renderOverlay(ov, state) {
-      let html = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
+      let html = screenHeader(state);
 
       if (ov.type === "outcome") {
         const cls = ov.correct ? "ok" : "bad";
@@ -110,13 +134,14 @@ export function mountGameUI(game: WebGame) {
     }
 
     function renderEncounter(state) {
+      updateMobileChrome(state);
       const enc = state.encounter;
-      let html = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
+      let html = screenHeader(state);
       html += `<div class="entity"><span class="entity-char">[ ${esc(enc.char)} ]</span> <span class="entity-name">${esc(enc.name)}</span></div>`;
 
       if (state.overlay) {
-        mapEl.innerHTML = renderOverlay(state.overlay, state);
-        hintEl.textContent = "q = lopeta";
+        setMapContent(renderOverlay(state.overlay, state));
+        if (hintEl) hintEl.textContent = isMobileLayout() ? "" : "q = lopeta";
         return;
       }
 
@@ -146,7 +171,7 @@ export function mountGameUI(game: WebGame) {
           { key: "p", label: "p poistu", cls: "muted" },
           { key: "h", label: "h hyökkää", cls: "danger" },
         ]);
-        hintEl.textContent = enc.hintLine + "  |  q = lopeta";
+        if (hintEl) hintEl.textContent = isMobileLayout() ? "" : enc.hintLine + "  |  q = lopeta";
       } else {
         html += `<div class="greeting">${esc(enc.greeting)}</div>`;
         for (const opt of state.dialogOptions || []) {
@@ -160,13 +185,19 @@ export function mountGameUI(game: WebGame) {
           { key: "3", label: "3 vitsi" },
           { key: "4", label: "4 poistu", cls: "muted" },
         ]);
-        hintEl.textContent = (enc.hintLine || "") + "  |  q = lopeta";
+        if (hintEl) hintEl.textContent = isMobileLayout() ? "" : (enc.hintLine || "") + "  |  q = lopeta";
       }
 
-      mapEl.innerHTML = html;
+      setMapContent(html);
     }
 
-    function setToolbar(buttons) {
+    function setToolbar(buttons: { key: string; label: string; cls?: string }[]) {
+      if (!toolbarEl) return;
+      if (isMobileLayout()) {
+        setMobileToolbar(toolbarEl, buttons, sendKey, resetGame);
+        return;
+      }
+      toolbarEl.className = "toolbar";
       toolbarEl.innerHTML = "";
       if (!buttons?.length) return;
       for (const b of buttons) {
@@ -183,6 +214,10 @@ export function mountGameUI(game: WebGame) {
     }
 
     function renderMapToolbar() {
+      if (isMobileLayout()) {
+        if (toolbarEl) setMobileMapToolbar(toolbarEl, sendKey, resetGame);
+        return;
+      }
       setToolbar([
         { key: "w", label: "↑" },
         { key: "a", label: "←" },
@@ -198,20 +233,39 @@ export function mountGameUI(game: WebGame) {
       hintEl.textContent = "WASD | i=inventaario | b=opiskelulista | h piiloudu | ?=valikko | o=hahmot (debug) | ↺ alusta | q lopeta";
     }
 
+    function updateMobileChrome(state: State) {
+      renderHudStats(hudStatsEl, state, esc);
+      renderMessageBar(messageBarEl, state, esc);
+    }
+
+    function renderMobileMap(state: State) {
+      updateMobileChrome(state);
+      const cropped = cropMapLines(state.lines);
+      const mapHtml = `<pre class="map-grid">${cropped.map((line) => colorizeLine(line, state)).join("\n")}</pre>`;
+      if (mapEl) mapEl.innerHTML = mapHtml;
+      renderMapToolbar();
+    }
+
     function render(state) {
-      jsonEl.textContent = JSON.stringify(state, null, 2);
-      metaEl.innerHTML = `screen=<b>${state.screen}</b> karma=${state.karma} deaths=${state.deaths} ` +
-        `agents=${state.agentCount} gen=${state.generation}`;
-      if (state.policeChase) metaEl.innerHTML += ` <span class="warn">POLIISIT</span>`;
-      if (state.studyCounts?.total > 0) {
-        metaEl.innerHTML += ` <span style="color:#d2a8ff">opiskelu: ${state.studyCounts.wantMore}+${state.studyCounts.wrongAnswers}✗</span>`;
-      }
-      if (state.staffRoster?.length) {
-        const names = state.staffRoster.map((s) => s.firstName || s.name).join(", ");
-        metaEl.innerHTML += `<div style="color:#8b949e;font-size:11px;margin-top:4px">Henkilöstö: ${esc(names)}</div>`;
+      if (isMobileLayout()) {
+        updateMobileChrome(state);
+      } else if (jsonEl && metaEl) {
+        jsonEl.textContent = JSON.stringify(state, null, 2);
+        metaEl.innerHTML = `screen=<b>${state.screen}</b> karma=${state.karma} deaths=${state.deaths} ` +
+          `agents=${state.agentCount} gen=${state.generation}`;
+        if (state.policeChase) metaEl.innerHTML += ` <span class="warn">POLIISIT</span>`;
+        if (state.studyCounts?.total > 0) {
+          metaEl.innerHTML += ` <span style="color:#d2a8ff">opiskelu: ${state.studyCounts.wantMore}+${state.studyCounts.wrongAnswers}✗</span>`;
+        }
+        if (state.staffRoster?.length) {
+          const names = state.staffRoster.map((s: { firstName?: string; name?: string }) => s.firstName || s.name).join(", ");
+          metaEl.innerHTML += `<div style="color:#8b949e;font-size:11px;margin-top:4px">Henkilöstö: ${esc(names)}</div>`;
+        }
       }
 
-      statusEl.textContent = state.status || "";
+      if (!isMobileLayout() && statusEl) {
+        statusEl.textContent = state.status || "";
+      }
 
       if (state.castListOpen) {
         mapEl.innerHTML =
@@ -360,6 +414,10 @@ export function mountGameUI(game: WebGame) {
       }
 
       if (state.lines) {
+        if (isMobileLayout()) {
+          renderMobileMap(state);
+          return;
+        }
         const studyLine = state.studyCounts?.total > 0
           ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} lisätietoa, ${state.studyCounts.wrongAnswers} väärin</div>`
           : "";
