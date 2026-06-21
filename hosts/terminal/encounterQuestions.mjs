@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { sessionMap } from "./gameHost.mjs";
+import { sessionMap } from "../shared/sessionMap.mjs";
 import {
   buildAskColleagueLine,
   buildAskColleagueReply,
@@ -18,9 +18,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const banksDir = resolve(__dirname, "../../content/question-banks");
 
 let cachedQuestions = null;
+/** @type {null | (() => import("./encounterQuestions.mjs").listAllQuestions extends () => infer R ? R : never)} */
+let externalQuestionLoader = null;
+
+/** Inject question bank loader (browser static build). Clears cache. */
+export function setQuestionLoader(loader) {
+  externalQuestionLoader = loader;
+  cachedQuestions = null;
+}
 
 function loadAllQuestions() {
   if (cachedQuestions) return cachedQuestions;
+  if (externalQuestionLoader) {
+    cachedQuestions = externalQuestionLoader();
+    return cachedQuestions;
+  }
   const files = readdirSync(banksDir).filter((f) => f.endsWith(".json"));
   const all = [];
   for (const file of files) {

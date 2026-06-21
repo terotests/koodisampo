@@ -8,8 +8,15 @@ editor/dist/
 .env.*
 !.env.example
 
-# Ranger build output (npm run build:ranger)
+# Ranger build output (npm run build:ranger) — commit cjs for CI / static web-game
 generated/
+!generated/es6/
+generated/es6/*
+!generated/es6/koodisampo.cjs
+
+web-game/dist/
+web-game/public/vendor/
+web-game/public/content/
 
 # Editor runtime data — keep directory placeholders only
 editor-data/worlds/*

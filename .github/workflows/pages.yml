@@ -25,17 +25,17 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install and build
+      - name: Install and build Corporate NetHack (static)
         run: npm ci && npm run build
         env:
           PAGES_BASE: /koodisampo/
 
       - name: SPA fallback for client-side routes
-        run: cp web/dist/index.html web/dist/404.html
+        run: cp web-game/dist/index.html web-game/dist/404.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: web/dist
+          path: web-game/dist
 
   deploy:
     needs: build

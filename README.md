@@ -6,10 +6,11 @@ Ensimmäinen aihealue: **moderni C++** vanhoille C++-konkareille, pohjautuen [C+
 
 ## Pelaa selaimessa
 
-Web-versio julkaistaan GitHub Pagesiin automaattisesti kun `main` päivittyy.
+**Corporate NetHack** (ASCII-kartta, NPC-kohtaamiset) julkaistaan GitHub Pagesiin automaattisesti kun `main` päivittyy.
 
 - **Osoite:** https://terotests.github.io/koodisampo/
-- Staattiset tarinat toimivat ilman backend-palvelinta; edistyminen tallentuu selaimen IndexedDB:hen.
+- Staattinen build (`web-game/`) — ei Node-backendia; tallennus IndexedDB:hen
+- Erillinen tarinakokeilu: `web/` (React-tarinavalitsin), `npm run dev:stories`
 
 ## Tarinat
 
@@ -34,20 +35,22 @@ Ei tasoja — vain kasvava **karma** featureittain (esim. `cpp:auto · 23`).
 
 ## Käynnistys
 
-### Web (kehitys)
+### Web — Corporate NetHack (staattinen, GitHub Pages)
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173
-npm run server       # story API http://localhost:3847 (valinnainen)
-npm run dev:all      # molemmat
+npm run build:ranger   # kerran, tai käytä repoon commitoitua generated/es6/koodisampo.cjs
+npm run dev            # http://localhost:5173 — web-game/
+npm run build          # web-game/dist → Pages
+npm run preview
 ```
 
-Tuotantobuild (sama kuin CI):
+Node-debug (sama peli, paikallinen API): `npm run play:web`
+
+### Web — tarinakokeilu (React)
 
 ```bash
-PAGES_BASE=/koodisampo/ npm run build
-npm run preview
+npm run dev:stories    # web/ — tarinalista ilman karttaa
 ```
 
 ### Terminaaliversio (Ranger)
@@ -67,7 +70,7 @@ Osaaminen (feature-karma) ja kuolemat tallentuvat tiedostoon `~/.koodisampo/play
 
 Workflow: [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
 
-- `main`-push → buildaa `web/` (`PAGES_BASE=/koodisampo/`) → julkaisee GitHub Pagesiin
+- `main`-push → buildaa `web-game/` (`PAGES_BASE=/koodisampo/`) → julkaisee GitHub Pagesiin
 - Manuaalinen ajo: Actions → *Deploy web to GitHub Pages* → Run workflow
 
 **Kerran GitHubissa:** Settings → Pages → Build and deployment → Source → **GitHub Actions** (ei *Deploy from a branch*).
@@ -100,10 +103,11 @@ Web-sovelluksessa vaihda lähde: **Vaihda** → Paikallinen palvelin. Vite proxy
 
 ```
 koodisampo/
-  web/           React + Vite -peli (julkaistaan GitHub Pagesiin)
-  server/        Valinnainen Express story-API
-  hosts/         Terminaali- ja debug-hostit (Ranger)
+  web-game/      Corporate NetHack — staattinen selainbuild (GitHub Pages)
+  web/           React-tarinavalitsin (kehitys / legacy)
+  hosts/         Terminaali- ja Node-debug-hostit + jaettu pelilogiikka
   lib/           Ranger-pelilogiikka (.rgr)
+  generated/     Ranger-käännös (koodisampo.cjs CI:hin)
   content/       Maailmat, kysymykset, tarinat
   docs/          Skeemat ja suunnitelmat
   opiskelu/      Opiskelumuistiinpanot ja -opas

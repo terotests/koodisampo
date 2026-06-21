@@ -5,8 +5,10 @@
   "description": "Corporate NetHack — toimisto-oppimispeli (C++)",
   "type": "module",
   "scripts": {
-    "dev": "npm run dev --workspace=web",
-    "build": "npm run build --workspace=web",
+    "dev": "npm run dev --workspace=web-game",
+    "dev:stories": "npm run dev --workspace=web",
+    "build": "npm run build --workspace=web-game",
+    "build:stories": "npm run build --workspace=web",
     "build:ranger": "node scripts/build-ranger.mjs",
     "play": "npm run build:ranger && node hosts/terminal/run.mjs",
     "play:web": "npm run build:ranger && node hosts/debug/webPlay.mjs",
@@ -24,12 +26,13 @@
     "editor:server": "node editor-server/index.mjs",
     "editor": "npm run dev --workspace=editor",
     "editor:dev": "concurrently \"npm run editor:server\" \"npm run editor\"",
-    "preview": "npm run preview --workspace=web",
+    "preview": "npm run preview --workspace=web-game",
     "server": "npm run start --workspace=server",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },
   "workspaces": [
     "web",
+    "web-game",
     "server",
     "editor"
   ],

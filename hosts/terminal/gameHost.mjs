@@ -1,6 +1,7 @@
 import { createRequire } from "node:module";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sessionMap } from "../shared/sessionMap.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../..");
@@ -12,9 +13,7 @@ const {
   ProcessRuntime,
 } = require(resolve(projectRoot, "generated/es6/koodisampo.cjs"));
 
-export function sessionMap(session) {
-  return session._map;
-}
+export { sessionMap } from "../shared/sessionMap.mjs";
 
 export function createGameSession(save) {
   const root = new KoodisampoAppRoot();

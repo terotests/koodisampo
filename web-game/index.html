@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <title>Koodisampo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: ui-monospace, Menlo, monospace; background: #0d1117; color: #c9d1d9; margin: 0; padding: 16px; font-size: 14px; }
+    h1 { font-size: 1rem; color: #58a6ff; margin: 0 0 12px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+    #main { flex: 1; min-width: 420px; max-width: 720px; }
+    #map { background: #161b22; padding: 12px; border: 1px solid #30363d; border-radius: 6px; line-height: 1.25; white-space: pre-wrap; }
+    #map .police { background: #000; color: #fff; font-weight: bold; }
+    #panel { flex: 1; min-width: 280px; }
+    pre { background: #161b22; padding: 12px; border-radius: 6px; overflow: auto; max-height: 40vh; font-size: 11px; }
+    .status { color: #f0883e; margin: 8px 0; }
+    .warn { color: #f85149; font-weight: bold; }
+    button { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 10px; margin: 2px; cursor: pointer; border-radius: 4px; font-family: inherit; font-size: 13px; }
+    button:hover { background: #30363d; }
+    button.danger { color: #f85149; border-color: #f8514966; }
+    button.muted { color: #8b949e; }
+    button.ai { color: #d2a8ff; }
+    .hint { color: #8b949e; font-size: 12px; margin-top: 8px; line-height: 1.5; }
+    .banner { color: #39c5cf; font-weight: bold; margin-bottom: 12px; white-space: pre; font-size: 12px; }
+    .stats { color: #8b949e; margin-bottom: 12px; }
+    .stats .karma { color: #3fb950; font-weight: bold; }
+    .entity { margin-bottom: 12px; }
+    .entity-char { color: #d2a8ff; font-weight: bold; }
+    .entity-name { color: #e3b341; font-weight: bold; }
+    .greeting { margin: 12px 0; line-height: 1.5; }
+    .choice { margin: 6px 0; }
+    .choice-num { color: #e3b341; }
+    .divider { color: #8b949e; margin: 14px 0 8px; }
+    .side-opt { margin: 4px 0; }
+    .side-key { font-weight: bold; }
+    .side-key.ai { color: #d2a8ff; }
+    .side-key.joke { color: #39c5cf; }
+    .side-key.meh, .side-key.leave { color: #8b949e; }
+    .side-key.attack { color: #f85149; font-weight: bold; }
+    .attack-warn { color: #f85149; }
+    .overlay-title { font-weight: bold; margin-bottom: 8px; }
+    .overlay-title.ok { color: #3fb950; }
+    .overlay-title.bad { color: #f85149; }
+    .overlay-title.ai { color: #d2a8ff; }
+    .teaching { color: #8b949e; margin-top: 12px; line-height: 1.5; }
+    .teaching h4 { color: #8b949e; margin: 0 0 6px; font-size: 12px; }
+    .banter-line { margin: 8px 0; }
+    .banter-you { color: #e3b341; }
+    .banter-npc { color: #d2a8ff; }
+    .toolbar { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 2px; }
+    .toolbar-label { width: 100%; color: #8b949e; font-size: 11px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Koodisampo — Corporate NetHack</h1>
+  <div class="row">
+    <div id="main">
+      <div id="map">ladataan…</div>
+      <div id="toolbar" class="toolbar"></div>
+      <div class="hint" id="hint"></div>
+    </div>
+    <div id="panel">
+      <div id="meta"></div>
+      <div id="status" class="status"></div>
+      <pre id="json"></pre>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

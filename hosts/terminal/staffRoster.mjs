@@ -1,4 +1,4 @@
-import { sessionMap } from "./gameHost.mjs";
+import { sessionMap } from "../shared/sessionMap.mjs";
 
 function hashString(s) {
   let h = 2166136261;
