@@ -31,9 +31,22 @@ export function mountGameUI(game: WebGame) {
 ╚══════════════════════════════════════════════════╝`;
 
     function sendKey(key: string) {
+      const before = game.snapshot();
       game.handleKey(key);
-      render(game.snapshot());
+      const after = game.snapshot();
+      if (
+        isMobileLayout()
+        && before.onElevator
+        && /^[0-9]$/.test(key)
+        && after.floor !== before.floor
+      ) {
+        elevatorPickerCollapsed = true;
+      }
+      render(after);
     }
+
+    let elevatorPickerCollapsed = false;
+    let wasOnElevator = false;
 
     function resetGame() {
       game.reset(true);
@@ -231,11 +244,25 @@ export function mountGameUI(game: WebGame) {
     }
 
     function renderMapToolbar(state?: State) {
+      const onElevator = Boolean(state?.onElevator);
+      if (!onElevator) {
+        elevatorPickerCollapsed = false;
+        wasOnElevator = false;
+      } else if (!wasOnElevator) {
+        elevatorPickerCollapsed = false;
+      }
+      wasOnElevator = onElevator;
+
       if (isMobileLayout()) {
         if (toolbarEl) {
           setMobileMapToolbar(toolbarEl, sendKey, resetGame, {
-            onElevator: state?.onElevator,
+            onElevator,
             floors: state?.elevatorFloors,
+            pickerCollapsed: elevatorPickerCollapsed,
+            onExpandPicker: () => {
+              elevatorPickerCollapsed = false;
+              render(game.snapshot());
+            },
           });
         }
         return;

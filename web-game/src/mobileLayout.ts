@@ -83,6 +83,8 @@ export type ElevatorFloorBtn = {
 export type MobileMapToolbarOptions = {
   onElevator?: boolean;
   floors?: ElevatorFloorBtn[];
+  pickerCollapsed?: boolean;
+  onExpandPicker?: () => void;
 };
 
 export function setMobileMapToolbar(
@@ -92,11 +94,22 @@ export function setMobileMapToolbar(
   elevator?: MobileMapToolbarOptions,
 ) {
   toolbarEl.className = "toolbar toolbar-mobile";
-  if (elevator?.onElevator) toolbarEl.classList.add("has-elevator");
+  const showElevatorPicker = Boolean(elevator?.onElevator && !elevator?.pickerCollapsed);
+  if (showElevatorPicker) toolbarEl.classList.add("has-elevator");
+  if (elevator?.onElevator && elevator.pickerCollapsed) {
+    toolbarEl.classList.add("has-elevator-collapsed");
+  }
   toolbarEl.innerHTML = "";
-  document.documentElement.classList.toggle("elevator-open", Boolean(elevator?.onElevator));
+  document.documentElement.classList.toggle("elevator-open", showElevatorPicker);
 
-  if (elevator?.onElevator && elevator.floors?.length) {
+  if (elevator?.onElevator && elevator.pickerCollapsed) {
+    const expandBtn = document.createElement("button");
+    expandBtn.type = "button";
+    expandBtn.className = "elevator-expand";
+    expandBtn.textContent = "Hissi — vaihda kerros";
+    expandBtn.addEventListener("click", () => elevator.onExpandPicker?.());
+    toolbarEl.appendChild(expandBtn);
+  } else if (showElevatorPicker && elevator?.floors?.length) {
     const label = document.createElement("div");
     label.className = "elevator-label";
     label.textContent = "Hissi — valitse kerros";

@@ -181,8 +181,16 @@
         gap: 6px;
         justify-content: flex-start;
       }
-      #toolbar.toolbar-mobile.has-elevator .dpad {
-        display: none;
+      #toolbar.toolbar-mobile.has-elevator-collapsed {
+        justify-content: flex-end;
+      }
+      #toolbar .elevator-expand {
+        width: 100%;
+        min-height: 36px;
+        margin: 0;
+        color: #39c5cf;
+        border-color: #39c5cf66;
+        flex-shrink: 0;
       }
       #toolbar .elevator-label {
         color: #39c5cf;
