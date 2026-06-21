@@ -102,20 +102,27 @@ export function setMobileMapToolbar(
     label.textContent = "Hissi — valitse kerros";
     toolbarEl.appendChild(label);
 
-    const elevRow = document.createElement("div");
-    elevRow.className = "elevator-row";
-    for (const floor of elevator.floors) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "elevator-btn";
-      if (floor.current) btn.classList.add("current");
-      if (floor.hasElevator === false) btn.classList.add("disabled");
-      btn.textContent = floor.key;
-      btn.title = floor.title;
-      btn.addEventListener("click", () => onKey(floor.key));
-      elevRow.appendChild(btn);
+    const elevGrid = document.createElement("div");
+    elevGrid.className = "elevator-grid";
+    const rowCount = Math.ceil(elevator.floors.length / 5);
+    for (let row = 0; row < rowCount; row += 1) {
+      const elevRow = document.createElement("div");
+      elevRow.className = "elevator-row";
+      const slice = elevator.floors.slice(row * 5, row * 5 + 5);
+      for (const floor of slice) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "elevator-btn";
+        if (floor.current) btn.classList.add("current");
+        if (floor.hasElevator === false) btn.classList.add("disabled");
+        btn.textContent = floor.key;
+        btn.title = floor.title;
+        btn.addEventListener("click", () => onKey(floor.key));
+        elevRow.appendChild(btn);
+      }
+      elevGrid.appendChild(elevRow);
     }
-    toolbarEl.appendChild(elevRow);
+    toolbarEl.appendChild(elevGrid);
   } else {
     document.documentElement.classList.remove("elevator-open");
   }
