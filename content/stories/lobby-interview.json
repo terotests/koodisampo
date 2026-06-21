@@ -1,0 +1,58 @@
+{
+  "id": "lobby-interview",
+  "title": "Työhaastattelu",
+  "topic": "cpp",
+  "description": "Vastaanotto kutsuu haastatteluun.",
+  "estimatedMinutes": 3,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Odotushuone",
+      "text": "Vastaanottovirkailija kutsuu sinut sisään. \"Tämä on harjoitusversio — pelissä haastattelu käyttää satunnaista kysymystä pankista.\"",
+      "next": "q_auto"
+    },
+    "q_auto": {
+      "type": "choice",
+      "title": "Haastattelukysymys",
+      "text": "Mitä `auto`-avainsana tekee C++:ssa?\n\n```cpp\nauto x = 42;\n```",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Kääntäjä päättelee tyypin käännösaikana",
+          "feedback": "Oikein. Saat virallisen kulkuluvan ja työsopimuksen.",
+          "next": "end_pass",
+          "correct": true,
+          "points": 15,
+          "features": [{ "id": "cpp:auto" }]
+        },
+        {
+          "id": "b",
+          "text": "Muuttuja on automaattisesti globaali",
+          "feedback": "Väärin. Haastattelu päättyy — virallista korttia ei tule.",
+          "next": "end_fail",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Muuttuja on aina int",
+          "feedback": "Väärin. HR pudottaa hakemuksen pöydälle.",
+          "next": "end_fail",
+          "correct": false
+        }
+      ]
+    },
+    "end_pass": {
+      "type": "end",
+      "title": "Hyväksytty",
+      "text": "Sait virallisen kulkuluvan. Hissillä pääset toimistolle.",
+      "outcome": "victory"
+    },
+    "end_fail": {
+      "type": "end",
+      "title": "Ei työpaikkaa",
+      "text": "Haastattelu ei mennyt läpi. Voit yrittää edelleen liikkua varastetulla kortilla — mutta vastaanotto saattaa huomata.",
+      "outcome": "partial"
+    }
+  }
+}

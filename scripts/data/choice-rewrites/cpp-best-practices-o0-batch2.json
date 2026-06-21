@@ -1,0 +1,347 @@
+{
+  "bank": "cpp-best-practices.json",
+  "rewrites": [
+    {
+      "id": "correct-ub",
+      "choices": [
+        { "text": "Ohjelma kaatuu aina heti UB:ssä — debugger pysähtyy riville", "correct": false },
+        { "text": "Standardi sallii mitä tahansa käyttäytymistä — optimointi voi rikkoa koodin", "correct": true },
+        { "text": "UB on vain debug-buildin ongelma — release toimii normaalisti", "correct": false },
+        { "text": "UB ja implementation-defined tarkoittavat samaa käytännössä", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-rule-of-zero",
+      "choices": [
+        { "text": "Älä kirjoita destructor/copy/move itse jos RAII-jäsenet hoitavat resurssit", "correct": true },
+        { "text": "Nollaa kaikki osoittimet manuaalisesti jokaisessa metodissa", "correct": false },
+        { "text": "Käytä malloc/free RAII:n sijaan — vähemmän abstraktiota", "correct": false },
+        { "text": "Poista konstruktorit kokonaan — default ei riitä koskaan", "correct": false }
+      ]
+    },
+    {
+      "id": "perf-noexcept",
+      "choices": [
+        { "text": "noexcept poistaa kaikki poikkeukset funktiosta käännöksessä", "correct": false },
+        { "text": "Kontit voivat valita move-operaation luottavaisemmin kuin kopion", "correct": true },
+        { "text": "noexcept korvaa std::move:n konttien sisäisessä logiikassa", "correct": false },
+        { "text": "noexcept tekee koodista aina nopeampaa riippumatta tyypistä", "correct": false }
+      ]
+    },
+    {
+      "id": "tools-constexpr",
+      "choices": [
+        { "text": "constexpr funktio voi laskea arvon käännösaikana const-argumenteilla", "correct": true },
+        { "text": "constexpr pakottaa funktion inline assembly -muotoon", "correct": false },
+        { "text": "constexpr funktio ei voi koskaan heittää poikkeusta", "correct": false },
+        { "text": "constexpr korvaa kaikki #define-makrot automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-avoid-c-array",
+      "choices": [
+        { "text": "C-taulukko API:ssa ei kuljeta kokoa — yli/aliraja on helppo", "correct": true },
+        { "text": "T[N] on aina hitaampi kuin std::vector samalla datalla", "correct": false },
+        { "text": "C-taulukko ei voi sijaita stack-muistissa lainkaan", "correct": false },
+        { "text": "C-taulukko ei tue const-merkintää elementeissä", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-shared-ptr",
+      "choices": [
+        { "text": "shared_ptr on aina parempi kuin unique_ptr yleiskäytössä", "correct": false },
+        { "text": "Useampi omistaja jakaa resurssin elinkaaren — atomilaskuri", "correct": true },
+        { "text": "shared_ptr on nopein omistajuusmalli yksittäiselle omistajalle", "correct": false },
+        { "text": "shared_ptr poistaa tarpeen delete-kutsulle — ei tarvita deleteriä", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-const-member",
+      "choices": [
+        { "text": "const-jäsen estää vahingossa tilan muuttamisen kääntäjässä", "correct": true },
+        { "text": "const-jäsen tekee luokasta aina nopeamman kuin ilman constia", "correct": false },
+        { "text": "const-jäsen korvaa mutexin thread-safe -suunnittelussa", "correct": false },
+        { "text": "const-jäsen pakottaa objektin heap-allokaatioon aina", "correct": false }
+      ]
+    },
+    {
+      "id": "tools-using-alias",
+      "choices": [
+        { "text": "using on template-aliasille luettavampi kuin typedef", "correct": true },
+        { "text": "using kääntyy aina nopeammin kuin typedef samalla koneella", "correct": false },
+        { "text": "typedef ei toimi C++11:ssä template-tyypeille", "correct": false },
+        { "text": "using tekee aliaksesta automaattisesti constexpr-tyypin", "correct": false }
+      ]
+    },
+    {
+      "id": "maintain-init-list",
+      "choices": [
+        { "text": "Sulkeet {1,2,3} alustavat arvot — (3) luo kolme nollaa", "correct": true },
+        { "text": "vector<int>(3) ja vector<int>{3} ovat aina identtiset", "correct": false },
+        { "text": "Aaltosulut pakottavat vektorin heap-allokaatioon", "correct": false },
+        { "text": "Uniform initialization toimii vain C-koodissa, ei C++:ssa", "correct": false }
+      ]
+    },
+    {
+      "id": "correct-overflow",
+      "choices": [
+        { "text": "Signed overflow on UB — älä luota kiertymiseen tuotannossa", "correct": true },
+        { "text": "Signed overflow on määritelty modulo-käyttäytyminen aina", "correct": false },
+        { "text": "Overflow on ongelma vain debug-buildissa, ei releasessa", "correct": false },
+        { "text": "Kääntäjä korjaa signed overflowin automaattisesti -O2:lla", "correct": false }
+      ]
+    },
+    {
+      "id": "style-final-override",
+      "choices": [
+        { "text": "final luokalle tai virtual-metodille estää ylikirjoituksen", "correct": true },
+        { "text": "private konstruktori estää perinnön aina ilman finalia", "correct": false },
+        { "text": "static-metodit korvaavat final-merkinnän tarpeen", "correct": false },
+        { "text": "#pragma once estää luokan perinnän header-tasolla", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-cr-optional-review",
+      "choices": [
+        { "text": "std::optional<T> ilmaisee puuttuvan arvon ilman null-osoitinta", "correct": true },
+        { "text": "volatile T* tekee null-arvon näkyväksi API-rajapinnassa", "correct": false },
+        { "text": "shared_ptr<T> stack-olioille — yksinkertaisin malli", "correct": false },
+        { "text": "int flag + T* erikseen — riittää kun dokumentoidaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-cr-enum-class-switch",
+      "choices": [
+        { "text": "enum class estää implisiittiset int-muunnokset ja nimikonfliktit", "correct": true },
+        { "text": "Unscoped enum on kielletty C++17-standardissa kokonaan", "correct": false },
+        { "text": "enum class on aina 64-bittinen kaikilla alustoilla", "correct": false },
+        { "text": "switch-lause ei toimi enum class -tyypin kanssa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-prod-weak-ptr-cache",
+      "choices": [
+        { "text": "Cache tallentaa weak_ptr:n ja tarkistaa lock() ennen käyttöä", "correct": true },
+        { "text": "Vaihda kaikki shared_ptr takaisin raw new/delete -pariin", "correct": false },
+        { "text": "shared_ptr::reset() globaalisti UI:n destructorissa riittää", "correct": false },
+        { "text": "volatile shared_ptr estää referenssien jäämisen eloon", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-cr-default-delete",
+      "choices": [
+        { "text": "= delete copy-operaatioille — intentti näkyy kääntäjälle", "correct": true },
+        { "text": "= delete tekee luokasta automaattisesti nopeamman", "correct": false },
+        { "text": "private copy riittää aina — linkkeri estää käytön", "correct": false },
+        { "text": "= delete korvaa move-operaation tarpeen kokonaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-prod-chrono-timeout",
+      "choices": [
+        { "text": "sleep(500) olettaa sekunteja — timeout-bugeja helposti", "correct": false },
+        { "text": "std::chrono::milliseconds(500) tai 500ms-literal", "correct": true },
+        { "text": "500 * CLOCKS_PER_SEC ilman yksikkökommenttia", "correct": false },
+        { "text": "double seconds = 0.5 — yksikkö jää kutsujan vastuulle", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-perf-reserve-vector",
+      "choices": [
+        { "text": "reserve(estimatedSize) ennen push_back-silmukkaa", "correct": true },
+        { "text": "Vaihda std::list<int> — aina nopeampi kuin vector", "correct": false },
+        { "text": "Poista const correctness parserista nopeuden vuoksi", "correct": false },
+        { "text": "realloc suoraan vektorin sisäiseen puskuriin", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-cr-raii-file",
+      "choices": [
+        { "text": "goto cleanup on ainoa turvallinen tapa FILE*-resurssille", "correct": false },
+        { "text": "unique_ptr<FILE, Deleter> tai std::fstream — RAII", "correct": true },
+        { "text": "Poista early returnit — fclose aina lopussa", "correct": false },
+        { "text": "fclose vain happy pathissa — virhepolku erikseen", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-prod-asan-build",
+      "choices": [
+        { "text": "AddressSanitizer CI/debug-buildissä ennen tuotantokokeilua", "correct": true },
+        { "text": "Optimoi -O3 ja toivo että vuoto häviää", "correct": false },
+        { "text": "Poista assertit nopeuden vuoksi ennen profilointia", "correct": false },
+        { "text": "printf-debuggaus riittää muistivuotojen paikantamiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-correct-compare-three-way",
+      "choices": [
+        { "text": "Palauta aina -1 tai 1 — sort toimii ilman yhtäsuuruutta", "correct": false },
+        { "text": "operator<=> tai std::strong_ordering comparatorissa", "correct": true },
+        { "text": "memcmp kaikille tyypeille — nopea yleisratkaisu", "correct": false },
+        { "text": "Poista sort ja käytä linked list -rakennetta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-portability-byte-order",
+      "choices": [
+        { "text": "Kopioi sizeof(int) suoraan wireen — nopein serialisointi", "correct": false },
+        { "text": "std::endian (C++20) + oma byteswap; C++23: std::byteswap", "correct": true },
+        { "text": "Oleta little-endian — kaikki palvelimet samanlaisia", "correct": false },
+        { "text": "union type punning — portable kaikilla alustoilla", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-cpp-tools-format-logging",
+      "choices": [
+        { "text": "strcpy logipuskuriin — vähiten overheadia", "correct": false },
+        { "text": "std::format (C++20) tai std::ostringstream", "correct": true },
+        { "text": "printf ilman format-specifieriä — yksinkertaisin API", "correct": false },
+        { "text": "itoa + strcat ketjutus turvalliseen bufferiin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-tools-raii-01",
+      "choices": [
+        { "text": "shared_ptr kaikille stack-olioille — yhtenäinen tyyli", "correct": false },
+        { "text": "unique_ptr<Database> — RAII vapauttaa poikkeuspolulla", "correct": true },
+        { "text": "raw new ilman deletea — kutsuja vastaa eliniästä", "correct": false },
+        { "text": "malloc + free C++-luokan sisällä — tuttu C-API", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-tools-concepts-02",
+      "choices": [
+        { "text": "static_assert(false) jokaisessa template-funktiossa", "correct": false },
+        { "text": "concept std::totally_ordered rajaamaan template-parametri T", "correct": true },
+        { "text": "void* parametri ja castaus funktion sisällä", "correct": false },
+        { "text": "Kommentti // only numbers — dokumentaatio riittää", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-style-override-03",
+      "choices": [
+        { "text": "virtual avainsana riittää — override on redundantti", "correct": false },
+        { "text": "override — kääntäjä varmistaa base-funktion olemassaolon", "correct": true },
+        { "text": "final korvaa override-merkinnän aliluokissa", "correct": false },
+        { "text": "using namespace std korjaa Draw/draw-kirjoitusvirheen", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-style-consteval-04",
+      "choices": [
+        { "text": "consteval pakottaa evaluoinnin käännösaikana", "correct": true },
+        { "text": "volatile const int — estää optimoinnin vakiossa", "correct": false },
+        { "text": "constexpr riittää aina runtime-laskentaan", "correct": false },
+        { "text": "Macro #define korvaa constevalin konfiguraatiossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-safety-noexcept-05",
+      "choices": [
+        { "text": "try/catch jokaisen push_back-kutsun ympärillä", "correct": false },
+        { "text": "noexcept move — vector voi käyttää movea turvallisesti", "correct": true },
+        { "text": "Poista move-operaattorit kokonaan — kopiointi turvallisempaa", "correct": false },
+        { "text": "volatile move estää optimoinnin move-operaatiossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-safety-make-unique-06",
+      "choices": [
+        { "text": "make_unique<Widget>() — yksi allokaatio, exception-safe", "correct": true },
+        { "text": "malloc — vähemmän overheadia kuin make_unique", "correct": false },
+        { "text": "shared_ptr aina vaikka omistajia on vain yksi", "correct": false },
+        { "text": "Poista destruktorit — smart pointer hoitaa kaiken", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-maintain-string-view-07",
+      "choices": [
+        { "text": "const char* aina — yhteensopivin legacy-API:n kanssa", "correct": false },
+        { "text": "string_view — ei kopioi, hyväksyy stringin ja C-str:n", "correct": true },
+        { "text": "std::string kopio parametrina — turvallisin oletus", "correct": false },
+        { "text": "Macro STR(x) literaalien käsittelyyn", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-maintain-structured-08",
+      "choices": [
+        { "text": "structured bindings: auto [id, name] = row;", "correct": true },
+        { "text": "Macro GET_FIRST(x) pairin purkamiseen", "correct": false },
+        { "text": "Kopioi .first ja .second erillisiin muuttujiin ilman autoa", "correct": false },
+        { "text": "void* castaus pair-olioon — vähiten boilerplatea", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-perf-move-09",
+      "choices": [
+        { "text": "Kyllä — std::move returnissa on aina pakollinen", "correct": false },
+        { "text": "Ei — NRVO/RVO usein riittää ilman std::move:a", "correct": true },
+        { "text": "Palauta shared_ptr vektorin sijaan — selkeämpi omistajuus", "correct": false },
+        { "text": "Kopioi aina varmuuden vuoksi ennen palautusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-perf-shrink-10",
+      "choices": [
+        { "text": "clear() vapauttaa aina kapasiteetin automaattisesti", "correct": false },
+        { "text": "shrink_to_fit() tai swap-trick vanhoilla kääntäjillä", "correct": true },
+        { "text": "resize(0) riittää — capacity palautuu nollaan", "correct": false },
+        { "text": "delete vector — ainoa tapa vapauttaa muisti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-thread-scoped-lock-12",
+      "choices": [
+        { "text": "lock(m1); lock(m2) manuaalisesti samassa järjestyksessä", "correct": false },
+        { "text": "scoped_lock(m1, m2) — atomisesti oikeassa järjestyksessä", "correct": true },
+        { "text": "volatile mutex estää deadlockin ilman lukitusta", "correct": false },
+        { "text": "sleep ennen lockia — satunnainen viive ratkaisee", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-thread-atomic-order-13",
+      "choices": [
+        { "text": "seq_cst on oletus — relaxed vain jos semantiikka sallii", "correct": true },
+        { "text": "atomic ei tarvitse memory_orderia koskaan", "correct": false },
+        { "text": "volatile int riittää usean säikeen laskuriin", "correct": false },
+        { "text": "mutex jokaiselle incrementille — aina turvallisin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-correct-signed-14",
+      "choices": [
+        { "text": "Kääntäjäbugi — vertailu index >= 0 on aina määritelty", "correct": false },
+        { "text": "size_t on unsigned — vertailu nollaan on aina tosi", "correct": true },
+        { "text": "Optimointi -O3 rikkoo unsigned-vertailun", "correct": false },
+        { "text": "size_t on signed tyypin aliaksena tässä kontekstissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-cpp-correct-dangling-15",
+      "choices": [
+        { "text": "const string& palautus on aina tehokkain paikallisesta", "correct": false },
+        { "text": "string arvona (RVO) tai string_view jos elinikä taattu", "correct": true },
+        { "text": "static string local — thread-safe ilman mutexia", "correct": false },
+        { "text": "char* osoitin paikalliseen puskuriin — välitön palautus", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-cpp-cr-move-semantics",
+      "choices": [
+        { "text": "RVO/NRVO usein riittää — move voi estää optimoinnin", "correct": true },
+        { "text": "std::move palautuksessa on aina pakollinen C++17:ssä", "correct": false },
+        { "text": "move tekee palautuksesta automaattisesti thread-safen", "correct": false },
+        { "text": "Palauta const reference — vältät kopioinnin kokonaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-cpp-prod-virtual-dtor",
+      "choices": [
+        { "text": "Käytä final-luokkaa base-luokkana polymorfisessa API:ssa", "correct": false },
+        { "text": "virtual ~Base() = default polymorfiselle pohjalle", "correct": true },
+        { "text": "shared_ptr korjaa ilman virtual destructoria", "correct": false },
+        { "text": "Muuta delete -> free() C-tyyliseen vapautukseen", "correct": false }
+      ]
+    }
+  ]
+}

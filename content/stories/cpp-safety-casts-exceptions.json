@@ -1,0 +1,182 @@
+{
+  "id": "cpp-safety-casts-exceptions",
+  "title": "Turvallinen loitsu — castit ja poikkeukset",
+  "topic": "cpp",
+  "description": "Opit käyttämään static_castia C-tyylisen castin sijaan ja miksi poikkeuksia ei voi sivuuttaa.",
+  "sourceRef": "cpp-best-practices/04-Considering_Safety.md#use-c-style-cast-instead-of-c-style-cast",
+  "estimatedMinutes": 12,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Myrskyn silmä",
+      "text": "Myrskyssä vanha loitsu `(int)x` piilottaa vaaransa. Velho näyttää turvallisemman tien:\n\n```cpp\ndouble x = getX();\nint i = static_cast<int>(x);\n```\n\nC++-tyylinen cast on **helpompi löytää haulla** ja **kääntäjä tarkistaa enemmän**.\n\n*Lähde: [Use C++-style cast](https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md)*",
+      "next": "q_cast"
+    },
+    "q_cast": {
+      "type": "choice",
+      "title": "Muunnosloitsu",
+      "text": "Miksi `static_cast<int>(x)` on parempi kuin `(int)x`?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Näkyvämpi koodissa, haettavissa, ja kääntäjä tekee enemmän tarkistuksia",
+          "feedback": "Oikein! C-tyylinen cast voi piilottaa const_cast tai reinterpret_cast -operaatioita. static_cast on rajattu ja turvallisempi.",
+          "next": "narrative_cast_warning",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:static-cast"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "static_cast on aina nopeampi suoritusajassa",
+          "feedback": "Ei suorituskykyeroa — kyse on turvallisuudesta ja luettavuudesta.",
+          "next": "death_cast",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "C-tyylinen cast on kielletty C++11:ssä",
+          "feedback": "Ei ole kielletty — mutta sitä ei suositella. Käytä C++-casteja.",
+          "next": "death_cast",
+          "correct": false
+        }
+      ]
+    },
+    "death_cast": {
+      "type": "end",
+      "title": "Piilotettu reinterpret",
+      "text": "(int*) muutti osoitteen väärin — määrittelemätön käyttäytyminen. Tuoni nauraa.",
+      "outcome": "death"
+    },
+    "narrative_cast_warning": {
+      "type": "narrative",
+      "title": "Velhon varoitus",
+      "text": "Velho muistuttaa: jos joudut castaamaan `double` → `int`, mieti onko logiikka oikein. Mittaa kolme kertaa, leikkaa kerran — overflow voi olla vaarallinen.\n\nSeuraavaksi: miten käsitellä virheitä?",
+      "next": "q_exceptions"
+    },
+    "q_exceptions": {
+      "type": "choice",
+      "title": "Virheen ääni",
+      "text": "cpp-best-practices suosittelee poikkeuksia. Miksi `throw` on parempi kuin paluuarvo jota voi **ignoroida**?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Poikkeusta ei voi sivuuttaa — se pakottaa käsittelyn tai ohjelman pysähtymisen",
+          "feedback": "Oikein! boost::optional tai error-koodi voi jäädä tarkistamatta → kaatuminen myöhemmin. Poikkeus voidaan napata ylhäällä.",
+          "next": "q_optional_trap",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:exceptions"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Poikkeukset ovat aina nopeampia kuin if-tarkistukset",
+          "feedback": "Ei — kyse on oikeellisuudesta, ei nopeudesta. Stroustrup perustelee poikkeuksia turvallisuudella.",
+          "next": "death_ignore",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "C++:ssa ei saa käyttää poikkeuksia suorituskyvyn takia",
+          "feedback": "Vanha myytti. Modernissa C++:ssa poikkeukset ovat validi virheenkäsittelytapa.",
+          "next": "death_ignore",
+          "correct": false
+        }
+      ]
+    },
+    "death_ignore": {
+      "type": "end",
+      "title": "Sivuutettu virhe",
+      "text": "Paluuarvo jäi tarkistamatta — ohjelma jatkoi romahtaneeseen tilaan.",
+      "outcome": "death"
+    },
+    "q_optional_trap": {
+      "type": "choice",
+      "title": "Optionalin sudenkuoppa",
+      "text": "Koodi palauttaa `boost::optional<int>`. Mitä voi tapahtua jos kutsuja **ei tarkista** tulosta?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ohjelma voi kaatua tai käyttää arvoa jota ei ole — hiljainen virhe",
+          "feedback": "Juuri näin! Siksi poikkeus on usein turvallisempi — sitä ei voi unohtaa tarkistaa.",
+          "next": "narrative_code",
+          "correct": true,
+          "points": 10,
+          "features": [
+            {
+              "id": "cpp:error-handling"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Kääntäjä pakottaa aina tarkistamaan optionalin",
+          "feedback": "Valitettavasti ei — C++ ei pakota. Virhe jää helposti huomaamatta.",
+          "next": "death_ignore",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "optional palauttaa automaattisesti 0 jos tyhjä",
+          "feedback": "Ei — tyhjä optional ei sisällä arvoa. Tarkistus on pakollinen.",
+          "next": "death_ignore",
+          "correct": false
+        }
+      ]
+    },
+    "narrative_code": {
+      "type": "narrative",
+      "title": "Castin kirjoitus",
+      "text": "Korvaa C-tyylinen cast modernilla. Täydennä cast-tyyppi.",
+      "next": "code_static_cast"
+    },
+    "code_static_cast": {
+      "type": "code",
+      "title": "static_cast",
+      "text": "Täydennä cast-tyyppi (ilman _cast-päätettä riittää etuliite):",
+      "template": "int voima = _____cast<int>(mana);",
+      "answers": [
+        "static_"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "hint": "static_cast — täytä puuttuva etuliite (7 merkkiä)",
+      "feedbackCorrect": "Loitsu on typeturvallinen! static_cast on helppo löytää ja turvallisempi kuin (int).",
+      "feedbackWrong": "Vastaus: static_ — eli static_cast",
+      "next": "victory",
+      "wrongNext": "death_code",
+      "features": [
+        {
+          "id": "cpp:static-cast"
+        }
+      ]
+    },
+    "death_code": {
+      "type": "end",
+      "title": "Väärä muunnos",
+      "text": "C-tyylinen tapa piilotti virheen — loitsu kääntyi itseään vastaan.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Loitsu hallussa",
+      "text": "Olet oppinut: käytä static_castia, älä sivuuta virheitä, poikkeukset pakottavat käsittelyn. Viimeinen turvallisuusaihe odottaa: variadiset funktiot.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 40,
+  "teaches": [
+    "cpp:static-cast",
+    "cpp:exceptions",
+    "cpp:error-handling"
+  ]
+}

@@ -1,0 +1,2418 @@
+{
+  "instructions": "docs/question-bank-choice-rewrite-prompt.md",
+  "bank": "qt-dev.json",
+  "offset": 70,
+  "limit": 57,
+  "totalInBank": 134,
+  "biasedInSlice": 57,
+  "outputFormat": {
+    "bank": "qt-dev.json",
+    "rewrites": [
+      {
+        "id": "question-id",
+        "choices": [
+          {
+            "text": "...",
+            "correct": true
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "b05-qt-widgets-size-hint",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Custom widget leikkaa tekstiä layoutissa. Mitä metodia ylikirjoitat?",
+      "choices": [
+        {
+          "text": "sizeHint() — layout käyttää ehdotettua kokoa",
+          "correct": true
+        },
+        {
+          "text": "paintEvent() palauttaa koon",
+          "correct": false
+        },
+        {
+          "text": "resize() layoutissa riittää",
+          "correct": false
+        },
+        {
+          "text": "setMinimumSize(0,0) korjaa aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "sizeHint tells layout preferred size — QWidget docs.",
+      "wrongFeedback": "Layout kysyy sizeHint():ia. Ilman sitä widget saa liian vähän tilaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.55,
+        "correctIsLongest": true,
+        "spread": 17,
+        "lens": [
+          44,
+          27,
+          27,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-widgets-tab-order",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Tab-järjestys lomakkeessa on väärä — käyttäjä tabbaa satunnaisesti. Miten korjaat?",
+      "choices": [
+        {
+          "text": "setTabOrder(widget1, widget2) — eksplisiittinen tab-ketju",
+          "correct": true
+        },
+        {
+          "text": "Tab order on aina automaattinen — ei korjattavissa",
+          "correct": false
+        },
+        {
+          "text": "QSS tab-order property",
+          "correct": false
+        },
+        {
+          "text": "Poista Tab key event filter",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QWidget tab order — Qt docs setTabOrder.",
+      "wrongFeedback": "Tab order ei aina seuraa layoutia. setTabOrder määrittää ketju.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 33,
+        "ratio": 1.73,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          57,
+          50,
+          22,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-widgets-focus-policy",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Label saa fokuksen tabilla mutta ei pitäisi. Mitä muutat?",
+      "choices": [
+        {
+          "text": "setFocusPolicy(Qt::NoFocus) — widget ei saa fokuksia",
+          "correct": true
+        },
+        {
+          "text": "hide() label",
+          "correct": false
+        },
+        {
+          "text": "setEnabled(false)",
+          "correct": false
+        },
+        {
+          "text": "QSS focus: none",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt focus policy — Qt docs QWidget focusPolicy.",
+      "wrongFeedback": "Focus policy hallitsee tab-fokusta. NoFocus poistaa labelin ketjusta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 14.666666666666666,
+        "ratio": 3.55,
+        "correctIsLongest": true,
+        "spread": 40,
+        "lens": [
+          52,
+          12,
+          17,
+          15
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-widgets-context-menu",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "List widget tarvitsee right-click menu. Miten toteutat Qt-widgetsissa?",
+      "choices": [
+        {
+          "text": "customContextMenuRequested + QMenu — standard pattern",
+          "correct": true
+        },
+        {
+          "text": "mousePressEvent aina — context menu deprecated",
+          "correct": false
+        },
+        {
+          "text": "QAction vain toolbarille",
+          "correct": false
+        },
+        {
+          "text": "setContextMenuPolicy(PreventContextMenu)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Context menu policy — Qt docs QWidget context menu.",
+      "wrongFeedback": "customContextMenuRequested on Qt:n standardi tapa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 36.666666666666664,
+        "ratio": 1.45,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          53,
+          46,
+          24,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-signals-auto-connection",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "on_pushButton_clicked() ei kutsuta — slot nimi väärä. Miten auto-connection löytää slotin?",
+      "choices": [
+        {
+          "text": "on_<objectName>_<signal>() — moc auto-connect pattern",
+          "correct": true
+        },
+        {
+          "text": "Kaikki public metodit auto-connect",
+          "correct": false
+        },
+        {
+          "text": "Vain connect() eksplisiittisesti — auto ei ole",
+          "correct": false
+        },
+        {
+          "text": "Slot nimi voi olla mitä tahansa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Auto-connection naming — Qt docs designer connection.",
+      "wrongFeedback": "Auto-connect vaatii on_object_signal nimen. Muoto on tiukka.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 37,
+        "ratio": 1.43,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          53,
+          34,
+          46,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-signals-lambda-disconnect",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Lambda-connect jää eloon widgetin tuhoutumisen jälkeen — crash. Miten disconnect turvallisesti?",
+      "choices": [
+        {
+          "text": "QObject::connect lambda + context object — disconnect kun context tuhoutuu",
+          "correct": true
+        },
+        {
+          "text": "Lambda ei tarvitse disconnect",
+          "correct": false
+        },
+        {
+          "text": "disconnect() ilman argumenteja aina",
+          "correct": false
+        },
+        {
+          "text": "Käytä raw function pointer",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Lambda connections context — Qt docs QObject connect lambda.",
+      "wrongFeedback": "Context object disconnectaa automaattisesti. Ilman context dangling riski.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 30,
+        "ratio": 2.47,
+        "correctIsLongest": true,
+        "spread": 48,
+        "lens": [
+          74,
+          29,
+          35,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-thread-event-loop",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Worker-thread ei vastaa signaaleihin — slot ei kutsuta. Mitä worker-thread tarvitsee?",
+      "choices": [
+        {
+          "text": "QEventLoop exec() tai QObject threadissa — event delivery",
+          "correct": true
+        },
+        {
+          "text": "Thread ilman event loop riittää signaaleille",
+          "correct": false
+        },
+        {
+          "text": "GUI thread exec korvaa worker exec",
+          "correct": false
+        },
+        {
+          "text": "Signaalit ei tarvitse event loopia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Threads and QObjects — Qt docs thread basics event loop.",
+      "wrongFeedback": "Queued connection vaatii event loop vastaanottajathreadissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 37.333333333333336,
+        "ratio": 1.53,
+        "correctIsLongest": true,
+        "spread": 23,
+        "lens": [
+          57,
+          44,
+          34,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-thread-future",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Pitkä laskenta taustalla — haluat tulos GUI:hin ilman raw threadia. Qt-ratkaisu?",
+      "choices": [
+        {
+          "text": "QtConcurrent::run + QFutureWatcher — future pattern",
+          "correct": true
+        },
+        {
+          "text": "sleep GUI-threadissa",
+          "correct": false
+        },
+        {
+          "text": "QThread::terminate",
+          "correct": false
+        },
+        {
+          "text": "Global mutex resultille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt Concurrent — Qt docs QFutureWatcher.",
+      "wrongFeedback": "QtConcurrent + watcher on standardi async Qt:ssä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 51,
+        "avgWrongLen": 20.333333333333332,
+        "ratio": 2.51,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          51,
+          20,
+          18,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-models-mime-drag",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Tree view drag-drop eri sovellukseen — data ei siirry. Mitä model-metodia toteutat?",
+      "choices": [
+        {
+          "text": "mimeData + supportedDropActions — QAbstractItemModel drag API",
+          "correct": true
+        },
+        {
+          "text": "setDragEnabled(true) riittää",
+          "correct": false
+        },
+        {
+          "text": "QSS drag property",
+          "correct": false
+        },
+        {
+          "text": "mouseMoveEvent viewissä aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Using drag and drop with item views — Qt docs model drag.",
+      "wrongFeedback": "Drag vaatii mimeData toteutuksen modelissa. Enable ei riitä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 2.51,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          61,
+          28,
+          17,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-models-editable-delegate",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Taulukon solu tarvitsee custom editor widgetin editissä. Mitä käytät?",
+      "choices": [
+        {
+          "text": "QStyledItemDelegate — createEditor ja setModelData",
+          "correct": true
+        },
+        {
+          "text": "QTableWidget setCellWidget kaikille soluille",
+          "correct": false
+        },
+        {
+          "text": "Model setData ilman delegatea aina",
+          "correct": false
+        },
+        {
+          "text": "QLineEdit overlay viewin päälle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QStyledItemDelegate — Qt docs model view delegate.",
+      "wrongFeedback": "Custom editor on delegate:n vastuu. Ei cell widget kaikille.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 50,
+        "avgWrongLen": 36.333333333333336,
+        "ratio": 1.38,
+        "correctIsLongest": true,
+        "spread": 19,
+        "lens": [
+          50,
+          44,
+          34,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-opengl-double-buffer",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "OpenGL rendering flicker — piirto näkyy kesken renderöinnin. Mitä format-optiota?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat double buffering — swap buffers",
+          "correct": true
+        },
+        {
+          "text": "QWidget::paintEvent ilman OpenGL",
+          "correct": false
+        },
+        {
+          "text": "setUpdatesEnabled(false) aina",
+          "correct": false
+        },
+        {
+          "text": "Single buffer on nopeampi tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSurfaceFormat swap behavior — Qt docs OpenGL surface format.",
+      "wrongFeedback": "Double buffering estää flicker. Määritä surface format.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 1.41,
+        "correctIsLongest": true,
+        "spread": 17,
+        "lens": [
+          46,
+          32,
+          29,
+          37
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-opengl-pixel-format",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Depth buffer ei toimi — 3D-objektit piirtyvät väärin. Mitä surface formatissa?",
+      "choices": [
+        {
+          "text": "setDepthBufferSize(24) — depth buffer koko",
+          "correct": true
+        },
+        {
+          "text": "setVersion(3,3) korvaa depth",
+          "correct": false
+        },
+        {
+          "text": "QOpenGLWidget ei tarvitse depth",
+          "correct": false
+        },
+        {
+          "text": "swapBuffers poistaa depth",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSurfaceFormat depth buffer — Qt docs depthBufferSize.",
+      "wrongFeedback": "Ilman depth buffer Z-test ei toimi. setDepthBufferSize.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 28,
+        "ratio": 1.5,
+        "correctIsLongest": true,
+        "spread": 17,
+        "lens": [
+          42,
+          28,
+          31,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-shaders-precompile",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Shader compile hidastaa app käynnistystä. Miten Qt 6 RHI auttaa?",
+      "choices": [
+        {
+          "text": "qsb precompiled shader — offline compile qsb tiedostoon",
+          "correct": true
+        },
+        {
+          "text": "GLSL compile runtime aina pakko",
+          "correct": false
+        },
+        {
+          "text": "QSS korvaa shaderit",
+          "correct": false
+        },
+        {
+          "text": "Shader cache poistetaan rebootissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt Shader Tools — Qt docs qsb shader baking.",
+      "wrongFeedback": "qsb offline compile vähentää startup compile. Qt Shader Tools.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 28,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          55,
+          31,
+          19,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-shaders-varying-interpolation",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 5,
+      "prompt": "Fragment shader saa väärät interpolated arvot vertex-attribuuteista. Mikä GLSL-stage välittää?",
+      "choices": [
+        {
+          "text": "Vertex shader output → fragment input — varying interpolation GPU:lla",
+          "correct": true
+        },
+        {
+          "text": "Uniform välittyy interpoloituna",
+          "correct": false
+        },
+        {
+          "text": "Fragment shader lukee VBO suoraan",
+          "correct": false
+        },
+        {
+          "text": "Interpolation vain CPU:lla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "OpenGL shading language pipeline — OpenGL wiki rendering pipeline.",
+      "wrongFeedback": "Varying interpoloidaan rasterizationissa. Vertex out → fragment in.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 30,
+        "ratio": 2.3,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          69,
+          31,
+          33,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b06-qt-resource-extern",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QRC-resurssi pitää päivittää ilman uudelleenkäännöstä. Miten ulkoiset resurssit?",
+      "choices": [
+        {
+          "text": "QResource registerResource runtime tai external path",
+          "correct": true
+        },
+        {
+          "text": "QRC on ainoa tapa Qt:ssä",
+          "correct": false
+        },
+        {
+          "text": "COPY resurssit imageen",
+          "correct": false
+        },
+        {
+          "text": "Resurssit vain filesystem ilman Qt API",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "The Qt Resource System — Qt docs resource system.",
+      "wrongFeedback": "registerResource ja external files mahdollistavat päivityksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 28,
+        "ratio": 1.86,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          52,
+          24,
+          22,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-layout-responsive",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Ikkuna resize aiheuttaa widgettien päällekkäisyyden. Mikä layout-manager korjaa?",
+      "choices": [
+        {
+          "text": "QVBoxLayout / QHBoxLayout / QGridLayout — automaattinen uudelleenasettelu",
+          "correct": true
+        },
+        {
+          "text": "setFixedSize kaikille",
+          "correct": false
+        },
+        {
+          "text": "Absolute positioning move():llä",
+          "correct": false
+        },
+        {
+          "text": "Poista layout",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Layout managers handle resize — Qt Layout Management.",
+      "wrongFeedback": "Kiinteät koordinaatit eivät skaalaudu. Käytä layoutteja.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 73,
+        "avgWrongLen": 21.666666666666668,
+        "ratio": 3.37,
+        "correctIsLongest": true,
+        "spread": 60,
+        "lens": [
+          73,
+          21,
+          31,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-widget-parent",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Dialogi jää roikkuen muistissa ikkunan sulkeuduttua. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Ei parent-widgettiä — QObject parent hallitsee lasten elinkaarta",
+          "correct": true
+        },
+        {
+          "text": "Qt vuotaa aina",
+          "correct": false
+        },
+        {
+          "text": "delete this riittää aina",
+          "correct": false
+        },
+        {
+          "text": "QApplication::quit korjaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QObject parent-child ownership — Qt Object Trees.",
+      "wrongFeedback": "Ilman parentia widget pitää poistaa käsin. Aseta parent.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 21,
+        "ratio": 3.05,
+        "correctIsLongest": true,
+        "spread": 50,
+        "lens": [
+          64,
+          14,
+          24,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-widget-stylesheet",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Nappi näyttää erilaiselta macOS vs Windows — haluat yhtenäisen ulkoasun. Qt-ratkaisu?",
+      "choices": [
+        {
+          "text": "QSS stylesheet tai QStyle — mukautettu tyyli platform-riippumattomasti",
+          "correct": true
+        },
+        {
+          "text": "Piirrä bitmap jokaiselle alustalle",
+          "correct": false
+        },
+        {
+          "text": "setFixedSize korjaa tyylin",
+          "correct": false
+        },
+        {
+          "text": "Qt ei tue custom tyyliä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt Style Sheets customize appearance — Qt Style Sheets.",
+      "wrongFeedback": "Native look vaihtelee. QSS tai custom style yhtenäistää.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 2.53,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          70,
+          34,
+          26,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-signals-queued",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Worker-thread emit signaalin joka päivittää GUI-widgettiä — satunnainen crash. Korjaus?",
+      "choices": [
+        {
+          "text": "Qt::QueuedConnection — slot ajetaan receiver-threadissa",
+          "correct": true
+        },
+        {
+          "text": "Qt::DirectConnection nopeuttaa",
+          "correct": false
+        },
+        {
+          "text": "Kutsu widgettiä suoraan workerista",
+          "correct": false
+        },
+        {
+          "text": "Poista signaalit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Cross-thread signals need queued connection — Qt Signals and Slots.",
+      "wrongFeedback": "GUI ei ole thread-safe. QueuedConnection marshals to main thread.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.06,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          55,
+          30,
+          34,
+          16
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-signals-disconnect",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit väärin?",
+      "choices": [
+        {
+          "text": "Ei disconnect tai ei parent — QObject elinajan hallinta signaaleille",
+          "correct": true
+        },
+        {
+          "text": "Signaalit eivät tarvitse disconnectia",
+          "correct": false
+        },
+        {
+          "text": "lambda korvaa disconnectin",
+          "correct": false
+        },
+        {
+          "text": "emit stop riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Disconnect or destroy receiver — Qt object lifetime.",
+      "wrongFeedback": "Elävä yhteys kuolleeseen objektiin crashaa. disconnect tai parent.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.55,
+        "correctIsLongest": true,
+        "spread": 51,
+        "lens": [
+          68,
+          37,
+          26,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-thread-moveToThread",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Raskas laskenta jäädyttää GUI-threadin. Qt-idiomi taustatyölle?",
+      "choices": [
+        {
+          "text": "Worker QObject moveToThread(QThread) — signaalit takaisin GUI:hin",
+          "correct": true
+        },
+        {
+          "text": "std::thread suoraan widgetistä",
+          "correct": false
+        },
+        {
+          "text": "QThread::run bez QObject",
+          "correct": false
+        },
+        {
+          "text": "processEvents silmukassa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "moveToThread pattern — Qt Thread Support.",
+      "wrongFeedback": "processEvents on hauras. Worker thread + queued signals on Qt-tapa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 26,
+        "ratio": 2.5,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          65,
+          30,
+          24,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-thread-gui-rule",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Code review: QLabel::setText kutsutaan worker-threadista. Mikä sääntö rikkoutuu?",
+      "choices": [
+        {
+          "text": "GUI-luokat vain main threadissä — Qt thread affinity",
+          "correct": true
+        },
+        {
+          "text": "setText on thread-safe",
+          "correct": false
+        },
+        {
+          "text": "Vain QPixmap vaatii main threadin",
+          "correct": false
+        },
+        {
+          "text": "Mutex riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QObject thread affinity — GUI updates on owning thread.",
+      "wrongFeedback": "Qt GUI ei ole thread-safe. Päivitä main threadissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 2.29,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          52,
+          22,
+          33,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-model-view-sort",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QTableView näyttää dataa mutta sortaus ei toimi. Mitä puuttuu?",
+      "choices": [
+        {
+          "text": "setSortingEnabled(true) + model data(Qt::DisplayRole) sortattavissa",
+          "correct": true
+        },
+        {
+          "text": "QPainter sorttaa",
+          "correct": false
+        },
+        {
+          "text": "QSortFilterProxyModel riittää ilman dataa",
+          "correct": false
+        },
+        {
+          "text": "View ei tue sortausta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Model must provide sortable data — Qt Model/View.",
+      "wrongFeedback": "Sortaus vaatii model-tuen ja viewn enable. Tarkista DisplayRole.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 67,
+        "avgWrongLen": 26,
+        "ratio": 2.58,
+        "correctIsLongest": true,
+        "spread": 51,
+        "lens": [
+          67,
+          16,
+          41,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-model-reset",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Lista päivittyy hitaasti kun data muuttuu — koko model resetataan. Parempi tapa?",
+      "choices": [
+        {
+          "text": "beginInsertRows/endInsertRows tai dataChanged — granular model notifications",
+          "correct": true
+        },
+        {
+          "text": "resetModel aina",
+          "correct": false
+        },
+        {
+          "text": "Poista view ja luo uudelleen",
+          "correct": false
+        },
+        {
+          "text": "QTimer::singleShot 0",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fine-grained model signals — QAbstractItemModel.",
+      "wrongFeedback": "Täysi reset on raskas. Ilmoita vain muuttuneet rivit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 76,
+        "avgWrongLen": 21,
+        "ratio": 3.62,
+        "correctIsLongest": true,
+        "spread": 61,
+        "lens": [
+          76,
+          15,
+          28,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-opengl-context",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "QOpenGLWidget renderöi mustaa — context ei ole current. Mitä kutsutaan ennen piirtoa?",
+      "choices": [
+        {
+          "text": "makeCurrent() — aktivoi GL context ennen OpenGL-kutsuja",
+          "correct": true
+        },
+        {
+          "text": "swapBuffers ennen piirtoa",
+          "correct": false
+        },
+        {
+          "text": "QWidget::update riittää",
+          "correct": false
+        },
+        {
+          "text": "OpenGL ei tarvitse current contextia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "OpenGL calls require current context — QOpenGLWidget.",
+      "wrongFeedback": "Ilman makeCurrent GL-kutsut voivat epäonnistua hiljaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 28,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          55,
+          25,
+          23,
+          36
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-opengl-vsync",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Peli renderöi 300 FPS ja kuluttaa CPU:ta turhaan. Miten rajoitat frame ratea?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat swap interval (vsync) tai QTimer frame pacing",
+          "correct": true
+        },
+        {
+          "text": "while(true) render",
+          "correct": false
+        },
+        {
+          "text": "Poista double buffering",
+          "correct": false
+        },
+        {
+          "text": "setFixedSize renderille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Swap interval ties to display refresh — QSurfaceFormat.",
+      "wrongFeedback": "Rajaton render loop polttaa CPU:ta. Vsync tai timer.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 60,
+        "avgWrongLen": 21.333333333333332,
+        "ratio": 2.81,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          60,
+          18,
+          23,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-shader-uniform",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Shader ei reagoi uniform-muutoksiin — väri pysyy valkoisena. Tyypillinen virhe?",
+      "choices": [
+        {
+          "text": "Uniform location -1 (optimoitu pois) tai bindMaterial/setUniformValue väärässä vaiheessa",
+          "correct": true
+        },
+        {
+          "text": "GLSL ei tue uniformeja",
+          "correct": false
+        },
+        {
+          "text": "QShaderProgram ei tarvitse bindiä",
+          "correct": false
+        },
+        {
+          "text": "Vain vertex shader voi uniformeja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Check uniform location and active program — QShaderProgram.",
+      "wrongFeedback": "Uniform voi olla dead code. Tarkista location ja bind timing.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 88,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 3,
+        "correctIsLongest": true,
+        "spread": 66,
+        "lens": [
+          88,
+          22,
+          33,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-shader-qsb",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Qt 6 shader ei lataudu — .frag tiedosto suoraan ei toimi. Miten shader valmistellaan?",
+      "choices": [
+        {
+          "text": "qsb offline compilation — .qsb binary Qt shader toolsilla",
+          "correct": true
+        },
+        {
+          "text": "Lue .glsl runtime compile aina",
+          "correct": false
+        },
+        {
+          "text": "QPainter korvaa shadert",
+          "correct": false
+        },
+        {
+          "text": "Qt 5 QGLShader only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt 6 uses precompiled .qsb — Qt Shader Tools.",
+      "wrongFeedback": "Qt 6 RHI vaatii qsb. Käännä shader offline.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 24,
+        "ratio": 2.38,
+        "correctIsLongest": true,
+        "spread": 38,
+        "lens": [
+          57,
+          30,
+          23,
+          19
+        ]
+      }
+    },
+    {
+      "id": "b07-qt-shader-precision",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 5,
+      "prompt": "Shader toimii desktopilla mutta on musta mobiilissa OpenGL ES:llä. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Puuttuva precision mediump/highp ES:ssä tai float texture ES2-rajoitus",
+          "correct": true
+        },
+        {
+          "text": "Qt ei tue mobiilia",
+          "correct": false
+        },
+        {
+          "text": "Vain QML toimii mobiilissa",
+          "correct": false
+        },
+        {
+          "text": "Desktop ja ES shadert identtiset",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "OpenGL ES requires precision qualifiers — Qt Quick 3D / RHI.",
+      "wrongFeedback": "ES shader language eroaa. Lisää precision ja tarkista texture format.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 2.76,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          70,
+          18,
+          26,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-widgets-menubar",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Desktop-sovelluksessa päävalikko puuttuu macOS:llä vaikka QMenuBar on luotu. Tyypillinen syy?",
+      "choices": [
+        {
+          "text": "macOS siirtää menu barin järjestelmän yläreunaan — setNativeMenuBar(true)",
+          "correct": true
+        },
+        {
+          "text": "QMenuBar ei toimi macOS:llä",
+          "correct": false
+        },
+        {
+          "text": "Menu pitää piirtää manuaalisesti QPainterilla",
+          "correct": false
+        },
+        {
+          "text": "Vain QML tukee valikoita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Native menu bar on macOS — QMenuBar docs.",
+      "wrongFeedback": "Menu voi olla native barissa, ei ikkunassa. Tarkista platform behavior.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 73,
+        "avgWrongLen": 32,
+        "ratio": 2.28,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          73,
+          27,
+          45,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-widgets-tooltip-delay",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Tooltip tulee liian hitaasti QA-testaajille. Mitä Qt-sovelluksessa säädät?",
+      "choices": [
+        {
+          "text": "QToolTip::setFont / QApplication style sheet tai showDelay platformista — toolTipDuration",
+          "correct": true
+        },
+        {
+          "text": "Tooltip-delay ei ole konfiguroitavissa",
+          "correct": false
+        },
+        {
+          "text": "Vain mouseTracking riittää",
+          "correct": false
+        },
+        {
+          "text": "QLabel korvaa tooltipin aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tool tip behavior via style/platform — QToolTip docs.",
+      "wrongFeedback": "Style ja platform theme vaikuttavat delayhin. Testaa eri OS:illä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 89,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 2.9,
+        "correctIsLongest": true,
+        "spread": 63,
+        "lens": [
+          89,
+          38,
+          26,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-signals-blocking",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Lataat modelin UI:hin — jokainen setData laukaisee dataChanged ja hidastaa. Miten hiljennät?",
+      "choices": [
+        {
+          "text": "QSignalBlocker objekti tai blockSignals(true) — palauta false lopuksi",
+          "correct": true
+        },
+        {
+          "text": "disconnect kaikki signaalit pysyvästi",
+          "correct": false
+        },
+        {
+          "text": "Signaaleja ei voi estää Qt:ssa",
+          "correct": false
+        },
+        {
+          "text": "sleep() signaalien välissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSignalBlocker RAII blocks signals — QObject blockSignals.",
+      "wrongFeedback": "Batch-päivityksissä blokkaa signaalit. Muuten N× dataChanged.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 31,
+        "ratio": 2.23,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          69,
+          37,
+          30,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-signals-unique-connection",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Sama connect() kutsutaan initissä kahdesti — slotti suoritetaan kaksinkertaisesti. Esto?",
+      "choices": [
+        {
+          "text": "Qt::UniqueConnection — connect epäonnistuu jos duplikaatti",
+          "correct": true
+        },
+        {
+          "text": "connect poistaa vanhan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "UniqueConnection toimii vain queued",
+          "correct": false
+        },
+        {
+          "text": "Käytä macro connect aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UniqueConnection prevents duplicate connections — Qt connect docs.",
+      "wrongFeedback": "Ilman UniqueConnection duplikaatticonnectit kasaantuvat.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.79,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          58,
+          38,
+          35,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-thread-qthreadpool",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Paljon lyhyitä taustatehtäviä — uusi QThread jokaiselle on raskasta. Parempi Qt-ratkaisu?",
+      "choices": [
+        {
+          "text": "QThreadPool + QRunnable / QtConcurrent — uudelleenkäytettävä pooli",
+          "correct": true
+        },
+        {
+          "text": "QThread::create jokaiselle tehtävä erikseen aina",
+          "correct": false
+        },
+        {
+          "text": "GUI-säie voi ajaa raskaat tehtävät",
+          "correct": false
+        },
+        {
+          "text": "std::thread ilman Qt integraatiota aina parempi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QThreadPool manages worker threads — Qt Concurrent.",
+      "wrongFeedback": "Thread pool vähentää luonti/kill overheadia. QtConcurrent mapReduce helppo.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 43,
+        "ratio": 1.53,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          66,
+          48,
+          34,
+          47
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-thread-invoke",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Worker-säie päivittää QLabel:ia suoraan — crash. Oikea tapa kutsua GUI-metodia toisesta säieestä?",
+      "choices": [
+        {
+          "text": "QMetaObject::invokeMethod(..., Qt::QueuedConnection) tai signaali GUI-säieeseen",
+          "correct": true
+        },
+        {
+          "text": "Direct call QLabel::setText workeristä",
+          "correct": false
+        },
+        {
+          "text": "mutex riittää GUI-päivitykseen",
+          "correct": false
+        },
+        {
+          "text": "GUI ei tarvitse säieturvallisuutta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GUI objects live in main thread — invokeMethod queued — threads-qobject.",
+      "wrongFeedback": "QWidget ei thread-safe. Marshaling queued connectionilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 79,
+        "avgWrongLen": 34,
+        "ratio": 2.32,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          79,
+          38,
+          30,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-models-sort-filter",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QTableView suodatus — haluat näyttää vain aktiiviset rivit ilman datan poistoa. Proxy?",
+      "choices": [
+        {
+          "text": "QSortFilterProxyModel — filterAcceptsRow + setSourceModel",
+          "correct": true
+        },
+        {
+          "text": "Poista rivit source modelista",
+          "correct": false
+        },
+        {
+          "text": "QTableWidget hideRow riittää aina suuressa datassa",
+          "correct": false
+        },
+        {
+          "text": "Proxy model ei tue suodatusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSortFilterProxyModel filters/sorts — Model/View.",
+      "wrongFeedback": "Proxy säilyttää lähtödatan. Suodata view-tasolla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 36,
+        "ratio": 1.58,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          57,
+          29,
+          50,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-models-data-changed",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Custom model päivittää solun — view ei päivity ennen full reset. Mitä signaalia emit?",
+      "choices": [
+        {
+          "text": "dataChanged(topLeft, bottomRight, roles) — targeted update",
+          "correct": true
+        },
+        {
+          "text": "layoutChanged aina yhdestä solusta",
+          "correct": false
+        },
+        {
+          "text": "modelReset jokaiselle muutokselle",
+          "correct": false
+        },
+        {
+          "text": "View pollaa modelia timerilla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "dataChanged notifies views of cell updates — QAbstractItemModel.",
+      "wrongFeedback": "modelReset on raskas. dataChanged rajattu alueelle.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 32,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          58,
+          34,
+          33,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-opengl-context-share",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat GL-resurssit?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat setShareContext / same QOpenGLContext share group",
+          "correct": true
+        },
+        {
+          "text": "OpenGL ei tue resurssien jakoa",
+          "correct": false
+        },
+        {
+          "text": "Piirrä kaikki yhteen widgetiin aina",
+          "correct": false
+        },
+        {
+          "text": "shareContext toimii vain QML:llä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shared OpenGL contexts share textures — QOpenGLWidget docs.",
+      "wrongFeedback": "Ilman shared context jokainen widget luo omat GL-resurssit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.98,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          64,
+          30,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-opengl-vsync",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "OpenGL-demo repii — CPU 100% spin loopissa. Miten synkkaat frame rateen?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat swapInterval 1 (VSync) tai QTimer ~16ms — älä busy loop",
+          "correct": true
+        },
+        {
+          "text": "while(true) update() on oikea game loop",
+          "correct": false
+        },
+        {
+          "text": "VSync ei ole Qt:ssä saatavilla",
+          "correct": false
+        },
+        {
+          "text": "QPainter korvaa swap chainin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Swap interval controls vsync — QSurfaceFormat.",
+      "wrongFeedback": "Busy loop polttaa CPU:n. VSync tai timer-pohjainen update.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.16,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          70,
+          39,
+          30,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-shaders-uniform",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Shader ei näy oikein — uniform arvo ei päivity. Qt6 RHI/shader polulla?",
+      "choices": [
+        {
+          "text": "Varmista uniform location/bindings — QShader ja material property sync",
+          "correct": true
+        },
+        {
+          "text": "Uniformit päivittyvät automaattisesti ilman koodia",
+          "correct": false
+        },
+        {
+          "text": "Shader compilation ei vaikuta uniformeihin",
+          "correct": false
+        },
+        {
+          "text": "Vain fixed pipeline toimii",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shader uniforms must match layout — Qt Shader Effect / RHI.",
+      "wrongFeedback": "Väärä binding = vääriä arvoja. Tarkista shader reflection ja update timing.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 39.333333333333336,
+        "ratio": 1.78,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          70,
+          50,
+          42,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-shaders-precision",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Fragment shader toimii desktopilla mutta on musta mobiilissa. Epäily?",
+      "choices": [
+        {
+          "text": "precision mediump/lowp mobiilissa — tarkista GLSL ES precision",
+          "correct": true
+        },
+        {
+          "text": "Mobiili ei tue fragment shadereita",
+          "correct": false
+        },
+        {
+          "text": "Qt ei tue OpenGL ES",
+          "correct": false
+        },
+        {
+          "text": "precision ei vaikuta väriin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Mobile GPUs need precision qualifiers — GLSL ES spec.",
+      "wrongFeedback": "Desktop highp vs mobile mediump voi rikkoa laskennan. Testaa ES profiililla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 62,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.32,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          62,
+          34,
+          19,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-widgets-focus-policy",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Custom nappi ei saa näppäimistöfokusta Tabilla. Mitä asetat?",
+      "choices": [
+        {
+          "text": "setFocusPolicy(Qt::StrongFocus) — widget tab orderiin",
+          "correct": true
+        },
+        {
+          "text": "setEnabled(true) riittää fokukselle",
+          "correct": false
+        },
+        {
+          "text": "FocusPolicy on vain QLineEditille",
+          "correct": false
+        },
+        {
+          "text": "Tab order ei ole konfiguroitavissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "focusPolicy determines keyboard focus — QWidget.",
+      "wrongFeedback": "NoFocus estää tab-fokuksen. StrongFocus tai TabFocus tarvitaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 34,
+        "ratio": 1.56,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          53,
+          35,
+          33,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b08-qt-widgets-qstacked",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Wizard-UI: useita sivuja yhdessä ikkunassa — vain yksi näkyvissä kerrallaan. Widget?",
+      "choices": [
+        {
+          "text": "QStackedWidget — setCurrentIndex vaihtaa sivua",
+          "correct": true
+        },
+        {
+          "text": "QTabBar ilman QStackedWidgetia riittää",
+          "correct": false
+        },
+        {
+          "text": "hide/show kaikki ikkunat erikseen",
+          "correct": false
+        },
+        {
+          "text": "QSplitter wizardeihin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QStackedWidget stacks pages — one visible — Qt widgets.",
+      "wrongFeedback": "Stacked widget on standardi wizard-pattern. Tab + stacked yhdistelmä OK.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 1.5,
+        "correctIsLongest": true,
+        "spread": 25,
+        "lens": [
+          46,
+          38,
+          33,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-widgets-size-policy",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "QFormLayoutissa label venyy turhaan ikkunan leveydessä — input-kenttä jää kapeaksi. Korjaus?",
+      "choices": [
+        {
+          "text": "setSizePolicy(QSizePolicy::Fixed/Preferred) labelille tai stretch oikein",
+          "correct": true
+        },
+        {
+          "text": "setFixedSize koko ikkunalle",
+          "correct": false
+        },
+        {
+          "text": "Poista layout — käytä move()",
+          "correct": false
+        },
+        {
+          "text": "SizePolicy ei vaikuta layouteihin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSizePolicy ohjaa layoutin jakoa — Qt Widget docs.",
+      "wrongFeedback": "Väärä size policy saa widgetin venymään. Säädä policy ja stretch.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 2.45,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          72,
+          27,
+          28,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-widgets-splitter-state",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Käyttäjä säätää paneelien kokoa QSplitterillä — asetus katoaa restartissa. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Tallenna restoreState()/saveState() QSettingsiin session välillä",
+          "correct": true
+        },
+        {
+          "text": "setFixedSize splitterille",
+          "correct": false
+        },
+        {
+          "text": "QSplitter ei tue tilan tallennusta",
+          "correct": false
+        },
+        {
+          "text": "resize() resizeEventissä riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSplitter saveState/restoreState — Qt docs.",
+      "wrongFeedback": "Splitter-tila pitää persistoida. saveState → QSettings → restoreState.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 2.11,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          64,
+          25,
+          34,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-widgets-focus-tab",
+      "chapter": "qt-widgets",
+      "domain": "qt",
+      "difficulty": 2,
+      "prompt": "Lomakkeessa tab-järjestys hyppii satunnaisesti. Mitä tarkistat?",
+      "choices": [
+        {
+          "text": "setTabOrder() widgettien välillä — focus chain",
+          "correct": true
+        },
+        {
+          "text": "setFocusPolicy(Qt::NoFocus) kaikille",
+          "correct": false
+        },
+        {
+          "text": "Tab order on automaattinen aina oikein",
+          "correct": false
+        },
+        {
+          "text": "QTimer::singleShot korjaa tabin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tab order määritellään eksplisiittisesti — QWidget focus.",
+      "wrongFeedback": "Luontijärjestys ei aina tuota loogista tabia. setTabOrder.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 35,
+        "ratio": 1.31,
+        "correctIsLongest": true,
+        "spread": 15,
+        "lens": [
+          46,
+          36,
+          38,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-signals-unique-connection",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Sama connect() kutsutaan useasti initissä — slotti laukeaa monta kertaa. Estä?",
+      "choices": [
+        {
+          "text": "Qt::UniqueConnection — connect epäonnistuu jos jo olemassa",
+          "correct": true
+        },
+        {
+          "text": "disconnect() ennen jokaista connectia manuaalisesti aina",
+          "correct": false
+        },
+        {
+          "text": "UniqueConnection ei toimi lambda-sloteilla",
+          "correct": false
+        },
+        {
+          "text": "Signaalit eivät voi duplikoitua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt::UniqueConnection — Qt connect docs.",
+      "wrongFeedback": "Toistuva connect tuplaa slot-kutsut. UniqueConnection tai disconnect ensin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 43,
+        "ratio": 1.35,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          58,
+          56,
+          42,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-signals-block-updates",
+      "chapter": "qt-signals",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Lataat 1000 riviä modeliin — jokainen setData laukaisee view-päivityksen. Optimointi?",
+      "choices": [
+        {
+          "text": "QSignalBlocker tai blockSignals(true) bulk-päivityksen ajaksi",
+          "correct": true
+        },
+        {
+          "text": "Poista view tilapäisesti",
+          "correct": false
+        },
+        {
+          "text": "Signaaleja ei voi estää Qt:ssa",
+          "correct": false
+        },
+        {
+          "text": "processEvents() nopeuttaa bulkia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "blockSignals/QSignalBlocker — Qt signals batch update.",
+      "wrongFeedback": "Bulk-päivitys ilman blockia aiheuttaa N repaint. Estä signaalit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 28.666666666666668,
+        "ratio": 2.13,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          61,
+          24,
+          30,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-thread-qthreadpool",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Satoja lyhyitä taustatehtäviä — uusi QThread jokaiselle on liian raskasta. Pattern?",
+      "choices": [
+        {
+          "text": "QThreadPool + QRunnable — uudelleenkäytettävä säiepooli",
+          "correct": true
+        },
+        {
+          "text": "QThread::create jokaiselle tehtävälle",
+          "correct": false
+        },
+        {
+          "text": "sleep() pääsäieessä",
+          "correct": false
+        },
+        {
+          "text": "QtConcurrent::run ilman poolia aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QThreadPool hallitsee worker-säikeitä — Qt concurrency.",
+      "wrongFeedback": "Thread per task ei skaalaudu. QThreadPool jakaa säieet.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          55,
+          37,
+          19,
+          35
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-thread-wait-condition",
+      "chapter": "qt-threading",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Producer-consumer queue Qt:llä — consumer odottaa dataa ilman busy-waitia. Primitiivi?",
+      "choices": [
+        {
+          "text": "QWaitCondition + QMutex — wait/wakeOne pattern",
+          "correct": true
+        },
+        {
+          "text": "QTimer pollaa queuea 1 ms välein",
+          "correct": false
+        },
+        {
+          "text": "QEventLoop exec() worker-säieessä riittää",
+          "correct": false
+        },
+        {
+          "text": "QSemaphore ei tue odotusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QWaitCondition — Qt thread synchronization.",
+      "wrongFeedback": "Busy-wait polttaa CPU:ta. QWaitCondition + mutex on oikea pattern.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 33,
+        "ratio": 1.39,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          46,
+          32,
+          41,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-models-reset-vs-layout",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Lataat koko listan uudelleen — beginResetModel on raskas ja välkkyy. Parempi vaihtoehto?",
+      "choices": [
+        {
+          "text": "beginInsertRows/endInsertRows tai layoutChanged jos rakenne sama",
+          "correct": true
+        },
+        {
+          "text": "Luo uusi model aina",
+          "correct": false
+        },
+        {
+          "text": "resetModel on ainoa tapa päivittää",
+          "correct": false
+        },
+        {
+          "text": "View päivittyy automaattisesti ilman model-signaaleja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Incremental model updates — QAbstractItemModel docs.",
+      "wrongFeedback": "ResetModel tyhjentää view:n. Käytä insert/remove jos mahdollista.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 35.333333333333336,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          64,
+          19,
+          34,
+          53
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-models-sort-proxy",
+      "chapter": "qt-models",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QTableView sorttaus rikkoo custom modelin indeksit. Ratkaisu?",
+      "choices": [
+        {
+          "text": "QSortFilterProxyModel source modelin päällä — view näkee proxyn",
+          "correct": true
+        },
+        {
+          "text": "Lajittele source data suoraan — view seuraa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Model ei tue sorttausta Qt:ssa",
+          "correct": false
+        },
+        {
+          "text": "setSortingEnabled(false) aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QSortFilterProxyModel — Qt model/view sorting.",
+      "wrongFeedback": "Proxy erottaa sort/filter logiikan source modelista.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 39.333333333333336,
+        "ratio": 1.6,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          63,
+          59,
+          30,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-opengl-context-share",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Optimointi?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat setSharedContext — jaetut GL-resurssit",
+          "correct": true
+        },
+        {
+          "text": "Kaksi erillistä QApplication:ia",
+          "correct": false
+        },
+        {
+          "text": "OpenGL ei tue resurssien jakoa",
+          "correct": false
+        },
+        {
+          "text": "QPainter korvaa OpenGL:n aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shared OpenGL contexts — Qt OpenGL docs.",
+      "wrongFeedback": "Jaettu context säästää tekstuurimuistia. setShareContext.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 30,
+        "ratio": 1.77,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          53,
+          31,
+          30,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-opengl-vsync-tear",
+      "chapter": "qt-opengl",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "Renderöinti repii ruudulla liikkuessa — tearing. Swap interval?",
+      "choices": [
+        {
+          "text": "QSurfaceFormat::setSwapInterval(1) — VSync päälle",
+          "correct": true
+        },
+        {
+          "text": "swapBuffers(false) nopeuttaa",
+          "correct": false
+        },
+        {
+          "text": "VSync ei vaikuta OpenGL:ään",
+          "correct": false
+        },
+        {
+          "text": "QPainter::Antialiasing korjaa tearingin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Swap interval controls VSync — QSurfaceFormat.",
+      "wrongFeedback": "Tearing johtuu buffer swap ilman VSync. setSwapInterval(1).",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 31.333333333333332,
+        "ratio": 1.56,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          49,
+          28,
+          27,
+          39
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-shaders-compile-log",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QOpenGLShaderProgram linkkaus epäonnistuu — musta ruutu. Debug-askel?",
+      "choices": [
+        {
+          "text": "log() ja shaderInfoLog() — tulosta compile/link virheet",
+          "correct": true
+        },
+        {
+          "text": "Käännä shader uudelleen ilman logia",
+          "correct": false
+        },
+        {
+          "text": "Shader-virheet näkyvät vain Windowsilla",
+          "correct": false
+        },
+        {
+          "text": "QPainter korvaa shaderin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shader compile log — QOpenGLShaderProgram::log.",
+      "wrongFeedback": "GLSL-virheet ovat logissa. Tarkista compile ja link status.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 1.68,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          55,
+          35,
+          39,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-shaders-uniform-location",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 4,
+      "prompt": "uniform float u_time ei päivity — setUniformValue ei vaikuta. Yleisin syy?",
+      "choices": [
+        {
+          "text": "Uniform-nimi optimoitu pois tai väärä location — tarkista link status",
+          "correct": true
+        },
+        {
+          "text": "Uniformit eivät toimi Qt:ssa",
+          "correct": false
+        },
+        {
+          "text": "Vain vertex shader voi käyttää uniformeja",
+          "correct": false
+        },
+        {
+          "text": "setUniformValue vaatii VAO:n",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Unused uniforms removed at link — OpenGL shader docs.",
+      "wrongFeedback": "Käyttämätön uniform poistetaan. Varmista että shader käyttää sitä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.13,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          69,
+          28,
+          41,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b09-qt-shaders-qml-graph-effect",
+      "chapter": "qt-shaders",
+      "domain": "qt",
+      "difficulty": 3,
+      "prompt": "QML-käyttöliittymässä tarvitset blur-efektin itemille. Qt Quick -komponentti?",
+      "choices": [
+        {
+          "text": "MultiEffect / ShaderEffect + fragment shader QML:ssä",
+          "correct": true
+        },
+        {
+          "text": "QPainter blur QML Itemissä suoraan",
+          "correct": false
+        },
+        {
+          "text": "CSS filter QML:ssä",
+          "correct": false
+        },
+        {
+          "text": "OpenGL ei toimi QML:n kanssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ShaderEffect Qt Quick — custom fragment shaders.",
+      "wrongFeedback": "Qt Quick tukee GPU-shadereita ShaderEffect/MultiEffect-komponenteilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 1.95,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          52,
+          34,
+          18,
+          28
+        ]
+      }
+    }
+  ]
+}

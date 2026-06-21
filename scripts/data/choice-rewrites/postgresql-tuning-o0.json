@@ -1,0 +1,320 @@
+{
+  "bank": "postgresql-tuning.json",
+  "rewrites": [
+    {
+      "id": "pg-indexes-btree-selective",
+      "choices": [
+        { "text": "B-tree-indeksi status-sarakkeelle selektiiviseen WHERE-ehtoon", "correct": true },
+        { "text": "SELECT * nopeuttaa kyselyä kun kaikki sarakkeet haetaan kerralla", "correct": false },
+        { "text": "PRIMARY KEY:n poisto vähentää indeksiylläpitoa ja nopeuttaa hakuja", "correct": false },
+        { "text": "random_page_cost = 0 ohjaa plannerin käyttämään seq scania aina", "correct": false }
+      ]
+    },
+    {
+      "id": "pg-explain-analyze",
+      "choices": [
+        { "text": "EXPLAIN (ANALYZE, BUFFERS) staging-kopiossa tai testiympäristössä", "correct": true },
+        { "text": "EXPLAIN ANALYZE suoraan prodissa ruuhka-aikaan jokaiselle hitaalle kyselylle", "correct": false },
+        { "text": "pg_sleep ennen jokaista kyselyä tasaa kuormaa ja paljastaa pullonkaulat", "correct": false },
+        { "text": "Vain \\d taulu riittää näyttämään todelliset ajat ja rivimäärät", "correct": false }
+      ]
+    },
+    {
+      "id": "pg-vacuum-bloat",
+      "choices": [
+        { "text": "Dead tuple -bloat — tarkista autovacuum ja last_vacuum", "correct": true },
+        { "text": "Indeksi on liian pieni ja pitää kasvattaa shared_buffers-arvoa", "correct": false },
+        { "text": "SELECT-kyselyt tarvitsevat REINDEX ennen jokaista UPDATE-operaatiota", "correct": false },
+        { "text": "PostgreSQL ei tue UPDATE:ia MVCC-mallissa, vain INSERT ja DELETE", "correct": false }
+      ]
+    },
+    {
+      "id": "pg-config-work-mem",
+      "choices": [
+        { "text": "Kasvata work_mem harkiten — muisti per sort/hash-operaatio", "correct": true },
+        { "text": "Pienennä shared_buffers aina kun sort spillaa levylle", "correct": false },
+        { "text": "max_connections = 10000 antaa jokaiselle sortille oman muistipoolin", "correct": false },
+        { "text": "Poista indeksit nopeuttaaksesi sort/hash-operaatioita kyselyissä", "correct": false }
+      ]
+    },
+    {
+      "id": "pg-indexes-partial",
+      "choices": [
+        { "text": "Partial index WHERE archived = false rajaa indeksin aktiivisiin riveihin", "correct": true },
+        { "text": "CLUSTER koko taulu uudelleen järjestää rivit archived-ehdon mukaan", "correct": false },
+        { "text": "BRIN-indeksi kaikille sarakkeille korvaa partial indexin aina", "correct": false },
+        { "text": "Poista WHERE-ehto kyselystä jotta planner käyttää olemassa olevaa indeksiä", "correct": false }
+      ]
+    },
+    {
+      "id": "pg-explain-seq-scan",
+      "choices": [
+        { "text": "Suuri osa taulusta haetaan — seq scan halvempi kuin indeksi", "correct": true },
+        { "text": "PostgreSQL ei koskaan käytä indeksiä kun taulussa on yli miljoona riviä", "correct": false },
+        { "text": "Indeksi on aina rikki bulk loadin jälkeen ja vaatii REINDEX DATABASE", "correct": false },
+        { "text": "VACUUM FULL pakollinen ennen kuin planner voi valita Index Scanin", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-indexes-covering",
+      "choices": [
+        { "text": "INCLUDE-sarakkeet indexiin tekevät index-only scanin mahdolliseksi", "correct": true },
+        { "text": "Lisää seq scan hint plannerille jotta heap fetch ohitetaan automaattisesti", "correct": false },
+        { "text": "Poista WHERE-ehto jotta Index Scan palauttaa kaikki SELECT-sarakkeet", "correct": false },
+        { "text": "CLUSTER TABLE riittää korvaamaan covering indexin SELECT-listassa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-indexes-partial-active",
+      "choices": [
+        { "text": "Partial index WHERE archived = false aktiivisille riveille", "correct": true },
+        { "text": "Full btree kaikille riveille on pienempi kuin osittainen indeksi", "correct": false },
+        { "text": "Seq scan aina nopein kun archived-rivejä on enemmistö taulussa", "correct": false },
+        { "text": "Hash index kaikille sarakkeille korvaa partial indexin PostgreSQLissä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-indexes-btree-composite",
+      "choices": [
+        { "text": "(tenant_id, created_at) — equality ensin, range seuraavaksi", "correct": true },
+        { "text": "(created_at, tenant_id) aina paras järjestys equality- ja range-ehdoille", "correct": false },
+        { "text": "Kaksi erillistä indeksiä riittää aina ORDER BY created_at -lausekkeeseen", "correct": false },
+        { "text": "Vain tenant_id indeksissä riittää kun created_at on range-ehto", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-indexes-unused-drop",
+      "choices": [
+        { "text": "Harkitse DROP INDEX — dead index hidastaa INSERT/UPDATE-operaatioita", "correct": true },
+        { "text": "REINDEX kaikki automaattisesti kun idx_scan pysyy nollassa kuukausia", "correct": false },
+        { "text": "Indeksi ei vaikuta kirjoitukseen koska planner käyttää vain read-polkuja", "correct": false },
+        { "text": "Lisää lisää indeksejä nopeuteen kun yksikään indeksi ei ole käytössä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-explain-analyze-buffers",
+      "choices": [
+        { "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja I/O-mittaukset", "correct": true },
+        { "text": "Vain EXPLAIN ilman ANALYZE näyttää cache-missit ja todelliset ajat", "correct": false },
+        { "text": "SELECT * korjaa plannerin arviot ja paljastaa buffer cache -käytön", "correct": false },
+        { "text": "SET enable_seqscan = off aina kun epäilet cache-missiä Index Scanissa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-explain-nested-loop",
+      "choices": [
+        { "text": "Puuttuva indeksi join/where-sarakkeelle — planner valitsee huonon polun", "correct": true },
+        { "text": "Nested Loop on aina paras join-menetelmä miljoonan rivin tuloksissa", "correct": false },
+        { "text": "Hash Join ei ole PostgreSQLissä saatavilla suurten taulujen yhdistämisessä", "correct": false },
+        { "text": "Planner ei käytä indeksejä kun JOIN palauttaa enemmän kuin tuhat riviä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-explain-seq-scan-ok",
+      "choices": [
+        { "text": "Seq scan voi olla halvin pienelle taululle — indeksi ei aina kannata", "correct": true },
+        { "text": "Seq scan on aina bugi ja pitää korjata enable_seqscan=off-asetuksella", "correct": false },
+        { "text": "enable_seqscan=off tuotannossa pakottaa indeksin pienille lookup-tauluille", "correct": false },
+        { "text": "Materialized view on pakollinen kun lookup-taulussa on alle tuhat riviä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-explain-stats-stale",
+      "choices": [
+        { "text": "ANALYZE taulu — päivitä statistics bulk loadin jälkeen", "correct": true },
+        { "text": "REINDEX DATABASE korjaa row estimate -virheet bulk loadin jälkeen", "correct": false },
+        { "text": "Restart postgres pakottaa plannerin lukemaan uudet rivimäärät taulusta", "correct": false },
+        { "text": "Planner ei käytä statistiikkaa vaan laskee rivit jokaisessa kyselyssä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-vacuum-bloat-wraparound",
+      "choices": [
+        { "text": "VACUUM (FREEZE) tai autovacuum tuning — estä shutdown trigger", "correct": true },
+        { "text": "DROP TABLE on nopein tapa estää transaction ID wraparound -varoitus", "correct": false },
+        { "text": "Pg_upgrade heti kun wraparound-varoitus ilmestyy pg_stat_activityssa", "correct": false },
+        { "text": "Wraparound ei vaikuta PostgreSQLiin koska XID kierrättää automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-vacuum-long-xact",
+      "choices": [
+        { "text": "Tunnista ja päätä pitkä transaktio — vacuum ei voi siivota tarvittavaa", "correct": true },
+        { "text": "VACUUM FULL heti ilman syytä kun idle in transaction kestää tunteja", "correct": false },
+        { "text": "Autovacuum pois päältä estää dead tuplejen kasaantumisen pitkien xactien aikana", "correct": false },
+        { "text": "Long xact ei vaikuta vacuumiin koska autovacuum käyttää erillistä xmin-arvoa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-vacuum-full-lock",
+      "choices": [
+        { "text": "VACUUM FULL exclusive lock + rewrite — käytä pg_repack off-peak-aikana", "correct": true },
+        { "text": "VACUUM FULL on online-operaatio joka ei lukitse taulua tuotannossa", "correct": false },
+        { "text": "Bloat ei vaikuta PostgreSQLiin koska dead tuples vapauttavat tilan heti", "correct": false },
+        { "text": "REINDEX TABLE korvaa vacuum fullin aina ilman downtimea tuotantotaulussa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-vacuum-autovacuum-tune",
+      "choices": [
+        { "text": "autovacuum_vacuum_scale_factor tai table-level storage params", "correct": true },
+        { "text": "max_connections = 1000 nopeuttaa autovacuumia heavy UPDATE -tauluilla", "correct": false },
+        { "text": "Poista autovacuum ja aja VACUUM FULL viikoittain heavy UPDATE -tauluille", "correct": false },
+        { "text": "shared_buffers = 1MB pakottaa autovacuumin käynnistymään useammin", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-config-work-mem-sort",
+      "choices": [
+        { "text": "work_mem session/query kohtaisesti — varovasti globaalisti", "correct": true },
+        { "text": "maintenance_work_mem query runtimeen korjaa Sort → Disk temp file -ongelman", "correct": false },
+        { "text": "wal_buffers sorttiin antaa muistisortille tilaa jokaisessa istunnossa", "correct": false },
+        { "text": "random_page_cost = 0 estää sortin spillaamisen levylle automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-config-shared-buffers",
+      "choices": [
+        { "text": "Liian suuri — tyypillisesti ~25 % RAM, OS cache tarvitsee tilaa", "correct": true },
+        { "text": "shared_buffers max 128 MB PostgreSQL 15:ssä riippumatta palvelimen RAMista", "correct": false },
+        { "text": "shared_buffers = 0 paras koska OS page cache hoitaa kaiken bufferoinnin", "correct": false },
+        { "text": "PostgreSQL ei käytä shared_buffers vaan lukee suoraan levyltä joka kerta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-pg-config-max-connections",
+      "choices": [
+        { "text": "Connection pooler (PgBouncer) + kohtuullinen max_connections", "correct": true },
+        { "text": "Nosta max_connections = 10000 jotta jokainen microservice saa oman yhteyden", "correct": false },
+        { "text": "Jokainen request oma server process ilman poolia skaalautuu parhaiten", "correct": false },
+        { "text": "Poista idle timeout jotta yhteydet pysyvät auki ja välttävät reconnect-kustannuksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-indexes-btree-02",
+      "choices": [
+        { "text": "B-tree composite index (status, created_at) oikealla sarakejärjestyksellä", "correct": true },
+        { "text": "GIN only on oletusindeksi equality- ja range-ehdoille PostgreSQLissä", "correct": false },
+        { "text": "BRIN aina parempi kuin B-tree kun WHERE:ssä on status ja created_at", "correct": false },
+        { "text": "Seq scan aina nopein status = 'active' AND created_at > -ehdossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-indexes-partial-03",
+      "choices": [
+        { "text": "Partial index CREATE INDEX ... WHERE status = 'active'", "correct": true },
+        { "text": "Full index kaikille riveille on pienempi kun 90 % on archived", "correct": false },
+        { "text": "Duplicate table active-riveille korvaa partial indexin ylläpidossa", "correct": false },
+        { "text": "VACUUM only riittää optimoimaan haun active-riveille archived-taulussa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-indexes-covering-04",
+      "choices": [
+        { "text": "INCLUDE columns: CREATE INDEX ... INCLUDE (email)", "correct": true },
+        { "text": "CLUSTER only tekee index-only scanin mahdolliseksi id ja email -kyselyssä", "correct": false },
+        { "text": "Materialized view aina tarpeen kun SELECT listassa on id ja email", "correct": false },
+        { "text": "Secondary sort korvaa covering indexin PostgreSQL 11+ index-only scanissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-explain-analyze-05",
+      "choices": [
+        { "text": "EXPLAIN (ANALYZE, BUFFERS) SELECT ... tuotantokopiossa tai stagingissa", "correct": true },
+        { "text": "EXPLAIN ilman ANALYZE riittää aina näyttämään todelliset suoritusajat", "correct": false },
+        { "text": "SELECT * only paljastaa miksi kysely on hidas tuotannossa", "correct": false },
+        { "text": "pg_dump tuotannosta antaa EXPLAIN ANALYZE -tulokset ilman kuormitusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-explain-seq-06",
+      "choices": [
+        { "text": "Ei — pieni osuma tai suuri fraction voi olla halvempi kuin index scan", "correct": true },
+        { "text": "Seq Scan aina korjattava indeksillä 5M rivin taulussa", "correct": false },
+        { "text": "Seq Scan on aina merkki bugista plannerissa tai rikkinäisestä indeksistä", "correct": false },
+        { "text": "Rebuild DB on ensimmäinen toimenpide kun EXPLAIN näyttää Seq Scanin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-explain-nested-07",
+      "choices": [
+        { "text": "Indeksi join/where-sarakkeille tai muuta join-järjestystä / statistics", "correct": true },
+        { "text": "SET enable_nestloop=off aina kun Nested Loop toistuu miljoona kertaa", "correct": false },
+        { "text": "Lisää RAM only korjaa Nested Loop + Seq Scan -yhdistelmän ilman indeksiä", "correct": false },
+        { "text": "Poista JOIN ja tee kaksi erillistä kyselyä sovelluskerroksessa aina", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-explain-stats-08",
+      "choices": [
+        { "text": "ANALYZE table_name — päivitä statistics ennen planin arviointia", "correct": true },
+        { "text": "REINDEX DATABASE korjaa plannerin arvion kun todelliset rivit poikkeavat", "correct": false },
+        { "text": "random_page_cost=0 pakottaa plannerin käyttämään oikeaa rivimäärää", "correct": false },
+        { "text": "Poista WHERE jotta planner laskee rivit tarkasti jokaisessa kyselyssä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-vacuum-bloat-09",
+      "choices": [
+        { "text": "Dead tuples — VACUUM (autovacuum) vapauttaa tilaa uudelleenkäyttöön", "correct": true },
+        { "text": "DELETE DATABASE ja restore on normaali toimenpide UPDATE-heavy bloatissa", "correct": false },
+        { "text": "VACUUM FULL heti tuotannossa päivällä kun rivimäärä ei kasva", "correct": false },
+        { "text": "Lisää indeksejä UPDATE-heavy tauluun kun levy kasvaa vaikka rivit eivät", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-vacuum-wrap-10",
+      "choices": [
+        { "text": "VACUUM FREEZE (autovacuum freeze) — estä shutdown wraparound", "correct": true },
+        { "text": "Ignoroi varoitus koska wraparound korjautuu seuraavassa pg_restartissa", "correct": false },
+        { "text": "pg_dump only riittää estämään transaction ID wraparound -shutdownin", "correct": false },
+        { "text": "DROP TABLE random nopeuttaa freeze-vaihetta wraparound-varoituksen jälkeen", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-vacuum-long-xact-11",
+      "choices": [
+        { "text": "Selvitä pitkä transaktio — se estää vacuumia poistamasta dead tupleja", "correct": true },
+        { "text": "REBOOT server korjaa idle in transaction 8h ilman että transaktio päättyy", "correct": false },
+        { "text": "max_connections=1 pakottaa autovacuumin siivoamaan dead tuples heti", "correct": false },
+        { "text": "DROP autovacuum estää dead tuplejen kasaantumisen pitkien transaktioiden aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-vacuum-full-12",
+      "choices": [
+        { "text": "Exclusive lock + uudelleenkirjoitus — downtime ja lock tuotannossa", "correct": true },
+        { "text": "VACUUM FULL online ilman lockia kun levy on lähes täynnä bloatista", "correct": false },
+        { "text": "Ei riskiä VACUUM FULL:ssa koska se vain merkitsee dead tuples poistetuiksi", "correct": false },
+        { "text": "Nopeampi kuin tavallinen VACUUM koska FULL ohittaa MVCC-siivouksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-config-work-mem-13",
+      "choices": [
+        { "text": "Kasvata work_mem session/query tasolla harkiten sort/hash spilliin", "correct": true },
+        { "text": "shared_buffers=0 antaa sort/hash-operaatioille enemmän muistia per query", "correct": false },
+        { "text": "max_connections=10000 pienentää temp file -käyttöä isoissa sorteissa", "correct": false },
+        { "text": "Poista sort kyselystä koska temp file tarkoittaa riittävää work_memiä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-config-shared-14",
+      "choices": [
+        { "text": "shared_buffers tyypillisesti ~25 % RAM — testaa cache hit ratioa", "correct": true },
+        { "text": "work_mem=8GB globaalisti korjaa matalan cache hit ration ensimmäisenä", "correct": false },
+        { "text": "fsync=off tuotannossa parantaa cache hit ratioa ilman datan riskiä", "correct": false },
+        { "text": "random_page_cost=0 on ensimmäinen muistiparametri matalalle cache hitille", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-pg-config-connections-15",
+      "choices": [
+        { "text": "Connection pooler (PgBouncer) + alenna max_connections tarpeen mukaan", "correct": true },
+        { "text": "max_connections=100000 skaalaa microservice-arkkitehtuurin ilman pooleria", "correct": false },
+        { "text": "Jokainen app suoraan superuser-yhteydellä vähentää connection overheadia", "correct": false },
+        { "text": "Poista idle timeout jotta pool explosion ei kasvata connection-määrää", "correct": false }
+      ]
+    }
+  ]
+}

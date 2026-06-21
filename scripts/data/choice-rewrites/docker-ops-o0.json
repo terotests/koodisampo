@@ -1,0 +1,320 @@
+{
+  "bank": "docker-ops.json",
+  "rewrites": [
+    {
+      "id": "docker-bridge-dns",
+      "choices": [
+        { "text": "Embedded DNS resolver yhdistää palvelunimet verkossa oleviin kontteihin", "correct": true },
+        { "text": "Konttien välillä tarvitaan legacy --link -linkitys nimien resoluutioon", "correct": false },
+        { "text": "Hostname täytyy määrittää manuaalisesti kontin /etc/hosts-tiedostoon", "correct": false },
+        { "text": "User-defined bridge jakaa vain IP-osoitteet ilman nimipalvelua konteille", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-host-network",
+      "choices": [
+        { "text": "--network host jakaa kontin verkkonamespaceen hostin kanssa", "correct": true },
+        { "text": "Bridge mode tarjoaa suoran pääsyn host-porttiin ilman NAT-kerrosta", "correct": false },
+        { "text": "none-verkko yhdistettynä port mapping 53:53 hoitaa kuuntelun suoraan", "correct": false },
+        { "text": "Overlay-verkko toimii vain Docker Swarm -klusterissa tässä skenaariossa", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-overlay",
+      "choices": [
+        { "text": "Bridge-verkko yhdistää kontin eri hostien välillä automaattisesti", "correct": false },
+        { "text": "Host mode luo verkkoyhteyden suoraan hostien välille klusterissa", "correct": false },
+        { "text": "Overlay (VXLAN) verkko kytkee kontit eri hostien välillä klusterissa", "correct": true },
+        { "text": "macvlan rajautuu käytännössä loopback-rajapintaan vain yksittäisellä hostilla", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-compose-network",
+      "choices": [
+        { "text": "Palvelut on liitetty eri verkkoon tai networks-kenttä on väärin määritelty", "correct": true },
+        { "text": "Puuttuva FROM-rivi Dockerfilessa eristää palvelut eri verkkoihin toisistaan", "correct": false },
+        { "text": "compose.yml:n timezone-asetus estää palveluiden näkymisen toisilleen verkossa", "correct": false },
+        { "text": "Liian pieni SHM-jako rikkoo palveluiden välisen DNS-resoluution compose-projektissa", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-exit-code",
+      "choices": [
+        { "text": "PID 1 -prosessi päättyy heti kun se daemonisoituu taustalle", "correct": true },
+        { "text": "Väärä Docker Hub -tag estää kontin pysymisen käynnissä käynnistyksen jälkeen", "correct": false },
+        { "text": "restart: always käynnistää kontin uudelleen vaikka pääprosessi on jo päättynyt", "correct": false },
+        { "text": "overlay-verkon puuttuminen sulkee kontin heti käynnistyksen jälkeen automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-inspect-network",
+      "choices": [
+        { "text": "docker inspect yhdistettynä docker exec ip route / ip addr -tarkistukseen", "correct": true },
+        { "text": "Vain docker ps paljastaa kontin IP-osoitteen ja oletusgatewayn luotettavasti", "correct": false },
+        { "text": "journalctl -u docker näyttää kontin verkkokonfiguraation ja reitityksen suoraan", "correct": false },
+        { "text": "docker rm poistaa kontin ja korjaa verkko-ongelmat automaattisesti diagnostiikassa", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-healthcheck",
+      "choices": [
+        { "text": "HEALTHCHECK kertoo orkestraattorille kun probe-komento onnistuu", "correct": true },
+        { "text": "EXPOSE varmistaa terveyden ennen load balancerin liikenteen ohjausta kontille", "correct": false },
+        { "text": "CMD sleep infinity pitää kontin healthy-tilassa orkestraattorin näkökulmasta", "correct": false },
+        { "text": "restart: always ohittaa terveystarkistuksen käynnistyksen yhteydessä orkestroinnissa", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-layer-cache",
+      "choices": [
+        { "text": "Riippuvuudet ennen lähdekoodia hyödyntää layer cachea parhaiten buildissa", "correct": true },
+        { "text": "COPY . . heti alussa invalidoi vain viimeisen layerin Dockerfile-buildissa", "correct": false },
+        { "text": "Yksi iso RUN-komento optimoi cachea vähentämällä layer-määrää merkittävästi", "correct": false },
+        { "text": "Layer cache ei vaikuta Dockerfile-rakennuksen nopeuteen merkittävästi lainkaan", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-multistage",
+      "choices": [
+        { "text": "Multi-stage build kopioi vain binäärin viimeiseen runtime-stageen", "correct": true },
+        { "text": "docker commit manuaalisesti poistaa build-työkalut imagesta tuotantoversiossa", "correct": false },
+        { "text": "Suurempi levytila palvelimella pienentää image-kokoa automaattisesti buildissa", "correct": false },
+        { "text": "ENTRYPOINT:in poistaminen vähentää image-kokoa merkittävästi tuotantoon", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-readonly-rootfs",
+      "choices": [
+        { "text": "docker run --read-only tmpfs-mounteilla tarvittaviin kirjoituspolkuihin", "correct": true },
+        { "text": "--privileged rajoittaa filesystem-kirjoituksia turvallisemmin kuin read-only", "correct": false },
+        { "text": "USER root nopeuttaa kirjoituksia ja vähentää latenssia turvallisuusarvioinnissa", "correct": false },
+        { "text": "bridge-verkko estää kontin kirjoittamasta hostin levylle turvallisuussyistä", "correct": false }
+      ]
+    },
+    {
+      "id": "docker-dns-custom",
+      "choices": [
+        { "text": "docker run --dns tai daemon.json DNS-asetus custom-resolverille", "correct": true },
+        { "text": "--network host on ensimmäinen vaihe corp.internal-DNS:n korjauksessa", "correct": false },
+        { "text": "/etc/resolv.conf poistaminen kontin sisältä korjaa resolver-ongelman nopeasti", "correct": false },
+        { "text": "EXPOSE 53 Dockerfilessa avaa DNS-resoluution kontin sisällä automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-vol-bind-perms",
+      "choices": [
+        { "text": "Bind mountin host-UID/GID ei täsmää kontin prosessikäyttäjään", "correct": true },
+        { "text": "Bind mount ei tue kirjoitusoikeuksia Dockerissa oletusasetuksilla lainkaan", "correct": false },
+        { "text": "Vain named volume sallii read-write -oikeudet bind mountin sijaan aina", "correct": false },
+        { "text": "Dockerfile EXPOSE korjaa bind mountin tiedosto-oikeudet automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-vol-backup",
+      "choices": [
+        { "text": "docker run --rm -v vol:/data alpine tar pakkaa volumen host-polkuun", "correct": true },
+        { "text": "docker cp siirtää volumen suoraan host-tiedostoon ilman apukonttia", "correct": false },
+        { "text": "Named volumet ovat salattuja eikä niitä voi varmuuskopioida ulkopuolelle", "correct": false },
+        { "text": "docker commit tallentaa volumen datan imageen automaattisesti backupiksi", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-prod-restart-policy",
+      "choices": [
+        { "text": "--restart unless-stopped pitää kontin pystyssä rebootin jälkeen", "correct": true },
+        { "text": "--detach yksin riittää pitämään kontin käynnissä host-rebootin jälkeen", "correct": false },
+        { "text": "Dockerissa restart policy ei vaikuta kontin käynnistymiseen rebootin jälkeen", "correct": false },
+        { "text": "cron docker start korvaa restart policyn tuotantoympäristössä luotettavasti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-prod-healthcheck",
+      "choices": [
+        { "text": "HEALTHCHECK tai --health-cmd testaa readinessin säännöllisesti", "correct": true },
+        { "text": "Exit code 0 riittää varmistamaan että palvelu vastaa pyyntöihin oikein", "correct": false },
+        { "text": "docker ps CPU-sarake riittää unhealthy-tilan tunnistamiseen load balancerissa", "correct": false },
+        { "text": "Healthcheck on käytettävissä vain Docker Swarm -ympäristössä tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-build-multistage",
+      "choices": [
+        { "text": "Multi-stage build erottaa builder- ja runtime-stagen imagessa", "correct": true },
+        { "text": ".dockerignore:n poistaminen pienentää Go-binaryn image-kokoa merkittävästi", "correct": false },
+        { "text": "latest-tagi valitsee aina pienimmän mahdollisen base imagen buildissa", "correct": false },
+        { "text": "Yksi stage riittää kun build-työkalut jätetään runtime-imageen mukaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-build-cache",
+      "choices": [
+        { "text": "Kopioi package.json ensin, npm install, vasta sitten lähdekoodi", "correct": true },
+        { "text": "COPY . . heti Dockerfilen alussa hyödyntää layer cachea parhaiten", "correct": false },
+        { "text": "--no-cache poistaa cache-ongelman hidastamalla jokaista buildiä pysyvästi", "correct": false },
+        { "text": "Kaikki RUN-komennot yhdelle riville parantaa cache-invalidaatiota CI:ssä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-prod-readonly-rootfs",
+      "choices": [
+        { "text": "--read-only plus tmpfs kirjoitettaville poluille kuten /tmp", "correct": true },
+        { "text": "--privileged on turvallisin tapa immutable root filesystemin toteutukseen", "correct": false },
+        { "text": "Read-only rootfs estää kontin käynnistymisen kokonaan tuotantoympäristössä", "correct": false },
+        { "text": "Alpine base image riittää immutable root filesystemin vaatimukseen yksinään", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-net-custom-dns",
+      "choices": [
+        { "text": "--dns tai user-defined networkin embedded DNS custom-nimille", "correct": true },
+        { "text": "--network none eristää kontin DNS-resoluutiosta custom-verkossa", "correct": false },
+        { "text": "/etc/hosts täytyy muokata käsin jokaisessa deploy-kierroksessa erikseen", "correct": false },
+        { "text": "DNS toimii vain host-network-modessa custom-verkon ulkopuolella luotettavasti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-net-compose-alias",
+      "choices": [
+        { "text": "Palvelut samassa compose user-defined verkossa näkevät toisensa", "correct": true },
+        { "text": "Jokainen palvelu oletus bridge -verkossa erikseen eristää ne toisistaan", "correct": false },
+        { "text": "links: on pakollinen Compose v3:ssä palveluiden hostname-resoluutioon", "correct": false },
+        { "text": "Vain host network toimii Compose-palveluiden välisessä DNS:ssä luotettavasti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-net-macvlan",
+      "choices": [
+        { "text": "macvlan antaa kontille oman MAC-osoitteen ja LAN-osoitteen", "correct": true },
+        { "text": "bridge-verkko riittää erilliselle MAC-tasolle legacy-laitteille verkossa", "correct": false },
+        { "text": "none-verkko plus port mapping antaa erillisen MAC-osoitteen lähiverkossa", "correct": false },
+        { "text": "host network antaa kontille erillisen MAC-osoitteen lähiverkossa suoraan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-docker-net-inspect-dns",
+      "choices": [
+        { "text": "docker network inspect ja docker exec nslookup toiselle kontille", "correct": true },
+        { "text": "docker logs paljastaa miksi kontit eivät pingaa toisiaan nimellä verkossa", "correct": false },
+        { "text": "Image-rebuild korjaa DNS-resoluution ilman verkkotarkistusta tai inspectia", "correct": false },
+        { "text": "DNS toimii vain overlay-verkossa usean hostin klusterissa oikein", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-run-user-01",
+      "choices": [
+        { "text": "docker run --user nonroot tai USER-Dockerfilessa non-rootille", "correct": true },
+        { "text": "--privileged vähentää kontin käyttäjän vaikutuksia host-turvallisuuteen", "correct": false },
+        { "text": "Ajetaan palvelu suoraan hostilla kontin sijaan auditin jälkeen tuotannossa", "correct": false },
+        { "text": "chmod 777 / antaa non-root-käyttäjälle tarvittavat oikeudet kontin sisällä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-run-limit-02",
+      "choices": [
+        { "text": "docker run --memory 512m --cpus 1.0 rajoittaa resurssikäytön", "correct": true },
+        { "text": "Docker rajaa resurssit automaattisesti ilman eksplisiittisiä lippuja", "correct": false },
+        { "text": "cgroups v1 manuaalinen konfigurointi on ainoa tuettu rajoitustapa Dockerissa", "correct": false },
+        { "text": "restart=always estää kontin kuluttamasta kaiken hostin RAM:in yöllä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-build-copy-03",
+      "choices": [
+        { "text": "COPY package.json ensin, sitten lähdekoodi — layer cache säilyy", "correct": true },
+        { "text": "COPY . . heti alussa invalidoi vain viimeisen layerin buildissa", "correct": false },
+        { "text": "--no-cache poistaa hitaan buildin syyn pysyvästi jokaisessa CI-ajossa", "correct": false },
+        { "text": "Yksi RUN-komento kaikelle nopeuttaa buildiä cachea rikkomatta", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-exec-debug-04",
+      "choices": [
+        { "text": "docker exec avaa shellin konttiin tai debug-sidecar distroless:lle", "correct": true },
+        { "text": "docker attach avaa uuden interaktiivisen shellin jokaiseen prosessiin", "correct": false },
+        { "text": "ssh localhost pääsee kontin namespaceen ilman docker exec -komentoa", "correct": false },
+        { "text": "docker rm -f korjaa puuttuvan shellin kontin sisällä debuggausta varten", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-prune-05",
+      "choices": [
+        { "text": "docker system prune poistaa käyttämättömät imaget ja containerit", "correct": true },
+        { "text": "rm -rf /var/lib/docker on turvallinen tapa poistaa vanhat stopped containerit", "correct": false },
+        { "text": "Poista vain running containerit vapauttaaksesi levytilaa vanhoista imageista", "correct": false },
+        { "text": "Levyn formatointi on nopein tapa siivota vanhoja Docker-imageja hostilla", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-net-bridge-06",
+      "choices": [
+        { "text": "Default bridge ei resolvoi nimiä — käytä user-defined networkia", "correct": true },
+        { "text": "Bridge-verkko ei tue konttien välistä kommunikaatiota lainkaan Dockerissa", "correct": false },
+        { "text": "--net=host tarvitaan aina kun kaksi konttia on samassa verkossa", "correct": false },
+        { "text": "iptables-sääntöjen poisto palauttaa automaattisen DNS:n bridge-verkkoon", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-net-compose-07",
+      "choices": [
+        { "text": "Palvelut eri verkossa tai väärä service name — tarkista networks", "correct": true },
+        { "text": "Compose DNS-bugi estää db-hostnamen löytymisen samassa projektissa", "correct": false },
+        { "text": "IP-osoite tarvitaan aina hostname-resoluution sijaan compose-verkossa", "correct": false },
+        { "text": "Service name -kentän poistaminen korjaa verkko-yhteyden composeissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-net-host-08",
+      "choices": [
+        { "text": "--network host jakaa kontin verkkopinon hostin kanssa Linuxissa", "correct": true },
+        { "text": "Bridge on aina nopein vaihtoehto low-latency palvelulle ilman NAT:ia", "correct": false },
+        { "text": "none-verkko tarjoaa suoran host-portin ilman NAT-yhteyttä kontissa", "correct": false },
+        { "text": "overlay local only jakaa host-portin ilman erillistä verkkonamespacea", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-net-inspect-09",
+      "choices": [
+        { "text": "docker network inspect netname — tarkista Containers ja IPAM", "correct": true },
+        { "text": "docker ps näyttää kontin IP-osoitteen ja verkko-liitoksen tarkasti", "correct": false },
+        { "text": "Host-reboot korjaa custom networkin IP-allokaatio-ongelmat automaattisesti", "correct": false },
+        { "text": "Kaikkien verkkojen poistaminen palauttaa IP:n custom networkista", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-net-alias-10",
+      "choices": [
+        { "text": "network_aliases Compose:ssa tai --network-alias docker run:ssa", "correct": true },
+        { "text": "/etc/hosts manuaalisesti kontin sisällä on suositeltu tapa useille nimille", "correct": false },
+        { "text": "Useita container-instansseja tarvitaan useaan DNS-nimeen samalla servicellä", "correct": false },
+        { "text": "extra_hosts toimii samoin kuin network alias sisäverkon palveluille", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-vol-named-11",
+      "choices": [
+        { "text": "Named volume puuttui — käytä -v pgdata:/var/lib/postgresql/data", "correct": true },
+        { "text": "Bind mount on aina parempi valinta PostgreSQL-datalle tuotantoympäristössä", "correct": false },
+        { "text": "tmpfs-tallennus riittää PostgreSQL-datan pysyvyyteen kontin poiston jälkeen", "correct": false },
+        { "text": "COPY data imageen säilyttää tietokannan kontin poiston jälkeen luotettavasti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-vol-bind-12",
+      "choices": [
+        { "text": "Cached/delegated mount tai docker sync korjaa host/VM-tiedostojärjestelmäeron", "correct": true },
+        { "text": "Bind mount ei toimi macOS/Windows Docker Desktop -ympäristössä ollenkaan", "correct": false },
+        { "text": "Käytä vain COPY dev-ympäristössä — bind mount ei synkronoi muutoksia", "correct": false },
+        { "text": "chmod 777 host-kansiossa korjaa bind mount -synkronointiviiveen automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-docker-vol-ro-13",
+      "choices": [
+        { "text": "docker run -v /host/config:/app/config:ro estää muokkauksen", "correct": true },
+        { "text": "-v ilman :rw on read-only oletuksena mountissa Dockerissa", "correct": false },
+        { "text": "Umask-asetus tekee mountista read-only automaattisesti turvallisuussyistä", "correct": false },
+        { "text": "Config kopioidaan imageen aina — mount ei tarvitse :ro-lippua lainkaan", "correct": false }
+      ]
+    }
+  ]
+}

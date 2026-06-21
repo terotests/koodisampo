@@ -1,0 +1,2376 @@
+{
+  "instructions": "docs/question-bank-choice-rewrite-prompt.md",
+  "bank": "javascript-web.json",
+  "offset": 70,
+  "limit": 56,
+  "totalInBank": 134,
+  "biasedInSlice": 56,
+  "outputFormat": {
+    "bank": "javascript-web.json",
+    "rewrites": [
+      {
+        "id": "question-id",
+        "choices": [
+          {
+            "text": "...",
+            "correct": true
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "b06-js-async-queue-microtask",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "console.log järjestys: sync, setTimeout(0), promise.then. Mitä tulostuu ensin promise:n jälkeen?",
+      "choices": [
+        {
+          "text": "Microtask (promise) ennen macrotask (setTimeout) — event loop järjestys",
+          "correct": true
+        },
+        {
+          "text": "setTimeout aina ensin",
+          "correct": false
+        },
+        {
+          "text": "Sync ja promise sama prioriteetti",
+          "correct": false
+        },
+        {
+          "text": "Järjestys satunnainen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Event loop microtask queue — MDN event loop.",
+      "wrongFeedback": "Promise.then on microtask — ennen setTimeout macrotaskia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 25,
+        "ratio": 2.84,
+        "correctIsLongest": true,
+        "spread": 50,
+        "lens": [
+          71,
+          21,
+          33,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b06-js-async-settimeout-zero",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "setTimeout(fn, 0) ei suorita fn heti — miksi?",
+      "choices": [
+        {
+          "text": "Callback menee macrotask queueen — odottaa nykyisen sync-koodin",
+          "correct": true
+        },
+        {
+          "text": "0 ms on liian pieni — min 4ms",
+          "correct": false
+        },
+        {
+          "text": "setTimeout on synkroninen",
+          "correct": false
+        },
+        {
+          "text": "Browser bugi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "setTimeout schedules macrotask — MDN setTimeout.",
+      "wrongFeedback": "0 ei tarkoita heti. Callback ajetaan event loopissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 22,
+        "ratio": 2.86,
+        "correctIsLongest": true,
+        "spread": 51,
+        "lens": [
+          63,
+          29,
+          25,
+          12
+        ]
+      }
+    },
+    {
+      "id": "b06-js-async-promise-finally",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Fetch-ketju — haluat cleanup riippumatta success/failure. Mitä käytät?",
+      "choices": [
+        {
+          "text": "promise.finally() — ajetaan aina kun promise settle",
+          "correct": true
+        },
+        {
+          "text": "then() ja catch() erikseen ilman duplikaattia",
+          "correct": false
+        },
+        {
+          "text": "finally on vain try-catch",
+          "correct": false
+        },
+        {
+          "text": "async function ei tarvitsee cleanup",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Promise.prototype.finally — MDN Promise finally.",
+      "wrongFeedback": "finally välttää duplikaatti cleanup then/catch:ssä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 51,
+        "avgWrongLen": 35,
+        "ratio": 1.46,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          51,
+          45,
+          25,
+          35
+        ]
+      }
+    },
+    {
+      "id": "b06-js-async-iterator-forawait",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Stream API palauttaa async iterable — haluat loopata awaitilla. Miten?",
+      "choices": [
+        {
+          "text": "for await (const chunk of stream) — async iteration",
+          "correct": true
+        },
+        {
+          "text": "for (const chunk of stream) — sync loop riittää",
+          "correct": false
+        },
+        {
+          "text": "stream.map async",
+          "correct": false
+        },
+        {
+          "text": "Promise.all stream chunks",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "for await...of — MDN for-await-of.",
+      "wrongFeedback": "Async iterable vaatii for await. Sync for ei odota promise.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 51,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 1.74,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          51,
+          47,
+          16,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b06-js-types-map-key-object",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Objekti avaimena Mapissa — sama key instance löytyy. Miksi ei Object avaimella?",
+      "choices": [
+        {
+          "text": "Map käyttää SameValueZero — objektiavain on referenssi",
+          "correct": true
+        },
+        {
+          "text": "Object keys stringify automaattisesti Mapissa",
+          "correct": false
+        },
+        {
+          "text": "Map ei sallii objektiavaimia",
+          "correct": false
+        },
+        {
+          "text": "JSON.stringify tekee avaimet uniikkeja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Map key equality — MDN Map.",
+      "wrongFeedback": "Objektiavain on referenssi. Eri objekti = eri key vaikka sisältö sama.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 37,
+        "ratio": 1.46,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          54,
+          45,
+          28,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b06-js-types-temporal-date",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Date.parse('01/02/2023') tulos vaihtelee locale:sta. Miten vältät?",
+      "choices": [
+        {
+          "text": "ISO 8601 format YYYY-MM-DD tai Temporal API",
+          "correct": true
+        },
+        {
+          "text": "Date.parse on aina deterministinen",
+          "correct": false
+        },
+        {
+          "text": "Käytä getMonth() korjaamaan",
+          "correct": false
+        },
+        {
+          "text": "Timestamp string ilman timezone",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Date parse ambiguity — MDN Date parse ISO.",
+      "wrongFeedback": "Locale-parsaus on epäluotettava. ISO 8601 tai Temporal.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 43,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 1.4,
+        "correctIsLongest": true,
+        "spread": 16,
+        "lens": [
+          43,
+          34,
+          27,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b06-js-types-in-operator",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Code review: 'key' in obj vs obj.hasOwnProperty(key). Milloin in on oikea?",
+      "choices": [
+        {
+          "text": "in tarkistaa koko prototype ketjun — hasOwn vain oma property",
+          "correct": true
+        },
+        {
+          "text": "in ja hasOwnProperty identtiset",
+          "correct": false
+        },
+        {
+          "text": "in on deprecated",
+          "correct": false
+        },
+        {
+          "text": "hasOwnProperty tarkistaa prototype",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "in operator — MDN in operator.",
+      "wrongFeedback": "in näkee inherited props. hasOwnProperty vain own.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 27,
+        "ratio": 2.26,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          61,
+          31,
+          16,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b06-js-modules-reexport",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Barrel file exporttaa utils-moduulien API yhdessä paikassa. Miten?",
+      "choices": [
+        {
+          "text": "export { foo } from './foo.js' — re-export",
+          "correct": true
+        },
+        {
+          "text": "import ja window.foo",
+          "correct": false
+        },
+        {
+          "text": "require() barrelissa",
+          "correct": false
+        },
+        {
+          "text": "export default kaikki moduulit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "export from syntax — MDN export.",
+      "wrongFeedback": "Re-export yhdistää API ilman import+export duplikaattia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 23.333333333333332,
+        "ratio": 1.8,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          42,
+          20,
+          20,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b06-js-modules-import-assertions",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "JSON config moduuli — haluat importtaa JSON ESM:ssä turvallisesti. Miten?",
+      "choices": [
+        {
+          "text": "import config from './config.json' with { type: 'json' }",
+          "correct": true
+        },
+        {
+          "text": "fetch config runtime aina",
+          "correct": false
+        },
+        {
+          "text": "require json ESM:ssä",
+          "correct": false
+        },
+        {
+          "text": "import json ilman assertion",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Import attributes JSON — MDN import.",
+      "wrongFeedback": "Import assertions/type määrittää moduulityypin. JSON import.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 24,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          56,
+          25,
+          20,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b06-js-modules-top-level-await",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "ESM moduuli tarvitsee async init ennen exporttia. Miten ilman wrapper-funktiota?",
+      "choices": [
+        {
+          "text": "Top-level await moduulin juuressa — ESM feature",
+          "correct": true
+        },
+        {
+          "text": "await vain funktion sisällä aina",
+          "correct": false
+        },
+        {
+          "text": "IIFE async moduulin korvaajana",
+          "correct": false
+        },
+        {
+          "text": "CommonJS require async",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Top-level await — MDN await module.",
+      "wrongFeedback": "ESM sallii top-level await. Ei tarvitse wrapper.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 28,
+        "ratio": 1.68,
+        "correctIsLongest": true,
+        "spread": 25,
+        "lens": [
+          47,
+          32,
+          30,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b06-js-runtime-finalization-registry",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 5,
+      "prompt": "WeakRef ei takaa cleanup — tarvitset callback kun objekti GC:ttä. Mitä API?",
+      "choices": [
+        {
+          "text": "FinalizationRegistry — cleanup callback GC:n jälkeen",
+          "correct": true
+        },
+        {
+          "text": "WeakRef callback automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Object.finalize standard",
+          "correct": false
+        },
+        {
+          "text": "setInterval poll WeakRef",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "FinalizationRegistry — MDN FinalizationRegistry.",
+      "wrongFeedback": "FinalizationRegistry on cleanup callback. WeakRef ei callback.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 1.95,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          52,
+          32,
+          24,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b06-js-runtime-proxy-freeze",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Object.freeze ei estä nested muutoksia — config objekti mutatoitu. Miten syvä immutability?",
+      "choices": [
+        {
+          "text": "Rekursiivinen freeze tai structured clone + freeze — tai immutable pattern",
+          "correct": true
+        },
+        {
+          "text": "freeze on aina syvä",
+          "correct": false
+        },
+        {
+          "text": "const estää nested muutokset",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse stringify riittää turvallisuuteen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Object.freeze shallow — MDN Object.freeze.",
+      "wrongFeedback": "freeze on shallow. Nested props edelleen muokattavissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 55,
+        "lens": [
+          74,
+          19,
+          28,
+          44
+        ]
+      }
+    },
+    {
+      "id": "b06-js-runtime-console-trace",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Debug — tarvitset call stack ilman breakpointia. Mitä console-metodia?",
+      "choices": [
+        {
+          "text": "console.trace() — tulostaa stack trace",
+          "correct": true
+        },
+        {
+          "text": "console.log stack automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "debugger statement productionissa",
+          "correct": false
+        },
+        {
+          "text": "console.dir stack",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "console.trace — MDN console trace.",
+      "wrongFeedback": "trace() tulostaa stack. log() ei.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 38,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 1.37,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          38,
+          33,
+          33,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b06-js-runtime-json-parse-reviver",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "JSON.parse palauttaa date stringit — haluat Date-objekteja automaattisesti. Miten?",
+      "choices": [
+        {
+          "text": "JSON.parse(text, reviver) — reviver transformaa arvot",
+          "correct": true
+        },
+        {
+          "text": "Date.parse kaikille kentille manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "JSON ei tukee Date — ei ratkaisua",
+          "correct": false
+        },
+        {
+          "text": "eval JSON korvaa parse",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "JSON.parse reviver — MDN JSON.parse.",
+      "wrongFeedback": "reviver callback transformaa parsatut arvot. Date revival.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.64,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          53,
+          42,
+          33,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b07-js-async-abort",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Käyttäjä vaihtaa sivua ennen fetchin valmistumista — vanha vastaus ylikirjoittaa uuden. Korjaus?",
+      "choices": [
+        {
+          "text": "AbortController — signal fetchiin ja abort navigoinnissa",
+          "correct": true
+        },
+        {
+          "text": "ignore vanha vastaus ilman abort",
+          "correct": false
+        },
+        {
+          "text": "Synkroninen fetch",
+          "correct": false
+        },
+        {
+          "text": "localStorage cache aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "AbortController cancels fetch — MDN AbortController.",
+      "wrongFeedback": "Race condition ilman peruutusta. Abort uusi navigointi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 24,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          56,
+          32,
+          17,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b07-js-async-microtask",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?",
+      "choices": [
+        {
+          "text": "Promise.then (microtask) ennen setTimeout (macrotask)",
+          "correct": true
+        },
+        {
+          "text": "setTimeout aina ensin",
+          "correct": false
+        },
+        {
+          "text": "Kaikki synkronisesti",
+          "correct": false
+        },
+        {
+          "text": "Promise on macrotask",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Microtasks run before next macrotask — MDN event loop.",
+      "wrongFeedback": "Event loop: sync → microtasks → macrotask. Promise.then on microtask.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 20.333333333333332,
+        "ratio": 2.61,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          53,
+          21,
+          20,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b07-js-async-await-error",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "async funktio heittää — unhandled rejection tuotannossa. Miten käsittelet?",
+      "choices": [
+        {
+          "text": "try/catch await ympärillä tai .catch() chainissa",
+          "correct": true
+        },
+        {
+          "text": "async ei heitä koskaan",
+          "correct": false
+        },
+        {
+          "text": "console.log error riittää",
+          "correct": false
+        },
+        {
+          "text": "Poista async",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "async/await needs try/catch — MDN async function.",
+      "wrongFeedback": "async heittää rejected promiseina. Käsittele try/catch.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 48,
+        "avgWrongLen": 19.666666666666668,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          48,
+          22,
+          25,
+          12
+        ]
+      }
+    },
+    {
+      "id": "b07-js-types-strict-equality",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Bug: `if (!userId)` hylkää validin arvon `0`. Mikä tarkistus on turvallisempi?",
+      "choices": [
+        {
+          "text": "Eksplisiittinen null/undefined-tarkistus (userId == null) — 0 on validi id",
+          "correct": true
+        },
+        {
+          "text": "!userId on aina oikein",
+          "correct": false
+        },
+        {
+          "text": "== null hylkää 0:n",
+          "correct": false
+        },
+        {
+          "text": "String(userId) korjaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Falsy-tarkistus sekoittaa 0:n puuttuvaan arvoon — MDN truthy/falsy.",
+      "wrongFeedback": "0 on falsy mutta voi olla validi. Älä käytä !userId jos 0 on sallittu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 20.333333333333332,
+        "ratio": 3.64,
+        "correctIsLongest": true,
+        "spread": 56,
+        "lens": [
+          74,
+          22,
+          18,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b07-js-types-nan",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi?",
+      "choices": [
+        {
+          "text": "Number.isNaN(x) — NaN ei ole === itsensä kanssa",
+          "correct": true
+        },
+        {
+          "text": "x == NaN",
+          "correct": false
+        },
+        {
+          "text": "typeof x === NaN",
+          "correct": false
+        },
+        {
+          "text": "isNaN riittää aina (ei — coerces)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Number.isNaN is reliable — MDN Number.isNaN.",
+      "wrongFeedback": "NaN !== NaN. Number.isNaN on oikea testi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 19,
+        "ratio": 2.47,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          47,
+          8,
+          16,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b07-js-types-optional-chain",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?",
+      "choices": [
+        {
+          "text": "optional chaining — user?.profile?.name",
+          "correct": true
+        },
+        {
+          "text": "user.profile.name aina",
+          "correct": false
+        },
+        {
+          "text": "eval polku",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse korjaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Optional chaining short-circuits undefined — MDN ?.",
+      "wrongFeedback": "?. estää crashin puuttuvassa välissä. Turvallinen polku.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 39,
+        "avgWrongLen": 16.333333333333332,
+        "ratio": 2.39,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          39,
+          22,
+          10,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b07-js-modules-dynamic",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Admin-paneeli on harvoin käytössä — haluat ladata sen koodin vain tarvittaessa. ES module?",
+      "choices": [
+        {
+          "text": "dynamic import() — code splitting lazy load",
+          "correct": true
+        },
+        {
+          "text": "import admin at top always",
+          "correct": false
+        },
+        {
+          "text": "script tag sync",
+          "correct": false
+        },
+        {
+          "text": "require() browserissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import() returns promise — MDN dynamic import.",
+      "wrongFeedback": "Staattinen import bundlaa kaiken. import() lazy load.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 43,
+        "avgWrongLen": 20.666666666666668,
+        "ratio": 2.08,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          43,
+          26,
+          15,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b07-js-modules-cycle",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "a.js importtaa b.js ja b.js importtaa a.js — undefined export. Miten korjaat?",
+      "choices": [
+        {
+          "text": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin — rikkoo syklin",
+          "correct": true
+        },
+        {
+          "text": "Lisää require sync",
+          "correct": false
+        },
+        {
+          "text": "Poista export",
+          "correct": false
+        },
+        {
+          "text": "global window fix",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Circular deps cause TDZ issues — refactor shared code.",
+      "wrongFeedback": "Sykli jättää exportin uninitialized. Erottele yhteinen koodi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 16,
+        "ratio": 4.06,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          65,
+          18,
+          13,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b07-js-modules-tree-shake",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Bundle on iso vaikka käytät yhtä lodash-funktiota. Import-korjaus?",
+      "choices": [
+        {
+          "text": "Named import tai lodash-es — import { debounce } from lodash-es",
+          "correct": true
+        },
+        {
+          "text": "import _ from lodash whole",
+          "correct": false
+        },
+        {
+          "text": "require entire package",
+          "correct": false
+        },
+        {
+          "text": "Copy paste function",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tree shaking needs static imports — bundler docs.",
+      "wrongFeedback": "Default import koko kirjastosta estää tree shaking.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 22.333333333333332,
+        "ratio": 2.82,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          63,
+          26,
+          22,
+          19
+        ]
+      }
+    },
+    {
+      "id": "b07-js-runtime-closure-loop",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "for-loopissa 5 click-handleria — kaikki tulostavat 5. Klassinen bugi ja fix?",
+      "choices": [
+        {
+          "text": "let i loopissa tai IIFE — var jakaa saman sidonta",
+          "correct": true
+        },
+        {
+          "text": "var korjaa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Poista handlerit",
+          "correct": false
+        },
+        {
+          "text": "setTimeout 0 riittää var:lla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "let creates per-iteration binding — MDN let.",
+      "wrongFeedback": "var closure viittaa samaan i:hin. Käytä let tai sulje arvo.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 23.333333333333332,
+        "ratio": 2.1,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          49,
+          26,
+          16,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b07-js-runtime-json-parse",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "API palauttaa JSON-stringin — eval(data) parseen. Turvallinen tapa?",
+      "choices": [
+        {
+          "text": "JSON.parse(data) — ei suorita koodia",
+          "correct": true
+        },
+        {
+          "text": "eval on nopein",
+          "correct": false
+        },
+        {
+          "text": "new Function(data)",
+          "correct": false
+        },
+        {
+          "text": "innerHTML data",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "JSON.parse only parses JSON — MDN JSON.parse.",
+      "wrongFeedback": "eval suorittaa mielivaltaista koodia. JSON.parse on turvallinen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 36,
+        "avgWrongLen": 15.333333333333334,
+        "ratio": 2.35,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          36,
+          14,
+          18,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b07-js-runtime-weakmap",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Cache Map DOM-elementeistä aiheuttaa memory leakin sivun vaihtuessa. Parempi rakenne?",
+      "choices": [
+        {
+          "text": "WeakMap — avaimet voivat GC:tä ilman explicit delete",
+          "correct": true
+        },
+        {
+          "text": "Map + manual delete aina riittää",
+          "correct": false
+        },
+        {
+          "text": "global array elements",
+          "correct": false
+        },
+        {
+          "text": "localStorage cache DOM",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WeakMap does not prevent GC of keys — MDN WeakMap.",
+      "wrongFeedback": "Map pitää elementit elossa. WeakMap sallii GC kun DOM poistuu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 25,
+        "ratio": 2.08,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          52,
+          32,
+          21,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b07-js-runtime-prototype",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Kaikki array-instanssit saivat uuden metodin forEachin jälkeen — mitä teit?",
+      "choices": [
+        {
+          "text": "Muokkasit Array.prototype — vältä, käytä utility-funktiota",
+          "correct": true
+        },
+        {
+          "text": "Se on best practice",
+          "correct": false
+        },
+        {
+          "text": "Object.prototype on parempi",
+          "correct": false
+        },
+        {
+          "text": "Se nopeuttaa aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Extending native prototypes is risky — MDN prototype.",
+      "wrongFeedback": "Prototype pollution rikkoo kirjastoja. Älä muokkaa built-in.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 21,
+        "ratio": 2.76,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          58,
+          19,
+          27,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b08-js-async-parallel",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Lataat kolme riippumatonta API:a — await peräkkäin kestää 3×. Nopeampi tapa?",
+      "choices": [
+        {
+          "text": "Promise.all([fetch(a), fetch(b), fetch(c)]) — rinnakkain",
+          "correct": true
+        },
+        {
+          "text": "for-await rinnakkaisuuteen ilman Promise.all",
+          "correct": false
+        },
+        {
+          "text": "Synkroninen XMLHttpRequest rinnakkain",
+          "correct": false
+        },
+        {
+          "text": "setTimeout ketjutus nopeuttaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Promise.all runs independent async in parallel — MDN Promise.all.",
+      "wrongFeedback": "Peräkkäinen await summaa latenssit. all/allSettled rinnakkain.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 36.666666666666664,
+        "ratio": 1.53,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          56,
+          44,
+          37,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b08-js-async-generator",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?",
+      "choices": [
+        {
+          "text": "async function* generator — for await...of sivuille",
+          "correct": true
+        },
+        {
+          "text": "while(true) sync fetch",
+          "correct": false
+        },
+        {
+          "text": "Generators eivät tue async:ia",
+          "correct": false
+        },
+        {
+          "text": "callback pyramid on moderni",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Async generators yield promises — MDN async function*.",
+      "wrongFeedback": "Async generator + for await siivoaa paginaatioketjun.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 51,
+        "avgWrongLen": 26,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          51,
+          22,
+          29,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b08-js-types-strict-equals",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "API hylkää vain `if (token == null) return unauthorized()`. Mikä arvo pääsee läpi virheellisesti?",
+      "choices": [
+        {
+          "text": "Tyhjä merkkijono `''` — se ei ole `null` eikä `undefined`, joten tarkistus ei laukea",
+          "correct": true
+        },
+        {
+          "text": "`'' == null` on tosi, joten tarkistus toimii",
+          "correct": false
+        },
+        {
+          "text": "if(token) hylkää aina tyhjän merkkijonon",
+          "correct": false
+        },
+        {
+          "text": "typeof token == null toimii",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "`'' == null` on false — pelkkä null-tarkistus ei kata tyhjää tokenia.",
+      "wrongFeedback": "Tyhjä string ei ole null. Käytä eksplisiittistä tyhjyystarkistusta tai `if (!token)` tarpeen mukaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 84,
+        "avgWrongLen": 37,
+        "ratio": 2.27,
+        "correctIsLongest": true,
+        "spread": 57,
+        "lens": [
+          84,
+          44,
+          40,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b08-js-types-bigint",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "64-bit ID ylittää Number.MAX_SAFE_INTEGER — JSON API palauttaa ison numeron. Tyyppi?",
+      "choices": [
+        {
+          "text": "BigInt — 123n tai BigInt(string) — älä sekoita Numberiin ilman tarkistusta",
+          "correct": true
+        },
+        {
+          "text": "parseFloat riittää tarkkuuteen",
+          "correct": false
+        },
+        {
+          "text": "Number on aina 64-bit tarkka",
+          "correct": false
+        },
+        {
+          "text": "BigInt ei serialisoidu JSON:iin natiivisti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BigInt arbitrary precision integers — MDN BigInt.",
+      "wrongFeedback": "Number menettää tarkkuuden suurilla ID:illä. BigInt tai string ID.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 33.333333333333336,
+        "ratio": 2.22,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          74,
+          30,
+          28,
+          42
+        ]
+      }
+    },
+    {
+      "id": "b08-js-modules-dynamic-import",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Raskas chart-kirjasto vain admin-sivulla — bundle liian iso. Latausstrategia?",
+      "choices": [
+        {
+          "text": "dynamic import() — code splitting route/komponentin mukaan",
+          "correct": true
+        },
+        {
+          "text": "import chart at top level aina",
+          "correct": false
+        },
+        {
+          "text": "require() on ainoa tapa lazy load",
+          "correct": false
+        },
+        {
+          "text": "script tag sync headissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import() returns promise — lazy load module — MDN dynamic import.",
+      "wrongFeedback": "Staattinen import bundlaa kaiken. dynamic import() splitaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 29,
+        "ratio": 2,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          58,
+          30,
+          33,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b08-js-modules-top-level-await",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "ES module init lataa config.json ennen exportteja — miten ilman async IIFE?",
+      "choices": [
+        {
+          "text": "top-level await modulessa — await fetch config ennen export",
+          "correct": true
+        },
+        {
+          "text": "var config sync fetch",
+          "correct": false
+        },
+        {
+          "text": "TLA toimii vain CommonJS",
+          "correct": false
+        },
+        {
+          "text": "export ennen await aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Top-level await in ES modules — MDN.",
+      "wrongFeedback": "TLA pysäyttää module graph initin kunnes valmis. Vain ES modules.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 2.6,
+        "correctIsLongest": true,
+        "spread": 38,
+        "lens": [
+          59,
+          21,
+          24,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b08-js-runtime-weakmap",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "DOM-elementtiin liitetty metadata — Map aiheuttaa memory leakin kun element poistuu. Rakenne?",
+      "choices": [
+        {
+          "text": "WeakMap — avaimet heikosti viitattuja, GC voi kerätä",
+          "correct": true
+        },
+        {
+          "text": "global object metadata",
+          "correct": false
+        },
+        {
+          "text": "WeakMap pitää avaimet ikuisesti",
+          "correct": false
+        },
+        {
+          "text": "JSON.stringify elementtiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WeakMap keys are weakly held — MDN WeakMap.",
+      "wrongFeedback": "Strong Map DOM-nodeen estää GC:n. WeakMap metadataan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 26.333333333333332,
+        "ratio": 1.97,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          52,
+          22,
+          31,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b08-js-runtime-prototype-chain",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "`obj.toString()` toimii vaikka obj:ssa ei ole toString — miten?",
+      "choices": [
+        {
+          "text": "Prototype chain — etsitään obj.__proto__ → Object.prototype",
+          "correct": true
+        },
+        {
+          "text": "JavaScript kääntää automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Kaikki metodit kopioitu jokaiseen objektiin",
+          "correct": false
+        },
+        {
+          "text": "Vain class-instanssit perivät",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Property lookup walks prototype chain — MDN inheritance.",
+      "wrongFeedback": "Metodit jaetussa prototyypissä. class syntaksi sama mekanismi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 35.333333333333336,
+        "ratio": 1.67,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          59,
+          34,
+          43,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b08-js-async-microtask-starvation",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 5,
+      "prompt": "while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. Miksi?",
+      "choices": [
+        {
+          "text": "Microtask loop — microtask queue tyhjenee ennen macrotask/render",
+          "correct": true
+        },
+        {
+          "text": "Promise ei käytä event loopia",
+          "correct": false
+        },
+        {
+          "text": "setTimeout(0) saman loopin sisällä auttaa",
+          "correct": false
+        },
+        {
+          "text": "async/await ei käytä microtaskeja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Microtasks drain before next render — MDN event loop.",
+      "wrongFeedback": "Loputon microtask ketju estää macrotaskit ja paintin. Katkaise macrotaskilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 34.333333333333336,
+        "ratio": 1.86,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          64,
+          29,
+          41,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b08-js-types-symbol-key",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Haluat piilottaa objektin sisäisen avaimen for-in loopilta mutta käyttää sitä metodissa. Avaintyyppi?",
+      "choices": [
+        {
+          "text": "Symbol('internal') — ei enumerable oletuksena",
+          "correct": true
+        },
+        {
+          "text": "string prefix _ riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Symbol serialisoituu JSON:iin",
+          "correct": false
+        },
+        {
+          "text": "Map vaatii Symbol-avaimia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Symbol unique non-enumerable keys — MDN Symbol.",
+      "wrongFeedback": "Symbol ei näy for-in/Object.keys. Ei JSON-serialisoitu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 27.333333333333332,
+        "ratio": 1.65,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          45,
+          28,
+          29,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b08-js-modules-circular",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "a.js importtaa b.js ja b.js importtaa a.js — export undefined initissä. Juurisyy?",
+      "choices": [
+        {
+          "text": "Circular dependency — moduuli ei ole fully evaluated vielä",
+          "correct": true
+        },
+        {
+          "text": "ES modules eivät salli syklejä",
+          "correct": false
+        },
+        {
+          "text": "Bundler bug aina",
+          "correct": false
+        },
+        {
+          "text": "import hoisting poistaa syklit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Circular imports get partial exports — MDN modules cycle.",
+      "wrongFeedback": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin. Vältä side-effect init syklissä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 2.29,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          58,
+          30,
+          16,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b08-js-runtime-closure-loop",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "for (var i=0; i<3; i++) { setTimeout(() => console.log(i), 0); } tulostaa 3,3,3. Korjaus?",
+      "choices": [
+        {
+          "text": "let i — block scope per iteratio — tai IIFE/param capture",
+          "correct": true
+        },
+        {
+          "text": "var on aina oikein loopissa",
+          "correct": false
+        },
+        {
+          "text": "setTimeout sync ajaa loopin",
+          "correct": false
+        },
+        {
+          "text": "Poista closure",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "let creates new binding per iteration — MDN closures.",
+      "wrongFeedback": "var jaetaan — closure näkee final i. let tai param capture.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 2.51,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          57,
+          27,
+          27,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b08-js-async-race-timeout",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "fetch ei saa roikkua yli 5 sekuntia — timeout ilman manuaalista flagia?",
+      "choices": [
+        {
+          "text": "AbortSignal.timeout(5000) tai Promise.race fetch + timeout promise",
+          "correct": true
+        },
+        {
+          "text": "fetch timeout parametri natiivisti",
+          "correct": false
+        },
+        {
+          "text": "while Date.now() block",
+          "correct": false
+        },
+        {
+          "text": "setInterval peruuttaa fetchin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "AbortSignal.timeout — MDN AbortSignal.",
+      "wrongFeedback": "fetch ei timeoutia ilman AbortSignal. race + abort moderni tapa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          66,
+          34,
+          22,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b08-js-runtime-dom-ready",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Script headissä — document.getElementById palauttaa null. Milloin DOM on valmis?",
+      "choices": [
+        {
+          "text": "DOMContentLoaded — tai script defer/module end of body",
+          "correct": true
+        },
+        {
+          "text": "window.load aina nopein DOM:iin",
+          "correct": false
+        },
+        {
+          "text": "DOM valmis heti parserin alussa",
+          "correct": false
+        },
+        {
+          "text": "async script takaa DOM ready",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DOMContentLoaded fires when HTML parsed — MDN.",
+      "wrongFeedback": "Head script ennen elementtiä = null. defer tai DOMContentLoaded listener.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 30,
+        "ratio": 1.8,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          54,
+          31,
+          31,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b09-js-async-promise-chain",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Callback hell API-ketjussa — kolme peräkkäistä fetch-kutsua. Moderni refaktorointi?",
+      "choices": [
+        {
+          "text": "async/await tai Promise chain .then() — flat async flow",
+          "correct": true
+        },
+        {
+          "text": "Synkroninen XMLHttpRequest",
+          "correct": false
+        },
+        {
+          "text": "setTimeout ketjutus",
+          "correct": false
+        },
+        {
+          "text": "Global callback registry",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Promises/async-await — MDN async functions.",
+      "wrongFeedback": "Callback pyramid on vaikea ylläpitää. async/await tai promise chain.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 23,
+        "ratio": 2.39,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          55,
+          26,
+          19,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b09-js-async-unhandled-rejection",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Tuotannossa `UnhandledPromiseRejection` kaataa Node-prosessin. Miten käsittelet?",
+      "choices": [
+        {
+          "text": "try/catch async-funktioissa + .catch() ketjuissa + process handler",
+          "correct": true
+        },
+        {
+          "text": "Promiset eivät voi rejectata",
+          "correct": false
+        },
+        {
+          "text": "Ignoroi — Node korjaa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Vain sync try/catch riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Handle rejections — MDN Promise catch, Node unhandledRejection.",
+      "wrongFeedback": "Unhandled rejection voi kaataa prosessin. catch kaikissa async-poluissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 2.15,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          66,
+          28,
+          37,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b09-js-async-event-loop-block",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Express-endpoint jäädyttää koko palvelimen 30 sekunniksi raskaalla JSON-parsinnalla. Juurisyy?",
+      "choices": [
+        {
+          "text": "Synkroninen työ event loop -säieessä — siirrä worker threadiin tai pilko",
+          "correct": true
+        },
+        {
+          "text": "Express ei tue asyncia",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse on aina async",
+          "correct": false
+        },
+        {
+          "text": "Lisää useampia Express-instanssia samaan prosessiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Node event loop — MDN event loop, Node.js docs.",
+      "wrongFeedback": "Pitkä sync-operaatio blokkaa koko loopin. Worker threads tai streamaus.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.23,
+        "correctIsLongest": true,
+        "spread": 50,
+        "lens": [
+          72,
+          22,
+          24,
+          51
+        ]
+      }
+    },
+    {
+      "id": "b09-js-async-fetch-abort",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — haluat peruuttaa pyynnön. API?",
+      "choices": [
+        {
+          "text": "AbortController + signal fetch-kutsussa",
+          "correct": true
+        },
+        {
+          "text": "fetch.cancel() built-in",
+          "correct": false
+        },
+        {
+          "text": "Sulje selain — ainoa tapa",
+          "correct": false
+        },
+        {
+          "text": "Promise.race ilman abortia riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "AbortController — MDN fetch abort.",
+      "wrongFeedback": "AbortController.signal peruuttaa fetchin siististi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 39,
+        "avgWrongLen": 29,
+        "ratio": 1.34,
+        "correctIsLongest": true,
+        "spread": 16,
+        "lens": [
+          39,
+          23,
+          25,
+          39
+        ]
+      }
+    },
+    {
+      "id": "b09-js-types-strict-equality",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 2,
+      "prompt": "Code review: `if (userId == 0)` hyväksyy myös tyhjän stringin. Korjaus?",
+      "choices": [
+        {
+          "text": "Käytä === strict equality — ei type coercion",
+          "correct": true
+        },
+        {
+          "text": "== on turvallisempi ===:aa",
+          "correct": false
+        },
+        {
+          "text": "Muuta userId stringiksi",
+          "correct": false
+        },
+        {
+          "text": "if (!userId) korvaa vertailun aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Strict equality — MDN equality comparisons.",
+      "wrongFeedback": "== tekee coercion: '' == 0. === vertaa tyyppiä ja arvoa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 1.59,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          44,
+          26,
+          23,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b09-js-types-null-object",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Bugi: `typeof null === 'object'`. Turvallinen null-tarkistus?",
+      "choices": [
+        {
+          "text": "value === null tai value == null (null/undefined)",
+          "correct": true
+        },
+        {
+          "text": "typeof value === 'null'",
+          "correct": false
+        },
+        {
+          "text": "value instanceof Object",
+          "correct": false
+        },
+        {
+          "text": "Object.isObject(value)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "typeof null quirk — MDN typeof, use === null.",
+      "wrongFeedback": "typeof null on historiallinen bugi. Käytä === null tai == null.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 2.16,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          49,
+          23,
+          23,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b09-js-types-bigint-json",
+      "chapter": "js-types",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "API palauttaa 64-bit ID:n — JSON.stringify heittää BigInt:illä. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Custom replacer tai serialisoi stringiksi — JSON ei tue BigInt natively",
+          "correct": true
+        },
+        {
+          "text": "JSON.stringify tukee BigInt automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Muuta kaikki Number — ei ylittymistä",
+          "correct": false
+        },
+        {
+          "text": "eval() parseen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BigInt JSON serialization — MDN BigInt, JSON.stringify.",
+      "wrongFeedback": "JSON.stringify ei tue BigInt. Replacer tai string-conversio.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 31,
+        "ratio": 2.29,
+        "correctIsLongest": true,
+        "spread": 57,
+        "lens": [
+          71,
+          43,
+          36,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b09-js-modules-dynamic-import",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Raskas chart-kirjasto tarvitaan vain admin-sivulla — haluat pienentää initial bundlea. Lataus?",
+      "choices": [
+        {
+          "text": "dynamic import() — code splitting lazy load",
+          "correct": true
+        },
+        {
+          "text": "require() top-level ESM:ssä",
+          "correct": false
+        },
+        {
+          "text": "script tag sync headissä",
+          "correct": false
+        },
+        {
+          "text": "import static kaikille sivuille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Dynamic import — MDN import expressions.",
+      "wrongFeedback": "import() lataa moduulin tarpeen mukaan — pienempi initial bundle.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 43,
+        "avgWrongLen": 27.333333333333332,
+        "ratio": 1.57,
+        "correctIsLongest": true,
+        "spread": 19,
+        "lens": [
+          43,
+          27,
+          24,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b09-js-modules-circular-dep",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Moduuli A importtaa B:n ja B importtaa A:n — undefined exportit bootissa. Korjaus?",
+      "choices": [
+        {
+          "text": "Refaktoroi jaettu logiikka kolmanteen moduuliin — poista sykli",
+          "correct": true
+        },
+        {
+          "text": "Lisää delay requireen",
+          "correct": false
+        },
+        {
+          "text": "Circular deps toimivat aina ESM:ssä",
+          "correct": false
+        },
+        {
+          "text": "Yhdistä A ja B yhdeksi tiedostoksi aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Circular dependencies — MDN modules, partial initialization.",
+      "wrongFeedback": "Sykliset importit aiheuttavat partial exportteja. Erottele riippuvuus.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 62,
+        "avgWrongLen": 31.666666666666668,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          62,
+          21,
+          35,
+          39
+        ]
+      }
+    },
+    {
+      "id": "b09-js-modules-esm-cjs-interop",
+      "chapter": "js-modules",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Node-projektissa `require('esm-only-pkg')` kaatuu. Oikea lähestymistapa?",
+      "choices": [
+        {
+          "text": "Siirry type:module tai dynamic import() ESM-paketeille",
+          "correct": true
+        },
+        {
+          "text": "require toimii kaikille npm-paketeille",
+          "correct": false
+        },
+        {
+          "text": "Muokkaa node_modules käsin",
+          "correct": false
+        },
+        {
+          "text": "Poista package.json type",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ESM/CJS interop — Node.js ESM docs.",
+      "wrongFeedback": "ESM-only paketit vaativat import. type:module tai dynamic import.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 1.84,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          54,
+          38,
+          26,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b09-js-runtime-closure-leak",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "SPA:n muisti kasvaa navigoidessa — DevTools näyttää detached DOM -nodeja. Syy?",
+      "choices": [
+        {
+          "text": "Event listenerit tai closuret pitävät viittauksia poistettuihin elementteihin",
+          "correct": true
+        },
+        {
+          "text": "GC ei toimi moderneissa selaimissa",
+          "correct": false
+        },
+        {
+          "text": "innerHTML tyhjentää aina listenerit",
+          "correct": false
+        },
+        {
+          "text": "Muistivuoto on vain Node-ongelma",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Memory leaks closures/listeners — MDN memory management.",
+      "wrongFeedback": "Poista listenerit ja pura viittaukset unmountissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 33.666666666666664,
+        "ratio": 2.29,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          77,
+          34,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b09-js-runtime-weakmap-cache",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Cacheta metadata DOM-elementeille ilman että estät GC:n poistamasta elementtejä. Rakenne?",
+      "choices": [
+        {
+          "text": "WeakMap — avaimet voivat kerätä roskikseen",
+          "correct": true
+        },
+        {
+          "text": "Map element-avaimilla — aina turvallinen",
+          "correct": false
+        },
+        {
+          "text": "Globaali object registry",
+          "correct": false
+        },
+        {
+          "text": "element.metadata property aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WeakMap for object metadata — MDN WeakMap.",
+      "wrongFeedback": "Map pitää elementin elossa. WeakMap ei estä GC:ta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 31.333333333333332,
+        "ratio": 1.34,
+        "correctIsLongest": true,
+        "spread": 18,
+        "lens": [
+          42,
+          40,
+          24,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b09-js-runtime-raf-animation",
+      "chapter": "js-runtime",
+      "domain": "javascript",
+      "difficulty": 3,
+      "prompt": "Custom animaatio pätkii — setInterval 16 ms ei synkronoidu näytön refreshiin. Korjaus?",
+      "choices": [
+        {
+          "text": "requestAnimationFrame — synkronoituu display refreshiin",
+          "correct": true
+        },
+        {
+          "text": "setInterval(0) on nopein",
+          "correct": false
+        },
+        {
+          "text": "CSS animation ei toimi JS:n kanssa",
+          "correct": false
+        },
+        {
+          "text": "while-loop animaatioon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "requestAnimationFrame — MDN Web API.",
+      "wrongFeedback": "rAF synkronoidu näytön kanssa — sulavampi animaatio.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.06,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          55,
+          24,
+          34,
+          22
+        ]
+      }
+    },
+    {
+      "id": "prod-js-unknown-vs-any",
+      "chapter": "js-typescript",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` on turvallisempi kuin `any`?",
+      "choices": [
+        {
+          "text": "unknown pakottaa tarkistamaan tai kaventamaan tyypin ennen käyttöä",
+          "correct": true
+        },
+        {
+          "text": "unknown poistaa kaikki runtime-virheet automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "any on aina readonly",
+          "correct": false
+        },
+        {
+          "text": "unknown kääntyy aina nopeammin kuin any",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "unknown on type-safe top type — TS handbook unknown vs any.",
+      "wrongFeedback": "any ohittaa tarkistukset. unknown vaatii narrowingin ennen property-käyttöä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 37.666666666666664,
+        "ratio": 1.75,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          66,
+          54,
+          20,
+          39
+        ]
+      }
+    },
+    {
+      "id": "prod-js-unhandled-rejection-caller",
+      "chapter": "js-async",
+      "domain": "javascript",
+      "difficulty": 4,
+      "prompt": "Event handler kutsuu `saveData()` async-funktiota ilman awaitia eikä lisää `.catch()`. Promise hylätään. Mikä riski?",
+      "choices": [
+        {
+          "text": "Unhandled rejection — virhe voi jäädä huomaamatta tai kaataa prosessin asetuksista riippuen",
+          "correct": true
+        },
+        {
+          "text": "Promise suoritetaan uudelleen automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "async-funktiot eivät voi epäonnistua ilman awaitia",
+          "correct": false
+        },
+        {
+          "text": "try/catch async-funktion sisällä riittää aina kutsujalle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fire-and-forget async vaatii .catch() tai void operator — Node unhandledRejection.",
+      "wrongFeedback": "Sisäinen try/catch ei suojaa kutsumattomasta promisesta. Käsittely kutsujassa tai await.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 91,
+        "avgWrongLen": 50.333333333333336,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          91,
+          45,
+          50,
+          56
+        ]
+      }
+    }
+  ]
+}

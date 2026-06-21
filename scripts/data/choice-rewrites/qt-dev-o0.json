@@ -1,0 +1,320 @@
+{
+  "bank": "qt-dev.json",
+  "rewrites": [
+    {
+      "id": "qt-widgets-parent",
+      "choices": [
+        { "text": "Parent hoitaa omistajuuden: lapset tuhotaan ja layout järjestää", "correct": true },
+        { "text": "Parent varmistaa että widget on näkyvissä heti konstruktorissa", "correct": false },
+        { "text": "Ilman parentia widget on automaattisesti modal-dialogi", "correct": false },
+        { "text": "Parent korvaa QApplication-olion event loopin hallinnassa", "correct": false }
+      ]
+    },
+    {
+      "id": "qt-thread-movetothread",
+      "choices": [
+        { "text": "Siirrä QObject worker-säikeeseen moveToThread:lla, käytä signaaleja", "correct": true },
+        { "text": "Kutsu QThread::terminate() heti kun työ hidastuu käynnistyksessä", "correct": false },
+        { "text": "Käytä processEvents()-silmukkaa jokaisessa pitkässä metodissa", "correct": false },
+        { "text": "sleep() pääsäikeessä pitää UI:n responsiivisena odotuksen aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "qt-opengl-makecurrent",
+      "choices": [
+        { "text": "Kutsu makeCurrent() widgetin kontekstissa ennen GL-komentoja", "correct": true },
+        { "text": "Vaihda QOpenGLWidget tavalliseen QWidget:iin piirtämisen sijaan", "correct": false },
+        { "text": "glFlush() riittää päivittämään piirin ilman aktiivista kontekstia", "correct": false },
+        { "text": "QApplication::setAttribute() aktivoi OpenGL-kontekstin automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "qt-shaders-glsl-version",
+      "choices": [
+        { "text": "#version-directive shaderin ensimmäisellä rivillä (esim. #version 330 core)", "correct": true },
+        { "text": "QSurfaceFormat määrittää version — erillistä #version-riviä ei tarvita", "correct": false },
+        { "text": "Käytä vain esikäännettyä .qsb-tiedostoa ja jätä GLSL pois kokonaan", "correct": false },
+        { "text": "Lisää precision mediump float C++-puolen QShaderProgram-luokkaan", "correct": false }
+      ]
+    },
+    {
+      "id": "qt-opengl-vbo",
+      "choices": [
+        { "text": "QOpenGLBuffer (VBO) ja vertex attrib -asetukset vähentävät kopiointia", "correct": true },
+        { "text": "glBegin/glEnd-kutsut jokaisella framella pitävät piirron yksinkertaisena", "correct": false },
+        { "text": "QPainter::drawPolygon QOpenGLWidgetissä hoitaa geometrian GPU:lle", "correct": false },
+        { "text": "QPixmap-cache kolmioille vähentää draw call -määrää 3D-näkymässä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-widgets-layout-crash",
+      "choices": [
+        { "text": "Anna parent QWidget*: Qt hallitsee elinkaaren hierarkiassa automaattisesti", "correct": true },
+        { "text": "Käytä raw new ilman parenttia — elinkaari on silloin selkeämpi", "correct": false },
+        { "text": "Poista closeEvent-override jotta sulku ei kaada dialogia", "correct": false },
+        { "text": "Migroi koko UI QML:ään välttääksesi QWidget-elinkaari-ongelmat", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-widgets-size-hint",
+      "choices": [
+        { "text": "Overridaa sizeHint() ja tarvittaessa minimumSizeHint() layoutille", "correct": true },
+        { "text": "Aseta resize(100,100) konstruktorissa kaikille DPI-asetuksille", "correct": false },
+        { "text": "paintEvent() riittää kertomaan layoutille widgetin oikean koon", "correct": false },
+        { "text": "setFixedSize() varmistaa yhtenäisen koon eri näyttöjen DPI:llä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-signals-disconnect-lifetime",
+      "choices": [
+        { "text": "disconnect tai QPointer receiverille estää slotin kuolleeseen objektiin", "correct": true },
+        { "text": "Qt:n roskienkeruu vapauttaa slotit automaattisesti dialogin sulkeuduttua", "correct": false },
+        { "text": "DirectConnection nopeuttaa cleanupia kun dialog suljetaan nopeasti", "correct": false },
+        { "text": "Signaalit eivät laukea enää kuin lähettäjä-objekti on tuhottu", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-thread-worker-object",
+      "choices": [
+        { "text": "QObject-worker moveToThread(QThread*)-säikeellä ja signaaleilla", "correct": true },
+        { "text": "Override QThread::run() suoraan QWidget-luokassa UI-säikeessä", "correct": false },
+        { "text": "std::thread QWidget-metodissa ilman synkronointia on Qt:n suositus", "correct": false },
+        { "text": "processEvents()-silmukka pääsäikeessä pitää laskennan taustalla", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-thread-gui-touch",
+      "choices": [
+        { "text": "QWidget on GUI-säikeen oma — toisesta säikeestä kutsu on UB", "correct": true },
+        { "text": "setText() on thread-safe kaikissa Qt 5 ja Qt 6 -versioissa", "correct": false },
+        { "text": "Vain OpenGL-piirto vaatii main thread -ajon, ei tavalliset widgetit", "correct": false },
+        { "text": "QMutex widgetin ympärillä tekee setText():stä turvallisen workerissa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-models-reset-vs-layout",
+      "choices": [
+        { "text": "dataChanged tai rowsInserted — reset vain kun mallin rakenne muuttuu", "correct": true },
+        { "text": "Luo uusi QTableWidget joka päivityksellä välttää välkkymisen", "correct": false },
+        { "text": "Poista model kokonaan ja luo se uudelleen jokaisella päivityksellä", "correct": false },
+        { "text": "processEvents() jokaisella rivillä pitää UI:n reagoivana päivityksessä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-models-persistent-index",
+      "choices": [
+        { "text": "QModelIndex ei ole pysyvä insertRow:n jälkeen — QPersistentModelIndex", "correct": true },
+        { "text": "QModelIndex säilyy validina kunnes model tuhotaan kokonaan", "correct": false },
+        { "text": "insertRow() ei muuta olemassa olevien QModelIndexien viittauksia", "correct": false },
+        { "text": "Vain QListWidget vaatii indeksien uudelleenhaun insertRow:n jälkeen", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-opengl-context-thread",
+      "choices": [
+        { "text": "QOpenGLWidget luodaan ja käytetään vain GUI-säikeessä Qt:n mukaan", "correct": true },
+        { "text": "OpenGL-konteksti toimii vapaasti miltä tahansa worker-säikeeltä", "correct": false },
+        { "text": "makeCurrent() riittää thread-tarkistukseen jo widgetin luonnissa", "correct": false },
+        { "text": "Qt 6 poisti OpenGL-tuen kokonaan — käytä vain QRhi-pipelinea", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-opengl-vao-vbo",
+      "choices": [
+        { "text": "QOpenGLBuffer (VBO) + VAO: lataa kerran, piirrä usein per frame", "correct": true },
+        { "text": "glBegin/glEnd immediate mode joka framella on moderni Qt-tapa", "correct": false },
+        { "text": "Poista depth test vähentääksesi GPU-kuormaa piirtosilmukassa", "correct": false },
+        { "text": "Software-rasterointi QPixmapilla korvaa buffer-objektit meshille", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-opengl-makecurrent",
+      "choices": [
+        { "text": "context->makeCurrent(surface) ennen GL:ää, doneCurrent() lopuksi", "correct": true },
+        { "text": "swapBuffers() aktivoi kontekstin automaattisesti ennen piirtokomentoja", "correct": false },
+        { "text": "Qt OpenGL ei vaadi current-kontekstia makeCurrent-kutsuja varten", "correct": false },
+        { "text": "QTimer-singleShot aktivoi GL-kontekstin render loopin alussa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-shaders-uniform-location",
+      "choices": [
+        { "text": "QShaderProgram::uniformLocation(\"name\") tai layout(binding) GLSL:ssä", "correct": true },
+        { "text": "Uniform location 0 on vakio kaikilla ajureilla ja GPU-arkkitehtuureilla", "correct": false },
+        { "text": "Uniform-muuttujat eivät toimi Qt:n shader pipeline -järjestelmässä", "correct": false },
+        { "text": "Fixed function pipeline korvaa uniformit Qt 6 OpenGL-backendissä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-shaders-glsl-version",
+      "choices": [
+        { "text": "Yhteensopiva #version ja core/es-profiili RHI/GL-backendin mukaan", "correct": true },
+        { "text": "Ajuri arvaa GLSL-version automaattisesti ilman #version-directivea", "correct": false },
+        { "text": "GLSL 1.0 toimii kaikilla macOS- ja Windows-OpenGL-ajureilla", "correct": false },
+        { "text": "Poista precision qualifierit — ne korvaavat #version-rivin tarpeen", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-qt-shaders-rhi-backend",
+      "choices": [
+        { "text": "QRhi-pipeline tekee shadereista backend-agnostisempia (GL/Vulkan/Metal)", "correct": true },
+        { "text": "Qt 6 poisti GPU-renderöinnin kokonaan fixed-functionin myötä", "correct": false },
+        { "text": "QWidget rikkoi kaikki shaderit Qt 5:stä Qt 6:een siirtymisessä", "correct": false },
+        { "text": "QML ei tue custom-shadereita Qt 6 RHI-arkkitehtuurissa lainkaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-widgets-layout-01",
+      "choices": [
+        { "text": "QLayout (QVBoxLayout/QHBoxLayout) hoitaa resizen automaattisesti", "correct": true },
+        { "text": "setFixedSize() kaikille widgeteille estää resizen repeämisen", "correct": false },
+        { "text": "resizeEvent()-override manuaalisesti joka widgetille on suositeltu", "correct": false },
+        { "text": "Widget ilman parentia ja layoutia skaalautuu ikkunan mukana", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-widgets-parent-02",
+      "choices": [
+        { "text": "Parent QDialogille tai WA_DeleteOnClose estää orphan-widgetit", "correct": true },
+        { "text": "delete this -kutsu satunnaisesti suljettaessa vapauttaa dialogin", "correct": false },
+        { "text": "shared_ptr<QWidget> on Qt:n suositeltu tapa hallita widget-elinkaarta", "correct": false },
+        { "text": "Piilota dialog show():lla — muisti vapautuu automaattisesti myöhemmin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-widgets-action-03",
+      "choices": [
+        { "text": "QAction yhdistää Ctrl+S, valikon ja toolbarin yhdeksi toiminnoksi", "correct": true },
+        { "text": "Kaksi erillistä slottia kopioituna valikolle ja toolbarille", "correct": false },
+        { "text": "Global OS-hotkey riittää korvaamaan QAction-abstraktion kokonaan", "correct": false },
+        { "text": "QShortcut erikseen ilman QActionia synkronoi valikon ja toolbarin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-signals-queued-04",
+      "choices": [
+        { "text": "Qt::QueuedConnection välittää signaalin oikeaan säikeeseen turvallisesti", "correct": true },
+        { "text": "Qt::DirectConnection on oletus cross-thread-signaaleille Qt:ssä", "correct": false },
+        { "text": "BlockingQueuedConnection UI-säikeeseen on nopein cross-thread-tapa", "correct": false },
+        { "text": "Emit ilman connectia toimittaa signaalin automaattisesti GUI-säikeelle", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-signals-disconnect-05",
+      "choices": [
+        { "text": "disconnect, QPointer tai destroyed-signaali estää myöhäisen slotin", "correct": true },
+        { "text": "Toivo ettei lähettäjä emitoi enää dialogin sulkeuduttua", "correct": false },
+        { "text": "static connect ilman receiveria sitoo slotin automaattisesti ikuiseksi", "correct": false },
+        { "text": "Poista kaikki signaalit projektista estääksesi myöhäiset slotit", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-thread-worker-06",
+      "choices": [
+        { "text": "QObject-worker moveToThread(QThread*) — älä override QThread::run GUI:ssa", "correct": true },
+        { "text": "Override QThread::run suoraan QWidget-luokassa raskaalle laskennalle", "correct": false },
+        { "text": "sleep() UI-säikeessä vapauttaa CPU:n taustatehtäville", "correct": false },
+        { "text": "fork() erillinen prosessi pitää UI:n responsiivisena laskennan aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-thread-gui-07",
+      "choices": [
+        { "text": "GUI-luokkiin vain GUI-säikeestä — viesti signaaleilla workerista", "correct": true },
+        { "text": "QMutex labelin ympärillä tekee setText():stä thread-safe-operaation", "correct": false },
+        { "text": "setText() on dokumentaation mukaan thread-safe kaikissa widgeteissä", "correct": false },
+        { "text": "volatile QLabel* estää optimoinnin worker-säikeen setText-kutsussa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-thread-pool-08",
+      "choices": [
+        { "text": "QThreadPool + QRunnable tai QtConcurrent lyhyille taustatehtäville", "correct": true },
+        { "text": "std::thread jokaiselle tehtävälle ilman rajaa skaalaa parhaiten", "correct": false },
+        { "text": "UI-timer 1 ms intervallilla ajaa satoja tehtäviä taustalla", "correct": false },
+        { "text": "Blocking GUI-säiettä pitää järjestyksen kun tehtäviä on satoja", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-models-sort-09",
+      "choices": [
+        { "text": "QSortFilterProxyModel tai sorttaus SQL/source-tasolla 100k rivillä", "correct": true },
+        { "text": "QTableWidget on aina nopein tapa sortata suuria tietomääriä", "correct": false },
+        { "text": "Poista sort-toiminto kokonaan — se hidastaa view-taso-sorttausta", "correct": false },
+        { "text": "Nested loop QTableView:ssä sorttaa 100k riviä tehokkaammin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-models-reset-10",
+      "choices": [
+        { "text": "dataChanged kun rivit päivittyvät; reset vain rakenteen muutoksessa", "correct": true },
+        { "text": "beginResetModel/endResetModel aina kun yksikin solu muuttuu", "correct": false },
+        { "text": "dataChanged ei koskaan riitä — reset aina kun data vaihtuu", "correct": false },
+        { "text": "Poista view ja luo uudelleen välttääksesi mallin päivitysongelmat", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-opengl-context-11",
+      "choices": [
+        { "text": "QOpenGLContext::makeCurrent() oikeassa säikeessä ennen glCall-komentoja", "correct": true },
+        { "text": "OpenGL on thread-safe Qt:ssä ilman makeCurrent-kutsuja", "correct": false },
+        { "text": "QWidget::update() aktivoi GL-kontekstin ennen piirtokomentoja", "correct": false },
+        { "text": "glFlush() riittää korvaamaan makeCurrent()-kutsun render loopissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-opengl-vao-12",
+      "choices": [
+        { "text": "QOpenGLVertexArrayObject + QOpenGLBuffer (VBO) + shader program", "correct": true },
+        { "text": "Immediate mode glBegin/glEnd piirtää suorakulmion modernissa Qt:ssa", "correct": false },
+        { "text": "QPainter yksin riittää 3D-suorakulmion piirtämiseen OpenGL-widgetissä", "correct": false },
+        { "text": "QPixmap-tekstuuri korvaa VAO:n ja VBO:n suorakulmion piirrossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-shaders-qsb-13",
+      "choices": [
+        { "text": "qsb (Qt Shader Tools) tuottaa esikäännetyn .qsb-tiedoston RHI:lle", "correct": true },
+        { "text": "glCompileShader() runtime-ajassa on Qt 6 RHI:n suositeltu tapa", "correct": false },
+        { "text": "QSS-tyylitiedosto korvaa shader-ohjelman Qt 6 backendissä", "correct": false },
+        { "text": "QPainter-shader API korvaa qsb-esikäännön Qt 6 RHI-backendissä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-qt-shaders-uniform-14",
+      "choices": [
+        { "text": "QShaderProgram::uniformLocation(\"mvpMatrix\") tai uniform buffer (UBO)", "correct": true },
+        { "text": "Hardcode location 0 toimii kaikilla GPU:illa mvpMatrix-uniformille", "correct": false },
+        { "text": "Preprocessor-makro HEADER_DEFINES_LOCATION hoitaa uniform-sijainnin", "correct": false },
+        { "text": "Poista uniform kokonaan — matriisi kulkee attribuuttien kautta", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-qt-widgets-dialog-modal",
+      "choices": [
+        { "text": "dialog.exec() modal-tilassa tai QDialog::ApplicationModal estää taustan", "correct": true },
+        { "text": "show() avaa dialogin modal-tilassa ja estää pääikkunan klikkaukset", "correct": false },
+        { "text": "Poista WindowStaysOnTopHint — se aktivoi modal-käytöksen automaattisesti", "correct": false },
+        { "text": "Modal-dialogit on poistettu Qt 6:ssa — käytä QWidget-overlaya", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-qt-widgets-event-filter",
+      "choices": [
+        { "text": "installEventFilter() objektilla, joka implementoi eventFilter()-metodin", "correct": true },
+        { "text": "Override keyPressEvent() jokaisessa widgetissä projektissa erikseen", "correct": false },
+        { "text": "Global keyboard hook käyttöjärjestelmästä korvaa Qt-event filterin", "correct": false },
+        { "text": "QShortcut ei toimi input-kentissä — event filter on ainoa tapa", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-qt-widgets-layout-stretch",
+      "choices": [
+        { "text": "addStretch() ja setStretchFactor() jakavat tilan tarkoituksella layoutissa", "correct": true },
+        { "text": "setFixedSize() koko ikkunalle estää nappien epätasaisen venymisen", "correct": false },
+        { "text": "Poista layout ja käytä absolute positioning resize-tilanteissa", "correct": false },
+        { "text": "Stretch toimii vain QGridLayoutissa — QHBoxLayout ei tue sitä", "correct": false }
+      ]
+    }
+  ]
+}

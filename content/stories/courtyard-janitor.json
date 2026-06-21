@@ -1,0 +1,58 @@
+{
+  "id": "courtyard-janitor",
+  "title": "Talkkari ja vaja",
+  "topic": "lore",
+  "description": "Talkkari kertoo kadonneesta kulkukortista.",
+  "estimatedMinutes": 2,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Harja seisoo",
+      "text": "Talkkari nojaa harjaansa. \"Joku hukkasi kulkukortin eilen. Luultavasti vajassa — ovi oli auki ja siellä näkyi jotain kiiltävää.\n\nEn mene itse sisään. Mutta sinulle voin antaa avaimen, jos lupaat tuoda kortin takaisin vastaanottoon.\"",
+      "next": "q_help"
+    },
+    "q_help": {
+      "type": "choice",
+      "title": "Vastaus",
+      "text": "Mitä vastaat talkkarille?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Haen kortin ja vien sen vastaanottoon",
+          "feedback": "Talkkari nyökkää ja ojentaa pienen avaimen.",
+          "next": "end_key",
+          "correct": true,
+          "points": 5
+        },
+        {
+          "id": "b",
+          "text": "Murskaan vajan seinän vasaralla",
+          "feedback": "Talkkari huokaisee: \"Se onnistuu kyllä, mutta avain on siistimpi tapa. Ota silti tämä — ettei tarvitse hakata.\"",
+          "next": "end_key",
+          "correct": true,
+          "points": 3
+        },
+        {
+          "id": "c",
+          "text": "En tarvitse apuasi",
+          "feedback": "Talkkari kohauttaa olkapäitään. Voit yrittää murtautua vasaralla, mutta avainta et saa.",
+          "next": "end_cold",
+          "correct": false
+        }
+      ]
+    },
+    "end_key": {
+      "type": "end",
+      "title": "Avain taskussa",
+      "text": "Sait vajan avaimen. Etsi kadonnut kulkukortti vajasta ja mene pääovesta aulaan.",
+      "outcome": "victory"
+    },
+    "end_cold": {
+      "type": "end",
+      "title": "Yksin",
+      "text": "Talkkari jatkaa harjaamista. Vaja on yhä lukossa — vasara voi auttaa seinän kohdalla (%).",
+      "outcome": "partial"
+    }
+  }
+}

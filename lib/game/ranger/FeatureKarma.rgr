@@ -1,0 +1,75 @@
+
+class FeatureKarma {
+  def ids:[string]
+  def amounts:[int]
+
+  fn total:int () {
+    def sum:int 0
+    def i:int 0
+    while (i < (array_length amounts)) {
+      sum = sum + (at amounts i)
+      i = i + 1
+    }
+    return sum
+  }
+
+  fn get:int (featureId:string) {
+    def i:int 0
+    while (i < (array_length ids)) {
+      if ((at ids i) == featureId) {
+        return (at amounts i)
+      }
+      i = i + 1
+    }
+    return 0
+  }
+
+  fn add:void (featureId:string karma:int) {
+    if (karma <= 0) {
+      return
+    }
+    def i:int 0
+    while (i < (array_length ids)) {
+      if ((at ids i) == featureId) {
+        def cur:int (at amounts i)
+        set amounts i (cur + karma)
+        return
+      }
+      i = i + 1
+    }
+    push ids featureId
+    push amounts karma
+  }
+
+  fn grantList:void (featureIds:[string] defaultKarma:int) {
+    def i:int 0
+    while (i < (array_length featureIds)) {
+      this.add((at featureIds i) defaultKarma)
+      i = i + 1
+    }
+  }
+
+  fn loseKarma:void (penalty:int) {
+    if (penalty <= 0) {
+      return
+    }
+    def left:int penalty
+    def i:int (array_length amounts)
+    i = i - 1
+    while (i >= 0) {
+      if (left <= 0) {
+        return
+      }
+      def cur:int (at amounts i)
+      if (cur > 0) {
+        def take:int left
+        if (take > cur) {
+          take = cur
+        }
+        set amounts i (cur - take)
+        left = left - take
+      }
+      i = i - 1
+    }
+  }
+}

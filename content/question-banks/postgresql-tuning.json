@@ -1,0 +1,4963 @@
+{
+  "id": "postgresql-tuning",
+  "domain": "postgres",
+  "source": "https://www.postgresql.org/docs/current/performance-tips.html",
+  "questions": [
+    {
+      "id": "pg-indexes-btree-selective",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % riveistä. Ensimmäinen optimointi?",
+      "choices": [
+        {
+          "text": "B-tree-indeksi status-sarakkeelle selektiiviseen WHERE-ehtoon",
+          "correct": true
+        },
+        {
+          "text": "SELECT * nopeuttaa kyselyä kun kaikki sarakkeet haetaan kerralla",
+          "correct": false
+        },
+        {
+          "text": "PRIMARY KEY:n poisto vähentää indeksiylläpitoa ja nopeuttaa hakuja",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost = 0 ohjaa plannerin käyttämään seq scania aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Selektiivinen ehto hyötyy indeksistä — varmista EXPLAINilla.",
+      "wrongFeedback": "Seq scan 10M rivillä on hidas — indeksi sopivalle sarakkeelle.",
+      "sourceRef": "postgresql/indexes-intro",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-intro.html",
+      "featureId": "postgres:btree-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "pg-explain-analyze",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Kysely on hidas tuotannossa. Miten näet todelliset ajat ja rivimäärät turvallisesti?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) staging-kopiossa tai testiympäristössä",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ANALYZE suoraan prodissa ruuhka-aikaan jokaiselle hitaalle kyselylle",
+          "correct": false
+        },
+        {
+          "text": "pg_sleep ennen jokaista kyselyä tasaa kuormaa ja paljastaa pullonkaulat",
+          "correct": false
+        },
+        {
+          "text": "Vain \\d taulu riittää näyttämään todelliset ajat ja rivimäärät",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE ajaa kyselyn — testaa kopiossa, vertaa suunnitelmia.",
+      "wrongFeedback": "EXPLAIN ANALYZE muuttaa tilastoja ja kuormittaa — varovasti prodissa.",
+      "sourceRef": "postgresql/sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-analyze",
+      "featurePoints": 4
+    },
+    {
+      "id": "pg-vacuum-bloat",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "project-lead"
+      ],
+      "prompt": "Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?",
+      "choices": [
+        {
+          "text": "Dead tuple -bloat — tarkista autovacuum ja last_vacuum",
+          "correct": true
+        },
+        {
+          "text": "Indeksi on liian pieni ja pitää kasvattaa shared_buffers-arvoa",
+          "correct": false
+        },
+        {
+          "text": "SELECT-kyselyt tarvitsevat REINDEX ennen jokaista UPDATE-operaatiota",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL ei tue UPDATE:ia MVCC-mallissa, vain INSERT ja DELETE",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "MVCC jättää kuolleet rivit — VACUUM siivoaa.",
+      "wrongFeedback": "Bloat on klassinen — pg_stat_user_tables ja autovacuum.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:autovacuum",
+      "featurePoints": 4
+    },
+    {
+      "id": "pg-config-work-mem",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "ceo"
+      ],
+      "prompt": "Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetus auttaa ensin?",
+      "choices": [
+        {
+          "text": "Kasvata work_mem harkiten — muisti per sort/hash-operaatio",
+          "correct": true
+        },
+        {
+          "text": "Pienennä shared_buffers aina kun sort spillaa levylle",
+          "correct": false
+        },
+        {
+          "text": "max_connections = 10000 antaa jokaiselle sortille oman muistipoolin",
+          "correct": false
+        },
+        {
+          "text": "Poista indeksit nopeuttaaksesi sort/hash-operaatioita kyselyissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem vaikuttaa sort/hash muistiin — liika voi OOM:ata.",
+      "wrongFeedback": "Sort/hash disk spill → work_mem on tyypillinen nuppi.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "pg-indexes-partial",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja hidas. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Partial index WHERE archived = false rajaa indeksin aktiivisiin riveihin",
+          "correct": true
+        },
+        {
+          "text": "CLUSTER koko taulu uudelleen järjestää rivit archived-ehdon mukaan",
+          "correct": false
+        },
+        {
+          "text": "BRIN-indeksi kaikille sarakkeille korvaa partial indexin aina",
+          "correct": false
+        },
+        {
+          "text": "Poista WHERE-ehto kyselystä jotta planner käyttää olemassa olevaa indeksiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial index on pienempi ja nopeampi kun ehto toistuu.",
+      "wrongFeedback": "Osittainen indeksi rajaa rivejä — Postgresin vahvuus.",
+      "sourceRef": "postgresql/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 5
+    },
+    {
+      "id": "pg-explain-seq-scan",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin syy?",
+      "choices": [
+        {
+          "text": "Suuri osa taulusta haetaan — seq scan halvempi kuin indeksi",
+          "correct": true
+        },
+        {
+          "text": "PostgreSQL ei koskaan käytä indeksiä kun taulussa on yli miljoona riviä",
+          "correct": false
+        },
+        {
+          "text": "Indeksi on aina rikki bulk loadin jälkeen ja vaatii REINDEX DATABASE",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL pakollinen ennen kuin planner voi valita Index Scanin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner valitsee kustannuksen mukaan — korkea selektiivisyys tarvitsee indeksin.",
+      "wrongFeedback": "Kun suuri osa riveistä osuu, seq scan voi voittaa.",
+      "sourceRef": "postgresql/performance-tips",
+      "sourceUrl": "https://www.postgresql.org/docs/current/performance-tips.html",
+      "featureId": "postgres:seq-scan",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-indexes-covering",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SELECT listassa. Miten vältät extra I/O:n?",
+      "choices": [
+        {
+          "text": "INCLUDE-sarakkeet indexiin tekevät index-only scanin mahdolliseksi",
+          "correct": true
+        },
+        {
+          "text": "Lisää seq scan hint plannerille jotta heap fetch ohitetaan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Poista WHERE-ehto jotta Index Scan palauttaa kaikki SELECT-sarakkeet",
+          "correct": false
+        },
+        {
+          "text": "CLUSTER TABLE riittää korvaamaan covering indexin SELECT-listassa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "INCLUDE tekee index-only scan mahdolliseksi — PostgreSQL CREATE INDEX.",
+      "wrongFeedback": "Pelkkä btree indeksi WHERE:lle ei kata SELECT-sarakkeita.",
+      "sourceRef": "postgresql/docs/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:covering-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-indexes-partial-active",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active riveille?",
+      "choices": [
+        {
+          "text": "Partial index WHERE archived = false aktiivisille riveille",
+          "correct": true
+        },
+        {
+          "text": "Full btree kaikille riveille on pienempi kuin osittainen indeksi",
+          "correct": false
+        },
+        {
+          "text": "Seq scan aina nopein kun archived-rivejä on enemmistö taulussa",
+          "correct": false
+        },
+        {
+          "text": "Hash index kaikille sarakkeille korvaa partial indexin PostgreSQLissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial index pienempi ja selektiivisempi — postgres indexes types.",
+      "wrongFeedback": "Täysi indeksi turhaan archived-riveille — rajaa WHERE:llä.",
+      "sourceRef": "postgresql/docs/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-indexes-btree-composite",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi indeksi — mikä järjestys?",
+      "choices": [
+        {
+          "text": "(tenant_id, created_at) — equality ensin, range seuraavaksi",
+          "correct": true
+        },
+        {
+          "text": "(created_at, tenant_id) aina paras järjestys equality- ja range-ehdoille",
+          "correct": false
+        },
+        {
+          "text": "Kaksi erillistä indeksiä riittää aina ORDER BY created_at -lausekkeeseen",
+          "correct": false
+        },
+        {
+          "text": "Vain tenant_id indeksissä riittää kun created_at on range-ehto",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Composite btree: equality-sarakkeet ensin — postgres indexes multicolumn.",
+      "wrongFeedback": "Väärä sarakejärjestys estää indeksin käytön range-ehdossa.",
+      "sourceRef": "postgresql/docs/indexes-multicolumn",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
+      "featureId": "postgres:composite-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-indexes-unused-drop",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausien jälkeen. Toimenpide?",
+      "choices": [
+        {
+          "text": "Harkitse DROP INDEX — dead index hidastaa INSERT/UPDATE-operaatioita",
+          "correct": true
+        },
+        {
+          "text": "REINDEX kaikki automaattisesti kun idx_scan pysyy nollassa kuukausia",
+          "correct": false
+        },
+        {
+          "text": "Indeksi ei vaikuta kirjoitukseen koska planner käyttää vain read-polkuja",
+          "correct": false
+        },
+        {
+          "text": "Lisää lisää indeksejä nopeuteen kun yksikään indeksi ei ole käytössä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Käyttämätön indeksi ylläpitokustannus — pg stat views docs.",
+      "wrongFeedback": "Jokainen indeksi päivittyy kirjoituksessa — poista tarpeettomat.",
+      "sourceRef": "postgresql/docs/monitoring-stats",
+      "sourceUrl": "https://www.postgresql.org/docs/current/monitoring-stats.html",
+      "featureId": "postgres:unused-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-explain-analyze-buffers",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Index Scan mutta query hidas — epäilet cache-missiä. Mitä lisäät?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja I/O-mittaukset",
+          "correct": true
+        },
+        {
+          "text": "Vain EXPLAIN ilman ANALYZE näyttää cache-missit ja todelliset ajat",
+          "correct": false
+        },
+        {
+          "text": "SELECT * korjaa plannerin arviot ja paljastaa buffer cache -käytön",
+          "correct": false
+        },
+        {
+          "text": "SET enable_seqscan = off aina kun epäilet cache-missiä Index Scanissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE mittaa suorituksen, BUFFERS I/O — using explain docs.",
+      "wrongFeedback": "Pelkkä EXPLAIN arvioi kustannuksia — ei mittaa todellista aikaa.",
+      "sourceRef": "postgresql/docs/using-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
+      "featureId": "postgres:explain-analyze",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-explain-nested-loop",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan isolla taululla. Ensimmäinen epäily?",
+      "choices": [
+        {
+          "text": "Puuttuva indeksi join/where-sarakkeelle — planner valitsee huonon polun",
+          "correct": true
+        },
+        {
+          "text": "Nested Loop on aina paras join-menetelmä miljoonan rivin tuloksissa",
+          "correct": false
+        },
+        {
+          "text": "Hash Join ei ole PostgreSQLissä saatavilla suurten taulujen yhdistämisessä",
+          "correct": false
+        },
+        {
+          "text": "Planner ei käytä indeksejä kun JOIN palauttaa enemmän kuin tuhat riviä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stats + indeksit vaikuttavat join-menetelmään — explain performance tips.",
+      "wrongFeedback": "Nested Loop isoilla ajoilla usein merkki puuttuvasta indeksistä.",
+      "sourceRef": "postgresql/docs/performance-tips",
+      "sourceUrl": "https://www.postgresql.org/docs/current/performance-tips.html",
+      "featureId": "postgres:join-plan",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-explain-seq-scan-ok",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). Neuvo?",
+      "choices": [
+        {
+          "text": "Seq scan voi olla halvin pienelle taululle — indeksi ei aina kannata",
+          "correct": true
+        },
+        {
+          "text": "Seq scan on aina bugi ja pitää korjata enable_seqscan=off-asetuksella",
+          "correct": false
+        },
+        {
+          "text": "enable_seqscan=off tuotannossa pakottaa indeksin pienille lookup-tauluille",
+          "correct": false
+        },
+        {
+          "text": "Materialized view on pakollinen kun lookup-taulussa on alle tuhat riviä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner valitsee kustannuksen mukaan — pienet taulut usein seq scan.",
+      "wrongFeedback": "Indeksi pienelle static-taululle voi olla turha ylläpito.",
+      "sourceRef": "postgresql/docs/using-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
+      "featureId": "postgres:seq-scan",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-explain-stats-stale",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väärä. Korjaus?",
+      "choices": [
+        {
+          "text": "ANALYZE taulu — päivitä statistics bulk loadin jälkeen",
+          "correct": true
+        },
+        {
+          "text": "REINDEX DATABASE korjaa row estimate -virheet bulk loadin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Restart postgres pakottaa plannerin lukemaan uudet rivimäärät taulusta",
+          "correct": false
+        },
+        {
+          "text": "Planner ei käytä statistiikkaa vaan laskee rivit jokaisessa kyselyssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner luottaa pg_statistic — ANALYZE bulk loadin jälkeen.",
+      "wrongFeedback": "Vanhentuneet stats → väärät row estimates → huono plan.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
+      "featureId": "postgres:analyze-stats",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-vacuum-bloat-wraparound",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi. Kiireellinen toimenpide?",
+      "choices": [
+        {
+          "text": "VACUUM (FREEZE) tai autovacuum tuning — estä shutdown trigger",
+          "correct": true
+        },
+        {
+          "text": "DROP TABLE on nopein tapa estää transaction ID wraparound -varoitus",
+          "correct": false
+        },
+        {
+          "text": "Pg_upgrade heti kun wraparound-varoitus ilmestyy pg_stat_activityssa",
+          "correct": false
+        },
+        {
+          "text": "Wraparound ei vaikuta PostgreSQLiin koska XID kierrättää automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Freeze vacuum estää XID wraparound — routine vacuuming docs.",
+      "wrongFeedback": "Wraparound pakottaa shutdownin jos ignored — freeze vacuum kiireellinen.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:freeze-vacuum",
+      "featurePoints": 5
+    },
+    {
+      "id": "exp-pg-vacuum-long-xact",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples kasaantuvat. Mitä teet?",
+      "choices": [
+        {
+          "text": "Tunnista ja päätä pitkä transaktio — vacuum ei voi siivota tarvittavaa",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL heti ilman syytä kun idle in transaction kestää tunteja",
+          "correct": false
+        },
+        {
+          "text": "Autovacuum pois päältä estää dead tuplejen kasaantumisen pitkien xactien aikana",
+          "correct": false
+        },
+        {
+          "text": "Long xact ei vaikuta vacuumiin koska autovacuum käyttää erillistä xmin-arvoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pitkittynyt xmin estää dead tuple -siivouksen — monitoring docs.",
+      "wrongFeedback": "Vacuum ei voi poistaa rivejä jotka vanhin xact vielä näkee.",
+      "sourceRef": "postgresql/docs/monitoring",
+      "sourceUrl": "https://www.postgresql.org/docs/current/monitoring.html",
+      "featureId": "postgres:long-transaction",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-vacuum-full-lock",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi vastustat?",
+      "choices": [
+        {
+          "text": "VACUUM FULL exclusive lock + rewrite — käytä pg_repack off-peak-aikana",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL on online-operaatio joka ei lukitse taulua tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "Bloat ei vaikuta PostgreSQLiin koska dead tuples vapauttavat tilan heti",
+          "correct": false
+        },
+        {
+          "text": "REINDEX TABLE korvaa vacuum fullin aina ilman downtimea tuotantotaulussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM FULL lukitsee taulun — routine vacuuming varoittaa.",
+      "wrongFeedback": "Tuotannossa VACUUM FULL downtime — harkitse vaihtoehtoja.",
+      "sourceRef": "postgresql/docs/sql-vacuumfull",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-vacuum.html",
+      "featureId": "postgres:vacuum-full",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-vacuum-autovacuum-tune",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeksi usein. Mitä säädät?",
+      "choices": [
+        {
+          "text": "autovacuum_vacuum_scale_factor tai table-level storage params",
+          "correct": true
+        },
+        {
+          "text": "max_connections = 1000 nopeuttaa autovacuumia heavy UPDATE -tauluilla",
+          "correct": false
+        },
+        {
+          "text": "Poista autovacuum ja aja VACUUM FULL viikoittain heavy UPDATE -tauluille",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers = 1MB pakottaa autovacuumin käynnistymään useammin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Per-table autovacuum settings — routine vacuuming tuning.",
+      "wrongFeedback": "Oletus scale factor liian suuri heavy-update tauluille.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#AUTOVACUUM",
+      "featureId": "postgres:autovacuum-tune",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-config-work-mem-sort",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC auttaa?",
+      "choices": [
+        {
+          "text": "work_mem session/query kohtaisesti — varovasti globaalisti",
+          "correct": true
+        },
+        {
+          "text": "maintenance_work_mem query runtimeen korjaa Sort → Disk temp file -ongelman",
+          "correct": false
+        },
+        {
+          "text": "wal_buffers sorttiin antaa muistisortille tilaa jokaisessa istunnossa",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost = 0 estää sortin spillaamisen levylle automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem rajoittaa sort/hash muistia per operation — runtime config.",
+      "wrongFeedback": "maintenance_work_mem on VACUUM/CREATE INDEX — ei SELECT sort.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "exp-pg-config-shared-buffers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Uusi DB-palvelin 32 GB RAM — junior asettaa shared_buffers = 32GB. Miksi väärin?",
+      "choices": [
+        {
+          "text": "Liian suuri — tyypillisesti ~25 % RAM, OS cache tarvitsee tilaa",
+          "correct": true
+        },
+        {
+          "text": "shared_buffers max 128 MB PostgreSQL 15:ssä riippumatta palvelimen RAMista",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers = 0 paras koska OS page cache hoitaa kaiken bufferoinnin",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL ei käytä shared_buffers vaan lukee suoraan levyltä joka kerta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers + OS page cache yhdessä — tuning guidelines.",
+      "wrongFeedback": "Koko RAM PG:lle ei jätä tilaa OS cachelle — suoritus heikkenee.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "exp-pg-config-max-connections",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security"
+      ],
+      "prompt": "App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context switch helvetti. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Connection pooler (PgBouncer) + kohtuullinen max_connections",
+          "correct": true
+        },
+        {
+          "text": "Nosta max_connections = 10000 jotta jokainen microservice saa oman yhteyden",
+          "correct": false
+        },
+        {
+          "text": "Jokainen request oma server process ilman poolia skaalautuu parhaiten",
+          "correct": false
+        },
+        {
+          "text": "Poista idle timeout jotta yhteydet pysyvät auki ja välttävät reconnect-kustannuksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PostgreSQL prosessi per connection — pooler vähentää overheadia.",
+      "wrongFeedback": "max_connections ylös pahentaa ongelmaa — poolaa yhteydet.",
+      "sourceRef": "postgresql/docs/runtime-config-connection",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+      "featureId": "postgres:connection-pooling",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-indexes-gin-01",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "JSONB-kenttä `metadata @> '{\"tag\": \"urgent\"}'` — seq scan hidas. Indeksityyppi?",
+      "choices": [
+        {
+          "text": "GIN index JSONB:lle",
+          "correct": true
+        },
+        {
+          "text": "B-tree primary key riittää",
+          "correct": false
+        },
+        {
+          "text": "Hash index kaikkeen",
+          "correct": false
+        },
+        {
+          "text": "Ei indeksiä koskaan JSONB",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN tukee containment @> — PostgreSQL JSON indexes docs.",
+      "wrongFeedback": "B-tree ei optimoi @> operaatiota. GIN on JSONB-hakuun.",
+      "sourceRef": "postgresql/json-indexing",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "postgres:gin-jsonb",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-indexes-btree-02",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksityyppi?",
+      "choices": [
+        {
+          "text": "B-tree composite index (status, created_at) oikealla sarakejärjestyksellä",
+          "correct": true
+        },
+        {
+          "text": "GIN only on oletusindeksi equality- ja range-ehdoille PostgreSQLissä",
+          "correct": false
+        },
+        {
+          "text": "BRIN aina parempi kuin B-tree kun WHERE:ssä on status ja created_at",
+          "correct": false
+        },
+        {
+          "text": "Seq scan aina nopein status = 'active' AND created_at > -ehdossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "B-tree on oletus equality/range — PostgreSQL indexes docs.",
+      "wrongFeedback": "Composite btree matchaa WHERE- ehtoja. Järjestys vaikuttaa.",
+      "sourceRef": "postgresql/indexes-types",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-types.html",
+      "featureId": "postgres:btree-composite",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-indexes-partial-03",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Indeksi vain active riveille — 90% archived. Optimointi?",
+      "choices": [
+        {
+          "text": "Partial index CREATE INDEX ... WHERE status = 'active'",
+          "correct": true
+        },
+        {
+          "text": "Full index kaikille riveille on pienempi kun 90 % on archived",
+          "correct": false
+        },
+        {
+          "text": "Duplicate table active-riveille korvaa partial indexin ylläpidossa",
+          "correct": false
+        },
+        {
+          "text": "VACUUM only riittää optimoimaan haun active-riveille archived-taulussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial index pienentää kokoa — PostgreSQL partial indexes.",
+      "wrongFeedback": "Full index turha archived riveille. WHERE clause partial index.",
+      "sourceRef": "postgresql/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-indexes-covering-04",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?",
+      "choices": [
+        {
+          "text": "INCLUDE columns: CREATE INDEX ... INCLUDE (email)",
+          "correct": true
+        },
+        {
+          "text": "CLUSTER only tekee index-only scanin mahdolliseksi id ja email -kyselyssä",
+          "correct": false
+        },
+        {
+          "text": "Materialized view aina tarpeen kun SELECT listassa on id ja email",
+          "correct": false
+        },
+        {
+          "text": "Secondary sort korvaa covering indexin PostgreSQL 11+ index-only scanissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Covering index INCLUDE — PostgreSQL indexes docs.",
+      "wrongFeedback": "INCLUDE sarakkeet leafissa ilman search keytä. Index-only scan.",
+      "sourceRef": "postgresql/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:covering-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-explain-analyze-05",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) SELECT ... tuotantokopiossa tai stagingissa",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ilman ANALYZE riittää aina näyttämään todelliset suoritusajat",
+          "correct": false
+        },
+        {
+          "text": "SELECT * only paljastaa miksi kysely on hidas tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "pg_dump tuotannosta antaa EXPLAIN ANALYZE -tulokset ilman kuormitusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE suorittaa queryn — PostgreSQL EXPLAIN docs.",
+      "wrongFeedback": "Pelkkä EXPLAIN arvioi. ANALYZE mittaa todellisen suorituksen.",
+      "sourceRef": "postgresql/sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-analyze",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-explain-seq-06",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono?",
+      "choices": [
+        {
+          "text": "Ei — pieni osuma tai suuri fraction voi olla halvempi kuin index scan",
+          "correct": true
+        },
+        {
+          "text": "Seq Scan aina korjattava indeksillä 5M rivin taulussa",
+          "correct": false
+        },
+        {
+          "text": "Seq Scan on aina merkki bugista plannerissa tai rikkinäisestä indeksistä",
+          "correct": false
+        },
+        {
+          "text": "Rebuild DB on ensimmäinen toimenpide kun EXPLAIN näyttää Seq Scanin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner valitsee kustannuksen mukaan — PostgreSQL planner docs.",
+      "wrongFeedback": "Index ei aina voita suurella osumalla. Tarkista rows ja cost.",
+      "sourceRef": "postgresql/performance-tips",
+      "sourceUrl": "https://www.postgresql.org/docs/current/performance-tips.html",
+      "featureId": "postgres:seq-scan-ok",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-explain-nested-07",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix?",
+      "choices": [
+        {
+          "text": "Indeksi join/where-sarakkeille tai muuta join-järjestystä / statistics",
+          "correct": true
+        },
+        {
+          "text": "SET enable_nestloop=off aina kun Nested Loop toistuu miljoona kertaa",
+          "correct": false
+        },
+        {
+          "text": "Lisää RAM only korjaa Nested Loop + Seq Scan -yhdistelmän ilman indeksiä",
+          "correct": false
+        },
+        {
+          "text": "Poista JOIN ja tee kaksi erillistä kyselyä sovelluskerroksessa aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Nested loop ilman indexiä on O(n*m) — PostgreSQL EXPLAIN.",
+      "wrongFeedback": "Sisä-loop seq scan on pullonkaula. Indeksi tai hash/merge join.",
+      "sourceRef": "postgresql/explicit-joins",
+      "sourceUrl": "https://www.postgresql.org/docs/current/explicit-joins.html",
+      "featureId": "postgres:nested-loop",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-explain-stats-08",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpide?",
+      "choices": [
+        {
+          "text": "ANALYZE table_name — päivitä statistics ennen planin arviointia",
+          "correct": true
+        },
+        {
+          "text": "REINDEX DATABASE korjaa plannerin arvion kun todelliset rivit poikkeavat",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost=0 pakottaa plannerin käyttämään oikeaa rivimäärää",
+          "correct": false
+        },
+        {
+          "text": "Poista WHERE jotta planner laskee rivit tarkasti jokaisessa kyselyssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stale stats vääristää planin — PostgreSQL ANALYZE docs.",
+      "wrongFeedback": "Vanhentuneet stats → huono plan. ANALYZE kerää uudet.",
+      "sourceRef": "postgresql/sql-analyze",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-analyze.html",
+      "featureId": "postgres:analyze-stats",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-vacuum-bloat-09",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpide?",
+      "choices": [
+        {
+          "text": "Dead tuples — VACUUM (autovacuum) vapauttaa tilaa uudelleenkäyttöön",
+          "correct": true
+        },
+        {
+          "text": "DELETE DATABASE ja restore on normaali toimenpide UPDATE-heavy bloatissa",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL heti tuotannossa päivällä kun rivimäärä ei kasva",
+          "correct": false
+        },
+        {
+          "text": "Lisää indeksejä UPDATE-heavy tauluun kun levy kasvaa vaikka rivit eivät",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PostgreSQL MVCC jättää dead tupleja — routine VACUUM.",
+      "wrongFeedback": "Dead tuples bloattavat. Autovacuum hoitaa normaalisti.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:vacuum-bloat",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-vacuum-wrap-10",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Varoitus: database approaching transaction ID wraparound. Kiireellinen toimenpide?",
+      "choices": [
+        {
+          "text": "VACUUM FREEZE (autovacuum freeze) — estä shutdown wraparound",
+          "correct": true
+        },
+        {
+          "text": "Ignoroi varoitus koska wraparound korjautuu seuraavassa pg_restartissa",
+          "correct": false
+        },
+        {
+          "text": "pg_dump only riittää estämään transaction ID wraparound -shutdownin",
+          "correct": false
+        },
+        {
+          "text": "DROP TABLE random nopeuttaa freeze-vaihetta wraparound-varoituksen jälkeen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "XID wraparound on kriittinen — PostgreSQL transaction ID docs.",
+      "wrongFeedback": "Wraparound voi pysäyttää DB:n. Freeze vanhat tupleversiot.",
+      "sourceRef": "postgresql/routine-vacuuming#VACUUM-FOR-WRAPAROUND",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:wraparound",
+      "featurePoints": 5
+    },
+    {
+      "id": "b02-pg-vacuum-long-xact-11",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h. Mitä teet?",
+      "choices": [
+        {
+          "text": "Selvitä pitkä transaktio — se estää vacuumia poistamasta dead tupleja",
+          "correct": true
+        },
+        {
+          "text": "REBOOT server korjaa idle in transaction 8h ilman että transaktio päättyy",
+          "correct": false
+        },
+        {
+          "text": "max_connections=1 pakottaa autovacuumin siivoamaan dead tuples heti",
+          "correct": false
+        },
+        {
+          "text": "DROP autovacuum estää dead tuplejen kasaantumisen pitkien transaktioiden aikana",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Long xact pitää xmin — PostgreSQL MVCC vacuum.",
+      "wrongFeedback": "Idle in transaction blokkaa vacuum cleanup. Kill/sulje transaktio.",
+      "sourceRef": "postgresql/monitoring-stats",
+      "sourceUrl": "https://www.postgresql.org/docs/current/monitoring-stats.html",
+      "featureId": "postgres:long-transaction",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-vacuum-full-12",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski?",
+      "choices": [
+        {
+          "text": "Exclusive lock + uudelleenkirjoitus — downtime ja lock tuotannossa",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL online ilman lockia kun levy on lähes täynnä bloatista",
+          "correct": false
+        },
+        {
+          "text": "Ei riskiä VACUUM FULL:ssa koska se vain merkitsee dead tuples poistetuiksi",
+          "correct": false
+        },
+        {
+          "text": "Nopeampi kuin tavallinen VACUUM koska FULL ohittaa MVCC-siivouksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM FULL on raskas — PostgreSQL VACUUM docs.",
+      "wrongFeedback": "FULL lockaa taulun. Käytä varhain maintenance-ikkunassa.",
+      "sourceRef": "postgresql/sql-vacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-vacuum.html",
+      "featureId": "postgres:vacuum-full",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-config-work-mem-13",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Iso sort/hash join spillaa diskiin — logissa 'temporary file'. Parametri?",
+      "choices": [
+        {
+          "text": "Kasvata work_mem session/query tasolla harkiten sort/hash spilliin",
+          "correct": true
+        },
+        {
+          "text": "shared_buffers=0 antaa sort/hash-operaatioille enemmän muistia per query",
+          "correct": false
+        },
+        {
+          "text": "max_connections=10000 pienentää temp file -käyttöä isoissa sorteissa",
+          "correct": false
+        },
+        {
+          "text": "Poista sort kyselystä koska temp file tarkoittaa riittävää work_memiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem rajoittaa sort/hash muistia — PostgreSQL runtime config.",
+      "wrongFeedback": "Liian pieni work_mem → temp files. Nosta kohtuullisesti.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b02-pg-config-shared-14",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "PostgreSQL cache hit ratio matala — ensimmäinen muistiparametri tarkistaa?",
+      "choices": [
+        {
+          "text": "shared_buffers tyypillisesti ~25 % RAM — testaa cache hit ratioa",
+          "correct": true
+        },
+        {
+          "text": "work_mem=8GB globaalisti korjaa matalan cache hit ration ensimmäisenä",
+          "correct": false
+        },
+        {
+          "text": "fsync=off tuotannossa parantaa cache hit ratioa ilman datan riskiä",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost=0 on ensimmäinen muistiparametri matalalle cache hitille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers on PG buffer cache — PostgreSQL config docs.",
+      "wrongFeedback": "Liian pieni shared_buffers lisää disk IO:ta. Säädä mitattuna.",
+      "sourceRef": "postgresql/runtime-config-resource#GUC-SHARED-BUFFERS",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b02-pg-config-connections-15",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "500 microservice instanssia × 10 connection = pool explosion. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Connection pooler (PgBouncer) + alenna max_connections tarpeen mukaan",
+          "correct": true
+        },
+        {
+          "text": "max_connections=100000 skaalaa microservice-arkkitehtuurin ilman pooleria",
+          "correct": false
+        },
+        {
+          "text": "Jokainen app suoraan superuser-yhteydellä vähentää connection overheadia",
+          "correct": false
+        },
+        {
+          "text": "Poista idle timeout jotta pool explosion ei kasvata connection-määrää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Liian monta connectionia kuormittaa — PostgreSQL connections + pooling.",
+      "wrongFeedback": "PostgreSQL connections ovat raskaita. PgBouncer poolaa.",
+      "sourceRef": "postgresql/runtime-config-connection",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+      "featureId": "postgres:connection-pooling",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-locks-blocking-query",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensimmäinen diagnostiikka?",
+      "choices": [
+        {
+          "text": "pg_locks + pg_blocking_pids() — kuka pitää lukkoa",
+          "correct": true
+        },
+        {
+          "text": "REINDEX DATABASE",
+          "correct": false
+        },
+        {
+          "text": "restart postgres",
+          "correct": false
+        },
+        {
+          "text": "Locks eivät vaikuta UPDATEen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Monitoring locks — PostgreSQL docs monitoring locks.",
+      "wrongFeedback": "Restart peittää juurisyyn ja katkaisee sessiot.",
+      "sourceRef": "postgresql/docs/view-pg-locks",
+      "sourceUrl": "https://www.postgresql.org/docs/current/view-pg-locks.html",
+      "featureId": "postgres:lock-diagnosis",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-config-effective-cache",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Planner valitsee seq scanin vaikka data mahtuu muistiin — SSD-palvelin 64 GB RAM. GUC?",
+      "choices": [
+        {
+          "text": "effective_cache_size ≈ OS cache + shared_buffers arvio",
+          "correct": true
+        },
+        {
+          "text": "random_page_cost = 0",
+          "correct": false
+        },
+        {
+          "text": "seq_page_cost = 1000",
+          "correct": false
+        },
+        {
+          "text": "effective_cache_size = shared_buffers only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner käyttää effective_cache_size:a index vs seq päätökseen.",
+      "wrongFeedback": "Liian pieni arvo suosii index scania turhaan tai seq scania.",
+      "sourceRef": "postgresql/docs/runtime-config-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE",
+      "featureId": "postgres:effective-cache-size",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-config-random-page-cost",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä?",
+      "choices": [
+        {
+          "text": "random_page_cost alas (esim. 1.1) SSD:lle — planner realismi",
+          "correct": true
+        },
+        {
+          "text": "random_page_cost = 10000",
+          "correct": false
+        },
+        {
+          "text": "Poista indeksit",
+          "correct": false
+        },
+        {
+          "text": "SSD ei vaikuta planneriin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "random_page_cost heijastaa levyn satunnaishaku-kustannusta.",
+      "wrongFeedback": "HDD-oletus SSD:llä vääristää suunnitelmia.",
+      "sourceRef": "postgresql/docs/runtime-config-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-RANDOM-PAGE-COST",
+      "featureId": "postgres:random-page-cost",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-explain-buffers-hit",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN ANALYZE näyttää hitaudesta — haluat tietää cache hit vs disk read. Lippu?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local hit read",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN VERBOSE only",
+          "correct": false
+        },
+        {
+          "text": "BUFFERS vaatii superuser aina",
+          "correct": false
+        },
+        {
+          "text": "pg_stat_user_tables riittää query-tasolle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BUFFERS näyttää block access — using explain.",
+      "wrongFeedback": "Ilman BUFFERS ei erottele cache vs I/O.",
+      "sourceRef": "postgresql/docs/using-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
+      "featureId": "postgres:explain-buffers",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-explain-hash-join-memory",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian pieni. Mitä näet?",
+      "choices": [
+        {
+          "text": "EXPLAIN ANALYZE: Hash Batches > 1 tai temp file — nosta work_mem varovasti",
+          "correct": true
+        },
+        {
+          "text": "Seq Scan aina nopein",
+          "correct": false
+        },
+        {
+          "text": "Hash join ei käytä muistia",
+          "correct": false
+        },
+        {
+          "text": "work_mem vaikuttaa vain sort",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Hash join voi spillata jos work_mem ei riitä — explain analyzing.",
+      "wrongFeedback": "work_mem rajoittaa myös hash table -kokoa.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:hash-join-spill",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-explain-index-only-scan",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto Index Only Scan?",
+      "choices": [
+        {
+          "text": "Index sisältää kaikki tarvittavat sarakkeet + visibility map ajantasainen",
+          "correct": true
+        },
+        {
+          "text": "Index Only Scan ei koskaan toimi",
+          "correct": false
+        },
+        {
+          "text": "VACUUM ei vaikuta visibility map",
+          "correct": false
+        },
+        {
+          "text": "Seq scan aina parempi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Index-only scan välttää heap fetch jos VM kertoo rivin visible — indexes docs.",
+      "wrongFeedback": "Stale visibility map pakottaa heap fetchiin.",
+      "sourceRef": "postgresql/docs/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:index-only-scan",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-indexes-gin-jsonb",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "JSONB metadata-kenttä `@> '{\"status\":\"active\"}'` query hidas seq scan. Indeksi?",
+      "choices": [
+        {
+          "text": "GIN index jsonb_column — containment queries",
+          "correct": true
+        },
+        {
+          "text": "B-tree jsonb_column",
+          "correct": false
+        },
+        {
+          "text": "Hash index jsonb",
+          "correct": false
+        },
+        {
+          "text": "JSONB ei indeksoitu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN on oletus JSONB containmentille — jsonb indexes docs.",
+      "wrongFeedback": "B-tree ei optimoi @> / ? operaatioita.",
+      "sourceRef": "postgresql/docs/datatype-json",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "postgres:gin-jsonb",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-indexes-concurrent-create",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Online-vaihtoehto?",
+      "choices": [
+        {
+          "text": "CREATE INDEX CONCURRENTLY — ei exclusive lock kirjoituksille",
+          "correct": true
+        },
+        {
+          "text": "REINDEX CONCURRENTLY table",
+          "correct": false
+        },
+        {
+          "text": "Indeksi vain yöllä VACUUM FULL",
+          "correct": false
+        },
+        {
+          "text": "CONCURRENTLY on nopeampi aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CONCURRENTLY rakentaa indeksin ilman pitkää write lockia.",
+      "wrongFeedback": "Normaali CREATE INDEX blokkaa writes.",
+      "sourceRef": "postgresql/docs/sql-createindex",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY",
+      "featureId": "postgres:create-index-concurrently",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-vacuum-wraparound-warning",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Logissa 'database must be vacuumed within 10 million transactions' — mitä uhkaa?",
+      "choices": [
+        {
+          "text": "Transaction ID wraparound — pakotettu shutdown jos autovacuum ei ehdi",
+          "correct": true
+        },
+        {
+          "text": "Levy täyttyy logeista",
+          "correct": false
+        },
+        {
+          "text": "Indeksit poistuvat",
+          "correct": false
+        },
+        {
+          "text": "Varoitus on informatiivinen — ei toimenpiteitä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "XID wraparound on kriittinen — routine vacuuming varoittaa.",
+      "wrongFeedback": "Ignorointi voi pysäyttää koko klusterin.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:xid-wraparound",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-vacuum-freeze-settings",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze tuning?",
+      "choices": [
+        {
+          "text": "autovacuum_freeze_max_age / vacuum_freeze_table_age — aikaisempi freeze",
+          "correct": true
+        },
+        {
+          "text": "max_connections = 1",
+          "correct": false
+        },
+        {
+          "text": "Poista autovacuum insert-taulusta",
+          "correct": false
+        },
+        {
+          "text": "Freeze tapahtuu vain VACUUM FULL",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Freeze parameters ohjaavat milloin rivit jäädytetään — vacuum docs.",
+      "wrongFeedback": "Ilman freezea xmin etenee kohti wraparoundia.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:vacuum-freeze",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-vacuum-analyze-stats",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentuneet. Komento?",
+      "choices": [
+        {
+          "text": "ANALYZE table_name (tai autovacuum analyze trigger)",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL heti",
+          "correct": false
+        },
+        {
+          "text": "REINDEX kaikki",
+          "correct": false
+        },
+        {
+          "text": "Stats päivittyvät automaattisesti heti loadissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE päivittää tilastot — pgstats docs.",
+      "wrongFeedback": "Massiivinen muutos ilman analyzea vääristää cost-arvioita.",
+      "sourceRef": "postgresql/docs/sql-analyze",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-analyze.html",
+      "featureId": "postgres:analyze-after-load",
+      "featurePoints": 2
+    },
+    {
+      "id": "b03-pg-config-statements-ext",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Tuotannossa hidas query tuntematon — haluat top 10 CPU-kuluttajaa historiasta. Laajennus?",
+      "choices": [
+        {
+          "text": "pg_stat_statements — shared_preload_libraries + CREATE EXTENSION",
+          "correct": true
+        },
+        {
+          "text": "pg_stat_activity riittää historiaan",
+          "correct": false
+        },
+        {
+          "text": "EXPLAIN kaikille quereille cron",
+          "correct": false
+        },
+        {
+          "text": "Log every query ilman sampling",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "pg_stat_statements kerää aggregate query stats — official extension.",
+      "wrongFeedback": "Activity view näyttää vain juuri nyt ajettavat.",
+      "sourceRef": "postgresql/docs/pgstatstatements",
+      "sourceUrl": "https://www.postgresql.org/docs/current/pgstatstatements.html",
+      "featureId": "postgres:pg-stat-statements",
+      "featurePoints": 3
+    },
+    {
+      "id": "b03-pg-explain-isolation-level",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen transaction commitoi välissä. Taso?",
+      "choices": [
+        {
+          "text": "READ COMMITTED sallii non-repeatable read — tarvitset REPEATABLE READ jos tarpeen",
+          "correct": true
+        },
+        {
+          "text": "SERIALIZABLE estää kaiken lukemisen",
+          "correct": false
+        },
+        {
+          "text": "READ UNCOMMITTED on Postgres default",
+          "correct": false
+        },
+        {
+          "text": "Isolation level ei vaikuta SELECT",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PostgreSQL default READ COMMITTED — transaction isolation docs.",
+      "wrongFeedback": "Non-repeatable read on odotettu READ COMMITTED:llä.",
+      "sourceRef": "postgresql/docs/transaction-iso",
+      "sourceUrl": "https://www.postgresql.org/docs/current/transaction-iso.html",
+      "featureId": "postgres:isolation-level",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-indexes-fillfactor-update",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?",
+      "choices": [
+        {
+          "text": "FILLFACTOR < 100 jättää tilaa HOT updatelille — vähentää index churn",
+          "correct": true
+        },
+        {
+          "text": "FILLFACTOR 100 aina paras",
+          "correct": false
+        },
+        {
+          "text": "CLUSTER päivittää fillfactorin",
+          "correct": false
+        },
+        {
+          "text": "Fillfactor vain indekseille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fillfactor storage parameter — CREATE TABLE / ALTER docs.",
+      "wrongFeedback": "100% fill ei jätä tilaa in-place updateille.",
+      "sourceRef": "postgresql/docs/sql-createtable",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-createtable.html#SQL-CREATETABLE-STORAGE-PARAMETERS",
+      "featureId": "postgres:fillfactor",
+      "featurePoints": 4
+    },
+    {
+      "id": "b03-pg-config-ssl-mode",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "security",
+        "coworker"
+      ],
+      "prompt": "App yhdistää Postgresiin internetin yli — compliance vaatii salatun yhteyden. Client-parametri?",
+      "choices": [
+        {
+          "text": "sslmode=verify-full (tai require minimum) connection stringissä",
+          "correct": true
+        },
+        {
+          "text": "sslmode=disable nopeuteen",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL ei tue TLS",
+          "correct": false
+        },
+        {
+          "text": "SSH tunnel riittää aina ilman sslmode",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "libpq sslmode — verify-full tarkistaa certin — SSL docs.",
+      "wrongFeedback": "Disable lähettää salasanat plaintextina.",
+      "sourceRef": "postgresql/docs/libpq-ssl",
+      "sourceUrl": "https://www.postgresql.org/docs/current/libpq-ssl.html",
+      "featureId": "postgres:sslmode",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-indexes-gin-jsonb",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Kysely `WHERE data @> '{\"status\":\"active\"}'` JSONB-sarakkeessa on hidas 5M rivillä. Indeksityyppi?",
+      "choices": [
+        {
+          "text": "GIN-indeksi JSONB:lle — CREATE INDEX ON t USING GIN (data)",
+          "correct": true
+        },
+        {
+          "text": "B-tree data-sarakkeelle riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi JSONB containmentiin",
+          "correct": false
+        },
+        {
+          "text": "Ei indeksiä — seq scan aina nopein",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN tukee @>, ?, ?& operaattoreita JSONB:ssä — PostgreSQL JSON indexing docs.",
+      "wrongFeedback": "B-tree ei optimoi containment-kyselyitä. GIN on JSONB-operaattoreille.",
+      "sourceRef": "postgresql/docs/json",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "pg:gin-jsonb",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-explain-buffers-io",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hitto disk I/O. Lisälippu?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local hit vs read",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN VERBOSE riittää aina",
+          "correct": false
+        },
+        {
+          "text": "SET log_statement = all",
+          "correct": false
+        },
+        {
+          "text": "pg_stat_activity riittää query planiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BUFFERS näyttää cache hit vs disk read — PostgreSQL EXPLAIN docs.",
+      "wrongFeedback": "Ilman BUFFERS et näe I/O:ta. ANALYZE + BUFFERS diagnostiikkaan.",
+      "sourceRef": "postgresql/docs/sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "pg:explain-buffers",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-vacuum-analyze-stats",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhentuneet arviot bulk-insertin jälkeen. Toimenpide?",
+      "choices": [
+        {
+          "text": "ANALYZE taulu; tai odota autovacuum analyze",
+          "correct": true
+        },
+        {
+          "text": "REINDEX DATABASE heti",
+          "correct": false
+        },
+        {
+          "text": "DROP INDEX — seq scan nopeampi",
+          "correct": false
+        },
+        {
+          "text": "Käynnistä PG uudestaan — stats päivittyy",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE päivittää tilastot — PostgreSQL Routine Vacuuming.",
+      "wrongFeedback": "Ilman fresh statseja planner arvioi väärin. ANALYZE bulk load jälkeen.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "pg:analyze",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-config-maintenance-work-mem",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "CREATE INDEX kestää tunteja isolla taululla — logissa 'external sort'. Mitä parametria nostat session tasolla?",
+      "choices": [
+        {
+          "text": "maintenance_work_mem — indeksin rakennus ja VACUUM",
+          "correct": true
+        },
+        {
+          "text": "work_mem — sama kuin maintenance",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers heti 64GB",
+          "correct": false
+        },
+        {
+          "text": "max_connections 10000",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "maintenance_work_mem vaikuttaa index buildiin — PostgreSQL Server Config.",
+      "wrongFeedback": "work_mem on query sort/hash. maintenance_work_mem index/VACUUM operaatioille.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM",
+      "featureId": "pg:maintenance-work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-indexes-concurrent-create",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunteiksi. Vaihtoehto?",
+      "choices": [
+        {
+          "text": "CREATE INDEX CONCURRENTLY — ei exclusive lockia kirjoituksiin",
+          "correct": true
+        },
+        {
+          "text": "REINDEX CONCURRENTLY riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Indeksi vain maintenance windowissa ilman CONCURRENTLY",
+          "correct": false
+        },
+        {
+          "text": "Duplikaatti taulu + swap",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CONCURRENTLY rakentaa indeksin ilman pitkää write lockia — PostgreSQL CREATE INDEX.",
+      "wrongFeedback": "Normaali CREATE INDEX lukitsee. CONCURRENTLY tuotantoon.",
+      "sourceRef": "postgresql/docs/sql-createindex",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY",
+      "featureId": "pg:index-concurrently",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-explain-cost-settings",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus 4.0. Tyypillinen SSD-säätö?",
+      "choices": [
+        {
+          "text": "Laske random_page_cost lähemmäs seq_page_cost (esim. 1.1–1.5)",
+          "correct": true
+        },
+        {
+          "text": "Nosta random_page_cost 10:een",
+          "correct": false
+        },
+        {
+          "text": "Cost parametrit eivät vaikuta",
+          "correct": false
+        },
+        {
+          "text": "Poista indeksit SSD:llä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "random_page_cost vs seq_page_cost ohjaa index vs seq scan — PostgreSQL Planner Cost Constants.",
+      "wrongFeedback": "HDD-oletukset eivät päde SSD:hen. Säädä cost parametrit storageen.",
+      "sourceRef": "postgresql/docs/runtime-config-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-RANDOM-PAGE-COST",
+      "featureId": "pg:random-page-cost",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-vacuum-freeze-age",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Varoitus: 'database must be vacuumed within 200 million transactions' — mitä uhkaa?",
+      "choices": [
+        {
+          "text": "Transaction ID wraparound — pakollinen anti-wraparound vacuum",
+          "correct": true
+        },
+        {
+          "text": "Levy täynnä — vain disk issue",
+          "correct": false
+        },
+        {
+          "text": "Indeksit korruptoituvat automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Varoitus voidaan ignore — cosmetic",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "XID wraparound pakottaa shutdownin jos vacuum ei ehdi — PostgreSQL Routine Vacuuming.",
+      "wrongFeedback": "Tämä on vakava — autovacuum freeze age. Ei koskaan ignore.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "pg:xid-wraparound",
+      "featurePoints": 5
+    },
+    {
+      "id": "b04-pg-config-effective-cache",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Planner aliarvioi index scan hyödyn — effective_cache_size on default 4GB mutta RAM 64GB. Vaikutus?",
+      "choices": [
+        {
+          "text": "Nosta effective_cache_size ~ OS cache + shared_buffers arvio — planner suosii indeksejä",
+          "correct": true
+        },
+        {
+          "text": "effective_cache_size varaa RAM:ia PostgreSQLille",
+          "correct": false
+        },
+        {
+          "text": "Parametri ei vaikuta suunnitteluun",
+          "correct": false
+        },
+        {
+          "text": "Aseta 0 nopeimpaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "effective_cache_size on hint plannerille — ei varaa muistia — PostgreSQL docs.",
+      "wrongFeedback": "Liian matala arvo suosii seq scania. Säädä hostin cache-arvioon.",
+      "sourceRef": "postgresql/docs/runtime-config-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE",
+      "featureId": "pg:effective-cache-size",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-indexes-expression",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei käytössä. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Expression index: CREATE INDEX ON users (lower(email))",
+          "correct": true
+        },
+        {
+          "text": "Seq scan on aina ok",
+          "correct": false
+        },
+        {
+          "text": "B-tree email riittää funktiokutsulle",
+          "correct": false
+        },
+        {
+          "text": "Trigger joka kopioi lower email",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Functional/expression index vastaa WHERE-lauseen funktiota — PostgreSQL Indexes.",
+      "wrongFeedback": "Indeksi sarakkeella ei matchaa lower(email). Expression index.",
+      "sourceRef": "postgresql/docs/indexes-expressional",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-expressional.html",
+      "featureId": "pg:expression-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-explain-parallel",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?",
+      "choices": [
+        {
+          "text": "Onko kysely parallel safe — EXPLAIN näyttaa Gather; tarkista parallel_setup_cost ja table size",
+          "correct": true
+        },
+        {
+          "text": "Parallel on aina päällä automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Vain REINDEX käyttää parallelia",
+          "correct": false
+        },
+        {
+          "text": "max_connections estää parallelin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner valitsee parallel vain jos hyöty > kustannus — PostgreSQL Parallel Query.",
+      "wrongFeedback": "Pienet kyselyt eivät paralleloidu. Cost threshold ja parallel-safe tarkistus.",
+      "sourceRef": "postgresql/docs/parallel-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/parallel-query.html",
+      "featureId": "pg:parallel-query",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-vacuum-dead-tuples",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy taulussa. Ensimmäinen toimenpide?",
+      "choices": [
+        {
+          "text": "Varmista autovacuum käynnissä; säätä autovacuum_vacuum_scale_factor tarvittaessa",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL heti tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "Dead tuples ovat harmless — ignore",
+          "correct": false
+        },
+        {
+          "text": "DROP TABLE",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Dead tuples bloattavat taulua — autovacuum siivoaa — PostgreSQL Monitoring.",
+      "wrongFeedback": "VACUUM FULL lukitsee. Autovacuum tuning ensin.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "pg:dead-tuples",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-indexes-partial-active",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimointi?",
+      "choices": [
+        {
+          "text": "Partial index: WHERE archived = false",
+          "correct": true
+        },
+        {
+          "text": "Full index status-sarakkeelle riittää",
+          "correct": false
+        },
+        {
+          "text": "Ei indeksiä — seq scan pienelle",
+          "correct": false
+        },
+        {
+          "text": "UNIQUE constraint archived",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial index on pienempi ja nopeampi kun predikaatti toistuu — PostgreSQL Partial Indexes.",
+      "wrongFeedback": "Full index sisältää turhia rivejä. Partial WHERE clause.",
+      "sourceRef": "postgresql/docs/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "pg:partial-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-explain-index-only",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usein?",
+      "choices": [
+        {
+          "text": "Visibility map ei ajan tasalla — VACUUM tarvitaan tai query tarvitsee muita sarakkeita",
+          "correct": true
+        },
+        {
+          "text": "Index Only Scan on deprecated",
+          "correct": false
+        },
+        {
+          "text": "B-tree ei tue index only",
+          "correct": false
+        },
+        {
+          "text": "Seq scan aina nopeampi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Index Only Scan vaatii visibility map bitin — PostgreSQL Index-Only Scans.",
+      "wrongFeedback": "Heap fetch tarvitaan jos VM ei varmista visibility. VACUUM auttaa.",
+      "sourceRef": "postgresql/docs/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "pg:index-only-scan",
+      "featurePoints": 4
+    },
+    {
+      "id": "b04-pg-config-log-min-duration",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Haluat lokittaa vain > 500ms kestävät kyselyt tuotannossa ilman kaiken logitusta. Parametri?",
+      "choices": [
+        {
+          "text": "log_min_duration_statement = 500 (ms)",
+          "correct": true
+        },
+        {
+          "text": "log_statement = all",
+          "correct": false
+        },
+        {
+          "text": "log_connections = on",
+          "correct": false
+        },
+        {
+          "text": "logging_collector = off",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "log_min_duration_statement rajaa slow query -login — PostgreSQL Error Reporting.",
+      "wrongFeedback": "log_statement=all on liian raskas. Duration threshold slow queryille.",
+      "sourceRef": "postgresql/docs/runtime-config-logging",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT",
+      "featureId": "pg:slow-query-log",
+      "featurePoints": 3
+    },
+    {
+      "id": "b04-pg-vacuum-long-xact",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in transaction' 12h. Syy?",
+      "choices": [
+        {
+          "text": "Pitkä transaktio pitää xmin:ää — estää vacuum poistamasta rivejä",
+          "correct": true
+        },
+        {
+          "text": "Autovacuum pois päältä oletuksena",
+          "correct": false
+        },
+        {
+          "text": "Dead tuples poistuvat automaattisesti commitissa",
+          "correct": false
+        },
+        {
+          "text": "REINDEX korjaa — ei vacuum",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Long-running xact estää vacuum cleanup — PostgreSQL MVCC.",
+      "wrongFeedback": "Idle in transaction on klassinen vacuum blocker. Katkaise tai korjaa app.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "pg:long-transaction",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-indexes-gin-jsonb",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Query: `WHERE data @> '{\"status\": \"active\"}'` JSONB-sarakkeessa — seq scan hidas. Indeksityyppi?",
+      "choices": [
+        {
+          "text": "GIN index JSONB:lle — tukee @>, ?, ?& operaattoreita",
+          "correct": true
+        },
+        {
+          "text": "B-tree data-sarakkeelle riittää",
+          "correct": false
+        },
+        {
+          "text": "Hash index JSONB:lle",
+          "correct": false
+        },
+        {
+          "text": "Ei indeksiä — JSONB ei indeksoitu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN for jsonb containment — PostgreSQL jsonb indexes.",
+      "wrongFeedback": "B-tree ei tue @> operaattoria tehokkaasti. GIN on JSONB-hakuun.",
+      "sourceRef": "postgresql/docs/jsonb-indexing",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "postgres:gin-jsonb",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-indexes-concurrent-create",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot indeksin ilman pitkää lukkoa?",
+      "choices": [
+        {
+          "text": "CREATE INDEX CONCURRENTLY — ei exclusive lockia koko ajaksi",
+          "correct": true
+        },
+        {
+          "text": "REINDEX CONCURRENTLY riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Indeksi luodaan vain maintenance windowissa ilman CONCURRENTLY",
+          "correct": false
+        },
+        {
+          "text": "CONCURRENTLY on nopeampi kuin tavallinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CONCURRENTLY builds without blocking writes — CREATE INDEX docs.",
+      "wrongFeedback": "Tavallinen CREATE INDEX lukitsee. CONCURRENTLY tuotantoon.",
+      "sourceRef": "postgresql/docs/sql-createindex-concurrently",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY",
+      "featureId": "postgres:concurrent-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b05-pg-indexes-expression",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree emailille ei käytössä. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Expression index: CREATE INDEX ON users (lower(email))",
+          "correct": true
+        },
+        {
+          "text": "Seq scan aina — funktio estää indeksin",
+          "correct": false
+        },
+        {
+          "text": "Hash index lower():lle",
+          "correct": false
+        },
+        {
+          "text": "Muuta email upper case — ei indeksiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Indexes on expressions — PostgreSQL indexes expressions.",
+      "wrongFeedback": "Indeksi voi olla lausekkeesta. lower(email) indeksissä.",
+      "sourceRef": "postgresql/docs/indexes-expressional",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-expressional.html",
+      "featureId": "postgres:expression-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-indexes-duplicate-drop",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?",
+      "choices": [
+        {
+          "text": "DROP INDEX toinen — duplikaatti indeksi turha ylläpito",
+          "correct": true
+        },
+        {
+          "text": "Pidä molemmat varmuuden vuoksi",
+          "correct": false
+        },
+        {
+          "text": "REINDEX molemmat",
+          "correct": false
+        },
+        {
+          "text": "Indeksit eivät vaikuta INSERT-nopeuteen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Each index maintained on write — PostgreSQL indexes intro.",
+      "wrongFeedback": "Duplikaatti indeksi hidastaa kirjoitusta ilman hyötyä.",
+      "sourceRef": "postgresql/docs/indexes-intro",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-intro.html",
+      "featureId": "postgres:duplicate-index",
+      "featurePoints": 2
+    },
+    {
+      "id": "b05-pg-explain-hash-join",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?",
+      "choices": [
+        {
+          "text": "Nested Loop voi valita planner jos toinen taulu pieni + indeksi — tai kasvata work_mem",
+          "correct": true
+        },
+        {
+          "text": "Hash Join on ainoa vaihtoehto",
+          "correct": false
+        },
+        {
+          "text": "SET enable_hashjoin=off riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Seq scan molemmissa on aina parempi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Hash join needs work_mem — EXPLAIN and join methods.",
+      "wrongFeedback": "Hash join voi spillata levyyn jos work_mem liian pieni. Tarkista plan ja mem.",
+      "sourceRef": "postgresql/docs/explicit-joins",
+      "sourceUrl": "https://www.postgresql.org/docs/current/explicit-joins.html",
+      "featureId": "postgres:hash-join",
+      "featurePoints": 3
+    },
+    {
+      "id": "b05-pg-explain-analyze-buffers",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Query hidas — epäilet levylukemista cache-missin vuoksi. Mitä EXPLAIN-lippua lisäät?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local block hits",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ilman ANALYZE riittää I/O-analyysiin",
+          "correct": false
+        },
+        {
+          "text": "SELECT pg_sleep(1)",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL ennen EXPLAIN",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BUFFERS shows read/hit counts — using explain docs.",
+      "wrongFeedback": "Pelkkä cost estimate ei näytä cache-hittejä. ANALYZE + BUFFERS.",
+      "sourceRef": "postgresql/docs/using-explain-buffers",
+      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
+      "featureId": "postgres:explain-buffers",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-explain-stats-stale",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Planner valitsee seq scan vaikka indeksi on olemassa — ANALYZE ajettu kuukausi sitten. Korjaus?",
+      "choices": [
+        {
+          "text": "ANALYZE taulu — päivitä planner-statistiikka",
+          "correct": true
+        },
+        {
+          "text": "DROP INDEX ja luo uudelleen aina",
+          "correct": false
+        },
+        {
+          "text": "REINDEX korvaa ANALYZEn",
+          "correct": false
+        },
+        {
+          "text": "Planner ei käytä statistiikkaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stale stats mislead planner — routine maintenance ANALYZE.",
+      "wrongFeedback": "Vanhentuneet stats → huono plan. Aja ANALYZE.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
+      "featureId": "postgres:analyze-stats",
+      "featurePoints": 3
+    },
+    {
+      "id": "b05-pg-explain-index-only-scan",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?",
+      "choices": [
+        {
+          "text": "Covering-indeksi INCLUDE-sarakkeilla ja VACUUM pitää visibility mapin ajan tasalla",
+          "correct": true
+        },
+        {
+          "text": "SET enable_indexscan = off pakottaa plannerin ohittamaan heap fetch -vaiheen",
+          "correct": false
+        },
+        {
+          "text": "Seq scan on halvempi kuin index-only scan kun taulu on alle miljoona riviä",
+          "correct": false
+        },
+        {
+          "text": "Index Only Scan ei tarvitse visibility mapia koska indeksi sisältää kaiken datan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Index-only scans need VM up to date — indexes index-only-scans.",
+      "wrongFeedback": "Ilman visibility map heap fetch tarvitaan. INCLUDE + maintenance.",
+      "sourceRef": "postgresql/docs/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:index-only-scan",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-vacuum-wraparound",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "PostgreSQL varoittaa: 'database is not accepting commands to avoid wraparound'. Kiireellinen toimenpide?",
+      "choices": [
+        {
+          "text": "Aja VACUUM (FREEZE) tai varmista autovacuum — XID wraparound on kriittinen",
+          "correct": true
+        },
+        {
+          "text": "Käynnistä PostgreSQL uudelleen — wraparound-varoitus nollautuu restartissa",
+          "correct": false
+        },
+        {
+          "text": "DROP suurin taulu vapauttaa transaction ID -tilaa ja poistaa wraparound-riskin",
+          "correct": false
+        },
+        {
+          "text": "Nosta max_connections arvoa jotta autovacuum saa enemmän työntekijöitä käyttöön",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "XID wraparound shutdown — routine vacuuming wraparound.",
+      "wrongFeedback": "Wraparound vaatii freeze-vacuumia. Kriittinen tuotantotilanne.",
+      "sourceRef": "postgresql/docs/routine-vacuuming-wraparound",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:wraparound",
+      "featurePoints": 5
+    },
+    {
+      "id": "b05-pg-vacuum-bloat-long-xact",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle transactionin. Juurisyy?",
+      "choices": [
+        {
+          "text": "Pitkä avoin transaktio estää dead tuple -siivouksen — VACUUM ei voi poistaa rivejä",
+          "correct": true
+        },
+        {
+          "text": "Autovacuum on oletuksena pois päältä ja pitää aktivoida manuaalisesti ensin",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL heti ilman tutkintaa on ensimmäinen askel bloat-ongelmaan",
+          "correct": false
+        },
+        {
+          "text": "Idle in transaction -tila ei vaikuta vacuumiin koska transaktio ei kirjoita dataa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Long transactions block vacuum — monitoring pg_stat_activity.",
+      "wrongFeedback": "Vanha xmin estää tuplejen poiston. Terminoi pitkät transaktiot.",
+      "sourceRef": "postgresql/docs/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:long-transaction",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-vacuum-analyze-after-bulk",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk-operaation jälkeen?",
+      "choices": [
+        {
+          "text": "Aja ANALYZE tai VACUUM ANALYZE — planner tarvitsee päivitetyn tilaston",
+          "correct": true
+        },
+        {
+          "text": "Planner päivittää tilastot automaattisesti heti bulk INSERT -operaation jälkeen",
+          "correct": false
+        },
+        {
+          "text": "REINDEX DATABASE on pakollinen ennen kuin kyselyt palautuvat normaaliksi",
+          "correct": false
+        },
+        {
+          "text": "DROP ja CREATE TABLE on nopein tapa päivittää plannerin rivimääräarvioita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Bulk load changes row counts — run ANALYZE after.",
+      "wrongFeedback": "Massiivinen data muuttuu ilman ANALYZE:ä → huono plan.",
+      "sourceRef": "postgresql/docs/sql-analyze",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-analyze.html",
+      "featureId": "postgres:analyze-bulk",
+      "featurePoints": 2
+    },
+    {
+      "id": "b05-pg-vacuum-full-lock",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat?",
+      "choices": [
+        {
+          "text": "VACUUM FULL ottaa exclusive lockin — taulu on lukittu koko operaation ajan",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL on nopeampi kuin tavallinen VACUUM eikä vaadi maintenance-ikkunaa",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL ei vapauta levytilaa vaan vain merkitsee dead tuplet uudelleenkäytettäviksi",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL korvaa REINDEX:in ja rebuildaa indeksit samalla ilman lukitusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM FULL rewrites table — locks exclusively.",
+      "wrongFeedback": "FULL lockaa taulun. Tuotannossa pg_repack tai maintenance window.",
+      "sourceRef": "postgresql/docs/sql-vacuum-full",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-vacuum.html",
+      "featureId": "postgres:vacuum-full",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-config-shared-buffers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "16 GB RAM palvelin — shared_buffers on 128MB oletus. Tyypillinen lähtösuositus?",
+      "choices": [
+        {
+          "text": "Noin 25 % RAM:sta (esim. 4 GB) — aloitusarvo, säädä mittausten perusteella",
+          "correct": true
+        },
+        {
+          "text": "90 % RAM shared_buffers-arvoksi maksimoi PostgreSQLin oman page cache -kerroksen",
+          "correct": false
+        },
+        {
+          "text": "128 MB oletusarvo riittää 16 GB palvelimella koska OS hoitaa loput cachesta",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers ei vaikuta lukusuorituskykyyn koska PostgreSQL lukee suoraan levyltä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers PostgreSQL page cache — runtime config.",
+      "wrongFeedback": "Liian pieni shared_buffers → enemmän levylukuja. Säädä RAM:in mukaan.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b05-pg-config-work-mem-sort",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Monimutkainen sort overflowaa levylle — temp files kasvavat. Mikä parametri vaikuttaa sort-muistiin per operaatio?",
+      "choices": [
+        {
+          "text": "work_mem — sort/hash-muisti per operaatio, kerro max_connections huomioiden",
+          "correct": true
+        },
+        {
+          "text": "shared_buffers korjaa sort overflow -ongelman koska sort käyttää page cachea",
+          "correct": false
+        },
+        {
+          "text": "maintenance_work_mem vaikuttaa tavallisten SELECT-kyselyiden sort-operaatioihin",
+          "correct": false
+        },
+        {
+          "text": "wal_buffers määrittää sort/hash-operaatioiden muistikatto per yhteys",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem limits sort/hash memory — can spill to disk if too low.",
+      "wrongFeedback": "Sort käyttää work_mem per operation. Liian pieni → disk spill.",
+      "sourceRef": "postgresql/docs/runtime-config-resource-work-mem",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b05-pg-config-log-min-duration",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Haluat lokittaa vain > 500ms kestävät queryt tuotannossa. Mikä GUC?",
+      "choices": [
+        {
+          "text": "log_min_duration_statement = 500ms lokittaa vain hitaat kyselyt",
+          "correct": true
+        },
+        {
+          "text": "log_statement = all on kevyt tapa suodattaa vain yli 500 ms kestävät kyselyt",
+          "correct": false
+        },
+        {
+          "text": "log_connections = on kirjoittaa jokaisen kyselyn suoritusajan lokiin",
+          "correct": false
+        },
+        {
+          "text": "logging_collector = off estää hitaiden kyselyiden lokituksen tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "log_min_duration_statement filters slow queries — runtime config logging.",
+      "wrongFeedback": "log_statement=all on liian raskas. Duration threshold slow queryille.",
+      "sourceRef": "postgresql/docs/runtime-config-logging",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT",
+      "featureId": "postgres:slow-query-log",
+      "featurePoints": 3
+    },
+    {
+      "id": "b06-pg-indexes-hash-index",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?",
+      "choices": [
+        {
+          "text": "Hash-indeksi sopii vain =-vertailuun — range scan ei toimi hash-indeksillä",
+          "correct": true
+        },
+        {
+          "text": "Hash-indeksi korvaa btree-indeksin kaikissa UUID-hauissa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi tukee ORDER BY -lausekkeita samalla tavalla kuin btree-indeksi",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi on PostgreSQLin oletusindeksityyppi CREATE INDEX -komennossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Hash indexes — PostgreSQL docs hash indexes.",
+      "wrongFeedback": "Hash vain equality. Range ja sort vaatii btree.",
+      "sourceRef": "indexes/hash",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-types.html#INDEXES-TYPES-HASH",
+      "featureId": "postgres:hash-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b06-pg-indexes-brin-timeseries",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
+      "choices": [
+        {
+          "text": "BRIN-indeksi — block range, pieni koko järjestetylle aikasarjadatalle",
+          "correct": true
+        },
+        {
+          "text": "Btree-indeksi on aina halvin miljardin rivin aikasarjataulussa",
+          "correct": false
+        },
+        {
+          "text": "GIN-indeksi on paras valinta timestamp-sarakkeen range-hakuun",
+          "correct": false
+        },
+        {
+          "text": "Seq scan on ainoa vaihtoehto kun taulussa on yli miljardi riviä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BRIN indexes — PostgreSQL docs BRIN.",
+      "wrongFeedback": "BRIN on kevyt järjestetylle suurille tauluille. Btree iso.",
+      "sourceRef": "brin-intro",
+      "sourceUrl": "https://www.postgresql.org/docs/current/brin-intro.html",
+      "featureId": "postgres:brin-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-indexes-include-columns",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexissä. Miten?",
+      "choices": [
+        {
+          "text": "CREATE INDEX ... INCLUDE (col) — covering index PostgreSQL 11+:ssa",
+          "correct": true
+        },
+        {
+          "text": "CLUSTER TABLE järjestää rivit niin että index-only scan toimii ilman INCLUDE:a",
+          "correct": false
+        },
+        {
+          "text": "Lisää kaikki SELECT-sarakkeet key columns -listaan indeksin määrittelyssä",
+          "correct": false
+        },
+        {
+          "text": "INCLUDE-sarakkeet ovat saatavilla vain MySQL:ssä, ei PostgreSQLissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Index-only scans and INCLUDE — PostgreSQL docs indexes.",
+      "wrongFeedback": "INCLUDE sarakkeet index-only scania. Ei key columns.",
+      "sourceRef": "indexes/index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:include-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b06-pg-indexes-reindex-concurrently",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtime?",
+      "choices": [
+        {
+          "text": "REINDEX INDEX CONCURRENTLY — ei exclusive lockia tuotannossa",
+          "correct": true
+        },
+        {
+          "text": "DROP INDEX ja CREATE INDEX uudelleen välttää lukituksen bloated indeksissä",
+          "correct": false
+        },
+        {
+          "text": "VACUUM rebuildaa indeksin automaattisesti ilman erillistä REINDEX-komentoa",
+          "correct": false
+        },
+        {
+          "text": "CONCURRENTLY-optio toimii vain CREATE INDEX -komennossa, ei REINDEX:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "REINDEX CONCURRENTLY — PostgreSQL docs REINDEX.",
+      "wrongFeedback": "REINDEX CONCURRENTLY välttää pitkän exclusive lockin.",
+      "sourceRef": "sql-reindex",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-reindex.html",
+      "featureId": "postgres:reindex",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-explain-wal-fpi",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/FPI tarkoittaa?",
+      "choices": [
+        {
+          "text": "Full page images WAL:issa — checkpoint ja write amplification vaikuttavat I/O:hon",
+          "correct": true
+        },
+        {
+          "text": "shared_blks_read mittaa cache osumia, ei levylukuja EXPLAIN BUFFERS -näkymässä",
+          "correct": false
+        },
+        {
+          "text": "FPI ei vaikuta I/O-kuormaan koska WAL kirjoitetaan erilliseen muistipuskuriin",
+          "correct": false
+        },
+        {
+          "text": "BUFFERS-näkymä näyttää vain CPU-aikaa, ei buffer cache -käyttöä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EXPLAIN BUFFERS — PostgreSQL docs EXPLAIN.",
+      "wrongFeedback": "FPI ja WAL liittyvät write amplification. BUFFERS näyttää I/O.",
+      "sourceRef": "sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-buffers",
+      "featurePoints": 5
+    },
+    {
+      "id": "b06-pg-explain-misestimate-rows",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?",
+      "choices": [
+        {
+          "text": "Vanhentuneet tilastot — aja ANALYZE tai harkitse extended statistics",
+          "correct": true
+        },
+        {
+          "text": "Seq scan valinta on aina planner-bugi kun actual rows poikkeaa arviosta",
+          "correct": false
+        },
+        {
+          "text": "Indeksi puuttuu aina kun planner arvioi 10 riviä mutta löytää 10 miljoonaa",
+          "correct": false
+        },
+        {
+          "text": "work_mem on liian korkea ja se vääristää plannerin rivimääräarvioita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner statistics — PostgreSQL docs planner stats.",
+      "wrongFeedback": "Bad row estimate → väärä plan. ANALYZE päivittää stats.",
+      "sourceRef": "routine-vacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
+      "featureId": "postgres:stats-misestimate",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-explain-generic-plan",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Prepared statement plan on hidas eri parametreilla. Miten näet generic plan?",
+      "choices": [
+        {
+          "text": "EXPLAIN (GENERIC_PLAN) — näyttää suunnitelman ilman parametriarvoja",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ilman ANALYZE riittää näyttämään prepared statementin generic planin",
+          "correct": false
+        },
+        {
+          "text": "DEALLOCATE kaikki prepared statementit korjaa generic plan -ongelman pysyvästi",
+          "correct": false
+        },
+        {
+          "text": "Generic plan -käsite ei ole tuettu PostgreSQLin prepared statementeissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Prepared statements planning — PostgreSQL docs PREPARE.",
+      "wrongFeedback": "GENERIC_PLAN näyttää plan prepared statementille.",
+      "sourceRef": "sql-prepare",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-prepare.html",
+      "featureId": "postgres:generic-plan",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-vacuum-skip-locked",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete?",
+      "choices": [
+        {
+          "text": "DELETE ... LIMIT batch + FOR UPDATE SKIP LOCKED -kuvio eräpoistoon",
+          "correct": true
+        },
+        {
+          "text": "DELETE kaikki rivit yhdellä transaktiolla on turvallisin tapa batch-poistoon",
+          "correct": false
+        },
+        {
+          "text": "TRUNCATE partial poistaa osan riveistä ilman lukitusta tai transaktiota",
+          "correct": false
+        },
+        {
+          "text": "VACUUM during DELETE nopeuttaa poistoa ja vapauttaa lukot välittömästi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "SKIP LOCKED — PostgreSQL docs SELECT SKIP LOCKED.",
+      "wrongFeedback": "Batch delete vähentää lock duration. SKIP LOCKED concurrent.",
+      "sourceRef": "sql-select#SQL-FOR-UPDATE-SHARE",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE",
+      "featureId": "postgres:skip-locked",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-vacuum-index-cleanup",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?",
+      "choices": [
+        {
+          "text": "vacuum index_cleanup päälle / REINDEX bloated indekseille",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL ei koskaan tarvita koska tavallinen VACUUM shrinkaa indeksit",
+          "correct": false
+        },
+        {
+          "text": "DROP TABLE on ensimmäinen toimenpide kun indeksit eivät pienene vacuumilla",
+          "correct": false
+        },
+        {
+          "text": "Index bloat -ilmiötä ei ole olemassa PostgreSQLin MVCC-mallissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM and index cleanup — PostgreSQL docs routine vacuum.",
+      "wrongFeedback": "Index bloat vaatii REINDEX tai vacuum index cleanup.",
+      "sourceRef": "routine-vacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:vacuum-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-vacuum-autovacuum-scale",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät?",
+      "choices": [
+        {
+          "text": "autovacuum_vacuum_scale_factor — taulukohtainen tai globaali säätö",
+          "correct": true
+        },
+        {
+          "text": "max_connections määrittää kuinka usein autovacuum käynnistyy suurille tauluille",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost vaikuttaa autovacuumin trigger-kynnykseen dead tupleille",
+          "correct": false
+        },
+        {
+          "text": "Autovacuum ei skaalaudu taulukoon — sama threshold kaikille tauluille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Autovacuum tuning — PostgreSQL docs autovacuum.",
+      "wrongFeedback": "scale_factor määrittää trigger threshold. Suuri taulu tarvitsee alhaisempi.",
+      "sourceRef": "runtime-config-autovacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-autovacuum.html",
+      "featureId": "postgres:autovacuum-scale",
+      "featurePoints": 3
+    },
+    {
+      "id": "b06-pg-config-huge-pages",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Suuri shared_buffers — TLB miss hidastaa. Mitä Linux + PostgreSQL optimointi?",
+      "choices": [
+        {
+          "text": "huge_pages = try/on — vähentää TLB pressure suurilla shared_buffers-arvoilla",
+          "correct": true
+        },
+        {
+          "text": "shared_buffers = 1MB on paras tapa vähentää TLB miss -ongelmia",
+          "correct": false
+        },
+        {
+          "text": "swappiness = 100 parantaa PostgreSQLin muistinhallintaa Linuxissa",
+          "correct": false
+        },
+        {
+          "text": "Huge pages toimivat vain sovellustasolla, ei PostgreSQL-prosessissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Huge pages — PostgreSQL docs kernel resources.",
+      "wrongFeedback": "huge_pages vähentää TLB miss suurilla buffer poolilla.",
+      "sourceRef": "kernel-resources-huge-pages",
+      "sourceUrl": "https://www.postgresql.org/docs/current/kernel-resources.html#LINUX-HUGE-PAGES",
+      "featureId": "postgres:huge-pages",
+      "featurePoints": 5
+    },
+    {
+      "id": "b06-pg-config-parallel-workers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Raporttikysely ei parallelize — seq scan yksin. Mitä parametria nostat?",
+      "choices": [
+        {
+          "text": "max_parallel_workers_per_gather ja max_parallel_workers — parallel query -asetukset",
+          "correct": true
+        },
+        {
+          "text": "max_connections nostaminen aktivoi parallel seq scan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "wal_level = replica pakottaa plannerin käyttämään parallel workers -moodia",
+          "correct": false
+        },
+        {
+          "text": "Parallel query ei ole tuettu PostgreSQLissä raportointikyselyille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Parallel query config — PostgreSQL docs parallel query.",
+      "wrongFeedback": "Parallel workers parametrit hallitavat parallel scan.",
+      "sourceRef": "runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER",
+      "featureId": "postgres:parallel-workers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b06-pg-config-track-io-timing",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "pg_stat_statements näyttää query time mutta ei I/O breakdown. Mitä enable?",
+      "choices": [
+        {
+          "text": "track_io_timing = on — mittaa I/O-operaatioiden keston diagnostiikkaan",
+          "correct": true
+        },
+        {
+          "text": "log_statement = all antaa I/O-erittelyn pg_stat_statements-näkymässä",
+          "correct": false
+        },
+        {
+          "text": "shared_preload_libraries = plpgsql aktivoi I/O timing -mittauksen",
+          "correct": false
+        },
+        {
+          "text": "I/O timing on automaattisesti päällä kun pg_stat_statements on ladattu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "track_io_timing — PostgreSQL docs runtime config.",
+      "wrongFeedback": "track_io_timing mittaa I/O latency diagnostiikkaan.",
+      "sourceRef": "runtime-config-statistics",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-IO-TIMING",
+      "featureId": "postgres:track-io-timing",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-locks-advisory",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "App-tason mutex kahden workerin välillä — ei taululock. Mitä PostgreSQL tarjoaa?",
+      "choices": [
+        {
+          "text": "pg_advisory_lock / pg_try_advisory_lock — sovellustason lukitus ilman taulua",
+          "correct": true
+        },
+        {
+          "text": "SELECT FOR UPDATE ilman taulua luo mutexin kahden workerin välille",
+          "correct": false
+        },
+        {
+          "text": "UNLOGGED table toimii kevyenä mutex-ratkaisuna worker-koordinaatioon",
+          "correct": false
+        },
+        {
+          "text": "Advisory lockit vaativat erillisen extensionin — eivät ole core PostgreSQLissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Advisory locks — PostgreSQL docs explicit locking.",
+      "wrongFeedback": "Advisory locks app-level coordination. Ei tauluriviä.",
+      "sourceRef": "explicit-locking-advisory",
+      "sourceUrl": "https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS",
+      "featureId": "postgres:advisory-lock",
+      "featurePoints": 4
+    },
+    {
+      "id": "b06-pg-config-checkpoint-timeout",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät?",
+      "choices": [
+        {
+          "text": "checkpoint_timeout ja max_wal_size — levittävät checkpoint I/O:n tasaisemmaksi",
+          "correct": true
+        },
+        {
+          "text": "fsync = off tuotannossa poistaa checkpoint-spikeit kokonaan",
+          "correct": false
+        },
+        {
+          "text": "wal_level = minimal estää checkpointien aiheuttaman I/O-kuorman",
+          "correct": false
+        },
+        {
+          "text": "Checkpoint ei vaikuta I/O:hon koska dirty pages kirjoitetaan taustalla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Checkpoint tuning — PostgreSQL docs WAL configuration.",
+      "wrongFeedback": "checkpoint_timeout ja max_wal_size hallitsevat checkpoint frequency.",
+      "sourceRef": "runtime-config-wal",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-CHECKPOINT-TIMEOUT",
+      "featureId": "postgres:checkpoint",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-index-partial",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?",
+      "choices": [
+        {
+          "text": "Partial index WHERE deleted_at IS NULL — indeksoi vain aktiiviset rivit",
+          "correct": true
+        },
+        {
+          "text": "Full index kaikille riveille on pienempi ja nopeampi kuin osittainen indeksi",
+          "correct": false
+        },
+        {
+          "text": "Indeksin poisto nopeuttaa hakuja kun deleted_at IS NOT NULL -rivejä on enemmistö",
+          "correct": false
+        },
+        {
+          "text": "Hash index kaikille riveille korvaa partial indexin tehokkaammin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial indexes reduce size — PostgreSQL docs indexes partial.",
+      "wrongFeedback": "Indeksoi vain relevantit rivit. Partial index pienentää ja nopeuttaa.",
+      "sourceRef": "postgresql/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-index-covering",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN näyttää Index Scan + Heap Fetch — query tarvitsee kaksi saraketta. Optimointi?",
+      "choices": [
+        {
+          "text": "INCLUDE-sarakkeet indeksiin — covering index mahdollistaa index-only scanin",
+          "correct": true
+        },
+        {
+          "text": "Seq scan on aina nopein kun query tarvitsee kaksi saraketta indeksistä",
+          "correct": false
+        },
+        {
+          "text": "Lisää JOIN toiseen tauluun jotta heap fetch ohitetaan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Poista WHERE-ehto jotta planner valitsee Index Scan + Heap Fetch -polun",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Covering indexes with INCLUDE — PostgreSQL docs.",
+      "wrongFeedback": "Heap fetch hidastaa. INCLUDE tuo data indeksiin.",
+      "sourceRef": "postgresql/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:covering-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-index-btree-vs-gin",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "JSONB @> query on hidas seq scanilla. Mikä indeksityyppi?",
+      "choices": [
+        {
+          "text": "GIN-indeksi JSONB-sarakkeelle — tukee @> containment-kyselyitä",
+          "correct": true
+        },
+        {
+          "text": "B-tree riittää JSONB @>-operaattorille tehokkaasti suurilla tauluilla",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi JSONB containment-hakuun on nopein vaihtoehto",
+          "correct": false
+        },
+        {
+          "text": "JSONB-kenttiä ei voi indeksoida PostgreSQLissä lainkaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN supports jsonb operators — PostgreSQL jsonb indexing.",
+      "wrongFeedback": "B-tree ei tue @> tehokkaasti. GIN on oikea JSONB-hakuun.",
+      "sourceRef": "postgresql/datatype-json",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "postgres:gin-jsonb",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-index-unused",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle indeksille. Toimenpide?",
+      "choices": [
+        {
+          "text": "Poista käyttämättömät indeksit — ne hidastavat INSERT/UPDATE-operaatioita",
+          "correct": true
+        },
+        {
+          "text": "Lisää indeksejä kun idx_scan = 0 — planner tarvitsee enemmän vaihtoehtoja",
+          "correct": false
+        },
+        {
+          "text": "REINDEX kaikki indeksit korjaa idx_scan = 0 -tilan pg_stat_user_indexesissä",
+          "correct": false
+        },
+        {
+          "text": "Indeksit eivät vaikuta kirjoitusnopeuteen koska ne ovat erillisiä rakenteita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Unused indexes cost writes — pg_stat_user_indexes.",
+      "wrongFeedback": "Jokainen indeksi ylläpitoa writeille. Poista dead indexes.",
+      "sourceRef": "postgresql/monitoring-stats",
+      "sourceUrl": "https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ALL-INDEXES-VIEW",
+      "featureId": "postgres:unused-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-explain-analyze-buffers",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Query hidas — EXPLAIN näyttää Seq Scan mutta et tiedä onko cache-osuma. Parempi komento?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja buffer hit/read -luvut",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ilman ANALYZE riittää näyttämään cache-osumat ja todelliset ajat",
+          "correct": false
+        },
+        {
+          "text": "SELECT pg_sleep(1) ennen kyselyä paljastaa onko data cachessa vai levyltä",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL ennen EXPLAIN:ia kertoo cache vs disk I/O -erittelyn",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BUFFERS shows read vs cache — PostgreSQL EXPLAIN.",
+      "wrongFeedback": "ANALYZE ajaa queryn. BUFFERS kertoo I/O vs cache.",
+      "sourceRef": "postgresql/sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-buffers",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-explain-nested-loop",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?",
+      "choices": [
+        {
+          "text": "Indeksi join-sarakkeeseen — planner voi vaihtaa hash/merge joiniin",
+          "correct": true
+        },
+        {
+          "text": "Lisää LIMIT ilman ORDER BY korjaa nested loop -kustannuksen isossa joinissa",
+          "correct": false
+        },
+        {
+          "text": "Poista JOIN ja hae data kahdella erillisellä kyselyllä aina",
+          "correct": false
+        },
+        {
+          "text": "Nested loop on aina paras join-strategia kun toinen taulu on pieni",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Indexes enable better join plans — PostgreSQL planner.",
+      "wrongFeedback": "Nested loop ilman indeksiä on O(n*m). Indeksoi join key.",
+      "sourceRef": "postgresql/performance-tips",
+      "sourceUrl": "https://www.postgresql.org/docs/current/performance-tips.html",
+      "featureId": "postgres:join-plan",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-explain-seq-vs-index",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?",
+      "choices": [
+        {
+          "text": "Taulu on pieni — seq scan halvempi kuin indeksihaku satunnaisella I/O:lla",
+          "correct": true
+        },
+        {
+          "text": "Indeksi on aina rikki kun planner valitsee seq scanin olemassa olevasta indeksistä",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL-bugi aiheuttaa seq scanin valinnan vaikka indeksi on kunnossa",
+          "correct": false
+        },
+        {
+          "text": "VACUUM puuttuu aina kun planner ohittaa indeksin pienessä taulussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner cost-based — small tables often seq scan.",
+      "wrongFeedback": "Planner arvioi kustannukset. Pieni taulu = seq scan voi olla oikein.",
+      "sourceRef": "postgresql/indexes-intro",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-intro.html",
+      "featureId": "postgres:seq-scan",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-explain-prepare",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Prepared statements — parse kerran, suorita monta kertaa parametreilla",
+          "correct": true
+        },
+        {
+          "text": "String concat SQL aina on turvallisin tapa vähentää parse overheadia",
+          "correct": false
+        },
+        {
+          "text": "Poista parametrit kyselystä jotta PostgreSQL cachettaa suunnitelman",
+          "correct": false
+        },
+        {
+          "text": "EXPLAIN jokaisessa requestissa cachettaa suunnitelman automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Prepared statements cache plan — PostgreSQL PREPARE.",
+      "wrongFeedback": "Parse overhead kasvaa. Prepared statement säästää suunnittelua.",
+      "sourceRef": "postgresql/sql-prepare",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-prepare.html",
+      "featureId": "postgres:prepared",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-vacuum-bloat",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu?",
+      "choices": [
+        {
+          "text": "Dead tuple -bloat — VACUUM ei palauta levytilaa ilman VACUUM FULL:ia",
+          "correct": true
+        },
+        {
+          "text": "PostgreSQL shrinkaa taulun automaattisesti UPDATE-heavy workloadissa",
+          "correct": false
+        },
+        {
+          "text": "DELETE vapauttaa levytilan heti kun rivi poistetaan transaktiosta",
+          "correct": false
+        },
+        {
+          "text": "REINDEX shrinkaa taulun fyysisen koon dead tuple -ongelmaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "MVCC leaves dead tuples — routine VACUUM reclaims space for reuse.",
+      "wrongFeedback": "Dead tuples kasvattavat taulua. VACUUM merkitsee vapaaksi, FULL shrinkaa.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:bloat",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-vacuum-autovacuum",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen toimenpide?",
+      "choices": [
+        {
+          "text": "Tarkista autovacuum-asetukset ja pitkät transaktiot pg_stat_activityssä",
+          "correct": true
+        },
+        {
+          "text": "DROP DATABASE ja luo uudelleen on nopein tapa korjata wraparound-varoitus",
+          "correct": false
+        },
+        {
+          "text": "Poista autovacuum ja aja manuaalinen VACUUM kerran viikossa",
+          "correct": false
+        },
+        {
+          "text": "REINDEX DATABASE korjaa transaction ID wraparound -varoituksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Long xacts block vacuum — PostgreSQL autovacuum.",
+      "wrongFeedback": "Wraparound on vakava. Etsi pitkiä transaktioita ja säädä autovacuum.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:wraparound",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-vacuum-analyze",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokomento?",
+      "choices": [
+        {
+          "text": "ANALYZE — päivittää tilastot plannerin rivimääräarvioita varten",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL aina bulk INSERTin jälkeen ennen muita ylläpitotoimia",
+          "correct": false
+        },
+        {
+          "text": "REINDEX on ensimmäinen askel kun planner arvioi rivimäärät väärin",
+          "correct": false
+        },
+        {
+          "text": "CHECKPOINT only päivittää planner-statistiikan bulk loadin jälkeen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE updates statistics — PostgreSQL ANALYZE.",
+      "wrongFeedback": "Vanhat stats = huonot planit. ANALYZE bulk loadin jälkeen.",
+      "sourceRef": "postgresql/sql-analyze",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-analyze.html",
+      "featureId": "postgres:analyze",
+      "featurePoints": 2
+    },
+    {
+      "id": "b07-pg-vacuum-freeze",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?",
+      "choices": [
+        {
+          "text": "Rivi on frozen — vanhat XID:t eivät vaadi enää vacuum freeze -käsittelyä",
+          "correct": true
+        },
+        {
+          "text": "Rivi on lukittu exclusive lockilla ja ei näy muille transaktioille",
+          "correct": false
+        },
+        {
+          "text": "Rivi on poistettu mutta näkyy vielä vanhoille transaktioille MVCC:ssä",
+          "correct": false
+        },
+        {
+          "text": "Freeze poistaa rivin datan levyltä ja vapauttaa sivun uudelleenkäyttöön",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Freeze prevents XID wraparound — PostgreSQL vacuum freeze.",
+      "wrongFeedback": "Freeze merkitsee rivin ikuisesti näkyväksi xmin:n kannalta.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:freeze",
+      "featurePoints": 5
+    },
+    {
+      "id": "b07-pg-config-shared-buffers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lähtöarvo?",
+      "choices": [
+        {
+          "text": "Noin 25 % RAM — esim. 8 GB, testaa ja mittaa workloadin mukaan",
+          "correct": true
+        },
+        {
+          "text": "100 % RAM shared_buffers-arvoksi maksimoi PostgreSQLin cache-kerroksen",
+          "correct": false
+        },
+        {
+          "text": "128 MB oletusarvo riittää 32 GB palvelimella ilman säätöä",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers ei vaikuta suorituskykyyn koska OS page cache hoitaa kaiken",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers is primary cache — PostgreSQL runtime config.",
+      "wrongFeedback": "Liian suuri voi kilpailla OS cache:n kanssa. ~25% on lähtökohta.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b07-pg-config-work-mem",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nostat?",
+      "choices": [
+        {
+          "text": "work_mem — sort/hash-muisti per operaatio, nosta varovasti yhteyksien kanssa",
+          "correct": true
+        },
+        {
+          "text": "max_connections = 10000 antaa sortille enemmän muistia per yhteys",
+          "correct": false
+        },
+        {
+          "text": "random_page_cost = 0 estää sortin spillaamisen levylle",
+          "correct": false
+        },
+        {
+          "text": "Poista sort ORDER BY:stä jotta temp file -ongelma poistuu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem limits sort/hash memory — PostgreSQL GUC.",
+      "wrongFeedback": "Liian korkea work_mem × connections = OOM. Nosta harkiten.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b07-pg-config-log-slow",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf?",
+      "choices": [
+        {
+          "text": "log_min_duration_statement = esim. 1000ms — lokittaa hitaat kyselyt",
+          "correct": true
+        },
+        {
+          "text": "log_statement = all ikuisesti prodissa on kevyt tapa lokittaa hitaat kyselyt",
+          "correct": false
+        },
+        {
+          "text": "Poista logging kokonaan parantaa suorituskykyä ja paljastaa hitaat kyselyt",
+          "correct": false
+        },
+        {
+          "text": "EXPLAIN jokaisessa requestissa korvaa slow query -lokituksen tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "log_min_duration_statement logs slow queries — PostgreSQL logging.",
+      "wrongFeedback": "log_statement=all on liian raskas. Duration threshold kohdistaa hitaat.",
+      "sourceRef": "postgresql/runtime-config-logging",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT",
+      "featureId": "postgres:slow-log",
+      "featurePoints": 2
+    },
+    {
+      "id": "b08-pg-indexes-partial",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Query: `WHERE status = 'active'` — 95% rivistä archived. Indeksi koko tauluun turha. Ratkaisu?",
+      "choices": [
+        {
+          "text": "CREATE INDEX ... WHERE status = 'active' — partial index aktiivisille riveille",
+          "correct": true
+        },
+        {
+          "text": "Seq scan on aina nopein kun 95 % riveistä on archived-tilassa",
+          "correct": false
+        },
+        {
+          "text": "Partial index ei ole tuettu PostgreSQLissä — vain full index toimii",
+          "correct": false
+        },
+        {
+          "text": "Hash index status-sarakkeelle korvaa partial indexin archived-tilanteessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial indexes index subset — PostgreSQL partial indexes.",
+      "wrongFeedback": "Partial index pienempi ja nopeampi kun query matchaa WHERE-lauseen.",
+      "sourceRef": "postgresql/docs/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-indexes-covering",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN: Index Scan + Heap Fetch hidastaa — query tarvitsee vain indeksisarakkeet. Optimointi?",
+      "choices": [
+        {
+          "text": "INCLUDE columns — covering index mahdollistaa index-only scanin",
+          "correct": true
+        },
+        {
+          "text": "random_page_cost = 0 poistaa heap fetch -vaiheen Index Scan -polusta",
+          "correct": false
+        },
+        {
+          "text": "Covering index on saatavilla vain MySQL:ssä, PostgreSQL tarvitsee CLUSTER:in",
+          "correct": false
+        },
+        {
+          "text": "Indeksin poisto nopeuttaa kyselyä kun kaikki sarakkeet ovat indeksissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "INCLUDE adds non-key columns to index — PostgreSQL indexes.",
+      "wrongFeedback": "Index-only scan välttää heap fetch jos visibility map OK.",
+      "sourceRef": "postgresql/docs/indexes-index-only-scans",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
+      "featureId": "postgres:covering-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-explain-analyze-buffers",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "EXPLAIN ANALYZE näyttää hitaan queryn — haluat nähdä cache vs disk I/O. Lisäparametri?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local hit ja read -luvut",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN VERBOSE riittää näyttämään cache vs disk I/O -erittelyn",
+          "correct": false
+        },
+        {
+          "text": "BUFFERS vaatii superuser-oikeudet aina, myös read-only diagnostiikassa",
+          "correct": false
+        },
+        {
+          "text": "strace postgres-prosessilla korvaa BUFFERS-tiedon cache-misseistä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BUFFERS shows buffer usage — EXPLAIN docs.",
+      "wrongFeedback": "BUFFERS erottaa cache hit vs read. Käytä tuotantodiagnostiikassa varovasti ANALYZEn kanssa.",
+      "sourceRef": "postgresql/docs/sql-explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-buffers",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-explain-seq-scan",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Taulu pieni — seq scan halvempi kuin index random I/O pienellä datamäärällä",
+          "correct": true
+        },
+        {
+          "text": "Indeksi pitää pakottaa enable_indexscan=off-asetuksella pienissä tauluissa",
+          "correct": false
+        },
+        {
+          "text": "Seq scan valinta on aina bugi vaikka taulussa on alle tuhat riviä",
+          "correct": false
+        },
+        {
+          "text": "statistics_target = 0 korjaa plannerin seq scan -valinnan olemassa olevalla indeksillä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner cost-based — small tables often seq scan — EXPLAIN.",
+      "wrongFeedback": "Indeksi ei aina nopeuta pientä taulua. Tarkista rows ja cost.",
+      "sourceRef": "postgresql/docs/planner-stats",
+      "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",
+      "featureId": "postgres:seq-scan-choice",
+      "featurePoints": 3
+    },
+    {
+      "id": "b08-pg-vacuum-autovacuum-threshold",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria säädät?",
+      "choices": [
+        {
+          "text": "autovacuum_vacuum_threshold + scale factor — tai taulukohtaiset storage params",
+          "correct": true
+        },
+        {
+          "text": "max_connections määrittää autovacuumin dead tuple -kynnyksen suurille tauluille",
+          "correct": false
+        },
+        {
+          "text": "Autovacuum ei ole konfiguroitavissa — samat oletusarvot kaikille tauluille",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL cron-ajossa riittää korvaamaan autovacuumin dead tuple -siivouksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Autovacuum triggers on dead tuple count — autovacuum params.",
+      "wrongFeedback": "Säädä threshold/scale tai per-table autovacuum. FULL vain hätätapauksessa.",
+      "sourceRef": "postgresql/docs/autovacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#AUTOVACUUM",
+      "featureId": "postgres:autovacuum-threshold",
+      "featurePoints": 3
+    },
+    {
+      "id": "b08-pg-vacuum-bloat",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toimenpide?",
+      "choices": [
+        {
+          "text": "Bloat — VACUUM FULL/pg_repack ja paranna autovacuum-asetuksia",
+          "correct": true
+        },
+        {
+          "text": "REINDEX DATABASE riittää korjaamaan taulun fyysisen bloat-ongelman",
+          "correct": false
+        },
+        {
+          "text": "Bloat ei vaikuta suorituskykyyn koska dead tuplet ohitetaan skannauksessa",
+          "correct": false
+        },
+        {
+          "text": "DROP TABLE korjaa bloatin automaattisesti ilman maintenance-ikkunaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Dead tuples cause bloat — routine vacuuming docs.",
+      "wrongFeedback": "Autovacuum reclaimaa dead tuples. FULL lockaa — pg_repack online vaihtoehto.",
+      "sourceRef": "postgresql/docs/vacuum-bloat",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:vacuum-bloat",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-config-shared-buffers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Tyypillinen lähtöarvo?",
+      "choices": [
+        {
+          "text": "Noin 25 % RAM — esim. 8 GB, testaa ja mittaa pg_stat_bgwriterilla",
+          "correct": true
+        },
+        {
+          "text": "100 % RAM shared_buffers-arvoksi estää OS page cache -käytön kokonaan",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers ei vaikuta suorituskykyyn dedicated DB-palvelimella",
+          "correct": false
+        },
+        {
+          "text": "128 MB oletusarvo riittää 32 GB palvelimella ilman lisäsäätöä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers PostgreSQL cache — tuning wiki / docs.",
+      "wrongFeedback": "Liian suuri shared_buffers voi hidastaa. 25% lähtö, sitten pg_stat_bgwriter.",
+      "sourceRef": "postgresql/docs/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b08-pg-config-work-mem",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Parametri?",
+      "choices": [
+        {
+          "text": "work_mem — sort/hash-muisti per operaatio, kerro concurrent ops huomioiden",
+          "correct": true
+        },
+        {
+          "text": "maintenance_work_mem vaikuttaa tavallisten SELECT-kyselyiden sort/hash-operaatioihin",
+          "correct": false
+        },
+        {
+          "text": "work_mem = total RAM antaa jokaiselle sortille maksimimuistin",
+          "correct": false
+        },
+        {
+          "text": "temp_file_limit = 0 nopeuttaa sort/hash-operaatioita estämällä spillin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem per sort/hash node — can multiply — config docs.",
+      "wrongFeedback": "work_mem per operation — monta sorttia = monta × work_mem. Nosta varovasti.",
+      "sourceRef": "postgresql/docs/work-mem",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-config-max-connections",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "project-lead",
+        "coworker"
+      ],
+      "prompt": "Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Arkkitehtuurikorjaus?",
+      "choices": [
+        {
+          "text": "Connection pooler (PgBouncer) — pidä max_connections kohtuullisena",
+          "correct": true
+        },
+        {
+          "text": "Nosta max_connections = 10000 jotta jokainen microservice saa oman yhteyden",
+          "correct": false
+        },
+        {
+          "text": "Jokainen microservice avaa oman connection stormin ilman pooleria",
+          "correct": false
+        },
+        {
+          "text": "Pooler korvaa PostgreSQL-palvelimen kokonaan sovelluskerroksessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Too many connections hurt — pooler multiplex — connection docs.",
+      "wrongFeedback": "PG prosessi per connection. PgBouncer transaction pooling.",
+      "sourceRef": "postgresql/docs/connect-estab",
+      "sourceUrl": "https://www.postgresql.org/docs/current/connect-estab.html",
+      "featureId": "postgres:connection-pool",
+      "featurePoints": 3
+    },
+    {
+      "id": "b08-pg-indexes-multicolumn-order",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi?",
+      "choices": [
+        {
+          "text": "B-tree composite: vasemmanpuoleinen prefix — tarvitsee a:n tai (a,b)-ehdon",
+          "correct": true
+        },
+        {
+          "text": "PostgreSQL skannaa aina koko (a,b)-indeksin vaikka WHERE käyttää vain b:tä",
+          "correct": false
+        },
+        {
+          "text": "Sarakkeiden järjestyksellä indeksissä ei ole väliä equality- ja range-hauissa",
+          "correct": false
+        },
+        {
+          "text": "b-only query hyödyntää (a,b)-indeksiä täydellisesti ilman erillistä indeksiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multicolumn btree left-prefix — indexes multicolumn.",
+      "wrongFeedback": "Indeksi (b,a) tai erillinen b-indeksi jos vain b-filtteri.",
+      "sourceRef": "postgresql/docs/indexes-multicolumn",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
+      "featureId": "postgres:multicolumn-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b08-pg-explain-nested-loop",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloin NL on OK?",
+      "choices": [
+        {
+          "text": "Ulkopuoli pieni ja sisäpuolella indeksi — NL + index scan on OK",
+          "correct": true
+        },
+        {
+          "text": "Nested loop on aina huono riippumatta ulkoisen taulun koosta",
+          "correct": false
+        },
+        {
+          "text": "Hash join ei ole olemassa PostgreSQLissä suurten taulujen yhdistämisessä",
+          "correct": false
+        },
+        {
+          "text": "Seq scan sisä loopissa on OK kun ulkopuolella on alle miljoona riviä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Nested loop good for small outer + indexed inner — planner.",
+      "wrongFeedback": "Iso outer × seq scan inner = katastrofi. Indeksi innerille tai hash join.",
+      "sourceRef": "postgresql/docs/planner-join",
+      "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",
+      "featureId": "postgres:nested-loop",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-vacuum-freeze",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa?",
+      "choices": [
+        {
+          "text": "Transaction ID wraparound — vacuum freeze estää pakotetun shutdownin",
+          "correct": true
+        },
+        {
+          "text": "Levy täyttyy WAL-logeista — ainoa uhka anti-wraparound-varoituksessa",
+          "correct": false
+        },
+        {
+          "text": "Freeze poistaa kaiken datan taulusta ja vaatii restore backupista",
+          "correct": false
+        },
+        {
+          "text": "Varoitus on kosmeettinen eikä vaadi toimenpiteitä tuotantoympäristössä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "XID wraparound requires vacuum freeze — routine vacuuming.",
+      "wrongFeedback": "Autovacuum freeze kriittinen. Ignored → forced shutdown risk.",
+      "sourceRef": "postgresql/docs/routine-vacuuming-wraparound",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:vacuum-freeze",
+      "featurePoints": 5,
+      "studyNotes": "Wraparound on harvinainen prod-peli mutta vakava. Seuraa age(relfrozenxid) ja autovacuum freeze settings."
+    },
+    {
+      "id": "b08-pg-config-checkpoint",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeout. Tavoite?",
+      "choices": [
+        {
+          "text": "Levitä checkpoint I/O — completion_target ~0.9, säätö timeout/max_wal",
+          "correct": true
+        },
+        {
+          "text": "checkpoint_timeout = 1s nopeuttaa I/O-spikejä ja parantaa throughputia",
+          "correct": false
+        },
+        {
+          "text": "Checkpoint ei aiheuta I/O:ta koska dirty pages kirjoitetaan WAL:in kautta",
+          "correct": false
+        },
+        {
+          "text": "fsync = off tuotantoon poistaa checkpoint-kuorman turvallisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Spread checkpoint writes — WAL and checkpoint tuning.",
+      "wrongFeedback": "Aggressiivinen checkpoint = spike. completion_target pehmentää.",
+      "sourceRef": "postgresql/docs/wal-configuration",
+      "sourceUrl": "https://www.postgresql.org/docs/current/wal-configuration.html",
+      "featureId": "postgres:checkpoint-tuning",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-indexes-btree-gist",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi?",
+      "choices": [
+        {
+          "text": "GiST (tai SP-GiST) — geometriset operaattorit kuten && box-overlap",
+          "correct": true
+        },
+        {
+          "text": "B-tree location-sarakkeelle riittää && box-overlap -kyselyihin",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi &&-operaattorille on nopein geo-query-ratkaisu",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL ei tue geo-indeksejä — tarvitaan erillinen tietokanta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GiST for geometric/range — index types docs.",
+      "wrongFeedback": "B-tree ei tue overlap-operaattoreita. PostGIS/GiST tai GIN riippuen tyypistä.",
+      "sourceRef": "postgresql/docs/indexes-types",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-types.html",
+      "featureId": "postgres:gist-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b08-pg-explain-cost-settings",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halvemmalta manuaalisesti. Säädettävä?",
+      "choices": [
+        {
+          "text": "Laske random_page_cost SSD:lle — seq_page_cost suhteessa",
+          "correct": true
+        },
+        {
+          "text": "enable_seqscan = off pysyvästi pakottaa indeksin SSD-palvelimella",
+          "correct": false
+        },
+        {
+          "text": "Cost-parametrit eivät vaikuta plannerin valintaan ollenkaan",
+          "correct": false
+        },
+        {
+          "text": "cpu_index_tuple_cost = 0 korjaa seq scan -valinnan SSD-ympäristössä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planner costs reflect storage speed — runtime config query tuning.",
+      "wrongFeedback": "Oletus random_page_cost on HDD-tyylinen. SSD:llä laske random_page_cost.",
+      "sourceRef": "postgresql/docs/runtime-config-query",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-RANDOM-PAGE-COST",
+      "featureId": "postgres:planner-costs",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-index-partial-active",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Kysely hakee vain `status = 'active'` rivejä 10M taulusta — index on suuri ja hidas. Optimointi?",
+      "choices": [
+        {
+          "text": "Partial index WHERE status = 'active' — pienempi ja nopeampi aktiivisille",
+          "correct": true
+        },
+        {
+          "text": "Full index kaikille riveille on aina pienempi kuin partial index 10M taulussa",
+          "correct": false
+        },
+        {
+          "text": "Seq scan on aina nopein kun haetaan vain active-rivejä suuresta taulusta",
+          "correct": false
+        },
+        {
+          "text": "CLUSTER korvaa partial indexin status = 'active' -kyselyissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial indexes — PostgreSQL docs CREATE INDEX.",
+      "wrongFeedback": "Partial index kattaa vain relevantit rivit — pienempi ja tehokkaampi.",
+      "sourceRef": "postgresql/indexes-partial",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
+      "featureId": "postgres:partial-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-index-composite-order",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?",
+      "choices": [
+        {
+          "text": "Equality-sarake ensin, range toisena — (tenant_id, created_at)",
+          "correct": true
+        },
+        {
+          "text": "Sarakkeiden järjestyksellä composite-indeksissä ei ole väliä plannerille",
+          "correct": false
+        },
+        {
+          "text": "Tarvitaan aina kaksi erillistä indeksiä equality + range -kyselyihin",
+          "correct": false
+        },
+        {
+          "text": "Hash-indeksi korjaa väärän sarakkeiden järjestyksen composite-indeksissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multicolumn index column order — PostgreSQL indexes.",
+      "wrongFeedback": "B-tree hyödyntää indexiä vasemmalta oikealle. Equality ennen rangea.",
+      "sourceRef": "postgresql/indexes-multicolumn",
+      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
+      "featureId": "postgres:composite-index",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-index-gin-jsonb",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "JSONB-kentässä haku `@>` containment-operaatiolla on hidas seq scan. Index-tyyppi?",
+      "choices": [
+        {
+          "text": "GIN index jsonb_path_ops tai jsonb_ops — @> containment-hakuun",
+          "correct": true
+        },
+        {
+          "text": "B-tree index JSONB:lle on paras valinta @>-operaattorille",
+          "correct": false
+        },
+        {
+          "text": "Hash index JSON containment-hakuun tukee @>-operaattoria tehokkaasti",
+          "correct": false
+        },
+        {
+          "text": "JSONB ei tue indeksejä PostgreSQLissä — vain seq scan toimii",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GIN for JSONB — PostgreSQL jsonb indexing.",
+      "wrongFeedback": "GIN tukee JSONB containment- ja key-operaatioita.",
+      "sourceRef": "postgresql/jsonb-indexing",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
+      "featureId": "postgres:gin-jsonb",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-index-unused-drop",
+      "chapter": "pg-indexes",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT hidastuu. Toimenpide?",
+      "choices": [
+        {
+          "text": "Arvioi poisto — unused index hidastaa kirjoituksia turhaan",
+          "correct": true
+        },
+        {
+          "text": "Pidä indeksi aina — idx_scan = 0 tarkoittaa että se on valmiina tulevaan",
+          "correct": false
+        },
+        {
+          "text": "REINDEX korjaa unused-tilan ja aktivoi indeksin planner-valinnoissa",
+          "correct": false
+        },
+        {
+          "text": "Unused tarkoittaa että indeksi on liian pieni eikä hidasta INSERTejä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Index maintenance — pg_stat_user_indexes idx_scan.",
+      "wrongFeedback": "Käyttämätön index kuluttaa levyä ja hidastaa INSERT/UPDATE. Poista jos turha.",
+      "sourceRef": "postgresql/monitoring-stats",
+      "sourceUrl": "https://www.postgresql.org/docs/current/monitoring-stats.html",
+      "featureId": "postgres:unused-index",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-explain-seq-scan-large",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?",
+      "choices": [
+        {
+          "text": "Tarkista selectivity — planner arvioi seq scan halvemmaksi, ANALYZE ja WHERE",
+          "correct": true
+        },
+        {
+          "text": "Indeksi on rikki — REINDEX aina kun seq scan 5M rivin taulussa",
+          "correct": false
+        },
+        {
+          "text": "Seq scan on aina virhe suurissa tauluissa vaikka suurin osa riveistä matchaa",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL ei käytä indeksejä yli miljoonan rivin tauluissa lainkaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Query planner cost — EXPLAIN, statistics.",
+      "wrongFeedback": "Planner valitsee seq scan jos suurin osa riveistä matchaa. ANALYZE päivittää stats.",
+      "sourceRef": "postgresql/explain",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:seq-scan-choice",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-explain-nested-loop",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?",
+      "choices": [
+        {
+          "text": "Hash Join tai Merge Join — tarkista indeksit ja stats isoille dataseteille",
+          "correct": true
+        },
+        {
+          "text": "Nested Loop on aina nopein 100k × 100k rivin joinissa",
+          "correct": false
+        },
+        {
+          "text": "Lisää LIMIT ilman ORDER BY korjaa nested loop -kustannuksen joinissa",
+          "correct": false
+        },
+        {
+          "text": "JOIN ei skaalaudu PostgreSQLissä yli tuhannen rivin tuloksiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Join algorithms — PostgreSQL planner.",
+      "wrongFeedback": "Nested loop sopii pieniin ulkoisiin. Isoille dataseteille hash/merge join.",
+      "sourceRef": "postgresql/planner-optimizer",
+      "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",
+      "featureId": "postgres:join-algorithm",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-explain-analyze-buffers",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Kysely on hidas mutta EXPLAIN cost näyttää pieneltä. Seuraava diagnostiikka?",
+      "choices": [
+        {
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja I/O-mittaukset",
+          "correct": true
+        },
+        {
+          "text": "EXPLAIN ilman ANALYZE riittää kun cost näyttää pieneltä mutta kysely hidas",
+          "correct": false
+        },
+        {
+          "text": "Kysely on nopea — cost-arvio on aina totuus plannerin arvioissa",
+          "correct": false
+        },
+        {
+          "text": "BUFFERS toimii vain replika-instansseissa, ei primary-palvelimella",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EXPLAIN ANALYZE BUFFERS — PostgreSQL performance tips.",
+      "wrongFeedback": "Cost on arvio. ANALYZE ajaa kyselyn, BUFFERS näyttää cache-missit.",
+      "sourceRef": "postgresql/explain-analyze",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
+      "featureId": "postgres:explain-analyze",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-explain-missing-stats",
+      "chapter": "pg-explain",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Bulk INSERT jälkeen kyselyt käyttävät väärää suunnitelmaa. Nopea korjaus?",
+      "choices": [
+        {
+          "text": "ANALYZE taulu — päivitä planner-statistiikka bulk loadin jälkeen",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL heti bulk INSERTin jälkeen ennen muita ylläpitotoimia",
+          "correct": false
+        },
+        {
+          "text": "REINDEX DATABASE korjaa planner-suunnitelman bulk loadin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Planner korjautuu automaattisesti minuutissa ilman ANALYZE-komentoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ANALYZE updates statistics — PostgreSQL routine maintenance.",
+      "wrongFeedback": "Bulk load muuttaa datajakaumaa. ANALYZE päivittää statsit.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
+      "featureId": "postgres:analyze-stats",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-vacuum-bloat-table",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables näyttää korkean n_dead_tup. Toimenpide?",
+      "choices": [
+        {
+          "text": "VACUUM (ANALYZE) — autovacuum ei pysynyt, tarkista bloat ja dead tuplet",
+          "correct": true
+        },
+        {
+          "text": "DROP TABLE heti kun n_dead_tup on korkea pg_stat_user_tablesissa",
+          "correct": false
+        },
+        {
+          "text": "Dead tuplet eivät vaikuta suorituskykyyn koska ne ohitetaan skannauksessa",
+          "correct": false
+        },
+        {
+          "text": "REINDEX korvaa VACUUM:in dead tuple -siivouksessa 50 GB taulussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM reclaims dead tuple space — PostgreSQL vacuuming.",
+      "wrongFeedback": "Dead tuples hidastavat skannauksia. VACUUM siivoaa — VACUUM FULL harvoin.",
+      "sourceRef": "postgresql/routine-vacuuming",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+      "featureId": "postgres:vacuum-bloat",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-vacuum-autovacuum-tuning",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö?",
+      "choices": [
+        {
+          "text": "autovacuum_vacuum_scale_factor / threshold tai table storage params",
+          "correct": true
+        },
+        {
+          "text": "Poista autovacuum — manuaalinen VACUUM riittää UPDATE-heavy tauluille",
+          "correct": false
+        },
+        {
+          "text": "VACUUM FULL cron joka minuutti on turvallisin tapa estää bloatia",
+          "correct": false
+        },
+        {
+          "text": "Autovacuum ei skaalaudu isoille tauluille — sama threshold kaikille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Autovacuum tuning — PostgreSQL autovacuum parameters.",
+      "wrongFeedback": "Isoille tauluille laske scale_factor tai aseta aggressive table settings.",
+      "sourceRef": "postgresql/autovacuum",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#AUTOVACUUM",
+      "featureId": "postgres:autovacuum-tuning",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-vacuum-freeze-age",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "Varoitus: `database must be vacuumed within 200 million transactions`. Kiireellinen toimenpide?",
+      "choices": [
+        {
+          "text": "VACUUM FREEZE — estää transaction ID wraparound",
+          "correct": true
+        },
+        {
+          "text": "RESTART PostgreSQL — korjaa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Lisää RAM — wraparound on muistiongelma",
+          "correct": false
+        },
+        {
+          "text": "Ignoroi — varoitus on informatiivinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Transaction ID wraparound — PostgreSQL routine vacuuming.",
+      "wrongFeedback": "Wraparound voi pysäyttää kirjoitukset. VACUUM FREEZE kiireellinen.",
+      "sourceRef": "postgresql/routine-vacuuming-wraparound",
+      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+      "featureId": "postgres:freeze-wraparound",
+      "featurePoints": 5
+    },
+    {
+      "id": "b09-pg-vacuum-full-lock",
+      "chapter": "pg-vacuum",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tämä on riski?",
+      "choices": [
+        {
+          "text": "VACUUM FULL lukitsee taulun exclusive lockilla — katkoa tuotannossa",
+          "correct": true
+        },
+        {
+          "text": "VACUUM FULL on nopeampi kuin VACUUM eikä vaadi maintenance-ikkunaa",
+          "correct": false
+        },
+        {
+          "text": "FULL poistaa datan taulusta ja vaatii restore backupista",
+          "correct": false
+        },
+        {
+          "text": "Lock kestää vain millisekunteja riippumatta taulun koosta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "VACUUM vs VACUUM FULL locking — PostgreSQL docs.",
+      "wrongFeedback": "VACUUM FULL rewrite table — exclusive lock. Aja maintenance-ikkunassa.",
+      "sourceRef": "postgresql/sql-vacuumfull",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-vacuum.html",
+      "featureId": "postgres:vacuum-full-lock",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-config-shared-buffers",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen lähtöarvo?",
+      "choices": [
+        {
+          "text": "Noin 25 % RAM — PostgreSQL wiki tuning, mutta mitataan workloadilla",
+          "correct": true
+        },
+        {
+          "text": "90 % RAM shared_buffers — maksimoi cache ja korvaa OS page cache",
+          "correct": false
+        },
+        {
+          "text": "128 MB riittää aina 32 GB palvelimella ilman lisäsäätöä",
+          "correct": false
+        },
+        {
+          "text": "shared_buffers korvaa OS pagecachen kokonaan dedicated DB-palvelimella",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers tuning — PostgreSQL wiki runtime config.",
+      "wrongFeedback": "Liian suuri shared_buffers voi hidastaa. ~25 % on lähtökohta, säädä mitaten.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 3
+    },
+    {
+      "id": "b09-pg-config-work-mem",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Parametri?",
+      "choices": [
+        {
+          "text": "work_mem — muistia sort/hash-operaatioille per operaatio",
+          "correct": true
+        },
+        {
+          "text": "maintenance_work_mem korjaa query sort/hash spill -ongelman SELECT-kyselyissä",
+          "correct": false
+        },
+        {
+          "text": "max_connections pienemmäksi antaa sortille enemmän muistia per yhteys",
+          "correct": false
+        },
+        {
+          "text": "temp_file_limit = 0 estää spillin ja nopeuttaa sort/hash-operaatioita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "work_mem — PostgreSQL runtime config.",
+      "wrongFeedback": "Sort/hash käyttää work_mem per node. Liian suuri × connections = OOM risk.",
+      "sourceRef": "postgresql/runtime-config-resource-work-mem",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
+      "featureId": "postgres:work-mem",
+      "featurePoints": 4
+    },
+    {
+      "id": "b09-pg-config-pgbouncer-pool",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "500 microservice-instanssia avaa oman PG-yhteyden — `too many connections`. Ratkaisu?",
+      "choices": [
+        {
+          "text": "PgBouncer connection pooling — transaction/session pool yhteyksille",
+          "correct": true
+        },
+        {
+          "text": "max_connections = 10000 ratkaisee too many connections -virheen turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "Jokainen microservice-instanssi tarvitsee oman PostgreSQL-instanssin",
+          "correct": false
+        },
+        {
+          "text": "Persistent connections estävät poolauksen — pooleri ei toimi niiden kanssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Connection pooling — PgBouncer docs.",
+      "wrongFeedback": "Liian monta suoraa yhteyttä kuormittaa PG:tä. PgBouncer poolaa yhteydet.",
+      "sourceRef": "pgbouncer/usage",
+      "sourceUrl": "https://www.pgbouncer.org/usage.html",
+      "featureId": "postgres:pgbouncer",
+      "featurePoints": 3
+    },
+    {
+      "id": "b10-pg-config-shared-buffers-01",
+      "chapter": "pg-config",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäinen konfiguraatiomuutos?",
+      "choices": [
+        {
+          "text": "Kasvata shared_buffers maltillisesti — esim. 25 % RAM, katso docs",
+          "correct": true
+        },
+        {
+          "text": "Aseta shared_buffers = 100 % RAM maksimoidaksesi cache hit ration",
+          "correct": false
+        },
+        {
+          "text": "Poista checkpointit parantaaksesi cache hit ratioa matalalla shared_buffersilla",
+          "correct": false
+        },
+        {
+          "text": "REINDEX kaikille tauluille on ensimmäinen askel matalassa cache hit ratiossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_buffers vaikuttaa page cache -käyttäytymiseen — säädä mitattuna.",
+      "wrongFeedback": "Liian suuri shared_buffers voi haitata — noudata PostgreSQL-ohjetta.",
+      "sourceRef": "postgresql/runtime-config-resource",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html",
+      "featureId": "postgres:shared-buffers",
+      "featurePoints": 4
+    }
+  ]
+}

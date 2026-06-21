@@ -1,0 +1,320 @@
+{
+  "bank": "javascript-web.json",
+  "rewrites": [
+    {
+      "id": "js-async-microtasks",
+      "choices": [
+        { "text": "1, 3, 2 — synkroninen koodi ennen microtask-jonoa", "correct": true },
+        { "text": "1, 2, 3 — promise callback ajetaan heti synkronin jälkeen", "correct": false },
+        { "text": "3, 2, 1 — event loop käsittelee jonon takaperin", "correct": false },
+        { "text": "2, 1, 3 — microtask ehtii ennen ensimmäistä logia", "correct": false }
+      ]
+    },
+    {
+      "id": "js-async-await-error",
+      "choices": [
+        { "text": "try/catch awaitin ympärillä tai .catch() promisessa", "correct": true },
+        { "text": "Virheet heitetään uudelleen automaattisesti async-funktiossa", "correct": false },
+        { "text": "Vain synkroninen callback-käsittely toimii virhetilanteissa", "correct": false },
+        { "text": "await estää poikkeusten leviämisen kutsupinossa kokonaan", "correct": false }
+      ]
+    },
+    {
+      "id": "js-types-strict-eq",
+      "choices": [
+        { "text": "Tiukka vertailu ilman implisiittistä tyyppimuunnosta", "correct": true },
+        { "text": "=== on merkittävästi nopeampi kuin == vertailuissa", "correct": false },
+        { "text": "== estää null- ja undefined-vertailun kokonaan käytöstä", "correct": false },
+        { "text": "Operaattoreilla ei ole käytännön eroa vertailun tuloksessa", "correct": false }
+      ]
+    },
+    {
+      "id": "js-runtime-closure-loop",
+      "choices": [
+        { "text": "3, 3, 3 — var ei luo erillistä lohkoscopea iteraatiolle", "correct": true },
+        { "text": "0, 1, 2 — setTimeout lukitsee loop-indeksin arvoksi", "correct": false },
+        { "text": "undefined × 3 — i on määrittelemätön callback-hetkellä", "correct": false },
+        { "text": "Syntaksivirhe — var ja nuoli estävät setTimeout-kutsun", "correct": false }
+      ]
+    },
+    {
+      "id": "js-types-null-object",
+      "choices": [
+        { "text": "ES-historiallinen vika — käytä eksplisiittistä === null -tarkistusta", "correct": true },
+        { "text": "null on primitiivi joka tallentuu object-tyyppinä muistissa", "correct": false },
+        { "text": "typeof-operaattori poistettiin ES6-moduulireformissa kokonaan", "correct": false },
+        { "text": "Ongelma on vain TypeScript-kääntäjän tiukan tyypityksen aiheuttama", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-async-fetch-abort",
+      "choices": [
+        { "text": "AbortController-signaali fetchiin ja cleanup useEffectin returnissa", "correct": true },
+        { "text": "Ignoroi virhetilanne — fetch päättyy itsestään navigoinnissa", "correct": false },
+        { "text": "setState on turvallista vaikka komponentti on jo unmountattu", "correct": false },
+        { "text": "async/await korvaa tarpeen peruuttaa hidas HTTP-pyyntö kesken", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-async-microtask-order",
+      "choices": [
+        { "text": "Promise microtask ajetaan ennen setTimeout-macrotaskia loopissa", "correct": true },
+        { "text": "setTimeout ajetaan aina ennen muita asynkronisia tehtäviä", "correct": false },
+        { "text": "Synkroninen koodi suoritetaan uudelleen jokaisella loop-kierroksella", "correct": false },
+        { "text": "Promise.then on macrotask samassa jonossa kuin setTimeout", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-async-await-parallel",
+      "choices": [
+        { "text": "await Promise.all([fetchA(), fetchB()]) suorittaa kutsut rinnakkain", "correct": true },
+        { "text": "Lisää kolmas peräkkäinen await — näin latenssi pienenee nopeammin", "correct": false },
+        { "text": "Poista async ja käytä synkronista fetchiä suorituskyvyn parantamiseen", "correct": false },
+        { "text": "Lisää setTimeout fetch-kutsujen väliin jotta ne eivät blokkaa toisiaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-types-nullish-coalescing",
+      "choices": [
+        { "text": "?? korvaa vain null/undefined — säilyttää arvon 0 oletuksena", "correct": true },
+        { "text": "== false -tarkistus erottaa nollan ja tyhjän arvon toisistaan", "correct": false },
+        { "text": "eval lukee config-merkkijonon ja palauttaa objektin suoraan runtimeen", "correct": false },
+        { "text": "parseInt muuntaa jokaisen config-arvon kokonaisluvuksi ennen vertailua", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-types-strict-equality",
+      "choices": [
+        { "text": "Eksplisiittinen validointi: typeof token === 'string' && token.length", "correct": true },
+        { "text": "Loose equality (==) riittää tokenin olemassaolon varmistamiseen", "correct": false },
+        { "text": "typeof token == 'null' paljastaa puuttuvan tokenin reviewissa luotettavasti", "correct": false },
+        { "text": "Object.is vertaa kaikki arvotyypit yhdellä geneerisellä equality-tarkistuksella", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-types-bigint-json",
+      "choices": [
+        { "text": "BigInt tai merkkijono ID:nä ennen Number-muunnosta JSON-datassa", "correct": true },
+        { "text": "Number-tyyppi säilyttää 64-bit kokonaisluvun tarkkuuden aina", "correct": false },
+        { "text": "parseFloat palauttaa tarkan integer-arvon desimaalimerkkijonosta", "correct": false },
+        { "text": "JSON.parse tukee BigInt-tyyppiä natiivisti ilman muunnosta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-modules-dynamic-import",
+      "choices": [
+        { "text": "dynamic import() reitillä — code splitting erilliseen chunkiin", "correct": true },
+        { "text": "require() bundlerissa lataa admin-moduulin kaikkien mukana", "correct": false },
+        { "text": "script-tag jokaisella sivulla varmistaa admin-koodin saatavuuden", "correct": false },
+        { "text": "eval() lataa moduulin sisällön runtimeen ilman bundleria", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-modules-cycle",
+      "choices": [
+        { "text": "Refaktoroi jaettu logiikka erilliseen kolmanteen moduuliin", "correct": true },
+        { "text": "Lisää window.global väliaikaiseksi sidontapaikaksi syklissä", "correct": false },
+        { "text": "Poista export-lauseet — import riittää moduulien väliseen linkitykseen", "correct": false },
+        { "text": "CommonJS require ratkaisee circular import -ongelman automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-runtime-closure-stale",
+      "choices": [
+        { "text": "Stale closure — päivitä deps-array tai käytä funktionaalista updatea", "correct": true },
+        { "text": "JavaScript ei tue closureja setInterval-kontekstissa lainkaan", "correct": false },
+        { "text": "let avainsana korjaa automaattisesti vanhan arvon intervalissa", "correct": false },
+        { "text": "setInterval ei sieppaa muuttujia closuren kautta koskaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-runtime-memory-detached",
+      "choices": [
+        { "text": "postMessage(buffer, [buffer]) transfer list — omistajuuden siirto", "correct": true },
+        { "text": "JSON.stringify serialisoi ArrayBufferin nopeasti viestin mukana", "correct": false },
+        { "text": "SharedWorker on aina nopeampi kuin tavallinen Web Worker", "correct": false },
+        { "text": "Blob-klonaus on nopein tapa siirtää suuri buffer workerille", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-runtime-prototype-pollution",
+      "choices": [
+        { "text": "Prototype pollution — Object.prototype saastuu userInput-avaimilla", "correct": true },
+        { "text": "JSON.parse on turvallinen — se ei koskaan muokkaa prototyyppiketjua", "correct": false },
+        { "text": "Riski on vain SQL injection kun merge käyttää tietokantakyselyä", "correct": false },
+        { "text": "Rekursiivinen merge on aina turvallinen objektiargumenteille", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-js-runtime-weakmap-cache",
+      "choices": [
+        { "text": "WeakMap — objektiavain ei estä elementin roskienkeruuta", "correct": true },
+        { "text": "global object tallentaa DOM-metadataa pysyvästi muistissa", "correct": false },
+        { "text": "localStorage DOM-id:llä säilyttää metadatan sivun latausten välillä", "correct": false },
+        { "text": "WeakMap ei salli objektiavaimia — vain primitiivit kelpaavat", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-async-fetch-01",
+      "choices": [
+        { "text": "AbortController ja signal fetch-opseissa pyynnön peruuttamiseen", "correct": true },
+        { "text": "fetch API ei tue kesken jääneen pyynnön peruuttamista lainkaan", "correct": false },
+        { "text": "window.close() keskeyttää kaikki aktiiviset fetch-pyynnöt välittömästi", "correct": false },
+        { "text": "setTimeout(null) peruuttaa edellisen fetch-kutsun automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-async-microtask-03",
+      "choices": [
+        { "text": "Promise.then ennen setTimeout — microtask-queue macrotaskin edellä", "correct": true },
+        { "text": "setTimeout ajetaan aina ennen microtask-jonon tyhjennystä", "correct": false },
+        { "text": "Synkroninen koodi ajetaan viimeisenä jokaisella event loop -kierroksella", "correct": false },
+        { "text": "Järjestys on satunnainen kun timer ja promise ovat samassa kierroksessa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-async-await-04",
+      "choices": [
+        { "text": "try/catch awaitin ympärillä tai .catch() promisen ketjussa", "correct": true },
+        { "text": "async-funktio ei voi heittää virhettä koskaan kutsujalle", "correct": false },
+        { "text": "console.log on ainoa tapa nähdä async-funktion virheilmoitus", "correct": false },
+        { "text": "Poista async — silloin throw toimii taas normaalisti callerissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-types-optional-05",
+      "choices": [
+        { "text": "Optional chaining: user?.profile?.name turvalliseen syvään lukemiseen", "correct": true },
+        { "text": "user.profile.name toimii kun API palauttaa joskus undefined-kentän", "correct": false },
+        { "text": "== null -tarkistus kattaa kaikki syvän property access -tapaukset", "correct": false },
+        { "text": "eval() lukee kentän arvon dynaamisesti objektista ilman tyyppivirhettä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-types-coalesce-06",
+      "choices": [
+        { "text": "Nullish coalescing: port ?? 3000 säilyttää arvon 0 sellaisenaan", "correct": true },
+        { "text": "port || 3000 toimii identtisesti ??-operaattorin kanssa kaikissa tapauksissa", "correct": false },
+        { "text": "port ? port : 3000 estää nollan käytön oletusarvona konfiguraatiossa", "correct": false },
+        { "text": "port + 3000 laskee oletusportin matemaattisesti null-tilanteessa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-types-strict-07",
+      "choices": [
+        { "text": "Käytä === tiukkaan vertailuun ilman tyyppimuunnosta", "correct": true },
+        { "text": "== on turvallisempi kuin === koska se normalisoi arvot automaattisesti", "correct": false },
+        { "text": "Muuta count stringiksi ennen vertailua — se poistaa bugin kokonaan", "correct": false },
+        { "text": "Poista vertailu kokonaan — falsy-tarkistus korvaa tarpeen ===-operaattorille", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-modules-dynamic-08",
+      "choices": [
+        { "text": "dynamic import(): await import('./analytics.js') feature flagin takana", "correct": true },
+        { "text": "require() toimii natiivisti kaikissa moderneissa selaimissa moduuleille", "correct": false },
+        { "text": "sync script-tag lataa moduulin ennen sivun interaktiivisuutta", "correct": false },
+        { "text": "eval() suorittaa moduulin lähdekoodin suoraan ilman bundleria", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-modules-cycle-09",
+      "choices": [
+        { "text": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin tai lazy import", "correct": true },
+        { "text": "Poista export — import riittää kun sykli on vain kahden moduulin välillä", "correct": false },
+        { "text": "Siirry CommonJS:ään — se ratkaisee circular dependency -ongelman", "correct": false },
+        { "text": "global variable jakaa tilan moduulien välillä init-ongelman kiertämiseksi", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-modules-tla-10",
+      "choices": [
+        { "text": "Kun async-init vaaditaan ennen exporttia — muuten erillinen init()", "correct": true },
+        { "text": "Käytä top-level awaitia jokaisessa tiedostossa suorituskyvyn parantamiseksi", "correct": false },
+        { "text": "Top-level await on kielletty ES-moduuleissa standardissa kokonaan", "correct": false },
+        { "text": "Vain callback-tyyli toimii async-resurssin latauksessa moduulin tasolla", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-modules-export-11",
+      "choices": [
+        { "text": "export { foo, bar } from './utils.js' — re-export ilman importia", "correct": true },
+        { "text": "import * sitten window.foo — julkaisee utilit globaalisti entrypointista", "correct": false },
+        { "text": "require() + module.exports re-export ES-moduuleissa toimii bundlerissa", "correct": false },
+        { "text": "globalThis.foo = foo on barrel-tiedoston suositeltu re-export-malli", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-runtime-closure-12",
+      "choices": [
+        { "text": "let i loopissa tai IIFE joka luo erillisen closuren jokaiselle iteraatiolle", "correct": true },
+        { "text": "var i on fine — loop-indeksi on erillinen jokaiselle setTimeout-kutsulle", "correct": false },
+        { "text": "Poista closure käyttämällä synkronista for-loopia timeoutin sisällä", "correct": false },
+        { "text": "setTimeout on synkroninen — se suorittaa callbackin ennen loopin jatkumista", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-runtime-weakmap-13",
+      "choices": [
+        { "text": "WeakMap — avaimet eivät estä objektien roskienkeruuta metadata-cachessa", "correct": true },
+        { "text": "Global object registry pitää kaikki objektit elossa käyttöönotosta lähtien", "correct": false },
+        { "text": "JSON.stringify avaimista tallentaa metadata-avaimet merkkijonoina Mapiin", "correct": false },
+        { "text": "WeakMap ei toimi objektiavaimille — vain string-primitiivit kelpaavat", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-js-runtime-pollution-14",
+      "choices": [
+        { "text": "Object.create(null) tai Map; vältä deep mergeä ilman avainvalidointia", "correct": true },
+        { "text": "JSON.parse on aina turvallinen — se ei muokkaa Object.prototype-rakennetta", "correct": false },
+        { "text": "Luota client-inputiin kun merge tapahtuu palvelimen ulkopuolella UI:ssa", "correct": false },
+        { "text": "eval(JSON) parsii payloadin turvallisesti ilman prototyyppimuutoksia", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-js-async-debounce-fetch",
+      "choices": [
+        { "text": "Debounce/throttle ja AbortController edellisen haku-pyynnön peruutukseen", "correct": true },
+        { "text": "setInterval 10 ms välein laukaisee fetchin tasaisella taajuudella hakuun", "correct": false },
+        { "text": "Synkroninen XMLHttpRequest estää rate limitin koska pyyntöjä tulee vähemmän", "correct": false },
+        { "text": "Cache-Control: no-store riittää rajaamaan API-pyyntöjen määrän hakukentässä", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-js-async-event-loop-order",
+      "choices": [
+        { "text": "1, 4, 2, 3 — microtask-queue tyhjenee ennen seuraavaa macrotaskia", "correct": true },
+        { "text": "1, 2, 3, 4 — promise callback suoritetaan välittömästi synkronisen jälkeen", "correct": false },
+        { "text": "1, 4, 3, 2 — queueMicrotask ajetaan ennen Promise.then-callbackia", "correct": false },
+        { "text": "Satunnainen järjestys riippuu selaimen sisäisestä scheduler-toteutuksesta", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-js-async-fetch-credentials",
+      "choices": [
+        { "text": "credentials: 'include' fetchissä + CORS Allow-Credentials palvelimella", "correct": true },
+        { "text": "credentials: 'omit' lähettää session-cookien cross-origin-pyynnöissä", "correct": false },
+        { "text": "Cookie-header manuaalisesti ilman CORS-asetuksia cross-origin API:lle", "correct": false },
+        { "text": "fetch API ei tue evästeiden lähettämistä lainkaan selaimen turvallisuussääntöjen vuoksi", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-js-types-optional-chaining",
+      "choices": [
+        { "text": "Optional chaining: user?.profile?.name estää TypeError null-polulla", "correct": true },
+        { "text": "try/catch jokaisella rivillä on kevyin tapa käsitellä puuttuvia kenttiä", "correct": false },
+        { "text": "== null -tarkistus kattaa kaikki syvät property access -polut luotettavasti", "correct": false },
+        { "text": "eval + JSON.parse lukee API-vastauksen ja normalisoi puuttuvat kentät", "correct": false }
+      ]
+    },
+    {
+      "id": "b03-js-types-number-precision",
+      "choices": [
+        { "text": "Integer-sentit tai desimaalikirjasto — älä vertaa float-arvoja suoraan", "correct": true },
+        { "text": "Math.round korjaa kaikki desimaaliylitykset billing-laskennassa luotettavasti", "correct": false },
+        { "text": "parseInt kaikille desimaaliarvoille säilyttää senttien tarkkuuden kokonaislukuna", "correct": false },
+        { "text": "Number-tyyppi on tarkka desimaalilaskennassa IEEE-754-standardin mukaisesti", "correct": false }
+      ]
+    }
+  ]
+}

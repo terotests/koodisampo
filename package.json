@@ -1,0 +1,39 @@
+{
+  "name": "koodisampo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Corporate NetHack — toimisto-oppimispeli (C++)",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev --workspace=web",
+    "build": "npm run build --workspace=web",
+    "build:ranger": "node scripts/build-ranger.mjs",
+    "play": "npm run build:ranger && node hosts/terminal/run.mjs",
+    "play:web": "npm run build:ranger && node hosts/debug/webPlay.mjs",
+    "questions:list": "node scripts/questions-list.mjs",
+    "questions:validate": "node scripts/questions-validate.mjs",
+    "questions:export": "node scripts/questions-export-md.mjs",
+    "world:merge": "node scripts/merge-intro-upper-floors.mjs",
+    "scripts:export": "node scripts/scripts-export-md.mjs",
+    "questions:bias": "node scripts/choices-bias-report.mjs",
+    "questions:export-choices": "node scripts/choices-export-rewrite-batch.mjs",
+    "questions:apply-choices": "node scripts/choices-apply-rewrite.mjs",
+    "questions:apply-expansion": "node scripts/apply-question-expansion.mjs",
+    "questions:apply-all": "node scripts/apply-question-expansion.mjs --all",
+    "test:engine": "npm run build:ranger && node test/story_engine.test.mjs && node test/player_save.test.mjs && node test/quiz_history.test.mjs && node test/study_backlog.test.mjs && node test/shuffle_choices.test.mjs && node test/stdin_hub.test.mjs && node test/map_generator.test.mjs && node test/world_map.test.mjs && node test/intro_world.test.mjs && node test/floor_access.test.mjs && node test/staff_roster.test.mjs && node test/encounter.test.mjs && node test/editor_world.test.mjs && node test/editor_storage.test.mjs",
+    "editor:server": "node editor-server/index.mjs",
+    "editor": "npm run dev --workspace=editor",
+    "editor:dev": "concurrently \"npm run editor:server\" \"npm run editor\"",
+    "preview": "npm run preview --workspace=web",
+    "server": "npm run start --workspace=server",
+    "dev:all": "concurrently \"npm run dev\" \"npm run server\""
+  },
+  "workspaces": [
+    "web",
+    "server",
+    "editor"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

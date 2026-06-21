@@ -1,0 +1,228 @@
+
+class PlayerTools {
+  def hasCrowbar:boolean false
+  def hasShovel:boolean false
+  def hasSledgehammer:boolean false
+  def hasStolenCard:boolean false
+  def hasOfficialBadge:boolean false
+  def hasPromotedCard:boolean false
+  def hasShedKey:boolean false
+  def heldCoworkerCardOwner:string ""
+  def accessTier:int 0
+  def activeTool:string ""
+
+  fn recalcAccessTier:void () {
+    def t:int 0
+    if (hasStolenCard) {
+      t = 1
+    }
+    if ((strlen heldCoworkerCardOwner) > 0) {
+      if (t < 2) {
+        t = 2
+      }
+    }
+    if (hasPromotedCard) {
+      if (t < 3) {
+        t = 3
+      }
+    }
+    if (hasOfficialBadge) {
+      t = 4
+    }
+    accessTier = t
+  }
+
+  fn grant:void (toolId:string) {
+    if (toolId == "crowbar") {
+      hasCrowbar = true
+      activeTool = "crowbar"
+      return
+    }
+    if (toolId == "shovel") {
+      hasShovel = true
+      activeTool = "shovel"
+      return
+    }
+    if (toolId == "sledgehammer") {
+      hasSledgehammer = true
+      activeTool = "sledgehammer"
+      return
+    }
+    if (toolId == "access_card") {
+      hasStolenCard = true
+      this.recalcAccessTier()
+      return
+    }
+    if (toolId == "coworker_card") {
+      this.recalcAccessTier()
+      return
+    }
+    if (toolId == "promoted_card") {
+      hasPromotedCard = true
+      this.recalcAccessTier()
+      return
+    }
+    if (toolId == "official_badge") {
+      hasOfficialBadge = true
+      hasStolenCard = false
+      heldCoworkerCardOwner = ""
+      this.recalcAccessTier()
+      return
+    }
+    if (toolId == "shed_key") {
+      hasShedKey = true
+    }
+  }
+
+  fn setCoworkerCardOwner:void (ownerId:string) {
+    heldCoworkerCardOwner = ownerId
+    this.recalcAccessTier()
+  }
+
+  fn returnCoworkerCard:void () {
+    heldCoworkerCardOwner = ""
+    this.recalcAccessTier()
+  }
+
+  fn hasBuildingAccess:boolean () {
+    if (accessTier >= 1) {
+      return true
+    }
+    return false
+  }
+
+  fn hasAny:boolean () {
+    if (hasCrowbar) {
+      return true
+    }
+    if (hasShovel) {
+      return true
+    }
+    if (hasSledgehammer) {
+      return true
+    }
+    return false
+  }
+
+  fn cycleActive:void () {
+    if (hasCrowbar) {
+      if (activeTool != "crowbar") {
+        activeTool = "crowbar"
+        return
+      }
+    }
+    if (hasShovel) {
+      if (activeTool != "shovel") {
+        activeTool = "shovel"
+        return
+      }
+    }
+    if (hasSledgehammer) {
+      if (activeTool != "sledgehammer") {
+        activeTool = "sledgehammer"
+        return
+      }
+    }
+    if (hasCrowbar) {
+      activeTool = "crowbar"
+      return
+    }
+    if (hasShovel) {
+      activeTool = "shovel"
+      return
+    }
+    activeTool = "sledgehammer"
+  }
+
+  fn activeLabel:string () {
+    if (activeTool == "crowbar") {
+      return "vasara"
+    }
+    if (activeTool == "shovel") {
+      return "lapio"
+    }
+    if (activeTool == "sledgehammer") {
+      return "kivivasara"
+    }
+    return "-"
+  }
+
+  fn accessLabel:string () {
+    if (accessTier == 0) {
+      return "ei kulkuoikeutta"
+    }
+    if (accessTier == 1) {
+      return "kadonnut kortti (taso 1)"
+    }
+    if (accessTier == 2) {
+      return "työkaverin kortti (taso 2)"
+    }
+    if (accessTier == 3) {
+      return "suositus / ylennyskortti (taso 3)"
+    }
+    return "virallinen kulkulupa (taso 4)"
+  }
+
+  fn pickupLabel:string (itemId:string) {
+    if (itemId == "access_card") {
+      return "kadonnut kulkukortti"
+    }
+    if (itemId == "coworker_card") {
+      return "löydetty kulkukortti"
+    }
+    if (itemId == "official_badge") {
+      return "virallinen kulkulupa"
+    }
+    if (itemId == "shed_key") {
+      return "vajan avain"
+    }
+    return (this.activeLabel())
+  }
+
+  fn fillInventory:void (view:InventoryView) {
+    def lines:[string]
+    push lines "── Työkalut ──"
+    if (hasCrowbar) {
+      push lines "  vasara (sorkkarauta)"
+    }
+    if (hasShovel) {
+      push lines "  lapio"
+    }
+    if (hasSledgehammer) {
+      push lines "  kivivasara"
+    }
+    if (this.hasAny() == false) {
+      push lines "  (ei työkaluja)"
+    }
+    if ((strlen activeTool) > 0) {
+      if (this.hasAny()) {
+        push lines ("  valittu: " + (this.activeLabel()))
+      }
+    }
+    push lines ""
+    push lines "── Oikeudet ──"
+    push lines ("  " + (this.accessLabel()))
+    if (hasShedKey) {
+      push lines "  vajan avain"
+    }
+    if ((strlen heldCoworkerCardOwner) > 0) {
+      push lines "  lainattu kortti (palauta omistajalle)"
+    }
+    push lines ""
+    push lines "── Hissi ──"
+    if (accessTier >= 4) {
+      push lines "  1.–2. kerros + 10. kerros (johto)"
+    } {
+      if (accessTier >= 3) {
+        push lines "  1.–2. kerros (+ ylemmät kun avautuvat)"
+      } {
+        if (accessTier >= 1) {
+          push lines "  1.–2. kerros (pihamaa + avokonttori)"
+        } {
+          push lines "  vain pihamaa"
+        }
+      }
+    }
+    view.lines = lines
+  }
+}

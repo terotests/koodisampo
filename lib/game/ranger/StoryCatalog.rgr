@@ -1,0 +1,55 @@
+
+Import "StorySummary.rgr"
+
+class StoryCatalog {
+
+  fn pushStory:void (items:[StorySummary] id:string title:string description:string filename:string minutes:int order:int) {
+    def s:StorySummary (new StorySummary)
+    s.id = id
+    s.title = title
+    s.description = description
+    s.filename = filename
+    s.estimatedMinutes = minutes
+    s.sortOrder = order
+    push items s
+  }
+
+  fn list:[StorySummary] () {
+    def items:[StorySummary]
+    this.pushStory(items "modern-cpp-intro" "Legacy herää — modernin C++:n polku" "auto, nullptr, range-for" "modern-cpp-intro.json" 8 1)
+    this.pushStory(items "courtyard-dog" "Toimistokoira" "Pihamaan tervehdys" "courtyard-dog.json" 1 0)
+    this.pushStory(items "courtyard-janitor" "Talkkari ja vaja" "Avain ja kadonnut kortti" "courtyard-janitor.json" 2 0)
+    this.pushStory(items "lobby-interview" "Työhaastattelu" "Kulkulupa aulassa" "lobby-interview.json" 3 0)
+    this.pushStory(items "cpp-safety-const" "Const-correctness — code review" "const &, pass-by-value, const-metodit" "cpp-safety-const.json" 12 2)
+    this.pushStory(items "cpp-safety-memory" "Muistivuodot standupissa" "unique_ptr, shared_ptr, vector" "cpp-safety-memory.json" 15 3)
+    this.pushStory(items "cpp-safety-casts-exceptions" "Poikkeukset ja castit" "static_cast, poikkeukset" "cpp-safety-casts-exceptions.json" 14 4)
+    this.pushStory(items "cpp-safety-variadic" "Vaihtelevat argumentit" "variadic templates, std::format" "cpp-safety-variadic.json" 12 5)
+    this.pushStory(items "vainamoinen-challenge" "CTO:n koodikatselmus" "Finaali — yhdistä oppimasi" "vainamoinen-challenge.json" 20 6)
+    return items
+  }
+
+  fn findByIndex:StorySummary (index:int) {
+    def items:[StorySummary] (this.list())
+    if (index < 0) {
+      return (new StorySummary)
+    }
+    if (index >= (array_length items)) {
+      return (new StorySummary)
+    }
+    return (at items index)
+  }
+
+  fn findById:StorySummary (id:string) {
+    def items:[StorySummary] (this.list())
+    def i:int 0
+    def n:int (array_length items)
+    while (i < n) {
+      def s:StorySummary (at items i)
+      if (s.id == id) {
+        return s
+      }
+      i = i + 1
+    }
+    return (new StorySummary)
+  }
+}

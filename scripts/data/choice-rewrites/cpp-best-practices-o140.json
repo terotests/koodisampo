@@ -1,0 +1,176 @@
+{
+  "bank": "cpp-best-practices.json",
+  "rewrites": [
+    {
+      "id": "b09-cpp-optional-null-api",
+      "choices": [
+        { "text": "std::optional<T> — arvo tai tyhjä ilman magic sentinel -arvoja API:ssa", "correct": true },
+        { "text": "Palauta -1 virheen merkiksi — kutsujat erottavat sen validista arvosta", "correct": false },
+        { "text": "Heitä poikkeus jokaisessa lookupissa — se on kevyin tapa ilmaista miss", "correct": false },
+        { "text": "Globaali last_error muuttuja korvaa optionalin tyypitetyn puuttuvan arvon", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-enum-class-type",
+      "choices": [
+        { "text": "enum class — vahvasti tyypitetty, ei implisiittistä int-muunnosta", "correct": true },
+        { "text": "Prefixaa arvot COLOR_RED — se estää nimikonfliktit toisen enumin kanssa", "correct": false },
+        { "text": "#define RED 0 korvaa enumin ja ratkaisee namespace-sotkun", "correct": false },
+        { "text": "Plain enum on deprecated C++17:ssä — käytä int-tyyppiä ja kommentteja", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-delete-copy-semantics",
+      "choices": [
+        { "text": "= delete copy constructor ja copy assignment — selkeä compile error", "correct": true },
+        { "text": "Private copy-operaattorit riittävät — ulkopuolinen koodi ei pääse kopioimaan", "correct": false },
+        { "text": "Kommentti 'do not copy' estää kopioinnin käännösaikana", "correct": false },
+        { "text": "Muuta kaikki jäsenet mutable — se estää luokan kopioinnin", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-rule-of-five-review",
+      "choices": [
+        { "text": "Rule of Five — määrittele tai =default/delete kaikki viisi special memberia", "correct": true },
+        { "text": "Destructor riittää — compiler generoi loput turvallisesti resurssiluokalle", "correct": false },
+        { "text": "Lisää vain copy constructor — move-operaatiot generoituvat automaattisesti", "correct": false },
+        { "text": "Siirry C:hen — ei special membereitä, ei double-free-riskiä", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-vector-reserve-incident",
+      "choices": [
+        { "text": "reserve() kun alkiomäärä on arvioitavissa — vähentää reallokaatioita", "correct": true },
+        { "text": "Korvaa vector std::list:llä aina — se poistaa reallokaatio-ongelman", "correct": false },
+        { "text": "Poista push_back — käytä indeksointia ilman kapasiteettivarausta", "correct": false },
+        { "text": "reserve hidastaa aina — älä käytä sitä request-käsittelyssä", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-emplace-back-move",
+      "choices": [
+        { "text": "emplace_back konstruoi paikalleen argumenteilla — vähemmän kopioita", "correct": true },
+        { "text": "push_back on aina tehokkaampi monimutkaisille olioille vectorissa", "correct": false },
+        { "text": "insert(0, obj) jokaiselle alkiolle — se välttää väliaikaisen objektin", "correct": false },
+        { "text": "reserve korvaa emplace_backin — kopioita ei synny varauksen jälkeen", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-extract-function-refactor",
+      "choices": [
+        { "text": "Extract function — pienemmät testattavat yksiköt selkeillä nimillä", "correct": true },
+        { "text": "Lisää #ifdef TEST_MODE — se mahdollistaa unit testauksen ilman jakoa", "correct": false },
+        { "text": "Kopioi logiikka testitiedostoon — se on nopein refaktorointi", "correct": false },
+        { "text": "200-rivinen funktio on OK jos toimii tuotannossa — ei jakoa tarvita", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-switch-fallthrough",
+      "choices": [
+        { "text": "[[fallthrough]] attribuutti tai break — eksplisiittinen intentti switchissä", "correct": true },
+        { "text": "goto case2 on selkeämpi tapa dokumentoida tarkoituksellinen putoaminen", "correct": false },
+        { "text": "Switch on deprecated — käytä if-ketjua fallthrough-ongelmien välttämiseksi", "correct": false },
+        { "text": "Kääntäjä korjaa fallthrough automaattisesti — ei dokumentointia tarvita", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-narrowing-conversion",
+      "choices": [
+        { "text": "Brace-init {value} — narrowing antaa varoituksen tai virheen käännöksessä", "correct": true },
+        { "text": "static_cast riittää turvallisuuteen — se estää hiljaisen truncauksen", "correct": false },
+        { "text": "Muuta int32_t int64_t:ksi — narrowing ei koskaan tapahdu laajennuksessa", "correct": false },
+        { "text": "Narrowing on vain floating point -ongelma — kokonaisluvut ovat turvallisia", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-condition-variable-wait",
+      "choices": [
+        { "text": "wait(lock, predicate) — tarkista ehto uudelleen spurious wakeupin jälkeen", "correct": true },
+        { "text": "sleep(1) pollaa queuea — se korvaa condition_variable::wait-patternin", "correct": false },
+        { "text": "wait ilman predikaattia riittää — spurious wakeup ei tapahdu std::cv:ssä", "correct": false },
+        { "text": "busy-wait on tehokkaampi tuotannossa kuin condition_variable worker-säikeessä", "correct": false }
+      ]
+    },
+    {
+      "id": "b10-cpp-portability-abi-01",
+      "choices": [
+        { "text": "Ulkoiset C-tyyliset funktiot + export-makrot — vältä STL rajapinnassa", "correct": true },
+        { "text": "std::string ja std::vector suoraan DLL-exportissa — ne ovat ABI-vakaita", "correct": false },
+        { "text": "Header-only aina ilman versionointia — se takaa yhteensopivuuden alustojen välillä", "correct": false },
+        { "text": "inline template kaikesta julkisesta API:sta — ABI pysyy vakaana", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-raii-rollback",
+      "choices": [
+        { "text": "Kirjoita väliaikaiseen tiedostoon ja tee atominen rename kun kaikki valmista", "correct": true },
+        { "text": "Kirjoita suoraan alkuperäisiin tiedostoihin — nopein ja yksinkertaisin tapa", "correct": false },
+        { "text": "Lisää sleep ennen toista kirjoitusta — se estää puolikkaan päivityksen", "correct": false },
+        { "text": "Catchaa poikkeukset ja jatka seuraavaan tiedostoon — osittainen päivitys on OK", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-span-member",
+      "choices": [
+        { "text": "span ei omista dataa — tallennettu näkymä voi roikkua kun puskuri tuhoutuu", "correct": true },
+        { "text": "span kopioi datan automaattisesti jäsenmuuttujaan konstruktorissa", "correct": false },
+        { "text": "span pitää vectorin automaattisesti elossa luokan eliniän ajan", "correct": false },
+        { "text": "span estää kaikki lifetime-bugit — jäsen-span on aina turvallinen", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-string-view-member",
+      "choices": [
+        { "text": "Viitatun merkkijonon elinikä ylittää olion — muuten tallenna std::string", "correct": true },
+        { "text": "string_view omistaa datan automaattisesti kuten std::string jäsenenä", "correct": false },
+        { "text": "string_view kopioi aina stringin jäseneksi konstruktorissa", "correct": false },
+        { "text": "const jäsen riittää takaamaan string_view:n eliniän luokan sisällä", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-optional-deref",
+      "choices": [
+        { "text": "Optional pitää tarkistaa ennen dereferointia — tyhjä optional on UB", "correct": true },
+        { "text": "optional heittää aina poikkeuksen jos tyhjä — operator* on turvallinen", "correct": false },
+        { "text": "optional palauttaa nullptr dereferoinnissa kun arvoa ei ole", "correct": false },
+        { "text": "optional ei voi olla tyhjä C++17:ssä — has_value on aina true", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-variant-visit",
+      "choices": [
+        { "text": "std::visit + exhaustive visitor — static_assert fallback uusille tyypeille", "correct": true },
+        { "text": "Korvaa variant std::any:llä — kääntäjä pakottaa käsittelemään uudet tyypit", "correct": false },
+        { "text": "Muunna kaikki stringiksi switchissä — se havaitsee puuttuvan käsittelyn", "correct": false },
+        { "text": "Lisää default-haara joka ignoraa tuntemattoman — compile-time tarkistus riittää", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-coroutine-lifetime",
+      "choices": [
+        { "text": "Viittaus voi roikkua — coroutine jatkuu myöhemmin eri elinkaaressa", "correct": true },
+        { "text": "co_await kopioi kaiken automaattisesti coroutine frameen", "correct": false },
+        { "text": "Coroutine estää dangling-referenssit automaattisesti suspendin jälkeen", "correct": false },
+        { "text": "volatile korjaa lifetime-ongelman paikallisen muuttujan viittauksessa", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-jthread-stop",
+      "choices": [
+        { "text": "std::jthread + stop_token — joinaa automaattisesti ja tukee pysäytyspyyntöä", "correct": true },
+        { "text": "std::thread ilman joinia destructorissa — detach hoitaa siistin pysäytyksen", "correct": false },
+        { "text": "detach aina destructorissa — se on turvallisin tapa pysäyttää worker", "correct": false },
+        { "text": "sleep-loop ilman stop-flagia — yksinkertaisin tapa pysäyttää säie", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-cpp-false-sharing-struct",
+      "choices": [
+        { "text": "False sharing — eri muuttujat jakavat saman cache linen structissa", "correct": true },
+        { "text": "Atomic ei toimi structin jäsenenä — se aiheuttaa suorituskykyromahduksen", "correct": false },
+        { "text": "CPU ei tue kahta laskuria rinnakkain — atomic-operaatiot serialisoituvat", "correct": false },
+        { "text": "Mutex puuttuu aina atomicien kanssa — ilman sitä laskurit eivät toimi", "correct": false }
+      ]
+    }
+  ]
+}

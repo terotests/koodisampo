@@ -1,0 +1,186 @@
+{
+  "id": "cpp-safety-memory",
+  "title": "Muistin vartija — älä käytä paljaita osoittimia",
+  "topic": "cpp",
+  "description": "Opit välttämään new/delete-parin, käyttämään unique_ptr:ää ja korvaamaan C-taulukot std::vectorilla.",
+  "sourceRef": "cpp-best-practices/04-Considering_Safety.md#avoid-raw-memory-access",
+  "estimatedMinutes": 15,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Haudatut osoittimet",
+      "text": "Hautausmaalla näet tuhansia unohtuneita `delete`-kutsuja. Velho varoittaa:\n\n```cpp\nMyClass *myobj = new MyClass;\n// ...\ndelete myobj;  // helppo unohtaa tai kutsua kahdesti\n```\n\nModerni C++11 tarjoaa RAII:n — resurssi vapautuu automaattisesti.\n\n*Lähde: [Avoid Raw Memory Access](https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md)*",
+      "next": "q_unique_ptr"
+    },
+    "q_unique_ptr": {
+      "type": "choice",
+      "title": "Yksinäinen omistaja",
+      "text": "Mikä on **Good Idea** yksittäisen dynaamisesti luodun objektin hallintaan (C++14)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "auto myobj = std::make_unique<MyClass>(args...);",
+          "feedback": "Erinomaista! make_unique on poikkeusturvallinen ja selkeä. Objekti vapautuu automaattisesti kun unique_ptr tuhoutuu.",
+          "next": "q_shared_when",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:unique-ptr"
+            },
+            {
+              "id": "cpp:make-unique"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "MyClass *myobj = new MyClass; /* unohda delete */",
+          "feedback": "Klassinen muistivuoto. cpp-best-practices: \"Bad Idea\".",
+          "next": "death_leak",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "std::shared_ptr aina — jaetaan kaikille",
+          "feedback": "shared_ptr on jaettua omistusta varten — älä käytä oletuksena. unique_ptr riittää yksinomistukseen.",
+          "next": "death_overhead",
+          "correct": false
+        }
+      ]
+    },
+    "death_leak": {
+      "type": "end",
+      "title": "Muistivuoto",
+      "text": "new ilman deletea — muisti valuu kuin veri haavasta. Tuoni kiittää.",
+      "outcome": "death"
+    },
+    "death_overhead": {
+      "type": "end",
+      "title": "Jaettu kaaos",
+      "text": "shared_ptr kaikkeen — atomiset laskurit hidastavat ja sotkevat omistuksen.",
+      "outcome": "death"
+    },
+    "q_shared_when": {
+      "type": "choice",
+      "title": "Jaettu omistus",
+      "text": "Milloin `std::make_shared` on oikea valinta?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Kun useampi osapuoli jakaa saman objektin elinkaaren",
+          "feedback": "Oikein! shared_ptr on viimeinen keino jaettuun omistukseen — ei oletus ratkaisu.",
+          "next": "q_vector",
+          "correct": true,
+          "points": 10,
+          "features": [
+            {
+              "id": "cpp:shared-ptr"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Aina kun käytit ennen new/delete",
+          "feedback": "Ei — yksinomistukseen unique_ptr. shared_ptr lisää ylimääräistä.",
+          "next": "death_overhead",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Kun haluat tallentaa C-tyylisen taulukon",
+          "feedback": "cpp-best-practices varoittaa: älä käytä shared_ptr:ää taulukon hallintaan!",
+          "next": "death_array",
+          "correct": false
+        }
+      ]
+    },
+    "death_array": {
+      "type": "end",
+      "title": "Väärä kontti",
+      "text": "shared_ptr<char[]> on väärä työkalu — käytä vector tai unique_ptr<T[]>.",
+      "outcome": "death"
+    },
+    "q_vector": {
+      "type": "choice",
+      "title": "Taulukon korvaaja",
+      "text": "Vanha heimo kirjoitti:\n\n```cpp\nint soturit[100];\n```\n\nMikä on moderni ja turvallinen korvike dynaamiselle kokoelmalle?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "std::vector<int> soturit;",
+          "feedback": "Oikein! vector takaa jatkuvan muistin, tuntee koon ja hallitsee elinkaaren. Korvaa C-taulukot.",
+          "next": "narrative_code",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:std-vector"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "int* soturit = new int[100];",
+          "feedback": "Paljas muisti — delete[] unohtuu helposti. Käytä vector.",
+          "next": "death_leak",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "std::shared_ptr<int[]> soturit;",
+          "feedback": "cpp-best-practices: vältä shared_ptr taulukoille. vector on oikea valinta.",
+          "next": "death_array",
+          "correct": false
+        }
+      ]
+    },
+    "narrative_code": {
+      "type": "narrative",
+      "title": "Viimeinen vartio",
+      "text": "Täydennä moderni luontilause — C++14:n make_unique yksittäiselle objektille.",
+      "next": "code_make_unique"
+    },
+    "code_make_unique": {
+      "type": "code",
+      "title": "make_unique",
+      "text": "Täydennä puuttuva osa funktion nimessä (C++14):",
+      "template": "auto miekka = std::_____unique<Miekka>();",
+      "answers": [
+        "make_"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "hint": "make_unique — täytä puuttuva etuliite (5 merkkiä)",
+      "feedbackCorrect": "Muistin vartija seisoo! make_unique luo unique_ptr:n turvallisesti.",
+      "feedbackWrong": "Vastaus on make_ — std::make_unique",
+      "next": "victory",
+      "wrongNext": "death_code",
+      "features": [
+        {
+          "id": "cpp:make-unique"
+        }
+      ]
+    },
+    "death_code": {
+      "type": "end",
+      "title": "Luonti epäonnistui",
+      "text": "Väärä funktio — objekti jää orvoksi muistissa.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Muisti on turvassa",
+      "text": "Olet oppinut: vältä paljaita new/delete, käytä unique_ptr ja make_unique, korvaa C-taulukot vectorilla. Seuraavaksi: typeturvalliset castit ja poikkeukset.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 30,
+  "teaches": [
+    "cpp:unique-ptr",
+    "cpp:make-unique",
+    "cpp:shared-ptr",
+    "cpp:std-vector"
+  ]
+}

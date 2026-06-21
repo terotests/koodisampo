@@ -1,0 +1,320 @@
+{
+  "bank": "cpp-best-practices.json",
+  "rewrites": [
+    {
+      "id": "b04-cpp-explicit-constructor",
+      "choices": [
+        { "text": "explicit Bytes(size_t) — estää implisiittiset muunnokset kutsukohdassa", "correct": true },
+        { "text": "Poista konstruktori ja käytä factory-funktiota Bytes-olion luontiin", "correct": false },
+        { "text": "Lisää operator int() Bytes-luokkaan helpottamaan numeerisia kutsuja", "correct": false },
+        { "text": "Muuta parametri double:ksi — se estää kokonaisluvun implisiittisen muunnoksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-final-override-virtual",
+      "choices": [
+        { "text": "override-avainsana — kääntäjä varoittaa jos signatuuri ei matchaa basea", "correct": true },
+        { "text": "Kommentti // overrides Base::draw riittää dokumentoimaan ylikirjoituksen", "correct": false },
+        { "text": "final kaikille funktioille automaattisesti estää piilotetut override-virheet", "correct": false },
+        { "text": "Poista virtual ja käytä switch type-kentällä polymorfian sijaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-structured-bindings-map",
+      "choices": [
+        { "text": "for (auto& [key, val] : map) — structured bindings C++17:ssä", "correct": true },
+        { "text": "Muuta std::map aina std::unordered_map:iksi parantaaksesi luettavuutta", "correct": false },
+        { "text": "Käytä C-tyylistä for (int i = 0; ...) mapin läpikäyntiin", "correct": false },
+        { "text": "Kopioi map jokaisella iteroinnilla varmistaaksesi turvallisen käytön", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-auto-deduction-trap",
+      "choices": [
+        { "text": "std::initializer_list<int> — brace-init auto:lle deduktoidaan näin", "correct": true },
+        { "text": "std::vector<int> — auto ja brace-init tuottavat aina vektorin", "correct": false },
+        { "text": "std::array<int, 3> — kolmen alkion lista deduktoidaan arrayksi", "correct": false },
+        { "text": "int[3] — C-tyylinen taulukko on auto-deduktion oletustulos", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-static-local-thread",
+      "choices": [
+        { "text": "Static local init on thread-safe (magic statics) — Logger tarvitsee synkan", "correct": true },
+        { "text": "Static local on aina data race useassa säikeessä C++11:ssä", "correct": false },
+        { "text": "Static local on kielletty useassa säikeessä — käytä globaalia", "correct": false },
+        { "text": "volatile static riittää turvalliseen alustukseen useassa säikeessä", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-ranges-filter-view",
+      "choices": [
+        { "text": "std::ranges::count_if(container, pred) — lazy, ei väliaikaista vectoria", "correct": true },
+        { "text": "Kopioi aina std::list suodatukseen ennen count-laskentaa", "correct": false },
+        { "text": "Macro FILTER_AND_COUNT korvaa ranges-pipeline:n tuotantokoodissa", "correct": false },
+        { "text": "Poista suodatus ja laske kaikki alkiot — se on ranges-tyylinen tapa", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-smart-ptr-make-shared",
+      "choices": [
+        { "text": "Custom deleter vaatii shared_ptr-konstruktorin — make_shared ei tue sitä", "correct": true },
+        { "text": "make_shared on aina parempi myös custom deleterillä kuin raw new", "correct": false },
+        { "text": "raw new on aina nopeampi kuin make_shared custom deleterillä", "correct": false },
+        { "text": "shared_ptr ei tarvitse make_shared C++17:ssä — konstruktori riittää", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-rule-of-five",
+      "choices": [
+        { "text": "Rule of Five — määrittele tai =default/delete kaikki viisi special memberia", "correct": true },
+        { "text": "Destructor riittää — kopio-operaattorit generoituvat automaattisesti oikein", "correct": false },
+        { "text": "Käytä memcpy copy-assignmentissa nopeuttaaksesi buffer-kopiointia", "correct": false },
+        { "text": "Poista destructor — smart pointer hoitaa dynaamisen bufferin hallinnan", "correct": false }
+      ]
+    },
+    {
+      "id": "b04-cpp-portability-fixed-width",
+      "choices": [
+        { "text": "stdint.h: int32_t, uint64_t jne. — kiinteä leveys wire-protokollassa", "correct": true },
+        { "text": "short on aina 16-bit — standardi takaa saman koon kaikilla alustoilla", "correct": false },
+        { "text": "sizeof(int) == 4 kaikkialla — int on portable wire-tyyppi", "correct": false },
+        { "text": "long long on aina 64-bit — se korvaa int32_t ja uint64_t portablesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-lambda-capture-review",
+      "choices": [
+        { "text": "Kaappaa [&] vain jos elinkaari varma, muuten kopioi arvo [x] tai [=]", "correct": true },
+        { "text": "Käytä aina [=] — se on turvallisin capture-tyyli kaikissa tilanteissa", "correct": false },
+        { "text": "Muuta lambda globaaliksi funktioksi välttääksesi capture-ongelmat", "correct": false },
+        { "text": "Poista capture ja käytä globaalia muuttujaa lambda-silmukan sisällä", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-constexpr-config",
+      "choices": [
+        { "text": "constexpr — compile-time arvo kun laskenta voidaan evaluoida käännöksessä", "correct": true },
+        { "text": "const tarkoittaa aina compile-time-vakiota C++17:ssä", "correct": false },
+        { "text": "static tekee arvosta automaattisesti compile-time-laskettavan", "correct": false },
+        { "text": "volatile estää optimoinnin ja varmistaa compile-time-laskennan", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-string-view-lifetime",
+      "choices": [
+        { "text": "string_view ei omista dataa — viittaus tuhoutuneeseen stringiin segfaultaa", "correct": true },
+        { "text": "string_view on aina kopio stringistä — elinkaari on itsenäinen", "correct": false },
+        { "text": "Segfault johtuu aina multithreadingista, ei string_view:n elinkaaresta", "correct": false },
+        { "text": "string_view vaatii shared_ptr:n turvalliseen palautukseen funktiosta", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-lock-guard-incident",
+      "choices": [
+        { "text": "std::lock_guard tai std::scoped_lock — RAII vapauttaa mutexin poikkeuksessa", "correct": true },
+        { "text": "mutex.unlock() jokaisessa catch-lohkossa käsin on moderni tapa", "correct": false },
+        { "text": "Poista try-catch — poikkeukset hidastavat mutexin hallintaa", "correct": false },
+        { "text": "Käytä volatile mutexia estääksesi lukon jäämisen poikkeuksen jälkeen", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-noexcept-move-review",
+      "choices": [
+        { "text": "Ilman noexcept move vector käyttää copy-fallbackia exception safety -syistä", "correct": true },
+        { "text": "noexcept on vain dokumentaatiota — ei vaikuta vectorin resizeen", "correct": false },
+        { "text": "Vector ei koskaan käytä move-operaatiota elementtien siirrossa", "correct": false },
+        { "text": "noexcept hidastaa move-operaatiota aina — vältä sitä tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-make-unique-factory",
+      "choices": [
+        { "text": "make_unique on exception-safe eikä vuoda raw new:ia poikkeustilanteessa", "correct": true },
+        { "text": "make_unique on aina nopeampi kuin stack-allokaatio tehdasfunktiossa", "correct": false },
+        { "text": "new on kielletty C++17:ssä — make_unique on pakollinen", "correct": false },
+        { "text": "make_unique palauttaa raw pointerin jota ei tarvitse vapauttaa", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-const-method-api",
+      "choices": [
+        { "text": "Merkitse metodi const — kutsuja voi kutsua sitä const-olioilla", "correct": true },
+        { "text": "Lisää kommentti // read-only getterin yläpuolelle API-dokumentaatioon", "correct": false },
+        { "text": "Palauta kopio aina — const-metodia ei tarvita gettereissä", "correct": false },
+        { "text": "Käytä friend-funktiota getterin sijaan ilmaistaksesi read-only-käytön", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-override-virtual-crash",
+      "choices": [
+        { "text": "override-avainsana — kääntäjä varoittaa jos base-signatuuri ei täsmää", "correct": true },
+        { "text": "virtual riittää aina — override on turha modernissa C++:ssa", "correct": false },
+        { "text": "final korvaa override:n periytymisessä ja estää kirjoitusvirheet", "correct": false },
+        { "text": "Käytä makroa DECLARE_VIRTUAL piilotettujen override-virheiden estoon", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-rvo-return-local",
+      "choices": [
+        { "text": "Ei — RVO/NRVO voi eliminoida kopion kääntäjäoptimoinnilla", "correct": true },
+        { "text": "Kyllä — paikallisesta stringistä palautus tekee aina kaksi kopiota", "correct": false },
+        { "text": "Vain jos palautat std::move(local) — muuten kopiointi on väistämätön", "correct": false },
+        { "text": "Palauta aina shared_ptr stringistä välttääksesi kopiointiongelmat", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-move-review-temp",
+      "choices": [
+        { "text": "Kun lähde ei enää tarvita — esim. viimeinen käyttö ennen returnia", "correct": true },
+        { "text": "Aina kaikille parametreille suorituskyvyn vuoksi funktion alussa", "correct": false },
+        { "text": "Vain const-viitauksille — move ei toimi muihin parametreihin", "correct": false },
+        { "text": "Move korvaa copyn automaattisesti — std::move-kutsua ei tarvita", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-avoid-raw-loop",
+      "choices": [
+        { "text": "range-for tai std::for_each — vähemmän toistoa, selkeämpi intentti", "correct": true },
+        { "text": "Kopioi silmukka makroksi COPY_LOOP viidessä tiedostossa", "correct": false },
+        { "text": "Jätä silmukat — optimointi on tärkeämpää kuin luettavuus refaktoroinnissa", "correct": false },
+        { "text": "Muuta kaikki goto-pohjaiseksi vähentääksesi toistuvaa for-logiikkaa", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-signed-compare-bug",
+      "choices": [
+        { "text": "Implisiittinen signed/unsigned vertailu voi aiheuttaa ikuisen silmukan", "correct": true },
+        { "text": "Ei riskiä — kääntäjä korjaa signed/unsigned vertailun automaattisesti", "correct": false },
+        { "text": "Vain debug-buildissa ongelma — release-build käsittelee vertailun oikein", "correct": false },
+        { "text": "int on aina turvallisempi kuin size_t silmukka-indeksinä", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-atomic-counter",
+      "choices": [
+        { "text": "std::atomic<int> — lock-free increment mahdollinen yksinkertaiseen laskuriin", "correct": true },
+        { "text": "volatile int riittää aina säieturvalliseen increment-operaatioon", "correct": false },
+        { "text": "static int + kommentti // thread-safe korvaa atomicin yksinkertaisissa tapauksissa", "correct": false },
+        { "text": "bool flag + busy-wait on moderni tapa jaettuun laskuriin ilman mutexia", "correct": false }
+      ]
+    },
+    {
+      "id": "b05-cpp-explicit-constructor",
+      "choices": [
+        { "text": "explicit-konstruktori — estää hiljaiset implisiittiset muunnokset kutsukohdassa", "correct": true },
+        { "text": "private konstruktori riittää estämään implisiittiset muunnokset ulkopuolelta", "correct": false },
+        { "text": "delete default constructor estää vahingossa tapahtuvat Meters-muunnokset", "correct": false },
+        { "text": "Muuta int double:ksi — se estää implisiittisen kokonaislukumuunnoksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-enum-class-scope",
+      "choices": [
+        { "text": "enum class Color { Red, Green }; — scoped enum estää implisiittiset konversiot", "correct": true },
+        { "text": "Lisää makro #define Red 0 — se ratkaisee nimikonfliktit headerissa", "correct": false },
+        { "text": "Siirrä enum namespacein ulkopuolelle välttääksesi nimiristiriidat", "correct": false },
+        { "text": "Käytä int-tyyppiä ja kommentteja enum-arvojen sijaan headerissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-deleted-function",
+      "choices": [
+        { "text": "= delete kopio-operaattoreille — kutsu aiheuttaa compile errorin", "correct": true },
+        { "text": "Jätä kopio-operaattorit private ja toivo ettei kukaan käytä niitä", "correct": false },
+        { "text": "Käytä #pragma once estääksesi kopio-konstruktorin kutsumisen", "correct": false },
+        { "text": "Merkitse luokka final — se estää kopioinnin käännösaikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-nodiscard-return",
+      "choices": [
+        { "text": "[[nodiscard]] attribuutti funktion paluuarvossa varoittaa kutsujaa", "correct": true },
+        { "text": "Palauta void ja käytä globaalia muuttujaa resurssin hallintaan", "correct": false },
+        { "text": "Lisää kommentti // remember to check funktion yläpuolelle", "correct": false },
+        { "text": "Käytä assert() funktion sisällä varoittaaksesi paluuarvon huomiotta jättämisestä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-span-heap-buffer",
+      "choices": [
+        { "text": "std::span<T> — kantaa pituuden mukana ja rajaa buffer-käytön turvallisesti", "correct": true },
+        { "text": "Käytä char* ilman pituutta — kutsuja vastaa buffer overrun -riskistä", "correct": false },
+        { "text": "Vain std::vector kelpaa — span on turha modernissa C++-API:ssa", "correct": false },
+        { "text": "Lisää magic number bufferin alkuun tunnistaaksesi ylivuodon", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-vector-emplace-back",
+      "choices": [
+        { "text": "emplace_back rakentaa alkion inplace — vähemmän turhia kopioita", "correct": true },
+        { "text": "push_back on aina nopeampi kuin emplace_back monimutkaisille olioille", "correct": false },
+        { "text": "Käytä reserve ja sitten at — se korvaa emplace_back-optimoinnin", "correct": false },
+        { "text": "Lisää olio ensin stackille ja push_back — se vähentää kopioita", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-raii-scope-guard",
+      "choices": [
+        { "text": "RAII — std::ifstream tai custom scope guard sulkee tiedoston destructorissa", "correct": true },
+        { "text": "close() jokaisessa return-polussa käsin on turvallisin tapa", "correct": false },
+        { "text": "Älä käytä poikkeuksia tiedostofunktioissa — se korvaa RAII:n", "correct": false },
+        { "text": "fork uusi prosessi tiedoston avaamiseen välttääksesi try-finally-tarpeen", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-default-member-init",
+      "choices": [
+        { "text": "Default member initializer luokassa — kentät alustuvat automaattisesti", "correct": true },
+        { "text": "Jätä kaikki nollaksi memset:llä konstruktorin alussa", "correct": false },
+        { "text": "Käytä globaaleja oletusarvoja jäsenten alustamiseen luokassa", "correct": false },
+        { "text": "Älä alusta — nollat ovat turvalliset aina kaikille jäsenkentille", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-ranges-adaptors",
+      "choices": [
+        { "text": "std::ranges::views::filter ja transform — lazy pipeline ilman kopioita", "correct": true },
+        { "text": "Kopioi kontti useaan kertaan — se tekee intentin selkeämmäksi", "correct": false },
+        { "text": "Käytä makro FOR_EACH filtteröintiin ja muunnokseen", "correct": false },
+        { "text": "Siirrä logiikka globaaliin funktioon — ranges ei tuo hyötyä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-signed-compare-bug",
+      "choices": [
+        { "text": "Signed/unsigned vertailu konvertoi — negatiivinen int näyttää suurelle", "correct": true },
+        { "text": "Kääntäjä varoittaa aina — signed/unsigned vertailu ei aiheuta tuotantobugia", "correct": false },
+        { "text": "size_t on aina signed C++17:ssä — vertailu int:n kanssa on turvallinen", "correct": false },
+        { "text": "Vain float-vertailu on vaarallinen — int ja size_t ovat turvallisia", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-packaged-task",
+      "choices": [
+        { "text": "std::packaged_task + std::future — tulos threadin ulkopuolelle turvallisesti", "correct": true },
+        { "text": "Globaali muuttuja tulokseen — mutex riittää future-pohjaiseen palautukseen", "correct": false },
+        { "text": "volatile int status-kenttä korvaa packaged_task:n worker-threadissä", "correct": false },
+        { "text": "sleep polling loop on suositeltu tapa odottaa worker-threadin tulosta", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-alignas-cache",
+      "choices": [
+        { "text": "alignas(64) tai erilliset cache line — vähentää false sharing -ongelmaa", "correct": true },
+        { "text": "Lisää volatile kaikille muuttujille — se korjaa false sharingin", "correct": false },
+        { "text": "Käytä float double tilalle hot loopissa vähentääksesi cache missejä", "correct": false },
+        { "text": "Poista mutex — false sharing ei vaikuta suorituskykyyn eri säikeillä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-portability-alignof",
+      "choices": [
+        { "text": "alignof ja offsetof — ymmärrä layout ennen wire-formatin määrittelyä", "correct": true },
+        { "text": "Oleta että sizeof on sama kaikilla alustoilla — se riittää serialisointiin", "correct": false },
+        { "text": "Käytä #pragma pack 1 ilman testausta — se takaa saman layoutin", "correct": false },
+        { "text": "Lähetä struct binaarisena memcpy:llä aina — padding on sama kaikilla", "correct": false }
+      ]
+    }
+  ]
+}

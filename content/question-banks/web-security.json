@@ -1,0 +1,151 @@
+{
+  "id": "web-security",
+  "domain": "security",
+  "source": "https://owasp.org/www-project-top-ten/",
+  "questions": [
+    {
+      "id": "prod-sec-csrf",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Selain lähettää session-cookien automaattisesti myös haitalliselta sivulta tulevaan POST-pyyntöön. Mikä suoja?",
+      "choices": [
+        {
+          "text": "CSRF-token validointi tai SameSite-cookie rajoittaa cross-site POST-pyyntöjä",
+          "correct": true
+        },
+        {
+          "text": "CORS-header riittää estämään automaattiset evästepohjaiset lomake-POSTit",
+          "correct": false
+        },
+        {
+          "text": "HTTPS-salaus kanavalla eliminoi cross-site-pyyntöjen istunnon kaappaamisen",
+          "correct": false
+        },
+        {
+          "text": "Piilota lomake CSS:llä estääksesi näkyvät väärinkäytetyt lomake-submit-napit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CSRF estää selaimen automaattisen todennuksen väärinkäytön — OWASP CSRF.",
+      "wrongFeedback": "CORS ei suojaa cookie-pohjaista sessiota samasta selaimesta.",
+      "sourceRef": "owasp/csrf",
+      "sourceUrl": "https://owasp.org/www-community/attacks/csrf",
+      "featureId": "security:csrf",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-xss",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "secretary"
+      ],
+      "prompt": "Käyttäjän kommentti renderöidään HTML:ään ilman escapetusta. Mikä riski?",
+      "choices": [
+        {
+          "text": "XSS: escapetoimaton käyttäjädata voi injektoida skriptiä uhrin selaimessa",
+          "correct": true
+        },
+        {
+          "text": "SQL injection kommenttikentässä kun HTML renderöidään ilman suodatinta",
+          "correct": false
+        },
+        {
+          "text": "CSRF hyökkäys rajoittuu GET-pyyntöihin ilman csrf-tokenia lomakkeessa",
+          "correct": false
+        },
+        {
+          "text": "Deadlock syntyy kun HTML-parser lukitsee tietokantayhteyden renderöinnin ajaksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stored/reflected XSS on OWASP Top 10 — escapeta tai käytä turvallista templatingia.",
+      "wrongFeedback": "Raaka HTML + käyttäjädata = script injection. Encode output.",
+      "sourceRef": "owasp/xss",
+      "sourceUrl": "https://owasp.org/www-community/attacks/xss/",
+      "featureId": "security:xss",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-password-hash",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Salasanat tallennetaan SHA-256-hasheina ilman suolaa. Mikä parempi ratkaisu?",
+      "choices": [
+        {
+          "text": "bcrypt tai argon2 suolalla ja work factorilla hidastaa brute force -hyökkäyksiä",
+          "correct": true
+        },
+        {
+          "text": "MD5 on nopeampi — riittää kun salasanoissa vähintään 12 merkin minimipituus",
+          "correct": false
+        },
+        {
+          "text": "Base64-koodaus riittää kun tietokanta on suojattu HTTPS-yhteyden takana",
+          "correct": false
+        },
+        {
+          "text": "Yhteinen pepper-avain kaikille salasanoille yksinkertaistaa vertailulogiikkaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Adaptive hash + salt hidastaa brute forcea — OWASP Password Storage.",
+      "wrongFeedback": "Nopea hash (SHA-256) on helppo murtaa rainbow-tauluilla.",
+      "sourceRef": "owasp/password-storage",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+      "featureId": "security:password-hash",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-jwt-claims",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "API hyväksyy JWT:n tarkistamatta `exp`- ja `aud`-kenttiä. Mikä riski?",
+      "choices": [
+        {
+          "text": "Vanhentunut tai väärälle aud:lle myönnetty token voidaan hyväksyä edelleen",
+          "correct": true
+        },
+        {
+          "text": "JWT vanhenee automaattisesti ilman palvelimen exp-tarkistusta kuitenkin",
+          "correct": false
+        },
+        {
+          "text": "aud-claim on dokumentaatiota — allekirjoituksen tarkistus riittää autentikointiin",
+          "correct": false
+        },
+        {
+          "text": "exp-validointi tapahtuu automaattisesti selaimessa ennen API-kutsua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Validoi exp, aud, iss ja allekirjoitus palvelimella — RFC 7519.",
+      "wrongFeedback": "JWT claimit ovat osa turvallisuutta — älä luota pelkkään decodeen.",
+      "sourceRef": "rfc7519",
+      "sourceUrl": "https://datatracker.ietf.org/doc/html/rfc7519",
+      "featureId": "security:jwt-validation",
+      "featurePoints": 4
+    }
+  ]
+}

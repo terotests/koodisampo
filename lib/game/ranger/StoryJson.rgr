@@ -1,0 +1,50 @@
+
+Import "JSON.rgr"
+
+class StoryJson {
+
+  fn objFieldStr:string (obj:JSONDataObject key:string) {
+    def v@(optional):string (getStr obj key)
+    if (null? v) {
+      return ""
+    }
+    return (unwrap v)
+  }
+
+  fn objFieldInt:int (obj:JSONDataObject key:string) {
+    def v@(optional):int (getInt obj key)
+    if (null? v) {
+      return 0
+    }
+    return (unwrap v)
+  }
+
+  fn objFieldBool:boolean (obj:JSONDataObject key:string) {
+    def v@(optional):boolean (getBoolean obj key)
+    if (null? v) {
+      return false
+    }
+    return (unwrap v)
+  }
+
+  fn arrayObjectAt:JSONDataObject (arr:JSONArrayObject index:int) {
+    def raw:JSONValueUnion (getValue arr index)
+    def obj:JSONDataObject (raw)
+    return obj
+  }
+
+  fn collectFeatureIds:[string] (features:JSONArrayObject) {
+    def ids:[string]
+    def i:int 0
+    def n:int (array_length features)
+    while (i < n) {
+      def feat:JSONDataObject (this.arrayObjectAt(features i))
+      def fid:string (this.objFieldStr(feat "id"))
+      if ((strlen fid) > 0) {
+        push ids fid
+      }
+      i = i + 1
+    }
+    return ids
+  }
+}

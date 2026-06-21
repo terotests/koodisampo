@@ -1,0 +1,41 @@
+{
+  "bank": "git-ci.json",
+  "rewrites": [
+    {
+      "id": "prod-git-force-with-lease",
+      "choices": [
+        { "text": "git push --force-with-lease — puskee vain jos remote-ref on odotettu", "correct": true },
+        { "text": "git push --force rebasen jälkeen — nopein tapa päivittää etäbranch", "correct": false },
+        { "text": "git reset --hard origin/main synkronoi paikallisen historian remoteen", "correct": false },
+        { "text": "git clean -fd siivoaa työhakemiston ja korjaa push-konfliktit", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-git-bisect",
+      "choices": [
+        { "text": "git bisect rajaa commit-joukon binäärihaulla good/bad-välillä", "correct": true },
+        { "text": "git blame koko repossa paljastaa syyllisen commitin yhdellä komennolla", "correct": false },
+        { "text": "git stash tallentaa muutokset pois ja nollaa historian seurannan", "correct": false },
+        { "text": "git gc optimoi repoa ja korjaa regression automaattisesti käynnistyksessä", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-ci-cache-lockfile",
+      "choices": [
+        { "text": "Lockfile-hash cache-avaimessa invalidoi välimuistin kun riippuvuudet muuttuvat", "correct": true },
+        { "text": "Sama cache-avain kaikille brancheille nopeuttaa pipelinen ensimmäistä ajoa", "correct": false },
+        { "text": "Cacheaa koko workspace ilman invalidointia vähentääksesi riippuvuuksien latausaikaa", "correct": false },
+        { "text": "Poista lockfile buildistä ja luota semver-rangeihin nopeuden vuoksi", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-ci-flaky-test",
+      "choices": [
+        { "text": "Eristä nondeterminismi: aika, verkko, rinnakkaisuus ja testien suoritusjärjestys", "correct": true },
+        { "text": "Lisää retry CI:hin ja hyväksy satunnainen epäonnistuminen buildin yhteydessä", "correct": false },
+        { "text": "Poista hidas testi pipelinesta ja aja se vain manuaalisesti ennen releaseta", "correct": false },
+        { "text": "Merkitse CI vihreäksi paikallisen onnistuneen testiajon perusteella", "correct": false }
+      ]
+    }
+  ]
+}

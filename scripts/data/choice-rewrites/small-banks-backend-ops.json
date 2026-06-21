@@ -1,0 +1,50 @@
+{
+  "bank": "backend-ops.json",
+  "rewrites": [
+    {
+      "id": "prod-backend-transfer-transaction",
+      "choices": [
+        { "text": "Wrapaa molemmat tilipäivitykset yhteen transaktioon — COMMIT vain onnistuessa", "correct": true },
+        { "text": "Suorita kaksi erillistä UPDATE:ia ja luota sovelluslogiikan rollbackiin", "correct": false },
+        { "text": "sleep() kyselyjen välissä antaa tietokannan ehtiä synkronoitua ennen tarkistusta", "correct": false },
+        { "text": "Lokita molemmat päivitykset — inkonsistenssi korjataan myöhäisessä batch-ajossa", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-backend-webhook-idempotency",
+      "choices": [
+        { "text": "Tallenna idempotency key ennen sivuvaikutusta ja hylkää duplikaatit", "correct": true },
+        { "text": "Luota että maksupalvelu toimittaa webhookin täsmälleen yhden kerran", "correct": false },
+        { "text": "Lisää timeout webhook-käsittelyyn odottaen verkon vakaantumista", "correct": false },
+        { "text": "Poista palveluntarjoajan retry-asetus integraatiosta kokonaan", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-backend-n-plus-one",
+      "choices": [
+        { "text": "N+1-query: profiili haetaan erikseen jokaiselle käyttäjäriville listauksessa", "correct": true },
+        { "text": "SQL ei palauta listoja ilman GROUP BY -lauseketta käyttäjätaulussa", "correct": false },
+        { "text": "Indeksi käyttäjätaulussa korjaa automaattisesti myös liitostaulun haun", "correct": false },
+        { "text": "ORM-kerros estää kaikki tietokantasuorituskykyongelmat abstraktiolla", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-backend-optimistic-lock",
+      "choices": [
+        { "text": "Optimistic locking: UPDATE vain jos version-kenttä vastaa lukuhetken arvoa", "correct": true },
+        { "text": "Pidempi istuntotimeout antaa käyttäjille aikaa viimeistellä muokkauksensa", "correct": false },
+        { "text": "DELETE + INSERT korvaa UPDATE:n konfliktien välttämiseksi tietokannassa", "correct": false },
+        { "text": "Piilota rivi muilta käyttäjiltä UI:ssa samanaikaisen muokkauksen aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-ops-observability",
+      "choices": [
+        { "text": "Observability: trace-id, strukturoidut lokit ja invariantit kriittisiin kohtiin", "correct": true },
+        { "text": "Kirjoita järjestelmä uusiksi uudella arkkitehtuurilla ennen diagnostiikkaa", "correct": false },
+        { "text": "Poista varoitustasoiset lokit vähentääksesi hälytyksiä on-call-vuoroissa", "correct": false },
+        { "text": "Käynnistä interaktiivinen debugger tuotannossa live-sessiolla virheen jäljitykseen", "correct": false }
+      ]
+    }
+  ]
+}

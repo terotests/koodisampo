@@ -1,0 +1,41 @@
+{
+  "bank": "web-security.json",
+  "rewrites": [
+    {
+      "id": "prod-sec-csrf",
+      "choices": [
+        { "text": "CSRF-token validointi tai SameSite-cookie rajoittaa cross-site POST-pyyntöjä", "correct": true },
+        { "text": "CORS-header riittää estämään automaattiset evästepohjaiset lomake-POSTit", "correct": false },
+        { "text": "HTTPS-salaus kanavalla eliminoi cross-site-pyyntöjen istunnon kaappaamisen", "correct": false },
+        { "text": "Piilota lomake CSS:llä estääksesi näkyvät väärinkäytetyt lomake-submit-napit", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-sec-xss",
+      "choices": [
+        { "text": "XSS: escapetoimaton käyttäjädata voi injektoida skriptiä uhrin selaimessa", "correct": true },
+        { "text": "SQL injection kommenttikentässä kun HTML renderöidään ilman suodatinta", "correct": false },
+        { "text": "CSRF hyökkäys rajoittuu GET-pyyntöihin ilman csrf-tokenia lomakkeessa", "correct": false },
+        { "text": "Deadlock syntyy kun HTML-parser lukitsee tietokantayhteyden renderöinnin ajaksi", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-sec-password-hash",
+      "choices": [
+        { "text": "bcrypt tai argon2 suolalla ja work factorilla hidastaa brute force -hyökkäyksiä", "correct": true },
+        { "text": "MD5 on nopeampi — riittää kun salasanoissa vähintään 12 merkin minimipituus", "correct": false },
+        { "text": "Base64-koodaus riittää kun tietokanta on suojattu HTTPS-yhteyden takana", "correct": false },
+        { "text": "Yhteinen pepper-avain kaikille salasanoille yksinkertaistaa vertailulogiikkaa", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-sec-jwt-claims",
+      "choices": [
+        { "text": "Vanhentunut tai väärälle aud:lle myönnetty token voidaan hyväksyä edelleen", "correct": true },
+        { "text": "JWT vanhenee automaattisesti ilman palvelimen exp-tarkistusta kuitenkin", "correct": false },
+        { "text": "aud-claim on dokumentaatiota — allekirjoituksen tarkistus riittää autentikointiin", "correct": false },
+        { "text": "exp-validointi tapahtuu automaattisesti selaimessa ennen API-kutsua", "correct": false }
+      ]
+    }
+  ]
+}

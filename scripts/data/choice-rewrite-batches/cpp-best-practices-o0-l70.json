@@ -1,0 +1,2956 @@
+{
+  "instructions": "docs/question-bank-choice-rewrite-prompt.md",
+  "bank": "cpp-best-practices.json",
+  "offset": 0,
+  "limit": 70,
+  "totalInBank": 178,
+  "biasedInSlice": 70,
+  "outputFormat": {
+    "bank": "cpp-best-practices.json",
+    "rewrites": [
+      {
+        "id": "question-id",
+        "choices": [
+          {
+            "text": "...",
+            "correct": true
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "tools-auto",
+      "chapter": "tools",
+      "difficulty": 1,
+      "prompt": "Mitä `auto` tekee modernissa C++:ssa?",
+      "choices": [
+        {
+          "text": "Kääntäjä päättelee tyypin initializerista",
+          "correct": true
+        },
+        {
+          "text": "Muuttuja on automaattisesti globaali",
+          "correct": false
+        },
+        {
+          "text": "Tyyppi pakotetaan aina int:ksi",
+          "correct": false
+        },
+        {
+          "text": "Se korvaa kaikki typedefit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Oikein — auto on tyyppipäättely (Use the Tools Available).",
+      "wrongFeedback": "Väärin. `auto` johtaa tyypin arvosta, ei tee muuttujaa globaaliksi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 41,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 1.34,
+        "correctIsLongest": true,
+        "spread": 15,
+        "lens": [
+          41,
+          36,
+          30,
+          26
+        ]
+      }
+    },
+    {
+      "id": "style-pass-int",
+      "chapter": "style",
+      "difficulty": 2,
+      "prompt": "Miten yksinkertainen `int` kannattaa välittää konstruktorille?",
+      "choices": [
+        {
+          "text": "Arvona: explicit MyClass(int value)",
+          "correct": true
+        },
+        {
+          "text": "const int&-viittauksena",
+          "correct": false
+        },
+        {
+          "text": "int*-osoittimena",
+          "correct": false
+        },
+        {
+          "text": "std::shared_ptr<int>",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Täsmälleen — älä passaa yksinkertaisia tyyppejä const ref:llä.",
+      "wrongFeedback": "cpp-best-practices: const ref intille on Very Bad Idea.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 35,
+        "avgWrongLen": 19.666666666666668,
+        "ratio": 1.78,
+        "correctIsLongest": true,
+        "spread": 19,
+        "lens": [
+          35,
+          23,
+          16,
+          20
+        ]
+      }
+    },
+    {
+      "id": "safety-unique-ptr",
+      "chapter": "safety",
+      "difficulty": 2,
+      "prompt": "Mikä korvaa turvallisesti `new`/`delete`-parin yksittäiselle omistajalle?",
+      "choices": [
+        {
+          "text": "std::unique_ptr + make_unique",
+          "correct": true
+        },
+        {
+          "text": "malloc/free",
+          "correct": false
+        },
+        {
+          "text": "raw new ilman deleteä",
+          "correct": false
+        },
+        {
+          "text": "volatile pointer",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RAII — unique_ptr vapauttaa automaattisesti (Considering Safety).",
+      "wrongFeedback": "Raw-muisti on Bad Idea. Käytä smart pointereita.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 29,
+        "avgWrongLen": 16,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 18,
+        "lens": [
+          29,
+          11,
+          21,
+          16
+        ]
+      }
+    },
+    {
+      "id": "safety-static-cast",
+      "chapter": "safety",
+      "difficulty": 2,
+      "prompt": "Miksi `(int)x` on huonompi kuin `static_cast<int>(x)`?",
+      "choices": [
+        {
+          "text": "C++-cast on helpompi löytää ja turvallisempi",
+          "correct": true
+        },
+        {
+          "text": "C-cast on aina nopeampi",
+          "correct": false
+        },
+        {
+          "text": "static_cast toimii vain osoittimille",
+          "correct": false
+        },
+        {
+          "text": "Ei eroa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Oikein — C++-tyyliset castit ovat haettavissa ja tarkistettavissa.",
+      "wrongFeedback": "C-cast piilottaa ongelmat. Käytä static_cast.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 22,
+        "ratio": 2,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          44,
+          23,
+          36,
+          7
+        ]
+      }
+    },
+    {
+      "id": "maintain-const-method",
+      "chapter": "maintainability",
+      "difficulty": 2,
+      "prompt": "Miten merkitset metodin joka ei muuta olion tilaa?",
+      "choices": [
+        {
+          "text": "Lisää const metodin loppuun",
+          "correct": true
+        },
+        {
+          "text": "Käytä volatile",
+          "correct": false
+        },
+        {
+          "text": "static-metodi aina",
+          "correct": false
+        },
+        {
+          "text": "#pragma const",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "const-correctness parantaa ylläpidettävyyttä.",
+      "wrongFeedback": "const-metodi lupaa ettei olion tilaa muuteta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 27,
+        "avgWrongLen": 15,
+        "ratio": 1.8,
+        "correctIsLongest": true,
+        "spread": 14,
+        "lens": [
+          27,
+          14,
+          18,
+          13
+        ]
+      }
+    },
+    {
+      "id": "portability-explicit",
+      "chapter": "portability",
+      "difficulty": 2,
+      "prompt": "Miksi yksiparametrisessä konstruktorissa kannattaa usein `explicit`?",
+      "choices": [
+        {
+          "text": "Estää hiljaiset implisiittiset muunnokset",
+          "correct": true
+        },
+        {
+          "text": "Nopeuttaa käännöstä merkittävästi",
+          "correct": false
+        },
+        {
+          "text": "Tekee luokasta final",
+          "correct": false
+        },
+        {
+          "text": "Pakottaa virtual-tuhoajan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "explicit vähentää yllätyksiä API-rajalla — tärkeää isossa koodipohjassa.",
+      "wrongFeedback": "Ilman explicitiä voi syntyä odottamattomia konversioita.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 41,
+        "avgWrongLen": 26,
+        "ratio": 1.58,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          41,
+          33,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "id": "correct-ub",
+      "chapter": "correctness",
+      "difficulty": 3,
+      "prompt": "Mitä tarkoittaa undefined behavior (UB) C++:ssa?",
+      "choices": [
+        {
+          "text": "Kääntäjä saa tehdä mitä tahansa — bugi voi olla mitätön",
+          "correct": true
+        },
+        {
+          "text": "Ohjelma kaatuu aina heti",
+          "correct": false
+        },
+        {
+          "text": "Vain debug-buildissa ongelma",
+          "correct": false
+        },
+        {
+          "text": "Sama kuin implementation-defined",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UB on vakava — turvallisuusauditoinnissa kriittinen käsite.",
+      "wrongFeedback": "UB ei takaa kaatumista; optimointi voi rikkoa koodin hiljaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 28,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          55,
+          24,
+          28,
+          32
+        ]
+      }
+    },
+    {
+      "id": "safety-variadic",
+      "chapter": "safety",
+      "difficulty": 3,
+      "prompt": "Mikä on turvallinen vaihtoehto omalle C-tyyliselle variadiselle funktiolle?",
+      "choices": [
+        {
+          "text": "Variadic template tai std::format",
+          "correct": true
+        },
+        {
+          "text": "printf suoraan käyttöön",
+          "correct": false
+        },
+        {
+          "text": "va_list kaikkialla",
+          "correct": false
+        },
+        {
+          "text": "Ei mitään — variadic on ok",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "cpp-best-practices varoittaa omista variadisista funktioista.",
+      "wrongFeedback": "Oma variadic-funktio ei ole typeturvallinen — käytä templateja.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 33,
+        "avgWrongLen": 22.333333333333332,
+        "ratio": 1.48,
+        "correctIsLongest": true,
+        "spread": 15,
+        "lens": [
+          33,
+          23,
+          18,
+          26
+        ]
+      }
+    },
+    {
+      "id": "tools-enum-class",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miksi `enum class` on parempi kuin vanha C-tyylinen `enum`?",
+      "choices": [
+        {
+          "text": "Rajattu scope — ei vuoda globaaliin namespaceen",
+          "correct": true
+        },
+        {
+          "text": "Se on aina nopeampi",
+          "correct": false
+        },
+        {
+          "text": "Se korvaa switch-lauseen",
+          "correct": false
+        },
+        {
+          "text": "Se pakottaa virtual-tuhoajan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "enum class on tyypitetty ja scope-suojattu — vähemmän nimiristiriitoja.",
+      "wrongFeedback": "C-enum voi vuotaa arvoja ulos; enum class ei.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 23.666666666666668,
+        "ratio": 1.99,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          47,
+          19,
+          24,
+          28
+        ]
+      }
+    },
+    {
+      "id": "safety-rule-of-zero",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Mitä Rule of Zero tarkoittaa?",
+      "choices": [
+        {
+          "text": "Älä määrittele special member -funktioita jos RAII hoitaa resurssit",
+          "correct": true
+        },
+        {
+          "text": "Nollaa kaikki osoittimet manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "Käytä aina malloc/free",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki konstruktorit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rule of Zero: compiler-generoidut special members riittävät kun ei raw-resursseja.",
+      "wrongFeedback": "Zero = älä kirjoita destructor/copy/move itse turhaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 67,
+        "avgWrongLen": 29,
+        "ratio": 2.31,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          67,
+          38,
+          22,
+          27
+        ]
+      }
+    },
+    {
+      "id": "maintain-string-view",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Milloin `std::string_view` on hyödyllinen?",
+      "choices": [
+        {
+          "text": "Kun tarvitset vain luku-oikeuden merkkijonoon ilman kopiota",
+          "correct": true
+        },
+        {
+          "text": "Kun merkkijono pitää muokata",
+          "correct": false
+        },
+        {
+          "text": "Korvaa aina std::string",
+          "correct": false
+        },
+        {
+          "text": "Vain heap-allokaatioon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "string_view on non-owning viittaus — nopea parametri.",
+      "wrongFeedback": "string_view ei omista dataa eikä sovi muokattavaksi puskuriin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 2.42,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          59,
+          28,
+          23,
+          22
+        ]
+      }
+    },
+    {
+      "id": "perf-noexcept",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Miksi `noexcept` voi auttaa move-operaatioissa?",
+      "choices": [
+        {
+          "text": "Kontainerit voivat valita move vs copy luottavaisemmin",
+          "correct": true
+        },
+        {
+          "text": "Se poistaa kaikki poikkeukset käännöksessä",
+          "correct": false
+        },
+        {
+          "text": "Se tekee koodista aina nopeampaa",
+          "correct": false
+        },
+        {
+          "text": "Se korvaa std::move",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "noexcept move on turvallinen valinta vectorin realokoinnissa.",
+      "wrongFeedback": "noexcept kertoo ettei funktio heitä — std::vector hyötyy.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 31,
+        "ratio": 1.74,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          54,
+          42,
+          32,
+          19
+        ]
+      }
+    },
+    {
+      "id": "correct-signed-unsigned",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Miksi `for (int i = 0; i < v.size(); i++)` voi olla vaarallinen?",
+      "choices": [
+        {
+          "text": "size_t vs int vertailu voi aiheuttaa väärän haaran tai ikuisen silmukan",
+          "correct": true
+        },
+        {
+          "text": "int on aina liian pieni",
+          "correct": false
+        },
+        {
+          "text": "vector.size() palauttaa int",
+          "correct": false
+        },
+        {
+          "text": "Ei voi olla vaarallinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Signed/unsigned vertailu voi tuottaa yllättävän haaran — käytä size_t tai range-for.",
+      "wrongFeedback": "Pelkkä vertailu ei ole UB, mutta signed/unsigned sekoitus on klassinen bugi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 2.92,
+        "correctIsLongest": true,
+        "spread": 48,
+        "lens": [
+          71,
+          23,
+          27,
+          23
+        ]
+      }
+    },
+    {
+      "id": "thread-lock-guard",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alueeksi?",
+      "choices": [
+        {
+          "text": "std::lock_guard tai std::unique_lock",
+          "correct": true
+        },
+        {
+          "text": "mutex.lock() ilman unlockia",
+          "correct": false
+        },
+        {
+          "text": "volatile mutex",
+          "correct": false
+        },
+        {
+          "text": "sleep(1) ennen lukitusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RAII-lukitus vapauttaa mutexin automaattisesti — lock_guard.",
+      "wrongFeedback": "Manuaalinen lock/unlock unohtuu helposti poikkeuksessa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 36,
+        "avgWrongLen": 21.666666666666668,
+        "ratio": 1.66,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          36,
+          27,
+          14,
+          24
+        ]
+      }
+    },
+    {
+      "id": "tools-constexpr",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Mitä `constexpr` funktio mahdollistaa C++11:ssä?",
+      "choices": [
+        {
+          "text": "Laskennan käännösaikana kun argumentit ovat vakioita",
+          "correct": true
+        },
+        {
+          "text": "Funktio on aina inline assembly",
+          "correct": false
+        },
+        {
+          "text": "Funktio ei voi koskaan heittää",
+          "correct": false
+        },
+        {
+          "text": "Korvaa `#define` makrot aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "constexpr = compile-time evaluation mahdollinen.",
+      "wrongFeedback": "constexpr funktiot voivat ajaa käännösaikana const inputilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 29.666666666666668,
+        "ratio": 1.75,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          52,
+          31,
+          30,
+          28
+        ]
+      }
+    },
+    {
+      "id": "style-override",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miksi käyttää `override` periytyvässä metodissa?",
+      "choices": [
+        {
+          "text": "Kääntäjä varmistaa että ylikirjoitat olemassa olevan virtual-metodin",
+          "correct": true
+        },
+        {
+          "text": "Nopeuttaa virtual-kutsua",
+          "correct": false
+        },
+        {
+          "text": "Tekee metodista static",
+          "correct": false
+        },
+        {
+          "text": "Poistaa virtual-tuhoajan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "override estää kirjoitusvirheet periytymisessä.",
+      "wrongFeedback": "Ilman overridea väärä signatuuri voi piiloutua.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 23.333333333333332,
+        "ratio": 2.91,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          68,
+          24,
+          22,
+          24
+        ]
+      }
+    },
+    {
+      "id": "safety-avoid-c-array",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miksi cpp-best-practices suosittelee välttämään `T[N]`-taulukoita rajapinnoissa?",
+      "choices": [
+        {
+          "text": "Ei tiedä kokoaan — helppo yli/aliraja",
+          "correct": true
+        },
+        {
+          "text": "Ne ovat aina hitaampia kuin vector",
+          "correct": false
+        },
+        {
+          "text": "Ne eivät voi olla stackilla",
+          "correct": false
+        },
+        {
+          "text": "Ne eivät tue constia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Raw array ei kulje kokoa mukana — std::array/vector on turvallisempi.",
+      "wrongFeedback": "C-array API:ssa koko katoaa — buffer overflow -riski.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 37,
+        "avgWrongLen": 27,
+        "ratio": 1.37,
+        "correctIsLongest": true,
+        "spread": 17,
+        "lens": [
+          37,
+          34,
+          27,
+          20
+        ]
+      }
+    },
+    {
+      "id": "safety-shared-ptr",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Milloin `std::shared_ptr` on perusteltu `unique_ptr`:n sijaan?",
+      "choices": [
+        {
+          "text": "Kun useampi omistaja jakaa saman resurssin elinkaaren",
+          "correct": true
+        },
+        {
+          "text": "Aina — se on yleisempi",
+          "correct": false
+        },
+        {
+          "text": "Kun haluat nopeimman omistajuuden",
+          "correct": false
+        },
+        {
+          "text": "Kun et tarvitse deleteä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "shared_ptr maksaa atomisesta laskurista — käytä vain jaetussa omistuksessa.",
+      "wrongFeedback": "Oletus on unique_ptr; shared vain kun omistajia on useita.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 26,
+        "ratio": 2.04,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          53,
+          22,
+          33,
+          23
+        ]
+      }
+    },
+    {
+      "id": "safety-make-shared",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Miksi `std::make_shared<T>(args)` on parempi kuin `shared_ptr<T>(new T(args))`?",
+      "choices": [
+        {
+          "text": "Yksi allokaatio objektille ja laskurille — poikkeusturvallisempi",
+          "correct": true
+        },
+        {
+          "text": "make_shared on aina thread-safe new:iin verrattuna",
+          "correct": false
+        },
+        {
+          "text": "new on kielletty C++17:ssä",
+          "correct": false
+        },
+        {
+          "text": "Ei eroa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "make_shared vähentää allokaatioita ja välttää leak-riskin kahdessa vaiheessa.",
+      "wrongFeedback": "Kaksi erillistä new:ia shared_ptr:lle on hitaampaa ja riskialttiimpaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 2.31,
+        "correctIsLongest": true,
+        "spread": 57,
+        "lens": [
+          64,
+          50,
+          26,
+          7
+        ]
+      }
+    },
+    {
+      "id": "safety-const-member",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miten `const` jäsenmuuttujat auttavat turvallisuudessa?",
+      "choices": [
+        {
+          "text": "Estävät vahingossa muuttamisen olion tilaa",
+          "correct": true
+        },
+        {
+          "text": "Tekevät koodista aina nopeampaa",
+          "correct": false
+        },
+        {
+          "text": "Korvaavat mutexin",
+          "correct": false
+        },
+        {
+          "text": "Pakottavat heap-allokaation",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "const correctness on puolustuslinja — kääntäjä estää virheet.",
+      "wrongFeedback": "const ei ole optimointi vaan suunnittelusopimus.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 25,
+        "ratio": 1.68,
+        "correctIsLongest": true,
+        "spread": 25,
+        "lens": [
+          42,
+          31,
+          17,
+          27
+        ]
+      }
+    },
+    {
+      "id": "tools-using-alias",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miksi `using StringMap = std::map<std::string, int>` on usein parempi kuin typedef?",
+      "choices": [
+        {
+          "text": "Luettavampi template-alias ja sama syntaksi kuin typedef",
+          "correct": true
+        },
+        {
+          "text": "using on aina nopeampi kääntää",
+          "correct": false
+        },
+        {
+          "text": "typedef ei toimi C++11:ssä",
+          "correct": false
+        },
+        {
+          "text": "using tekee tyypistä constexpr",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "using on moderni alias — erityisesti templateille selkeämpi.",
+      "wrongFeedback": "typedef toimii, mutta using on suositeltu uudessa koodissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 28.666666666666668,
+        "ratio": 1.95,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          56,
+          30,
+          26,
+          30
+        ]
+      }
+    },
+    {
+      "id": "maintain-init-list",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Miksi `std::vector<int> v{1, 2, 3}` on turvallisempi kuin `vector<int>(3)` kun tarkoitus on kolme arvoa?",
+      "choices": [
+        {
+          "text": "Aaltosulut alustavat elementit — (3) luo kolme nollaa",
+          "correct": true
+        },
+        {
+          "text": "Ei eroa",
+          "correct": false
+        },
+        {
+          "text": "Sulkeet pakottavat heap-allokaation",
+          "correct": false
+        },
+        {
+          "text": "Vain C-koodi voi käyttää {}",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Most vexing parse / koko vs alustus — uniform initialization auttaa.",
+      "wrongFeedback": "(3) on koko, {3} on yksi alkio — {1,2,3} on kolme arvoa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 23,
+        "ratio": 2.3,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          53,
+          7,
+          35,
+          27
+        ]
+      }
+    },
+    {
+      "id": "perf-rvo",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Funktio palauttaa suuren `std::vector` arvona. Mikä usein välttää kopion C++17:ssä?",
+      "choices": [
+        {
+          "text": "RVO / NRVO — kääntäjä optimoi paluuarvon paikalleen",
+          "correct": true
+        },
+        {
+          "text": "Pakollinen std::move jokaisessa returnissa",
+          "correct": false
+        },
+        {
+          "text": "Palauta aina osoitin",
+          "correct": false
+        },
+        {
+          "text": "vector ei voi palautua arvona",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named Return Value Optimization on sallittu — älä move return-lokaalia turhaan.",
+      "wrongFeedback": "return local; usein optimoidaan — move voi jopa estää RVO:n.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 51,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 1.68,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          51,
+          42,
+          20,
+          29
+        ]
+      }
+    },
+    {
+      "id": "correct-overflow",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo?",
+      "choices": [
+        {
+          "text": "Undefined behavior — älä luota wraparoundiin",
+          "correct": true
+        },
+        {
+          "text": "Määritelty modulo-käyttäytyminen aina",
+          "correct": false
+        },
+        {
+          "text": "Vain debug-buildissa ongelma",
+          "correct": false
+        },
+        {
+          "text": "Kääntäjä korjaa automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Signed overflow on UB — turvakriittisissä paikoissa käytä tarkistuksia tai uint.",
+      "wrongFeedback": "Älä oleta että overflow kiertää — se on UB.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 32,
+        "ratio": 1.38,
+        "correctIsLongest": true,
+        "spread": 16,
+        "lens": [
+          44,
+          37,
+          28,
+          31
+        ]
+      }
+    },
+    {
+      "id": "style-final-override",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja. Mitä käytät?",
+      "choices": [
+        {
+          "text": "final luokalle tai virtual-metodille",
+          "correct": true
+        },
+        {
+          "text": "private konstruktori riittää aina",
+          "correct": false
+        },
+        {
+          "text": "static kaikille metodeille",
+          "correct": false
+        },
+        {
+          "text": "#pragma once",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "final estää ylikirjoituksen ja kertoo API-intentin.",
+      "wrongFeedback": "final on eksplisiittinen — override + final yhdessä turvalliseen hierarkiaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 36,
+        "avgWrongLen": 23.666666666666668,
+        "ratio": 1.52,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          36,
+          33,
+          26,
+          12
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-cr-optional-review",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni tyyppi tekee tyhjän arvon eksplisiittiseksi ilman raw-osoitinta?",
+      "choices": [
+        {
+          "text": "std::optional<T> tai std::optional<std::reference_wrapper<const T>>",
+          "correct": true
+        },
+        {
+          "text": "volatile T*",
+          "correct": false
+        },
+        {
+          "text": "std::shared_ptr<T> aina, myös stack-olioille",
+          "correct": false
+        },
+        {
+          "text": "int flag + T* erikseen ilman dokumentaatiota",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "optional ilmaisee puuttuvan arvon tyypitetysti — CppCoreGuidelines suosittelee välttämään null-osoittimia.",
+      "wrongFeedback": "Raw osoitin + erillinen flag on helppo rikkoa. optional tai viittaus on selkeämpi API.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 67,
+        "avgWrongLen": 33,
+        "ratio": 2.03,
+        "correctIsLongest": true,
+        "spread": 56,
+        "lens": [
+          67,
+          11,
+          44,
+          44
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-cr-enum-class-switch",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Code review: switch-case käyttää `enum Status { OK, FAIL }` ilman scopea. Miksi reviewer pyytää muutosta?",
+      "choices": [
+        {
+          "text": "enum class estää implisiittiset int-muunnokset ja nimi­konfliktit",
+          "correct": true
+        },
+        {
+          "text": "Vanha enum on kielletty C++17:ssä",
+          "correct": false
+        },
+        {
+          "text": "enum class on aina 64-bittinen",
+          "correct": false
+        },
+        {
+          "text": "switch ei toimi enum classin kanssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "enum class on vahvasti tyypitetty — cpp-best-practices Style-osio suosittelee sitä.",
+      "wrongFeedback": "Unscoped enum vuotaa nimiavaruuteen ja muuntuu helposti int:ksi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 1.99,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          65,
+          33,
+          30,
+          35
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-prod-weak-ptr-cache",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Jaettu image-cache käyttää `shared_ptr`. Objektit eivät vapaudu vaikka UI sulkeutuu. Mikä omistusmalli auttaa?",
+      "choices": [
+        {
+          "text": "Cache tallentaa weak_ptr — tarkista lock() ennen käyttöä",
+          "correct": true
+        },
+        {
+          "text": "Vaihda kaikki raw new/delete",
+          "correct": false
+        },
+        {
+          "text": "shared_ptr::reset() globaalisti destructorissa",
+          "correct": false
+        },
+        {
+          "text": "Käytä volatile shared_ptr",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "weak_ptr ei pidä elossa — sopii välimuisteihin jotka viittaavat shared-omistettuihin resursseihin.",
+      "wrongFeedback": "Cache joka pitää shared_ptr:n estää vapautumisen. weak_ptr katkaisee syklit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 33,
+        "ratio": 1.7,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          56,
+          28,
+          46,
+          25
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-cr-default-delete",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?",
+      "choices": [
+        {
+          "text": "Estää vahingossa kopioinnin kääntäjävirheellä — intentti selvä",
+          "correct": true
+        },
+        {
+          "text": "delete tekee luokasta nopeamman",
+          "correct": false
+        },
+        {
+          "text": "Vain private copy riittää aina",
+          "correct": false
+        },
+        {
+          "text": "delete korvaa move-operaation",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "deleted copy on moderni tapa kertoa non-copyable — parempi kuin pelkkä private.",
+      "wrongFeedback": "Private copy antaa sekavan linkkerivirheen. = delete on eksplisiittinen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 62,
+        "avgWrongLen": 30,
+        "ratio": 2.07,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          62,
+          31,
+          30,
+          29
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-prod-chrono-timeout",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti ilman magic-numeroita?",
+      "choices": [
+        {
+          "text": "std::chrono::milliseconds(500) tai 500ms-literal (C++14)",
+          "correct": true
+        },
+        {
+          "text": "sleep(500) — oletus sekunteina",
+          "correct": false
+        },
+        {
+          "text": "500 * CLOCKS_PER_SEC",
+          "correct": false
+        },
+        {
+          "text": "double seconds = 0.5 ilman yksikköä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "chrono yksiköt estävät sekunti/millis-sekaannuksen — cpp-best-practices suosittelee.",
+      "wrongFeedback": "Magic numerot ilman yksikköä johtavat timeout-bugeihin. chrono on tyypitetty.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.98,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          56,
+          30,
+          20,
+          35
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-perf-reserve-vector",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Profileri näyttää tuhansia vector-uudelleenallokaatioita CSV-parserissa. Ensimmäinen optimointi?",
+      "choices": [
+        {
+          "text": "reserve(estimatedSize) ennen push_back-silmukkaa",
+          "correct": true
+        },
+        {
+          "text": "Vaihda list<int> — aina nopeampi",
+          "correct": false
+        },
+        {
+          "text": "Poista const correctness",
+          "correct": false
+        },
+        {
+          "text": "Käytä realloc suoraan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "reserve vähentää allokaatioita kun koko arvio tiedossa — performance-best-practice.",
+      "wrongFeedback": "Toistuvat kasvut kopioivat elementit. reserve on halpa voitto.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 48,
+        "avgWrongLen": 25.666666666666668,
+        "ratio": 1.87,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          48,
+          32,
+          24,
+          21
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-cr-raii-file",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Funktio avaa FILE*:n mutta early return ennen fclose:a. Mitä ehdotat code reviewissa?",
+      "choices": [
+        {
+          "text": "RAII: std::unique_ptr<FILE, decltype(&fclose)> tai std::fstream",
+          "correct": true
+        },
+        {
+          "text": "goto cleanup — ainoa turvallinen tapa",
+          "correct": false
+        },
+        {
+          "text": "Poista early returnit",
+          "correct": false
+        },
+        {
+          "text": "fclose vain happy pathissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RAII vapauttaa resurssin automaattisesti — maintainability ja safety.",
+      "wrongFeedback": "Manuaalinen fclose helposti unohtuu poikkeuspoluilla. RAII on moderni ratkaisu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 28,
+        "ratio": 2.25,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          63,
+          37,
+          21,
+          26
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-prod-asan-build",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Muistivuoto epäilty tuotannossa. Mitä CI-buildia pyydät ensin ennen tuotantokokeilua?",
+      "choices": [
+        {
+          "text": "AddressSanitizer (ASan) debug/CI-buildissä",
+          "correct": true
+        },
+        {
+          "text": "Optimoi -O3 ja toivo",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki assertit nopeuden vuoksi",
+          "correct": false
+        },
+        {
+          "text": "Vain printf-debuggaus",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ASan löytää use-after-free ja buffer overruns — cpp-best-practices työkalupakki.",
+      "wrongFeedback": "Tuotantoprofileri ei korvaa sanitizeria kehitysvaiheessa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 26.333333333333332,
+        "ratio": 1.59,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          42,
+          20,
+          38,
+          21
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-correct-compare-three-way",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — epävakaa sort. C++20 ratkaisu?",
+      "choices": [
+        {
+          "text": "operator<=> (three-way comparison) tai std::strong_ordering",
+          "correct": true
+        },
+        {
+          "text": "Palauta aina -1 tai 1",
+          "correct": false
+        },
+        {
+          "text": "Käytä memcmp kaikille tyypeille",
+          "correct": false
+        },
+        {
+          "text": "Poista sort — käytä linked list",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Three-way comparison antaa oikean ordering-semantiikan — correctness-parannus.",
+      "wrongFeedback": "Virheellinen comparator rikkoo std::sort oletukset. <=> auttaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 2.13,
+        "correctIsLongest": true,
+        "spread": 38,
+        "lens": [
+          59,
+          21,
+          31,
+          31
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-portability-byte-order",
+      "chapter": "portability",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaaliset shift-makrot?",
+      "choices": [
+        {
+          "text": "std::endian (C++20) + endian-kohtainen byteswap-helper; C++23: std::byteswap",
+          "correct": true
+        },
+        {
+          "text": "Kopioi sizeof(int) suoraan wireen",
+          "correct": false
+        },
+        {
+          "text": "Oleta aina little-endian",
+          "correct": false
+        },
+        {
+          "text": "union { uint32_t u; char c[4]; } — aina turvallinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Endianness on portability-kysymys — älä oleta alustaa. standard-endian auttaa.",
+      "wrongFeedback": "Type punning unionilla on UB C++:ssa. Käytä dokumentoituja conversioneja.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 76,
+        "avgWrongLen": 36,
+        "ratio": 2.11,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          76,
+          33,
+          24,
+          51
+        ]
+      }
+    },
+    {
+      "id": "exp-cpp-tools-format-logging",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa turvalliseen merkkijonoon?",
+      "choices": [
+        {
+          "text": "std::format (C++20) tai std::ostringstream",
+          "correct": true
+        },
+        {
+          "text": "strcpy logipuskuriin",
+          "correct": false
+        },
+        {
+          "text": "printf ilman format-specifieriä",
+          "correct": false
+        },
+        {
+          "text": "itoa + strcat",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "format/ostringstream välttää buffer overflow -riskin — Use the Tools Available.",
+      "wrongFeedback": "C-tyyliset merkkijonofunktiot ovat riskialttiita. Modernit työkalut ovat turvallisempia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 21.333333333333332,
+        "ratio": 1.97,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          42,
+          20,
+          31,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-tools-raii-01",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Code reviewissa funktio luo `new Database()` ja palauttaa raakaa osoitinta. Mikä moderni omistusmalli estää vuodon poikkeuspolulla?",
+      "choices": [
+        {
+          "text": "std::unique_ptr<Database> — RAII vapauttaa automaattisesti",
+          "correct": true
+        },
+        {
+          "text": "shared_ptr kaikille stack-olioille",
+          "correct": false
+        },
+        {
+          "text": "Raw new ilman deletea kutsujassa",
+          "correct": false
+        },
+        {
+          "text": "malloc + free C++-luokassa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "unique_ptr sitoo eliniän funktion scopeen — CppCoreGuidelines suosittelee RAII:ta.",
+      "wrongFeedback": "Raaka new helposti unohtuu early returnissa. Omistus kuuluu smart pointeriin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          58,
+          34,
+          32,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-tools-concepts-02",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Template-funktio `sortLike(T& a, T& b)` kaatuu outoihin virheisiin väärillä tyypeillä. C++20-ratkaisu rajapintaan?",
+      "choices": [
+        {
+          "text": "concepts: `template<std::totally_ordered T> void sortLike(T& a, T& b)`",
+          "correct": true
+        },
+        {
+          "text": "static_assert(false) jokaisessa funktiossa",
+          "correct": false
+        },
+        {
+          "text": "Käytä void* ja castaa",
+          "correct": false
+        },
+        {
+          "text": "Kommentti // only numbers",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "concepts antavat selkeän kääntäjävirheen — cpp-best-practices suosittelee työkaluja.",
+      "wrongFeedback": "Ilman concepts template-virheet ovat kilometrien pituisia. concepts rajaavat API:n.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 2.39,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          70,
+          42,
+          21,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-style-override-03",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?",
+      "choices": [
+        {
+          "text": "override — kääntäjä tarkistaa että base-funktio on olemassa",
+          "correct": true
+        },
+        {
+          "text": "virtual riittää aina",
+          "correct": false
+        },
+        {
+          "text": "final korvaa override",
+          "correct": false
+        },
+        {
+          "text": "using namespace std korjaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "override estää kirjoitusvirheet periytymisessä — cpp-best-practices Style.",
+      "wrongFeedback": "Ilman overridea typo jää huomaamatta. override on pakollinen modernissa koodissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 22.333333333333332,
+        "ratio": 2.64,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          59,
+          20,
+          21,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-style-consteval-04",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Konfiguraatiovakio pitää laskea compile-time — runtime-laskenta hidastaa käynnistystä. C++20-vaihtoehto constexpr:lle?",
+      "choices": [
+        {
+          "text": "consteval — pakottaa evaluoinnin käännösaikana",
+          "correct": true
+        },
+        {
+          "text": "volatile const int",
+          "correct": false
+        },
+        {
+          "text": "constexpr riittää aina runtimeen",
+          "correct": false
+        },
+        {
+          "text": "Macro #define",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "consteval on immediate function — pakottaa compile-time laskennan.",
+      "wrongFeedback": "constexpr voi silti ajaa runtime-ajassa. consteval on tiukempi compile-time takuu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 21,
+        "ratio": 2.19,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          46,
+          18,
+          32,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-safety-noexcept-05",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?",
+      "choices": [
+        {
+          "text": "noexcept move constructor/assignment — vector voi käyttää movea turvallisesti",
+          "correct": true
+        },
+        {
+          "text": "Poista move kokonaan",
+          "correct": false
+        },
+        {
+          "text": "try/catch jokaisessa push_back",
+          "correct": false
+        },
+        {
+          "text": "volatile move",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "noexcept move mahdollistaa strong exception guarantee — safety-parannus.",
+      "wrongFeedback": "Heittävä move estää optimoinnin. noexcept on osa turvallista API:a.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 21,
+        "ratio": 3.67,
+        "correctIsLongest": true,
+        "spread": 64,
+        "lens": [
+          77,
+          20,
+          30,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-safety-make-unique-06",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparannus?",
+      "choices": [
+        {
+          "text": "std::make_unique<Widget>() — poistaa yksittäisen new/delete-parin",
+          "correct": true
+        },
+        {
+          "text": "Käytä malloc",
+          "correct": false
+        },
+        {
+          "text": "shared_ptr aina vaikka ei jaeta",
+          "correct": false
+        },
+        {
+          "text": "Poista destruktorit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "make_unique estää leakin ja on exception-safe — CppCoreGuidelines R.11.",
+      "wrongFeedback": "Raaka new on helppo unohtaa. make_unique on moderni oletus.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 20.666666666666668,
+        "ratio": 3.15,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          65,
+          12,
+          31,
+          19
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-maintain-string-view-07",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Funktio ottaa `const std::string&` mutta kutsutaan literaaleilla — turhia allokaatioita. Parempi parametri?",
+      "choices": [
+        {
+          "text": "std::string_view — ei kopioi, hyväksyy stringin ja C-str:n",
+          "correct": true
+        },
+        {
+          "text": "const char* aina",
+          "correct": false
+        },
+        {
+          "text": "std::string kopio parametrina",
+          "correct": false
+        },
+        {
+          "text": "Macro STR(x)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "string_view yksinkertaistaa API:a ilman allokaatiota — maintainability.",
+      "wrongFeedback": "const string& pakottaa literaalit string-muunnokseen. string_view on kevyempi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 19,
+        "ratio": 3.05,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          58,
+          16,
+          29,
+          12
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-maintain-structured-08",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Koodi purkaa `std::pair<int,std::string>` käsin `.first` ja `.second`. Moderni tapa?",
+      "choices": [
+        {
+          "text": "structured bindings: `auto [id, name] = row;`",
+          "correct": true
+        },
+        {
+          "text": "Macro GET_FIRST(x)",
+          "correct": false
+        },
+        {
+          "text": "Kopioi pair erillisiin muuttujiin ilman auto",
+          "correct": false
+        },
+        {
+          "text": "Käytä void*",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "structured bindings tekevät tuple/pair-koodista luettavaa — C++17.",
+      "wrongFeedback": "Manuaalinen purku on virhealtista. structured bindings on selkeämpi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 1.85,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          45,
+          18,
+          44,
+          11
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-perf-move-09",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std::move(returnVec)`. Onko se oikein?",
+      "choices": [
+        {
+          "text": "Ei — NRVO/RVO usein estää kopion ilman movea",
+          "correct": true
+        },
+        {
+          "text": "Kyllä, move aina pakollinen",
+          "correct": false
+        },
+        {
+          "text": "Palauta shared_ptr",
+          "correct": false
+        },
+        {
+          "text": "Kopioi aina varmuuden vuoksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named RVO on usein parempi kuin std::move return — estää move-from-tilan.",
+      "wrongFeedback": "std::move return voi estää RVO:n. Luota optimoijaan tai palauta arvo suoraan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          44,
+          27,
+          18,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-perf-shrink-10",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapaudu. Mitä kutsut?",
+      "choices": [
+        {
+          "text": "shrink_to_fit() tai swap-trick vanhoilla kääntäjillä",
+          "correct": true
+        },
+        {
+          "text": "clear() riittää aina vapauttamaan kapasiteetin",
+          "correct": false
+        },
+        {
+          "text": "resize(0) ja toivo",
+          "correct": false
+        },
+        {
+          "text": "delete vector",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "clear() säilyttää capacityn — shrink_to_fit pyytää vapautusta.",
+      "wrongFeedback": "Tyhjä vector voi pitää suuren puskurin. shrink_to_fit vapauttaa ylimääräisen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 25.666666666666668,
+        "ratio": 2.03,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          52,
+          46,
+          18,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-thread-scoped-lock-12",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Funktio lukitsee kaksi mutexia — riski deadlockille. C++17-ratkaisu?",
+      "choices": [
+        {
+          "text": "std::scoped_lock(m1, m2) — lukitsee atomisesti oikeassa järjestyksessä",
+          "correct": true
+        },
+        {
+          "text": "lock(m1); lock(m2); aina samassa järjestyksessä manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "volatile mutex",
+          "correct": false
+        },
+        {
+          "text": "sleep ennen lockia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "scoped_lock usealle mutexille estää deadlockin — threadability-best-practice.",
+      "wrongFeedback": "Manuaalinen kaksinkertainen lock on virhealtista. scoped_lock hoitaa järjestyksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 31,
+        "ratio": 2.26,
+        "correctIsLongest": true,
+        "spread": 56,
+        "lens": [
+          70,
+          61,
+          14,
+          18
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-thread-atomic-order-13",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 5,
+      "prompt": "Laskuri kasvaa useasta säikeestä — `atomic<int>++` riittääkö ilman memory_order?",
+      "choices": [
+        {
+          "text": "seq_cst on oletus — usein OK; relaxed vain jos semantiikka sallii",
+          "correct": true
+        },
+        {
+          "text": "atomic ei tarvitse koskaan orderia",
+          "correct": false
+        },
+        {
+          "text": "volatile int riittää",
+          "correct": false
+        },
+        {
+          "text": "mutex jokaiselle incrementille aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "memory_order vaikuttaa näkyvyyteen — oletus seq_cst on turvallisin.",
+      "wrongFeedback": "Relaxed order voi rikkoa oletukset. Ymmärrä semantiikka ennen relaxedia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 29.666666666666668,
+        "ratio": 2.19,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          65,
+          34,
+          20,
+          35
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-correct-signed-14",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. Miksi tarkistus on hyödytön?",
+      "choices": [
+        {
+          "text": "size_t on unsigned — vertailu nollaan on aina tosi, ei tarkista virheitä",
+          "correct": true
+        },
+        {
+          "text": "Kääntäjäbugi",
+          "correct": false
+        },
+        {
+          "text": "Optimointi -O3 rikkoo vertailun",
+          "correct": false
+        },
+        {
+          "text": "size_t on signed",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sekoitetut signed/unsigned vertailut ovat vaarallisia — correctness-ansat.",
+      "wrongFeedback": "size_t on unsigned — ehto on aina tosi. Käytä eksplisiittistä rajatarkistusta tai signed-tyyppiä tarvittaessa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 19.666666666666668,
+        "ratio": 3.66,
+        "correctIsLongest": true,
+        "spread": 60,
+        "lens": [
+          72,
+          12,
+          31,
+          16
+        ]
+      }
+    },
+    {
+      "id": "b02-cpp-correct-dangling-15",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Funktio palauttaa `const std::string&` paikallisesta muuttujasta — crash tuotannossa. Mikä on oikea paluutyyppi?",
+      "choices": [
+        {
+          "text": "std::string arvona (RVO) tai std::string_view vain jos elinikä taattu",
+          "correct": true
+        },
+        {
+          "text": "const string& aina tehokkain",
+          "correct": false
+        },
+        {
+          "text": "static string local — thread-safe",
+          "correct": false
+        },
+        {
+          "text": "char* literaaliin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Viittaus paikalliseen on dangling — correctness-kriittinen virhe.",
+      "wrongFeedback": "Reference return vaatii elävän objektin. Palauta arvo tai varmista elinikä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 26,
+        "ratio": 2.65,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          69,
+          28,
+          33,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-cr-move-semantics",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Code reviewissa funktio palauttaa suuren `std::vector` arvona ja reviewer ehdottaa `std::move`-paluuta. Miksi?",
+      "choices": [
+        {
+          "text": "RVO/NRVO usein riittää — move on turha tai voi estää optimoinnin",
+          "correct": true
+        },
+        {
+          "text": "std::move palautuksessa on aina pakollinen C++17:ssä",
+          "correct": false
+        },
+        {
+          "text": "move tekee palautuksesta thread-safen automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Palauta aina const reference suorituskyvyn vuoksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named return value optimization voi jo siirtää ilman move:a — cppreference varoittaa turhasta std::move palautuksessa.",
+      "wrongFeedback": "Palautusarvo on jo rvalue — liian aikainen move voi jopa haitata NRVO:ta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 51.333333333333336,
+        "ratio": 1.25,
+        "correctIsLongest": true,
+        "spread": 15,
+        "lens": [
+          64,
+          52,
+          53,
+          49
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-prod-virtual-dtor",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "virtual ~Base() = default polymorfiselle pohjalle",
+          "correct": true
+        },
+        {
+          "text": "Käytä final-luokkaa base:na",
+          "correct": false
+        },
+        {
+          "text": "shared_ptr korjaa ilman virtual destructoria",
+          "correct": false
+        },
+        {
+          "text": "Muuta delete -> free()",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Polymorphic base tarvitsee virtual destructorin — CppCoreGuidelines C.35.",
+      "wrongFeedback": "Ilman virtual dtor:ia delete base-osoittimella jää resurssit vapauttamatta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 31,
+        "ratio": 1.58,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          49,
+          27,
+          44,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-thread-mutex-order",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Deadlock kahdessa mutexissa: thread A lukitsee m1→m2, thread B m2→m1. Miten estät?",
+      "choices": [
+        {
+          "text": "Lukitse aina samassa järjestyksessä tai käytä std::scoped_lock molempiin",
+          "correct": true
+        },
+        {
+          "text": "Vaihda mutexit spinlock:eihin",
+          "correct": false
+        },
+        {
+          "text": "Poista toinen mutex kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Käytä volatile mutex-flageja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "scoped_lock (C++17) hakee useita lukituksia deadlock-vapaasti tai käytä kiinteää järjestystä.",
+      "wrongFeedback": "Satunnainen lukitusjärjestys johtaa helposti deadlockiin tuotannossa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 2.54,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          72,
+          29,
+          28,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-style-explicit-ctor",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m = d;`. Miten estät?",
+      "choices": [
+        {
+          "text": "explicit Meters(int v) — estää implisiittiset muunnokset",
+          "correct": true
+        },
+        {
+          "text": "operator int() palautuksessa",
+          "correct": false
+        },
+        {
+          "text": "Muuta int -> long",
+          "correct": false
+        },
+        {
+          "text": "Poista constructor — käytä factorya aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "explicit kertoo intentin — cpp-best-practices Style suosittelee single-argument ctor:eihin.",
+      "wrongFeedback": "Ilman explicit:ia kääntäjä voi tehdä hiljaisia tyyppimuunnoksia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.98,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          56,
+          28,
+          17,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-tools-if-constexpr",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Template-funktio tarvitsee eri haaran integraalisille vs float-tyypeille compile-time. Mitä käytät?",
+      "choices": [
+        {
+          "text": "if constexpr — haara poistuu instanssoinnissa",
+          "correct": true
+        },
+        {
+          "text": "Runtime if + typeid",
+          "correct": false
+        },
+        {
+          "text": "Macro #ifdef aina",
+          "correct": false
+        },
+        {
+          "text": "dynamic_cast templatessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "if constexpr (C++17) valitsee haaran käännösaikana — ei runtime-kustannusta.",
+      "wrongFeedback": "Runtime if ei poista kuollutta koodia templaten instanssista.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 20,
+        "ratio": 2.25,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          45,
+          19,
+          17,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-maintain-copy-swap",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Tiimi kirjoittaa copy assignment -operaattorin käsin ja unohtaa self-assignmentin. Idiomivaihtoehto?",
+      "choices": [
+        {
+          "text": "Copy-and-swap: copy constructor + swap — strong exception safety",
+          "correct": true
+        },
+        {
+          "text": "memcpy koko structille",
+          "correct": false
+        },
+        {
+          "text": "Poista copy assignment ja käytä shallow copy",
+          "correct": false
+        },
+        {
+          "text": "Globaali flag selfAssignmentDetected",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Copy-and-swap on testattu idiom — Rule of Five -luokille turvallinen.",
+      "wrongFeedback": "Käsin kirjoitettu operator= on helppo rikkoa self-assignmentissa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 34,
+        "ratio": 1.88,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          64,
+          22,
+          44,
+          36
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-perf-string-reserve",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Silmukka liittää tuhansia rivejä `std::string`iin — profiloija näyttää toistuvia realokointeja. Ensimmäinen korjaus?",
+      "choices": [
+        {
+          "text": "result.reserve(estimatedSize) ennen silmukkaa",
+          "correct": true
+        },
+        {
+          "text": "Vaihda string -> C-merkkijono strcat",
+          "correct": false
+        },
+        {
+          "text": "Poista reserve — se hidastaa aina",
+          "correct": false
+        },
+        {
+          "text": "Käytä ostringstream ilman reservea",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "reserve vähentää reallocaatioita — cpp-best-practices Performance.",
+      "wrongFeedback": "Ilman reservea append kasvattaa kapasiteettia logaritmisesti mutta turhalla työllä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 34.333333333333336,
+        "ratio": 1.31,
+        "correctIsLongest": true,
+        "spread": 12,
+        "lens": [
+          45,
+          36,
+          33,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-safety-array-span",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?",
+      "choices": [
+        {
+          "text": "std::array<int,256> tai std::span<int> — koko mukana",
+          "correct": true
+        },
+        {
+          "text": "Jatka C-taulukkoa — nopeampi",
+          "correct": false
+        },
+        {
+          "text": "Muuta int -> short",
+          "correct": false
+        },
+        {
+          "text": "Lisää kommentti // caller must ensure size",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "std::array ei dekay → pointer ja span kantaa pituuden — Safety-ohje.",
+      "wrongFeedback": "Raaka taulukko menettää koon parametreissa — buffer overrun riski.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 1.77,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          52,
+          28,
+          18,
+          42
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-correct-three-way-default",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?",
+      "choices": [
+        {
+          "text": "<=> (spaceship) tai std::strong_ordering — totaalinen järjestys",
+          "correct": true
+        },
+        {
+          "text": "Palauta a < b || a == b",
+          "correct": false
+        },
+        {
+          "text": "Käytä qsort C:stä",
+          "correct": false
+        },
+        {
+          "text": "Comparator ei saa koskaan palauttaa false",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Three-way comparison antaa johdonmukaisen ordering — correctness-parannus.",
+      "wrongFeedback": "Virheellinen strict weak ordering rikkoo sort-algoritmit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 27,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          63,
+          23,
+          17,
+          41
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-portability-fixed-width",
+      "chapter": "portability",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Verkkoprotokolla tallentaa `uint32_t` binäärimuodossa eri alustoille. Mitä tyyppiä käytät?",
+      "choices": [
+        {
+          "text": "std::uint32_t (<cstdint>) — kiinteä leveys",
+          "correct": true
+        },
+        {
+          "text": "unsigned int — aina 32-bittinen",
+          "correct": false
+        },
+        {
+          "text": "long — riittää kaikissa",
+          "correct": false
+        },
+        {
+          "text": "size_t protokollakentässä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fixed-width integerit takaavat saman koon — portability best practice.",
+      "wrongFeedback": "int/leveys vaihtelee alustan mukaan — wire format vaatii stdint-tyypit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 26.333333333333332,
+        "ratio": 1.59,
+        "correctIsLongest": true,
+        "spread": 19,
+        "lens": [
+          42,
+          31,
+          23,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-thread-atomic-flag",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "Yksinkertainen shutdown-flag jaettiin bool:lla ilman synkronointia — satunnainen jumi. Ratkaisu?",
+      "choices": [
+        {
+          "text": "std::atomic<bool> tai atomic_flag — memory ordering mukana",
+          "correct": true
+        },
+        {
+          "text": "volatile bool riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Globaali mutex jokaiselle lukemiselle",
+          "correct": false
+        },
+        {
+          "text": "sleep(1) ennen lukemista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Data race bool:lla on UB — std::atomic on oikea työkalu flagille.",
+      "wrongFeedback": "volatile ei tarjoa atomisuutta eikä memory ordering -takeita.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 29,
+        "ratio": 2,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          58,
+          26,
+          37,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-cr-override-keyword",
+      "chapter": "style",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `void draw()` ilman overridea. Riski?",
+      "choices": [
+        {
+          "text": "Kääntäjä ei varoita jos signatuuri hieman eri — piilotettu bugi",
+          "correct": true
+        },
+        {
+          "text": "override hidastaa virtual-kutsua",
+          "correct": false
+        },
+        {
+          "text": "override on pakollinen C++11:ssä",
+          "correct": false
+        },
+        {
+          "text": "Ilman overridea kutsutaan aina base-versiota",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "override varmistaa että base-funktio on ylikirjoitettu — C++11 työkalu.",
+      "wrongFeedback": "Ilman overridea typo signatuurissa tekee uuden overloadin hiljaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 36,
+        "ratio": 1.75,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          63,
+          32,
+          32,
+          44
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-prod-exception-noexcept",
+      "chapter": "correctness",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja tila epävarma. Mitä merkitset?",
+      "choices": [
+        {
+          "text": "noexcept move — kontainerit käyttävät movea vain jos noexcept",
+          "correct": true
+        },
+        {
+          "text": "throw() on pakollinen kaikissa funktioissa",
+          "correct": false
+        },
+        {
+          "text": "Poista move — käytä copy aina",
+          "correct": false
+        },
+        {
+          "text": "catch(...) move-operaattorissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "noexcept move mahdollistaa tehokkaan reallokoinnin — strong guarantee.",
+      "wrongFeedback": "Heittävä move pakottaa kopioimaan — huono suorituskyky.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 33.666666666666664,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          61,
+          42,
+          29,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-sprint-const-correctness",
+      "chapter": "maintainability",
+      "domain": "cpp",
+      "difficulty": 2,
+      "prompt": "Code review: getter palauttaa `std::string` kopiona vaikka dataa ei muuteta. Parannus?",
+      "choices": [
+        {
+          "text": "const std::string& tai std::string_view read-only pääsyyn",
+          "correct": true
+        },
+        {
+          "text": "Palauta aina shared_ptr<string>",
+          "correct": false
+        },
+        {
+          "text": "Muuta getter -> global",
+          "correct": false
+        },
+        {
+          "text": "Poista const metodeista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Const correctness vähentää kopioita ja dokumentoi intentin.",
+      "wrongFeedback": "Turha kopio jokaisella getter-kutsulla on helppo välttää.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 2.25,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          57,
+          31,
+          22,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b03-cpp-incident-sanitize-ubsan",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Tuotantoon pääsee signed overflow -bugi vain tietyllä ARM-buildilla. CI-parannus?",
+      "choices": [
+        {
+          "text": "Ota UBSan/ASan debug-buildiin ja -fsanitize=undefined testeihin",
+          "correct": true
+        },
+        {
+          "text": "Vain x86-buildi tuotantoon",
+          "correct": false
+        },
+        {
+          "text": "Poista signed integerit kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Luota pelkkään code reviewhun",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UndefinedBehaviorSanitizer löytää overflowit — cpp-best-practices tooling.",
+      "wrongFeedback": "UB voi manifestoitua eri tavalla eri alustoilla — sanitizerit auttavat.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 29,
+        "ratio": 2.17,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          63,
+          26,
+          32,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b04-cpp-concept-constraints",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virheviesteihin kun T on custom-tyyppi. Miten rajaat template-parametrin luettavaksi?",
+      "choices": [
+        {
+          "text": "C++20 concepts: template<std::ranges::sortable R> tai requires-lause",
+          "correct": true
+        },
+        {
+          "text": "static_assert(false) funktion alussa",
+          "correct": false
+        },
+        {
+          "text": "Kommentti // T must be sortable",
+          "correct": false
+        },
+        {
+          "text": "Käytä void* ja castaa jokaisessa kutsussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Concepts antavat selkeän kääntäjävirheen — cppreference dokumentoi std::sortable ja requires.",
+      "wrongFeedback": "Ilman rajoitteita virhe tulee syvältä standardikirjastosta. Concepts kertovat intentin kääntäjälle.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 36,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          68,
+          36,
+          31,
+          41
+        ]
+      }
+    },
+    {
+      "id": "b04-cpp-string-view-lifetime",
+      "chapter": "safety",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Funktio palauttaa `std::string_view` joka viittaa paikalliseen std::stringiin. Tuotannossa satunnainen data. Mikä on oikea korjaus?",
+      "choices": [
+        {
+          "text": "Palauta std::string tai pidä string elossa kutsujan omistuksessa",
+          "correct": true
+        },
+        {
+          "text": "Muuta string_view volatile:ksi",
+          "correct": false
+        },
+        {
+          "text": "Käytä const_cast poistamaan const",
+          "correct": false
+        },
+        {
+          "text": "string_view on aina turvallinen — bugi on muualla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "string_view ei omista dataa — CppCoreGuidelines F.42 varoittaa dangling-viittauksista.",
+      "wrongFeedback": "Dangling string_view on klassinen UB. Omista data stringillä tai pidä elossa pidempään.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 37.333333333333336,
+        "ratio": 1.71,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          64,
+          30,
+          33,
+          49
+        ]
+      }
+    },
+    {
+      "id": "b04-cpp-move-noexcept-vector",
+      "chapter": "performance",
+      "domain": "cpp",
+      "difficulty": 3,
+      "prompt": "std::vector<MyType> kasvaa hitaasti vaikka move-operaattori on olemassa. Profileri näyttää kopioita. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Move-operaattori ei ole noexcept — vector käyttää copya reallocationissa",
+          "correct": true
+        },
+        {
+          "text": "Vector on liian pieni reserve:lle",
+          "correct": false
+        },
+        {
+          "text": "Move on aina hitaampi kuin copy",
+          "correct": false
+        },
+        {
+          "text": "Poista move-operaattori kokonaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Vector siirtää elementtejä vain jos move on noexcept — cppreference vector reallocation.",
+      "wrongFeedback": "Strong exception guarantee pakottaa kopioimaan jos move voi heittää. Merkitse noexcept.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 32,
+        "ratio": 2.25,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          72,
+          33,
+          31,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b04-cpp-lock-guard-deadlock",
+      "chapter": "threadability",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Kaksi mutexia lukitaan eri järjestyksessä kahdessa säikeessä — satunnainen deadlock. Mikä standardiratkaisu auttaa?",
+      "choices": [
+        {
+          "text": "std::lock(m1, m2) + std::lock_guard adopt_lock — lukitsee atomisesti",
+          "correct": true
+        },
+        {
+          "text": "sleep(100) ennen toista lukitusta",
+          "correct": false
+        },
+        {
+          "text": "Käytä try_lock silmukassa ikuisesti",
+          "correct": false
+        },
+        {
+          "text": "Yksi globaali mutex kaikelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "std::lock ottaa useita mutexeja deadlock-vapaasti — en.cppreference lock algorithm.",
+      "wrongFeedback": "Manuaalinen järjestys rikkoutuu refaktoroinnissa. std::lock on oikea työkalu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 32,
+        "ratio": 2.13,
+        "correctIsLongest": true,
+        "spread": 40,
+        "lens": [
+          68,
+          33,
+          35,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b04-cpp-consteval-compile-time",
+      "chapter": "tools",
+      "domain": "cpp",
+      "difficulty": 4,
+      "prompt": "Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?",
+      "choices": [
+        {
+          "text": "consteval funktio — pakottaa compile-time evaluoinnin",
+          "correct": true
+        },
+        {
+          "text": "constexpr riittää aina — sama asia",
+          "correct": false
+        },
+        {
+          "text": "Macro #define TABLE_SIZE 256",
+          "correct": false
+        },
+        {
+          "text": "static initializer ilman constevalia riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "consteval funktioita EI voi kutsua runtime — pakottaa constexpr-kontekstin.",
+      "wrongFeedback": "constexpr voi ajaa runtime:ssa. consteval on tiukempi compile-time pakko.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 37,
+        "ratio": 1.43,
+        "correctIsLongest": true,
+        "spread": 25,
+        "lens": [
+          53,
+          34,
+          28,
+          49
+        ]
+      }
+    }
+  ]
+}

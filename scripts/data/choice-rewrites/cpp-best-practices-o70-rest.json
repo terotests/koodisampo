@@ -1,0 +1,320 @@
+{
+  "bank": "cpp-best-practices.json",
+  "rewrites": [
+    {
+      "id": "b06-cpp-static-cast-review",
+      "choices": [
+        { "text": "static_cast on näkyvä ja rajattu — helpompi grep ja turvallisempi kuin C-cast", "correct": true },
+        { "text": "C-style cast on nopeampi käännöksessä — static_cast hidastaa optimointia", "correct": false },
+        { "text": "static_cast poistaa tarpeen kaikille muille cast-tyypeille koodissa", "correct": false },
+        { "text": "Kääntäjä kieltää static_castin C++20:ssä — käytä vain C-style castia", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-cpp-attributes-fallthrough",
+      "choices": [
+        { "text": "[[fallthrough]] attribuutti — kääntäjä ja lukija ymmärtävät tarkoituksellisen putoamisen", "correct": true },
+        { "text": "Tyhjä case ilman break on aina bugi — fallthrough ei ole sallittu C++:ssa", "correct": false },
+        { "text": "goto next_case on moderni tapa dokumentoida switch-case putoaminen", "correct": false },
+        { "text": "Kommentti // intentional riittää kääntäjälle estämään fallthrough-varoituksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-unique-ptr-deleter",
+      "choices": [
+        { "text": "unique_ptr kutsuu fclose deleterissä — poikkeuksessa handle ei jää auki", "correct": true },
+        { "text": "Raw delete toimii FILE*-pointterille samoin kuin malloc-allokaatiolle", "correct": false },
+        { "text": "shared_ptr on aina pakollinen C-API-resurssien hallintaan C++:ssa", "correct": false },
+        { "text": "unique_ptr ei tue custom deleteriä — vain oletusdelete on mahdollinen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-enum-class-scoped",
+      "choices": [
+        { "text": "enum class Color { Red, Green } — scoped enum estää vuodon globaaliin nimiavaruuteen", "correct": true },
+        { "text": "#define Red 0 korvaa enumin ja estää nimikonfliktit header-tiedostoissa", "correct": false },
+        { "text": "typedef int Color on moderni korvaaja enumille ilman nimiavaruusongelmia", "correct": false },
+        { "text": "Vanha enum on deprecated C++17:ssä — enum class ei ole tuettu", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-span-bounds-check",
+      "choices": [
+        { "text": "std::span<T> kantaa pointerin ja pituuden yhdessä API-rajapinnassa", "correct": true },
+        { "text": "void* riittää aina — kutsija vastaa bufferin koon hallinnasta", "correct": false },
+        { "text": "std::vector& vaatii aina datan kopioimisen funktiokutsussa", "correct": false },
+        { "text": "span omistaa datan automaattisesti kuten std::vector omistaa elementit", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-perfect-forwarding",
+      "choices": [
+        { "text": "std::forward<Args>(args)... säilyttää lvalue/rvalue — perfect forwarding", "correct": true },
+        { "text": "std::move kaikille argumenteille säilyttää value categoryn tehdasfunktiossa", "correct": false },
+        { "text": "Kopioi args vektoriin ensin — se säilyttää forwarding-semantiikan", "correct": false },
+        { "text": "Käytä Args& ilman && — se riittää perfect forwardingiin", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-clang-tidy-ci",
+      "choices": [
+        { "text": "clang-tidy build-vaiheessa — fail build jos uudet varoitukset CI-putkessa", "correct": true },
+        { "text": "Luota pelkkään manuaaliseen reviewhin — automaatio ei löydä guideline-rikkomuksia", "correct": false },
+        { "text": "Poista kaikki varoitukset -w-flagilla — CI pysyy vihreänä ilman clang-tidyä", "correct": false },
+        { "text": "Vain runtime-testit riittävät CppCoreGuidelines-rikkomusten havaitsemiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-reserve-vector",
+      "choices": [
+        { "text": "vector.reserve(n) ennen silmukkaa — vähentää toistuvia reallokaatioita", "correct": true },
+        { "text": "Käytä list<T> aina — se välttää vectorin reallokaatio-ongelman", "correct": false },
+        { "text": "Poista reserve — se hidastaa push_back-silmukkaa merkittävästi", "correct": false },
+        { "text": "Muuta push_back emplace_backiksi ilman reservea — se korvaa kapasiteettivarauksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-endian-portable",
+      "choices": [
+        { "text": "C++20 std::endian + oma byteswap; C++23 std::byteswap verkkoarvoille", "correct": true },
+        { "text": "reinterpret_cast uint32_t*:lla riittää endianness-käsittelyyn kaikilla alustoilla", "correct": false },
+        { "text": "volatile korjaa endianness-ongelman ARM- ja x86-alustoilla automaattisesti", "correct": false },
+        { "text": "Käytä float→double castia — se normalisoi byte-järjestyksen protokollassa", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-atomic-acquire-release",
+      "choices": [
+        { "text": "Tuottaja store release, kuluttaja load acquire — synkronoi datan näkyvyyden", "correct": true },
+        { "text": "memory_order_relaxed riittää lock-free jonossa datan julkaisuun ja lukemiseen", "correct": false },
+        { "text": "volatile int flag korvaa acquire-release-parin jonossa", "correct": false },
+        { "text": "std::mutex on aina hitaampi — älä käytä sitä atomicien rinnalla", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-spaceship-operator",
+      "choices": [
+        { "text": "auto operator<=>(const T&) const = default — three-way comparison C++20:ssä", "correct": true },
+        { "text": "Kirjoita kaikki vertailuoperaattorit käsin — default ei generoi niitä", "correct": false },
+        { "text": "memcmp structille riittää — se korvaa operator<=> turvallisesti", "correct": false },
+        { "text": "operator< riittää — muut vertailut johdetaan automaattisesti C++03-tyylillä", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-optional-null-api",
+      "choices": [
+        { "text": "std::optional<T> — arvo tai tyhjä ilman magic number -sentinel-arvoja", "correct": true },
+        { "text": "Palauta 0 virheessä — kutsujat erottavat sen validista arvosta", "correct": false },
+        { "text": "Heitä poikkeus jokaisesta missistä — se on kevyin lookup-API", "correct": false },
+        { "text": "Globaali errno riittää ilmaisemaan puuttuvan arvon tyypitetysti", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-rule-of-five",
+      "choices": [
+        { "text": "Rule of five: copy/move ctor + assign — tai =delete / =default tietoisesti", "correct": true },
+        { "text": "Destructor riittää — muut special memberit generoituvat aina turvallisesti", "correct": false },
+        { "text": "Vain copy constructor tarvitaan kun destructor on määritelty", "correct": false },
+        { "text": "Smart pointer korvaa luokan — special membereitä ei tarvita lainkaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-nodiscard-error",
+      "choices": [
+        { "text": "[[nodiscard]] funktiolle — kääntäjä varoittaa ignooratusta paluuarvosta", "correct": true },
+        { "text": "Muuta paluutyyppi voidiksi — kutsuja muistaa tarkistaa virheen", "correct": false },
+        { "text": "Kommentti // must check estää paluuarvon unohtamisen käännöksessä", "correct": false },
+        { "text": "Heitä poikkeus aina — se korvaa nodiscard-tarkistuksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-chrono-literals",
+      "choices": [
+        { "text": "500ms chrono-literalilla — using namespace std::chrono_literals", "correct": true },
+        { "text": "500 std::chrono::seconds ilmaisee 500 millisekuntia tyypitetysti", "correct": false },
+        { "text": "500 * 1000 nanoseconds käsin — se on chrono:n suositeltu tapa", "correct": false },
+        { "text": "chrono ei tue millisekunteja — käytä raw sleep()-kutsua", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-assert-vs-expect",
+      "choices": [
+        { "text": "Runtime check + throw/log tuotannossa — assert vain debug-invarianteille", "correct": true },
+        { "text": "assert riittää kriittisiin tuotantoinvariantteihin release-buildissä", "correct": false },
+        { "text": "Poista kaikki tarkistukset release:ssä — ne hidastavat suorituskykyä", "correct": false },
+        { "text": "#ifdef DEBUG around return korvaa runtime-tarkistuksen tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-cpp-pimpl-abi",
+      "choices": [
+        { "text": "Pimpl — vain impl muuttuu, julkinen header pysyy vakaana ABI:lle", "correct": true },
+        { "text": "Kaikki private memberit headeriin — se pienentää compile-riippuvuuksia", "correct": false },
+        { "text": "inline kaikki funktiot headeriin — se vähentää uudelleenkäännöksiä", "correct": false },
+        { "text": "Poista private osio — se yksinkertaistaa kirjaston rajapintaa", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-span-bounds",
+      "choices": [
+        { "text": "Tarkista size() ennen operator[] — span ei bounds-checkaa automaattisesti", "correct": true },
+        { "text": "span estää yli rajojen menon kääntäjässä operator[]-kutsussa", "correct": false },
+        { "text": "Muuta span takaisin raakaan pointeriin — se on turvallisempi indeksoinnissa", "correct": false },
+        { "text": "volatile indeksi korjaa optimoinnin joka aiheuttaa buffer overflowin", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-emplace-back",
+      "choices": [
+        { "text": "emplace_back(args...) rakentaa suoraan konttiin ilman väliaikaista", "correct": true },
+        { "text": "reserve() korvaa emplace_backin — kopioita ei synny reserve:n jälkeen", "correct": false },
+        { "text": "push_back on aina nopein tapa lisätä monimutkaisia olioita vectoriin", "correct": false },
+        { "text": "insert(0, obj) on moderni tapa välttää väliaikaista kopiota", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-initializer-list-trap",
+      "choices": [
+        { "text": "auto x = {1,2,3} on initializer_list — sitä ei voi välittää array-parametrille", "correct": true },
+        { "text": "auto ei tue listoja C++11:ssä — brace-init vaatii eksplisiittisen tyypin", "correct": false },
+        { "text": "auto deduoi aina std::vector<int>:ksi brace-init listasta", "correct": false },
+        { "text": "Kääntäjävirhe — f(x) pitäisi toimia kun f ottaa std::array<int,3>", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-sort-requirements",
+      "choices": [
+        { "text": "RandomAccessIterator — std::sort vaatii O(1) etäisyyden elementtien välillä", "correct": true },
+        { "text": "Mikä tahansa forward iterator riittää std::sort-algoritmille", "correct": false },
+        { "text": "std::sort toimii vain std::vectorilla — muut kontit eivät tueta", "correct": false },
+        { "text": "Input iterator riittää kun vertailuoperaattori on määritelty", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-unique-ptr-deleter",
+      "choices": [
+        { "text": "unique_ptr<FILE, decltype(&fclose)> fp(f, &fclose) — RAII FILE:lle", "correct": true },
+        { "text": "shared_ptr FILE:lle ilman deleteria — oletusdelete sulkee tiedoston", "correct": false },
+        { "text": "new/delete FILE:lle on oikea tapa hallita C-stdio-resurssia", "correct": false },
+        { "text": "unique_ptr ilman custom deleteria kutsuu fclose automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-chrono-literals",
+      "choices": [
+        { "text": "using namespace std::chrono_literals; auto t = 500ms; — tyypitetty timeout", "correct": true },
+        { "text": "500 chrono ilman suffixia — kääntäjä deduoi millisekunnit automaattisesti", "correct": false },
+        { "text": "sleep(500) on aina millisekunteja C++14 std::chrono API:ssa", "correct": false },
+        { "text": "#define ms * 1 on chrono-literalin virallinen korvaaja", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-atomic-memory-order",
+      "choices": [
+        { "text": "memory_order_release/acquire tai seq_cst — ymmärrä visibility tarpeen mukaan", "correct": true },
+        { "text": "volatile int korvaa std::atomicin säieturvalliseen laskuriin", "correct": false },
+        { "text": "memory_order_relaxed estää kaikki race conditionit laskurissa", "correct": false },
+        { "text": "Mutex ei koskaan tarvita std::atomic<int>:n rinnalla incrementissä", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-optional-monadic",
+      "choices": [
+        { "text": "optional::and_then / transform — monadinen ketjutus ilman if-pesäkkeitä", "correct": true },
+        { "text": "operator* aina ilman tarkistusta — tyhjä optional on turvallinen", "correct": false },
+        { "text": "optional ei tue ketjutusta — vain if (opt) toimii C++17:ssä", "correct": false },
+        { "text": "Muunna nullptr optionaliksi — se korvaa and_then-ketjutuksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-variant-visit",
+      "choices": [
+        { "text": "std::visit + overloadattu lambda-setti käsittelee jokaisen alternative-tyypin", "correct": true },
+        { "text": "std::get<int> riittää kun aktiivinen tyyppi vaihtelee ajonaikaisesti", "correct": false },
+        { "text": "dynamic_cast std::variant-olioon valitsee oikean haaran kuten perinnössä", "correct": false },
+        { "text": "C-tyylinen union korvaa variantin kun tyypit mahtuvat samaan muistiin", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-ranges-pipeline",
+      "choices": [
+        { "text": "views::filter | views::transform — laiska ketju ilman välikopiota", "correct": true },
+        { "text": "Kopioi aina uuteen vectoriin ensin — ranges vaatii materialisoinnin", "correct": false },
+        { "text": "ranges hidastaa aina — for-loop on nopeampi suodatuksessa", "correct": false },
+        { "text": "for-loop on kielletty ranges:n kanssa C++20-standardissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-assert-ndebug",
+      "choices": [
+        { "text": "assert vain kehitykseen — tuotannossa explicit check ja error handling", "correct": true },
+        { "text": "assert toimii release-buildissä — NDEBUG ei poista sitä", "correct": false },
+        { "text": "Poista kaikki tarkistukset nopeuden vuoksi — nullptr crash paljastaa virheen", "correct": false },
+        { "text": "NDEBUG määrittää assertin aina päälle tuotantobuildissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-shared-mutex-read",
+      "choices": [
+        { "text": "std::shared_mutex — shared_lock lukijoille, unique_lock kirjoittajalle", "correct": true },
+        { "text": "Yksi std::mutex kaikille — se on nopein read-heavy cacheen", "correct": false },
+        { "text": "std::atomic riittää monimutkaisen map-konfiguraation päivitykseen", "correct": false },
+        { "text": "spinlock on aina parempi kuin shared_mutex lukupainotteisessa cachessa", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-modules-headers",
+      "choices": [
+        { "text": "export module + import — käännä moduuli kerran, käytä import rajapinnassa", "correct": true },
+        { "text": "#pragma once korvaa moduulit — include-ketju ei hidasta buildia", "correct": false },
+        { "text": "PCH riittää aina — C++20-moduuleja ei tarvita uudelleenkäännöksiin", "correct": false },
+        { "text": "inline kaikki headeriin — se korvaa moduulijärjestelmän", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-sanitizer-ci-failure",
+      "choices": [
+        { "text": "Aja sama build ASan/UBSan-flageilla paikallisesti — reprodukoi ennen mergeä", "correct": true },
+        { "text": "Poista sanitizer CI:stä — hidastaa liikaa ja ei löydä oikeita bugeja", "correct": false },
+        { "text": "Muuta release-build optimoimaan ASan-virhe pois — se on nopein korjaus", "correct": false },
+        { "text": "Ignoroi ASan-raportti — se on vain kehitystyökalu, ei tuotanto-ongelma", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-clang-tidy-review",
+      "choices": [
+        { "text": "clang-tidy checkit CI:hin — modernize- ja bugprone-säännöt ennen reviewia", "correct": true },
+        { "text": "Lisää README:hen 'älä käytä raw pointereita' — se korvaa automaation", "correct": false },
+        { "text": "Vain senior reviewaa kaikki PR:t — automaatio ei löydä anti-patterneja", "correct": false },
+        { "text": "Poista varoitukset -w-flagilla — CI pysyy vihreänä ilman tarkistuksia", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-raw-pointer-refactor",
+      "choices": [
+        { "text": "Korvaa unique_ptr omistuksella — selkeä elinkaari ilman manuaalista deleteä", "correct": true },
+        { "text": "Lisää kommentti 'caller must delete' — se estää muistivuodot", "correct": false },
+        { "text": "shared_ptr kaikille — se on aina turvallisin yksinomistuksen korvaaja", "correct": false },
+        { "text": "Jätä raw pointer — toimii tuotannossa eikä vaadi refaktorointia", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-span-bounds-check",
+      "choices": [
+        { "text": "std::span kantaa pituuden mukana — non-owning näkymä rajattuun bufferiin", "correct": true },
+        { "text": "std::string_view kaikille byte-buffereille — se korvaa spanin aina", "correct": false },
+        { "text": "volatile char* estää buffer overflowin C-tyylisessä API:ssa", "correct": false },
+        { "text": "malloc + strlen riittää — erillinen size-parametri on turha", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-cpp-enable-shared-from-this",
+      "choices": [
+        { "text": "Peri enable_shared_from_this ja käytä shared_from_this() async-callbackissa", "correct": true },
+        { "text": "shared_ptr(this) on turvallinen kun objekti on jo shared_ptr:ssä", "correct": false },
+        { "text": "weak_ptr(this) korvaa shared_ptr:n callbackin elinkaaren hallintaan", "correct": false },
+        { "text": "Käytä raw this callbackissa — se on nopeampi kuin shared_from_this", "correct": false }
+      ]
+    }
+  ]
+}

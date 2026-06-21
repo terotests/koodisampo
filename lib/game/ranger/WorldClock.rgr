@@ -1,0 +1,44 @@
+
+class WorldClock {
+  def gameMinutes:int 480
+
+  fn advance:void (delta:int) {
+    gameMinutes = gameMinutes + delta
+    if (gameMinutes >= 1080) {
+      gameMinutes = 480
+    }
+  }
+
+  fn phaseLabel:string () {
+    if (gameMinutes < 660) {
+      return "aamu"
+    }
+    if (gameMinutes < 780) {
+      return "lounas"
+    }
+    if (gameMinutes < 900) {
+      return "iltapäivä"
+    }
+    if (gameMinutes < 1020) {
+      return "lähtöaika"
+    }
+    return "tyhjä toimisto"
+  }
+
+  fn pad2:string (n:int) {
+    if (n < 10) {
+      return ("0" + (to_string n))
+    }
+    return (to_string n)
+  }
+
+  fn formatTime:string () {
+    def h:int (to_int (gameMinutes / 60))
+    def m:int (gameMinutes - (h * 60))
+    return ((this.pad2(h)) + ":" + (this.pad2(m)))
+  }
+
+  fn formatLine:string () {
+    return ((this.formatTime()) + " — " + (this.phaseLabel()))
+  }
+}

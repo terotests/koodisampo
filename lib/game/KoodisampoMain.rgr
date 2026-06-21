@@ -1,0 +1,16 @@
+
+Import "RangerProcess.rgr"
+Import "process/KoodisampoAppRoot.rgr"
+Import "process/GameSession.rgr"
+
+class KoodisampoMain {
+  sfn run@(main):void () {
+    def root:KoodisampoAppRoot (new KoodisampoAppRoot)
+    proc_start root
+    def session:GameSession (root.createSession())
+    if (session.loadFromText("{}") == false) {
+      print "map load expected to fail in headless stub"
+    }
+    proc_stop root
+  }
+}

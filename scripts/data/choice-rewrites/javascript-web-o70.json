@@ -1,0 +1,509 @@
+{
+  "bank": "javascript-web.json",
+  "rewrites": [
+    {
+      "id": "b06-js-async-queue-microtask",
+      "choices": [
+        { "text": "Promise.then ajetaan microtask-jonossa ennen setTimeout-macrotaskia", "correct": true },
+        { "text": "setTimeout(0) saa aina etuoikeuden ennen Promise-callbackia event loopissa", "correct": false },
+        { "text": "Synkroninen koodi ja promise-then jakavat saman suoritusprioriteetin", "correct": false },
+        { "text": "Tulostusjärjestys riippuu selaimen satunnaistetusta ajoituksesta", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-async-settimeout-zero",
+      "choices": [
+        { "text": "Callback menee macrotask-jonoon nykyisen synkkoodin jälkeen", "correct": true },
+        { "text": "Nollan millisekunnin viive on liian pieni — selain pakottaa vähintään 4 ms", "correct": false },
+        { "text": "setTimeout suorittaa callbackin synkronisesti heti kutsumishetkellä", "correct": false },
+        { "text": "Viive nollalla tarkoittaa että kutsu ohitetaan ja callbackia ei ajeta", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-async-promise-finally",
+      "choices": [
+        { "text": "finally() ajetaan aina kun promise settle — cleanup ilman duplikaattia", "correct": true },
+        { "text": "then() ja catch() erikseen riittää kun cleanup-koodi kopioidaan molempiin", "correct": false },
+        { "text": "finally toimii vain synkronisessa try-catch-lohkossa, ei promisessa", "correct": false },
+        { "text": "async-funktio hoitaa resurssien vapautuksen automaattisesti ilman finallyä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-async-iterator-forawait",
+      "choices": [
+        { "text": "for await (const chunk of stream) — async iteration odottaa jokaisen arvon", "correct": true },
+        { "text": "for (const chunk of stream) riittää koska iterable palauttaa promiset", "correct": false },
+        { "text": "stream.map(async fn) käsittelee async iterablen samalla tavalla kuin for await", "correct": false },
+        { "text": "Promise.all(stream) kerää kaikki chunkit kerralla ennen loopin aloitusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-types-map-key-object",
+      "choices": [
+        { "text": "Map vertaa objektiavaimia referenssillä — SameValueZero, ei sisältöä", "correct": true },
+        { "text": "Map stringifioi objektiavaimet automaattisesti kuten tavallinen objekti", "correct": false },
+        { "text": "Map ei hyväksy objektiavaimia — vain primitiivit kelpaavat avaimiksi", "correct": false },
+        { "text": "JSON.stringify tekee objektiavaimet uniikeiksi Mapissa riippumatta referenssistä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-types-temporal-date",
+      "choices": [
+        { "text": "ISO 8601 YYYY-MM-DD tai Temporal API — välttää locale-riippuvaisen parsauksen", "correct": true },
+        { "text": "Date.parse on deterministinen kaikissa selaimissa riippumatta locale-asetuksista", "correct": false },
+        { "text": "getMonth()-kutsu korjaa locale-parsauksen epäselvyyden jälkikäteen automaattisesti", "correct": false },
+        { "text": "Timestamp-merkkijono ilman timezone-tietoa on aina turvallinen parsausmuoto", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-types-in-operator",
+      "choices": [
+        { "text": "in tarkistaa koko prototype-ketjun — hasOwnProperty vain oman propertyn", "correct": true },
+        { "text": "in ja hasOwnProperty ovat identtiset kun avain on merkkijono", "correct": false },
+        { "text": "in-operaattori on deprecated ES6:ssa — käytä Object.hasOwn sen sijaan", "correct": false },
+        { "text": "hasOwnProperty tarkistaa perittyjä propertyjä prototype-ketjussa", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-modules-reexport",
+      "choices": [
+        { "text": "export { foo } from './foo.js' — re-export ilman erillistä importtia", "correct": true },
+        { "text": "import foo ja aseta window.foo — barrel kerää API:n globaalisti", "correct": false },
+        { "text": "require() barrel-tiedostossa yhdistää utils-moduulit CommonJS:ssä", "correct": false },
+        { "text": "export default kaikista moduuleista — yksi default export riittää barrelissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-modules-import-assertions",
+      "choices": [
+        { "text": "import config from './config.json' with { type: 'json' } — import attribute", "correct": true },
+        { "text": "fetch config runtime aina — JSON ei kuulu moduulijärjestelmään ESM:ssä", "correct": false },
+        { "text": "require('config.json') toimii ESM-moduulissa samalla tavalla kuin CommonJS", "correct": false },
+        { "text": "import json ilman assertionia — bundler tunnistaa tyypin tiedostopäätteestä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-modules-top-level-await",
+      "choices": [
+        { "text": "Top-level await moduulin juuressa — ESM sallii async init ennen exportteja", "correct": true },
+        { "text": "await toimii vain async-funktion sisällä — moduulin juuri on aina synkroninen", "correct": false },
+        { "text": "Async IIFE moduulin alussa korvaa top-level awaitin kaikissa bundlereissa", "correct": false },
+        { "text": "CommonJS require tukee async initia natiivisti ilman wrapper-funktiota", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-runtime-finalization-registry",
+      "choices": [
+        { "text": "FinalizationRegistry — cleanup-callback kun objekti on GC:tty", "correct": true },
+        { "text": "WeakRef kutsuu callbackia automaattisesti kun referoitu objekti kerätään", "correct": false },
+        { "text": "Object.finalize on standardi tapa rekisteröidä GC-cleanup kaikille objekteille", "correct": false },
+        { "text": "setInterval pollaa WeakRef.deref() ja vapauttaa resurssit manuaalisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-runtime-proxy-freeze",
+      "choices": [
+        { "text": "Rekursiivinen freeze tai structured clone + freeze — shallow ei suojaa nested", "correct": true },
+        { "text": "Object.freeze on syvä immuuttisuus — nested propertyt eivät muutu", "correct": false },
+        { "text": "const-esto estää nested-muutokset koska viittaus ei voi vaihtua", "correct": false },
+        { "text": "JSON.parse(JSON.stringify(config)) takaa syvän immuuttisuuden aina turvallisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-runtime-console-trace",
+      "choices": [
+        { "text": "console.trace() — tulostaa call stackin ilman breakpointia", "correct": true },
+        { "text": "console.log() sisältää call stackin automaattisesti jokaisessa tulosteessa", "correct": false },
+        { "text": "debugger-lause on suositeltu tapa tuotannossa stack-tracen hakuun", "correct": false },
+        { "text": "console.dir() tulostaa funktiokutsujen pinon samalla tavalla kuin trace", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-js-runtime-json-parse-reviver",
+      "choices": [
+        { "text": "JSON.parse(text, reviver) — reviver muuntaa parsatut arvot kuten Date-objektit", "correct": true },
+        { "text": "Date.parse jokaiselle kentälle manuaalisesti loopissa parsauksen jälkeen", "correct": false },
+        { "text": "JSON-formaatti ei tue päivämääriä — Date-objekteja ei voi palauttaa", "correct": false },
+        { "text": "eval() JSON-merkkijonolla korvaa parse:n ja palauttaa Date-objektit suoraan", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-async-abort",
+      "choices": [
+        { "text": "AbortController — signal fetchiin ja abort navigoinnissa peruuttaa pyynnön", "correct": true },
+        { "text": "Ignoroi vanha vastaus flagilla — race condition ratkeaa ilman abortia", "correct": false },
+        { "text": "Synkroninen fetch estää vanhan vastauksen ylikirjoittamisen uuden päälle", "correct": false },
+        { "text": "localStorage-cache kaikille vastauksille estää navigointikonfliktit", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-async-microtask",
+      "choices": [
+        { "text": "Promise.then (microtask) ennen setTimeout (macrotask) event loopissa", "correct": true },
+        { "text": "setTimeout ajetaan aina ennen microtask-jonoa kun viive on nolla", "correct": false },
+        { "text": "Kaikki console.log-kutsut suoritetaan synkronisesti samassa järjestyksessä", "correct": false },
+        { "text": "Promise.then on macrotask samassa jonossa kuin setTimeout ja setInterval", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-async-await-error",
+      "choices": [
+        { "text": "try/catch awaitin ympärillä tai .catch() promisessa — async heittää rejectionina", "correct": true },
+        { "text": "async-funktio ei koskaan heitä — virheet muunnetaan automaattisesti arvoiksi", "correct": false },
+        { "text": "console.log(error) riittää tuotannossa unhandled rejection -ongelman estoon", "correct": false },
+        { "text": "Poista async-avainsana — synkroninen funktio estää rejection-virheet", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-types-strict-equality",
+      "choices": [
+        { "text": "Eksplisiittinen null/undefined-tarkistus — 0 on validi id, !userId hylkää sen", "correct": true },
+        { "text": "!userId on aina oikea tapa tarkistaa puuttuva tunniste kaikissa tapauksissa", "correct": false },
+        { "text": "userId == null hylkää myös arvon 0 koska nolla on falsy vertailussa", "correct": false },
+        { "text": "String(userId) korjaa falsy-ongelman muuttamalla nollan merkkijonoksi", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-types-nan",
+      "choices": [
+        { "text": "Number.isNaN(x) — NaN ei ole === itsensä kanssa JavaScriptissä", "correct": true },
+        { "text": "x == NaN toimii luotettavasti koska loose equality normalisoi NaN-arvot", "correct": false },
+        { "text": "typeof x === NaN paljastaa NaN-arvon kuten muut primitiivit typeofilla", "correct": false },
+        { "text": "isNaN(x) riittää aina — se ei tee type coercionia ennen tarkistusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-types-optional-chain",
+      "choices": [
+        { "text": "Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa", "correct": true },
+        { "text": "user.profile.name toimii aina kun API palauttaa vähintään tyhjän objektin", "correct": false },
+        { "text": "eval(polku) lukee syvän objektipolun dynaamisesti ilman undefined-riskiä", "correct": false },
+        { "text": "JSON.parse korjaa undefined-virheet muuttamalla puuttuvat kentät null-arvoiksi", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-modules-dynamic",
+      "choices": [
+        { "text": "dynamic import() — lazy load admin-moduuli vain tarvittaessa code splittingillä", "correct": true },
+        { "text": "Staattinen import admin-moduulista ylhäällä — bundler optimoi pois käyttämättömän", "correct": false },
+        { "text": "Synkroninen script-tag headissä lataa admin-koodin vain admin-sivulla", "correct": false },
+        { "text": "require() selaimessa lataa admin-moduulin dynaamisesti ilman bundleria", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-modules-cycle",
+      "choices": [
+        { "text": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin — rikkoo import-syklin", "correct": true },
+        { "text": "Lisää require sync importin tilalle — sykli ratkeaa CommonJS-hoistingilla", "correct": false },
+        { "text": "Poista export-lauseet — import riittää moduulien väliseen linkitykseen", "correct": false },
+        { "text": "window.global väliaikaisena sidontapaikkana korjaa circular dependency -ongelman", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-modules-tree-shake",
+      "choices": [
+        { "text": "Named import lodash-es:stä — import { debounce } from 'lodash-es' tree shakingille", "correct": true },
+        { "text": "import _ from 'lodash' — default import bundlaa vain käytetyt funktiot", "correct": false },
+        { "text": "require('lodash') koko paketista — bundler poistaa käyttämättömät automaattisesti", "correct": false },
+        { "text": "Kopioi funktio suoraan lähdekoodista — tree shaking ei toimi npm-paketeissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-runtime-closure-loop",
+      "choices": [
+        { "text": "let i loopissa tai IIFE — var jakaa saman sidonnan kaikille callbackeille", "correct": true },
+        { "text": "var korjaa automaattisesti closure-ongelman loopissa click-handlereissa", "correct": false },
+        { "text": "Poista handlerit kokonaan — loop ei tarvitse erillisiä callback-funktioita", "correct": false },
+        { "text": "setTimeout(0) var-loopissa luo erillisen sidonnan jokaiselle iteratiolle", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-runtime-json-parse",
+      "choices": [
+        { "text": "JSON.parse(data) — parsii datan ilman koodin suorittamista", "correct": true },
+        { "text": "eval(data) on nopein tapa parsia JSON-merkkijono suurissa datamäärissä", "correct": false },
+        { "text": "new Function(data) on turvallinen vaihtoehto eval:lle JSON-parsauksessa", "correct": false },
+        { "text": "innerHTML data-kentällä parsii JSON:n ja renderöi DOM-elementit suoraan", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-runtime-weakmap",
+      "choices": [
+        { "text": "WeakMap — avaimet voivat GC:tä ilman explicit delete-kutsua", "correct": true },
+        { "text": "Map + manual delete riittää aina — GC kerää avaimet automaattisesti", "correct": false },
+        { "text": "Globaali array DOM-elementeistä ei aiheuta memory leakia navigoinnissa", "correct": false },
+        { "text": "localStorage-cache DOM-elementeille estää muistivuodon sivun vaihtuessa", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-js-runtime-prototype",
+      "choices": [
+        { "text": "Array.prototype muokattu — vältä, käytä erillistä utility-funktiota", "correct": true },
+        { "text": "Built-in prototyyppien laajentaminen on best practice ja nopeuttaa koodia", "correct": false },
+        { "text": "Object.prototype on parempi kohde kuin Array.prototype uusille metodeille", "correct": false },
+        { "text": "Prototype-muokkaus nopeuttaa aina suoritusta koska metodi on jaettu", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-async-parallel",
+      "choices": [
+        { "text": "Promise.all([fetch(a), fetch(b), fetch(c)]) — riippumattomat kutsut rinnakkain", "correct": true },
+        { "text": "for-await loop riippumattomille API-kutsuille ajaa ne rinnakkain automaattisesti", "correct": false },
+        { "text": "Synkroninen XMLHttpRequest rinnakkain — ei blokkaa event loop -säiettä", "correct": false },
+        { "text": "setTimeout-ketjutus fetch-kutsujen välissä nopeuttaa kokonaislatausaikaa", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-async-generator",
+      "choices": [
+        { "text": "async function* generator — for await...of paginoituun API-iteraatioon", "correct": true },
+        { "text": "while(true) sync fetch — async generator ei tue awaitia yield-kutsujen välissä", "correct": false },
+        { "text": "Generatorit eivät tue async/await-syntaksia — vain synkroninen yield", "correct": false },
+        { "text": "Callback-pyramid on moderni tapa paginoida API-kutsuja for-loopin sijaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-types-strict-equals",
+      "choices": [
+        { "text": "Tyhjä merkkijono '' — ei ole null eikä undefined, joten == null ei laukea", "correct": true },
+        { "text": "'' == null on tosi, joten token == null -tarkistus hylkää tyhjän merkkijonon", "correct": false },
+        { "text": "if(token) hylkää aina tyhjän merkkijonon — sama kuin null-tarkistus", "correct": false },
+        { "text": "typeof token == null toimii luotettavasti puuttuvan tokenin tunnistamiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-types-bigint",
+      "choices": [
+        { "text": "BigInt — 123n tai BigInt(string) — älä sekoita Numberiin ilman tarkistusta", "correct": true },
+        { "text": "parseFloat riittää 64-bit ID:n tarkkuuteen JSON-vastauksessa", "correct": false },
+        { "text": "Number on aina 64-bit tarkka — MAX_SAFE_INTEGER kattaa kaikki ID:t", "correct": false },
+        { "text": "BigInt ei serialisoidu JSON:iin — käytä aina Number suurille tunnisteille", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-modules-dynamic-import",
+      "choices": [
+        { "text": "dynamic import() — code splitting route- tai komponenttitason mukaan", "correct": true },
+        { "text": "Staattinen import chart-kirjastosta ylhäällä — bundler poistaa admin-chunkin", "correct": false },
+        { "text": "require() on ainoa tapa lazy loadata moduuleja selaimessa ilman bundleria", "correct": false },
+        { "text": "Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-modules-top-level-await",
+      "choices": [
+        { "text": "Top-level await moduulissa — await fetch config ennen export-lauseita", "correct": true },
+        { "text": "var config = sync fetch — XMLHttpRequest on synkroninen moduulin initissä", "correct": false },
+        { "text": "Top-level await toimii vain CommonJS:ssä — ESM vaatii async IIFE:n", "correct": false },
+        { "text": "Export ennen await aina — moduulin arvot ovat saatavilla ennen async initia", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-runtime-weakmap",
+      "choices": [
+        { "text": "WeakMap — avaimet heikosti viitattuja, GC voi kerätä elementin", "correct": true },
+        { "text": "Globaali object metadata-tallennukseen — ei estä elementin garbage collectionia", "correct": false },
+        { "text": "WeakMap pitää avaimet ikuisesti elossa — vahvempi kuin tavallinen Map", "correct": false },
+        { "text": "JSON.stringify elementtiin — metadata säilyy ilman muistivuotoriskiä", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-runtime-prototype-chain",
+      "choices": [
+        { "text": "Prototype chain — etsitään obj.__proto__ → Object.prototype", "correct": true },
+        { "text": "JavaScript kääntää objektin automaattisesti ja lisää toString-metodin", "correct": false },
+        { "text": "Kaikki metodit kopioidaan jokaiseen objektiin luontihetkellä erikseen", "correct": false },
+        { "text": "Vain class-instanssit perivät metodit — plain objectit eivät käytä prototyyppiä", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-async-microtask-starvation",
+      "choices": [
+        { "text": "Microtask loop — jono tyhjenee ennen macrotask/render-kierrosta", "correct": true },
+        { "text": "Promise ei käytä event loopia — se ajaa callbackit erillisessä säikeessä", "correct": false },
+        { "text": "setTimeout(0) saman loopin sisällä katkaisee loputtoman microtask-ketjun", "correct": false },
+        { "text": "async/await ei käytä microtaskeja — se on puhdas macrotask-mekanismi", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-types-symbol-key",
+      "choices": [
+        { "text": "Symbol('internal') — ei enumerable oletuksena, piilossa for-in loopilta", "correct": true },
+        { "text": "Merkkijono prefix _ riittää piilottamaan avaimen for-in ja Object.keys:iltä", "correct": false },
+        { "text": "Symbol serialisoituu JSON:iin automaattisesti kuten merkkijonoavaimet", "correct": false },
+        { "text": "Map vaatii Symbol-avaimia — primitiivit eivät kelpaa Map-avaimiksi", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-modules-circular",
+      "choices": [
+        { "text": "Circular dependency — moduuli ei ole fully evaluated export-lukemisen hetkellä", "correct": true },
+        { "text": "ES modules eivät salli syklisiä importteja — bundler estää ne buildissa", "correct": false },
+        { "text": "Bundler bug aiheuttaa aina undefined exportit — refaktorointi ei auta", "correct": false },
+        { "text": "Import hoisting poistaa syklit automaattisesti — undefined on väliaikainen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-runtime-closure-loop",
+      "choices": [
+        { "text": "let i — block scope per iteratio — tai IIFE/param capture var-ongelmaan", "correct": true },
+        { "text": "var on aina oikein loopissa — function scope luo erillisen sidonnan", "correct": false },
+        { "text": "setTimeout ajaa synkronisesti loopin aikana ennen callback-rekisteröintiä", "correct": false },
+        { "text": "Poista closure — nuolifunktio ei sieppaa ympäröivän scopen muuttujia", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-async-race-timeout",
+      "choices": [
+        { "text": "AbortSignal.timeout(5000) tai Promise.race fetch + timeout-promisen kanssa", "correct": true },
+        { "text": "fetch timeout-parametri natiivisti — viive sekunteina options-objektissa", "correct": false },
+        { "text": "while Date.now() block — odottaa timeoutia synkronisesti event loopissa", "correct": false },
+        { "text": "setInterval peruuttaa fetchin automaattisesti viiden sekunnin kuluttua", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-js-runtime-dom-ready",
+      "choices": [
+        { "text": "DOMContentLoaded — tai script defer/module body:n lopussa", "correct": true },
+        { "text": "window.load on nopein tapa käyttää DOM-elementtejä head-scriptissä", "correct": false },
+        { "text": "DOM on valmis heti parserin alussa — getElementById toimii head-scriptissä", "correct": false },
+        { "text": "async script takaa DOM-valmiuden ennen callback-funktion suoritusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-async-promise-chain",
+      "choices": [
+        { "text": "async/await tai Promise chain .then() — litteä async flow callback hellin sijaan", "correct": true },
+        { "text": "Synkroninen XMLHttpRequest ketjussa — moderni tapa peräkkäisiin API-kutsuihin", "correct": false },
+        { "text": "setTimeout-ketjutus fetch-kutsujen välissä korvaa promise chain -refaktoroinnin", "correct": false },
+        { "text": "Globaali callback registry — rekisteröi jokainen vaihe window-objektiin", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-async-unhandled-rejection",
+      "choices": [
+        { "text": "try/catch async-funktioissa + .catch() ketjuissa + process rejection handler", "correct": true },
+        { "text": "Promiset eivät voi rejectata — ne muuttuvat aina fulfilled-tilaan lopulta", "correct": false },
+        { "text": "Ignoroi rejection — Node korjaa unhandled rejectionit automaattisesti", "correct": false },
+        { "text": "Vain synkroninen try/catch riittää — async-virheet eivät leviä promisena", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-async-event-loop-block",
+      "choices": [
+        { "text": "Synkroninen työ event loop -säieessä — siirrä worker threadiin tai pilko", "correct": true },
+        { "text": "Express ei tue asyncia — kaikki handlerit suoritetaan synkronisesti", "correct": false },
+        { "text": "JSON.parse on aina async — se ei voi blokata event loop -säiettä", "correct": false },
+        { "text": "Lisää useampia Express-instanssia samaan prosessiin — ratkaisee blokin", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-async-fetch-abort",
+      "choices": [
+        { "text": "AbortController + signal fetch-kutsussa — peruuttaa pyynnön navigoinnissa", "correct": true },
+        { "text": "fetch.cancel() built-in — kutsu peruuttaa pyynnön ilman AbortControlleria", "correct": false },
+        { "text": "Selaimen sulkeminen on ainoa tapa keskeyttää käynnissä oleva fetch-pyyntö", "correct": false },
+        { "text": "Promise.race ilman abortia riittää — hidas pyyntö peruuntuu automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-types-strict-equality",
+      "choices": [
+        { "text": "Käytä === strict equality — ei type coercion tyhjän stringin kanssa", "correct": true },
+        { "text": "== on turvallisempi ===:aa — se normalisoi tyypit ennen vertailua", "correct": false },
+        { "text": "Muuta userId stringiksi — vertailu toimii oikein kaikilla arvoilla", "correct": false },
+        { "text": "if (!userId) korvaa vertailun aina — hylkää sekä 0:n että tyhjän stringin", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-types-null-object",
+      "choices": [
+        { "text": "value === null tai value == null — null/undefined erikseen typeofista", "correct": true },
+        { "text": "typeof value === 'null' — oikea tapa tunnistaa null JavaScriptissä", "correct": false },
+        { "text": "value instanceof Object erottaa nullin primitiiveistä luotettavasti", "correct": false },
+        { "text": "Object.isObject(value) — standardi API null-tarkistukseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-types-bigint-json",
+      "choices": [
+        { "text": "Custom replacer tai serialisoi stringiksi — JSON ei tue BigInt natiivisti", "correct": true },
+        { "text": "JSON.stringify tukee BigInt automaattisesti — ei tarvitse muunnosta", "correct": false },
+        { "text": "Muuta kaikki Number — MAX_SAFE_INTEGER kattaa 64-bit ID:t aina", "correct": false },
+        { "text": "eval() parseen — BigInt säilyy automaattisesti JSON-merkkijonossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-modules-dynamic-import",
+      "choices": [
+        { "text": "dynamic import() — code splitting lazy load pienentää initial bundlea", "correct": true },
+        { "text": "require() top-level ESM:ssä — lazy load admin-moduuli tarvittaessa", "correct": false },
+        { "text": "Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla", "correct": false },
+        { "text": "Staattinen import kaikille sivuille — bundler poistaa käyttämättömän koodin", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-modules-circular-dep",
+      "choices": [
+        { "text": "Refaktoroi jaettu logiikka kolmanteen moduuliin — poista import-sykli", "correct": true },
+        { "text": "Lisää delay requireen — odota että toinen moduuli on fully evaluated", "correct": false },
+        { "text": "Circular deps toimivat aina ESM:ssä — undefined export on väliaikainen", "correct": false },
+        { "text": "Yhdistä A ja B yhdeksi tiedostoksi aina — ainoa tapa korjata sykli", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-modules-esm-cjs-interop",
+      "choices": [
+        { "text": "Siirry type:module tai dynamic import() ESM-only npm-paketeille", "correct": true },
+        { "text": "require toimii kaikille npm-paketeille — ESM-only on harvinainen poikkeus", "correct": false },
+        { "text": "Muokkaa node_modules käsin — muunna ESM CommonJS:ksi jokaiselle paketille", "correct": false },
+        { "text": "Poista type:module package.jsonista — require toimii taas kaikille", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-runtime-closure-leak",
+      "choices": [
+        { "text": "Event listenerit tai closuret pitävät viittauksia poistettuihin DOM-elementteihin", "correct": true },
+        { "text": "GC ei toimi moderneissa selaimissa — detached nodeja ei kerätä koskaan", "correct": false },
+        { "text": "innerHTML tyhjentää aina listenerit — ei tarvitse removeEventListener", "correct": false },
+        { "text": "Muistivuoto on vain Node-ongelma — selaimet vapauttavat DOM-automaattisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-runtime-weakmap-cache",
+      "choices": [
+        { "text": "WeakMap — avaimet voivat kerätä roskikseen ilman explicit deletea", "correct": true },
+        { "text": "Map element-avaimilla on aina turvallinen — GC kerää avaimet automaattisesti", "correct": false },
+        { "text": "Globaali object registry metadata-tallennukseen — ei estä elementin GC:ta", "correct": false },
+        { "text": "element.metadata property aina — kevyempi kuin WeakMap tai Map", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-js-runtime-raf-animation",
+      "choices": [
+        { "text": "requestAnimationFrame synkronoituu näytön refreshiin — sulavampi animaatio", "correct": true },
+        { "text": "setInterval(0) on nopein animaatiotapa — ei tarvitse rAF-synkronointia näytön kanssa", "correct": false },
+        { "text": "CSS animation ei toimi JavaScript-animaation kanssa samalla elementillä", "correct": false },
+        { "text": "while-loop animaatioon — suorittaa frame-päivitykset synkronisesti loopissa", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-js-unknown-vs-any",
+      "choices": [
+        { "text": "unknown pakottaa tarkistamaan tai kaventamaan tyypin ennen käyttöä", "correct": true },
+        { "text": "unknown poistaa kaikki runtime-virheet automaattisesti parsauksessa", "correct": false },
+        { "text": "any on aina readonly — unknown sallii mielivaltaisen mutoinnin", "correct": false },
+        { "text": "unknown kääntyy aina nopeammin kuin any — pienempi tyyppigraafi", "correct": false }
+      ]
+    },
+    {
+      "id": "prod-js-unhandled-rejection-caller",
+      "choices": [
+        { "text": "Unhandled rejection — virhe voi jäädä huomaamatta tai kaataa prosessin", "correct": true },
+        { "text": "Promise suoritetaan uudelleen automaattisesti kun rejection jää käsittelemättä", "correct": false },
+        { "text": "async-funktiot eivät voi epäonnistua ilman awaitia — virheet nieltyvät", "correct": false },
+        { "text": "try/catch async-funktion sisällä riittää aina — kutsuja ei tarvitse .catch()", "correct": false }
+      ]
+    }
+  ]
+}

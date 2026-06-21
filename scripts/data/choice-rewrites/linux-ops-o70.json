@@ -1,0 +1,482 @@
+{
+  "bank": "linux-ops.json",
+  "rewrites": [
+    {
+      "id": "b06-linux-systemd-Requires",
+      "choices": [
+        { "text": "After=db.service app-unitissa pakottaa käynnistyksen järjestyksen", "correct": true },
+        { "text": "Restart=always korvaa unit-riippuvuudet käynnistyksessä", "correct": false },
+        { "text": "Type=simple määrittää käynnistyksen riippuvuuden automaattisesti", "correct": false },
+        { "text": "ExecStartPre=sleep 30 on tuotannon standardi odotusratkaisu", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-systemd-ConditionPath",
+      "choices": [
+        { "text": "ConditionPathIsMountPoint=/backup estää ajon ilman mountia", "correct": true },
+        { "text": "After=backup.mount tarkistaa mountin tilan ennen käynnistystä", "correct": false },
+        { "text": "ExecStartPre=test -d /backup korvaa Condition-ehdon unitissa", "correct": false },
+        { "text": "WantedBy=multi-user.target määrittää mount-ehdon backup-unitille", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-systemd-LimitsNOFILE",
+      "choices": [
+        { "text": "LimitNOFILE=65535 [Service]-osassa service unit -tiedostossa", "correct": true },
+        { "text": "ulimit -n skriptissä ennen exec pitää rajan palveluprosessille", "correct": false },
+        { "text": "Restart=on-failure korjaa liian alhaisen NOFILE-rajan palvelussa", "correct": false },
+        { "text": "Type=notify nostaa NOFILE-rajan automaattisesti systemd-palvelulle", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-systemd-logind",
+      "choices": [
+        { "text": "systemd-logind hallinnoi sessioneja ja seat-konfiguraatiota", "correct": true },
+        { "text": "cron luo ja ylläpitää kaikki login-sessionit palvelimella", "correct": false },
+        { "text": "journald avaa interaktiivisen session palveluprosessille", "correct": false },
+        { "text": "sshd korvaa logindin kun palvelu tarvitsee pysyvän session", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-journalctl-reverse",
+      "choices": [
+        { "text": "journalctl -r — kääntää järjestyksen, vanhin lokimerkintä ensin", "correct": true },
+        { "text": "journalctl --boot=0 tulostaa vanhimmat lokit ensin oletuksena", "correct": false },
+        { "text": "tail -f /var/log/syslog näyttää journalin vanhimmasta uusimpaan", "correct": false },
+        { "text": "journalctl -f follow-moodissa näyttää vain historialliset rivit", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-journalctl-verify",
+      "choices": [
+        { "text": "journalctl --verify tarkistaa journal-tiedostojen eheyden", "correct": true },
+        { "text": "grep checksum /var/log/journal/* löytää vaurioituneet lokimerkinnät", "correct": false },
+        { "text": "systemctl verify journald.service validoi lokien integriteetin auditissa", "correct": false },
+        { "text": "Journal-lokit ovat luotettavia ilman erillistä verify-komentoa", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-journald-forward-syslog",
+      "choices": [
+        { "text": "ForwardToSyslog=yes journald.conf — journal lähetetään syslogille", "correct": true },
+        { "text": "Cron syncaa /var/log/journal manuaalisesti syslog-kollektoriin", "correct": false },
+        { "text": "Poista journald ja käytä vain rsyslog kaiken lokituksen lähteenä", "correct": false },
+        { "text": "systemctl forward-journal kytkee journal-lähteen syslog-palveluun", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-network-ip-neigh",
+      "choices": [
+        { "text": "ip neigh show — näyttää ARP- ja neighbor cache -taulun", "correct": true },
+        { "text": "ss -tuln listaa neighbor-taulun incomplete-merkinnät verkossa", "correct": false },
+        { "text": "nmcli device wifi tarkistaa ARP-taulun incomplete-tilat lähiverkossa", "correct": false },
+        { "text": "journalctl -k rajoittuu kernel neighbor -virheisiin ARP-diagnostiikassa", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-network-ss-udp",
+      "choices": [
+        { "text": "ss -ulnp — UDP-kuuntelijat ja prosessit listataan porteittain", "correct": true },
+        { "text": "ss -tlnp riittää koska DNS käyttää myös TCP-protokollaa", "correct": false },
+        { "text": "netstat -a on riittävä vaikka se on jo deprecated työkalu", "correct": false },
+        { "text": "ip route show UDP näyttää DNS-kuuntelijat ja prosessitiedot", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-network-resolv-options",
+      "choices": [
+        { "text": "options timeout:1 attempts:2 resolv.conf:ssa tai stub resolverissa", "correct": true },
+        { "text": "TimeoutStartSec service unitissa rajoittaa DNS-clientin timeout-arvoa", "correct": false },
+        { "text": "iptables -t nat -A POSTROUTING muuttaa resolverin retry-käytöstä", "correct": false },
+        { "text": "ss -K reset DNS resetoi resolverin timeout- ja retry-asetukset", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-network-ethtool-offload",
+      "choices": [
+        { "text": "ethtool -K eth0 tx off rx off — checksum offload kytketään pois", "correct": true },
+        { "text": "ip link set eth0 down poistaa vioitetut checksum-offload -asetukset", "correct": false },
+        { "text": "nmcli connection modify offload disabled korjaa virtuaalin NIC:n offloadin", "correct": false },
+        { "text": "sysctl -w net.offload=0 poistaa kaiken offload-toiminnon kernelista", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-avahi-resolve-hostname",
+      "choices": [
+        { "text": "avahi-resolve -n printer.local — testaa mDNS-nimen resoluution", "correct": true },
+        { "text": "nslookup printer.local toimii .local-nimille kuten tavalliselle DNS:lle", "correct": false },
+        { "text": "systemctl restart avahi-daemon estää hostname.local -pingin testauksen", "correct": false },
+        { "text": "ip route add local määrittää .local-hostnamen resoluution reitillä", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-avahi-service-type",
+      "choices": [
+        { "text": "_http._tcp tai vastaava IANA service type Avahi XML:ssä", "correct": true },
+        { "text": "_custom._udp riittää — service type ei vaikuta discoveryyn", "correct": false },
+        { "text": "Avahi julkaisee hostname-palvelun ilman erillistä service typea", "correct": false },
+        { "text": "Pelkkä hostname .local-päätteellä korvaa service record -julkaisun", "correct": false }
+      ]
+    },
+    {
+      "id": "b06-linux-avahi-daemon-restart",
+      "choices": [
+        { "text": "systemctl reload avahi-daemon — lataa uudet service definitionit", "correct": true },
+        { "text": "Reboot koko palvelin on ensimmäinen toimi uuden service XML:n jälkeen", "correct": false },
+        { "text": "journalctl --vacuum pakottaa Avahin lukemaan uudet service-tiedostot", "correct": false },
+        { "text": "Poista /etc/resolv.conf jotta Avahi näkee uuden service-tiedoston", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-systemd-wantedby",
+      "choices": [
+        { "text": "WantedBy=multi-user.target — enable luo symlinkin boot-targetiin", "correct": true },
+        { "text": "After=network.target riittää unitin käynnistykseen bootissa", "correct": false },
+        { "text": "Type=simple korvaa WantedBy-asetuksen [Install]-osiossa", "correct": false },
+        { "text": "ExecStart=/bin/true riittää ilman WantedBy-linkitystä bootiin", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-systemd-restart-policy",
+      "choices": [
+        { "text": "Restart=on-failure tai Restart=always — systemd käynnistää uudelleen", "correct": true },
+        { "text": "Restart=no on tuotannon oletus ja pitää palvelun yöllä pystyssä", "correct": false },
+        { "text": "Type=notify korvaa restart-politiikan service unit -tiedostossa", "correct": false },
+        { "text": "KillMode=process estää automaattisen uudelleenkäynnistyksen kaatumisen jälkeen", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-systemd-limit-nofile",
+      "choices": [
+        { "text": "LimitNOFILE= service unitissa — systemd asettaa rajat prosessille", "correct": true },
+        { "text": "/etc/security/limits.conf riittää systemd-palveluiden NOFILE-rajoihin", "correct": false },
+        { "text": "sysctl -w fs.file-max korjaa yksittäisen palvelun open files -virheen", "correct": false },
+        { "text": "chmod 777 /proc nostaa palvelun file descriptor -rajan heti", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-systemd-journal-unit",
+      "choices": [
+        { "text": "Palvelu ei ole systemd-hallinnassa tai stdout ei ohjaa journaliin", "correct": true },
+        { "text": "journald on oletuksena pois päältä ja estää stdout-lokituksen", "correct": false },
+        { "text": "stdout ei voi mennä journaliin systemd-palveluiden kautta", "correct": false },
+        { "text": "Erillinen syslog-ng tarvitaan ennen journalctl -u myapp -näkymää", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-journalctl-follow",
+      "choices": [
+        { "text": "journalctl -f — seuraa uusia journal-rivejä kuten tail -f", "correct": true },
+        { "text": "journalctl --rotate tailaa uusia lokimerkintöjä reaaliajassa", "correct": false },
+        { "text": "journalctl --vacuum-time=1s seuraa live-lokia incidentin aikana", "correct": false },
+        { "text": "cat /var/log/syslog seuraa journald-yksikön uusia merkintöjä", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-journald-boot",
+      "choices": [
+        { "text": "journalctl -b -1 — edellisen bootin journal ja virhelokit", "correct": true },
+        { "text": "journalctl --since reboot näyttää edellisen bootin virheet", "correct": false },
+        { "text": "dmesg -b tulostaa edellisen bootin systemd-journalin kokonaan", "correct": false },
+        { "text": "journald ei säilytä edellisten boottien merkintöjä levylle", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-journald-json",
+      "choices": [
+        { "text": "journalctl -o json tai json-pretty — strukturoitu output parsintaan", "correct": true },
+        { "text": "journalctl -o binary only — ainoa formaatti automaattiseen parsintaan", "correct": false },
+        { "text": "grep journal-riveistä riittää skaalautuvaan automaattiseen parsintaan", "correct": false },
+        { "text": "journalctl ei tue JSON-muotoa lainkaan plain textin sijaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-network-tcpdump",
+      "choices": [
+        { "text": "tcpdump tai ss porttiin — näet RST-paketit ja TCP-liikenteen", "correct": true },
+        { "text": "ping hostname riittää TLS-jälkeisten RST-pakettien havaitsemiseen", "correct": false },
+        { "text": "ifconfig up korjaa palomuurin lähettämät RST-vastaukset API:lle", "correct": false },
+        { "text": "reboot palomuuri poistaa RST-paketit ja palauttaa API-yhteyden", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-network-curl-debug",
+      "choices": [
+        { "text": "curl -v — verbose näyttää TLS-handshaken ja HTTP-headerit", "correct": true },
+        { "text": "curl -silent piilottaa virheet mutta näyttää handshake-detaljit", "correct": false },
+        { "text": "curl --get pakottaa TLS-debugin näkyviin certificate-virheissä", "correct": false },
+        { "text": "wget on ainoa työkalu TLS-handshaken diagnostiikkaan curlin sijaan", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-network-dns-dig",
+      "choices": [
+        { "text": "dig hostname tai nslookup — testaa DNS-vastaus erikseen IP:stä", "correct": true },
+        { "text": "ping hostname riittää kun IP-yhteys toimii mutta nimi ei", "correct": false },
+        { "text": "ip link set up korjaa DNS-resoluution kun ping IP:llä onnistuu", "correct": false },
+        { "text": "systemctl restart avahi-daemon korjaa tavallisen DNS-nimen resoluution", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-network-firewall-nft",
+      "choices": [
+        { "text": "nftables/iptables säännöt — palomuuri ohjaa liikennettä eri kuin bind", "correct": true },
+        { "text": "Vain ss -tlnp riittää kun palvelu kuuntelee localhostia", "correct": false },
+        { "text": "SELinux pois päältä estää portin 443 näkymisen ulkoapäin", "correct": false },
+        { "text": "hostname -f paljastaa miksi localhost-bind on auki ulkoapäin", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-avahi-resolve",
+      "choices": [
+        { "text": "avahi-resolve -n printer.local — mDNS-nimen resoluution testaus", "correct": true },
+        { "text": "nslookup printer.local toimii .local-nimille perinteisellä DNS:llä", "correct": false },
+        { "text": "ping 8.8.8.8 testaa printer.local mDNS-resoluution toimivuuden", "correct": false },
+        { "text": "systemctl stop avahi-daemon korjaa printer.local resoluution", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-avahi-reflector",
+      "choices": [
+        { "text": "mDNS multicast ei ylitä Docker-verkkoa ilman reflector/bridge-asetusta", "correct": true },
+        { "text": "Avahi ei toimi Docker-kontissa lainkaan mDNS-palveluiden kanssa", "correct": false },
+        { "text": "Kontti tarvitsee port 80 avattuna jotta host näkee mDNS-palvelun", "correct": false },
+        { "text": "Poista .local-pääte hostnamesta jotta host löytää konttipalvelun", "correct": false }
+      ]
+    },
+    {
+      "id": "b07-linux-avahi-daemon-check",
+      "choices": [
+        { "text": "systemctl status avahi-daemon — varmista että palvelu on käynnissä", "correct": true },
+        { "text": "reboot heti ennen kuin tarkistat avahi-daemonin tilaa", "correct": false },
+        { "text": "Poista /etc/nsswitch.conf jotta mDNS-palvelut ilmestyvät listaan", "correct": false },
+        { "text": "curl google.com testaa lähiverkon mDNS-palveluiden löytymistä", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-systemd-restart-policy",
+      "choices": [
+        { "text": "Restart=on-failure tai always + StartLimitBurst/Interval unitissa", "correct": true },
+        { "text": "Type=forking korjaa palvelun satunnaiset kaatumiset yöllä", "correct": false },
+        { "text": "Restart-direktiivi ei ole systemd:ssä tuettu service unitissa", "correct": false },
+        { "text": "cron @reboot riittää korvaamaan systemd-restart-politiikan", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-systemd-wantedby",
+      "choices": [
+        { "text": "WantedBy=multi-user.target — enable luo symlinkin oikeaan targetiin", "correct": true },
+        { "text": "After=network.target riittää unitin enableen ja boot-käynnistykseen", "correct": false },
+        { "text": "ExecStart riittää boot-käynnistykseen ilman [Install]-osiota", "correct": false },
+        { "text": "systemctl start tekee enable-automaattisesti ja boot-linkityksen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-journalctl-since",
+      "choices": [
+        { "text": "journalctl --since '2024-01-15 14:30' -u myservice", "correct": true },
+        { "text": "journalctl -f ilman aikarajaa rajaa incidentin alkamisaikaan", "correct": false },
+        { "text": "cat /var/log/messages näyttää unit-lokit tarkalla aikaleimalla", "correct": false },
+        { "text": "dmesg | grep 14:30 korvaa journalctl --since -filtterin", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-journald-storage",
+      "choices": [
+        { "text": "SystemMaxUse= tai MaxRetentionSec= — rajoita tilaa tai aikaa", "correct": true },
+        { "text": "Storage=volatile poistaa lokituksen kokonaan embedded-laitteessa", "correct": false },
+        { "text": "journald ei voi rajoittaa levytilaa tai retention-aikaa lainkaan", "correct": false },
+        { "text": "rm -rf /var/log/journal estää journalin täyttämästä levyä pysyvästi", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-network-nmcli",
+      "choices": [
+        { "text": "nmcli con mod 'Wired' ipv4.addresses ... ipv4.method manual", "correct": true },
+        { "text": "ifconfig eth0 asettaa pysyvän staattisen IP:n NetworkManagerissa", "correct": false },
+        { "text": "reboot korjaa staattisen IP:n automaattisesti ilman nmcli:tä", "correct": false },
+        { "text": "echo IP > /etc/hosts riittää pysyvään staattiseen osoitteeseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-network-firewalld",
+      "choices": [
+        { "text": "firewall-cmd --add-port=8080/tcp --permanent && firewall-cmd --reload", "correct": true },
+        { "text": "iptables -F poistaa kaiken suojauksen turvallisesti tuotannossa", "correct": false },
+        { "text": "systemctl stop firewalld on suositeltu tapa avata portti 8080", "correct": false },
+        { "text": "EXPOSE 8080 Dockerfile riittää host-palomuurin avaamiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-ss-listening",
+      "choices": [
+        { "text": "ss -tlnp tai ss -ulnp — listening socketit ja prosessit", "correct": true },
+        { "text": "ping localhost kertoo mikä prosessi kuuntelee porttia 5432", "correct": false },
+        { "text": "netstat on ainoa työkalu listening-porttien diagnostiikkaan", "correct": false },
+        { "text": "lsof ilman porttisuodatinta riittää kuuntelijan tunnistamiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-resolv-search",
+      "choices": [
+        { "text": "search lisää domain-suffiksia lyhyille nimille — järjestys tärkeä", "correct": true },
+        { "text": "search määrittää DNS-palvelimen IP-osoitteen resolv.conf:ssa", "correct": false },
+        { "text": "search korvaa /etc/hosts-tiedoston lyhyiden hostnamejen resoluutiossa", "correct": false },
+        { "text": "search on deprecated eikä vaikuta resolverin suffix-kokeiluun", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-avahi-resolve",
+      "choices": [
+        { "text": "avahi-browse -a tai resolve .local — onko palvelu ilmoitettu?", "correct": true },
+        { "text": "Poista avahi-daemon — se hidastaa verkkoa ja estää mDNS:n", "correct": false },
+        { "text": "ping printer.local toimii ilman Avahia kun mDNS on päällä", "correct": false },
+        { "text": "mDNS toimii vain Windowsissa, ei Linux-kehityskoneella", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-systemd-timer",
+      "choices": [
+        { "text": ".timer unit + .service unit — OnCalendar= ajastuksessa", "correct": true },
+        { "text": "Vain service unit riittää systemd-ajastukseen ilman timeria", "correct": false },
+        { "text": "systemd ei tue ajastuksia — cron on pakollinen korvaaja", "correct": false },
+        { "text": "at-komento on aina parempi kuin systemd timer backup-ajoihin", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-systemd-logind",
+      "choices": [
+        { "text": "systemd-run --user scope tai tmux — logind KillUserProcesses", "correct": true },
+        { "text": "nohup riittää pitämään jobin elossa systemd-logind logoutissa", "correct": false },
+        { "text": "logind ei voi tappaa prosesseja kun SSH-istunto katkeaa", "correct": false },
+        { "text": "Disable systemd-logind on suositeltu tapa säilyttää taustajobit", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-network-traceroute",
+      "choices": [
+        { "text": "traceroute tai tracepath kohde — näyttää reitityksen hopit", "correct": true },
+        { "text": "ping riittää reitityspolun analyysiin ulkoiseen API-palveluun", "correct": false },
+        { "text": "ifconfig näyttää reitityspolun ja hopit ulkoiseen palveluun", "correct": false },
+        { "text": "curl -I korvaa tracerouten API-viiveen juurisyy-analyysissä", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-linux-systemd-requires",
+      "choices": [
+        { "text": "After=network-online.target + Wants=network-online.target", "correct": true },
+        { "text": "Before=network.target riittää odottamaan verkon valmistumista", "correct": false },
+        { "text": "ExecStartPre=ping google.com korvaa network-online.target riippuvuuden", "correct": false },
+        { "text": "Type=notify luo verkkoyhteyden ennen palvelun käynnistystä", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-systemd-restart-policy",
+      "choices": [
+        { "text": "Restart=on-failure + StartLimitIntervalSec/StartLimitBurst", "correct": true },
+        { "text": "Restart=always ilman rajoja on turvallisin tuotantoasetus", "correct": false },
+        { "text": "Type=simple estää palvelun kaatumiset yöllä automaattisesti", "correct": false },
+        { "text": "KillMode=process korvaa restart-politiikan ja rajoittaa loopit", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-systemd-memory-limit",
+      "choices": [
+        { "text": "MemoryMax= tai MemoryHigh= — cgroup-raja systemd unitissa", "correct": true },
+        { "text": "Nice=-20 priorisoi muistia ja estää muistivuodon täyttämästä hostia", "correct": false },
+        { "text": "LimitCORE=infinity rajoittaa palvelun RAM-käytön cgroupissa", "correct": false },
+        { "text": "OOM-killer ei koske systemd-palveluja lainkaan muistivuodon aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-systemd-after-before",
+      "choices": [
+        { "text": "After=network-online.target + Wants=network-online.target", "correct": true },
+        { "text": "Before=network.target riittää boot-järjestykseen ennen DNS-hakua", "correct": false },
+        { "text": "Requires=multi-user.target varmistaa verkon ennen app-käynnistystä", "correct": false },
+        { "text": "Unit-riippuvuudet eivät vaikuta boot-käynnistyksen järjestykseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-systemd-kill-mode",
+      "choices": [
+        { "text": "KillMode=control-group — tappaa koko cgroupin prosessit stopissa", "correct": true },
+        { "text": "KillMode=process riittää kun palvelu spawnnaa child-prosesseja", "correct": false },
+        { "text": "SIGKILL ensin stop-komennossa siivoaa child-prosessit varmasti", "correct": false },
+        { "text": "RemainAfterExit=yes korjaa zombie-childit palvelun pysäytyksessä", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-journalctl-follow-live",
+      "choices": [
+        { "text": "journalctl -u palvelu.service -f — seuraa unitin live-lokia", "correct": true },
+        { "text": "tail -f /var/log/syslog seuraa systemd-palvelun uusia rivejä", "correct": false },
+        { "text": "systemctl logs -f on oikea komento reaaliaikaiseen lokiseurantaan", "correct": false },
+        { "text": "journalctl --rotate -f tailaa uusia merkintöjä deployn aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-journald-forward-syslog",
+      "choices": [
+        { "text": "ForwardToSyslog=yes journald.conf:ssa + rsyslog konfiguroitu", "correct": true },
+        { "text": "journald ei tue ulkoista forwardingia syslog-formaattiin", "correct": false },
+        { "text": "Kopioi /var/log/journal manuaalisesti keskus-LOKI-palvelimelle", "correct": false },
+        { "text": "systemctl export-logs riittää syslog-formaatin toimittamiseen", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-net-ss-listen",
+      "choices": [
+        { "text": "ss -tlnp | grep 8080 — listenerit ja prosessit portissa", "correct": true },
+        { "text": "ping localhost 8080 kertoo mikä prosessi varaa portin", "correct": false },
+        { "text": "ifconfig näyttää kuuntelevat portit ja prosessitiedot", "correct": false },
+        { "text": "netstat on ainoa moderni työkalu portin 8080 kuuntelijalle", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-net-tcpdump-incident",
+      "choices": [
+        { "text": "tcpdump -i eth0 host api.example.com -w capture.pcap", "correct": true },
+        { "text": "curl api.example.com korjaa pakettihäviön ja timeout-ongelman", "correct": false },
+        { "text": "iptables -F ratkaisee API-kutsun timeoutin tuotannossa", "correct": false },
+        { "text": "tcpdump vaatii aina GUI:n pakettikaappaukseen tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-net-firewall-cmd",
+      "choices": [
+        { "text": "firewall-cmd --add-port=8443/tcp --permanent && firewall-cmd --reload", "correct": true },
+        { "text": "iptables -F — tyhjennä kaikki säännöt avataksesi portin 8443", "correct": false },
+        { "text": "systemctl stop firewalld on suositeltu pysyvä aukko porttiin", "correct": false },
+        { "text": "Portti 8443 aukeaa automaattisesti kun palvelu käynnistyy", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-net-nat-troubleshoot",
+      "choices": [
+        { "text": "iptables/nftables NAT + sysctl net.ipv4.ip_forward — tarkista", "correct": true },
+        { "text": "Vain DNS on syy — ping IP:llä riittää NAT-ongelman diagnosointiin", "correct": false },
+        { "text": "NAT toimii automaattisesti kaikissa distroissa ilman sääntöjä", "correct": false },
+        { "text": "ifconfig up korjaa konttiverkon NAT:in ja internet-yhteyden", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-avahi-service-discovery",
+      "choices": [
+        { "text": "mDNS/Avahi — .local-palvelunimi lähiverkon discoveryyn", "correct": true },
+        { "text": "Vain DHCP-reservointi skaalautuu lähiverkon palvelujen löytöön", "correct": false },
+        { "text": "DNS A-record riittää tulostimen löytämiseen ilman staattista IP:tä", "correct": false },
+        { "text": "Avahi on vain macOS-ominaisuus, ei Linux-lähiverkossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b09-linux-avahi-mdns-troubleshoot",
+      "choices": [
+        { "text": "avahi-daemon ei pyöri tai firewall estää UDP 5353 multicast", "correct": true },
+        { "text": "mDNS vaatii staattisen IP:n jotta .local-palvelu löytyy WiFi:ssä", "correct": false },
+        { "text": ".local toimii vain Windowsissa, ei samassa WiFi-verkossa Linuxilla", "correct": false },
+        { "text": "DNS-palvelin puuttuu — mDNS ei toimi ilman keskitettyä DNS:ää", "correct": false }
+      ]
+    }
+  ]
+}

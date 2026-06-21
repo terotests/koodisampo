@@ -1,0 +1,189 @@
+{
+  "id": "cpp-safety-const",
+  "title": "Velhon kilpi — const-correctness",
+  "topic": "cpp",
+  "description": "Velho opettaa const-suojauksen: parametrit, viittaukset ja yksinkertaisten tyyppien välitys arvona.",
+  "sourceRef": "cpp-best-practices/04-Considering_Safety.md#const-as-much-as-possible",
+  "estimatedMinutes": 12,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Velhon työpaja",
+      "text": "Velho näyttää sinulle kaksi versiota samasta luokasta. Vanha heimo kirjoitti:\n\n```cpp\nvoid do_something(std::string str);\n```\n\nModerni velho sanoo: käytä `const`-suojausta ja viittauksia — älä kopioi turhaan.\n\n*Lähde: [Considering Safety — Const as Much as Possible](https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md)*",
+      "next": "q_const_ref"
+    },
+    "q_const_ref": {
+      "type": "choice",
+      "title": "Merkkijonon läpikulku",
+      "text": "Mikä on **turvallinen ja tehokas** tapa ottaa `std::string` parametrina, kun et muuta sitä funktiossa?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "const std::string &str",
+          "feedback": "Oikein! `const &` kertoo ettei funktio muuta merkkijonoa eikä kopioi sitä turhaan. Tämä on cpp-best-practicesin suositus isommille tyypeille.",
+          "next": "narrative_int",
+          "correct": true,
+          "points": 10,
+          "features": [
+            {
+              "id": "cpp:const-ref"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "std::string str (arvona, ei const)",
+          "feedback": "Toimii mutta kopioi merkkijonon joka kutsulla — turhaa jos et muuta sitä. Käytä const & -viittausta.",
+          "next": "death_copy",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "std::string &str (ei-const viittaus)",
+          "feedback": "Vaarallinen intentio — kutsuja pelkää että funktio muuttaa merkkijonoa. Käytä const &.",
+          "next": "death_copy",
+          "correct": false
+        }
+      ]
+    },
+    "death_copy": {
+      "type": "end",
+      "title": "Turha kopio kaataa",
+      "text": "Merkkijono kopioitui tuhansia kertoja. Soturisi uupuivat — Tuoni odottaa.",
+      "outcome": "death"
+    },
+    "narrative_int": {
+      "type": "narrative",
+      "title": "Yksinkertainen tyyppi",
+      "text": "Velho jatkaa: \"Mutta `int` on eri asia! Älä välitä yksinkertaisia tyyppejä const-viittauksena — se hidastaa ja monimutkaistaa turhaan. Prosessori rekistereissä arvo on nopeampi.\"",
+      "next": "q_int_by_value"
+    },
+    "q_int_by_value": {
+      "type": "choice",
+      "title": "Intin välitys",
+      "text": "Mikä on **Very Bad Idea** vs **Good Idea** konstruktorissa int-arvolle?\n\n```cpp\n// A\nexplicit MyClass(const int& t_int_value);\n\n// B\nexplicit MyClass(const int t_int_value);\n```",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A on huono, B on hyvä — yksinkertaiset tyypit arvona",
+          "feedback": "Täsmälleen! cpp-best-practices: \"Do not pass and return simple types by const ref\" — viittaus pakottaa osoiteoperaatioita rekisterien sijaan.",
+          "next": "q_getter",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:pass-by-value"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "A on nopeampi aina — viittaus säästää muistia",
+          "feedback": "Väärin int-tyypille. int mahtuu rekisteriin — const int& on ylimääräistä.",
+          "next": "death_int",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Molemmat yhtä hyviä — kääntäjä optimoi saman tuloksen",
+          "feedback": "Ei luota optimointiin — kirjoita intentio selkeästi. Yksinkertaiset tyypit arvona.",
+          "next": "death_int",
+          "correct": false
+        }
+      ]
+    },
+    "death_int": {
+      "type": "end",
+      "title": "Osoitin eksyy",
+      "text": "const int& johti turhaan osoiteoperaatioon. Pieni virhe, suuri myrsky.",
+      "outcome": "death"
+    },
+    "q_getter": {
+      "type": "choice",
+      "title": "Getterin paluuarvo",
+      "text": "Luokassasi on `int m_int_value`. Mikä getter on turvallisin ja selkein **yksinkertaiselle int-tyypille**?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "int get_int_value() const { return m_int_value; }",
+          "feedback": "Oikein! Palauta yksinkertaiset tyypit arvona. const-metodi kertoo ettei objektia muuteta.",
+          "next": "narrative_code",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:const-method"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "const int& get_int_value() const { return m_int_value; }",
+          "feedback": "cpp-best-practices kutsuu tätä \"Very Bad Idea\" — palauta int arvona.",
+          "next": "death_getter",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "int& get_int_value() { return m_int_value; }",
+          "feedback": "Paljastaa sisäisen tilan muokattavaksi ulkopuolelle — vaarallista.",
+          "next": "death_getter",
+          "correct": false
+        }
+      ]
+    },
+    "death_getter": {
+      "type": "end",
+      "title": "Kilpi murtui",
+      "text": "Väärä getter paljasti sisäisen tilan. Vihollinen muokkasi arvoa suoraan.",
+      "outcome": "death"
+    },
+    "narrative_code": {
+      "type": "narrative",
+      "title": "Loitsu viimeistellään",
+      "text": "Velho antaa sinulle lähes valmiin metodin. Täydennä const-suojaus parametrille — et muuta int-arvoa funktiossa.",
+      "next": "code_const_param"
+    },
+    "code_const_param": {
+      "type": "code",
+      "title": "Const-parametri",
+      "text": "Täydennä puuttuva avainsana ennen `int`-tyyppiä:",
+      "template": "void taisto(_____ int voima);",
+      "answers": [
+        "const"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "hint": "Viisi kirjainta — lupaa ettei parametria muuteta",
+      "feedbackCorrect": "Kilpi on vahvistettu! const-parametri dokumentoi intentiosi kääntäjälle ja lukijalle.",
+      "feedbackWrong": "Muista: const ennen int — lupaa lukemisen ilman muutosta.",
+      "next": "victory",
+      "wrongNext": "death_code",
+      "features": [
+        {
+          "id": "cpp:const-correctness"
+        }
+      ]
+    },
+    "death_code": {
+      "type": "end",
+      "title": "Loitsu hylätty",
+      "text": "Ilman const-suojausta velho ei luota sinuun.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Kilpi suojaa",
+      "text": "Olet oppinut const-correctnessin perusteet: `const &` isoille tyypeille, arvo pienille, const-metodit sivuvaikutusten merkintään. Seuraavaksi: muistin turvaaminen.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 20,
+  "teaches": [
+    "cpp:const-ref",
+    "cpp:pass-by-value",
+    "cpp:const-method",
+    "cpp:const-correctness"
+  ]
+}

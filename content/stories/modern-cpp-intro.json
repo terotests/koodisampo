@@ -1,0 +1,196 @@
+{
+  "id": "modern-cpp-intro",
+  "title": "Legacy herää — modernin C++:n polku",
+  "topic": "cpp",
+  "description": "Vanha C++-konkari palaa toimistolle. Opit auto-tyypin, range-forin ja nullptr:n.",
+  "sourceRef": "cpp-best-practices/00-Table_of_Contents.md",
+  "estimatedMinutes": 8,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Aulan portinvartija",
+      "text": "Olet vanha C++-konkari, joka vuosikymmeniä sitten hallitsi C++98:n synkät koodipolut. Nyt palaat toimistolle — mutta kieli on muuttunut. Legacy on hajallaan: auto, nullptr, range-for. Ilman niitä et pääse CTO:n katselmukseen.\n\nMentor huutaa kahvihuoneesta: \"Älä enää kirjoita `int*` kun tarkoitat osoitinta. Älä käytä NULLia. Uusi standardi odottaa.\"",
+      "next": "q_auto"
+    },
+    "q_auto": {
+      "type": "choice",
+      "title": "Ensimmäinen koetus",
+      "text": "Metsässä kohtaat muuttujan, jonka tyyppiä et vielä tunne:\n\n```cpp\nauto loitsu = 42;\n```\n\nMitä `auto` tekee modernissa C++:ssa?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Kääntäjä päättelee tyypin käännösaikana (type deduction)",
+          "feedback": "Oikein! `auto` on tyyppipäättely — kääntäjä johtaa tyypin initializerista. Tämä on yksi modernin C++:n peruskivijalkoja (cpp-best-practices).",
+          "next": "narrative_auto",
+          "correct": true,
+          "points": 10,
+          "features": [
+            {
+              "id": "cpp:auto"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Muuttuja on automaattisesti globaali",
+          "feedback": "Väärin. `auto` ei liity näkyvyyteen — se on tyyppipäättelyavainsana.",
+          "next": "death_confusion",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Muuttuja on aina int-tyyppinen",
+          "feedback": "Väärin. Tyyppi johtuu arvosta — tässä int, mutta `auto s = 3.14` olisi double.",
+          "next": "death_confusion",
+          "correct": false
+        }
+      ]
+    },
+    "death_confusion": {
+      "type": "end",
+      "title": "Burnout",
+      "text": "Vanhat tavat johtivat harhaan. Standupissa myönnät ettei sinulla ole vastausta — mutta burnout ei ole lopullinen. Voit yrittää uudelleen.",
+      "outcome": "death"
+    },
+    "narrative_auto": {
+      "type": "narrative",
+      "title": "Sampo välähtää",
+      "text": "Yksi Sampo-pala löytyi! Velho nyökkää: \"Hyvä. Seuraavaksi — älä käytä vanhaa `NULL`-makroa. C++11 toi `nullptr`, joka on tyypitetty null-osoitin.\"",
+      "next": "q_nullptr"
+    },
+    "q_nullptr": {
+      "type": "choice",
+      "title": "Null-osoittimen koetus",
+      "text": "Vihamielinen heimo hyökkää. Sinun täytyy nollata osoitin turvallisesti:\n\n```cpp\nint* miekka = _____;\n```\n\nMikä on moderni ja turvallinen tapa?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "nullptr",
+          "feedback": "Erinomaista! `nullptr` on tyypitetty — ei sekoitu int:iin kuten NULL voi. Suositus: cpp-best-practices / Considering Safety.",
+          "next": "narrative_range",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:nullptr"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "NULL",
+          "feedback": "Vanha tapa. NULL on makro joka usein on 0 — voi aiheuttaa ylikuormitusongelmia.",
+          "next": "death_null",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "0",
+          "feedback": "Toimii, mutta ei ilmaise intentiota. Modernissa C++:ssa käytä nullptr.",
+          "next": "death_null",
+          "correct": false
+        }
+      ]
+    },
+    "death_null": {
+      "type": "end",
+      "title": "Osoitin murskautuu",
+      "text": "NULL-osoitin johti segfaultiin. Tuoni nauraa — mutta uusi syntyminen on mahdollista.",
+      "outcome": "death"
+    },
+    "narrative_range": {
+      "type": "narrative",
+      "title": "Metsän läpi",
+      "text": "Toinen Sampo-pala! Nyt opit kävellä kokoontumien läpi ilman indeksejä:\n\n```cpp\nfor (const auto& soturi : lauma) { ... }\n```\n\nTämä on range-for — selkeämpi ja vähemmän virhealtis kuin klassinen for.",
+      "next": "q_range"
+    },
+    "q_range": {
+      "type": "choice",
+      "title": "Lauman läpikäynti",
+      "text": "Mikä on range-for-silmukan etu vanhaan `for (int i = 0; i < n; i++)` -tyyliin verrattuna?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ei tarvitse indeksiä — vähentää off-by-one -virheitä",
+          "feedback": "Oikein! Range-for on suositeltu tapa iteroida kokoelmia (C++11+).",
+          "next": "narrative_code",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:range-for"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Se on aina nopeampi kuin mikään muu silmukka",
+          "feedback": "Ei aina — se on luettavuutta ja turvallisuutta, ei automaattista optimointia.",
+          "next": "death_range",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Se toimii vain std::vector:lla",
+          "feedback": "Väärin. Range-for toimii kaikilla iterable-tyypeillä joilla on begin/end.",
+          "next": "death_range",
+          "correct": false
+        }
+      ]
+    },
+    "death_range": {
+      "type": "end",
+      "title": "Silmukka kiertyy",
+      "text": "Off-by-one-virhe vei sinut ikuiseen silmukkaan. Tuoni odottaa.",
+      "outcome": "death"
+    },
+    "narrative_code": {
+      "type": "narrative",
+      "title": "Velhon työpaja",
+      "text": "Kolmas Sampo-pala on lähellä. Velho antaa sinulle tyhjän loitsun — täydennä se itse. Vähintään 3 merkkiä, enintään 10.",
+      "next": "code_const"
+    },
+    "code_const": {
+      "type": "code",
+      "title": "Loitsun täydennys",
+      "text": "Muuta muuttuja vakioksi modernilla avainsanalla (C++11). Tämä estää vahingossa tapahtuvan uudelleenmäärityksen.",
+      "template": "_____ kertaa = 3;",
+      "answers": [
+        "const"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "ignoreCase": false,
+      "hint": "Viisi kirjainta — alkaa c:llä",
+      "feedbackCorrect": "Loistavaa! `const` on perusta turvalliselle koodille. cpp-best-practices suosittelee const-correctnessia.",
+      "feedbackWrong": "Ei aivan. Vihje: viisi kirjainta, alkaa c:llä.",
+      "next": "victory",
+      "wrongNext": "death_code",
+      "features": [
+        {
+          "id": "cpp:const-correctness"
+        }
+      ]
+    },
+    "death_code": {
+      "type": "end",
+      "title": "Loitsu epäonnistui",
+      "text": "Väärä avainsana — loitsu räjähti. Yritä uudelleen.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Sampo palautuu",
+      "text": "Olet kerännyt kolme Sampo-palaa: auto, nullptr ja range-for. Matka jatkuu kohti Väinämöisen haastetta — siellä kirjoitat koodia itse, enemmän kuin yhden sanan.\n\nSeuraava taso: RAII, smart pointerit ja std::optional odottavat.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 10,
+  "teaches": [
+    "cpp:auto",
+    "cpp:nullptr",
+    "cpp:range-for",
+    "cpp:const-correctness"
+  ]
+}

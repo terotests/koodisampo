@@ -1,0 +1,188 @@
+{
+  "id": "backend-ops",
+  "domain": "backend",
+  "source": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+  "questions": [
+    {
+      "id": "prod-backend-transfer-transaction",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen päivitys epäonnistuu kesken. Mitä tarvitaan?",
+      "choices": [
+        {
+          "text": "Wrapaa molemmat tilipäivitykset yhteen transaktioon — COMMIT vain onnistuessa",
+          "correct": true
+        },
+        {
+          "text": "Suorita kaksi erillistä UPDATE:ia ja luota sovelluslogiikan rollbackiin",
+          "correct": false
+        },
+        {
+          "text": "sleep() kyselyjen välissä antaa tietokannan ehtiä synkronoitua ennen tarkistusta",
+          "correct": false
+        },
+        {
+          "text": "Lokita molemmat päivitykset — inkonsistenssi korjataan myöhäisessä batch-ajossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ACID-transaktio varmistaa atomisuuden — PostgreSQL transactions.",
+      "wrongFeedback": "Ilman transaktiota järjestelmä voi jäädä epäjohdonmukaiseen tilaan.",
+      "sourceRef": "postgresql/tutorial-transactions",
+      "sourceUrl": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+      "featureId": "backend:transactions",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-backend-webhook-idempotency",
+      "chapter": "backend-api",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Maksupalvelu lähettää saman webhookin kahdesti verkkohäiriön jälkeen. Miten vältät tuplakirjauksen?",
+      "choices": [
+        {
+          "text": "Tallenna idempotency key ennen sivuvaikutusta ja hylkää duplikaatit",
+          "correct": true
+        },
+        {
+          "text": "Luota että maksupalvelu toimittaa webhookin täsmälleen yhden kerran",
+          "correct": false
+        },
+        {
+          "text": "Lisää timeout webhook-käsittelyyn odottaen verkon vakaantumista",
+          "correct": false
+        },
+        {
+          "text": "Poista palveluntarjoajan retry-asetus integraatiosta kokonaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Idempotentti käsittely sallii turvallisen uudelleentoimituksen — Stripe/API best practices.",
+      "wrongFeedback": "Verkko voi toistaa pyyntöjä. Tallenna käsitelty avain ennen sivuvaikutuksia.",
+      "sourceRef": "stripe/idempotency",
+      "sourceUrl": "https://docs.stripe.com/api/idempotent_requests",
+      "featureId": "backend:idempotency",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-backend-n-plus-one",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Lista käyttäjistä haetaan yhdellä queryllä, mutta jokaiselle tehdään erillinen query profiiliin. Mikä ongelma?",
+      "choices": [
+        {
+          "text": "N+1-query: profiili haetaan erikseen jokaiselle käyttäjäriville listauksessa",
+          "correct": true
+        },
+        {
+          "text": "SQL ei palauta listoja ilman GROUP BY -lauseketta käyttäjätaulussa",
+          "correct": false
+        },
+        {
+          "text": "Indeksi käyttäjätaulussa korjaa automaattisesti myös liitostaulun haun",
+          "correct": false
+        },
+        {
+          "text": "ORM-kerros estää kaikki tietokantasuorituskykyongelmat abstraktiolla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "N+1 on klassinen backend-bugi — korjaa joinilla, batchilla tai dataloaderilla.",
+      "wrongFeedback": "Yksi query per rivi skaalautuu huonosti. Yhdistä tai esihae.",
+      "sourceRef": "microsoft/performance-n-plus-one",
+      "sourceUrl": "https://learn.microsoft.com/en-us/ef/core/performance/efficient-querying",
+      "featureId": "backend:n-plus-one",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-backend-optimistic-lock",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kaksi käyttäjää muokkaa samaa riviä ja viimeinen tallennus ylikirjoittaa toisen muutokset huomaamatta. Mikä auttaa?",
+      "choices": [
+        {
+          "text": "Optimistic locking: UPDATE vain jos version-kenttä vastaa lukuhetken arvoa",
+          "correct": true
+        },
+        {
+          "text": "Pidempi istuntotimeout antaa käyttäjille aikaa viimeistellä muokkauksensa",
+          "correct": false
+        },
+        {
+          "text": "DELETE + INSERT korvaa UPDATE:n konfliktien välttämiseksi tietokannassa",
+          "correct": false
+        },
+        {
+          "text": "Piilota rivi muilta käyttäjiltä UI:ssa samanaikaisen muokkauksen aikana",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Optimistic lock havaitsee konfliktin — palauta 409 tai merge-flow.",
+      "wrongFeedback": "Viimeinen kirjoitus voittaa hiljaa ilman version-tarkistusta.",
+      "sourceRef": "martinfowler/optimistic-offline-lock",
+      "sourceUrl": "https://martinfowler.com/eaaCatalog/optimisticOfflineLock.html",
+      "featureId": "backend:optimistic-locking",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-ops-observability",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security",
+        "project-lead"
+      ],
+      "prompt": "Tuotannossa satunnainen datan korruptio, mutta lokit eivät riitä juurisyyn löytämiseen. Mikä ensimmäinen parannus ennen isoa refaktorointia?",
+      "choices": [
+        {
+          "text": "Observability: trace-id, strukturoidut lokit ja invariantit kriittisiin kohtiin",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita järjestelmä uusiksi uudella arkkitehtuurilla ennen diagnostiikkaa",
+          "correct": false
+        },
+        {
+          "text": "Poista varoitustasoiset lokit vähentääksesi hälytyksiä on-call-vuoroissa",
+          "correct": false
+        },
+        {
+          "text": "Käynnistä interaktiivinen debugger tuotannossa live-sessiolla virheen jäljitykseen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Structured logging + trace id yhdistää tapahtumat — OpenTelemetry/Google SRE.",
+      "wrongFeedback": "Ilman korrelaatiota et näe ketjua. Invariantit havaitsevat korruption aikaisin.",
+      "sourceRef": "opentelemetry.io/docs",
+      "sourceUrl": "https://opentelemetry.io/docs/concepts/observability-primer/",
+      "featureId": "backend:observability",
+      "featurePoints": 5,
+      "studyNotes": "Ennen refaktorointia lisää mitattavuus: request/correlation id jokaiseen pyyntöön, strukturoidut lokit (JSON), metriikat kriittisistä poluista ja assertit/invariantit datan eheydelle. Näin seuraava incident on diagnosoitavissa."
+    }
+  ]
+}

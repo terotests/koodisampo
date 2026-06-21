@@ -1,0 +1,1128 @@
+
+Import "RangerProcess.rgr"
+Import "../FeatureKarma.rgr"
+Import "../StoryEngine.rgr"
+Import "../StoryCatalog.rgr"
+Import "../StorySummary.rgr"
+Import "../StoryView.rgr"
+Import "../WorldMap.rgr"
+Import "../MapView.rgr"
+Import "../MapEntity.rgr"
+Import "../EncounterView.rgr"
+Import "../PlayerConduct.rgr"
+Import "../PlayerTools.rgr"
+Import "../InventoryView.rgr"
+Import "../WorldClock.rgr"
+
+class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBase {
+  def karma:FeatureKarma
+  def engine:StoryEngine
+  def map:WorldMap
+  def catalog:StoryCatalog
+  def screen:string "map"
+  def shouldQuit:boolean false
+  def pendingStoryId:string ""
+  def menuMessage:string ""
+  def engineReady:boolean false
+  def pendingEntityId:string ""
+  def pendingEntityChar:string ""
+  def pendingEntityName:string ""
+  def pendingEntityKind:string ""
+  def encounterResult:string ""
+  def conduct:PlayerConduct
+  def tools:PlayerTools
+  def encounterCooldown:int 0
+  def interviewPassed:boolean false
+  def interviewFailed:boolean false
+  def usedStolenCardEntry:boolean false
+  def guruIntroPassed:boolean false
+  def guruStoryAttempted:boolean false
+  def guruQuizCorrect:int 0
+  def quizWinsForPromotion:int 0
+  def worldClock:WorldClock
+
+  Constructor () {
+    karma = (new FeatureKarma)
+    map = (new WorldMap)
+    catalog = (new StoryCatalog)
+    conduct = (new PlayerConduct)
+    tools = (new PlayerTools)
+    worldClock = (new WorldClock)
+  }
+
+  fn ensureEngine:void () {
+    if (engineReady) {
+      return
+    }
+    def eng:StoryEngine (new StoryEngine)
+    eng.karma = karma
+    engine = eng
+    engineReady = true
+  }
+
+  fn start:void () {
+    this.ensureEngine()
+  }
+
+  fn isHostileEncounter:boolean () {
+    if (pendingEntityKind == "hostile") {
+      return true
+    }
+    return false
+  }
+
+  fn isCeoEncounter:boolean () {
+    if ((strlen pendingEntityId) >= 4) {
+      def prefix:string (substring pendingEntityId 0 4)
+      if (prefix == "ceo-") {
+        return true
+      }
+    }
+    if (pendingEntityKind == "role") {
+      if (pendingEntityChar == "C") {
+        return true
+      }
+    }
+    return false
+  }
+
+  fn isCoworkerEncounter:boolean () {
+    if (pendingEntityKind == "coworker") {
+      return true
+    }
+    return false
+  }
+
+  fn needsEncounterQuiz:boolean () {
+    if (pendingEntityId == "receptionist") {
+      if (interviewPassed) {
+        return false
+      }
+      return true
+    }
+    if (pendingEntityKind == "guru") {
+      if (guruIntroPassed) {
+        return false
+      }
+      return true
+    }
+    if ((strlen pendingStoryId) > 0) {
+      return false
+    }
+    if ((strlen pendingEntityKind) < 1) {
+      return false
+    }
+    if (pendingEntityKind == "item") {
+      return false
+    }
+    return true
+  }
+
+  fn finishEncounterQuiz:void (correct:boolean featureId:string points:int msg:string) {
+    if (correct) {
+      if ((strlen featureId) > 0) {
+        karma.add(featureId points)
+      }
+      def status:string ("✓ " + pendingEntityName + ": " + msg)
+      if (this.isCoworkerEncounter()) {
+        quizWinsForPromotion = quizWinsForPromotion + 1
+        def promoRoll:int (random 0 2)
+        if (quizWinsForPromotion >= 2) {
+          promoRoll = 0
+        }
+        if (promoRoll == 0) {
+          if (tools.accessTier < 3) {
+            tools.grant("promoted_card")
+            quizWinsForPromotion = 0
+            status = (status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)!")
+          }
+        }
+      }
+      if (pendingEntityKind == "guru") {
+        guruQuizCorrect = guruQuizCorrect + 1
+        if (guruQuizCorrect >= 2) {
+          guruIntroPassed = true
+          status = (status + " Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta (2 oikeaa) — sitten 10. kerros virallisella luvalla.")
+        } {
+          status = (status + " (" + (to_string guruQuizCorrect) + "/2 oikein Guru-tarkistukseen)")
+        }
+      }
+      if (pendingEntityId == "receptionist") {
+        tools.grant("official_badge")
+        interviewPassed = true
+        interviewFailed = false
+        status = (status + " Sait virallisen kulkuluvan — haastattelu meni läpi!")
+      }
+      map.lastStatus = status
+    } {
+      karma.loseKarma(3)
+      def failStatus:string ("✗ " + pendingEntityName + ": " + msg)
+      if (pendingEntityId == "receptionist") {
+        interviewFailed = true
+        interviewPassed = false
+        failStatus = (failStatus + " Haastattelu ei mennyt läpi. Voit yrittää uudelleen tai käyttää varastettua korttia — riskillä.")
+      }
+      map.lastStatus = failStatus
+    }
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn askEncounterAiStudy:boolean (cost:int) {
+    def total:int (karma.total())
+    if (total < cost) {
+      return false
+    }
+    karma.loseKarma(cost)
+    this.markStateDirty()
+    return true
+  }
+
+  fn dismissEncounterQuiz:void (tone:string npcReply:string) {
+    if (tone == "meh") {
+      karma.loseKarma(1)
+      map.lastStatus = npcReply
+    } {
+      map.lastStatus = npcReply
+    }
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn encounterAiStudyCost:int () {
+    return 5
+  }
+
+  fn gameOverPolice:void () {
+    this.ensureEngine()
+    engine.deaths = engine.deaths + 1
+    map.clearPoliceSquad()
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    map.lastStatus = ""
+    screen = "gameover"
+    this.markStateDirty()
+  }
+
+  fn triggerPoliceChaseAfterAttack:void (victimName:string) {
+    karma.loseKarma(12)
+    conduct.addMisconduct(22)
+    map.startPoliceChase()
+    map.lastStatus = (victimName + " huusi apua! Kolme poliisia (P) saapui — mustat paidat, takaa-ajo alussa!")
+    encounterResult = "attack"
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn encounterGreeting:string () {
+    if (pendingEntityId == "office-dog") {
+      return "Toimistokoira heiluttaa häntää ja katsoo sinua odottaen."
+    }
+    if (pendingEntityId == "janitor") {
+      if (tools.hasShedKey) {
+        return "Talkkari nyökkää: \"Vajan avain on jo taskussasi. Kadonnut kulkukortti lienee siellä.\""
+      }
+      return "Talkkari pysähtyy harjan kanssa: \"Uusi tulokas? Piha on rauhallinen — toisin kuin sisällä.\""
+    }
+    if (pendingEntityId == "receptionist") {
+      if (interviewPassed) {
+        return "Vastaanottovirkailija hymyilee: \"Tervetuloa työntekijäksi. Kulkulupasi on voimassa.\""
+      }
+      if (interviewFailed) {
+        if (tools.hasStolenCard) {
+          return "Vastaanottovirkailija katsoo korttiasi epäillen: \"Hetkinen… tämä numero on raportoitu kadonneeksi. Selitä.\""
+        }
+        return "Vastaanottovirkailija: \"Haastattelu ei mennyt läpi. Haluatko yrittää uudelleen?\""
+      }
+      return "Vastaanottovirkailija: \"Työhaastatteluun? Yksi C++-kysymys — vastaa oikein niin saat virallisen kulkuluvan.\""
+    }
+    if (this.isHostileEncounter()) {
+      return (pendingEntityName + " katsoo sinua uhkaavasti. Mitä teet?")
+    }
+    if (this.isCeoEncounter()) {
+      return (pendingEntityName + " pysäyttää sinut: \"Strateginen tilanne. KPI:t eivät odota — mitä haluat?\"")
+    }
+    if (pendingEntityKind == "security") {
+      return ("Turvallisuus tarkkailee sinua: \"Tunniste näkyvissä? Asiallisuus kunnossa?\"")
+    }
+    if (pendingEntityKind == "guru") {
+      if (guruIntroPassed) {
+        return (pendingEntityName + ": \"Perusteet jo kunnossa. Jatka hissillä ylempiin kerroksiin — paina 3 tai korkeampi numero.\"")
+      }
+      if (guruStoryAttempted) {
+        return (pendingEntityName + " haluaa tarkistaa yhden C++-kysymyksen ennen kuin päästää ylemmäs.")
+      }
+      return (pendingEntityName + " nostaa katseensa koodista. Miten lähestyt?")
+    }
+    if (this.isCoworkerEncounter()) {
+      if ((strlen tools.heldCoworkerCardOwner) > 0) {
+        if (tools.heldCoworkerCardOwner == pendingEntityId) {
+          return (pendingEntityName + " näyttää huolestuneelta: \"Oletko nähnyt kulkukorttiani?\"")
+        }
+      }
+      return (pendingEntityName + " haluaa kysyä yhden C++-kysymyksen ennen kuin palaat työhön.")
+    }
+    if (pendingEntityChar == "S") {
+      return (pendingEntityName + ": \"Ajanvaraus? Täyttäkää ensin lomake 7B.\"")
+    }
+    if (pendingEntityChar == "P") {
+      return (pendingEntityName + ": \"Oletko päivittänyt riskirekisteriä tällä viikolla?\"")
+    }
+    return (pendingEntityName + " huomaa sinut. Mitä teet?")
+  }
+
+  fn encounterAttackWarning:string () {
+    if (this.isCeoEncounter()) {
+      return " — toimitusjohtajaan hyökkääminen = välitön potku, ellei karmasi ole erittäin korkea!"
+    }
+    if (this.isHostileEncounter()) {
+      return " — battle-tilanteessa karma voi kadota pahasti!"
+    }
+    if (pendingEntityKind == "security") {
+      return " — turvallisuus vastaa välittömästi!"
+    }
+    if (this.isCoworkerEncounter()) {
+      return " — kollega voi huutaa 112: kolme poliisia (P) takaa-ajoon!"
+    }
+    return ""
+  }
+
+  fn encounterDeath:void (message:string) {
+    this.ensureEngine()
+    engine.deaths = engine.deaths + 1
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    map.lastStatus = (message + " Heräsit toimiston spawn-pisteellä.")
+    this.clearEncounter()
+    screen = "map"
+    encounterResult = "death"
+  }
+
+  fn clearEncounter:void () {
+    pendingEntityId = ""
+    pendingEntityChar = ""
+    pendingEntityName = ""
+    pendingEntityKind = ""
+    encounterResult = ""
+    encounterCooldown = 3
+  }
+
+  fn startEncounter:void (bump:MapEntity) {
+    pendingEntityId = bump.id
+    pendingEntityChar = bump.char
+    pendingEntityName = bump.name
+    pendingEntityKind = bump.kind
+    pendingStoryId = bump.storyId
+    encounterResult = ""
+    screen = "encounter"
+  }
+
+  fn loadMapFromText:boolean (mapJson:string) {
+    this.ensureEngine()
+    def ok:boolean (map.loadFromText(mapJson))
+    if (ok == false) {
+      menuMessage = "Kartan lataus epäonnistui."
+    }
+    screen = "map"
+    this.markStateDirty()
+    return ok
+  }
+
+  fn applySave:void (featureIds:[string] featureAmounts:[int] deathCount:int) {
+    karma.ids = featureIds
+    karma.amounts = featureAmounts
+    engine.deaths = deathCount
+    this.markStateDirty()
+  }
+
+  fn applyGuruProgress:void (introPassed:boolean storyAttempted:boolean quizCorrect:int) {
+    guruIntroPassed = introPassed
+    guruStoryAttempted = storyAttempted
+    guruQuizCorrect = quizCorrect
+    this.markStateDirty()
+  }
+
+  fn exportDeaths:int () {
+    return engine.deaths
+  }
+
+  fn onPrisonKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    if (conduct.tickPrison()) {
+      screen = "map"
+      map.lastStatus = "Pääsit vapaaksi. Turvallisuus valvoo yhä."
+    } {
+      map.lastStatus = ("Vangittuna — " + (to_string conduct.prisonTurns) + " vuoroa jäljellä.")
+    }
+    this.markStateDirty()
+  }
+
+  fn tryElevatorKey:void (key:string) {
+    def idx:int -1
+    if (key == "1") {
+      idx = 0
+    }
+    if (key == "2") {
+      idx = 1
+    }
+    if (key == "3") {
+      idx = 2
+    }
+    if (key == "4") {
+      idx = 3
+    }
+    if (key == "5") {
+      idx = 4
+    }
+    if (key == "6") {
+      idx = 5
+    }
+    if (key == "7") {
+      idx = 6
+    }
+    if (key == "8") {
+      idx = 7
+    }
+    if (key == "9") {
+      idx = 8
+    }
+    if (key == "0") {
+      idx = 9
+    }
+    if (idx >= 0) {
+      if (this.canAccessFloor(idx) == false) {
+        map.lastStatus = (this.elevatorDeniedMessage(idx))
+        this.markStateDirty()
+        return
+      }
+      if (map.tryElevatorTo(idx)) {
+        this.markStateDirty()
+      }
+    }
+  }
+
+  fn handleAgentTick:void () {
+    if (screen != "map") {
+      return
+    }
+    worldClock.advance(15)
+    map.tickSchedules(worldClock.gameMinutes)
+    map.agentHuntFlag = (conduct.isWanted())
+    def agentResult:MapEntity (map.tickAgents())
+    if ((strlen agentResult.id) > 0) {
+      if (agentResult.kind == "police") {
+        this.gameOverPolice()
+        return
+      }
+      if (agentResult.kind == "security") {
+        conduct.arrest()
+        map.teleportToPrison()
+        screen = "prison"
+        return
+      }
+      if (encounterCooldown > 0) {
+        encounterCooldown = encounterCooldown - 1
+        return
+      }
+      map.lastStatus = (agentResult.name + " haluaa jutella.")
+      this.startEncounter(agentResult)
+    }
+  }
+
+  fn afterPlayerAction:void () {
+    def toolPick:string (map.pickupItemAt(map.playerX map.playerY))
+    if ((strlen toolPick) > 0) {
+      tools.grant(toolPick)
+      if (toolPick == "coworker_card") {
+        tools.setCoworkerCardOwner(map.lastPickedOwner)
+      }
+      if (toolPick == "crowbar" || toolPick == "shovel" || toolPick == "sledgehammer") {
+        def toolName:string (tools.activeLabel())
+        map.lastStatus = ("Poimit työkalun: " + toolName)
+      } {
+        def itemName:string (tools.pickupLabel(toolPick))
+        map.lastStatus = ("Poimit: " + itemName + "  (i = inventaario)")
+      }
+    }
+  }
+
+  fn tryPlayerMove:boolean (dx:int dy:int) {
+    if (dx != 0) {
+      map.facingX = dx
+      map.facingY = 0
+    }
+    if (dy != 0) {
+      map.facingX = 0
+      map.facingY = dy
+    }
+    def nx:int (map.playerX + dx)
+    def ny:int (map.playerY + dy)
+    def tile:string (map.tileAt(nx ny))
+    if (tile == "L") {
+      if (tools.hasBuildingAccess() == false) {
+        map.lastStatus = "Pääoven lukko — tarvitset kulkukortin."
+        return false
+      }
+      if (tools.hasOfficialBadge == false) {
+        usedStolenCardEntry = true
+      }
+      map.openTileAt(nx ny)
+    }
+    if (tile == "+") {
+      if (tools.hasShedKey == false) {
+        map.lastStatus = "Vajan ovi lukossa. Kysy avain talkkarilta."
+        return false
+      }
+      map.openTileAt(nx ny)
+    }
+    return (map.tryMove(dx dy))
+  }
+
+  fn canAccessFloor:boolean (floorIndex:int) {
+    if (floorIndex == 0) {
+      return true
+    }
+    if (tools.hasBuildingAccess() == false) {
+      return false
+    }
+    if (floorIndex == 1) {
+      return true
+    }
+    if (floorIndex >= 9) {
+      if (tools.accessTier < 4) {
+        return false
+      }
+      return true
+    }
+    if (floorIndex >= 2) {
+      if (guruIntroPassed == false) {
+        return false
+      }
+      if (tools.accessTier < 3) {
+        return false
+      }
+      return true
+    }
+    return false
+  }
+
+  fn elevatorDeniedMessage:string (floorIndex:int) {
+    if (floorIndex >= 9) {
+      return "10. kerros vaatii virallisen kulkuluvan — varastettu kortti ei riitä."
+    }
+    if (floorIndex >= 2) {
+      if (guruIntroPassed == false) {
+        return "Ylemmät kerrokset lukittu — läpäise gurun tarkistus (kerros 2)."
+      }
+      if (tools.accessTier < 3) {
+        return "Kerrokset 3–9 vaativat ylennyksen — 2 oikeaa vastausta työkavereilta."
+      }
+    }
+    if (tools.hasBuildingAccess() == false) {
+      return "Hissi vaatii kulkukortin."
+    }
+    return "Kulkukorttisi ei kata tätä kerrosta."
+  }
+
+  fn applyStoryRewards:void (storyId:string outcome:string) {
+    if (storyId == "courtyard-janitor") {
+      if (outcome == "victory") {
+        tools.grant("shed_key")
+        map.lastStatus = "Talkkari antoi vajan avaimen."
+      }
+      return
+    }
+    if (storyId == "lobby-interview") {
+      if (outcome == "victory") {
+        tools.grant("official_badge")
+        interviewPassed = true
+        interviewFailed = false
+        map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi!"
+      } {
+        interviewFailed = true
+        interviewPassed = false
+        map.lastStatus = "Haastattelu ei mennyt läpi. Voit yrittää varastetulla kortilla — riskillä."
+      }
+      return
+    }
+    if (storyId == "stolen-card-caught") {
+      conduct.arrest()
+      map.teleportToPrison()
+      screen = "prison"
+      return
+    }
+    if (storyId == "modern-cpp-intro") {
+      if (outcome == "victory") {
+        guruIntroPassed = true
+        map.lastStatus = "Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta — 10. kerros vaatii virallisen luvan."
+      }
+    }
+  }
+
+  fn needsCardReturnChoice:boolean () {
+    if ((strlen tools.heldCoworkerCardOwner) < 1) {
+      return false
+    }
+    if (tools.heldCoworkerCardOwner != pendingEntityId) {
+      return false
+    }
+    return true
+  }
+
+  fn returnCoworkerCard:void () {
+    def ownerName:string pendingEntityName
+    tools.returnCoworkerCard()
+    karma.add("social:honest" 8)
+    map.lastStatus = ("Palautit kortin — " + ownerName + " kiittää. (+8 karma)")
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn keepCoworkerCardLie:void () {
+    karma.loseKarma(2)
+    map.lastStatus = "Väitit ettei kortti ole sinulla. Työkaveri epäilee — pidät kortin."
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn onReceptionistTalk:void () {
+    if (interviewFailed == false) {
+      if (interviewPassed) {
+        return
+      }
+      return
+    }
+    if (tools.hasStolenCard == false) {
+      return
+    }
+    if (usedStolenCardEntry == false) {
+      return
+    }
+    pendingStoryId = "stolen-card-caught"
+    encounterResult = "talk"
+  }
+
+  fn onMapKey:void (key:string) {
+    if (screen == "prison") {
+      this.onPrisonKey(key)
+      return
+    }
+    if (screen == "gameover") {
+      this.onGameOverKey(key)
+      return
+    }
+    if (screen == "studylist") {
+      this.onStudyListKey(key)
+      return
+    }
+    if (screen == "inventory") {
+      this.onInventoryKey(key)
+      return
+    }
+    if (screen != "map") {
+      return
+    }
+    if (conduct.arrested) {
+      screen = "prison"
+      this.markStateDirty()
+      return
+    }
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    if (key == "?") {
+      screen = "menu"
+      menuMessage = ""
+      this.markStateDirty()
+      return
+    }
+    if (key == "b") {
+      screen = "studylist"
+      this.markStateDirty()
+      return
+    }
+    if (key == "i") {
+      screen = "inventory"
+      this.markStateDirty()
+      return
+    }
+    if (key == "h") {
+      if (map.tryToggleHide()) {
+        this.handleAgentTick()
+        this.markStateDirty()
+      } {
+        map.lastStatus = "Piiloudu kopin (=) taakse."
+        this.markStateDirty()
+      }
+      return
+    }
+    if (key == "t") {
+      if (tools.hasAny() == false) {
+        map.lastStatus = "Ei työkaluja — pihalta löytyy vasara ja kivivasara."
+      } {
+        tools.cycleActive()
+        def toolName:string (tools.activeLabel())
+        map.lastStatus = ("Työkalu: " + toolName)
+      }
+      this.markStateDirty()
+      return
+    }
+    if (key == "x") {
+      def severity:string (map.tryBreakFacing(tools.activeTool))
+      if ((strlen severity) > 0) {
+        if (severity == "heavy") {
+          conduct.addDamage(15)
+          conduct.addMisconduct(10)
+        }
+        if (severity == "medium") {
+          conduct.addDamage(6)
+          conduct.addMisconduct(4)
+        }
+        if (severity == "light") {
+          conduct.addDamage(2)
+          conduct.addMisconduct(1)
+        }
+        this.afterPlayerAction()
+        this.handleAgentTick()
+      }
+      this.markStateDirty()
+      return
+    }
+    if (key == "1" || key == "2" || key == "3" || key == "4" || key == "5" || key == "6" || key == "7" || key == "8" || key == "9" || key == "0") {
+      this.tryElevatorKey(key)
+      return
+    }
+    def dx:int 0
+    def dy:int 0
+    if (key == "up") {
+      dy = -1
+    } {
+      if (key == "down") {
+        dy = 1
+      } {
+        if (key == "left") {
+          dx = -1
+        } {
+          if (key == "right") {
+            dx = 1
+          } {
+            if (key == "w") {
+              dy = -1
+            } {
+              if (key == "s") {
+                dy = 1
+              } {
+                if (key == "a") {
+                  dx = -1
+                } {
+                  if (key == "d") {
+                    dx = 1
+                  } {
+                    map.lastStatus = "Tuntematon näppäin."
+                    this.markStateDirty()
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    def targetX:int (map.playerX + dx)
+    def targetY:int (map.playerY + dy)
+    def moved:boolean (this.tryPlayerMove(dx dy))
+    if (moved) {
+      if (encounterCooldown > 0) {
+        encounterCooldown = encounterCooldown - 1
+      }
+      this.afterPlayerAction()
+      if (screen != "map") {
+        this.markStateDirty()
+        return
+      }
+    } {
+      def blocker:MapEntity (map.entityAt(targetX targetY))
+      if ((strlen blocker.id) > 0) {
+        if (blocker.kind != "item") {
+          map.playerHidden = false
+          map.lastStatus = ""
+          this.startEncounter(blocker)
+          this.markStateDirty()
+          return
+        }
+      }
+    }
+    def bump:MapEntity (map.bumpAtPlayer())
+    if ((strlen bump.id) > 0) {
+      this.startEncounter(bump)
+    } {
+      if (moved) {
+        this.handleAgentTick()
+      }
+    }
+    this.markStateDirty()
+  }
+
+  fn onEncounterChoice:void (choice:string) {
+    if (screen != "encounter") {
+      return
+    }
+    if (choice == "leave") {
+      map.lastStatus = "Vetäydyt takaisin."
+      this.clearEncounter()
+      screen = "map"
+      this.markStateDirty()
+      return
+    }
+    if (choice == "talk") {
+      if (this.needsCardReturnChoice()) {
+        encounterResult = "card_return"
+        this.markStateDirty()
+        return
+      }
+      if (pendingEntityId == "receptionist") {
+        if (interviewPassed) {
+          map.lastStatus = "Sinulla on jo virallinen kulkulupa. Hissillä pääset kaikkiin kerroksiin, myös 10. kerrokseen (0)."
+          this.clearEncounter()
+          screen = "map"
+          this.markStateDirty()
+          return
+        }
+        this.onReceptionistTalk()
+        if (pendingStoryId == "stolen-card-caught") {
+          encounterResult = "talk"
+          this.markStateDirty()
+          return
+        }
+        pendingStoryId = ""
+        encounterResult = "quiz"
+        this.markStateDirty()
+        return
+      }
+      if (pendingEntityKind == "guru") {
+        if (guruIntroPassed) {
+          map.lastStatus = "Senior-guru: \"Olet jo läpäissyt tämän. Jatka hissillä kerrokseen 3 tai ylemmäs.\""
+          this.clearEncounter()
+          screen = "map"
+          this.markStateDirty()
+          return
+        }
+        pendingStoryId = ""
+        encounterResult = "quiz"
+        this.markStateDirty()
+        return
+      }
+      if ((strlen pendingStoryId) < 1) {
+        if (this.needsEncounterQuiz()) {
+          encounterResult = "quiz"
+          this.markStateDirty()
+          return
+        }
+        map.lastStatus = "Ei ole mitään järkevää sanottavaa."
+        this.clearEncounter()
+        screen = "map"
+        this.markStateDirty()
+        return
+      }
+      encounterResult = "talk"
+      this.markStateDirty()
+      return
+    }
+    if (choice == "attack") {
+      if (this.isCeoEncounter()) {
+        def totalKarma:int (karma.total())
+        if (totalKarma < 100) {
+          this.encounterDeath("YOU ARE FIRED!!!!")
+          this.markStateDirty()
+          return
+        }
+        karma.loseKarma(40)
+        conduct.addMisconduct(25)
+        map.lastStatus = "Toimitusjohtaja oli valmis potkuihin — korkea karma pelasti sinut. Tällä kertaa."
+        encounterResult = "attack"
+        this.clearEncounter()
+        screen = "map"
+        this.markStateDirty()
+        return
+      }
+      if (pendingEntityKind == "security") {
+        karma.loseKarma(20)
+        conduct.addMisconduct(20)
+        conduct.arrest()
+        map.teleportToPrison()
+        map.lastStatus = "Turvallisuus neutraloi hyökkäyksen."
+        encounterResult = "attack"
+        this.clearEncounter()
+        screen = "prison"
+        this.markStateDirty()
+        return
+      }
+      if (this.isCoworkerEncounter()) {
+        def roll:int (random 0 2)
+        if (roll == 0) {
+          this.triggerPoliceChaseAfterAttack(pendingEntityName)
+          return
+        }
+        karma.loseKarma(15)
+        conduct.addMisconduct(15)
+        map.lastStatus = (pendingEntityName + " huusi HR:n. Kollegan hyökkääminen ei ole ok.")
+        encounterResult = "attack"
+        this.clearEncounter()
+        screen = "map"
+        this.markStateDirty()
+        return
+      }
+      def chaseRoll:int (random 0 2)
+      if (chaseRoll == 0) {
+        if (this.isHostileEncounter()) {
+          this.triggerPoliceChaseAfterAttack(pendingEntityName)
+          return
+        }
+      }
+      def penalty:int 8
+      if (this.isHostileEncounter()) {
+        penalty = 30
+      }
+      karma.loseKarma(penalty)
+      conduct.addMisconduct(12)
+      if (this.isHostileEncounter()) {
+        conduct.addMisconduct(8)
+        map.lastStatus = ("Hyökkäys epäonnistui pahasti. -" + (to_string penalty) + " karmaa.")
+      } {
+        map.lastStatus = ("Hyökkäys toimistossa ei kannata. -" + (to_string penalty) + " karmaa.")
+      }
+      encounterResult = "attack"
+      this.clearEncounter()
+      screen = "map"
+      this.markStateDirty()
+      return
+    }
+    if (choice == "joke") {
+      def roll:int (random 0 2)
+      if (roll == 0) {
+        if ((strlen pendingStoryId) > 0) {
+          map.lastStatus = "Vitsi laskee jännitteen. Jatketaan jutustelua."
+          encounterResult = "talk"
+        } {
+          map.lastStatus = "Vitsi naurattaa, mutta asia jää auki."
+          encounterResult = "joke_ok"
+          this.clearEncounter()
+          screen = "map"
+        }
+      } {
+        def penalty:int 10
+        karma.loseKarma(penalty)
+        conduct.addMisconduct(6)
+        map.lastStatus = ("Vitsi ei mennyt läpi. -" + (to_string penalty) + " karmaa.")
+        encounterResult = "joke_fail"
+        this.clearEncounter()
+        screen = "map"
+      }
+      this.markStateDirty()
+      return
+    }
+    map.lastStatus = "Valitse 1–4."
+    this.markStateDirty()
+  }
+
+  fn onInventoryKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    screen = "map"
+    map.lastStatus = "Takaisin kartalla."
+    this.markStateDirty()
+  }
+
+  fn getInventoryView:InventoryView () {
+    def view:InventoryView (new InventoryView)
+    tools.fillInventory(view)
+    return view
+  }
+
+  fn onStudyListKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    screen = "map"
+    map.lastStatus = "Takaisin toimistolla."
+    this.markStateDirty()
+  }
+
+  fn onGameOverKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    map.clearPoliceSquad()
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    map.lastStatus = "Selvitit hengissä — mutta poliisit muistavat kasvosi."
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn finishEncounterTalk:void () {
+    this.clearEncounter()
+    encounterResult = ""
+    this.markStateDirty()
+  }
+
+  fn clearPendingStory:void () {
+    pendingStoryId = ""
+    this.markStateDirty()
+  }
+
+  fn beginStory:boolean (storyJson:string) {
+    if (engine.loadFromText(storyJson) == false) {
+      map.lastStatus = "Tarinan lataus epäonnistui."
+      screen = "map"
+      this.clearEncounter()
+      pendingStoryId = ""
+      this.markStateDirty()
+      return false
+    }
+    if (engine.storyId == "modern-cpp-intro") {
+      guruStoryAttempted = true
+    }
+    pendingStoryId = ""
+    screen = "story"
+    this.markStateDirty()
+    return true
+  }
+
+  fn onStoryNarrativeAdvance:void () {
+    engine.advanceNarrative()
+    this.syncStoryEnd()
+  }
+
+  fn onStoryChoice:void (index:int) {
+    engine.submitChoice(index)
+    this.syncStoryEnd()
+  }
+
+  fn onStoryCodeResult:void (answer:string matches:boolean) {
+    engine.applyCodeResult(answer matches)
+    this.syncStoryEnd()
+  }
+
+  fn onStoryDismissFeedback:void () {
+    engine.dismissFeedback()
+    this.syncStoryEnd()
+  }
+
+  fn syncStoryEnd:void () {
+    def view:StoryView (engine.getView())
+    if (view.screen == "ended") {
+      def sid:string engine.storyId
+      this.applyStoryRewards(sid view.outcome)
+      engine.returnToMenu()
+      if (screen != "prison") {
+        screen = "map"
+      }
+      this.clearEncounter()
+    }
+    this.markStateDirty()
+  }
+
+  fn onMenuPick:void (raw:string) {
+    if (raw == "q") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    if (raw == "m") {
+      screen = "map"
+      menuMessage = ""
+      this.markStateDirty()
+      return
+    }
+    if ((strlen raw) == 0) {
+      screen = "map"
+      menuMessage = ""
+      this.markStateDirty()
+      return
+    }
+    menuMessage = "Tuntematon valinta."
+    this.markStateDirty()
+  }
+
+  fn onMenuStartStory:void (storyJson:string) {
+    this.beginStory(storyJson)
+  }
+
+  fn backToMap:void () {
+    screen = "map"
+    menuMessage = ""
+    this.clearEncounter()
+    this.markStateDirty()
+  }
+
+  fn getEncounterView:EncounterView () {
+    def view:EncounterView (new EncounterView)
+    view.entityChar = pendingEntityChar
+    view.entityName = pendingEntityName
+    view.isHostile = (this.isHostileEncounter())
+    view.greeting = (this.encounterGreeting())
+    view.attackWarning = (this.encounterAttackWarning())
+    if (this.needsEncounterQuiz()) {
+      view.attackWarning = ""
+      view.hintLine = "1–4=vastaa  n=kollega  a=AI  j=vitsi  i=ei kiinnosta  p=poistu  h=hyökkää"
+    } {
+      view.hintLine = "1=juttele  2=hyökkää  3=vitsi  4=poistu"
+    }
+    return view
+  }
+
+  fn getMapView:MapView () {
+    def view:MapView (map.getView())
+    def toolName:string (tools.activeLabel())
+    def proprietyScore:int (conduct.propriety())
+    view.toolsLine = ("Työkalu: " + toolName)
+    view.conductLine = ("Asiallisuus: " + (to_string proprietyScore) + "  Vahingot: " + (to_string conduct.propertyDamage))
+    if (conduct.isWanted()) {
+      view.conductLine = (view.conductLine + "  |  ETSINTÄKUULUTUS")
+    }
+    view.timeLine = worldClock.formatLine()
+    view.ambientLine = map.overheardMsg
+    return view
+  }
+
+  fn getStoryView:StoryView () {
+    return (engine.getView())
+  }
+
+  fn catalogList:[StorySummary] () {
+    return (catalog.list())
+  }
+
+  fn findStoryByIndex:StorySummary (index:int) {
+    return (catalog.findByIndex(index))
+  }
+}

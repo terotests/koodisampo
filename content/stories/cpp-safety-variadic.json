@@ -1,0 +1,171 @@
+{
+  "id": "cpp-safety-variadic",
+  "title": "Tuulikko — älä määrittele variadista funktiota",
+  "topic": "cpp",
+  "description": "Opit miksi oma printf-tyylinen funktio on turvallisuusriski ja miten variadic templatet korvaavat sen.",
+  "sourceRef": "cpp-best-practices/04-Considering_Safety.md#do-not-define-a-variadic-function",
+  "estimatedMinutes": 10,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Tuulikon huuto",
+      "text": "Tuulikko tuo mukanaan vanhan `printf`-henkisen loitsun — parametreja voi tulla miten monta tahansa. Velho varoittaa ankarasti:\n\n**Älä määrittele omaa variadista funktiota.** Se ei ole typeturvallinen. Väärä argumentti → määrittelemätön käyttäytyminen → turvallisuusaukko (kuten Heartbleed-opetukset).\n\nC++11: **variadic templatet** ovat turvallinen korvike.\n\n*Lähde: [Do not define a variadic function](https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md)*",
+      "next": "q_variadic_risk"
+    },
+    "q_variadic_risk": {
+      "type": "choice",
+      "title": "Miksi vaarallista?",
+      "text": "Mikä on pääasiallinen ongelma omassa C-tyylisessä variadisessa funktiossa (kuten `void log(const char* fmt, ...)`)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ei typeturvallinen — väärät argumentit aiheuttavat UB:tä ja turvallisuusriskejä",
+          "feedback": "Oikein! Kääntäjä ei tarkista että fmt ja ...-argumentit täsmäävät. Hyökkääjä voi hyödyntää tätä.",
+          "next": "q_alternative",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:type-safety"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "Variadic funktiot ovat hitaampia kuin tavalliset",
+          "feedback": "Suorituskyky ei ole pääongelma — turvallisuus on.",
+          "next": "death_ub",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "C++11 kielsi variadic funktiot kokonaan",
+          "feedback": "Ei kieltänyt — mutta suosittelee välttämään omien määrittelyä.",
+          "next": "death_ub",
+          "correct": false
+        }
+      ]
+    },
+    "death_ub": {
+      "type": "end",
+      "title": "Määrittelemätön tuho",
+      "text": "Väärä argumentti — pinomuisti korruptoitui. Tuulikko vei kaiken.",
+      "outcome": "death"
+    },
+    "q_alternative": {
+      "type": "choice",
+      "title": "Moderni korvike",
+      "text": "Mitä cpp-best-practices suosittelee C++11-kääntäjällä variadisen funktion sijaan?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Variadic templatet (esim. template<typename... Args>)",
+          "feedback": "Oikein! Templatet ovat typeturvallisia käännösaikana — virheet näkyvät ennen ajoa.",
+          "next": "q_printf",
+          "correct": true,
+          "points": 15,
+          "features": [
+            {
+              "id": "cpp:variadic-templates"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "macros printf:llä — nopeampi ratkaisu",
+          "feedback": "Makrot ovat vielä vaarallisempia — ei typetarkistuksia lainkaan.",
+          "next": "death_ub",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "global void* taulukko argumenteille",
+          "feedback": "Tämä on vielä huonompi — tyypitön data on turvallisuusriski.",
+          "next": "death_ub",
+          "correct": false
+        }
+      ]
+    },
+    "q_printf": {
+      "type": "choice",
+      "title": "printf ja std::format",
+      "text": "Tunnettu `printf` on valmis variadinen funktio. Miten moderni C++ vähentää riskejä uudessa koodissa?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Käytä typeturvallisia vaihtoehtoja kuten std::format (C++20) tai kirjastoja — älä kirjoita omaa",
+          "feedback": "Hyvä! Periaate: älä määrittele uutta variadista funktiota — käytä valmiita typeturvallisia työkaluja.",
+          "next": "narrative_code",
+          "correct": true,
+          "points": 10,
+          "features": [
+            {
+              "id": "cpp:std-format"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "text": "printf on turvallinen kun käytät -Wall-lippua",
+          "feedback": "Varoitukset auttavat mutta eivät poista typeturvattomuutta omista variadisista funktioista.",
+          "next": "death_ub",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Kaikki variadiset funktiot pitää korvata makroilla",
+          "feedback": "Päinvastoin — makrot ovat huonompia. Templatet ja typeturvalliset API:t.",
+          "next": "death_ub",
+          "correct": false
+        }
+      ]
+    },
+    "narrative_code": {
+      "type": "narrative",
+      "title": "Viimeinen koetus",
+      "text": "Kirjoita modernin templaten avainsana — se korvaa turvattoman `...`-parametrin.",
+      "next": "code_template"
+    },
+    "code_template": {
+      "type": "code",
+      "title": "Variadic template",
+      "text": "Täydennä avainsana joka aloittaa typeturvallisen templaten:",
+      "template": "_____ <typename... Args>\nvoid turvallinen_loitsu(Args&&... args);",
+      "answers": [
+        "template"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "hint": "Kahdeksan kirjainta — C++ templaten alku",
+      "feedbackCorrect": "Tuulikko asettuu! Variadic template on typeturvallinen — kääntäjä tarkistaa argumentit.",
+      "feedbackWrong": "Vastaus: template",
+      "next": "victory",
+      "wrongNext": "death_code",
+      "features": [
+        {
+          "id": "cpp:templates"
+        }
+      ]
+    },
+    "death_code": {
+      "type": "end",
+      "title": "Loitsu hajoaa",
+      "text": "Ilman templateta jäit vanhan tuulikon armoille.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Myrsky selätetty",
+      "text": "Olet läpäissyt Considering Safety -polun: const, muisti, vector, castit, poikkeukset ja variadiset funktiot. Väinämöinen odottaa — siellä kirjoitat koodia vapaammin.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 50,
+  "teaches": [
+    "cpp:type-safety",
+    "cpp:variadic-templates",
+    "cpp:templates",
+    "cpp:std-format"
+  ]
+}

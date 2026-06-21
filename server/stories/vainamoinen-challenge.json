@@ -1,0 +1,59 @@
+{
+  "id": "vainamoinen-challenge",
+  "title": "Väinämöisen haaste",
+  "topic": "cpp",
+  "description": "Viimeinen taso. Väinämöinen vaatii että kirjoitat koodia itse — ei pelkkiä monivalintoja.",
+  "sourceRef": "cpp-best-practices/04-Considering_Safety.md#avoid-raw-memory-access",
+  "estimatedMinutes": 12,
+  "isFinale": true,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Väinämöisen sali",
+      "text": "Olet saapunut. Väinämöinen, vanha tietäjä, katsoo sinua:\n\n\"Monivalinta opetti sinut tunnistamaan. Nyt sinun täytyy kirjoittaa. Täydennä smart pointer -loitsu — muista moderni C++: `std::unique_ptr` hallitsee resurssin yksin.\"",
+      "next": "code_unique_ptr"
+    },
+    "code_unique_ptr": {
+      "type": "code",
+      "title": "Resurssin hallinta",
+      "text": "Täydennä tyhjä kohta luodaksesi unique_ptr:n (C++14: std::make_unique suositeltu):",
+      "template": "auto miekka = std::_____unique_ptr<int>(new int(7));",
+      "answers": [
+        "make_"
+      ],
+      "minLength": 3,
+      "maxLength": 10,
+      "hint": "make_unique — täytä puuttuva osa (5 merkkiä + alaviiva)",
+      "feedbackCorrect": "Väinämöinen hymyilee. RAII ja smart pointerit — modernin C++:n ydin. Olet valmis.",
+      "feedbackWrong": "Loitsu ei toimi. Muista: std::make_unique",
+      "next": "victory",
+      "wrongNext": "death",
+      "features": [
+        {
+          "id": "cpp:make-unique"
+        },
+        {
+          "id": "cpp:unique-ptr"
+        }
+      ]
+    },
+    "death": {
+      "type": "end",
+      "title": "Haaste hylätty",
+      "text": "Väinämöinen pudistaa päätään. Palaa harjoittelemaan.",
+      "outcome": "death"
+    },
+    "victory": {
+      "type": "end",
+      "title": "Tietäjäksi kruunattu",
+      "text": "Olet läpäissyt Väinämöisen haasteen. Moderni C++ ei ole enää vieras maa — se on kotisi.",
+      "outcome": "victory"
+    }
+  },
+  "sortOrder": 100,
+  "teaches": [
+    "cpp:make-unique",
+    "cpp:unique-ptr"
+  ]
+}

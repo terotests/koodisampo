@@ -1,0 +1,373 @@
+
+Import "JSON.rgr"
+Import "FeatureKarma.rgr"
+Import "StoryView.rgr"
+Import "StoryJson.rgr"
+
+class StoryEngine {
+  def karma:FeatureKarma
+  def json:StoryJson
+  def root:JSONDataObject
+  def nodes:JSONDataObject
+  def storyId:string ""
+  def storyTitle:string ""
+  def currentNodeId:string ""
+  def phase:string "idle"
+  def totalPoints:int 0
+  def deaths:int 0
+  def pendingNext:string ""
+  def pendingFeedback:string ""
+  def pendingCorrect:boolean false
+  def pendingPoints:int 0
+  def pendingFeatureIds:[string]
+  def hasStory:boolean false
+  def shuffledForNode:string ""
+  def choiceOrder:[int]
+
+  Constructor () {
+    json = (new StoryJson)
+    def empty:[string]
+    pendingFeatureIds = empty
+  }
+
+  sfn withKarma:StoryEngine (karmaRef:FeatureKarma) {
+    def engine:StoryEngine (new StoryEngine)
+    engine.karma = karmaRef
+    return engine
+  }
+
+  fn resetChoiceShuffle:void () {
+    shuffledForNode = ""
+    def empty:[int]
+    choiceOrder = empty
+  }
+
+  fn ensureChoiceShuffle:void (node:JSONDataObject) {
+    def choicesOpt@(optional):JSONArrayObject (getArray node "choices")
+    if (null? choicesOpt) {
+      return
+    }
+    def n:int (array_length (unwrap choicesOpt))
+    if (shuffledForNode == currentNodeId) {
+      if ((array_length choiceOrder) == n) {
+        return
+      }
+    }
+    shuffledForNode = currentNodeId
+    def order:[int]
+    def i:int 0
+    while (i < n) {
+      push order i
+      i = i + 1
+    }
+    if (n > 1) {
+      i = n - 1
+      while (i > 0) {
+        def j:int (random 0 i)
+        def tmp:int (at order i)
+        set order i (at order j)
+        set order j tmp
+        i = i - 1
+      }
+    }
+    choiceOrder = order
+  }
+
+  fn clearPending:void () {
+    pendingNext = ""
+    pendingFeedback = ""
+    pendingCorrect = false
+    pendingPoints = 0
+    def empty:[string]
+    pendingFeatureIds = empty
+  }
+
+  fn loadFromText:boolean (storyJson:string) {
+    this.clearPending()
+    this.resetChoiceShuffle()
+    try {
+      def rootOpt@(optional):JSONDataObject (from_string storyJson)
+      if (null? rootOpt) {
+        hasStory = false
+        return false
+      }
+      root = (unwrap rootOpt)
+    } {
+      hasStory = false
+      return false
+    }
+    storyId = (json.objFieldStr((unwrap root) "id"))
+    storyTitle = (json.objFieldStr((unwrap root) "title"))
+    def nodesOpt@(optional):JSONDataObject (getObject (unwrap root) "nodes")
+    if (null? nodesOpt) {
+      hasStory = false
+      return false
+    }
+    nodes = (unwrap nodesOpt)
+    hasStory = true
+    if ((strlen storyId) == 0) {
+      hasStory = false
+      return false
+    }
+    def start:string (json.objFieldStr((unwrap root) "startNode"))
+    phase = "playing"
+    totalPoints = 0
+    currentNodeId = start
+    return true
+  }
+
+  fn currentNode:JSONDataObject () {
+    def nodeOpt@(optional):JSONDataObject (getObject (unwrap nodes) currentNodeId)
+    if (null? nodeOpt) {
+      return (unwrap nodes)
+    }
+    return (unwrap nodeOpt)
+  }
+
+  fn goToNode:void (nodeId:string pointsEarned:int) {
+    totalPoints = totalPoints + pointsEarned
+    currentNodeId = nodeId
+    if (nodeId != shuffledForNode) {
+      def empty:[int]
+      choiceOrder = empty
+    }
+    def node:JSONDataObject (this.currentNode())
+    def kind:string (json.objFieldStr(node "type"))
+    if (kind == "end") {
+      phase = "ended"
+      def outcome:string (json.objFieldStr(node "outcome"))
+      if (outcome == "death") {
+        deaths = deaths + 1
+      }
+    } {
+      phase = "playing"
+    }
+  }
+
+  fn fillBaseView:void (view:StoryView) {
+    view.screen = phase
+    view.storyTitle = storyTitle
+    view.totalPoints = totalPoints
+    view.totalKarma = (karma.total())
+    view.deaths = deaths
+    def node:JSONDataObject (this.currentNode())
+    view.nodeTitle = (json.objFieldStr(node "title"))
+    view.bodyText = (json.objFieldStr(node "text"))
+    view.nodeKind = (json.objFieldStr(node "type"))
+  }
+
+  fn fillChoices:void (view:StoryView node:JSONDataObject) {
+    this.ensureChoiceShuffle(node)
+    def choicesOpt@(optional):JSONArrayObject (getArray node "choices")
+    if (null? choicesOpt) {
+      return
+    }
+    def choices:JSONArrayObject (unwrap choicesOpt)
+    def i:int 0
+    def n:int (array_length choices)
+    def emptyIds:[string]
+    def emptyTexts:[string]
+    view.choiceIds = emptyIds
+    view.choiceTexts = emptyTexts
+    while (i < n) {
+      def orig:int (at choiceOrder i)
+      def choice:JSONDataObject (json.arrayObjectAt(choices orig))
+      push view.choiceIds (json.objFieldStr(choice "id"))
+      push view.choiceTexts (json.objFieldStr(choice "text"))
+      i = i + 1
+    }
+  }
+
+  fn menuView:StoryView () {
+    def view:StoryView (new StoryView)
+    view.screen = "menu"
+    view.promptLine = "Valitse oppitunti numerolla tai q lopettaaksesi."
+    view.totalKarma = (karma.total())
+    view.deaths = deaths
+    return view
+  }
+
+  fn getView:StoryView () {
+    def view:StoryView (new StoryView)
+    if (phase == "idle") {
+      return (this.menuView())
+    }
+    if (hasStory == false) {
+      view.screen = "idle"
+      view.promptLine = "Ei ladattua tarinaa."
+      return view
+    }
+    if (phase == "feedback") {
+      view.screen = "feedback"
+      view.storyTitle = storyTitle
+      view.feedbackMessage = pendingFeedback
+      view.feedbackCorrect = pendingCorrect
+      view.pointsEarned = pendingPoints
+      view.totalPoints = totalPoints
+      view.totalKarma = (karma.total())
+      view.featureGainIds = pendingFeatureIds
+      def emptyKarma:[int]
+      view.featureGainKarma = emptyKarma
+      def i:int 0
+      while (i < (array_length pendingFeatureIds)) {
+        push view.featureGainKarma (karma.get((at pendingFeatureIds i)))
+        i = i + 1
+      }
+      view.promptLine = "Paina Enter jatkaaksesi..."
+      return view
+    }
+    if (phase == "ended") {
+      view.screen = "ended"
+      this.fillBaseView(view)
+      view.outcome = (json.objFieldStr((this.currentNode()) "outcome"))
+      view.promptLine = "Paina Enter palataksesi valikkoon."
+      return view
+    }
+    this.fillBaseView(view)
+    view.screen = "playing"
+    def node:JSONDataObject (this.currentNode())
+    def kind:string (view.nodeKind)
+    if (kind == "narrative") {
+      view.promptLine = "Paina Enter jatkaaksesi..."
+    }
+    if (kind == "choice") {
+      view.promptLine = "Valitse vastaus numerolla."
+      this.fillChoices(view node)
+    }
+    if (kind == "code") {
+      view.codeTemplate = (json.objFieldStr(node "template"))
+      view.codeHint = (json.objFieldStr(node "hint"))
+      view.promptLine = "Kirjoita vastaus ja paina Enter."
+    }
+    return view
+  }
+
+  fn advanceNarrative:void () {
+    if (phase != "playing") {
+      return
+    }
+    def node:JSONDataObject (this.currentNode())
+    if ((json.objFieldStr(node "type")) != "narrative") {
+      return
+    }
+    def nextId:string (json.objFieldStr(node "next"))
+    this.goToNode(nextId 0)
+  }
+
+  fn submitChoice:void (choiceIndex:int) {
+    if (phase != "playing") {
+      return
+    }
+    def node:JSONDataObject (this.currentNode())
+    if ((json.objFieldStr(node "type")) != "choice") {
+      return
+    }
+    this.ensureChoiceShuffle(node)
+    def choicesOpt@(optional):JSONArrayObject (getArray node "choices")
+    if (null? choicesOpt) {
+      return
+    }
+    def choices:JSONArrayObject (unwrap choicesOpt)
+    if (choiceIndex < 0) {
+      return
+    }
+    if (choiceIndex >= (array_length choices)) {
+      return
+    }
+    def orig:int (at choiceOrder choiceIndex)
+    def choice:JSONDataObject (json.arrayObjectAt(choices orig))
+    def correct:boolean (json.objFieldBool(choice "correct"))
+    def points:int 0
+    if (correct) {
+      points = (json.objFieldInt(choice "points"))
+      if (points <= 0) {
+        points = 10
+      }
+    }
+    pendingNext = (json.objFieldStr(choice "next"))
+    pendingFeedback = (json.objFieldStr(choice "feedback"))
+    pendingCorrect = correct
+    pendingPoints = points
+    def empty:[string]
+    pendingFeatureIds = empty
+    if (correct) {
+      def featuresOpt@(optional):JSONArrayObject (getArray choice "features")
+      if (!null? featuresOpt) {
+        def features:JSONArrayObject (unwrap featuresOpt)
+        pendingFeatureIds = (json.collectFeatureIds(features))
+        karma.grantList(pendingFeatureIds 3)
+      }
+    }
+    phase = "feedback"
+  }
+
+  fn dismissFeedback:void () {
+    if (phase != "feedback") {
+      return
+    }
+    this.goToNode(pendingNext pendingPoints)
+    this.clearPending()
+  }
+
+  fn applyCodeResult:void (answer:string matches:boolean) {
+    if (phase != "playing") {
+      return
+    }
+    def node:JSONDataObject (this.currentNode())
+    if ((json.objFieldStr(node "type")) != "code") {
+      return
+    }
+    def trimmed:string (answer)
+    def minLen:int (json.objFieldInt(node "minLength"))
+    if (minLen <= 0) {
+      minLen = 1
+    }
+    def maxLen:int (json.objFieldInt(node "maxLength"))
+    if (maxLen <= 0) {
+      maxLen = 200
+    }
+    if ((strlen trimmed) < minLen) {
+      return
+    }
+    if ((strlen trimmed) > maxLen) {
+      return
+    }
+    def points:int 0
+    if (matches) {
+      points = 20
+    }
+    def empty:[string]
+    pendingFeatureIds = empty
+    if (matches) {
+      pendingNext = (json.objFieldStr(node "next"))
+      pendingFeedback = (json.objFieldStr(node "feedbackCorrect"))
+      def featuresOpt@(optional):JSONArrayObject (getArray node "features")
+      if (!null? featuresOpt) {
+        def features:JSONArrayObject (unwrap featuresOpt)
+        pendingFeatureIds = (json.collectFeatureIds(features))
+        karma.grantList(pendingFeatureIds 5)
+      }
+    } {
+      def wrongNext:string (json.objFieldStr(node "wrongNext"))
+      if ((strlen wrongNext) > 0) {
+        pendingNext = wrongNext
+      } {
+        pendingNext = (json.objFieldStr(node "next"))
+      }
+      pendingFeedback = (json.objFieldStr(node "feedbackWrong"))
+    }
+    pendingCorrect = matches
+    pendingPoints = points
+    phase = "feedback"
+  }
+
+  fn returnToMenu:void () {
+    phase = "idle"
+    hasStory = false
+    storyId = ""
+    storyTitle = ""
+    currentNodeId = ""
+    this.clearPending()
+    this.resetChoiceShuffle()
+  }
+}

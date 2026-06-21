@@ -1,0 +1,1344 @@
+
+Import "JSON.rgr"
+Import "StoryJson.rgr"
+Import "MapEntity.rgr"
+Import "MapFloor.rgr"
+Import "MapView.rgr"
+
+class WorldMap {
+  def json:StoryJson
+  def root:JSONDataObject
+  def mapId:string ""
+  def title:string ""
+  def width:int 0
+  def height:int 0
+  def floors:[MapFloor]
+  def currentFloor:int 0
+  def playerX:int 0
+  def playerY:int 0
+  def lastStatus:string ""
+  def hasMap:boolean false
+  def foundElevatorX:int 0
+  def foundElevatorY:int 0
+  def viewPortW:int 30
+  def viewPortH:int 18
+  def cameraX:int 0
+  def cameraY:int 0
+  def facingX:int 0
+  def facingY:int 1
+  def playerHidden:boolean false
+  def playerAlias:string "Larry"
+  def overheardMsg:string ""
+  def agentHuntFlag:boolean false
+  def policeChaseActive:boolean false
+  def lastPickedOwner:string ""
+  def droppedCardOwners:[string]
+
+  Constructor () {
+    json = (new StoryJson)
+    def emptyFloors:[MapFloor]
+    floors = emptyFloors
+    def emptyOwners:[string]
+    droppedCardOwners = emptyOwners
+  }
+
+  fn activeFloor:MapFloor () {
+    if ((array_length floors) < 1) {
+      return (new MapFloor)
+    }
+    if (currentFloor < 0) {
+      return (at floors 0)
+    }
+    if (currentFloor >= (array_length floors)) {
+      return (at floors ((array_length floors) - 1))
+    }
+    return (at floors currentFloor)
+  }
+
+  fn isBlockedTile:boolean (ch:string) {
+    if (ch == "#") {
+      return true
+    }
+    if (ch == "|") {
+      return true
+    }
+    if (ch == "+") {
+      return true
+    }
+    if (ch == "%") {
+      return true
+    }
+    if (ch == "L") {
+      return true
+    }
+    if (ch == "+") {
+      return true
+    }
+    return false
+  }
+
+  fn isElevatorNeighborOk:boolean (ch:string) {
+    if (ch == "#") {
+      return true
+    }
+    if (ch == ".") {
+      return true
+    }
+    if (ch == " ") {
+      return true
+    }
+    if (ch == ",") {
+      return true
+    }
+    if (ch == "=") {
+      return true
+    }
+    if (ch == "-") {
+      return true
+    }
+    return false
+  }
+
+  fn isElevatorCell:boolean (x:int y:int) {
+    return (this.isElevatorCellOnFloor(currentFloor x y))
+  }
+
+  fn isElevatorCellOnFloor:boolean (floorIndex:int x:int y:int) {
+    def ch:string (this.tileAtOnFloor(floorIndex x y))
+    if (ch != "E") {
+      return false
+    }
+    def left:string (this.tileAtOnFloor(floorIndex (x - 1) y))
+    def right:string (this.tileAtOnFloor(floorIndex (x + 1) y))
+    if (this.isElevatorNeighborOk(left) == false) {
+      return false
+    }
+    if (this.isElevatorNeighborOk(right) == false) {
+      return false
+    }
+    return true
+  }
+
+  fn ensurePlayerOnWalkable:void () {
+    def cur:string (this.tileAt(playerX playerY))
+    if (this.isBlockedTile(cur) == false) {
+      return
+    }
+    if (this.findElevatorOnFloor(currentFloor)) {
+      def ech:string (this.tileAt(foundElevatorX foundElevatorY))
+      if (this.isBlockedTile(ech) == false) {
+        playerX = foundElevatorX
+        playerY = foundElevatorY
+        lastStatus = "Siirryit hissille — edellinen ruutu ei ollut kulkukelpoinen."
+        return
+      }
+    }
+    def floor:MapFloor (this.activeFloor())
+    playerX = floor.spawnX
+    playerY = floor.spawnY
+    def sch:string (this.tileAt(playerX playerY))
+    if (this.isBlockedTile(sch) == false) {
+      lastStatus = "Heräsit kerroksen spawn-pisteellä."
+      return
+    }
+    def rows:[string] (floor.rows)
+    def y:int 0
+    def h:int (array_length rows)
+    while (y < h) {
+      def row:string (at rows y)
+      def x:int 0
+      def w:int (strlen row)
+      while (x < w) {
+        def tile:string (substring row x (x + 1))
+        if (this.isBlockedTile(tile) == false) {
+          playerX = x
+          playerY = y
+          lastStatus = "Siirryit lähimpään vapaaseen ruutuun."
+          return
+        }
+        x = x + 1
+      }
+      y = y + 1
+    }
+  }
+
+  fn isBreakableTile:boolean (ch:string tool:string) {
+    if (tool == "crowbar") {
+      if (ch == "%") {
+        return true
+      }
+      if (ch == "+") {
+        return true
+      }
+      if (ch == "=") {
+        return true
+      }
+      return false
+    }
+    if (tool == "shovel") {
+      if (ch == "%") {
+        return true
+      }
+      if (ch == "=") {
+        return true
+      }
+      return false
+    }
+    if (tool == "sledgehammer") {
+      if (ch == "#") {
+        return true
+      }
+      if (ch == "%") {
+        return true
+      }
+      if (ch == "+") {
+        return true
+      }
+      if (ch == "=") {
+        return true
+      }
+    }
+    return false
+  }
+
+  fn setTileAt:void (x:int y:int ch:string) {
+    def floor:MapFloor (this.activeFloor())
+    def rows:[string] (floor.rows)
+    if (y < 0) {
+      return
+    }
+    if (y >= (array_length rows)) {
+      return
+    }
+    def row:string (at rows y)
+    def rowLen:int (strlen row)
+    if (x < 0) {
+      return
+    }
+    if (x >= rowLen) {
+      return
+    }
+    def left:string (substring row 0 x)
+    def right:string (substring row (x + 1) rowLen)
+    set rows y (left + ch + right)
+  }
+
+  fn floorCount:int () {
+    return (array_length floors)
+  }
+
+  fn updateCamera:void () {
+    def halfW:int 15
+    def halfH:int 9
+    cameraX = playerX - halfW
+    cameraY = playerY - halfH
+    if (cameraX < 0) {
+      cameraX = 0
+    }
+    if (cameraY < 0) {
+      cameraY = 0
+    }
+    if (cameraX + viewPortW > width) {
+      cameraX = width - viewPortW
+    }
+    if (cameraY + viewPortH > height) {
+      cameraY = height - viewPortH
+    }
+    if (cameraX < 0) {
+      cameraX = 0
+    }
+    if (cameraY < 0) {
+      cameraY = 0
+    }
+  }
+
+  fn tileAt:string (x:int y:int) {
+    return (this.tileAtOnFloor(currentFloor x y))
+  }
+
+  fn tileAtOnFloor:string (floorIndex:int x:int y:int) {
+    def floor:MapFloor (at floors floorIndex)
+    def rows:[string] (floor.rows)
+    def h:int (array_length rows)
+    if (y < 0) {
+      return "#"
+    }
+    if (y >= h) {
+      return "#"
+    }
+    if (x < 0) {
+      return "#"
+    }
+    def row:string (at rows y)
+    def rowLen:int (strlen row)
+    if (x >= rowLen) {
+      return "#"
+    }
+    return (substring row x (x + 1))
+  }
+
+  fn entityAt:MapEntity (x:int y:int) {
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.x == x) {
+        if (e.y == y) {
+          return e
+        }
+      }
+      i = i + 1
+    }
+    return (new MapEntity)
+  }
+
+  fn isOnElevator:boolean () {
+    def ch:string (this.tileAt(playerX playerY))
+    if (ch == "E") {
+      return true
+    }
+    return false
+  }
+
+  fn inferKind:string (ch:string) {
+    if (ch == "G") {
+      return "guru"
+    }
+    if (ch == "o") {
+      return "hostile"
+    }
+    if (ch == "O") {
+      return "hostile"
+    }
+    if (ch == "M") {
+      return "hostile"
+    }
+    return "role"
+  }
+
+  fn normalizeEntity:void (ent:MapEntity) {
+    if ((strlen ent.name) < 1) {
+      ent.name = ent.id
+    }
+    if ((strlen ent.kind) < 1) {
+      ent.kind = (this.inferKind(ent.char))
+    }
+    if (ent.sociability <= 0) {
+      ent.sociability = 50
+    }
+    if (ent.persistence <= 0) {
+      ent.persistence = 50
+    }
+    if (ent.isAgent == false) {
+    if (ent.kind == "coworker") {
+      ent.isAgent = true
+    }
+    if (ent.kind == "pet") {
+      ent.isAgent = true
+      if ((strlen ent.moveMode) < 1) {
+        ent.moveMode = "wander"
+      }
+    }
+      if (ent.kind == "security") {
+        ent.isAgent = true
+      }
+      if (ent.kind == "police") {
+        ent.isAgent = true
+      }
+      if (ent.kind == "guru") {
+        ent.isAgent = true
+      }
+      if (ent.kind == "role") {
+        if ((strlen ent.moveMode) > 0) {
+          ent.isAgent = true
+        }
+      }
+    }
+    if ((strlen ent.moveMode) < 1) {
+      if (ent.kind == "security") {
+        ent.moveMode = "seek_player"
+      }
+      if (ent.kind == "coworker") {
+        ent.moveMode = "wander"
+      }
+      if (ent.kind == "police") {
+        ent.moveMode = "police_chase"
+      }
+    }
+    if ((strlen ent.scheduleRole) > 0) {
+      ent.isAgent = true
+      ent.moveMode = "schedule"
+      if (ent.homeX < 1) {
+        ent.homeX = ent.x
+      }
+      if (ent.homeY < 1) {
+        ent.homeY = ent.y
+      }
+    }
+  }
+
+  fn trySpawnPoliceAt:void (x:int y:int slot:int) {
+    def tile:string (this.tileAt(x y))
+    if (this.isBlockedTile(tile)) {
+      return
+    }
+    def other:MapEntity (this.entityAt(x y))
+    if ((strlen other.id) > 0) {
+      return
+    }
+    def floor:MapFloor (this.activeFloor())
+    def p:MapEntity (new MapEntity)
+    p.id = ("police-" + (to_string currentFloor) + "-" + (to_string slot))
+    p.char = "P"
+    p.name = "Poliisi"
+    p.kind = "police"
+    p.moveMode = "police_chase"
+    p.isAgent = true
+    p.persistence = 100
+    p.sociability = 0
+    p.x = x
+    p.y = y
+    def ents:[MapEntity] (floor.entities)
+    push ents p
+    floor.entities = ents
+  }
+
+  fn clearPoliceSquad:void () {
+    policeChaseActive = false
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def kept:[MapEntity]
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.kind != "police") {
+        push kept e
+      }
+      i = i + 1
+    }
+    floor.entities = kept
+  }
+
+  fn startPoliceChase:void () {
+    this.clearPoliceSquad()
+    policeChaseActive = true
+    this.trySpawnPoliceAt((playerX + 4) playerY 0)
+    this.trySpawnPoliceAt((playerX - 4) playerY 1)
+    this.trySpawnPoliceAt(playerX (playerY + 4) 2)
+    lastStatus = "KOLME POLIISIA SAAPUI! P musta paidassa — he jahtaavat sinua!"
+  }
+
+  fn loadFloorEntities:void (entArr:JSONArrayObject loaded:MapFloor) {
+    def ei:int 0
+    def en:int (array_length entArr)
+    def loadedEnt:[MapEntity]
+    while (ei < en) {
+      def entObj:JSONDataObject (json.arrayObjectAt(entArr ei))
+      def ent:MapEntity (new MapEntity)
+      ent.id = (json.objFieldStr(entObj "id"))
+      ent.char = (json.objFieldStr(entObj "char"))
+      if ((strlen ent.char) < 1) {
+        ent.char = "?"
+      }
+      ent.x = (json.objFieldInt(entObj "x"))
+      ent.y = (json.objFieldInt(entObj "y"))
+      ent.storyId = (json.objFieldStr(entObj "storyId"))
+      if ((strlen ent.storyId) < 1) {
+        ent.storyId = (json.objFieldStr(entObj "template"))
+      }
+      ent.name = (json.objFieldStr(entObj "name"))
+      ent.kind = (json.objFieldStr(entObj "kind"))
+      ent.itemTool = (json.objFieldStr(entObj "itemTool"))
+      ent.itemOwner = (json.objFieldStr(entObj "itemOwner"))
+      ent.sociability = (json.objFieldInt(entObj "sociability"))
+      ent.persistence = (json.objFieldInt(entObj "persistence"))
+      ent.moveMode = (json.objFieldStr(entObj "behavior"))
+      ent.agentGoal = (json.objFieldStr(entObj "agenda"))
+      def agentFlag:int (json.objFieldInt(entObj "isAgent"))
+      if (agentFlag != 0) {
+        ent.isAgent = true
+      }
+      ent.topic = (json.objFieldStr(entObj "topic"))
+      ent.scheduleRole = (json.objFieldStr(entObj "scheduleRole"))
+      ent.homeX = (json.objFieldInt(entObj "homeX"))
+      ent.homeY = (json.objFieldInt(entObj "homeY"))
+      ent.npcState = (json.objFieldStr(entObj "npcState"))
+      def offFlag:int (json.objFieldInt(entObj "offDuty"))
+      if (offFlag != 0) {
+        ent.offDuty = true
+      }
+      this.normalizeEntity(ent)
+      push loadedEnt ent
+      ei = ei + 1
+    }
+    loaded.entities = loadedEnt
+  }
+
+  fn loadFloorRows:void (rowsArr:JSONArrayObject loaded:MapFloor) {
+    def rowCount:int (array_length rowsArr)
+    def loadedRows:[string]
+    def ri:int 0
+    while (ri < rowCount) {
+      def rowObj:JSONDataObject (json.arrayObjectAt(rowsArr ri))
+      push loadedRows (json.objFieldStr(rowObj "line"))
+      ri = ri + 1
+    }
+    loaded.rows = loadedRows
+  }
+
+  fn loadSingleFloor:void (floorObj:JSONDataObject loaded:MapFloor) {
+    loaded.floorId = (json.objFieldStr(floorObj "id"))
+    loaded.title = (json.objFieldStr(floorObj "title"))
+    def rowsOpt@(optional):JSONArrayObject (getArray floorObj "rows")
+    if ((null? rowsOpt) == false) {
+      this.loadFloorRows((unwrap rowsOpt) loaded)
+    }
+    def entOpt@(optional):JSONArrayObject (getArray floorObj "entities")
+    if ((null? entOpt) == false) {
+      this.loadFloorEntities((unwrap entOpt) loaded)
+    }
+    def spawnObj@(optional):JSONDataObject (getObject floorObj "spawn")
+    if ((null? spawnObj) == false) {
+      def spawn:JSONDataObject (unwrap spawnObj)
+      loaded.spawnX = (json.objFieldInt(spawn "x"))
+      loaded.spawnY = (json.objFieldInt(spawn "y"))
+    }
+    def cafObj@(optional):JSONDataObject (getObject floorObj "cafeteria")
+    if ((null? cafObj) == false) {
+      def caf:JSONDataObject (unwrap cafObj)
+      loaded.cafeteriaX = (json.objFieldInt(caf "x"))
+      loaded.cafeteriaY = (json.objFieldInt(caf "y"))
+    }
+    def doorObj@(optional):JSONDataObject (getObject floorObj "door")
+    if ((null? doorObj) == false) {
+      def door:JSONDataObject (unwrap doorObj)
+      loaded.doorX = (json.objFieldInt(door "x"))
+      loaded.doorY = (json.objFieldInt(door "y"))
+    }
+  }
+
+  fn recomputeSize:void () {
+    def floor:MapFloor (this.activeFloor())
+    def rows:[string] (floor.rows)
+    def rowCount:int (array_length rows)
+    height = rowCount
+    if (rowCount < 1) {
+      width = 0
+      return
+    }
+    def w:int 0
+    def wi:int 0
+    while (wi < rowCount) {
+      def len:int (strlen (at rows wi))
+      if (len > w) {
+        w = len
+      }
+      wi = wi + 1
+    }
+    width = w
+  }
+
+  fn loadFromText:boolean (mapJson:string) {
+    try {
+      def rootOpt@(optional):JSONDataObject (from_string mapJson)
+      if (null? rootOpt) {
+        hasMap = false
+        return false
+      }
+      root = (unwrap rootOpt)
+    } {
+      hasMap = false
+      return false
+    }
+    mapId = (json.objFieldStr((unwrap root) "id"))
+    title = (json.objFieldStr((unwrap root) "title"))
+    currentFloor = (json.objFieldInt((unwrap root) "startFloor"))
+
+    def floorsOpt@(optional):JSONArrayObject (getArray (unwrap root) "floors")
+    if (null? floorsOpt) {
+      hasMap = false
+      return false
+    }
+    def floorsArr:JSONArrayObject (unwrap floorsOpt)
+    def floorCount:int (array_length floorsArr)
+    if (floorCount < 1) {
+      hasMap = false
+      return false
+    }
+
+    def loadedFloors:[MapFloor]
+    def fi:int 0
+    while (fi < floorCount) {
+      def floorObj:JSONDataObject (json.arrayObjectAt(floorsArr fi))
+      def floor:MapFloor (new MapFloor)
+      this.loadSingleFloor(floorObj floor)
+      push loadedFloors floor
+      fi = fi + 1
+    }
+    floors = loadedFloors
+
+    def start:MapFloor (this.activeFloor())
+    playerX = start.spawnX
+    playerY = start.spawnY
+    playerAlias = (json.objFieldStr((unwrap root) "playerAlias"))
+    if ((strlen playerAlias) < 1) {
+      playerAlias = "Larry"
+    }
+    playerHidden = false
+    overheardMsg = ""
+    this.recomputeSize()
+    this.ensurePlayerOnWalkable()
+    lastStatus = ""
+    hasMap = true
+    return true
+  }
+
+  fn findElevatorOnFloor:boolean (floorIndex:int) {
+    return (this.findElevatorAt(floorIndex))
+  }
+
+  fn findElevatorAt:boolean (floorIndex:int) {
+    def floor:MapFloor (at floors floorIndex)
+    def rows:[string] (floor.rows)
+    def y:int 0
+    def h:int (array_length rows)
+    while (y < h) {
+      def row:string (at rows y)
+      def x:int 0
+      def w:int (strlen row)
+      while (x < w) {
+        def ch:string (substring row x (x + 1))
+        if (ch == "E") {
+          if (this.isElevatorCellOnFloor(floorIndex x y)) {
+            foundElevatorX = x
+            foundElevatorY = y
+            return true
+          }
+        }
+        x = x + 1
+      }
+      y = y + 1
+    }
+    return false
+  }
+
+  fn tryElevatorTo:boolean (targetFloor:int) {
+    if (hasMap == false) {
+      return false
+    }
+    if (this.isOnElevator() == false) {
+      lastStatus = "Hissi on vain E-ruudulla."
+      return false
+    }
+    def floorCount:int (array_length floors)
+    if (targetFloor < 0) {
+      return false
+    }
+    if (targetFloor >= floorCount) {
+      lastStatus = "Kerrosta ei ole."
+      return false
+    }
+    if (targetFloor == currentFloor) {
+      lastStatus = "Olet jo tällä kerroksella."
+      return false
+    }
+    if (this.findElevatorOnFloor(targetFloor) == false) {
+      lastStatus = "Hissiä ei ole kohdekerroksessa."
+      return false
+    }
+    currentFloor = targetFloor
+    playerX = foundElevatorX
+    playerY = foundElevatorY
+    this.recomputeSize()
+    this.ensurePlayerOnWalkable()
+    def floor:MapFloor (this.activeFloor())
+    lastStatus = ("Hissi: " + floor.title)
+    return true
+  }
+
+  fn tryMove:boolean (dx:int dy:int) {
+    if (hasMap == false) {
+      return false
+    }
+    if (dx != 0) {
+      facingX = dx
+      facingY = 0
+    }
+    if (dy != 0) {
+      facingX = 0
+      facingY = dy
+    }
+    def nx:int (playerX + dx)
+    def ny:int (playerY + dy)
+    def tile:string (this.tileAt(nx ny))
+    if (this.isBlockedTile(tile)) {
+      lastStatus = "Este — tarvitset ehkä työkalun (x)."
+      return false
+    }
+    def blocker:MapEntity (this.entityAt(nx ny))
+    if ((strlen blocker.id) > 0) {
+      if (blocker.kind != "item") {
+        lastStatus = "Tiellä on joku."
+        return false
+      }
+    }
+    playerHidden = false
+    playerX = nx
+    playerY = ny
+    if (this.isOnElevator()) {
+      lastStatus = "Hissi — 1-9/0 vaihtaa kerrosta."
+    } {
+      lastStatus = ""
+    }
+    return true
+  }
+
+  fn removeEntityAt:void (x:int y:int) {
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def kept:[MapEntity]
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.x == x) {
+        if (e.y == y) {
+          i = i + 1
+          continue
+        }
+      }
+      push kept e
+      i = i + 1
+    }
+    floor.entities = kept
+  }
+
+  fn pickupItemAt:string (x:int y:int) {
+    def e:MapEntity (this.entityAt(x y))
+    if ((strlen e.id) < 1) {
+      return ""
+    }
+    if (e.kind != "item") {
+      return ""
+    }
+    if ((strlen e.itemTool) < 1) {
+      return ""
+    }
+    def pick:string e.itemTool
+    lastPickedOwner = e.itemOwner
+    this.removeEntityAt(x y)
+    return pick
+  }
+
+  fn hasDroppedCardFrom:boolean (coworkerId:string) {
+    def i:int 0
+    def n:int (array_length droppedCardOwners)
+    while (i < n) {
+      if ((at droppedCardOwners i) == coworkerId) {
+        return true
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn markDroppedCardFrom:void (coworkerId:string) {
+    if (this.hasDroppedCardFrom(coworkerId)) {
+      return
+    }
+    push droppedCardOwners coworkerId
+  }
+
+  fn tryCoworkerDropCard:boolean (coworker:MapEntity) {
+    if (coworker.kind != "coworker") {
+      return false
+    }
+    if (this.hasDroppedCardFrom(coworker.id)) {
+      return false
+    }
+    def roll:int (random 0 24)
+    if (roll != 0) {
+      return false
+    }
+    def dirs:[int]
+    push dirs 1
+    push dirs -1
+    push dirs 0
+    push dirs 0
+    def dy:[int]
+    push dy 0
+    push dy 0
+    push dy 1
+    push dy -1
+    def di:int 0
+    while (di < 4) {
+      def nx:int (coworker.x + (at dirs di))
+      def ny:int (coworker.y + (at dy di))
+      def tile:string (this.tileAt(nx ny))
+      if (this.isBlockedTile(tile)) {
+        di = di + 1
+        continue
+      }
+      def other:MapEntity (this.entityAt(nx ny))
+      if ((strlen other.id) > 0) {
+        di = di + 1
+        continue
+      }
+      def floor:MapFloor (this.activeFloor())
+      def item:MapEntity (new MapEntity)
+      item.id = ("dropped-card-" + coworker.id)
+      item.char = "k"
+      item.name = "Kulkukortti"
+      item.kind = "item"
+      item.itemTool = "coworker_card"
+      item.itemOwner = coworker.id
+      item.x = nx
+      item.y = ny
+      def ents:[MapEntity] (floor.entities)
+      push ents item
+      floor.entities = ents
+      this.markDroppedCardFrom(coworker.id)
+      overheardMsg = (coworker.name + " pudotti jotain lattialle!")
+      return true
+    }
+    return false
+  }
+
+  fn openTileAt:void (x:int y:int) {
+    def tile:string (this.tileAt(x y))
+    if (tile == "L") {
+      this.setTileAt(x y ".")
+      return
+    }
+    if (tile == "+") {
+      this.setTileAt(x y ".")
+      return
+    }
+    if (tile == "%") {
+      this.setTileAt(x y ".")
+    }
+  }
+
+  fn tryBreakFacing:string (tool:string) {
+    if ((strlen tool) < 1) {
+      lastStatus = "Ei valittua työkalua (t vaihtaa)."
+      return ""
+    }
+    def tx:int (playerX + facingX)
+    def ty:int (playerY + facingY)
+    def tile:string (this.tileAt(tx ty))
+    if (this.isBreakableTile(tile tool) == false) {
+      lastStatus = "Työkalu ei tepsi tähän esteeseen."
+      return ""
+    }
+    this.setTileAt(tx ty ".")
+    if (tool == "sledgehammer") {
+      lastStatus = "Moukarivasara murskaa seinän — melu kantautuu!"
+      return "heavy"
+    }
+    if (tool == "crowbar") {
+      lastStatus = "Sorkkarauta taivuttaa esteen."
+      return "medium"
+    }
+    lastStatus = "Lapio avaa raon hiljaa."
+    return "light"
+  }
+
+  fn tryToggleHide:boolean () {
+    if (playerHidden) {
+      playerHidden = false
+      lastStatus = "Nouset esiin."
+      return true
+    }
+    def tile:string (this.tileAt(playerX playerY))
+    if (tile == "=") {
+      playerHidden = true
+      lastStatus = "Piiloudut kopin taakse."
+      return true
+    }
+    return false
+  }
+
+  fn canNpcSeePlayer:boolean (e:MapEntity) {
+    if (playerHidden == false) {
+      return true
+    }
+    if (e.persistence >= 90) {
+      return true
+    }
+    return false
+  }
+
+  fn isActiveAgent:boolean (e:MapEntity) {
+    if (e.isAgent == false) {
+      return false
+    }
+    if (e.kind == "item") {
+      return false
+    }
+    if ((strlen e.id) < 1) {
+      return false
+    }
+    return true
+  }
+
+  fn stepTowardPlayer:void (e:MapEntity) {
+    def dx:int 0
+    def dy:int 0
+    if (e.x < playerX) {
+      dx = 1
+    }
+    if (e.x > playerX) {
+      dx = -1
+    }
+    if (dx == 0) {
+      if (e.y < playerY) {
+        dy = 1
+      }
+      if (e.y > playerY) {
+        dy = -1
+      }
+    }
+    this.tryMoveEntity(e dx dy)
+  }
+
+  fn stepWander:void (e:MapEntity) {
+    def roll:int (random 0 3)
+    def dx:int 0
+    def dy:int 0
+    if (roll == 0) {
+      dx = 1
+    }
+    if (roll == 1) {
+      dx = -1
+    }
+    if (roll == 2) {
+      dy = 1
+    }
+    if (roll == 3) {
+      dy = -1
+    }
+    this.tryMoveEntity(e dx dy)
+  }
+
+  fn tryMoveEntity:void (e:MapEntity dx:int dy:int) {
+    def nx:int (e.x + dx)
+    def ny:int (e.y + dy)
+    def tile:string (this.tileAt(nx ny))
+    if (this.isBlockedTile(tile)) {
+      return
+    }
+    def other:MapEntity (this.entityAt(nx ny))
+    if ((strlen other.id) > 0) {
+      if (other.kind != "item") {
+        return
+      }
+    }
+    e.x = nx
+    e.y = ny
+  }
+
+  fn teleportToPrison:void () {
+    def floor:MapFloor (this.activeFloor())
+    def rows:[string] (floor.rows)
+    def y:int 0
+    def h:int (array_length rows)
+    while (y < h) {
+      def row:string (at rows y)
+      def x:int 0
+      def w:int (strlen row)
+      while (x < w) {
+        def ch:string (substring row x (x + 1))
+        if (ch == "J") {
+          playerX = x
+          playerY = y
+          lastStatus = "Turvallisuus vangitsi sinut."
+          return
+        }
+        x = x + 1
+      }
+      y = y + 1
+    }
+    playerX = floor.spawnX
+    playerY = floor.spawnY
+    lastStatus = "Turvallisuus vangitsi sinut."
+  }
+
+  fn bumpAtPlayer:MapEntity () {
+    if (playerHidden) {
+      return (new MapEntity)
+    }
+    def e:MapEntity (this.entityAt(playerX playerY))
+    if ((strlen e.id) > 0) {
+      return e
+    }
+    return (new MapEntity)
+  }
+
+  fn emitAmbient:void (e:MapEntity line:string) {
+    overheardMsg = (e.name + ": \"" + line + "\"")
+  }
+
+  fn tryAgentAmbient:void (e:MapEntity) {
+    if (e.agentGoal != "seek_larry") {
+      return
+    }
+    if (playerHidden == false) {
+      return
+    }
+    def distSq:int ((e.x - playerX) * (e.x - playerX) + (e.y - playerY) * (e.y - playerY))
+    if (distSq > 36) {
+      return
+    }
+    def roll:int (random 0 2)
+    if (roll == 0) {
+      this.emitAmbient(e ("Oletko nähnyt " + playerAlias + "?"))
+    }
+    if (roll == 1) {
+      this.emitAmbient(e ("Missä " + playerAlias + " on?"))
+    }
+  }
+
+  fn stepTowardTile:void (e:MapEntity tx:int ty:int) {
+    if (e.x == tx) {
+      if (e.y == ty) {
+        return
+      }
+    }
+    def dx:int 0
+    def dy:int 0
+    if (e.x < tx) {
+      dx = 1
+    }
+    if (e.x > tx) {
+      dx = -1
+    }
+    if (dx == 0) {
+      if (e.y < ty) {
+        dy = 1
+      }
+      if (e.y > ty) {
+        dy = -1
+      }
+    }
+    if (dx != 0) {
+      if (dy != 0) {
+        def pick:int (random 0 1)
+        if (pick == 0) {
+          dy = 0
+        }
+        if (pick == 1) {
+          dx = 0
+        }
+      }
+    }
+    this.tryMoveEntity(e dx dy)
+  }
+
+  fn applyEntitySchedule:void (floorIndex:int floor:MapFloor e:MapEntity gameMinutes:int) {
+    if ((strlen e.scheduleRole) < 1) {
+      return
+    }
+    if (e.scheduleRole == "janitor") {
+      return
+    }
+    if (gameMinutes < 480) {
+      e.offDuty = true
+      return
+    }
+    if (gameMinutes >= 1020) {
+      e.offDuty = true
+      e.npcState = "gone"
+      return
+    }
+    if (e.scheduleRole == "ceo_lunch") {
+      if (gameMinutes >= 660) {
+        if (gameMinutes < 780) {
+          e.offDuty = false
+          e.npcState = "lunch_out"
+          if (floor.doorX >= 0) {
+            this.stepTowardTile(e floor.doorX floor.doorY)
+          }
+          return
+        }
+      }
+      e.offDuty = true
+      return
+    }
+    if (e.scheduleRole == "ceo") {
+      if (gameMinutes >= 660) {
+        if (gameMinutes < 780) {
+          e.offDuty = true
+          e.npcState = "lunch_out"
+          return
+        }
+      }
+    }
+    if (e.scheduleRole == "mentor") {
+      e.offDuty = false
+      e.npcState = "desk"
+      this.stepTowardTile(e e.homeX e.homeY)
+      return
+    }
+    e.offDuty = false
+    def tx:int e.homeX
+    def ty:int e.homeY
+    if (e.homeX < 1) {
+      tx = e.x
+      ty = e.y
+    }
+    e.npcState = "desk"
+    if (gameMinutes >= 660) {
+      if (gameMinutes < 780) {
+        if (e.scheduleRole == "desk_lunch") {
+          e.npcState = "desk_lunch"
+        }
+        if (e.scheduleRole != "desk_lunch") {
+          if (floor.cafeteriaX >= 0) {
+            tx = floor.cafeteriaX
+            ty = floor.cafeteriaY
+            e.npcState = "lunch"
+          }
+        }
+      }
+    }
+    if (gameMinutes >= 900) {
+      if (gameMinutes < 1020) {
+        if (this.findElevatorAt(floorIndex)) {
+          tx = foundElevatorX
+          ty = foundElevatorY
+          e.npcState = "leaving"
+        }
+      }
+    }
+    this.stepTowardTile(e tx ty)
+  }
+
+  fn tickSchedules:void (gameMinutes:int) {
+    def saved:int currentFloor
+    saved = currentFloor
+    def fi:int 0
+    def fc:int (array_length floors)
+    while (fi < fc) {
+      currentFloor = fi
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def i:int 0
+      def n:int (array_length ents)
+      while (i < n) {
+        def e:MapEntity (at ents i)
+        if (this.isActiveAgent(e)) {
+          this.applyEntitySchedule(fi floor e gameMinutes)
+        }
+        i = i + 1
+      }
+      fi = fi + 1
+    }
+    currentFloor = saved
+  }
+
+  fn tickAgents:MapEntity () {
+    overheardMsg = ""
+    def empty:MapEntity (new MapEntity)
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    def approach:MapEntity empty
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (this.isActiveAgent(e) == false) {
+        i = i + 1
+        continue
+      }
+      this.tryAgentAmbient(e)
+      if (e.kind == "police") {
+        if (policeChaseActive == false) {
+          i = i + 1
+          continue
+        }
+        if (playerHidden == false) {
+          this.stepTowardPlayer(e)
+          if (e.x == playerX) {
+            if (e.y == playerY) {
+              return e
+            }
+          }
+        }
+        i = i + 1
+        continue
+      }
+      if (e.kind == "security") {
+        if (agentHuntFlag == false) {
+          i = i + 1
+          continue
+        }
+        if (this.canNpcSeePlayer(e)) {
+          this.stepTowardPlayer(e)
+          if (e.x == playerX) {
+            if (e.y == playerY) {
+              return e
+            }
+          }
+        }
+        i = i + 1
+        continue
+      }
+      if (e.moveMode == "schedule") {
+        i = i + 1
+        continue
+      }
+      if (e.moveMode == "seek_player") {
+        if (this.canNpcSeePlayer(e)) {
+          this.stepTowardPlayer(e)
+        }
+      }
+      if (e.moveMode == "wander") {
+        def wanderRoll:int (random 0 2)
+        if (wanderRoll == 0) {
+          this.stepWander(e)
+        }
+        if (e.kind == "coworker") {
+          this.tryCoworkerDropCard(e)
+        }
+      }
+      if (e.moveMode == "patrol") {
+        def patrolRoll:int (random 0 3)
+        if (patrolRoll == 0) {
+          this.stepWander(e)
+        }
+      }
+      def dx:int (e.x - playerX)
+      if (dx < 0) {
+        dx = (0 - dx)
+      }
+      def dy:int (e.y - playerY)
+      if (dy < 0) {
+        dy = (0 - dy)
+      }
+      def manhattan:int (dx + dy)
+      if (manhattan <= 1) {
+        if (e.sociability >= 70) {
+          if (this.canNpcSeePlayer(e)) {
+            if ((strlen e.storyId) > 0) {
+              approach = e
+            }
+            if (e.agentGoal == "socialize") {
+              approach = e
+            }
+          }
+        }
+      }
+      i = i + 1
+    }
+    if ((strlen approach.id) > 0) {
+      return approach
+    }
+    return empty
+  }
+
+  fn roleDisplayChar:string (ent:MapEntity) {
+    if ((strlen ent.id) < 1) {
+      return "?"
+    }
+    if (ent.kind == "item") {
+      return ent.char
+    }
+    if (ent.kind == "coworker") {
+      return "t"
+    }
+    if (ent.kind == "guru") {
+      return "g"
+    }
+    if (ent.kind == "pet") {
+      return ent.char
+    }
+    if (ent.kind == "security") {
+      return "u"
+    }
+    if (ent.kind == "police") {
+      return ent.char
+    }
+    if (ent.kind == "hostile") {
+      return ent.char
+    }
+    if (ent.kind == "role") {
+      if (ent.id == "receptionist") {
+        return "v"
+      }
+      if (ent.char == "C") {
+        return "T"
+      }
+      if (ent.char == "S") {
+        return "s"
+      }
+      if (ent.char == "P") {
+        return "p"
+      }
+      if (ent.char == "u") {
+        return "k"
+      }
+      return ent.char
+    }
+    return ent.char
+  }
+
+  fn renderChar:string (x:int y:int) {
+    if (x == playerX) {
+      if (y == playerY) {
+        if (playerHidden) {
+          return (this.tileAt(x y))
+        }
+        return "@"
+      }
+    }
+    def e:MapEntity (this.entityAt(x y))
+    if ((strlen e.id) > 0) {
+      if (e.offDuty) {
+        return (this.tileAt(x y))
+      }
+      return (this.roleDisplayChar(e))
+    }
+    return (this.tileAt(x y))
+  }
+
+  fn getView:MapView () {
+    def view:MapView (new MapView)
+    def floor:MapFloor (this.activeFloor())
+    view.mapTitle = title
+    view.floorTitle = floor.title
+    this.updateCamera()
+    def lines:[string]
+    def vy:int 0
+    while (vy < viewPortH) {
+      def mapY:int (cameraY + vy)
+      def line:string ""
+      def vx:int 0
+      while (vx < viewPortW) {
+        def mapX:int (cameraX + vx)
+        line = line + (this.renderChar(mapX mapY))
+        vx = vx + 1
+      }
+      push lines line
+      vy = vy + 1
+    }
+    view.lines = lines
+    view.mapWidth = width
+    view.mapHeight = height
+    view.cameraX = cameraX
+    view.cameraY = cameraY
+    view.playerMapX = playerX
+    view.playerMapY = playerY
+    view.statusLine = lastStatus
+    view.ambientLine = overheardMsg
+    if (policeChaseActive) {
+      view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!"
+    } {
+      view.hintLine = "wasd | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta"
+    }
+    return view
+  }
+}

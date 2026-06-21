@@ -1,0 +1,22 @@
+
+Import "MapEntity.rgr"
+
+class MapFloor {
+  def floorId:string ""
+  def title:string ""
+  def rows:[string]
+  def entities:[MapEntity]
+  def spawnX:int 0
+  def spawnY:int 0
+  def cafeteriaX:int -1
+  def cafeteriaY:int -1
+  def doorX:int -1
+  def doorY:int -1
+
+  Constructor () {
+    def empty:[string]
+    rows = empty
+    def emptyEnt:[MapEntity]
+    entities = emptyEnt
+  }
+}

@@ -1,0 +1,61 @@
+
+class PlayerConduct {
+  def misconduct:int 0
+  def propertyDamage:int 0
+  def arrested:boolean false
+  def prisonTurns:int 0
+
+  fn addMisconduct:void (amount:int) {
+    if (amount <= 0) {
+      return
+    }
+    misconduct = misconduct + amount
+  }
+
+  fn addDamage:void (amount:int) {
+    if (amount <= 0) {
+      return
+    }
+    propertyDamage = propertyDamage + amount
+  }
+
+  fn isWanted:boolean () {
+    if (this.propriety() <= 85) {
+      return true
+    }
+    if (propertyDamage >= 12) {
+      return true
+    }
+    return false
+  }
+
+  fn propriety:int () {
+    def score:int (100 - misconduct)
+    if (score < 0) {
+      return 0
+    }
+    return score
+  }
+
+  fn arrest:void () {
+    arrested = true
+    prisonTurns = 5
+  }
+
+  fn tickPrison:boolean () {
+    if (arrested == false) {
+      return false
+    }
+    prisonTurns = prisonTurns - 1
+    if (prisonTurns <= 0) {
+      arrested = false
+      prisonTurns = 0
+      misconduct = misconduct - 5
+      if (misconduct < 0) {
+        misconduct = 0
+      }
+      return true
+    }
+    return false
+  }
+}

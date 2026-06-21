@@ -1,0 +1,2964 @@
+{
+  "instructions": "docs/question-bank-choice-rewrite-prompt.md",
+  "bank": "scrum-best-practices.json",
+  "offset": 0,
+  "limit": 70,
+  "totalInBank": 142,
+  "biasedInSlice": 70,
+  "outputFormat": {
+    "bank": "scrum-best-practices.json",
+    "rewrites": [
+      {
+        "id": "question-id",
+        "choices": [
+          {
+            "text": "...",
+            "correct": true
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "scrum-dor-criteria",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Mikä kuuluu Definition of Ready -kriteereihin ennen kuin tarina otetaan sprinttiin?",
+      "choices": [
+        {
+          "text": "Hyväksymiskriteerit ja arvioitavissa oleva koko",
+          "correct": true
+        },
+        {
+          "text": "Kaikki tuotantodata migroitu",
+          "correct": false
+        },
+        {
+          "text": "Koko epic toteutettu",
+          "correct": false
+        },
+        {
+          "text": "Release note julkaistu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR: arvo selvä, estimointi mahdollinen, acceptance criteria olemassa.",
+      "wrongFeedback": "DoR varmistaa että tarina on valmis työstettäväksi — ei tuotantoa vielä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 23.333333333333332,
+        "ratio": 2.01,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          47,
+          28,
+          20,
+          22
+        ]
+      }
+    },
+    {
+      "id": "scrum-team-size",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmia?",
+      "choices": [
+        {
+          "text": "Noin 7 ± 2 — yli 9 kasvattaa koordinaatiokuormaa",
+          "correct": true
+        },
+        {
+          "text": "Aina täsmälleen 15",
+          "correct": false
+        },
+        {
+          "text": "Mitä enemmän sitä parempi",
+          "correct": false
+        },
+        {
+          "text": "2–3 riittää enterprise-projektiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "7±2 on klassinen — isompi tiimi hidastuu koordinaatiosta.",
+      "wrongFeedback": "Scrum-best-practices: yli 9 jäsentä → koordinaatio kasvaa liikaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 48,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          48,
+          18,
+          25,
+          33
+        ]
+      }
+    },
+    {
+      "id": "scrum-retro",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Mikä ceremonia on usein tärkein jatkuvaan parantamiseen?",
+      "choices": [
+        {
+          "text": "Retrospektiivi — miten työskentelemme",
+          "correct": true
+        },
+        {
+          "text": "Daily ilman action itemeitä",
+          "correct": false
+        },
+        {
+          "text": "Vain sprint review asiakkaille",
+          "correct": false
+        },
+        {
+          "text": "Kick-off kerran vuodessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Retro parantaa prosessia — tarkista edellisen retro actionit.",
+      "wrongFeedback": "Retrospektiivi on prosessin parantamisen ydin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 37,
+        "avgWrongLen": 27,
+        "ratio": 1.37,
+        "correctIsLongest": true,
+        "spread": 13,
+        "lens": [
+          37,
+          27,
+          30,
+          24
+        ]
+      }
+    },
+    {
+      "id": "scrum-planning-poker",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Miksi planning poker toimii paremmin kuin yhden henkilön arvio?",
+      "choices": [
+        {
+          "text": "Piilotetut arviot + cross-functional asiantuntijat",
+          "correct": true
+        },
+        {
+          "text": "PO arvioi aina yksin nopeammin",
+          "correct": false
+        },
+        {
+          "text": "Story pointit muuttuvat absoluuttisiksi tunneiksi",
+          "correct": false
+        },
+        {
+          "text": "Subtaskien tunnit korvaavat tarinan arvon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kaikki asiantuntijat arvioivat — ankkurointivinouma pienenee.",
+      "wrongFeedback": "Poker yhdistää piilotetut arviot ja koko tiimin näkemyksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 50,
+        "avgWrongLen": 40,
+        "ratio": 1.25,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          50,
+          30,
+          49,
+          41
+        ]
+      }
+    },
+    {
+      "id": "scrum-story-split",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa **liiketoiminta-kerroksia** pystysuunnassa?",
+      "choices": [
+        {
+          "text": "Vertical split — ohittaa kaikki arkkitehtuurikerrokset",
+          "correct": true
+        },
+        {
+          "text": "Vain UI ensin, API ei koskaan",
+          "correct": false
+        },
+        {
+          "text": "Kaikki edge caset samaan tarinaan",
+          "correct": false
+        },
+        {
+          "text": "Spike korvaa aina acceptance criteria",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Vertical slice tuottaa end-to-end arvoa (walking skeleton).",
+      "wrongFeedback": "Vertical split jakaa liiketoiminta-aspektien mukaan läpi kerrosten.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 33,
+        "ratio": 1.64,
+        "correctIsLongest": true,
+        "spread": 25,
+        "lens": [
+          54,
+          29,
+          33,
+          37
+        ]
+      }
+    },
+    {
+      "id": "scrum-multitask",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Sprintin aikana paine kasvaa. Mitä priorisointiohjetta kannattaa noudattaa?",
+      "choices": [
+        {
+          "text": "Vältä multitasking — korkea riski/arvo ensin",
+          "correct": true
+        },
+        {
+          "text": "Aloita helpoista low/low tehtävistä",
+          "correct": false
+        },
+        {
+          "text": "Kaikki WIP rajatta samanaikaisesti",
+          "correct": false
+        },
+        {
+          "text": "Uudet interruptit aina edelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "High risk/high value ensin — multitasking piilokustannuksia.",
+      "wrongFeedback": "Prioriteetti: high risk/value → vältä high risk/low value.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 1.35,
+        "correctIsLongest": true,
+        "spread": 15,
+        "lens": [
+          44,
+          35,
+          34,
+          29
+        ]
+      }
+    },
+    {
+      "id": "scrum-dod-shippable",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Mikä on Definition of Done -listan ydinvaatimus jokaiselle sprintin valmiille tarinalle?",
+      "choices": [
+        {
+          "text": "Inkrementti on tuotantokelpoinen ja integroitu",
+          "correct": true
+        },
+        {
+          "text": "Dev on merkinnyt Jiran Done-tilaan",
+          "correct": false
+        },
+        {
+          "text": "PO on hyväksynyt demossa suullisesti",
+          "correct": false
+        },
+        {
+          "text": "Koodi on pushattu feature-branchiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD varmistaa että jokainen valmis tarina on oikeasti releasable increment.",
+      "wrongFeedback": "DoD on tiimin sopimus tuotantokelpoisesta inkrementistä — ei pelkkä status Jirassa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 35,
+        "ratio": 1.31,
+        "correctIsLongest": true,
+        "spread": 12,
+        "lens": [
+          46,
+          34,
+          36,
+          35
+        ]
+      }
+    },
+    {
+      "id": "scrum-dod-automated-tests",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Tiimi debateaa DoD:stä. Mikä kuuluu tyypillisesti moderniin Definition of Done -listaan?",
+      "choices": [
+        {
+          "text": "Automaattiset testit ajettu ja läpäisty CI:ssä",
+          "correct": true
+        },
+        {
+          "text": "Vain manuaalinen smoke test tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "Testaus vasta release-haarassa",
+          "correct": false
+        },
+        {
+          "text": "QA testaa vasta seuraavassa sprintissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD sisältää usein automaation — regressio ei jää sprintin jälkeen.",
+      "wrongFeedback": "Best practice: testit ja CI ovat osa Done-kriteeriä, ei jälkikäteistä vaihetta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 35.666666666666664,
+        "ratio": 1.29,
+        "correctIsLongest": true,
+        "spread": 16,
+        "lens": [
+          46,
+          39,
+          30,
+          38
+        ]
+      }
+    },
+    {
+      "id": "scrum-dod-no-partial",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprint review lähestyy. Tarina täyttää 4/5 DoD-kohtaa. Miten Scrum-best-practices käsittelee tilanteen?",
+      "choices": [
+        {
+          "text": "Ei Done — kaikki DoD-kriteerit täyttyvät tai tarina ei valmis",
+          "correct": true
+        },
+        {
+          "text": "80 % Done riittää velocityyn",
+          "correct": false
+        },
+        {
+          "text": "Merkitään Done ja korjataan jälkikäteen",
+          "correct": false
+        },
+        {
+          "text": "PO voi alittaa DoD:n hätätilanteessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD on binäärinen — osittainen valmius ei laske inkrementtiin.",
+      "wrongFeedback": "Osittainen Done rikkoo läpinäkyvyyden; unfinished jää backlogiin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 34.333333333333336,
+        "ratio": 1.78,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          61,
+          28,
+          39,
+          36
+        ]
+      }
+    },
+    {
+      "id": "scrum-dod-tech-debt",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 5,
+      "prompt": "Tekninen velka kasvaa. Miten DoD auttaa hallitsemaan sitä sprinttitasolla?",
+      "choices": [
+        {
+          "text": "DoD määrittelee minimilaadun — velkaa ei piiloteta Done-merkintään",
+          "correct": true
+        },
+        {
+          "text": "DoD ohitetaan kun deadline lähestyy",
+          "correct": false
+        },
+        {
+          "text": "Velka kirjataan erilliseen 'Done-lite' -tilaan",
+          "correct": false
+        },
+        {
+          "text": "DoD koskee vain uutta koodia, ei refaktorointia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Selkeä DoD estää 'valmis mutta rikki' -inkrementit ja pakottaa velan näkyväksi.",
+      "wrongFeedback": "DoD:n kiertäminen kasvattaa velkaa piilossa — läpinäkyvyys on pointti.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 42.666666666666664,
+        "ratio": 1.55,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          66,
+          35,
+          46,
+          47
+        ]
+      }
+    },
+    {
+      "id": "scrum-team-cross-functional",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Mitä tarkoittaa että Scrum-tiimi on cross-functional?",
+      "choices": [
+        {
+          "text": "Tiimillä on kaikki taidot tuottaa valmis inkrementti",
+          "correct": true
+        },
+        {
+          "text": "Jokainen dev osaa kaikkia kieliä",
+          "correct": false
+        },
+        {
+          "text": "Tiimi raportoi usealle esimiehelle",
+          "correct": false
+        },
+        {
+          "text": "Eri tiimit hoitavat dev/test/deploy erikseen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Cross-functional = ei ulkoisia käsiä joka sprintin valmiiksi saattamiseen.",
+      "wrongFeedback": "Scrum-tiimi omistaa inkrementin läpi ketjun — ei vain koodin kirjoituksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 36.666666666666664,
+        "ratio": 1.42,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          52,
+          32,
+          34,
+          44
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-sprint-scope-add",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprintin puolivälissä tuoteomistaja tuo kriittisen lisätarinan. Mitä Scrum Guide suosittelee?",
+      "choices": [
+        {
+          "text": "Tiimi neuvottelee vaikutuksen sprint goaliin — scope muuttuu vain yhteisymmärryksellä",
+          "correct": true
+        },
+        {
+          "text": "PO voi lisätä tarinoita yksin milloin tahansa",
+          "correct": false
+        },
+        {
+          "text": "Hylätään aina — sprint scope on lukittu lakiin",
+          "correct": false
+        },
+        {
+          "text": "Lisätään automaattisesti ilman arviointia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprintin tavoite on yhteinen — muutokset vaativat tiimin sitoutumisen (Scrum Guide).",
+      "wrongFeedback": "Scrum ei ole waterfall-lukko, mutta scope-muutos ei ole yksin PO:n päätös.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 85,
+        "avgWrongLen": 44,
+        "ratio": 1.93,
+        "correctIsLongest": true,
+        "spread": 44,
+        "lens": [
+          85,
+          45,
+          46,
+          41
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-sprint-cancel",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Markkinatilanne muuttuu — nykyinen sprint goal on merkityksetön. Kuka voi peruuttaa sprintin?",
+      "choices": [
+        {
+          "text": "Vain Product Owner ennen ajan umpeutumista",
+          "correct": true
+        },
+        {
+          "text": "Kuka tahansa kehittäjä dailyssa",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master yksin",
+          "correct": false
+        },
+        {
+          "text": "Sprinttiä ei voi koskaan peruuttaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint cancellation on PO:n erityinen valta — harvinainen mutta sallittu.",
+      "wrongFeedback": "Tiimi ei peru sprinttiä — PO päättää kun goal menettää arvon.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 1.52,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          42,
+          31,
+          18,
+          34
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-sprint-review-stakeholders",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Sprint Review -tapahtumaan kutsutaan sidosryhmiä. Mikä on tapahtuman ydin?",
+      "choices": [
+        {
+          "text": "Inspect increment + adaptoi backlog yhteistyössä sidosryhmien kanssa",
+          "correct": true
+        },
+        {
+          "text": "Statusraportti johdolle PowerPointilla",
+          "correct": false
+        },
+        {
+          "text": "Yksittäisten kehittäjien suoritusarviointi",
+          "correct": false
+        },
+        {
+          "text": "Retrospektiivi tuotannosta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Review on transparenssi ja palaute incrementistä — ei status meeting.",
+      "wrongFeedback": "Review ≠ retro eikä henkilöarviointi. Fokus on valmiissa incrementissä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 35.333333333333336,
+        "ratio": 1.92,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          68,
+          38,
+          42,
+          26
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-sprint-daily-focus",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Daily kestää 45 minuuttia ja muuttuu debug-sessioksi. Miten SM ohjaa takaisin?",
+      "choices": [
+        {
+          "text": "15 min plan sprint goalia kohti — yksityiskohtainen debug erikseen",
+          "correct": true
+        },
+        {
+          "text": "Peru daily kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Kaikki avaavat laptoppinsa ja koodaavat",
+          "correct": false
+        },
+        {
+          "text": "Daily korvataan viikoittaisella statusraportilla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Daily on sync sprint goaliin — ei ratkaisufestivaali.",
+      "wrongFeedback": "Pitkä daily on signaali fasilitointiongelmasta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 35.333333333333336,
+        "ratio": 1.87,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          66,
+          19,
+          39,
+          48
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dor-split-story",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Backlog refinementissa tarina on 21 pistettä ja epäselvä. Mitä DoR-best practice sanoo?",
+      "choices": [
+        {
+          "text": "Pilko tarina pienempiin ennen sprinttiin ottoa",
+          "correct": true
+        },
+        {
+          "text": "Ota sprinttiin — suurempi on tehokkaampi",
+          "correct": false
+        },
+        {
+          "text": "Poista estimointi kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Siirrä seuraavaan quarteriin ilman pilkkomista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR: tarina on arvioitavissa ja testattavissa — isot tarinat pilkotaan.",
+      "wrongFeedback": "Iso epäselvä tarina hidastaa sprinttiä. Refinement ennen valintaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 37.333333333333336,
+        "ratio": 1.23,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          46,
+          40,
+          26,
+          46
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dor-acceptance-tests",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarinalla on otsikko mutta ei hyväksymiskriteereitä. Sprint planningissa mitä teette?",
+      "choices": [
+        {
+          "text": "Ei sprinttiin — DoR vaatii selkeät acceptance criteria",
+          "correct": true
+        },
+        {
+          "text": "Aloitetaan koodaus — kriteerit myöhemmin",
+          "correct": false
+        },
+        {
+          "text": "PO kirjoittaa kriteerit sprintin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "QA arvailee kriteerit tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Definition of Ready varmistaa että tiimi ymmärtää mitä Done tarkoittaa.",
+      "wrongFeedback": "Ilman acceptance criteriaa Done on epäselvä — DoR-esto.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 37.666666666666664,
+        "ratio": 1.43,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          54,
+          40,
+          40,
+          33
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dor-refinement-timebox",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Backlog refinement syö 30 % sprintin kapasiteetista. Mitä best practice suosittelee?",
+      "choices": [
+        {
+          "text": "Timeboxaa refinement (~10 % kapasiteetista) ja priorisoi valmiiksi seuraava sprint",
+          "correct": true
+        },
+        {
+          "text": "Lopeta refinement — kaikki planningissa",
+          "correct": false
+        },
+        {
+          "text": "Refinement vain kerran vuodessa",
+          "correct": false
+        },
+        {
+          "text": "Vain PO tekee refinementin yksin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Jatkuva refinement mutta rajattu — DoR-valmius ennen planningia.",
+      "wrongFeedback": "Liian vähän refinement → epävalmiit tarinat. Liikaa → ei ehdi tehdä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 82,
+        "avgWrongLen": 34,
+        "ratio": 2.41,
+        "correctIsLongest": true,
+        "spread": 51,
+        "lens": [
+          82,
+          39,
+          31,
+          32
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-team-po-authority",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Kehittäjä haluaa priorisoida oman teknisen refaktoroinnin tuoteomistajan yli. Mikä rooli päättää backlog-järjestyksestä?",
+      "choices": [
+        {
+          "text": "Product Owner — maximizes product value",
+          "correct": true
+        },
+        {
+          "text": "Tech lead yksin",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master",
+          "correct": false
+        },
+        {
+          "text": "Eniten senior kehittäjä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PO omistaa backlogin sisällön ja prioriteetin — tiimi neuvottelee.",
+      "wrongFeedback": "Tekninen työ voi olla tarpeen, mutta prioriteetti on PO:n vastuulla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 39,
+        "avgWrongLen": 16.666666666666668,
+        "ratio": 2.34,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          39,
+          15,
+          12,
+          23
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-team-sm-impediment",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "CI-putki on ollut punaisena kolme päivää ja hidastaa koko tiimiä. Scrum Masterin ensimmäinen tehtävä?",
+      "choices": [
+        {
+          "text": "Poista impedimentti tai escaloi — SM palvelee tiimiä",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita uudet user storyt",
+          "correct": false
+        },
+        {
+          "text": "Määritä sprint goal PO:n sijasta",
+          "correct": false
+        },
+        {
+          "text": "Odota että kehittäjä korjaa vapaa-ajallaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "SM fasilitoi ja poistaa esteitä — CI on klassinen impediment.",
+      "wrongFeedback": "SM ei tee backlog-päätöksiä vaan auttaa tiimiä etenemään.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 33.333333333333336,
+        "ratio": 1.56,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          52,
+          26,
+          32,
+          42
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-estimation-no-hours",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Projektipäällikkö vaatii story pointien muuntamista tunteihin raporttia varten. Mitä best practice suosittelee?",
+      "choices": [
+        {
+          "text": "Story pointit ovat suhteellisia — älä käytä tunteja sprintin sisällä",
+          "correct": true
+        },
+        {
+          "text": "1 point = 8 tuntia aina",
+          "correct": false
+        },
+        {
+          "text": "Estimointi tapahtuu vain tunneissa",
+          "correct": false
+        },
+        {
+          "text": "Velocity on sama kuin capacity tunneissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pisteet mittaavat suhteellista työmäärää ja epävarmuutta — ei kalenteriaikaa.",
+      "wrongFeedback": "Tuntimuunnos vääristää velocitya ja kannustaa väärään optimointiin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.1,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          68,
+          23,
+          34,
+          40
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-estimation-planning-poker",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Estimaatiossa yksi senior dominoi keskustelua. Miten fasilitoit tasapuolisemman session?",
+      "choices": [
+        {
+          "text": "Planning poker — yksilöarvio ensin, sitten keskustelu",
+          "correct": true
+        },
+        {
+          "text": "Senior päättää lopullisen numeron",
+          "correct": false
+        },
+        {
+          "text": "Ohitetaan estimointi kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Kaikki sanovat saman numeron nopeasti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planning poker vähentää ankkurointia — jokaisen ääni kuuluu.",
+      "wrongFeedback": "Dominointi vääristää arviota. Structured tekniikka auttaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 33,
+        "ratio": 1.61,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          53,
+          33,
+          29,
+          37
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dod-regression-suite",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Tuotantoon meni bugi joka olisi kaatunut regressiotestissä. Mitä DoD:iin lisätte?",
+      "choices": [
+        {
+          "text": "Automaattiset regressiotestit vihreänä ennen Donea",
+          "correct": true
+        },
+        {
+          "text": "Manuaalinen smoke vain release-viikolla",
+          "correct": false
+        },
+        {
+          "text": "DoD ei koske testausta",
+          "correct": false
+        },
+        {
+          "text": "Hotfix-prosessi korvaa DoD:n",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD määrittää shippable incrementin — testit ovat osa valmiutta.",
+      "wrongFeedback": "Done ilman testejä ei ole Scrum-valmis increment.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 50,
+        "avgWrongLen": 29.666666666666668,
+        "ratio": 1.69,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          50,
+          39,
+          22,
+          28
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dod-security-review",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Turvallisuustiimi löysi OWASP-aukko sprintin jälkeen. Miten DoD estää toistumisen?",
+      "choices": [
+        {
+          "text": "Security checklist / SAST gate osana DoD:ta relevanteille tarinoille",
+          "correct": true
+        },
+        {
+          "text": "Turvallisuus vain erillisessä hardening-sprintissä",
+          "correct": false
+        },
+        {
+          "text": "DoD koskee vain dokumentaatiota",
+          "correct": false
+        },
+        {
+          "text": "Pen test kerran vuodessa riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD voidaan laajentaa domain-kohtaisesti — security on osa valmiutta.",
+      "wrongFeedback": "Turvallisuus ei ole optional add-on jos riski on tiedossa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 37.666666666666664,
+        "ratio": 1.81,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          68,
+          50,
+          31,
+          32
+        ]
+      }
+    },
+    {
+      "id": "exp-scrum-dod-docs-minimum",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Operaatio valittaa puuttuvasta runbookista incidentin jälkeen. Mitä DoD voisi vaatia?",
+      "choices": [
+        {
+          "text": "Päivitetty operatiivinen dokumentaatio user-visible muutoksille",
+          "correct": true
+        },
+        {
+          "text": "Vain koodi riittää — docs myöhemmin",
+          "correct": false
+        },
+        {
+          "text": "Wiki-artikkeli kerran vuodessa",
+          "correct": false
+        },
+        {
+          "text": "DoD kieltää dokumentoinnin hidastavana",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD on tiimin sopimus shippable incrementistä — ops-docs voi kuulua siihen.",
+      "wrongFeedback": "Valmis increment sisältää mitä tiimi määrittelee — usein myös docs.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 34.333333333333336,
+        "ratio": 1.83,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          63,
+          35,
+          30,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dod-demo-01",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Tiimi väittää tarina valmiiksi koska koodi on mergattu. DoD vaatii demottavuuden. Mitä puuttuu?",
+      "choices": [
+        {
+          "text": "Incrment on testattu ja esiteltävissä stakeholderille — pelkkä merge ei riitä",
+          "correct": true
+        },
+        {
+          "text": "Vain code review",
+          "correct": false
+        },
+        {
+          "text": "Dokumentaatio vapaaehtoista",
+          "correct": false
+        },
+        {
+          "text": "Deploy tuotantoon pakollinen aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD määrittelee valmiuden — toimiva, integroitu increment (Scrum Guide).",
+      "wrongFeedback": "Merge mainiin ei ole DoD. Valmius = DoD täyttyy.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 3.04,
+        "correctIsLongest": true,
+        "spread": 61,
+        "lens": [
+          77,
+          16,
+          27,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dod-perf-02",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Uusi API hidastaa raporttia 10× — tarina 'done' ilman suorituskykytestiä. Miten DoD auttaa?",
+      "choices": [
+        {
+          "text": "DoD voi sisältää NFR-kriteerit (esim. p95 < 200ms) — ei hyväksytä ilman",
+          "correct": true
+        },
+        {
+          "text": "Suorituskyky on aina erillinen projekti",
+          "correct": false
+        },
+        {
+          "text": "PO hyväksyy aina hidastuksen",
+          "correct": false
+        },
+        {
+          "text": "DoD koskee vain unit testejä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD on laajennettavissa laatuattribuutteihin — tiimin sopimus.",
+      "wrongFeedback": "DoD ei rajoitu funktionaalisuuteen. NFR:t kuuluvat valmiuskriteereihin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 31.666666666666668,
+        "ratio": 2.24,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          71,
+          39,
+          28,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dod-rollback-03",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Tuotantoon mennyt feature ei täytä DoD:ia — miten tiimi reagoi sprintin jälkeen?",
+      "choices": [
+        {
+          "text": "Palautetaan backlogiin/tekninen velka korjataan — DoD on minimi laatu",
+          "correct": true
+        },
+        {
+          "text": "Merkitään done koska jo deployattu",
+          "correct": false
+        },
+        {
+          "text": "Piilotetaan bugi",
+          "correct": false
+        },
+        {
+          "text": "Peru sprintti aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD on laadun lattia — poikkeukset dokumentoidaan ja korjataan.",
+      "wrongFeedback": "Deployattu ≠ valmis. DoD-rikkomus vaatii korjauksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 3.04,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          69,
+          34,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dor-spike-04",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarina: 'Tutki miksi integraatio kaatuu' — ei acceptance criteriaa. Refinementissa mitä tehdään?",
+      "choices": [
+        {
+          "text": "Spike/timebox tutkimus — DoR vaatii riittävän ymmärryksen ennen sprinttiin ottoa",
+          "correct": true
+        },
+        {
+          "text": "Otetaan suoraan sprinttiin ilman rajoja",
+          "correct": false
+        },
+        {
+          "text": "Hylätään kaikki tutkimustyö",
+          "correct": false
+        },
+        {
+          "text": "PO kirjoittaa koodin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR varmistaa että työ on valmis aloitettavaksi — spike selventää.",
+      "wrongFeedback": "Epämääräinen tarina ei täytä DoR:ia. Timeboxattu spike on OK.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 80,
+        "avgWrongLen": 28.666666666666668,
+        "ratio": 2.79,
+        "correctIsLongest": true,
+        "spread": 60,
+        "lens": [
+          80,
+          39,
+          27,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dor-deps-05",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarina riippuu toisen tiimin API:sta jota ei ole vielä olemassa. DoR-tilanne?",
+      "choices": [
+        {
+          "text": "Ei Ready — riippuvuus ratkaistava tai mockattava ennen sprint commitmentia",
+          "correct": true
+        },
+        {
+          "text": "Ready koska PO haluaa",
+          "correct": false
+        },
+        {
+          "text": "Odota sprintin loppua",
+          "correct": false
+        },
+        {
+          "text": "Aloita koodaus ja toivo",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR sisältää riippuvuudet — ilman niitä tarina ei ole valmis.",
+      "wrongFeedback": "Blokkaava riippuvuus estää DoR:n. Selvitä ennen sprinttiä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 21.666666666666668,
+        "ratio": 3.42,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          74,
+          21,
+          21,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-dor-size-06",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Backlog-item on 21 story pointia — tiimi ei saa valmiiksi yhdessä sprintissä. Refinement-toimenpide?",
+      "choices": [
+        {
+          "text": "Pilko pienempiin tarinoihin joiden jokainen tuottaa arvoa",
+          "correct": true
+        },
+        {
+          "text": "Kasvata sprintin pituutta",
+          "correct": false
+        },
+        {
+          "text": "Jätä isoksi — velocity korjaa",
+          "correct": false
+        },
+        {
+          "text": "Poista acceptance criteria",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR: työ mahtuu sprinttiin tai on pilkottu — Scrum Guide backlog refinement.",
+      "wrongFeedback": "Liian iso item ei ole valmis. Pilkkominen on DoR-työkalu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 57,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.14,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          57,
+          25,
+          29,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-estimation-relative-07",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Manageri vaatii tuntiarvioita sprintille. Scrum-muotoilu suhteellisesta arviosta?",
+      "choices": [
+        {
+          "text": "Story pointit kuvaavat suhteellista vaivaa — absoluuttiset tunnit eivät ole sprintin mittari",
+          "correct": true
+        },
+        {
+          "text": "Muunna pisteet tunteihin julkisesti",
+          "correct": false
+        },
+        {
+          "text": "Velocity = henkilöpäivät",
+          "correct": false
+        },
+        {
+          "text": "Estimointi kielletty",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum käyttää suhteellista estimointia — tiimin consensus (Scrum Guide).",
+      "wrongFeedback": "Tuntibudjetointi ei ole sprintin työkalu. Pisteet ovat suhteellisia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 92,
+        "avgWrongLen": 26.333333333333332,
+        "ratio": 3.49,
+        "correctIsLongest": true,
+        "spread": 72,
+        "lens": [
+          92,
+          35,
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-estimation-anchor-08",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Planning pokerissa kaikki kortit eri — keskustelu pysähtyy. Facilitointi-jatko?",
+      "choices": [
+        {
+          "text": "Kysy ääripäiden perustelut — uusi kierros kunnes konsensus",
+          "correct": true
+        },
+        {
+          "text": "Ota keskiarvo automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "PO päättää yksin",
+          "correct": false
+        },
+        {
+          "text": "Ohita tarina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planning pokerin arvo on keskustelussa — eri näkemykset paljastuvat.",
+      "wrongFeedback": "Keskiarvo piilottaa riskit. Keskustele ennen uutta kierrosta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 19,
+        "ratio": 3.05,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          58,
+          29,
+          16,
+          12
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-estimation-velocity-09",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Stakeholder vertaa kahden tiimin velocitya suunnittelussa. Miksi se on harhaanjohtavaa?",
+      "choices": [
+        {
+          "text": "Pisteet ovat tiimikohtaisia — vertailu eri skaaloilla ei kerro tuottavuutta",
+          "correct": true
+        },
+        {
+          "text": "Velocity on absoluuttinen mittari",
+          "correct": false
+        },
+        {
+          "text": "Suurempi velocity = parempi tiimi aina",
+          "correct": false
+        },
+        {
+          "text": "Velocity korvaa laadun",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Velocity on ennustetyökalu tiimille — ei vertailumittari (Scrum Guide).",
+      "wrongFeedback": "Eri tiimit arvioivat eri tavalla. Velocity ei ole kilpailu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 75,
+        "avgWrongLen": 31,
+        "ratio": 2.42,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          75,
+          33,
+          38,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-sprint-goal-10",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Sprintin aikana tiimi keskittyy yksittäisiin taskeihin ilman yhteistä suuntaa. Mikä Scrum-elementti puuttuu?",
+      "choices": [
+        {
+          "text": "Sprint Goal — yhteinen tavoite joka ohjaa valintoja sprintin aikana",
+          "correct": true
+        },
+        {
+          "text": "Daily agenda PO:lta",
+          "correct": false
+        },
+        {
+          "text": "Gantt-kaavio",
+          "correct": false
+        },
+        {
+          "text": "Henkilökohtaiset OKR:t",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Goal sitoo tiimin — Scrum Guide sprint planning.",
+      "wrongFeedback": "Ilman goalia työ hajautuu. Sprint Goal on yhteinen fokus.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 67,
+        "avgWrongLen": 17.666666666666668,
+        "ratio": 3.79,
+        "correctIsLongest": true,
+        "spread": 55,
+        "lens": [
+          67,
+          19,
+          12,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-sprint-daily-11",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Daily kestää 45 minuuttia statusraportteja managerille. Miten Scrum Master korjaa?",
+      "choices": [
+        {
+          "text": "Palauta 15 min timebox — kehittäjät synkkaavat työtä, ei raportoi ylöspäin",
+          "correct": true
+        },
+        {
+          "text": "Peru daily kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Kirjoita status sähköpostiin",
+          "correct": false
+        },
+        {
+          "text": "Lisää agenda-slideja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Daily on tiimin tapahtuma — progress kohti Sprint Goalia (Scrum Guide).",
+      "wrongFeedback": "Statusraportti ≠ daily. Fokus sprint goaliin ja esteisiin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 22.333333333333332,
+        "ratio": 3.31,
+        "correctIsLongest": true,
+        "spread": 55,
+        "lens": [
+          74,
+          19,
+          28,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-sprint-review-12",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprint Review on vain PowerPoint — demo puuttuu. Mitä Scrum Guide odottaa?",
+      "choices": [
+        {
+          "text": "Toimiva increment esitellään stakeholderille — feedback backlogiin",
+          "correct": true
+        },
+        {
+          "text": "Vain metrics review",
+          "correct": false
+        },
+        {
+          "text": "PO esittää yksin",
+          "correct": false
+        },
+        {
+          "text": "Review = retro",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Review on inspect & adapt incrementille — Scrum Guide.",
+      "wrongFeedback": "Slides eivät korvaa demoa. Increment on konkreettinen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 16.333333333333332,
+        "ratio": 4.04,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          66,
+          19,
+          16,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-team-sm-13",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Scrum Master assignaa tehtäviä kehittäjille sprintin alussa. Mikä roolirikkomus?",
+      "choices": [
+        {
+          "text": "SM facilitoi — tiimi itseorganisoituu työn jakoon",
+          "correct": true
+        },
+        {
+          "text": "SM on tech lead",
+          "correct": false
+        },
+        {
+          "text": "SM omistaa backlogin",
+          "correct": false
+        },
+        {
+          "text": "SM hyväksyy DoD:n yksin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum Master palvelee tiimiä — ei hallitse työnjakoa (Scrum Guide).",
+      "wrongFeedback": "Task assignment on tiimin tehtävä. SM poistaa esteitä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 19.333333333333332,
+        "ratio": 2.53,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          49,
+          15,
+          20,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b02-scrum-team-cross-14",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tiimissä vain yksi henkilö osaa deployata — bottleneck joka sprintti. Scrum-ratkaisu?",
+      "choices": [
+        {
+          "text": "Cross-functional tiimi jakaa taidot — kuka tahansa voi edistää incrementtiä",
+          "correct": true
+        },
+        {
+          "text": "Palkkaa erillinen deploy-tiimi",
+          "correct": false
+        },
+        {
+          "text": "Odota specialistia aina",
+          "correct": false
+        },
+        {
+          "text": "Piilota deploy-taidot",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum tiimi on cross-functional — tarvittavat taidot tiimissä (Scrum Guide).",
+      "wrongFeedback": "Yhden henkilön riippuvuus rikkoo Scrum-tiimin idean. Jaa osaaminen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 75,
+        "avgWrongLen": 24.666666666666668,
+        "ratio": 3.04,
+        "correctIsLongest": true,
+        "spread": 54,
+        "lens": [
+          75,
+          30,
+          23,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-retro-action-item",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Retrospektiivin jälkeen parannusideoita ei seurata — sama ongelma toistuu. Mitä Scrum suosittelee?",
+      "choices": [
+        {
+          "text": "Valitse 1–2 konkreettista toimenpidettä seuraavaan sprinttiin ja seuraa niitä",
+          "correct": true
+        },
+        {
+          "text": "Retrospektiivi korvataan kuukausittaisella raportilla",
+          "correct": false
+        },
+        {
+          "text": "SM toteuttaa kaikki ideat yksin",
+          "correct": false
+        },
+        {
+          "text": "Retro on vain kehittäjille — PO ei osallistu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Retrospective tuottaa parannuksia — toimenpiteet pitää viedä käytäntöön.",
+      "wrongFeedback": "Retro ilman follow-upia on turhaa venttiiliä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 42.666666666666664,
+        "ratio": 1.8,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          77,
+          53,
+          31,
+          44
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-backlog-refine-spike",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarina vaatii teknistä selvitystä ennen estimointia — arkkitehtuuri epäselvä. Mitä teette?",
+      "choices": [
+        {
+          "text": "Spike / tutkimustarinoita refinementiin — aikarajattu oppiminen",
+          "correct": true
+        },
+        {
+          "text": "Arvaatte 13 pistettä ja aloitatte",
+          "correct": false
+        },
+        {
+          "text": "Siirrätte backlogin pohjalle ilman selvitystä",
+          "correct": false
+        },
+        {
+          "text": "PO arvioi teknisen riskin yksin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Empiirinen prosessi: spike tuottaa tietoa ennen sitoutumista.",
+      "wrongFeedback": "Ilman selvitystä estimointi on arvailua.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 36.333333333333336,
+        "ratio": 1.73,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          63,
+          33,
+          45,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-increment-done-criteria",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprintin lopussa 'melkein valmis' feature demoissaan mutta ei tuotantokelpoista. Mikä artefakti puuttuu?",
+      "choices": [
+        {
+          "text": "Selkeä Definition of Done jota koko tiimi noudattaa incrementissä",
+          "correct": true
+        },
+        {
+          "text": "Erillinen QA-tiimi sprintin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Pidemmät sprintit",
+          "correct": false
+        },
+        {
+          "text": "Vain PO:n suullinen hyväksyntä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD määrittää milloin työ on valmista incrementiksi — Scrum Guide.",
+      "wrongFeedback": "Ilman yhteistä DoD:ta 'valmis' tarkoittaa eri asioita eri ihmisille.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 27.333333333333332,
+        "ratio": 2.38,
+        "correctIsLongest": true,
+        "spread": 48,
+        "lens": [
+          65,
+          35,
+          17,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-team-stable-membership",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Johto kiertää kehittäjiä projektien välillä viikoittain. Miksi Scrum Master vastustaa?",
+      "choices": [
+        {
+          "text": "Vakaa tiimi rakentaa velocityä ja luottamusta — jatkuva vaihto hidastaa",
+          "correct": true
+        },
+        {
+          "text": "Scrum vaatii 20 hengen tiimin",
+          "correct": false
+        },
+        {
+          "text": "Kehittäjiä ei saa koskaan siirtää",
+          "correct": false
+        },
+        {
+          "text": "Vain PO:n pitää pysyä vakaana",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum Team on cross-functional yksikkö — vakaus parantaa ennustettavuutta.",
+      "wrongFeedback": "Tiimin jatkuva uudelleenmuodostus syö empiiristä oppimista.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 2.34,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          71,
+          29,
+          33,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-events-timebox-review",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Sprint Review venyy kolmeen tuntiin — sidosryhmät väsyvät. Timebox?",
+      "choices": [
+        {
+          "text": "Enintään 4 h kuukausittaiselle sprintille — skaalaa sprintin pituuden mukaan",
+          "correct": true
+        },
+        {
+          "text": "Review saa kestää rajattomasti",
+          "correct": false
+        },
+        {
+          "text": "15 min kuten daily",
+          "correct": false
+        },
+        {
+          "text": "Review poistetaan — demo Slackissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum eventit ovat timeboxattuja — review max 4h / 1 kk sprint.",
+      "wrongFeedback": "Liian pitkä review heikentää palautteen laatua.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 76,
+        "avgWrongLen": 27.333333333333332,
+        "ratio": 2.78,
+        "correctIsLongest": true,
+        "spread": 58,
+        "lens": [
+          76,
+          30,
+          18,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-empirical-inspect-adapt",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tuote ei löydä product-market fitiä — tiimi jatkaa sprintejä ilman suuntaa. Empiirinen periaate?",
+      "choices": [
+        {
+          "text": "Inspect & adapt jokaisessa eventissä — muuta suuntaa datan perusteella",
+          "correct": true
+        },
+        {
+          "text": "Lukitse roadmap vuodeksi etukäteen",
+          "correct": false
+        },
+        {
+          "text": "Lopeta Scrum ja siirry waterfalliin",
+          "correct": false
+        },
+        {
+          "text": "Nopeuta sprinttejä 1 päivään",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum perustuu empirismiin — läpinäkyvyys, tarkastelu, sopeutuminen.",
+      "wrongFeedback": "Scrum ei ole mekaaninen sprintti-kone ilman oppimista.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.16,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          70,
+          34,
+          35,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-tech-debt-backlog",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tekninen velka kasaaantuu — PO sanoo 'ei aikaa'. Miten tuot backlogiin?",
+      "choices": [
+        {
+          "text": "Nimeä velka näkyviksi backlog-tarinoiksi kustannuksineen — PO priorisoi",
+          "correct": true
+        },
+        {
+          "text": "Piilota velka branchiin ilman tarinaa",
+          "correct": false
+        },
+        {
+          "text": "Kehittäjät korjaavat salaa ylitöinä",
+          "correct": false
+        },
+        {
+          "text": "Velka ei kuulu Scrumiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Product Backlog sisältää kaiken työn — velka tarvitsee läpinäkyvyyden.",
+      "wrongFeedback": "Piilotettu velka räjähtää myöhemmin kalliimpana.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 31.666666666666668,
+        "ratio": 2.24,
+        "correctIsLongest": true,
+        "spread": 48,
+        "lens": [
+          71,
+          37,
+          35,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-sprint-goal-one",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Sprintillä on viisi erillistä 'tavoitetta' eri tiimiosille. Mikä on Sprint Goal -ohje?",
+      "choices": [
+        {
+          "text": "Yksi yhteinen sprint goal — yhdistää tiimin ja ohjaa dailya",
+          "correct": true
+        },
+        {
+          "text": "Jokaisella kehittäjällä oma goal",
+          "correct": false
+        },
+        {
+          "text": "Goal valitaan sprintin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Goal on valinnainen Scrumissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Goal on yksi cohesiivinen tavoite — Scrum Guide 2020.",
+      "wrongFeedback": "Useita tavoitteita hajottaa fokuksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 1.95,
+        "correctIsLongest": true,
+        "spread": 30,
+        "lens": [
+          59,
+          32,
+          30,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-sm-servant-leader",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Scrum Master antaa päivittäin tehtävälistoja kehittäjille. Roolivirhe?",
+      "choices": [
+        {
+          "text": "SM fasilitoi ja poistaa impedimentteja — ei delegoi tehtäviä",
+          "correct": true
+        },
+        {
+          "text": "SM on projektipäällikkö",
+          "correct": false
+        },
+        {
+          "text": "SM omistaa tekniset päätökset",
+          "correct": false
+        },
+        {
+          "text": "SM raportoi johdolle sprintin edistymisestä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum Master on servant leader — tukee tiimiä, ei hallitse työtä.",
+      "wrongFeedback": "Task delegation on manager-roolia, ei SM:ää.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 60,
+        "avgWrongLen": 31.666666666666668,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          60,
+          23,
+          29,
+          43
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-estimation-relative",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Stakeholder vaatii tuntiarvioita sprint-suunnitteluun. Miksi tiimi käyttää story pointeja?",
+      "choices": [
+        {
+          "text": "Suhteellinen estimointi — vertaa tarinoita toisiinsa, ei lupaa tunteja",
+          "correct": true
+        },
+        {
+          "text": "Story point = tunti × 1.5",
+          "correct": false
+        },
+        {
+          "text": "Tuntiarvio on Scrumissa pakollinen",
+          "correct": false
+        },
+        {
+          "text": "Pointit korvaavat velocityn",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Estimointi on suhteellista — epävarmuus pienemmillä tarinoilla.",
+      "wrongFeedback": "Tuntiarviot antavat väärän tarkkuuden illuusion.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 28.666666666666668,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          70,
+          25,
+          34,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-dor-testable",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarina: 'Paranna suorituskykyä'. Refinementissa puuttuu hyväksymiskriteerit. DoR-korjaus?",
+      "choices": [
+        {
+          "text": "Määrittele mitattavat kriteerit (esim. p95 < 200 ms) ennen sprinttiin ottoa",
+          "correct": true
+        },
+        {
+          "text": "Ota sprinttiin — kriteerit myöhemmin",
+          "correct": false
+        },
+        {
+          "text": "PO hyväksyy ilman kriteereitä",
+          "correct": false
+        },
+        {
+          "text": "DoR ei koske epäselviä tarinoita",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Definition of Ready: tarina on testattavissa ja arvioitavissa.",
+      "wrongFeedback": "Epämääräinen tarina tuottaa kiistanalaisen 'valmiin'.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 75,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 2.32,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          75,
+          36,
+          29,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-dod-automation-gate",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tuotantoon pääsee regressio koska DoD ei vaadi CI:tä. Mitä lisätte DoD:hen?",
+      "choices": [
+        {
+          "text": "Automaattiset testit vihreänä CI:ssä ennen mergeä / releaseä",
+          "correct": true
+        },
+        {
+          "text": "Manuaalinen 'works on my machine' -check",
+          "correct": false
+        },
+        {
+          "text": "DoD on vain dokumentaatiolle",
+          "correct": false
+        },
+        {
+          "text": "Testit ajetaan kerran vuodessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD varmistaa incrementin laadun — automaatio skaalaa.",
+      "wrongFeedback": "Ilman CI-porttia laatu riippuu yksilöstä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 60,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 1.84,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          60,
+          40,
+          28,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-velocity-forecast",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 4,
+      "prompt": "Johto käyttää velocityä henkilökohtaiseen suorituskykyyn. Mikä on oikea käyttö?",
+      "choices": [
+        {
+          "text": "Tiimitason ennuste seuraaville sprinteille — ei yksilövertailuun",
+          "correct": true
+        },
+        {
+          "text": "Velocity määrittää bonukset",
+          "correct": false
+        },
+        {
+          "text": "Velocity pitää kasvattaa joka sprintti",
+          "correct": false
+        },
+        {
+          "text": "Velocity korvaa sprint goalin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Velocity on empiiristä dataa suunnitteluun — Scrum Guide varoittaa väärinkäytöstä.",
+      "wrongFeedback": "Velocity vertailu henkilöiden välillä vääristää estimointia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 31.333333333333332,
+        "ratio": 2.04,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          64,
+          27,
+          38,
+          29
+        ]
+      }
+    },
+    {
+      "id": "b03-scrum-artifacts-transparency",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Product Backlog on jaettu kolmessa eri työkalussa — kukaan ei näe kokonaiskuvaa. Scrum-arvo?",
+      "choices": [
+        {
+          "text": "Transparency — yksi totuuden lähde backlogille sidosryhmille",
+          "correct": true
+        },
+        {
+          "text": "Piilotettu backlog nopeuttaa kehitystä",
+          "correct": false
+        },
+        {
+          "text": "Vain PO näkee backlogin",
+          "correct": false
+        },
+        {
+          "text": "Artefaktit ovat valinnaisia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum perustuu läpinäkyvyyteen — backlog, sprint backlog, increment.",
+      "wrongFeedback": "Hajautettu backlog heikentää inspect & adapt -kykyä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 60,
+        "avgWrongLen": 29.333333333333332,
+        "ratio": 2.05,
+        "correctIsLongest": true,
+        "spread": 37,
+        "lens": [
+          60,
+          38,
+          23,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-refinement-backlog-order",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Product Backlog on sekava — tiimi ei tiedä mitä refinenoida seuraavaksi. Kuka priorisoi backlog-järjestyksen?",
+      "choices": [
+        {
+          "text": "Product Owner — tiimi auttaa selkeyttämään, mutta prioriteetti on PO:lla",
+          "correct": true
+        },
+        {
+          "text": "Scrum Master yksin",
+          "correct": false
+        },
+        {
+          "text": "Kehittäjä jolla eniten avoimia tikettejä",
+          "correct": false
+        },
+        {
+          "text": "Aakkosjärjestys reiluuden vuoksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PO vastaa backlogin sisällöstä ja järjestyksestä — Scrum Guide Product Backlog.",
+      "wrongFeedback": "Tiimi arvioi työmäärän, mutta prioriteetti on PO:n vastuulla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 30,
+        "ratio": 2.4,
+        "correctIsLongest": true,
+        "spread": 54,
+        "lens": [
+          72,
+          18,
+          40,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-daily-timebox",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Daily Scrum venyy 45 minuuttiin tekniseksi debug-sessioksi. Mitä Scrum Guide sanoo?",
+      "choices": [
+        {
+          "text": "Enintään 15 minuuttia — impedimentit käsitellään dailyn jälkeen",
+          "correct": true
+        },
+        {
+          "text": "Daily voi kestää tunnin jos paljon blokkeria",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master päättää keston joka päivä",
+          "correct": false
+        },
+        {
+          "text": "Daily korvataan Slack-viesteillä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Daily Scrum on 15 min timebox — tarkoitus on synkronoida, ei ratkaista kaikkea.",
+      "wrongFeedback": "Pitkä daily syö sprint-työajan. Blokkerit erilliseen sessioon.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 38,
+        "ratio": 1.66,
+        "correctIsLongest": true,
+        "spread": 31,
+        "lens": [
+          63,
+          44,
+          38,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-retro-action-items",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Retrospektiivin jälkeen samat ongelmat toistuvat sprint toisensa jälkeen. Mikä puuttuu?",
+      "choices": [
+        {
+          "text": "Konkreettiset parannustoimenpiteet omistajineen seuraavaan sprintiin",
+          "correct": true
+        },
+        {
+          "text": "Enemmän post-it-lappuja",
+          "correct": false
+        },
+        {
+          "text": "Retrospektiivin peruminen",
+          "correct": false
+        },
+        {
+          "text": "Vain Scrum Master puhuu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Retro tuottaa actionable parannuksia — ilman seurantaa se on turha.",
+      "wrongFeedback": "Retro ilman action itemeja on valitus sessio. Seuraa parannuksia sprintissä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 68,
+        "avgWrongLen": 23.666666666666668,
+        "ratio": 2.87,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          68,
+          23,
+          25,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-velocity-not-commitment",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Johto vaatii kiinteän story point -lupauksen seuraavalle kvartaalille velocityn perusteella. Mikä on oikea vastaus?",
+      "choices": [
+        {
+          "text": "Velocity on historiallinen mittari, ei sitova lupaus — epävarmuus tunnustetaan",
+          "correct": true
+        },
+        {
+          "text": "Velocity on sopimus jota ei saa rikkoa",
+          "correct": false
+        },
+        {
+          "text": "Tuplaa velocity tavoitteeksi",
+          "correct": false
+        },
+        {
+          "text": "Lopeta story pointit — käytä tunteja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Velocity auttaa suunnittelussa mutta ei ole SLA — Scrum Guide korostaa empirismiä.",
+      "wrongFeedback": "Velocity vaihtelee. Sitova lupaus vääristää arviointia ja laatua.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 78,
+        "avgWrongLen": 34,
+        "ratio": 2.29,
+        "correctIsLongest": true,
+        "spread": 50,
+        "lens": [
+          78,
+          38,
+          28,
+          36
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-pbi-invest",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Backlog item on liian suuri sprinttiin: epäselvä, ei testattavissa. Refinementissa mitä tarkistatte?",
+      "choices": [
+        {
+          "text": "INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable",
+          "correct": true
+        },
+        {
+          "text": "Vain arvio story pointeissa riittää",
+          "correct": false
+        },
+        {
+          "text": "Jaetaan aina 13 pisteeseen",
+          "correct": false
+        },
+        {
+          "text": "Odotetaan sprintin alkua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "INVEST auttaa halkomaan ja selkeyttämään user storyja — yleinen Scrum-käytäntö.",
+      "wrongFeedback": "Iso epäselvä item ei ole sprint-valmis. INVEST checklist auttaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 69,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          69,
+          35,
+          26,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-sm-facilitator",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Scrum Master alkaa jakaa teknisiä tehtäviä kehittäjille dailyssa. Onko tämä Scrum Masterin rooli?",
+      "choices": [
+        {
+          "text": "Ei — SM fasilitoi Scrumia ja poistaa impedimenttejä, ei hallitse teknistä työnjakoa",
+          "correct": true
+        },
+        {
+          "text": "Kyllä — SM on tiimin tekninen johtaja",
+          "correct": false
+        },
+        {
+          "text": "SM päättää kuka koodaa mitäkin",
+          "correct": false
+        },
+        {
+          "text": "Vain PO saa puhua dailyssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum Master palvelee tiimiä fasilitoimalla — Scrum Guide Scrum Master.",
+      "wrongFeedback": "SM ei ole project manager eikä tech lead. Tiimi itse-organisoituu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 83,
+        "avgWrongLen": 31,
+        "ratio": 2.68,
+        "correctIsLongest": true,
+        "spread": 57,
+        "lens": [
+          83,
+          37,
+          30,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-backlog-refinement-ongoing",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprint Planning venyy koska tarinat eivät ole valmiita. Milloin backlog-refinement pitäisi tapahtua?",
+      "choices": [
+        {
+          "text": "Jatkuvasti sprintin aikana — ei vain planning-viikolla",
+          "correct": true
+        },
+        {
+          "text": "Vain kerran vuodessa",
+          "correct": false
+        },
+        {
+          "text": "Vain Scrum Masterin lomalla",
+          "correct": false
+        },
+        {
+          "text": "Refinement kielletty — kaikki planningissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Backlog refinement on jatkuva aktiviteetti — valmiit itemit nopeuttavat planningia.",
+      "wrongFeedback": "Odottaa planningiin = hukattu aika. Refinoi jatkuvasti.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 54,
+        "avgWrongLen": 29.666666666666668,
+        "ratio": 1.82,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          54,
+          20,
+          27,
+          42
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-sprint-goal-one",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Sprintille valitaan viisi erillistä tavoitetta eri stakeholderille. Mikä on Scrumin suositus sprint goaliin?",
+      "choices": [
+        {
+          "text": "Yksi yhteinen sprint goal joka ohjaa tiimiä — tarinat tukevat sitä",
+          "correct": true
+        },
+        {
+          "text": "Yksi goal per kehittäjä",
+          "correct": false
+        },
+        {
+          "text": "Goal valinnainen jos backlog on täynnä",
+          "correct": false
+        },
+        {
+          "text": "Goal kirjoitetaan vasta sprintin jälkeen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint goal antaa fokuksen — Scrum Guide Sprint Goal.",
+      "wrongFeedback": "Useita tavoitteita hajottaa tiimin. Yksi goal, yhteinen suunta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 33.666666666666664,
+        "ratio": 1.96,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          66,
+          23,
+          38,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-cross-functional-delivery",
+      "chapter": "scrum-team",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tiimi viimeistelee koodin mutta increment jää testaamatta ja dokumentoimatta. Täyttääkö se DoD:ia?",
+      "choices": [
+        {
+          "text": "Ei — cross-functional tiimi toimittaa valmiin incrementin DoD:n mukaan",
+          "correct": true
+        },
+        {
+          "text": "Kyllä jos koodi compiloituu",
+          "correct": false
+        },
+        {
+          "text": "Testaus on erillisen QA-tiimin vastuulla aina",
+          "correct": false
+        },
+        {
+          "text": "DoD koskee vain PO:ta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Increment on DoD:n mukaisesti valmis — Scrum Guide Increment.",
+      "wrongFeedback": "Keskeneräinen työ ei ole shippable. Tiimi vastaa kokonaisuudesta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 31,
+        "ratio": 2.26,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          70,
+          27,
+          45,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-dor-acceptance-clear",
+      "chapter": "scrum-dor",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tarina siirtyy sprinttiin ilman hyväksymiskriteereitä. Mid-sprint väittelyt: 'onko valmis?'. Miten estät?",
+      "choices": [
+        {
+          "text": "Definition of Ready vaatii selkeät acceptance criteria ennen sprinttiin ottoa",
+          "correct": true
+        },
+        {
+          "text": "Kysytään PO:lta joka commit jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Hyväksymiskriteerit kirjoitetaan release:n jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Valmius = developer sanoo valmis",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoR varmistaa että tarina on työstettävissä — yleinen Scrum-käytäntö.",
+      "wrongFeedback": "Ilman kriteerejä 'valmis' on subjektiivinen. DoR ennen sprinttiä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 39,
+        "ratio": 1.97,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          77,
+          35,
+          50,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-dod-regression-gate",
+      "chapter": "scrum-dod",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Tuotantoon meni regressio koska DoD ei sisällä automaattista testiporttia. Mitä tiimi lisää DoD:hen?",
+      "choices": [
+        {
+          "text": "CI:ssä vihreä regressiotestisarja ennen mergeä/incrementtiä",
+          "correct": true
+        },
+        {
+          "text": "Vain manuaalinen smoke test kerran kuussa",
+          "correct": false
+        },
+        {
+          "text": "DoD on vain PO:n henkilökohtainen lista",
+          "correct": false
+        },
+        {
+          "text": "Regressio kuuluu seuraavaan sprinttiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DoD määrittelee valmiuden — automaattiset testit estävät regressioita.",
+      "wrongFeedback": "Ilman testiporttia increment ei ole valmis. DoD on tiimin laatustandardi.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 39.333333333333336,
+        "ratio": 1.5,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          59,
+          41,
+          39,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-poker-consensus",
+      "chapter": "scrum-estimation",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Planning Pokerissa arviot hajallaan 2 ja 13 välillä. Mitä teette seuraavaksi?",
+      "choices": [
+        {
+          "text": "Keskustelitte eroista — suurin ja pienin perustelevat, uusi kierros",
+          "correct": true
+        },
+        {
+          "text": "Otetaan keskiarvo automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master päättää luvun",
+          "correct": false
+        },
+        {
+          "text": "Hylätään tarina ikuisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Planning Poker hyödyntää keskustelua — eri näkemykset paljastavat riskit.",
+      "wrongFeedback": "Keskiarvo piilottaa epävarmuuden. Keskustelu on pokerin ydin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 67,
+        "avgWrongLen": 28,
+        "ratio": 2.39,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          67,
+          33,
+          26,
+          25
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-review-feedback",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprint Review päättyy ilman stakeholder-palautetta — vain demot. Mitä Scrum Guide odottaa?",
+      "choices": [
+        {
+          "text": "Collaboration: backlog päivittyy palautteen perusteella",
+          "correct": true
+        },
+        {
+          "text": "Review on vain show-and-tell ilman keskustelua",
+          "correct": false
+        },
+        {
+          "text": "Palaute kerätään seuraavassa retro:ssa",
+          "correct": false
+        },
+        {
+          "text": "Vain PO saa kommentoida",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Review on inspect & adapt tilaisuus — Scrum Guide Sprint Review.",
+      "wrongFeedback": "Demo ilman palautetta hukkaa adaptointimahdollisuuden.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 35.666666666666664,
+        "ratio": 1.54,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          55,
+          46,
+          38,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b04-scrum-events-timebox",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Uusi tiimi kysyy: 'Voimmeko skipata Sprint Review jos ei mitään uutta?' Vastaus Scrum Guiden mukaan?",
+      "choices": [
+        {
+          "text": "Ei — kaikki viisi Scrum eventiä pidetään sprintin aikana timeboxattuna",
+          "correct": true
+        },
+        {
+          "text": "Kyllä jos velocity on korkea",
+          "correct": false
+        },
+        {
+          "text": "Vain joka toinen sprintti",
+          "correct": false
+        },
+        {
+          "text": "Review korvataan sähköpostilla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Scrum eventit ovat pakollinen runko empirismille — Scrum Guide Events.",
+      "wrongFeedback": "Eventien skipaaminen heikentää inspect-adapt sykliä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 2.53,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          70,
+          28,
+          25,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b05-scrum-daily-timebox",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 2,
+      "prompt": "Daily Scrum venyy 45 minuuttiin tekniseen keskusteluun. Mitä Scrum Guide sanoo tapahtuman tarkoituksesta?",
+      "choices": [
+        {
+          "text": "15 min aikataulu — tiimi synkronoi edistymisen sprint goalia kohti",
+          "correct": true
+        },
+        {
+          "text": "Daily on sprintin ainoa suunnittelutapahtuma",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master raportoi johdolle dailyssa",
+          "correct": false
+        },
+        {
+          "text": "Daily korvaa sprint reviewn",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Daily on tiimin tapahtuma — inspect progress toward Sprint Goal (Scrum Guide).",
+      "wrongFeedback": "Daily ei ole statusraportti eikä tekninen workshop. Pidä fokus ja aikaraja.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 36.666666666666664,
+        "ratio": 1.8,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          66,
+          44,
+          39,
+          27
+        ]
+      }
+    },
+    {
+      "id": "b05-scrum-backlog-order",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Product Backlog on sekava — tiimi ei tiedä seuraavaa prioriteettia. Kenen vastuulla järjestys?",
+      "choices": [
+        {
+          "text": "Product Owner — vastaa backlogin sisällöstä ja priorisoinnista",
+          "correct": true
+        },
+        {
+          "text": "Kehittäjä joka on vapaa ensin",
+          "correct": false
+        },
+        {
+          "text": "Scrum Master priorisoi teknisen velan mukaan",
+          "correct": false
+        },
+        {
+          "text": "Prioriteetti on aina FIFO — vanhin ensin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PO omistaa Product Backlogin — Scrum Guide accountabilities.",
+      "wrongFeedback": "Tiimi ehdottaa, mutta PO päättää arvon ja järjestyksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 62,
+        "avgWrongLen": 37.666666666666664,
+        "ratio": 1.65,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          62,
+          29,
+          44,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b05-scrum-planning-capacity",
+      "chapter": "scrum-sprint",
+      "domain": "scrum",
+      "difficulty": 3,
+      "prompt": "Sprint Planningissa tiimi ottaa liikaa työtä — lomat ja tuki unohtuvat. Mikä on oikea lähestymistapa?",
+      "choices": [
+        {
+          "text": "Tiimi arvioi kapasiteettinsa ja valitsee backlog-itemit sprint goalin pohjalta",
+          "correct": true
+        },
+        {
+          "text": "PO valitsee kaikki korkeimman prioriteetin itemit riippumatta kapasiteetista",
+          "correct": false
+        },
+        {
+          "text": "Velocity edellisestä sprintistä on ehdoton lupaus",
+          "correct": false
+        },
+        {
+          "text": "Lasketaan story pointit tunteina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sprint Planning: Why + What + How — tiimi sitoutuu realistiseen työmäärään.",
+      "wrongFeedback": "Kapasiteetti vaihtelee. Tiimi arvioi mitä sprint goaliin mahtuu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 78,
+        "avgWrongLen": 52.333333333333336,
+        "ratio": 1.49,
+        "correctIsLongest": true,
+        "spread": 46,
+        "lens": [
+          78,
+          76,
+          49,
+          32
+        ]
+      }
+    }
+  ]
+}

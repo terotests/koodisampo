@@ -1,0 +1,140 @@
+{
+  "bank": "cpp-best-practices.json",
+  "rewrites": [
+    {
+      "id": "tools-auto",
+      "choices": [
+        { "text": "Kääntäjä päättelee tyypin alustuslausekkeesta (type deduction)", "correct": true },
+        { "text": "Muuttuja rekisteröityy automaattisesti globaaliksi näkyvyydellä", "correct": false },
+        { "text": "Kaikki auto-muuttujat normalisoidaan int-tyypiksi käännöksessä", "correct": false },
+        { "text": "Korvaa typedef/using-alias -määritykset lähdekoodissa kokonaan", "correct": false }
+      ]
+    },
+    {
+      "id": "style-pass-int",
+      "choices": [
+        { "text": "const int&-viittauksena — välttää kopioinnin myös primitiiveissä", "correct": false },
+        { "text": "By-value parametrina: explicit MyClass(int value)", "correct": true },
+        { "text": "int*-osoittimena jotta kutsuja voi muuttaa alkuperäistä arvoa", "correct": false },
+        { "text": "std::shared_ptr<int> jakamaan omistajuuden konstruktorin kanssa", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-unique-ptr",
+      "choices": [
+        { "text": "malloc/free -pari ilman RAII:ta — eksplisiittinen vapautus", "correct": false },
+        { "text": "std::unique_ptr yhdistettynä make_unique-factoryyn", "correct": true },
+        { "text": "raw new ilman deleteä hot pathissa — vähemmän overheadia", "correct": false },
+        { "text": "volatile T* estää kääntäjän optimoimasta osoitinvirheitä", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-static-cast",
+      "choices": [
+        { "text": "C-cast on aina nopeampi kuin static_cast tuotantokäännöksessä", "correct": false },
+        { "text": "static_cast toimii vain polymorfisten osoitintyyppien kanssa", "correct": false },
+        { "text": "C++-castit on helpompi grepata ja ne rajaavat cast-tyypin", "correct": true },
+        { "text": "Käytännössä ei eroa — valitse kumpi tahansa tyyli projektissa", "correct": false }
+      ]
+    },
+    {
+      "id": "maintain-const-method",
+      "choices": [
+        { "text": "Merkitse metodi volatile jos olion tilaa ei muuteta", "correct": false },
+        { "text": "Lisää const metodin sulkevan lainausmerkin jälkeen", "correct": true },
+        { "text": "Käytä static-avainsanaa kaikissa gettereissä automaattisesti", "correct": false },
+        { "text": "mutable-jäsen sallii muutokset ilman const-merkintää metodissa", "correct": false }
+      ]
+    },
+    {
+      "id": "portability-explicit",
+      "choices": [
+        { "text": "Implisiittinen yhden argumentin konstruktori — vähemmän boilerplatea", "correct": false },
+        { "text": "explicit-konstruktori estää hiljaiset implisiittiset muunnokset", "correct": true },
+        { "text": "friend-funktio korvaa explicit-merkinnän API-rajapinnassa", "correct": false },
+        { "text": "operator int() tekee tyypin käytön API-kutsuissa joustavaksi", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-variadic",
+      "choices": [
+        { "text": "printf-tyylinen C-vararg on turvallisin kun formaatti on vakio", "correct": false },
+        { "text": "Variadic template tai std::format parametrisoi tyyppiturvallisesti", "correct": true },
+        { "text": "va_list + vsnprintf riittää modernissa C++-rajapinnassa", "correct": false },
+        { "text": "Macro __VA_ARGS__ korvaa tarpeen tyypitettyihin argumentteihin", "correct": false }
+      ]
+    },
+    {
+      "id": "tools-enum-class",
+      "choices": [
+        { "text": "enum class rajaa arvot tyyppiin — ei vuoda globaaliin namespaceen", "correct": true },
+        { "text": "Perinteinen enum riittää kun nimet etuliitteellä (RED_COLOR)", "correct": false },
+        { "text": "#define RED 1 välttää nimiristiriidat header-tiedostoissa", "correct": false },
+        { "text": "namespace { enum Color } on sama kuin enum class ilman class-sanaa", "correct": false }
+      ]
+    },
+    {
+      "id": "maintain-string-view",
+      "choices": [
+        { "text": "std::string_view parametrina kun tarvitset vain lukuoikeuden ilman kopiota", "correct": true },
+        { "text": "std::string_view jäsenmuuttujana — kevyt korvike std::stringille", "correct": false },
+        { "text": "const char* aina parempi kuin string_view legacy-API:ssa", "correct": false },
+        { "text": "string_view omistaa merkkijonon automaattisesti kontissa", "correct": false }
+      ]
+    },
+    {
+      "id": "correct-signed-unsigned",
+      "choices": [
+        { "text": "int on aina turvallisempi silmukkaindeksissä kuin size_t", "correct": false },
+        { "text": "size_t vs int -vertailu voi tuottaa yllättävän haaran tai ikuisen silmukan", "correct": true },
+        { "text": "Kääntäjä varoittaa aina signed/unsigned-sekoituksista -Wall:lla", "correct": false },
+        { "text": "static_cast riittää — vertailu on määritelty standardissa turvalliseksi", "correct": false }
+      ]
+    },
+    {
+      "id": "style-override",
+      "choices": [
+        { "text": "override varmistaa kääntäjällä että virtual-metodi ylikirjoitetaan", "correct": true },
+        { "text": "virtual avainsana metodin alussa riittää — override on redundantti", "correct": false },
+        { "text": "final korvaa override-merkinnän kaikissa aliluokissa", "correct": false },
+        { "text": "using Base::foo; tuo automaattisesti oikean ylikirjoituksen", "correct": false }
+      ]
+    },
+    {
+      "id": "safety-make-shared",
+      "choices": [
+        { "text": "shared_ptr<T>(new T) on aina turvallisempi kuin make_shared", "correct": false },
+        { "text": "make_shared yhdistää objektin ja control blockin yhteen allokaatioon", "correct": true },
+        { "text": "make_shared estää custom deleterin käytön kokonaan", "correct": false },
+        { "text": "raw new + shared_ptr on nopeampi kuin make_shared monisäikeisessä", "correct": false }
+      ]
+    },
+    {
+      "id": "perf-rvo",
+      "choices": [
+        { "text": "std::move palautuslausekkeessa pakottaa aina siirron (RVO:n sijaan)", "correct": false },
+        { "text": "Kääntäjä voi elideä palautusarvon (RVO/NRVO) ilman std::move:a", "correct": true },
+        { "text": "RVO toimii vain kun palautetaan std::vector<T> kontista", "correct": false },
+        { "text": "NRVO vaatii -O3 kääntäjälipun toimiakseen standardin mukaan", "correct": false }
+      ]
+    },
+    {
+      "id": "thread-lock-guard",
+      "choices": [
+        { "text": "mutex.lock() ja unlock() erikseen — selkeämpi kuin RAII-lukitus", "correct": false },
+        { "text": "std::lock_guard tai unique_lock vapauttaa lukon poikkeuksissa", "correct": true },
+        { "text": "std::atomic korvaa mutexin kun jaettu data on yksi int", "correct": false },
+        { "text": "volatile mutex-jäsen estää data racen ilman erillistä lukitusta", "correct": false }
+      ]
+    },
+    {
+      "id": "b08-cpp-variant-visit",
+      "choices": [
+        { "text": "std::get<int> riittää kun aktiivinen tyyppi vaihtelee ajonaikaisesti", "correct": false },
+        { "text": "std::visit + overloadattu lambda-setti käsittelee jokaisen alternative-tyypin", "correct": true },
+        { "text": "dynamic_cast variant-olioon valitsee haaran kuten perinnössä", "correct": false },
+        { "text": "C-tyylinen union korvaa variantin kun tyypit mahtuvat samaan muistiin", "correct": false }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+
+Import "RangerProcess.rgr"
+Import "GameSession.rgr"
+
+class KoodisampoAppRoot @process(true) @name("app.koodisampo.root") extends RangerProcessBase {
+  fn start:void () {
+  }
+
+  fn createSession:GameSession () {
+    def session:GameSession (new GameSession)
+    if (session.__rangerId == 0) {
+      session.__rangerRegisterRoot()
+    }
+    ProcessRuntime.startInstance(session)
+    return session
+  }
+}

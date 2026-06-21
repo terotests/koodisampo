@@ -1,0 +1,23 @@
+
+class StoryView {
+  ; screen: menu | playing | feedback | ended | idle
+  def screen:string "idle"
+  def storyTitle:string ""
+  def nodeTitle:string ""
+  def bodyText:string ""
+  def nodeKind:string ""
+  def promptLine:string ""
+  def choiceIds:[string]
+  def choiceTexts:[string]
+  def codeTemplate:string ""
+  def codeHint:string ""
+  def feedbackMessage:string ""
+  def feedbackCorrect:boolean false
+  def pointsEarned:int 0
+  def totalPoints:int 0
+  def totalKarma:int 0
+  def featureGainIds:[string]
+  def featureGainKarma:[int]
+  def outcome:string ""
+  def deaths:int 0
+}

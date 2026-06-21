@@ -1,0 +1,320 @@
+{
+  "bank": "scrum-best-practices.json",
+  "rewrites": [
+    {
+      "id": "scrum-dor-criteria",
+      "choices": [
+        { "text": "Hyväksymiskriteerit ja arvioitavissa oleva koko ennen sprinttiin ottoa", "correct": true },
+        { "text": "Kaikki tuotantodata migroitu ennen kuin tarina merkitään Ready-tilaan", "correct": false },
+        { "text": "Koko epic toteutettu ennen yksittäisen tarinan ottamista sprinttiin", "correct": false },
+        { "text": "Release note julkaistu ennen backlog refinement -istuntoa tarinalle", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-team-size",
+      "choices": [
+        { "text": "Noin 7 ± 2 — yli 9 kasvattaa koordinaatiokuormaa merkittävästi", "correct": true },
+        { "text": "Aina täsmälleen 15 kehittäjää on Scrum Guiden suositus dev-tiimille", "correct": false },
+        { "text": "Mitä enemmän kehittäjiä sitä parempi velocity ilman koordinaatiokustannusta", "correct": false },
+        { "text": "2–3 riittää enterprise-projektiin koska Scrum skaalautuu pienillä tiimeillä", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-retro",
+      "choices": [
+        { "text": "Retrospektiivi — miten tiimi työskentelee ja parantaa prosessia", "correct": true },
+        { "text": "Daily ilman action itemeitä on tärkein jatkuvan parantamisen ceremonia", "correct": false },
+        { "text": "Vain sprint review asiakkaille korvaa prosessin parantamisen tarpeen", "correct": false },
+        { "text": "Kick-off kerran vuodessa riittää korvaamaan säännöllisen retrospektiivin", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-planning-poker",
+      "choices": [
+        { "text": "Piilotetut arviot ja cross-functional asiantuntijat vähentävät vinoumaa", "correct": true },
+        { "text": "PO arvioi aina yksin nopeammin kuin koko tiimi planning pokerissa", "correct": false },
+        { "text": "Story pointit muuttuvat absoluuttisiksi tunneiksi kun pokerissa konsensus", "correct": false },
+        { "text": "Subtaskien tunnit korvaavat tarinan arvon estimoinnissa paremmin kuin pokeri", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-story-split",
+      "choices": [
+        { "text": "Vertical split — läpi kerrosten end-to-end arvon tuottamiseksi", "correct": true },
+        { "text": "Vain UI ensin; API, integraatiot ja deploy jätetään seuraaviin sprinteihin", "correct": false },
+        { "text": "Kaikki edge caset samaan tarinaan nopeuttaa epic-pilkkomista ja estimointia", "correct": false },
+        { "text": "Spike korvaa acceptance criteria kun epic pilkotaan pystysuunnassa valmiiksi", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-multitask",
+      "choices": [
+        { "text": "Vältä multitasking — korkea riski/arvo ensin sprintin aikana", "correct": true },
+        { "text": "Aloita helpoista low/low tehtävistä kun sprintin paine kasvaa", "correct": false },
+        { "text": "Kaikki WIP rajatta samanaikaisesti parantaa flow'ta sprintin loppupuolella", "correct": false },
+        { "text": "Uudet interruptit aina edelle koska ne ovat usein tärkeämpiä kuin goal", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-dod-shippable",
+      "choices": [
+        { "text": "Inkrementti on tuotantokelpoinen ja integroitu ennen Done-merkintää", "correct": true },
+        { "text": "Dev on merkinnyt Jiran Done-tilaan ja se riittää Definition of Doneen", "correct": false },
+        { "text": "PO on hyväksynyt demossa suullisesti ilman testejä tai integraatiota", "correct": false },
+        { "text": "Koodi on pushattu feature-branchiin ja se täyttää DoD-minimivaatimuksen", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-dod-automated-tests",
+      "choices": [
+        { "text": "Automaattiset testit ajettu ja läpäisty CI:ssä ennen Donea", "correct": true },
+        { "text": "Vain manuaalinen smoke test tuotannossa riittää modernissa DoD-listassa", "correct": false },
+        { "text": "Testaus vasta release-haarassa on tyypillinen Definition of Done -kriteeri", "correct": false },
+        { "text": "QA testaa vasta seuraavassa sprintissä ja se kuuluu DoD-prosessiin", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-dod-no-partial",
+      "choices": [
+        { "text": "Ei Done — kaikki DoD-kriteerit täyttyvät tai tarina ei ole valmis", "correct": true },
+        { "text": "80 % Done riittää velocityyn kun sprint review lähestyy", "correct": false },
+        { "text": "Merkitään Done ja korjataan jälkikäteen ilman backlog-merkintää", "correct": false },
+        { "text": "PO voi alittaa DoD:n hätätilanteessa ilman tiimin sopimusta", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-dod-tech-debt",
+      "choices": [
+        { "text": "DoD määrittelee minimilaadun — velkaa ei piiloteta Done-merkintään", "correct": true },
+        { "text": "DoD ohitetaan kun deadline lähestyy ja velka kirjataan myöhemmin", "correct": false },
+        { "text": "Velka kirjataan erilliseen Done-lite -tilaan joka laskee velocityyn", "correct": false },
+        { "text": "DoD koskee vain uutta koodia, ei refaktorointia tai teknistä velkaa", "correct": false }
+      ]
+    },
+    {
+      "id": "scrum-team-cross-functional",
+      "choices": [
+        { "text": "Tiimillä on kaikki taidot tuottaa valmis inkrementti ilman ulkoisia käsiä", "correct": true },
+        { "text": "Jokainen dev osaa kaikkia kieliä ja teknologioita cross-functional-tiimissä", "correct": false },
+        { "text": "Tiimi raportoi usealle esimiehelle ja se tekee tiimistä cross-functional", "correct": false },
+        { "text": "Eri tiimit hoitavat dev/test/deploy erikseen ja se on Scrum-malli", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-sprint-scope-add",
+      "choices": [
+        { "text": "Tiimi neuvottelee vaikutuksen sprint goaliin yhteisymmärryksellä", "correct": true },
+        { "text": "PO voi lisätä tarinoita yksin milloin tahansa sprintin aikana ilman keskustelua", "correct": false },
+        { "text": "Hylätään aina — sprint scope on lukittu eikä koskaan muutu kesken sprintin", "correct": false },
+        { "text": "Lisätään automaattisesti ilman arviointia kun tarina on merkitty kriittiseksi", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-sprint-cancel",
+      "choices": [
+        { "text": "Vain Product Owner ennen ajan umpeutumista voi peruuttaa sprintin", "correct": true },
+        { "text": "Kuka tahansa kehittäjä dailyssa voi peruuttaa sprintin tarvittaessa", "correct": false },
+        { "text": "Scrum Master yksin päättää sprintin peruutuksesta markkinamuutoksessa", "correct": false },
+        { "text": "Sprinttiä ei voi koskaan peruuttaa kun se on kerran alkanut", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-sprint-review-stakeholders",
+      "choices": [
+        { "text": "Inspect increment ja adaptoi backlog yhteistyössä sidosryhmien kanssa", "correct": true },
+        { "text": "Statusraportti johdolle PowerPointilla on Sprint Review -tapahtuman ydin", "correct": false },
+        { "text": "Yksittäisten kehittäjien suoritusarviointi kuuluu Sprint Review -agendaan", "correct": false },
+        { "text": "Retrospektiivi tuotannosta korvaa incrementin tarkastelun sidosryhmille", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-sprint-daily-focus",
+      "choices": [
+        { "text": "15 min plan sprint goalia kohti — yksityiskohtainen debug erikseen", "correct": true },
+        { "text": "Peru daily kokonaan kun se muuttuu liian usein debug-sessioksi", "correct": false },
+        { "text": "Kaikki avaavat laptoppinsa ja koodaavat dailyssa ratkaistakseen ongelmat", "correct": false },
+        { "text": "Daily korvataan viikoittaisella statusraportilla PO:lta tiimin sijaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dor-split-story",
+      "choices": [
+        { "text": "Pilko tarina pienempiin ennen sprinttiin ottoa kun se on liian iso", "correct": true },
+        { "text": "Ota sprinttiin — suurempi tarina on tehokkaampi kuin pilkottu työ", "correct": false },
+        { "text": "Poista estimointi kokonaan kun tarina on 21 pistettä ja epäselvä", "correct": false },
+        { "text": "Siirrä seuraavaan quarteriin ilman pilkkomista DoR-best practicen mukaan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dor-acceptance-tests",
+      "choices": [
+        { "text": "Ei sprinttiin — DoR vaatii selkeät acceptance criteria ennen aloitusta", "correct": true },
+        { "text": "Aloitetaan koodaus — kriteerit kirjoitetaan myöhemmin sprintin aikana", "correct": false },
+        { "text": "PO kirjoittaa kriteerit sprintin jälkeen ennen seuraavaa reviewta", "correct": false },
+        { "text": "QA arvailee kriteerit tuotannossa kun tarinalla on vain otsikko", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dor-refinement-timebox",
+      "choices": [
+        { "text": "Timeboxaa refinement ~10 % kapasiteetista ja valmistele seuraava sprint", "correct": true },
+        { "text": "Lopeta refinement — kaikki tehdään sprint planningissa ilman valmistelua", "correct": false },
+        { "text": "Refinement vain kerran vuodessa riittää DoR-valmiuden ylläpitoon", "correct": false },
+        { "text": "Vain PO tekee refinementin yksin ilman kehittäjien osallistumista", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-team-po-authority",
+      "choices": [
+        { "text": "Product Owner — maximizes product value ja omistaa backlog-prioriteetin", "correct": true },
+        { "text": "Tech lead yksin päättää backlog-järjestyksestä refaktoroinnin yli", "correct": false },
+        { "text": "Scrum Master määrittää mitä tehdään seuraavaksi sprintissä", "correct": false },
+        { "text": "Eniten senior kehittäjä priorisoi backlogin tuoteomistajan sijasta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-team-sm-impediment",
+      "choices": [
+        { "text": "Poista impedimentti tai escaloi — SM palvelee tiimiä esteiden poistossa", "correct": true },
+        { "text": "Kirjoita uudet user storyt kun CI-putki on punaisena kolme päivää", "correct": false },
+        { "text": "Määritä sprint goal PO:n sijasta kun CI estää koko tiimin etenemisen", "correct": false },
+        { "text": "Odota että kehittäjä korjaa CI:n vapaa-ajallaan ilman eskalointia", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-estimation-no-hours",
+      "choices": [
+        { "text": "Story pointit ovat suhteellisia — älä käytä tunteja sprintin sisällä", "correct": true },
+        { "text": "1 point = 8 tuntia aina kun projektipäällikkö vaatii raporttia", "correct": false },
+        { "text": "Estimointi tapahtuu vain tunneissa koska se on Scrum-best practice", "correct": false },
+        { "text": "Velocity on sama kuin capacity tunneissa tiimin sprint-suunnittelussa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-estimation-planning-poker",
+      "choices": [
+        { "text": "Planning poker — yksilöarvio ensin, sitten keskustelu ennen konsensusta", "correct": true },
+        { "text": "Senior päättää lopullisen numeron kun arviot eroavat paljon", "correct": false },
+        { "text": "Ohitetaan estimointi kokonaan jos senior dominoi keskustelua", "correct": false },
+        { "text": "Kaikki sanovat saman numeron nopeasti jotta sessio pysyy lyhyenä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dod-regression-suite",
+      "choices": [
+        { "text": "Automaattiset regressiotestit vihreänä ennen Done-merkintää", "correct": true },
+        { "text": "Manuaalinen smoke vain release-viikolla riittää DoD:n testivaatimukseen", "correct": false },
+        { "text": "DoD ei koske testausta koska testit ovat erillinen QA-vaihe", "correct": false },
+        { "text": "Hotfix-prosessi korvaa DoD:n kun bugi olisi kaatunut regressiotestissä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dod-security-review",
+      "choices": [
+        { "text": "Security checklist / SAST gate osana DoD:ta relevanteille tarinoille", "correct": true },
+        { "text": "Turvallisuus vain erillisessä hardening-sprintissä kerran vuodessa", "correct": false },
+        { "text": "DoD koskee vain dokumentaatiota, ei turvallisuustarkistuksia", "correct": false },
+        { "text": "Pen test kerran vuodessa riittää korvaamaan DoD-security-kriteerit", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-scrum-dod-docs-minimum",
+      "choices": [
+        { "text": "Päivitetty operatiivinen dokumentaatio user-visible muutoksille DoD:ssa", "correct": true },
+        { "text": "Vain koodi riittää — docs kirjoitetaan myöhemmin erillisessä sprintissä", "correct": false },
+        { "text": "Wiki-artikkeli kerran vuodessa korvaa runbook-päivityksen DoD:ssa", "correct": false },
+        { "text": "DoD kieltää dokumentoinnin hidastavana työnä sprintin aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dod-demo-01",
+      "choices": [
+        { "text": "Increment testattu ja esiteltävissä stakeholderille — pelkkä merge ei riitä", "correct": true },
+        { "text": "Vain code review riittää DoD-demottavuusvaatimukseen kun koodi on mergattu", "correct": false },
+        { "text": "Dokumentaatio on vapaaehtoista eikä vaikuta tarinan valmiuteen", "correct": false },
+        { "text": "Deploy tuotantoon pakollinen aina ennen kuin tarina voi olla Done", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dod-perf-02",
+      "choices": [
+        { "text": "DoD voi sisältää NFR-kriteerit (esim. p95 < 200ms) ennen hyväksyntää", "correct": true },
+        { "text": "Suorituskyky on aina erillinen projekti eikä kuulu Definition of Doneen", "correct": false },
+        { "text": "PO hyväksyy aina hidastuksen ilman suorituskykytestiä DoD-prosessissa", "correct": false },
+        { "text": "DoD koskee vain unit testejä, ei suorituskykyä tai muita NFR:itä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dod-rollback-03",
+      "choices": [
+        { "text": "Palautetaan backlogiin — tekninen velka korjataan, DoD on minimi laatu", "correct": true },
+        { "text": "Merkitään done koska jo deployattu vaikka DoD-kriteerit puuttuvat", "correct": false },
+        { "text": "Piilotetaan bugi ja jatketaan seuraavaan sprinttiin ilman korjausta", "correct": false },
+        { "text": "Peru sprintti aina kun feature ei täytä DoD:ia tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dor-spike-04",
+      "choices": [
+        { "text": "Spike/timebox tutkimus — DoR vaatii ymmärryksen ennen sprinttiin ottoa", "correct": true },
+        { "text": "Otetaan suoraan sprinttiin ilman rajoja koska tutkimustyö on arvokasta", "correct": false },
+        { "text": "Hylätään kaikki tutkimustyö backlogista DoR-best practicen mukaan", "correct": false },
+        { "text": "PO kirjoittaa koodin spike-tarinassa kun acceptance criteria puuttuu", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dor-deps-05",
+      "choices": [
+        { "text": "Ei Ready — riippuvuus ratkaistava tai mockattava ennen sprint commitmentia", "correct": true },
+        { "text": "Ready koska PO haluaa ottaa tarinan sprinttiin riippuvuudesta huolimatta", "correct": false },
+        { "text": "Odota sprintin loppua ja toivo että toisen tiimin API valmistuu", "correct": false },
+        { "text": "Aloita koodaus ja toivo riippuvuuden ratkeavan sprintin aikana", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-dor-size-06",
+      "choices": [
+        { "text": "Pilko pienempiin tarinoihin joiden jokainen tuottaa arvoa erikseen", "correct": true },
+        { "text": "Kasvata sprintin pituutta jotta 21 pisteen tarina mahtuu yhteen sprinttiin", "correct": false },
+        { "text": "Jätä isoksi — velocity korjaa automaattisesti kun tarina jää kesken", "correct": false },
+        { "text": "Poista acceptance criteria jotta iso tarina mahtuu refinement-kriteereihin", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-estimation-relative-07",
+      "choices": [
+        { "text": "Story pointit kuvaavat suhteellista vaivaa — tunnit eivät ole sprintin mittari", "correct": true },
+        { "text": "Muunna pisteet tunteihin julkisesti jotta manageri saa raportin", "correct": false },
+        { "text": "Velocity = henkilöpäivät ja se on Scrum-muotoilu suhteellisesta arviosta", "correct": false },
+        { "text": "Estimointi kielletty Scrumissa koska se hidastaa sprint planningia", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-estimation-anchor-08",
+      "choices": [
+        { "text": "Kysy ääripäiden perustelut — uusi kierros kunnes konsensus saavutetaan", "correct": true },
+        { "text": "Ota keskiarvo automaattisesti kun planning poker -kortit eroavat", "correct": false },
+        { "text": "PO päättää yksin lopullisen numeron kun keskustelu pysähtyy", "correct": false },
+        { "text": "Ohita tarina estimoinnista jos konsensusta ei synny heti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-estimation-velocity-09",
+      "choices": [
+        { "text": "Pisteet ovat tiimikohtaisia — vertailu eri skaaloilla ei kerro tuottavuutta", "correct": true },
+        { "text": "Velocity on absoluuttinen mittari jolla vertaillaan tiimien tehokkuutta", "correct": false },
+        { "text": "Suurempi velocity tarkoittaa aina parempaa tiimiä suunnittelussa", "correct": false },
+        { "text": "Velocity korvaa laadun kun stakeholder vertaa kahta tiimiä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-scrum-sprint-goal-10",
+      "choices": [
+        { "text": "Sprint Goal — yhteinen tavoite joka ohjaa valintoja sprintin aikana", "correct": true },
+        { "text": "Daily agenda PO:lta korvaa sprint goalin kun tiimi keskittyy taskeihin", "correct": false },
+        { "text": "Gantt-kaavio on Scrum-elementti joka antaa yhteisen suunnan sprintille", "correct": false },
+        { "text": "Henkilökohtaiset OKR:t riittävät korvaamaan sprint goalin tiimissä", "correct": false }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2964 @@
+{
+  "instructions": "docs/question-bank-choice-rewrite-prompt.md",
+  "bank": "docker-ops.json",
+  "offset": 0,
+  "limit": 70,
+  "totalInBank": 142,
+  "biasedInSlice": 70,
+  "outputFormat": {
+    "bank": "docker-ops.json",
+    "rewrites": [
+      {
+        "id": "question-id",
+        "choices": [
+          {
+            "text": "...",
+            "correct": true
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "docker-bridge-dns",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kaksi konttia samassa user-defined bridge -verkossa. Miten `app` löytää `db`:n nimellä?",
+      "choices": [
+        {
+          "text": "Embedattu DNS resolver tunnistaa konttinimet verkossa",
+          "correct": true
+        },
+        {
+          "text": "Pakko käyttää --link (legacy)",
+          "correct": false
+        },
+        {
+          "text": "Vain /etc/hosts manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "Bridge ei tue nimiä — vain IP",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User-defined bridge tarjoaa automaattisen DNS:n konttien välillä.",
+      "wrongFeedback": "Dockerin sisäinen DNS ratkaisee palvelunimet samassa verkossa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 29,
+        "ratio": 1.83,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          53,
+          29,
+          29,
+          29
+        ]
+      }
+    },
+    {
+      "id": "docker-host-network",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontti tarvitsee kuunnella hostin porttia 53 ilman NAT:ia. Mikä network mode?",
+      "choices": [
+        {
+          "text": "--network host jakaa verkkonamespaceen",
+          "correct": true
+        },
+        {
+          "text": "bridge oletuksena riittää aina",
+          "correct": false
+        },
+        {
+          "text": "none + port mapping 53:53",
+          "correct": false
+        },
+        {
+          "text": "overlay vain Swarmissa toimii",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "host-mode = ei erillistä verkkonamespacea, suora host-portti.",
+      "wrongFeedback": "host network poistaa erillisen NIC:n — suora bind hostiin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 38,
+        "avgWrongLen": 28,
+        "ratio": 1.36,
+        "correctIsLongest": true,
+        "spread": 13,
+        "lens": [
+          38,
+          30,
+          25,
+          29
+        ]
+      }
+    },
+    {
+      "id": "docker-overlay",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 5,
+      "prompt": "Mikä verkkotyyppi yhdistää kontit eri Docker-hostien välillä klusterissa?",
+      "choices": [
+        {
+          "text": "overlay (VXLAN) klusterin hallinnassa",
+          "correct": true
+        },
+        {
+          "text": "bridge yksittäisellä hostilla riittää",
+          "correct": false
+        },
+        {
+          "text": "host mode hostien välillä",
+          "correct": false
+        },
+        {
+          "text": "macvlan vain loopbackissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Overlay rakentaa monen hostin verkon (esim. Swarm/K8s CNI).",
+      "wrongFeedback": "Bridge on single-host — overlay monihost-ympäristöön.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 37,
+        "avgWrongLen": 29,
+        "ratio": 1.28,
+        "correctIsLongest": true,
+        "spread": 12,
+        "lens": [
+          37,
+          37,
+          25,
+          25
+        ]
+      }
+    },
+    {
+      "id": "docker-compose-network",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Compose-projektissa palvelut eivät näe toisiaan. Yleisin konfiguraatiovirhe?",
+      "choices": [
+        {
+          "text": "Eri custom network tai väärä network-attribuutti",
+          "correct": true
+        },
+        {
+          "text": "Puuttuva FROM rivi Dockerfilessa",
+          "correct": false
+        },
+        {
+          "text": "Väärä timezone",
+          "correct": false
+        },
+        {
+          "text": "Liian pieni SHM — aina DNS-syy",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sama user-defined network (tai oletus compose-verkko) yhdistää palvelut.",
+      "wrongFeedback": "Palvelut eri verkoissa → DNS ei resolvaa — tarkista networks:-osio.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 48,
+        "avgWrongLen": 25.333333333333332,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          48,
+          32,
+          14,
+          30
+        ]
+      }
+    },
+    {
+      "id": "docker-exit-code",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontti poistuu heti käynnistyksen jälkeen. Ensimmäinen diagnosoitava asia?",
+      "choices": [
+        {
+          "text": "PID 1 prosessi päättyykö — foreground vs daemon",
+          "correct": true
+        },
+        {
+          "text": "Väärä Docker Hub -tag aina",
+          "correct": false
+        },
+        {
+          "text": "Vain restart: always korjaa syyn",
+          "correct": false
+        },
+        {
+          "text": "overlay network puuttuu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kontti elää vain kun PID1 pyörii etualalla (tai init wrapper).",
+      "wrongFeedback": "Klassinen: daemonize → kontti luulee työn valmistuneen → exit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 27,
+        "ratio": 1.74,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          47,
+          26,
+          32,
+          23
+        ]
+      }
+    },
+    {
+      "id": "docker-inspect-network",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 5,
+      "prompt": "Kontti on verkossa mutta ei vastaa. Miten varmistat IP:n ja gatewayn kontissa?",
+      "choices": [
+        {
+          "text": "docker inspect + docker exec ip route / ip addr",
+          "correct": true
+        },
+        {
+          "text": "Vain docker ps riittää",
+          "correct": false
+        },
+        {
+          "text": "journalctl -u docker aina näyttää kontti-IP:n",
+          "correct": false
+        },
+        {
+          "text": "docker rm ja toivo",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "inspect näyttää network settings; exec varmistaa reitityksen kontissa.",
+      "wrongFeedback": "Verkkodiagnostiikka: inspect + ip route/addr kontin sisällä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 47,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.66,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          47,
+          22,
+          45,
+          18
+        ]
+      }
+    },
+    {
+      "id": "docker-healthcheck",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Orkestraattori käynnistää uuden kontin ennen vanhan poistoa. Mikä Dockerfile-ominaisuus auttaa?",
+      "choices": [
+        {
+          "text": "HEALTHCHECK — kontti merkitään healthy vasta kun probe onnistuu",
+          "correct": true
+        },
+        {
+          "text": "EXPOSE riittää aina terveyden varmistukseen",
+          "correct": false
+        },
+        {
+          "text": "CMD sleep infinity",
+          "correct": false
+        },
+        {
+          "text": "Vain restart: always",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "HEALTHCHECK erottaa 'käynnissä' vs 'palvelee oikein'.",
+      "wrongFeedback": "EXPOSE ei testaa prosessia — HEALTHCHECK ajaa määritellyn komennon.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 27,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          63,
+          43,
+          18,
+          20
+        ]
+      }
+    },
+    {
+      "id": "docker-layer-cache",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Docker build on hidas. Mikä Dockerfile-järjestys hyödyntää layer cachea parhaiten?",
+      "choices": [
+        {
+          "text": "Harvoin muuttuvat rivit (riippuvuudet) ennen usein muuttuvia (lähdekoodi)",
+          "correct": true
+        },
+        {
+          "text": "COPY . . ensimmäisenä aina",
+          "correct": false
+        },
+        {
+          "text": "Yksi RUN joka asentaa kaiken — vähemmän layereita = nopeampi",
+          "correct": false
+        },
+        {
+          "text": "Cache ei vaikuta build-aikaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Layer invalidoituvat muuttuneesta rivistä alaspäin — optimoi järjestys.",
+      "wrongFeedback": "Aikainen COPY . . rikkoo cache joka kerta kun yksi tiedosto muuttuu.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 73,
+        "avgWrongLen": 38.333333333333336,
+        "ratio": 1.9,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          73,
+          26,
+          60,
+          29
+        ]
+      }
+    },
+    {
+      "id": "docker-multistage",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Tuotantoimage on 2 GB koska mukana kääntäjä ja dev-työkalut. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Multi-stage build — vain binary viimeiseen stageen",
+          "correct": true
+        },
+        {
+          "text": "docker commit manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "Suurempi levy palvelimella",
+          "correct": false
+        },
+        {
+          "text": "Poista vain ENTRYPOINT",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multi-stage erottaa build- ja runtime-ympäristöt — pienempi attack surface.",
+      "wrongFeedback": "Build-työkalut eivät kuulu runtime-imageen — käytä toista FROM-stagea.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 50,
+        "avgWrongLen": 25,
+        "ratio": 2,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          50,
+          27,
+          26,
+          22
+        ]
+      }
+    },
+    {
+      "id": "docker-readonly-rootfs",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 5,
+      "prompt": "Haluat rajoittaa kontin kirjoituksia levylle turvallisuussyistä. Mikä käynnistysasetus?",
+      "choices": [
+        {
+          "text": "docker run --read-only (+ tmpfs tarvittaessa)",
+          "correct": true
+        },
+        {
+          "text": "--privileged aina turvallisempi",
+          "correct": false
+        },
+        {
+          "text": "USER root nopeuttaa",
+          "correct": false
+        },
+        {
+          "text": "bridge network estää kirjoitukset",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Read-only rootfs estää hyökkääjää muokkaamasta imagea ajon aikana.",
+      "wrongFeedback": "Verkko ei suojaa filesystemia — read-only + rajatut volumet.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 27.666666666666668,
+        "ratio": 1.63,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          45,
+          31,
+          19,
+          33
+        ]
+      }
+    },
+    {
+      "id": "docker-dns-custom",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontti ei resolvaa sisäistä `corp.internal` -DNS:ää. Ensimmäinen tarkistus?",
+      "choices": [
+        {
+          "text": "docker run --dns tai daemon.json dns-asetus",
+          "correct": true
+        },
+        {
+          "text": "Vaihda network mode host aina",
+          "correct": false
+        },
+        {
+          "text": "Poista /etc/resolv.conf kontin sisältä",
+          "correct": false
+        },
+        {
+          "text": "EXPOSE 53 Dockerfilessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Docker injektoi oletusresolverin — custom DNS vaatii --dns tai daemon-konfigin.",
+      "wrongFeedback": "Sisäinen DNS ei välttämättä tule oletuksena — konfiguroi resolver.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 43,
+        "avgWrongLen": 30,
+        "ratio": 1.43,
+        "correctIsLongest": true,
+        "spread": 20,
+        "lens": [
+          43,
+          29,
+          38,
+          23
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-vol-bind-perms",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Bind mount ./config:/app/config — kontti ei saa kirjoittaa. Mikä on tyypillinen syy?",
+      "choices": [
+        {
+          "text": "Host-tiedoston UID/GID ei täsmää konttiprosessin kanssa",
+          "correct": true
+        },
+        {
+          "text": "Bind mount ei tue kirjoitusta koskaan",
+          "correct": false
+        },
+        {
+          "text": "Vain named volume voi olla rw",
+          "correct": false
+        },
+        {
+          "text": "Dockerfile EXPOSE korjaa oikeudet",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Bind mount käyttää hostin filesystem-oikeuksia — sovita UID/GID.",
+      "wrongFeedback": "Named vs bind eroaa hallinnassa — bind mount perii host-permissionit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 33,
+        "ratio": 1.67,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          55,
+          37,
+          29,
+          33
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-vol-backup",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Haluat varmuuskopioida named volumen ilman konttia käynnissä. Miten?",
+      "choices": [
+        {
+          "text": "docker run --rm -v vol:/data -v $(pwd):/backup alpine tar cvf /backup/vol.tar /data",
+          "correct": true
+        },
+        {
+          "text": "docker cp suoraan volumeen ilman mounttia",
+          "correct": false
+        },
+        {
+          "text": "Volumes ovat salattuja — backup mahdoton",
+          "correct": false
+        },
+        {
+          "text": "Vain docker commit volumeen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Apukontti mounttaa volumen ja pakkaa datan — Docker docs -kuvio.",
+      "wrongFeedback": "Volume ei ole suora polku hostilla — mounttaa apukontilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 83,
+        "avgWrongLen": 36,
+        "ratio": 2.31,
+        "correctIsLongest": true,
+        "spread": 56,
+        "lens": [
+          83,
+          41,
+          40,
+          27
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-prod-restart-policy",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Tuotantokontti kaatuu yöllä eikä nouse uudelleen host-rebootin jälkeen. Mitä lisäät run-komentoon?",
+      "choices": [
+        {
+          "text": "--restart unless-stopped (tai always)",
+          "correct": true
+        },
+        {
+          "text": "Vain --detach riittää",
+          "correct": false
+        },
+        {
+          "text": "restart ei toimi Dockerissa",
+          "correct": false
+        },
+        {
+          "text": "cron docker start riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Restart policy pitää palvelun pystyssä — unless-stopped yleinen tuotannossa.",
+      "wrongFeedback": "Ilman restart policya kontti pysyy stopped-tilassa rebootin jälkeen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 37,
+        "avgWrongLen": 26,
+        "ratio": 1.42,
+        "correctIsLongest": true,
+        "spread": 16,
+        "lens": [
+          37,
+          21,
+          27,
+          30
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-prod-healthcheck",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Load balancer lähettää liikenteen kontille joka on jumissa. Miten Docker tunnistaa unhealthy-tilan?",
+      "choices": [
+        {
+          "text": "HEALTHCHECK Dockerfilessa tai --health-cmd",
+          "correct": true
+        },
+        {
+          "text": "Vain exit code 0 riittää aina",
+          "correct": false
+        },
+        {
+          "text": "docker ps näyttää CPU:n — riittää",
+          "correct": false
+        },
+        {
+          "text": "Healthcheck on vain Swarmissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "HEALTHCHECK ajaa testikomennon säännöllisesti — unhealthy status orchestratorille.",
+      "wrongFeedback": "Prosessi voi olla elossa mutta jumissa — healthcheck testaa readinessia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 42,
+        "avgWrongLen": 30.333333333333332,
+        "ratio": 1.38,
+        "correctIsLongest": true,
+        "spread": 13,
+        "lens": [
+          42,
+          29,
+          33,
+          29
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-build-multistage",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Go-binary image on 1.2 GB koska build-työkalut mukana. Miten pienennät?",
+      "choices": [
+        {
+          "text": "Multi-stage build: builder-stage + distroless/runtime stage",
+          "correct": true
+        },
+        {
+          "text": "Poista .dockerignore",
+          "correct": false
+        },
+        {
+          "text": "Käytä latest-tagia aina",
+          "correct": false
+        },
+        {
+          "text": "Yksi stage riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multi-stage kopioi vain artifactin lopulliseen imageen — pienempi attack surface.",
+      "wrongFeedback": "Build-deps eivät kuulu runtime-imageen — erilliset staget.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 22,
+        "ratio": 2.68,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          59,
+          20,
+          23,
+          23
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-build-cache",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "CI-buildit ovat hitaita — jokainen layer invalidoituu kun package.json muuttuu. Mitä Dockerfile-järjestystä muutat?",
+      "choices": [
+        {
+          "text": "Kopioi riippuvuusmanifestit ensin, npm install, sitten lähdekoodi",
+          "correct": true
+        },
+        {
+          "text": "COPY . . heti alussa",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki cache --no-cache",
+          "correct": false
+        },
+        {
+          "text": "Yhdistä kaikki RUN yhdeksi riviksi aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Layer cache invalidoituu muuttuneesta layerista alaspäin — optimoi muuttumaton ensin.",
+      "wrongFeedback": "Aikainen COPY . invalidoi cachea jokaisella commitilla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 29.666666666666668,
+        "ratio": 2.19,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          65,
+          20,
+          30,
+          39
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-prod-readonly-rootfs",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Security review vaatii immutable root filesystemin. Mikä run-optio?",
+      "choices": [
+        {
+          "text": "--read-only + tmpfs mountit kirjoitettaville poluille",
+          "correct": true
+        },
+        {
+          "text": "--privileged turvallisin",
+          "correct": false
+        },
+        {
+          "text": "Read-only estää kaiken — ei voi ajaa",
+          "correct": false
+        },
+        {
+          "text": "Vain Alpine base image riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Read-only rootfs + tmpfs /tmp yms. rajoittaa persistoituja muutoksia.",
+      "wrongFeedback": "Read-only vaatii erilliset writable mountit — ei estä ajoa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 30,
+        "ratio": 1.77,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          53,
+          24,
+          36,
+          30
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-net-custom-dns",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Kontti ei resolvdu sisäistä DNS-nimeä custom-verkossa. Mitä docker run -optiota kokeilet?",
+      "choices": [
+        {
+          "text": "--dns tai network-scoped embedded DNS user-defined networkissä",
+          "correct": true
+        },
+        {
+          "text": "Vain --network none",
+          "correct": false
+        },
+        {
+          "text": "Muokkaa konttien /etc/hosts käsin jokaisessa deployssa",
+          "correct": false
+        },
+        {
+          "text": "DNS toimii vain host-networkissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User-defined bridge tarjoaa embedded DNS — custom --dns tarvittaessa.",
+      "wrongFeedback": "Default bridge ≠ user-defined — DNS-käyttäytyminen eroaa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 62,
+        "avgWrongLen": 35,
+        "ratio": 1.77,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          62,
+          19,
+          54,
+          32
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-net-compose-alias",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Compose-palvelu `api` ei löydä `cache`-palvelua hostnameilla. Mitä compose-network konfiguroit?",
+      "choices": [
+        {
+          "text": "Sama user-defined network — palvelut samassa compose networkissa",
+          "correct": true
+        },
+        {
+          "text": "Jokainen service oletus bridge erikseen",
+          "correct": false
+        },
+        {
+          "text": "links: on pakollinen Compose v3:ssa",
+          "correct": false
+        },
+        {
+          "text": "Vain host network toimii compose:ssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Compose luo oletusverkon — palvelunimi on DNS-nimi verkossa.",
+      "wrongFeedback": "Eri default bridge -verkot eivät näe toisiaan — yhteinen compose network.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 36.666666666666664,
+        "ratio": 1.75,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          64,
+          39,
+          35,
+          36
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-net-macvlan",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 5,
+      "prompt": "Legacy-laite vaatii kontille oman MAC-osoitteen LANissa. Mikä network driver?",
+      "choices": [
+        {
+          "text": "macvlan — kontti saa fyysisen verkon osoitteen",
+          "correct": true
+        },
+        {
+          "text": "bridge riittää aina MAC-tasolle",
+          "correct": false
+        },
+        {
+          "text": "none + port mapping",
+          "correct": false
+        },
+        {
+          "text": "host network antaa erillisen MAC:in",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "macvlan liittää konttia suoraan physical segmenttiin — docs macvlan.",
+      "wrongFeedback": "Bridge NAT ei anna erillistä L2-osoitetta laitteelle.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.62,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          46,
+          31,
+          19,
+          35
+        ]
+      }
+    },
+    {
+      "id": "exp-docker-net-inspect-dns",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontit samassa verkossa eivät pingaa toisiaan nimellä. Mitä diagnostiikkaa ajat?",
+      "choices": [
+        {
+          "text": "docker network inspect verkko + docker exec nslookup toinen-kontti",
+          "correct": true
+        },
+        {
+          "text": "Vain docker logs",
+          "correct": false
+        },
+        {
+          "text": "Rebuild image ilman verkkotarkistusta",
+          "correct": false
+        },
+        {
+          "text": "DNS toimii vain overlay-verkossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "network inspect näyttaa liitetyt kontit — embedded DNS testataan exec:llä.",
+      "wrongFeedback": "Nimi-resoluutio vaatii saman user-defined networkin — inspect vahvistaa liitoksen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 66,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 50,
+        "lens": [
+          66,
+          16,
+          37,
+          32
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-run-user-01",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Containeri ajaa rootina tuotannossa — audit finding. Ensimmäinen hardening?",
+      "choices": [
+        {
+          "text": "docker run --user nonroot:nonroot (tai USER Dockerfilessa)",
+          "correct": true
+        },
+        {
+          "text": "--privileged turvallisempaa",
+          "correct": false
+        },
+        {
+          "text": "Ajetaan hostilla suoraan",
+          "correct": false
+        },
+        {
+          "text": "chmod 777 /",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Non-root user vähentää escape-riskiä — Docker docs security.",
+      "wrongFeedback": "Root container = host root jos escape. Käytä non-root USER.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 20.666666666666668,
+        "ratio": 2.81,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          58,
+          27,
+          24,
+          11
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-run-limit-02",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Yksi container syö koko hostin RAM:in — OOM killaa muita. Rajoitus?",
+      "choices": [
+        {
+          "text": "docker run --memory 512m --cpus 1.0",
+          "correct": true
+        },
+        {
+          "text": "Ei rajoja — Docker hoitaa",
+          "correct": false
+        },
+        {
+          "text": "Vain cgroups v1 manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "restart=always",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Resource limits — docker run docs.",
+      "wrongFeedback": "Ilman rajoja container voi tappaa hostin. memory/cpus flags.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 35,
+        "avgWrongLen": 22.666666666666668,
+        "ratio": 1.54,
+        "correctIsLongest": true,
+        "spread": 21,
+        "lens": [
+          35,
+          25,
+          29,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-build-copy-03",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Docker build on hidas — jokainen pieni koodimuutos invalidoi koko dependency layerin. Fix?",
+      "choices": [
+        {
+          "text": "COPY package.json ennen loput — hyödynnä layer cache",
+          "correct": true
+        },
+        {
+          "text": "COPY . ensimmäisenä aina",
+          "correct": false
+        },
+        {
+          "text": "Poista cache --no-cache",
+          "correct": false
+        },
+        {
+          "text": "Yksi RUN kaikelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Layer ordering optimoi cache — Dockerfile best practices.",
+      "wrongFeedback": "Aikainen COPY . rikkoo cache. Riippuvuudet erikseen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 52,
+        "avgWrongLen": 21.333333333333332,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          52,
+          24,
+          23,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-exec-debug-04",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Containerissa shell puuttuu mutta prosessi elää — miten debuggaat sisältä?",
+      "choices": [
+        {
+          "text": "docker exec -it container_id /bin/sh (tai distroless: debug image sidecar)",
+          "correct": true
+        },
+        {
+          "text": "docker attach riittää aina",
+          "correct": false
+        },
+        {
+          "text": "ssh localhost",
+          "correct": false
+        },
+        {
+          "text": "docker rm -f",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "docker exec avaa prosessin namespaceen — docker exec docs.",
+      "wrongFeedback": "attach liittää pääprosessiin. exec uuteen shelliin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 17,
+        "ratio": 4.35,
+        "correctIsLongest": true,
+        "spread": 62,
+        "lens": [
+          74,
+          26,
+          13,
+          12
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-prune-05",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Levy täynnä vanhoja imageja ja stopped containereita. Turvallinen siivous?",
+      "choices": [
+        {
+          "text": "docker system prune (tai prune -a varovasti)",
+          "correct": true
+        },
+        {
+          "text": "rm -rf /var/lib/docker",
+          "correct": false
+        },
+        {
+          "text": "Poista vain running",
+          "correct": false
+        },
+        {
+          "text": "format C:",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "prune poistaa käyttämättömät resurssit — docker system prune docs.",
+      "wrongFeedback": "Manuaalinen rm -rf on vaarallinen. prune on hallittu siivous.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 44,
+        "avgWrongLen": 16.666666666666668,
+        "ratio": 2.64,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          44,
+          22,
+          19,
+          9
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-net-bridge-06",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Kaksi default-bridge containeria eivät resolvdu nimellä — miksi?",
+      "choices": [
+        {
+          "text": "Default bridge ei tarjoa automaattista DNS-nimeä — käytä user-defined network",
+          "correct": true
+        },
+        {
+          "text": "Bridge ei toimi koskaan",
+          "correct": false
+        },
+        {
+          "text": "Tarvitaan --net=host aina",
+          "correct": false
+        },
+        {
+          "text": "iptables pois",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User-defined bridge antaa DNS-nimet — docker network docs.",
+      "wrongFeedback": "Legacy bridge ei linkitä nimiä. docker network create ratkaisee.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 20.333333333333332,
+        "ratio": 3.79,
+        "correctIsLongest": true,
+        "spread": 64,
+        "lens": [
+          77,
+          23,
+          25,
+          13
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-net-compose-07",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Compose: web ei tavoita db:ä hostname `db` — molemmat samassa projektissa. Tyypillinen syy?",
+      "choices": [
+        {
+          "text": "Eri compose network tai service name ≠ hostname — määritä networks ja depends_on",
+          "correct": true
+        },
+        {
+          "text": "Docker bug",
+          "correct": false
+        },
+        {
+          "text": "Tarvitaan IP aina",
+          "correct": false
+        },
+        {
+          "text": "Poista service names",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Compose network luo DNS service-nimille — compose networking docs.",
+      "wrongFeedback": "Palvelut eri networkissa eivät näe toisiaan. Sama network + service name.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 80,
+        "avgWrongLen": 15.666666666666666,
+        "ratio": 5.11,
+        "correctIsLongest": true,
+        "spread": 70,
+        "lens": [
+          80,
+          10,
+          17,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-net-host-08",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Low-latency palvelu tarvitsee suoran host-portin ilman NAT:ia. Verkko-optio?",
+      "choices": [
+        {
+          "text": "--network host (Linux) — container jakaa host network stackin",
+          "correct": true
+        },
+        {
+          "text": "bridge aina nopein",
+          "correct": false
+        },
+        {
+          "text": "none network",
+          "correct": false
+        },
+        {
+          "text": "overlay local only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "host network poistaa NAT overhead — docker network host docs.",
+      "wrongFeedback": "Bridge NAT lisää latencya. host mode suoralle bindille (Linux).",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 16,
+        "ratio": 3.81,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          61,
+          18,
+          12,
+          18
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-net-inspect-09",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Container ei saa IP:tä custom networkista — diagnostiikka?",
+      "choices": [
+        {
+          "text": "docker network inspect netname — tarkista Containers ja IPAM",
+          "correct": true
+        },
+        {
+          "text": "docker ps riittää",
+          "correct": false
+        },
+        {
+          "text": "reboot host",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki verkot",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "network inspect näyttää liitetyt containerit — docker network inspect.",
+      "wrongFeedback": "IP-ongelmat näkyvät inspectissa. Tarkista IPAM config.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 60,
+        "avgWrongLen": 16,
+        "ratio": 3.75,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          60,
+          17,
+          11,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-net-alias-10",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Yhdellä servicellä pitää olla useita DNS-nimiä samassa verkossa. Miten?",
+      "choices": [
+        {
+          "text": "network_aliases Compose:ssa tai --network-alias docker run",
+          "correct": true
+        },
+        {
+          "text": "/etc/hosts manuaalisesti containerissa",
+          "correct": false
+        },
+        {
+          "text": "Useita container instansseja",
+          "correct": false
+        },
+        {
+          "text": "ExtraHosts only ulkoisille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "network aliases lisäävät DNS-nimiä — compose services docs.",
+      "wrongFeedback": "Alias on docker-native tapa. ExtraHosts eri käyttöön.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 1.89,
+        "correctIsLongest": true,
+        "spread": 32,
+        "lens": [
+          58,
+          38,
+          28,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-vol-named-11",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "PostgreSQL data katoaa containerin poiston jälkeen — mitä käytit väärin?",
+      "choices": [
+        {
+          "text": "Ei named volumea — `-v pgdata:/var/lib/postgresql/data`",
+          "correct": true
+        },
+        {
+          "text": "Bind mount aina parempi tietokannalle",
+          "correct": false
+        },
+        {
+          "text": "tmpfs riittää",
+          "correct": false
+        },
+        {
+          "text": "COPY data imageen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named volumes säilyvät containerin elämän jälkeen — docker volumes docs.",
+      "wrongFeedback": "Container filesystem on epämeral. Volume persistoi datan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 55,
+        "avgWrongLen": 22.333333333333332,
+        "ratio": 2.46,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          55,
+          37,
+          13,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-vol-bind-12",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Dev: koodi bind-mountattu mutta muutokset eivät näy containerissa — macOS/Windows?",
+      "choices": [
+        {
+          "text": "Cached/delegated mount tai docker sync — tiedostojärjestelmäero host/VM",
+          "correct": true
+        },
+        {
+          "text": "Bind mount ei toimi koskaan",
+          "correct": false
+        },
+        {
+          "text": "Käytä COPY only",
+          "correct": false
+        },
+        {
+          "text": "chmod 777 host",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Bind mount behavior eri alustoilla — docker bind mounts docs.",
+      "wrongFeedback": "VM sync viive voi hidastaa dev flowta. Tarkista mount options.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 18.666666666666668,
+        "ratio": 3.8,
+        "correctIsLongest": true,
+        "spread": 57,
+        "lens": [
+          71,
+          27,
+          15,
+          14
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-vol-ro-13",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Config mountattu containeriin — attacker ei saa muokata. Flag?",
+      "choices": [
+        {
+          "text": "docker run -v /host/config:/app/config:ro",
+          "correct": true
+        },
+        {
+          "text": "-v ilman :rw on read-only",
+          "correct": false
+        },
+        {
+          "text": "Umask riittää",
+          "correct": false
+        },
+        {
+          "text": "Config imageen aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": ":ro mount flag tekee read-only — docker run volume docs.",
+      "wrongFeedback": "Oletus mount on rw. :ro configeille.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 41,
+        "avgWrongLen": 19,
+        "ratio": 2.16,
+        "correctIsLongest": true,
+        "spread": 28,
+        "lens": [
+          41,
+          25,
+          13,
+          19
+        ]
+      }
+    },
+    {
+      "id": "b02-docker-vol-backup-14",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Named volume backup ilman container downtimea — suositeltu tapa?",
+      "choices": [
+        {
+          "text": "docker run --rm -v vol:/data -v $(pwd):/backup alpine tar czf /backup/vol.tar.gz /data",
+          "correct": true
+        },
+        {
+          "text": "docker cp running db container",
+          "correct": false
+        },
+        {
+          "text": "Snapshot host root",
+          "correct": false
+        },
+        {
+          "text": "Export image only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sidecar container mounttaa volumen backupiin — docker backup patterns.",
+      "wrongFeedback": "Image export ei sisällä volume dataa. Mount + tar backup.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 86,
+        "avgWrongLen": 21.666666666666668,
+        "ratio": 3.97,
+        "correctIsLongest": true,
+        "spread": 69,
+        "lens": [
+          86,
+          30,
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-user-nonroot",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Security review: Dockerfile ei määritä USER:ia — kontti ajaa rootina. Korjaus?",
+      "choices": [
+        {
+          "text": "Lisää non-root USER ja varmista tiedosto-oikeudet COPY:ssa",
+          "correct": true
+        },
+        {
+          "text": "Privileged mode turvallisempi",
+          "correct": false
+        },
+        {
+          "text": "Root on OK kontissa koska eristetty",
+          "correct": false
+        },
+        {
+          "text": "Poista ENTRYPOINT",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Docker docs suosittelee non-root käyttäjää — container escape riski pienenee.",
+      "wrongFeedback": "Root kontissa on yleinen hardening-aukko.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 27,
+        "ratio": 2.15,
+        "correctIsLongest": true,
+        "spread": 41,
+        "lens": [
+          58,
+          29,
+          35,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-dockerignore-build",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen optimointi?",
+      "choices": [
+        {
+          "text": ".dockerignore — sulje node_modules, .git, build-artifaktit",
+          "correct": true
+        },
+        {
+          "text": "docker build --no-cache aina",
+          "correct": false
+        },
+        {
+          "text": "Kopioi koko repo COPY . .",
+          "correct": false
+        },
+        {
+          "text": "Build context ei vaikuta nopeuteen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": ".dockerignore pienentää contextia — Dockerfile best practices.",
+      "wrongFeedback": "Turha context hidastaa buildia ja rikkoo cachea.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 29,
+        "ratio": 2,
+        "correctIsLongest": true,
+        "spread": 33,
+        "lens": [
+          58,
+          28,
+          25,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-copy-vs-add",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet COPY:tä?",
+      "choices": [
+        {
+          "text": "COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia",
+          "correct": true
+        },
+        {
+          "text": "ADD on aina nopeampi",
+          "correct": false
+        },
+        {
+          "text": "COPY ei toimi binääritiedostoille",
+          "correct": false
+        },
+        {
+          "text": "ADD on pakollinen multi-stage buildissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Docker docs: käytä COPY paitsi tar/URL tarpeissa.",
+      "wrongFeedback": "ADD piilotettu magia tekee buildeista vaikeammin auditoitavia.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 63,
+        "avgWrongLen": 30.666666666666668,
+        "ratio": 2.05,
+        "correctIsLongest": true,
+        "spread": 43,
+        "lens": [
+          63,
+          20,
+          33,
+          39
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-entrypoint-cmd",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa oletuskomentoa. Miksi?",
+      "choices": [
+        {
+          "text": "ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyttää",
+          "correct": true
+        },
+        {
+          "text": "CMD korvaa aina ENTRYPOINTin",
+          "correct": false
+        },
+        {
+          "text": "Vain yksi niistä sallittu",
+          "correct": false
+        },
+        {
+          "text": "shell-form on identtinen exec-formin kanssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ENTRYPOINT+CMD yhdistelmä — Docker reference.",
+      "wrongFeedback": "shell-form ENTRYPOINT estää argumenttien korvauksen odotetusti.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 72,
+        "avgWrongLen": 32,
+        "ratio": 2.25,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          72,
+          28,
+          25,
+          43
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-stats-limits",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Yksi kontti syö koko hostin RAM:in — muut palvelut kaatuvat. docker stats näyttää 100%. Mitä asetat?",
+      "choices": [
+        {
+          "text": "docker run --memory / --cpus tai compose deploy.resources limits",
+          "correct": true
+        },
+        {
+          "text": "Restart=always riittää",
+          "correct": false
+        },
+        {
+          "text": "docker stats asettaa limitit automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Privileged mode jakaa RAM:in tasaisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Resource constraints — Docker run reference / compose deploy.",
+      "wrongFeedback": "Ilman limitejä kontti voi kuluttaa host-resurssit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 35,
+        "ratio": 1.83,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          64,
+          22,
+          44,
+          39
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-prune-disk",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "CI-runnerin levy täyttyy 'no space left' — satoja dangling imageja. Turvallinen siivous?",
+      "choices": [
+        {
+          "text": "docker system prune -f (tai image prune) — poista käyttämättömät",
+          "correct": true
+        },
+        {
+          "text": "rm -rf /var/lib/docker ilman varmuuskopiota",
+          "correct": false
+        },
+        {
+          "text": "docker rmi $(docker images -q) tuotantokoneella",
+          "correct": false
+        },
+        {
+          "text": "Prune poistaa käynnissä olevat kontit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "docker system prune siivoaa dangling resursseja — CLI docs.",
+      "wrongFeedback": "Blind rm -rf rikkoo kaikki kontit ja volyymit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 42.333333333333336,
+        "ratio": 1.51,
+        "correctIsLongest": true,
+        "spread": 27,
+        "lens": [
+          64,
+          43,
+          47,
+          37
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-secrets-compose",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "DB-salasana on compose-tiedoston environment-osiossa gitissä. Parempi tapa?",
+      "choices": [
+        {
+          "text": "Docker secrets / ulkoinen secret store — ei plaintext repossa",
+          "correct": true
+        },
+        {
+          "text": "Base64 encode environmentissa",
+          "correct": false
+        },
+        {
+          "text": "Salasana Dockerfile ARG:ssa",
+          "correct": false
+        },
+        {
+          "text": "Commit .env tuotantoon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Secrets eivät kuulu versionhallintaan — Docker secrets / Swarm / compose secrets.",
+      "wrongFeedback": "Encoding ei ole salaus — salaisuudet repossa vuotavat.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 26,
+        "ratio": 2.35,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          61,
+          29,
+          27,
+          22
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-net-compose-depends",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "App-kontti käynnistyy ennen Postgresia ja kaatuu connection refused. Compose-korjaus?",
+      "choices": [
+        {
+          "text": "depends_on + healthcheck db:lle tai odota retry-logiikka appissa",
+          "correct": true
+        },
+        {
+          "text": "links: deprecated riittää",
+          "correct": false
+        },
+        {
+          "text": "network_mode: host korjaa järjestyksen",
+          "correct": false
+        },
+        {
+          "text": "depends_on takaa että db on valmis",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "depends_on odottaa käynnistystä, ei readinessia — healthcheck + retry.",
+      "wrongFeedback": "depends_on alone ei odota DB:n accept-yhteyksiä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 64,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.98,
+        "correctIsLongest": true,
+        "spread": 39,
+        "lens": [
+          64,
+          25,
+          38,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-net-internal-network",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Backend-API ei saa olla suoraan internetissä — vain reverse proxy ulos. Verkko?",
+      "choices": [
+        {
+          "text": "internal: true compose-verkossa — ei ulkoista reittiä",
+          "correct": true
+        },
+        {
+          "text": "host networking kaikille",
+          "correct": false
+        },
+        {
+          "text": "bridge + publish kaikki portit",
+          "correct": false
+        },
+        {
+          "text": "none network kaikille palveluille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Internal network eristää palvelut — Compose networking.",
+      "wrongFeedback": "Host mode tai julkaistut portit altistavat backendin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 29,
+        "ratio": 1.83,
+        "correctIsLongest": true,
+        "spread": 29,
+        "lens": [
+          53,
+          24,
+          30,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-net-ipv6-disable",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Legacy-sovellus hajoaa IPv6-osoitteeseen DNS:ssä — kontissa toimii IPv4-only hostilla. Diagnostiikka?",
+      "choices": [
+        {
+          "text": "Tarkista docker network inspect ja /etc/hosts / getaddrinfo — dual stack vs ipv4-only",
+          "correct": true
+        },
+        {
+          "text": "IPv6 on aina pois Dockerissa",
+          "correct": false
+        },
+        {
+          "text": "Käytä network_mode: none",
+          "correct": false
+        },
+        {
+          "text": "DNS aina palauttaa IPv4",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Docker networking voi tarjota IPv6 — sovellus voi yrittää AAAA ensin.",
+      "wrongFeedback": "IPv6 DNS vastaus voi rikkoa IPv4-only palvelun.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 85,
+        "avgWrongLen": 25,
+        "ratio": 3.4,
+        "correctIsLongest": true,
+        "spread": 62,
+        "lens": [
+          85,
+          28,
+          24,
+          23
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-vol-named-vs-bind",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Tuotantodata bind-mountataan suoraan host-polusta — deploy eri poluilla eri koneilla. Parempi?",
+      "choices": [
+        {
+          "text": "Named volume — Docker hallitsee sijaintia, siirrettävä backupilla",
+          "correct": true
+        },
+        {
+          "text": "Bind mount aina tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "tmpfs pysyvälle datalle",
+          "correct": false
+        },
+        {
+          "text": "VOLUME Dockerfilessa riittää ilman nimeä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named volumes decouplaavat host-polun — storage docs.",
+      "wrongFeedback": "Bind mount sidoo polkuun joka vaihtelee ympäristöissä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 65,
+        "avgWrongLen": 30,
+        "ratio": 2.17,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          65,
+          27,
+          23,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-vol-tmpfs-secrets",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontti kirjoittaa väliaikaista salaista tokenia levylle — se jää image layeriin. Ratkaisu?",
+      "choices": [
+        {
+          "text": "tmpfs mount /run/secrets — muistissa, ei persistoi",
+          "correct": true
+        },
+        {
+          "text": "chmod 777 /tmp",
+          "correct": false
+        },
+        {
+          "text": "Secret env variable aina turvallinen",
+          "correct": false
+        },
+        {
+          "text": "docker commit tallentaa tokenin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tmpfs ei jää levylle — sopii arkaluontoiseen transient dataan.",
+      "wrongFeedback": "Kirjoitus container layeriin voi jäädä historiaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 50,
+        "avgWrongLen": 27,
+        "ratio": 1.85,
+        "correctIsLongest": true,
+        "spread": 36,
+        "lens": [
+          50,
+          14,
+          36,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-vol-external-volume",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Compose-projekti uudelleenkäynnistyy eri nimellä — vanha named volume jää orphaniksi. Käytäntö?",
+      "choices": [
+        {
+          "text": "external: true ja nimetty volume jaettu projektien yli tai yhtenäinen project name",
+          "correct": true
+        },
+        {
+          "text": "Poista volume joka deploylla",
+          "correct": false
+        },
+        {
+          "text": "Bind mount /tmp aina",
+          "correct": false
+        },
+        {
+          "text": "Compose luo saman volume-nimen automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "External volume tai consistent naming — Compose volumes docs.",
+      "wrongFeedback": "Projektin nimi vaikuttaa volume prefixiin — data voi eriytyä.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 82,
+        "avgWrongLen": 31.333333333333332,
+        "ratio": 2.62,
+        "correctIsLongest": true,
+        "spread": 62,
+        "lens": [
+          82,
+          28,
+          20,
+          46
+        ]
+      }
+    },
+    {
+      "id": "b03-docker-buildkit-cache-mount",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "npm ci kestää 5 min jokaisessa buildissa vaikka package-lock ei muutu. BuildKit-parannus?",
+      "choices": [
+        {
+          "text": "RUN --mount=type=cache,target=/root/.npm npm ci — cache mount",
+          "correct": true
+        },
+        {
+          "text": "COPY node_modules hostista",
+          "correct": false
+        },
+        {
+          "text": "Poista package-lock",
+          "correct": false
+        },
+        {
+          "text": "docker build --no-cache nopeuttaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BuildKit cache mount säilyttää npm cache:n layerien välillä.",
+      "wrongFeedback": "Ilman cache mountia jokainen build lataa paketit uudelleen.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 61,
+        "avgWrongLen": 26,
+        "ratio": 2.35,
+        "correctIsLongest": true,
+        "spread": 42,
+        "lens": [
+          61,
+          26,
+          19,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-compose-depends-on",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Compose-sovellus kaatuu koska API käynnistyy ennen Postgresia. Mitä compose-tiedostoon?",
+      "choices": [
+        {
+          "text": "depends_on + healthcheck db:lle (Compose v2 condition: service_healthy)",
+          "correct": true
+        },
+        {
+          "text": "restart: always riittää järjestykseen",
+          "correct": false
+        },
+        {
+          "text": "links: — ainoa tapa",
+          "correct": false
+        },
+        {
+          "text": "Poista db — käytä sqlite",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "depends_on with healthcheck varmistaa valmiuden — Docker Compose docs.",
+      "wrongFeedback": "depends_on alone odottaa vain container startia, ei DB ready. healthcheck tarvitaan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 26.666666666666668,
+        "ratio": 2.66,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          71,
+          37,
+          19,
+          24
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-buildkit-cache",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "CI-build kopioi koko kontekstin joka kerta — cache ei hyödy package.json muutoksista. Optimointi?",
+      "choices": [
+        {
+          "text": "COPY package.json ensin, RUN npm ci, sitten loput — layer cache hyötyy",
+          "correct": true
+        },
+        {
+          "text": "COPY . ensin — yksinkertaisin",
+          "correct": false
+        },
+        {
+          "text": "Poista cache — aina clean build",
+          "correct": false
+        },
+        {
+          "text": "Yksi RUN kaikelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Dockerfile layer ordering hyödyntää cachea — Docker docs best practices.",
+      "wrongFeedback": "COPY . invalidoi cache usein. Eriytä riippuvuudet omiin layer:eihin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 70,
+        "avgWrongLen": 25.666666666666668,
+        "ratio": 2.73,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          70,
+          29,
+          31,
+          17
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-cgroup-limits",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Kontti syö koko hostin RAM:in — OOM killaa naapurikontteja. docker run rajoitus?",
+      "choices": [
+        {
+          "text": "--memory ja --cpus (tai deploy.resources compose:ssa)",
+          "correct": true
+        },
+        {
+          "text": "Vain --restart unless-stopped",
+          "correct": false
+        },
+        {
+          "text": "Docker rajoittaa automaattisesti 512MB",
+          "correct": false
+        },
+        {
+          "text": "nice -n 19 riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Resource limits käyttävät cgroups — docker run docs.",
+      "wrongFeedback": "Oletuksena kontti voi käyttää host-resursseja. Aseta memory/CPU limitit.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 53,
+        "avgWrongLen": 28.333333333333332,
+        "ratio": 1.87,
+        "correctIsLongest": true,
+        "spread": 35,
+        "lens": [
+          53,
+          29,
+          38,
+          18
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-network-alias",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Kontti A ei löydä kontti B:tä nimellä `api` samassa user-defined networkissä. Compose-ratkaisu?",
+      "choices": [
+        {
+          "text": "Palvelun nimi compose:ssa on DNS-nimi — network: shared + service name api",
+          "correct": true
+        },
+        {
+          "text": "linkit konttien välillä pakollisia",
+          "correct": false
+        },
+        {
+          "text": "Käytä aina host network",
+          "correct": false
+        },
+        {
+          "text": "Extra_hosts 127.0.0.1",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User-defined bridge tekee DNS:n palvelunimille — Docker networking docs.",
+      "wrongFeedback": "Legacy links korvattu embedded DNS:llä. Sama network + service name.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 74,
+        "avgWrongLen": 26,
+        "ratio": 2.85,
+        "correctIsLongest": true,
+        "spread": 53,
+        "lens": [
+          74,
+          34,
+          23,
+          21
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-secrets-env",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Tuotanto: salasanat ENV-muuttujina Dockerfile:ssa. Turvallisempi Compose/Swarm tapa?",
+      "choices": [
+        {
+          "text": "secrets mount tiedostona /run/secrets/ — ei image layerissa",
+          "correct": true
+        },
+        {
+          "text": "ARG salasana buildissa — ok tuotantoon",
+          "correct": false
+        },
+        {
+          "text": "ENV salasana .env tiedostossa gitissä",
+          "correct": false
+        },
+        {
+          "text": "echo salasana Dockerfile RUN:issa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Docker secrets eivät päädy imageen — docs.docker.com/compose/use-secrets.",
+      "wrongFeedback": "ENV ja ARG jäävät historyyn. Secrets mount runtime-tasolla.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 59,
+        "avgWrongLen": 36,
+        "ratio": 1.64,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          59,
+          38,
+          37,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-prune-dangling",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Levy täynnä `<none>` image-tageja CI-koneella. Siivouskomento?",
+      "choices": [
+        {
+          "text": "docker image prune tai docker system prune -f",
+          "correct": true
+        },
+        {
+          "text": "rm -rf /var/lib/docker manuaalisesti ensin",
+          "correct": false
+        },
+        {
+          "text": "docker rmi -f $(docker ps -q)",
+          "correct": false
+        },
+        {
+          "text": "Ei voi siivota — uusi levy",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "docker image prune poistaa dangling imaget — docker prune docs.",
+      "wrongFeedback": "Dangling imaget kertyvät build:eista. prune on turvallinen siivous.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 45,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.39,
+        "correctIsLongest": true,
+        "spread": 19,
+        "lens": [
+          45,
+          42,
+          29,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-log-driver",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Konttilokit katoavat rebootin jälkeen — oletus json-file kasvaa loputtomasti. Tuotanto-asetus?",
+      "choices": [
+        {
+          "text": "logging driver esim. journald/json-file max-size & max-file tai centralized driver",
+          "correct": true
+        },
+        {
+          "text": "printf debug — ei lokitusta",
+          "correct": false
+        },
+        {
+          "text": "docker logs riittää persistenssiin",
+          "correct": false
+        },
+        {
+          "text": "Loki vain stdout hostille ilman configia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Log driver + rotation konfiguroidaan daemon/container tasolla — docker logging docs.",
+      "wrongFeedback": "Oletus json-file tarvitsee rotation. Centralized logging tuotantoon.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 82,
+        "avgWrongLen": 33.666666666666664,
+        "ratio": 2.44,
+        "correctIsLongest": true,
+        "spread": 55,
+        "lens": [
+          82,
+          27,
+          34,
+          40
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-health-interval",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Healthcheck merkitsee kontin unhealthy liian myöhään — 5 min outage. Mitä säätää?",
+      "choices": [
+        {
+          "text": "HEALTHCHECK --interval ja --timeout — tiheämpi tarkistus",
+          "correct": true
+        },
+        {
+          "text": "Poista healthcheck — nopeampi",
+          "correct": false
+        },
+        {
+          "text": "restart: no",
+          "correct": false
+        },
+        {
+          "text": "Vain CMD ilman intervalia riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "interval/timeout/retries määrittävät healthcheck-käyttäytymisen — Dockerfile HEALTHCHECK.",
+      "wrongFeedback": "Oletus interval voi olla liian pitkä. Säädä interval ja retries.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 24.333333333333332,
+        "ratio": 2.3,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          56,
+          29,
+          11,
+          33
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-compose-profile",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Kehityksessä tarvitaan debug-työkalukontti, tuotannossa ei. Compose-malli?",
+      "choices": [
+        {
+          "text": "profiles: [debug] palvelulle — aktivoitu docker compose --profile debug",
+          "correct": true
+        },
+        {
+          "text": "Erillinen compose-tiedosto aina — ei muita tapoja",
+          "correct": false
+        },
+        {
+          "text": "scale=0 tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "Kommentoi palvelu pois gitissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Compose profiles valitsevat palveluja — docs.docker.com/compose/profiles.",
+      "wrongFeedback": "Profiles on virallinen tapa optional-palveluihin. Ei tarvitse duplikaatti-tiedostoa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 2.17,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          71,
+          49,
+          19,
+          30
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-build-arg",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Sama Dockerfile eri versioille — BASE_IMAGE vaihtelee CI:ssä. Miten parametrisoit?",
+      "choices": [
+        {
+          "text": "ARG BASE_IMAGE + docker build --build-arg BASE_IMAGE=...",
+          "correct": true
+        },
+        {
+          "text": "sed Dockerfile ennen buildia aina",
+          "correct": false
+        },
+        {
+          "text": "ENV BASE_IMAGE — sama kuin ARG",
+          "correct": false
+        },
+        {
+          "text": "Kopioi Dockerfile kolmeen versioon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ARG on build-time parametri — Dockerfile ARG docs.",
+      "wrongFeedback": "ENV jää imageen. ARG on build-parametreille.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 32.333333333333336,
+        "ratio": 1.73,
+        "correctIsLongest": true,
+        "spread": 26,
+        "lens": [
+          56,
+          33,
+          30,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-security-cap-drop",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 4,
+      "prompt": "Security review: kontti ei tarvitse root-oikeuksia eikä NET_RAW. Hardening?",
+      "choices": [
+        {
+          "text": "USER nonroot + cap_drop: [ALL] ja cap_add vain tarvittavat",
+          "correct": true
+        },
+        {
+          "text": "privileged: true nopeuteen",
+          "correct": false
+        },
+        {
+          "text": "Vain --read-only riittää",
+          "correct": false
+        },
+        {
+          "text": "Root on turvallinen kontissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Least privilege: non-root user + drop capabilities — Docker security docs.",
+      "wrongFeedback": "Privileged laajentaa attack surfacea. Drop caps ja non-root user.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 58,
+        "avgWrongLen": 26,
+        "ratio": 2.23,
+        "correctIsLongest": true,
+        "spread": 34,
+        "lens": [
+          58,
+          26,
+          24,
+          28
+        ]
+      }
+    },
+    {
+      "id": "b04-docker-volume-named",
+      "chapter": "docker-volumes",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Postgres data katoaa `docker compose down` jälkeen. Mikä puuttui?",
+      "choices": [
+        {
+          "text": "Named volume määritelty palvelulle — down ei poista named volumeja ilman -v",
+          "correct": true
+        },
+        {
+          "text": "Bind mount /tmp aina riittää",
+          "correct": false
+        },
+        {
+          "text": "container_name riittää persistenssiin",
+          "correct": false
+        },
+        {
+          "text": "Data tallentuu automaattisesti imageen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Named volumes säilyvät — docker compose down -v poistaa ne. volumes docs.",
+      "wrongFeedback": "Ilman volumea data on container layerissa. Named volume Postgres-datalle.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 75,
+        "avgWrongLen": 34.333333333333336,
+        "ratio": 2.18,
+        "correctIsLongest": true,
+        "spread": 47,
+        "lens": [
+          75,
+          28,
+          37,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b05-dockerfile-layer-cache",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Docker build on hidas — jokainen koodirivin muutos invalidoi koko npm install -kerroksen. Korjaus?",
+      "choices": [
+        {
+          "text": "Kopioi package.json ensin, asenna riippuvuudet, vasta sitten COPY lähdekoodi",
+          "correct": true
+        },
+        {
+          "text": "Lisää --no-cache jokaiseen buildiin",
+          "correct": false
+        },
+        {
+          "text": "Yhdistä kaikki RUN-komennot yhteen COPY:hen",
+          "correct": false
+        },
+        {
+          "text": "Poista .dockerignore",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Layer cache hyödyntää muuttumattomia kerroksia — Dockerfile best practices.",
+      "wrongFeedback": "Riippuvuudet muuttuvat harvemmin kuin lähdekoodi. Järjestä COPY/RUN oikein.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 76,
+        "avgWrongLen": 32.666666666666664,
+        "ratio": 2.33,
+        "correctIsLongest": true,
+        "spread": 56,
+        "lens": [
+          76,
+          35,
+          43,
+          20
+        ]
+      }
+    },
+    {
+      "id": "b05-dockerfile-multistage-size",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Tuotantoimage on 2 GB koska build-työkalut mukana runtime-kuvassa. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Multi-stage build — käännä builder-stagessa, kopioi vain binary final-stageen",
+          "correct": true
+        },
+        {
+          "text": "Poista kaikki LABEL-kentät",
+          "correct": false
+        },
+        {
+          "text": "Käytä latest-tagia base imagessa",
+          "correct": false
+        },
+        {
+          "text": "Yksi RUN apt-get && build && cleanup riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multi-stage erottaa build- ja runtime-ympäristöt — Docker docs.",
+      "wrongFeedback": "Build-työkalut eivät kuulu runtime-imageen. Erottele staget.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 77,
+        "avgWrongLen": 35.666666666666664,
+        "ratio": 2.16,
+        "correctIsLongest": true,
+        "spread": 51,
+        "lens": [
+          77,
+          26,
+          32,
+          49
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-compose-depends-on",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "App-kontti käynnistyy ennen Postgresia ja kaatuu connection refused -virheeseen. Compose-korjaus?",
+      "choices": [
+        {
+          "text": "depends_on + healthcheck db:lle — odota valmiutta",
+          "correct": true
+        },
+        {
+          "text": "restart: always korjaa käynnistysjärjestyksen",
+          "correct": false
+        },
+        {
+          "text": "links: deprecated riittää",
+          "correct": false
+        },
+        {
+          "text": "Poista depends_on — järjestys on satunnainen OK",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "depends_on condition service_healthy odottaa healthcheckiä — Compose docs.",
+      "wrongFeedback": "depends_on ilman healthcheckiä vain käynnistää — ei odota valmiutta.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 49,
+        "avgWrongLen": 39,
+        "ratio": 1.26,
+        "correctIsLongest": true,
+        "spread": 24,
+        "lens": [
+          49,
+          45,
+          25,
+          47
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-healthcheck-prod",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Orkestraattori ei huomaa jumiutunutta Node-prosessia — kontti on 'running' mutta ei vastaa. Lisäät?",
+      "choices": [
+        {
+          "text": "HEALTHCHECK curl localhost /health endpointiin",
+          "correct": true
+        },
+        {
+          "text": "Vain EXPOSE 3000 riittää",
+          "correct": false
+        },
+        {
+          "text": "restart: unless-stopped korvaa healthcheckin",
+          "correct": false
+        },
+        {
+          "text": "docker logs riittää monitorointiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "HEALTHCHECK määrittää konttiterveyden — Dockerfile reference.",
+      "wrongFeedback": "Running ≠ healthy. HEALTHCHECK raportoi todellisen tilan.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 46,
+        "avgWrongLen": 34,
+        "ratio": 1.35,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          46,
+          24,
+          44,
+          34
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-log-driver-json",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Konttilokit katoavat rebootissa. Miten varmistat lokien keräyksen?",
+      "choices": [
+        {
+          "text": "Logging driver (json-file + log rotation) tai ulkoinen driver kuten fluentd",
+          "correct": true
+        },
+        {
+          "text": "docker logs tallentaa pysyvästi automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "stdout ei tarvitse konfiguraatiota",
+          "correct": false
+        },
+        {
+          "text": "Vain exec tail -f kontissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Configure logging drivers — Docker logging docs.",
+      "wrongFeedback": "Oletus lokitus voi täyttyä tai kadota. Konfiguroi driver ja rotation.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 75,
+        "avgWrongLen": 35.666666666666664,
+        "ratio": 2.1,
+        "correctIsLongest": true,
+        "spread": 49,
+        "lens": [
+          75,
+          47,
+          34,
+          26
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-prune-disk-full",
+      "chapter": "docker",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Build-palvelimen levy täynnä — vanhoja imageja ja stopped-kontteja pinossa. Turvallisin siivous?",
+      "choices": [
+        {
+          "text": "docker system prune — poistaa käyttämättömät resurssit (tarkista ensin)",
+          "correct": true
+        },
+        {
+          "text": "rm -rf /var/lib/docker ilman varmuuskopiota",
+          "correct": false
+        },
+        {
+          "text": "Poista vain running-kontit",
+          "correct": false
+        },
+        {
+          "text": "Levy täyttyy — Docker ei tue siivousta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "docker system prune siivoaa dangling resursseja — CLI docs.",
+      "wrongFeedback": "Manuaalinen rm on riskialtista. prune poistaa käyttämättömät kontit/kuvat.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 71,
+        "avgWrongLen": 35.666666666666664,
+        "ratio": 1.99,
+        "correctIsLongest": true,
+        "spread": 45,
+        "lens": [
+          71,
+          43,
+          26,
+          38
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-net-bridge-default",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 2,
+      "prompt": "Kaksi konttia samassa default bridge-verkossa — voivatko ne kommunikoida nimellä?",
+      "choices": [
+        {
+          "text": "Ei automaattisesti — default bridge ei tarjoa DNS-nimiä; käytä user-defined network",
+          "correct": true
+        },
+        {
+          "text": "Kyllä — container_name riittää aina",
+          "correct": false
+        },
+        {
+          "text": "Vain host network tukee kommunikaatiota",
+          "correct": false
+        },
+        {
+          "text": "Bridge ja host ovat sama verkko",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User-defined bridge tarjoaa DNS-nimet — Docker networking docs.",
+      "wrongFeedback": "Default bridge vaatii linkit/IP:t. Luo oma verkko compose:ssa.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 83,
+        "avgWrongLen": 35,
+        "ratio": 2.37,
+        "correctIsLongest": true,
+        "spread": 52,
+        "lens": [
+          83,
+          35,
+          39,
+          31
+        ]
+      }
+    },
+    {
+      "id": "b05-docker-net-host-mode",
+      "chapter": "docker-network",
+      "domain": "docker",
+      "difficulty": 3,
+      "prompt": "Latency-kriittinen palvelu tarvitsee suoran pääsyn host-portteihin ilman NAT:ia. Verkko-mode?",
+      "choices": [
+        {
+          "text": "network_mode: host — kontti jakaa hostin network stackin",
+          "correct": true
+        },
+        {
+          "text": "bridge + publish kaikki portit riittää aina",
+          "correct": false
+        },
+        {
+          "text": "none network nopeuttaa liikennettä",
+          "correct": false
+        },
+        {
+          "text": "overlay vain Swarmissa — ei host-modea",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Host mode poistaa port mapping -overheadin — network drivers.",
+      "wrongFeedback": "Bridge NAT lisää latencya. host mode suoraan host-stackiin.",
+      "bias": {
+        "biased": true,
+        "correctIndex": 0,
+        "correctLen": 56,
+        "avgWrongLen": 38.333333333333336,
+        "ratio": 1.46,
+        "correctIsLongest": true,
+        "spread": 22,
+        "lens": [
+          56,
+          43,
+          34,
+          38
+        ]
+      }
+    }
+  ]
+}

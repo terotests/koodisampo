@@ -1,0 +1,320 @@
+{
+  "bank": "linux-ops.json",
+  "rewrites": [
+    {
+      "id": "systemd-wants-requires",
+      "choices": [
+        { "text": "Requires katkaisee A:n kun B epäonnistuu käynnistyksessä", "correct": true },
+        { "text": "Wants ja Requires käyttäytyvät samoin riippuvuuden epäonnistuessa", "correct": false },
+        { "text": "A jatkaa normaalisti ja B käynnistetään uudelleen erikseen", "correct": false },
+        { "text": "systemd käynnistää A:n uudelleen kunnes B onnistuu lopulta", "correct": false }
+      ]
+    },
+    {
+      "id": "journald-persistent",
+      "choices": [
+        { "text": "Storage=persistent journald.conf:ssa ja /var/log/journal", "correct": true },
+        { "text": "ForwardToSyslog=no estää lokien kopiointi syslog-palveluun", "correct": false },
+        { "text": "SystemMaxUse=1K asettaa journalin levykiintiön megatavuiksi", "correct": false },
+        { "text": "RuntimeDirectory=journald varmistaa lokien pysyvyyden rebootissa", "correct": false }
+      ]
+    },
+    {
+      "id": "journalctl-filter",
+      "choices": [
+        { "text": "journalctl -u nginx --since 02:00 --until 04:00", "correct": true },
+        { "text": "cat /var/log/messages | grep nginx viime yön ajoalalta", "correct": false },
+        { "text": "dmesg -T näyttää nginx-yksikön systemd-lokit aikaleimoilla", "correct": false },
+        { "text": "systemctl cat nginx tulostaa palvelun lokimerkinnät aikaväliltä", "correct": false }
+      ]
+    },
+    {
+      "id": "linux-ip-route",
+      "choices": [
+        { "text": "Oletusreitti tai NAT/firewall puuttuu ulospääsyyn", "correct": true },
+        { "text": "/etc/hosts puuttuu ja blokkaa ulkoisen verkon liikenteen", "correct": false },
+        { "text": "Väärä MAC loopbackissa rikkoo paikallisen segmentin yhteydet", "correct": false },
+        { "text": "Vain DNS-asetusten korjaus palauttaa oletusreitityksen ulos", "correct": false }
+      ]
+    },
+    {
+      "id": "linux-nmcli",
+      "choices": [
+        { "text": "nmcli connection up corp-wifi profiilin aktivointiin", "correct": true },
+        { "text": "ifconfig corp-wifi up aktivoi NetworkManager-profiilin oikein", "correct": false },
+        { "text": "systemctl start corp-wifi.service käynnistää NM-yhteyden", "correct": false },
+        { "text": "ip link set corp-wifi up valitsee corp-wifi-profiilin aktiiviseksi", "correct": false }
+      ]
+    },
+    {
+      "id": "avahi-mdns",
+      "choices": [
+        { "text": "mDNS/DNS-SD palvelujen löytäminen .local-verkossa", "correct": true },
+        { "text": "LDAP-autentikointi keskitetysti ilman paikallista DNS:ää", "correct": false },
+        { "text": "Active Directory -toimialue lähiverkkoon ilman DNS-palvelinta", "correct": false },
+        { "text": "TLS-päättäminen nginxille lähiverkon palveluilmoituksessa", "correct": false }
+      ]
+    },
+    {
+      "id": "avahi-service-xml",
+      "choices": [
+        { "text": "/etc/avahi/services/*.service XML-tiedosto palvelulle", "correct": true },
+        { "text": "/etc/resolv.conf search-rivi julkaisee HTTP-palvelun mDNS:llä", "correct": false },
+        { "text": "D-Bus API on ainoa tapa — static service XML ei tueta", "correct": false },
+        { "text": "/etc/systemd/system/avahi.http yksikkö riittää Avahi-julkaisuun", "correct": false }
+      ]
+    },
+    {
+      "id": "systemd-after-before",
+      "choices": [
+        { "text": "After=network-online.target ilman Requires-riippuvuutta", "correct": true },
+        { "text": "Requires=B varmistaa verkon ennen A:n käynnistystä", "correct": false },
+        { "text": "Before=B riittää odottamaan verkkoa ennen käynnistystä", "correct": false },
+        { "text": "Ei tarvita riippuvuuksia — ExecStartPre odottaa verkkoa", "correct": false }
+      ]
+    },
+    {
+      "id": "linux-ss-listen",
+      "choices": [
+        { "text": "ss -tlnp | grep 8080 näyttää kuuntelijan ja prosessin", "correct": true },
+        { "text": "ping localhost varmistaa että portti 8080 on vapaa", "correct": false },
+        { "text": "cat /etc/services listaa prosessit portti 8080 kuuntelijana", "correct": false },
+        { "text": "ifconfig -a näyttää TCP-kuuntelijat ja niiden prosessit", "correct": false }
+      ]
+    },
+    {
+      "id": "linux-resolv-search",
+      "choices": [
+        { "text": "/etc/resolv.conf nameserver- ja search/domain-rivit", "correct": true },
+        { "text": "/etc/fstab mount-asetukset vaikuttavat DNS-hakuun kontissa", "correct": false },
+        { "text": "/etc/shadow määrittää resolverin hakudomainit ja nameserverit", "correct": false },
+        { "text": "/etc/hosts riittää lyhyiden hostnamejen resoluutioon", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-systemd-failed-service",
+      "choices": [
+        { "text": "systemctl status palvelu ja journalctl -u palvelu -b", "correct": true },
+        { "text": "kill -9 kaikille palveluun liittyville prosesseille", "correct": false },
+        { "text": "rm /etc/systemd/system/palvelu.service poistaa virheen", "correct": false },
+        { "text": "reboot uudestaan ilman lokien tarkastelua korjaa tilan", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-systemd-timer-incident",
+      "choices": [
+        { "text": "timer.unit + service.unit pari OnCalendar-ajastuksella", "correct": true },
+        { "text": "Pelkkä .service yksikkö riittää ajastetulle systemd-tehtävälle", "correct": false },
+        { "text": "systemd ei tue ajastettuja tehtäviä cron-korvauksena", "correct": false },
+        { "text": "at-komento on systemd:n virallinen cron-korvike tuotannossa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-journald-disk-full",
+      "choices": [
+        { "text": "journalctl --disk-usage ja SystemMaxUse journald.conf:ssa", "correct": true },
+        { "text": "rm -rf /var/log/* vapauttaa tilaa ilman journald-tarkistusta", "correct": false },
+        { "text": "Poista journald ja siirry pelkkään syslogiin", "correct": false },
+        { "text": "Osta isompi levy ilman lokien retention-hallintaa", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-journalctl-since-boot",
+      "choices": [
+        { "text": "journalctl -b tai -b -1 edellisen bootin lokit", "correct": true },
+        { "text": "tail -f /var/log/messages rajaa lokin nykyiseen bootiin", "correct": false },
+        { "text": "dmesg --follow näyttää vain nykyisen boot-session lokit", "correct": false },
+        { "text": "journalctl ei indeksoi boot-id:tä suodatusta varten", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-journald-priority-filter",
+      "choices": [
+        { "text": "journalctl -u palvelu -p err näyttää err-tason ja korkeammat", "correct": true },
+        { "text": "grep ERROR /var/log/messages suodattaa yhden palvelun lokit", "correct": false },
+        { "text": "systemctl stop journald poistaa DEBUG-rivit lokista", "correct": false },
+        { "text": "Vain palvelun printf-taso määrittää journalctl-suodatuksen", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-network-route-missing",
+      "choices": [
+        { "text": "ip route get 10.20.0.1 ja VPN-interface/gateway", "correct": true },
+        { "text": "ping 8.8.8.8 paljastaa puuttuvan VPN-reitin 10.20.0.0/16:lle", "correct": false },
+        { "text": "Poista default route korjaa VPN-reitityksen automaattisesti", "correct": false },
+        { "text": "ifconfig on ainoa työkalu VPN-reittien diagnosointiin", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-network-ss-listen",
+      "choices": [
+        { "text": "ss -tlnp | grep 8080 tai ss -ulnp UDP-kuuntelijalle", "correct": true },
+        { "text": "netstat -a ilman -p näyttää prosessin portti 8080 kuuntelijana", "correct": false },
+        { "text": "lsof tiedostopoluille paljastaa portin 8080 omistajan", "correct": false },
+        { "text": "reboot vapauttaa portin 8080 ilman prosessitarkistusta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-network-nmcli-down",
+      "choices": [
+        { "text": "nmcli connection down/up tai nmcli device reapply", "correct": true },
+        { "text": "Muokkaa /etc/resolv.conf käsin VPN-yhteyden palauttamiseksi", "correct": false },
+        { "text": "Poista NetworkManager kokonaan palauttaaksesi Wi-Fi-yhteyden", "correct": false },
+        { "text": "ifdown eth0 riittää kaikkien NetworkManager-profiilien resetointiin", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-network-resolv-search",
+      "choices": [
+        { "text": "search-domainit lisätään lyhyille hostnameille DNS-kyselyihin", "correct": true },
+        { "text": "search-kenttä määrittää oletusgatewayn kontti-verkossa", "correct": false },
+        { "text": "search korvaa /etc/hosts-tiedoston kaikissa resoluutioissa", "correct": false },
+        { "text": "search estää ulkoiset DNS-kyselyt corp-verkon ulkopuolelta", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-avahi-printer-discovery",
+      "choices": [
+        { "text": "mDNS / Avahi julkaisee .local-palvelun LANissa", "correct": true },
+        { "text": "DHCP-reservointi kaikille laitteille korvaa palvelun löytämisen", "correct": false },
+        { "text": "FTP broadcast ilmoittaa tulostimen lähiverkossa automaattisesti", "correct": false },
+        { "text": "SMTP discovery paljastaa tulostimet ilman staattista IP:tä", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-avahi-service-xml",
+      "choices": [
+        { "text": "/etc/avahi/services/*.service XML DNS-SD-määrittely portille 8080", "correct": true },
+        { "text": "/etc/hosts -rivi julkaisee HTTP-palvelun portissa 8080 mDNS:llä", "correct": false },
+        { "text": "systemd unit riittää mDNS-palvelun ilmoitukseen ilman Avahia", "correct": false },
+        { "text": "iptables DNAT hoitaa HTTP-palvelun discoveryn portissa 8080", "correct": false }
+      ]
+    },
+    {
+      "id": "exp-linux-avahi-conflict",
+      "choices": [
+        { "text": "mDNS probing ja uudelleennimeäminen esim. hostname-2.local", "correct": true },
+        { "text": "Ensimmäinen laite säilyttää nimen ikuisesti konfliktitilanteessa", "correct": false },
+        { "text": "Avahi ei käsittele hostname-konflikteja mDNS-verkossa ollenkaan", "correct": false },
+        { "text": "Sammuta mDNS kaikilta laitteilta ratkaisee nimiristiriidan", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-systemd-unit-01",
+      "choices": [
+        { "text": "systemctl enable palvelu luo wanted-by-symlinkin bootiin", "correct": true },
+        { "text": "systemctl restart tekee palvelusta pysyvän boot-käynnistyksessä", "correct": false },
+        { "text": "chmod +x unit-tiedosto riittää palvelun automaattiseen bootiin", "correct": false },
+        { "text": "journalctl --boot aktivoi palvelun käynnistyksen jokaisella bootilla", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-systemd-failure-02",
+      "choices": [
+        { "text": "StartLimitIntervalSec + StartLimitBurst unit-tiedostossa", "correct": true },
+        { "text": "Restart=always ilman rajaa estää restart-loopin luotettavasti", "correct": false },
+        { "text": "Poista Restart-kenttä — systemd rajoittaa uudelleenkäynnistyksiä", "correct": false },
+        { "text": "kill -9 init lopettaa palvelun restart-loopin turvallisesti", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-systemd-timer-03",
+      "choices": [
+        { "text": "timer.unit + service.unit — timer triggeröi servicen", "correct": true },
+        { "text": "Pelkkä service.unit riittää ajastukseen ilman timer-yksikköä", "correct": false },
+        { "text": "target.unit korvaa timer-yksikön cron-työssä systemd:ssä", "correct": false },
+        { "text": "socket.unit käynnistää ajastetut tehtävät OnCalendar-säännöllä", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-systemd-env-04",
+      "choices": [
+        { "text": "EnvironmentFile=-/etc/myapp/env tai credentials drop-in", "correct": true },
+        { "text": "ExecStart=echo $KEY injektoi API-avaimen turvallisesti palveluun", "correct": false },
+        { "text": "Environment= avain unit-tiedostossa versionhallinnassa", "correct": false },
+        { "text": "export shell-profiilissa välittää salaisuuden systemd-palvelulle", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-journalctl-boot-05",
+      "choices": [
+        { "text": "journalctl -b 0 tai -b ilman argumenttia nykyinen boot", "correct": true },
+        { "text": "journalctl --since yesterday suodattaa vain nykyisen bootin", "correct": false },
+        { "text": "cat /var/log/messages rajaa lokin rebootin jälkeiseen sessioon", "correct": false },
+        { "text": "dmesg -k näyttää vain nykyisen boot-session journal-merkinnät", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-journalctl-unit-06",
+      "choices": [
+        { "text": "journalctl -u nginx.service -p err -n 50 viimeiset virheet", "correct": true },
+        { "text": "grep nginx /var/log/* hakee indeksoidusti nginx-yksikön virheet", "correct": false },
+        { "text": "tail -f /dev/null seuraa nginx-palvelun virhelokimerkintöjä", "correct": false },
+        { "text": "systemctl cat nginx tulostaa viimeisimmät err-tason lokirivit", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-journald-persist-07",
+      "choices": [
+        { "text": "Storage=persistent /var/log/journal journald.conf:ssa", "correct": true },
+        { "text": "Storage=volatile säilyttää lokit rebootien yli forensic-tarkoituksiin", "correct": false },
+        { "text": "Poista journald ja käytä vain rsyslogia lokitiedostojen säilytykseen", "correct": false },
+        { "text": "Rsyslog-only korvaa persistent-journalin automaattisesti rebootissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-network-ss-08",
+      "choices": [
+        { "text": "ss -tlnp | grep 8080 tai ss -ulnp UDP-kuuntelijalle", "correct": true },
+        { "text": "netstat -a näyttää prosessin joka kuuntelee porttia 8080", "correct": false },
+        { "text": "ping localhost paljastaa portin 8080 omistavan prosessin", "correct": false },
+        { "text": "ifconfig listaa TCP-kuuntelijat ja prosessit portissa 8080", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-network-route-09",
+      "choices": [
+        { "text": "ip route show table all — policy routing ja oikea interface", "correct": true },
+        { "text": "reboot korjaa VPN-reitityksen ja internal IP -reachability", "correct": false },
+        { "text": "Poista default route korjaa VPN:n internal-reitit", "correct": false },
+        { "text": "ifdown eth0 palauttaa VPN-reitit policy routing -tauluun", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-network-resolv-10",
+      "choices": [
+        { "text": "search/domain /etc/resolv.conf tai systemd-resolved", "correct": true },
+        { "text": "/etc/hosts määrittää search-domainit lyhyille hostnameille", "correct": false },
+        { "text": "/etc/nsswitch.conf DNS off estää FQDN-resoluution", "correct": false },
+        { "text": "iptables search-kenttä rikkoo lyhyiden hostnamejen haun", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-network-nmcli-11",
+      "choices": [
+        { "text": "nmcli connection up 'Profile-Name' vaihtaa Wi-Fi-profiilin", "correct": true },
+        { "text": "ifconfig wlan0 up valitsee NetworkManager-profiilin CLI:stä", "correct": false },
+        { "text": "route add default vaihtaa aktiivisen Wi-Fi-verkon profiilin", "correct": false },
+        { "text": "systemctl restart network aktivoi valitun NM-profiilin reconnectissa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-avahi-browse-12",
+      "choices": [
+        { "text": "avahi-browse -a -r tai avahi-browse -t _ipp._tcp", "correct": true },
+        { "text": "ping printer.local listaa kaikki lähiverkon Avahi-palvelut", "correct": false },
+        { "text": "nmap -sP skannaa mDNS-palvelut kuten avahi-browse", "correct": false },
+        { "text": "systemctl start cups listaa tulostimet mDNS-verkossa", "correct": false }
+      ]
+    },
+    {
+      "id": "b02-linux-avahi-conflict-13",
+      "choices": [
+        { "text": "hostname collision mDNS-verkossa — nimet täytyy olla uniikit", "correct": true },
+        { "text": "Avahi bugi aiheuttaa aina .local-nimen flapping-käyttäytymisen", "correct": false },
+        { "text": "DNS cache synkronoi duplikaatti-hostnamet .local-verkossa", "correct": false },
+        { "text": "firewall estää kaiken mDNS-liikenteen ja aiheuttaa flappingin", "correct": false }
+      ]
+    }
+  ]
+}
