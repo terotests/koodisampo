@@ -6,9 +6,9 @@ Ensimmäinen aihealue: **moderni C++** vanhoille C++-konkareille, pohjautuen [C+
 
 ## Pelaa selaimessa
 
-Web-versio julkaistaan GitHub Pagesiin GitLab CI:stä (`main`-haara).
+Web-versio julkaistaan GitHub Pagesiin automaattisesti kun `main` päivittyy.
 
-- **Osoite:** `https://<github-käyttäjä>.github.io/koodisampo/` (kun Pages on kytketty `gh-pages`-haaraan)
+- **Osoite:** https://terotests.github.io/koodisampo/
 - Staattiset tarinat toimivat ilman backend-palvelinta; edistyminen tallentuu selaimen IndexedDB:hen.
 
 ## Tarinat
@@ -63,20 +63,16 @@ Kartta: `content/worlds/corporate-hq.json`. Tarinat: `content/stories/`.
 
 Osaaminen (feature-karma) ja kuolemat tallentuvat tiedostoon `~/.koodisampo/player.json` — säilyvät pelisession välillä.
 
-## CI/CD — GitHub Pages GitLabista
+## CI/CD — GitHub Pages (GitHub Actions)
 
-`.gitlab-ci.yml` buildaa `web/`-workspace:n ja puskee artefaktin GitHubin `gh-pages`-haaraan.
+Workflow: [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
 
-**GitLab CI/CD -muuttujat** (Settings → CI/CD → Variables):
+- `main`-push → buildaa `web/` (`PAGES_BASE=/koodisampo/`) → julkaisee GitHub Pagesiin
+- Manuaalinen ajo: Actions → *Deploy web to GitHub Pages* → Run workflow
 
-| Muuttuja | Kuvaus |
-|----------|--------|
-| `GITHUB_TOKEN` | PAT, jolla `contents:write` kohderepoon |
-| `GITHUB_PAGES_REPO` | Esim. `terotolonen/koodisampo` |
+**Kerran GitHubissa:** Settings → Pages → Build and deployment → Source → **GitHub Actions** (ei *Deploy from a branch*).
 
-**GitHub-repossa:** Settings → Pages → Build and deployment → Deploy from branch → `gh-pages` / root.
-
-Valinnainen `PAGES_BASE` (oletus `/koodisampo/`) määrittää Viten `base`-polun project-sivulle.
+Ensimmäisen onnistuneen ajon jälkeen sivu on osoitteessa https://terotests.github.io/koodisampo/
 
 ## Tarinan lisääminen
 
