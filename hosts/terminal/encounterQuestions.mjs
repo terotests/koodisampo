@@ -439,6 +439,10 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
     pickNonce,
     deaths: session.exportDeaths?.() ?? 0,
   });
+  if (!picked?.question?.id) {
+    clearEncounterQuizCache();
+    return null;
+  }
   const shuffleSeed = `${entityId}:${picked.question.id}:${session.karma.total()}`;
   const question = {
     ...picked.question,

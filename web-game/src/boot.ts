@@ -4,17 +4,17 @@ import { createWebGameController } from "../../hosts/shared/webGameController.mj
 import { StoryCatalog } from "koodisampo-runtime";
 import * as gameHost from "./gameHost";
 import { loadPlayerSave, savePlayerSave } from "./playerSave";
-import { loadAllQuestionsFromBundle } from "./questions";
+import { loadAllQuestionsFromPublic } from "./questions";
 
 export type WebGame = ReturnType<typeof createWebGameController>;
 
 export async function createBrowserGame(): Promise<WebGame> {
-  setQuestionLoader(() => loadAllQuestionsFromBundle());
-
   const base = import.meta.env.BASE_URL;
-  const [mapRes] = await Promise.all([
+  const [mapRes, questions] = await Promise.all([
     fetch(`${base}content/worlds/corporate-hq-intro.json`),
+    loadAllQuestionsFromPublic(base),
   ]);
+  setQuestionLoader(() => questions);
   if (!mapRes.ok) {
     throw new Error("Maailman lataus epäonnistui");
   }
