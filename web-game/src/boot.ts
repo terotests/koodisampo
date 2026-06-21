@@ -23,7 +23,7 @@ export async function createBrowserGame(): Promise<WebGame> {
   const storyCatalog = new StoryCatalog();
 
   const storyTextByFile = new Map<string, string>();
-  const summaries = storyCatalog.catalogList();
+  const summaries = storyCatalog.list();
   await Promise.all(
     summaries.map(async (summary: { filename?: string }) => {
       if (!summary.filename) return;
