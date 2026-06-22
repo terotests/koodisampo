@@ -65,6 +65,11 @@ import {
   elevatorKeyToFloorIndex,
   getFloorRecommendationStatus,
 } from "./personStatus.mjs";
+import {
+  buildMenuItems,
+  menuItemByNumber,
+  partitionMenuStories,
+} from "./storyMenu.mjs";
 
 let quizHistoryState = emptyQuizHistory();
 let studyBacklogState = emptyStudyBacklog();
@@ -391,11 +396,25 @@ function printMenu(session) {
   lines.push(
     `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${session.karma.total()}\n`,
   );
-  const items = session.catalogList();
-  for (let i = 0; i < items.length; i += 1) {
-    const s = items[i];
-    lines.push(`  ${styled(`[${i + 1}]`, FG.yellow)} ${s.title}`);
-    lines.push(`      ${styled(s.description, FG.gray)}`);
+  const { lessons, social } = partitionMenuStories(session.catalogList());
+  if (lessons.length) {
+    lines.push(`  ${styled("═══ Oppitunnit ═══", FG.cyan, BOLD)}`);
+    let n = 1;
+    for (const s of lessons) {
+      lines.push(`  ${styled(`[${n}]`, FG.yellow)} ${s.title}`);
+      lines.push(`      ${styled(s.description, FG.gray)}`);
+      n += 1;
+    }
+    lines.push("");
+  }
+  if (social.length) {
+    lines.push(`  ${styled("═══ Social chats ═══", FG.magenta, BOLD)}`);
+    let n = lessons.length + 1;
+    for (const s of social) {
+      lines.push(`  ${styled(`[${n}]`, FG.yellow)} ${s.title}`);
+      lines.push(`      ${styled(s.description, FG.gray)}`);
+      n += 1;
+    }
   }
   if (session.menuMessage) {
     lines.push(`\n  ${styled(session.menuMessage, FG.red)}`);
@@ -482,9 +501,18 @@ async function runMenuLoop(session) {
       return;
     }
 
-    const index = Number.parseInt(pick, 10) - 1;
-    const summary = session.findStoryByIndex(index);
-    if (!summary.id) {
+    const menuItems = buildMenuItems(session.catalogList());
+    const item = menuItemByNumber(menuItems, pick);
+    if (!item?.storyId) {
+      sendMenuPick(session, "???");
+      continue;
+    }
+
+    let summary = null;
+    dispatch(session, () => {
+      summary = session.catalog.findById(item.storyId);
+    });
+    if (!summary?.id) {
       sendMenuPick(session, "???");
       continue;
     }

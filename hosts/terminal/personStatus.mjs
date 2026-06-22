@@ -59,6 +59,8 @@ export function inferGender(firstName, entity = null) {
 export function isImportantPerson(entity) {
   if (!entity?.id) return false;
   if (entity.id === "receptionist") return true;
+  if (entity.id === "janitor" || entity.id === "office-dog") return true;
+  if (entity.kind === "pet") return true;
   if (entity.kind === "guru") return true;
   if (entity.kind === "security") return true;
   if (entity.kind === "hostile" || entity.kind === "police") return true;
@@ -158,6 +160,8 @@ export function personMapChar(registry, entity) {
 export function countsForFloorRecommendation(entity) {
   if (!entity?.id) return false;
   if (entity.kind === "item" || entity.kind === "pet") return false;
+  if (entity.id === "janitor" || entity.id === "office-dog") return false;
+  if (entity.scheduleRole === "janitor") return false;
   if (entity.isAgent && entity.kind === "police") return false;
   return (
     entity.kind === "coworker"

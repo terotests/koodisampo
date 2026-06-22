@@ -40,6 +40,7 @@ import {
   elevatorKeyToFloorIndex,
   getFloorRecommendationStatus,
 } from "../terminal/personStatus.mjs";
+import { buildMenuItems, menuItemByNumber } from "../terminal/storyMenu.mjs";
 import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
 
 /**
@@ -239,6 +240,14 @@ function startStoryFromId(storyId) {
   return true;
 }
 
+function getMenuItems() {
+  let items = [];
+  dispatch(session, () => {
+    items = buildMenuItems(session.catalogList());
+  });
+  return items;
+}
+
 function handleMenuKey(key) {
   if (key === "q") {
     dispatch(session, () => session.onMenuPick("q"));
@@ -249,21 +258,13 @@ function handleMenuKey(key) {
     return;
   }
 
-  const idx = Number.parseInt(key, 10) - 1;
-  if (Number.isNaN(idx) || idx < 0) {
-    return;
-  }
-
-  let summary = null;
-  dispatch(session, () => {
-    summary = session.findStoryByIndex(idx);
-  });
-  if (!summary?.id) {
+  const item = menuItemByNumber(getMenuItems(), Number.parseInt(key, 10));
+  if (!item?.storyId) {
     dispatch(session, () => session.onMenuPick("???"));
     persistWeb();
     return;
   }
-  startStoryFromId(summary.id);
+  startStoryFromId(item.storyId);
 }
 
 function processEncounterAfterChoice() {
@@ -494,15 +495,11 @@ function snapshot() {
   }
 
   if (session.screen === "menu") {
-    const items = session.catalogList();
+    const menuItems = getMenuItems();
     return {
       ...base,
       menuMessage: session.menuMessage,
-      menuItems: items.map((s, i) => ({
-        n: i + 1,
-        title: s.title,
-        description: s.description,
-      })),
+      menuItems,
     };
   }
 

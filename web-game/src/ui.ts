@@ -342,11 +342,24 @@ export function mountGameUI(game: WebGame) {
 
       if (state.screen === "menu") {
         let html = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
-        html += `<div style="color:#39c5cf;font-weight:bold;margin:12px 0">═══ Oppitunnit ═══</div>`;
-        for (const item of state.menuItems || []) {
-          html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.title)}</div>`;
-          if (item.description) {
-            html += `<div style="color:#8b949e;margin:0 0 8px 1.5em">${esc(item.description)}</div>`;
+        const lessons = (state.menuItems || []).filter((item) => item.category !== "social");
+        const social = (state.menuItems || []).filter((item) => item.category === "social");
+        if (lessons.length) {
+          html += `<div style="color:#39c5cf;font-weight:bold;margin:12px 0">═══ Oppitunnit ═══</div>`;
+          for (const item of lessons) {
+            html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.title)}</div>`;
+            if (item.description) {
+              html += `<div style="color:#8b949e;margin:0 0 8px 1.5em">${esc(item.description)}</div>`;
+            }
+          }
+        }
+        if (social.length) {
+          html += `<div style="color:#d2a8ff;font-weight:bold;margin:12px 0">═══ Social chats ═══</div>`;
+          for (const item of social) {
+            html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.title)}</div>`;
+            if (item.description) {
+              html += `<div style="color:#8b949e;margin:0 0 8px 1.5em">${esc(item.description)}</div>`;
+            }
           }
         }
         if (state.menuMessage) {
