@@ -17,6 +17,7 @@ import {
   emptyStudyBacklog,
   normalizeStudyBacklog,
 } from "../hosts/terminal/studyBacklog.mjs";
+import { emptyPersonRegistry } from "../hosts/terminal/personStatus.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
@@ -40,7 +41,7 @@ export function runPlayerSaveTests() {
     karma.add("cpp:nullptr", 3);
     engine.deaths = 2;
 
-    savePlayerSave(karma, engine.deaths, emptyQuizHistory(), emptyStudyBacklog(), {}, file);
+    savePlayerSave(karma, engine.deaths, emptyQuizHistory(), emptyStudyBacklog(), {}, emptyPersonRegistry(), file);
 
     const karma2 = new FeatureKarma();
     const engine2 = new StoryEngine(karma2);
@@ -52,7 +53,8 @@ export function runPlayerSaveTests() {
     assert(karma2.total() === 10, "total karma");
 
     const raw = JSON.parse(readFileSync(file, "utf8"));
-    assert(raw.version === 4, "save version");
+    assert(raw.version === 5, "save version");
+    assert(raw.personRegistry?.byId, "person registry saved");
     assert(raw.progress?.guruIntroPassed === false, "guru progress saved");
     assert(raw.features.ids.length === 2, "saved feature count");
     assert(raw.quizHistory?.global?.asked, "global quiz history saved");

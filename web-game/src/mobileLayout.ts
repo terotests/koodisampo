@@ -49,6 +49,7 @@ type HudState = {
   status?: string;
   ambient?: string;
   hint?: string;
+  floorRecommendation?: { total?: number; done?: number; complete?: boolean };
 };
 
 export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
@@ -66,7 +67,12 @@ export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s:
 
 export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
-  const msg = state.status || state.ambient || state.hint || "";
+  let msg = state.status || state.ambient || state.hint || "";
+  const fr = state.floorRecommendation;
+  if (fr && fr.total > 0 && !fr.complete) {
+    const rec = `Suositukset: ${fr.done}/${fr.total}`;
+    msg = msg ? `${msg} · ${rec}` : rec;
+  }
   el.textContent = msg;
   el.hidden = !msg;
 }

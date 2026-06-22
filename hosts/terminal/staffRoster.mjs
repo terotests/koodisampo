@@ -1,4 +1,5 @@
 import { sessionMap } from "../shared/sessionMap.mjs";
+import { personMapChar } from "./personStatus.mjs";
 
 function hashString(s) {
   let h = 2166136261;
@@ -81,7 +82,7 @@ export const CAST_KIND_MAP_CHAR = {
 };
 
 export const CAST_KIND_HELP = [
-  { kind: "coworker", label: "Työkaveri", mapChar: "t", note: "C++-kysymykset, kulkukortti" },
+  { kind: "coworker", label: "Työkaveri", mapChar: "t/T → P…", note: "Tuntematon t/T (sukupuoli), tuttu etukirjain" },
   { kind: "guru", label: "Guru", mapChar: "g", note: "C++-intro ja tarkistuskysymykset" },
   { kind: "role", label: "Rooli", mapChar: "v/s/k/T/p", note: "Esim. vastaanotto v, sihteeri s, talkkari k, CEO T" },
   { kind: "security", label: "Turvallisuus", mapChar: "u", note: "Audit-kysymykset" },
@@ -91,7 +92,8 @@ export const CAST_KIND_HELP = [
 ];
 
 /** Karttamerkki roolin mukaan (ei esineille). */
-export function roleMapChar(entity) {
+export function roleMapChar(entity, personRegistry = null) {
+  if (personRegistry) return personMapChar(personRegistry, entity);
   if (!entity?.id) return "?";
   if (entity.kind === "item") return entity.char || "?";
   if (entity.kind === "coworker") return "t";

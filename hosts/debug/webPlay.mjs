@@ -32,8 +32,8 @@ const game = createWebGameController({
   storyCatalog,
   gameHost,
   loadSave: () => loadPlayerSave(),
-  persistSave: (karma, deaths, quizHistory, studyBacklog, progress) => {
-    savePlayerSave(karma, deaths, quizHistory, studyBacklog, progress);
+  persistSave: (karma, deaths, quizHistory, studyBacklog, progress, personRegistry) => {
+    savePlayerSave(karma, deaths, quizHistory, studyBacklog, progress, personRegistry);
   },
   loadStoryJson: (summary) => {
     if (!summary?.id || !summary.filename) return null;

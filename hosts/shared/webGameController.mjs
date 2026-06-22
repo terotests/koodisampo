@@ -31,6 +31,16 @@ import {
   collectStaffFromSession,
   formatCastRosterText,
 } from "../terminal/staffRoster.mjs";
+import {
+  normalizePersonRegistry,
+  emptyPersonRegistry,
+  recordPersonEncounter,
+  applyMapPersonDisplay,
+  checkFloorRecommendationAccess,
+  elevatorKeyToFloorIndex,
+  getFloorRecommendationStatus,
+} from "../terminal/personStatus.mjs";
+import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
 
 /**
  * @param {{
@@ -48,7 +58,7 @@ import {
  *     sendStoryDismissFeedback: Function,
  *   },
  *   loadSave: () => Record<string, unknown> | null,
- *   persistSave: (karma: unknown, deaths: number, quizHistory: unknown, studyBacklog: unknown, progress: unknown) => void,
+ *   persistSave: (karma: unknown, deaths: number, quizHistory: unknown, studyBacklog: unknown, progress: unknown, personRegistry: unknown) => void,
  *   loadStoryJson: (summary: { id?: string, filename?: string } | null) => string | null,
  *   castListEnabled?: () => boolean,
  * }} deps
@@ -79,6 +89,7 @@ export function createWebGameController(deps) {
   const { root, session } = createGameSession(save);
   let quizHistoryState = normalizeQuizHistory(save?.quizHistory);
   let studyBacklogState = normalizeStudyBacklog(save?.studyBacklog);
+  let personRegistryState = normalizePersonRegistry(save?.personRegistry);
   let interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   let guruPickNonce = save?.progress?.guruPickNonce ?? 0;
   /** @type {null | { type: string, [key: string]: unknown }} */
@@ -109,6 +120,7 @@ export function createWebGameController(deps) {
       save = disk;
       quizHistoryState = normalizeQuizHistory(save.quizHistory);
       studyBacklogState = normalizeStudyBacklog(save.studyBacklog);
+      personRegistryState = normalizePersonRegistry(save.personRegistry);
       interviewPickNonce = save.progress?.interviewPickNonce ?? 0;
       guruPickNonce = save.progress?.guruPickNonce ?? 0;
     }
@@ -148,12 +160,29 @@ function updateLocalSave() {
   };
   save.quizHistory = quizHistoryState;
   save.studyBacklog = studyBacklogState;
+  save.personRegistry = personRegistryState;
 }
 
   function persistWeb() {
     updateLocalSave();
-    persistSave(session.karma, session.exportDeaths(), quizHistoryState, studyBacklogState, save.progress);
+    persistSave(
+      session.karma,
+      session.exportDeaths(),
+      quizHistoryState,
+      studyBacklogState,
+      save.progress,
+      personRegistryState,
+    );
   }
+
+function pendingEncounterEntity() {
+  return findPendingEntity(session) || {
+    id: session.pendingEntityId,
+    name: session.pendingEntityName,
+    kind: session.pendingEntityKind,
+    char: session.pendingEntityChar,
+  };
+}
 
 function makeQuizPickOptions() {
   return {
@@ -269,6 +298,7 @@ function ensureQuizRecorded(quiz) {
   if (quizRecordedKey === key) return;
   quizRecordedKey = key;
   quizHistoryState = recordQuizShown(quizHistoryState, quiz.entity.id, quiz.question.id);
+  recordPersonEncounter(personRegistryState, quiz.entity, { tone: "meet" });
   persistWeb();
 }
 
@@ -422,6 +452,11 @@ function snapshot() {
   if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover") {
     const view = session.getMapView();
     const elevator = buildElevatorSnapshot(map);
+    const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
+    const lines = applyMapPersonDisplay(view.lines, map, personRegistryState, {
+      x: view.cameraX,
+      y: view.cameraY,
+    });
     return {
       ...base,
       mapTitle: view.mapTitle,
@@ -430,10 +465,11 @@ function snapshot() {
       ambient: view.ambientLine,
       time: view.timeLine,
       hint: view.hintLine,
-      lines: view.lines,
+      lines,
       camera: { x: view.cameraX, y: view.cameraY },
       onElevator: elevator.onElevator,
       elevatorFloors: elevator.floors,
+      floorRecommendation: floorRec,
     };
   }
 
@@ -499,6 +535,8 @@ function dismissOverlay() {
   if (!overlay) return;
 
   if (overlay.type === "outcome") {
+    const entity = pendingEncounterEntity();
+    recordPersonEncounter(personRegistryState, entity, { correct: overlay.correct });
     dispatch(session, () => {
       session.finishEncounterQuiz(
         overlay.correct,
@@ -515,15 +553,19 @@ function dismissOverlay() {
     );
     persistWeb();
   } else if (overlay.type === "banter") {
+    const entity = pendingEncounterEntity();
     if (overlay.kind === "meh") {
+      recordPersonEncounter(personRegistryState, entity, { tone: "meh" });
       dispatch(session, () => {
         session.dismissEncounterQuiz("meh", overlay.npcReply);
       });
     } else if (overlay.kind === "colleague") {
+      recordPersonEncounter(personRegistryState, entity, { tone: "talk" });
       dispatch(session, () => {
         session.dismissEncounterQuiz("leave", overlay.npcReply);
       });
     } else if (overlay.kind === "joke") {
+      recordPersonEncounter(personRegistryState, entity, { tone: "joke" });
       dispatch(session, () => {
         session.onEncounterChoice("joke");
       });
@@ -787,6 +829,9 @@ function handleKey(key) {
     };
     const choice = choiceMap[key];
     if (choice) {
+      if (choice === "talk" || choice === "joke") {
+        recordPersonEncounter(personRegistryState, pendingEncounterEntity(), { tone: choice });
+      }
       dispatch(session, () => session.onEncounterChoice(choice));
       processEncounterAfterChoice();
       persistWeb();
@@ -815,6 +860,28 @@ function handleKey(key) {
       dispatch(session, () => session.onMapKey("enter"));
     }
     return;
+  }
+
+  if (session.screen === "map" && /^[0-9]$/.test(key)) {
+    const map = sessionMap(session);
+    if (map?.isOnElevator?.()) {
+      const target = elevatorKeyToFloorIndex(key);
+      if (target >= 0 && target > (map.currentFloor ?? 0)) {
+        let allowed = true;
+        dispatch(session, () => {
+          allowed = session.canAccessFloor(target);
+        });
+        if (allowed) {
+          const recCheck = checkFloorRecommendationAccess(session, personRegistryState, target);
+          if (!recCheck.ok) {
+            dispatch(session, () => {
+              map.lastStatus = recCheck.message;
+            });
+            return;
+          }
+        }
+      }
+    }
   }
 
   dispatch(session, () => session.onMapKey(key));

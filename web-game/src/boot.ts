@@ -37,9 +37,9 @@ export async function createBrowserGame(): Promise<WebGame> {
     storyCatalog,
     gameHost,
     loadSave: () => cachedSave,
-    persistSave: (karma, deaths, quizHistory, studyBacklog, progress) => {
+    persistSave: (karma, deaths, quizHistory, studyBacklog, progress, personRegistry) => {
       void (async () => {
-        await savePlayerSave(karma, deaths, quizHistory, studyBacklog, progress);
+        await savePlayerSave(karma, deaths, quizHistory, studyBacklog, progress, personRegistry);
         cachedSave = (await loadPlayerSave()) ?? cachedSave;
       })();
     },

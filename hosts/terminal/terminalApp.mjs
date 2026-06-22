@@ -56,9 +56,19 @@ import {
 } from "./encounterQuestions.mjs";
 import { castListEnabledForTerminal } from "./debugFlags.mjs";
 import { collectAllCastFromSession, formatCastRosterText } from "./staffRoster.mjs";
+import {
+  emptyPersonRegistry,
+  normalizePersonRegistry,
+  recordPersonEncounter,
+  applyMapPersonDisplay,
+  checkFloorRecommendationAccess,
+  elevatorKeyToFloorIndex,
+  getFloorRecommendationStatus,
+} from "./personStatus.mjs";
 
 let quizHistoryState = emptyQuizHistory();
 let studyBacklogState = emptyStudyBacklog();
+let personRegistryState = emptyPersonRegistry();
 let castListOpen = false;
 let interviewPickNonce = 0;
 let guruPickNonce = 0;
@@ -144,10 +154,20 @@ function buildMapFrame(session) {
   if (map?.policeChaseActive) {
     lines.push(`  ${styled("⚠ POLIISIT TAKAA-AJAVAT — P mustalla pohjalla!", FG.red, BOLD)}`);
   }
+  const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
+  if (floorRec.total > 0 && !floorRec.complete) {
+    lines.push(
+      `  ${styled(`Suositukset tältä kerrokselta: ${floorRec.done}/${floorRec.total} (tarvitaan kaikilta ennen ylemmäs)`, FG.magenta)}`,
+    );
+  }
   lines.push("");
-  for (let i = 0; i < view.lines.length; i += 1) {
+  const displayLines = applyMapPersonDisplay(view.lines, map, personRegistryState, {
+    x: view.cameraX,
+    y: view.cameraY,
+  });
+  for (let i = 0; i < displayLines.length; i += 1) {
     const mapY = view.cameraY + i;
-    lines.push(`  ${colorizeMapLineAt(view.lines[i], view.cameraX, mapY, policeSet)}`);
+    lines.push(`  ${colorizeMapLineAt(displayLines[i], view.cameraX, mapY, policeSet)}`);
   }
   if (view.statusLine) {
     const status = view.statusLine;
@@ -256,7 +276,14 @@ function schedulePersist(session) {
     const s = persistPending;
     persistPending = null;
     if (!s) return;
-    savePlayerSave(s.karma, s.exportDeaths(), quizHistoryState, studyBacklogState, persistProgress(s));
+    savePlayerSave(
+      s.karma,
+      s.exportDeaths(),
+      quizHistoryState,
+      studyBacklogState,
+      persistProgress(s),
+      personRegistryState,
+    );
   }, 400);
 }
 
@@ -266,7 +293,48 @@ function flushPersist(session) {
     persistTimer = null;
   }
   persistPending = null;
-  savePlayerSave(session.karma, session.exportDeaths(), quizHistoryState, studyBacklogState, persistProgress(session));
+  savePlayerSave(
+    session.karma,
+    session.exportDeaths(),
+    quizHistoryState,
+    studyBacklogState,
+    persistProgress(session),
+    personRegistryState,
+  );
+}
+
+function pendingEncounterEntity(session) {
+  return {
+    id: session.pendingEntityId,
+    name: session.pendingEntityName,
+    kind: session.pendingEntityKind,
+    char: session.pendingEntityChar,
+  };
+}
+
+function trySendMapKey(session, keyName) {
+  if (/^[0-9]$/.test(keyName)) {
+    const map = sessionMap(session);
+    if (map?.isOnElevator?.()) {
+      const target = elevatorKeyToFloorIndex(keyName);
+      if (target >= 0 && target > (map.currentFloor ?? 0)) {
+        let allowed = true;
+        dispatch(session, () => {
+          allowed = session.canAccessFloor(target);
+        });
+        if (allowed) {
+          const recCheck = checkFloorRecommendationAccess(session, personRegistryState, target);
+          if (!recCheck.ok) {
+            dispatch(session, () => {
+              map.lastStatus = recCheck.message;
+            });
+            return;
+          }
+        }
+      }
+    }
+  }
+  sendMapKey(session, keyName);
 }
 
 function printStory(session) {
@@ -744,6 +812,7 @@ async function runQuizEncounterLoop(session) {
   }
 
   quizHistoryState = recordQuizShown(quizHistoryState, quiz.entity.id, quiz.question.id);
+  recordPersonEncounter(personRegistryState, quiz.entity, { tone: "meet" });
   persist(session);
 
   while (session.screen === "encounter" && !session.shouldQuit) {
@@ -753,6 +822,7 @@ async function runQuizEncounterLoop(session) {
 
     const pick = String(result.value || "").trim().toLowerCase();
     if (pick === "p" || pick === "poistu") {
+      recordPersonEncounter(personRegistryState, quiz.entity, { tone: "leave" });
       dispatch(session, () => {
         session.dismissEncounterQuiz("leave", "Vetäydyt takaisin hiljaa.");
       });
@@ -776,6 +846,7 @@ async function runQuizEncounterLoop(session) {
       const npcReply = buildAskColleagueReply(quiz.entity, session);
       const ok = await showQuizBanter(session, quiz, "colleague");
       if (!ok) return;
+      recordPersonEncounter(personRegistryState, quiz.entity, { tone: "talk" });
       dispatch(session, () => {
         session.dismissEncounterQuiz("leave", npcReply);
       });
@@ -787,6 +858,7 @@ async function runQuizEncounterLoop(session) {
       const npcReply = buildNpcMehReply(quiz.entity);
       const ok = await showQuizBanter(session, quiz, "meh");
       if (!ok) return;
+      recordPersonEncounter(personRegistryState, quiz.entity, { tone: "meh" });
       dispatch(session, () => {
         session.dismissEncounterQuiz("meh", npcReply);
       });
@@ -797,6 +869,7 @@ async function runQuizEncounterLoop(session) {
     if (pick === "j" || pick === "vitsi") {
       const ok = await showQuizBanter(session, quiz, "joke");
       if (!ok) return;
+      recordPersonEncounter(personRegistryState, quiz.entity, { tone: "joke" });
       sendEncounterChoice(session, "joke");
       clearEncounterQuizCache();
       persist(session);
@@ -843,6 +916,7 @@ async function runQuizEncounterLoop(session) {
     const ok = await showQuizOutcome(session, quiz, correct);
     if (!ok) return;
 
+    recordPersonEncounter(personRegistryState, quiz.entity, { correct });
     dispatch(session, () => {
       session.finishEncounterQuiz(
         correct,
@@ -891,6 +965,10 @@ async function runEncounterLoop(session) {
       continue;
     }
 
+    if (choice === "talk" || choice === "joke") {
+      recordPersonEncounter(personRegistryState, pendingEncounterEntity(session), { tone: choice });
+    }
+
     sendEncounterChoice(session, choice);
     persist(session);
 
@@ -928,6 +1006,7 @@ export async function runTerminalApp(mapJson) {
   const save = loadPlayerSave();
   quizHistoryState = normalizeQuizHistory(save?.quizHistory);
   studyBacklogState = normalizeStudyBacklog(save?.studyBacklog);
+  personRegistryState = normalizePersonRegistry(save?.personRegistry);
   interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   guruPickNonce = save?.progress?.guruPickNonce ?? 0;
   const { root, session } = createGameSession(save);
@@ -1037,7 +1116,7 @@ export async function runTerminalApp(mapJson) {
         continue;
       }
 
-      sendMapKey(session, key.name);
+      trySendMapKey(session, key.name);
     }
   } finally {
     flushPersist(session);

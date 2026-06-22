@@ -35,9 +35,10 @@ export async function savePlayerSave(
   quizHistory: unknown,
   studyBacklog: unknown,
   progress: unknown,
+  personRegistry?: unknown,
 ): Promise<void> {
   const payload: SavePayload = {
-    version: 4,
+    version: 5,
     updatedAt: Date.now(),
     deaths: deaths ?? 0,
     features: {
@@ -46,6 +47,7 @@ export async function savePlayerSave(
     },
     quizHistory,
     studyBacklog,
+    personRegistry,
     progress,
   };
   const db = await openDb();

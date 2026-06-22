@@ -3,6 +3,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { emptyQuizHistory, normalizeQuizHistory } from "./quizHistory.mjs";
 import { emptyStudyBacklog, normalizeStudyBacklog } from "./studyBacklog.mjs";
+import { emptyPersonRegistry, normalizePersonRegistry } from "./personStatus.mjs";
 
 export function defaultSaveFile() {
   return join(homedir(), ".koodisampo", "player.json");
@@ -19,16 +20,27 @@ export function loadPlayerSave(filePath = defaultSaveFile()) {
     if (data.studyBacklog) {
       data.studyBacklog = normalizeStudyBacklog(data.studyBacklog);
     }
+    if (data.personRegistry) {
+      data.personRegistry = normalizePersonRegistry(data.personRegistry);
+    }
     return data;
   } catch {
     return null;
   }
 }
 
-export function savePlayerSave(karma, deaths, quizHistory, studyBacklog, progress, filePath = defaultSaveFile()) {
+export function savePlayerSave(
+  karma,
+  deaths,
+  quizHistory,
+  studyBacklog,
+  progress,
+  personRegistry,
+  filePath = defaultSaveFile(),
+) {
   mkdirSync(dirname(filePath), { recursive: true });
   const payload = {
-    version: 4,
+    version: 5,
     updatedAt: Date.now(),
     deaths: deaths ?? 0,
     features: {
@@ -37,6 +49,7 @@ export function savePlayerSave(karma, deaths, quizHistory, studyBacklog, progres
     },
     quizHistory: normalizeQuizHistory(quizHistory ?? emptyQuizHistory()),
     studyBacklog: normalizeStudyBacklog(studyBacklog ?? emptyStudyBacklog()),
+    personRegistry: normalizePersonRegistry(personRegistry ?? emptyPersonRegistry()),
     progress: {
       guruIntroPassed: !!progress?.guruIntroPassed,
       guruStoryAttempted: !!progress?.guruStoryAttempted,
