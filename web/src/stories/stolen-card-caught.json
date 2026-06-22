@@ -1,0 +1,22 @@
+{
+  "id": "stolen-card-caught",
+  "title": "Kadonnut kortti paljastuu",
+  "topic": "lore",
+  "description": "Vastaanotto huomaa varastetun kortin.",
+  "estimatedMinutes": 1,
+  "startNode": "intro",
+  "nodes": {
+    "intro": {
+      "type": "narrative",
+      "title": "Epäily",
+      "text": "\"Tämä kortti on merkitty kadonneeksi eilen!\" Vastaanottovirkailija painaa hälytyspainiketta. Turvallisuus saapuu hetkeä myöhemmin.",
+      "next": "end"
+    },
+    "end": {
+      "type": "end",
+      "title": "Kiinni",
+      "text": "Sinut viedään turvatilaan selittämään, miksi käytit toisen kulkukorttia.",
+      "outcome": "partial"
+    }
+  }
+}
