@@ -8,6 +8,9 @@ import {
   setMobileToolbar,
   syncMobileClass,
 } from "./mobileLayout";
+import { setText } from "./render/domPatch";
+import { patchMapGrid } from "./render/mapGrid";
+import { clearMapView, ensureMapShell, setScrollContent } from "./render/viewRoot";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
  type State = any;
@@ -42,12 +45,15 @@ export function mountGameUI(game: WebGame) {
       ) {
         elevatorPickerCollapsed = true;
       }
+      lastRenderKey = "";
       render(after);
     }
 
     let elevatorPickerCollapsed = false;
     let wasOnElevator = false;
     let copyStatusTimeout = 0;
+    let lastRenderKey = "";
+    let currentStudyListText = "";
 
     const STUDY_LIST_HINT = "Kopioi = leikepöydälle | b / Enter = takaisin | q = lopeta";
 
@@ -94,11 +100,13 @@ export function mountGameUI(game: WebGame) {
 
     function resetGame() {
       game.reset(true);
+      lastRenderKey = "";
       render(game.snapshot());
     }
 
     function sendCode(answer: string) {
       game.handleStoryCode(answer);
+      lastRenderKey = "";
       render(game.snapshot());
     }
 
@@ -136,22 +144,45 @@ export function mountGameUI(game: WebGame) {
     function setMapTextView(active: boolean) {
       const wrap = document.getElementById("map-wrap");
       if (active) {
-        mapEl?.classList.add("encounter-view");
         wrap?.classList.add("map-text-view");
       } else {
-        mapEl?.classList.remove("encounter-view");
         wrap?.classList.remove("map-text-view");
       }
     }
 
     function setMapContent(html: string) {
       if (!mapEl) return;
-      if (isMobileLayout()) {
-        setMapTextView(true);
-        mapEl.innerHTML = `<div class="mobile-scroll">${html}</div>`;
+      if (mapEl.querySelector("[data-map-shell]")) {
+        clearMapView(mapEl);
+      }
+      setMapTextView(true);
+      setScrollContent(mapEl, html);
+    }
+
+    function renderMapLines(state: State, lines: string[]) {
+      if (!mapEl) return;
+      if (mapEl.querySelector("[data-scroll-root]")) {
+        clearMapView(mapEl);
+      }
+      setMapTextView(false);
+      const { header, grid, hint } = ensureMapShell(mapEl);
+      const studyLine = state.studyCounts?.total > 0
+        ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
+        : "";
+      const headerHtml = (isMobileLayout() ? "" : `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`) +
+        studyLine +
+        (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "");
+      if (headerHtml) {
+        header.innerHTML = headerHtml;
       } else {
-        setMapTextView(false);
-        mapEl.innerHTML = html;
+        header.innerHTML = "";
+      }
+      patchMapGrid(grid, lines, state, colorizeLine);
+      setText(hint, state.hint || "");
+      if (!state.hint) {
+        hint.style.display = "none";
+      } else {
+        hint.style.display = "";
       }
     }
 
@@ -371,14 +402,30 @@ export function mountGameUI(game: WebGame) {
 
     function renderMobileMap(state: State) {
       updateMobileChrome(state);
-      setMapTextView(false);
-      const cropped = cropMapLines(state.lines);
-      const mapHtml = `<pre class="map-grid">${cropped.map((line, row) => colorizeLine(line, state, row)).join("\n")}</pre>`;
-      if (mapEl) mapEl.innerHTML = mapHtml;
+      renderMapLines(state, cropMapLines(state.lines));
       renderMapToolbar(state);
     }
 
+    function renderKey(state: State): string {
+      return [
+        state.generation,
+        state.screen,
+        state.overlay?.type ?? "",
+        state.actionPanel?.mode ?? "",
+        state.encounter?.mode ?? "",
+        state.story?.screen ?? "",
+        state.story?.nodeKind ?? "",
+        state.story?.currentNodeId ?? "",
+        elevatorPickerCollapsed ? "1" : "0",
+      ].join("|");
+    }
+
     function render(state) {
+      const key = renderKey(state);
+      if (key === lastRenderKey) {
+        return;
+      }
+      lastRenderKey = key;
       if (isMobileLayout()) {
         updateMobileChrome(state);
       } else if (jsonEl && metaEl) {
@@ -400,9 +447,12 @@ export function mountGameUI(game: WebGame) {
       }
 
       if (state.castListOpen) {
-        mapEl.innerHTML =
-          `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
-          `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:12px 0;color:#c9d1d9;font-size:12px;line-height:1.45">${esc(state.castListText || "")}</pre>`;
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(
+          screenHeader(state) +
+          `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:12px 0;color:#c9d1d9;font-size:12px;line-height:1.45">${esc(state.castListText || "")}</pre>`,
+        );
         setToolbar([
           { key: "o", label: "o sulje" },
           { key: "enter", label: "Enter sulje" },
@@ -413,10 +463,13 @@ export function mountGameUI(game: WebGame) {
 
       if (state.screen === "inventory") {
         const invText = (state.inventoryLines || []).join("\n");
-        mapEl.innerHTML =
-          `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(
+          screenHeader(state) +
           `<div style="color:#39c5cf;font-weight:bold;margin:12px 0">═══ Inventaario ═══</div>` +
-          `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(invText)}</pre>`;
+          `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(invText)}</pre>`,
+        );
         setToolbar([{ key: "enter", label: "Enter — takaisin" }, { key: "i", label: "i takaisin" }]);
         hintEl.textContent = "Enter / mikä tahansa näppäin = takaisin kartalle | q = lopeta";
         return;
@@ -448,7 +501,9 @@ export function mountGameUI(game: WebGame) {
           html += `<div class="warn" style="margin-top:8px">${esc(state.menuMessage)}</div>`;
         }
         html += `<div class="hint" style="margin-top:12px">Valitse numero tai nappi — m / Enter = takaisin toimistolle</div>`;
-        mapEl.innerHTML = html;
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(html);
         const menuBtns = (state.menuItems || []).map((item) => ({
           key: String(item.n),
           label: `${item.n}. ${item.title}`,
@@ -463,13 +518,13 @@ export function mountGameUI(game: WebGame) {
 
       if (state.screen === "studylist") {
         const text = state.studyListText || "";
+        currentStudyListText = text;
         let html = screenHeader(state);
         html += `<div style="margin:12px 0"><button type="button" id="study-copy-btn">Kopioi leikepöydälle</button></div>`;
         html += `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(text)}</pre>`;
+        if (!mapEl) return;
+        clearMapView(mapEl);
         setMapContent(html);
-        document.getElementById("study-copy-btn")?.addEventListener("click", () => {
-          void copyStudyListToClipboard(text);
-        });
         setToolbar([
           {
             key: "copy",
@@ -557,7 +612,9 @@ export function mountGameUI(game: WebGame) {
             html += `<div style="color:#3fb950;margin-top:8px">+${s.pointsEarned} pistettä</div>`;
           }
           html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
-          mapEl.innerHTML = html;
+          if (!mapEl) return;
+          clearMapView(mapEl);
+          setMapContent(html);
           setToolbar([{ key: "enter", label: "Enter — jatka" }]);
           hintEl.textContent = "q = lopeta";
           return;
@@ -576,7 +633,9 @@ export function mountGameUI(game: WebGame) {
             html += `<div style="margin-top:8px">Pisteet: ${s.totalPoints}</div>`;
           }
           html += `<div class="hint" style="margin-top:16px">Enter = palaa kartalle</div>`;
-          mapEl.innerHTML = html;
+          if (!mapEl) return;
+          clearMapView(mapEl);
+          setMapContent(html);
           setToolbar([{ key: "enter", label: "Enter — kartalle" }]);
           hintEl.textContent = "q = lopeta";
           return;
@@ -593,19 +652,11 @@ export function mountGameUI(game: WebGame) {
             html += `<div class="hint">${esc(s.codeHint)}</div>`;
           }
           html += `<input id="codeInput" type="text" spellcheck="false" style="width:100%;margin-top:8px;padding:8px;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;font-family:inherit" placeholder="vastaus…" />`;
-          html += `<button id="codeSubmit" style="margin-top:8px">Lähetä vastaus</button>`;
+          html += `<button id="codeSubmit" type="button" style="margin-top:8px">Lähetä vastaus</button>`;
           html += `</div>`;
-          mapEl.innerHTML = html;
-          document.getElementById("codeSubmit")?.addEventListener("click", () => {
-            const val = document.getElementById("codeInput")?.value ?? "";
-            sendCode(val);
-          });
-          document.getElementById("codeInput")?.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              sendCode(e.target.value);
-            }
-          });
+          if (!mapEl) return;
+          clearMapView(mapEl);
+          setMapContent(html);
           setToolbar([]);
           hintEl.textContent = "Kirjoita vastaus ja paina Enter tai Lähetä | q = lopeta";
           return;
@@ -615,13 +666,17 @@ export function mountGameUI(game: WebGame) {
           s.choiceTexts.forEach((t, i) => {
             html += `<div class="choice"><span class="choice-num">[${i + 1}]</span> ${esc(t)}</div>`;
           });
-          mapEl.innerHTML = html;
+          if (!mapEl) return;
+          clearMapView(mapEl);
+          setMapContent(html);
           setToolbar(s.choiceTexts.map((_, i) => ({ key: String(i + 1), label: String(i + 1) })));
           hintEl.textContent = "Valitse 1–" + s.choiceTexts.length + " | q = lopeta";
           return;
         }
 
-        mapEl.innerHTML = html;
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(html);
         setToolbar([{ key: "enter", label: "Enter — jatka" }]);
         hintEl.textContent = "Enter = jatka | q = lopeta";
         return;
@@ -632,19 +687,13 @@ export function mountGameUI(game: WebGame) {
           renderMobileMap(state);
           return;
         }
-        const studyLine = state.studyCounts?.total > 0
-          ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
-          : "";
-        const mapHtml = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
-          studyLine +
-          (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "") +
-          state.lines.map((line, row) => colorizeLine(line, state, row)).join("\n") +
-          (state.hint ? `<div class="hint" style="margin-top:12px">${esc(state.hint)}</div>` : "");
-        mapEl.innerHTML = mapHtml;
-        renderMapToolbar();
+        renderMapLines(state, state.lines);
+        renderMapToolbar(state);
         return;
       }
 
+      if (!mapEl) return;
+      clearMapView(mapEl);
       mapEl.textContent = `(${state.screen})`;
       toolbarEl.innerHTML = "";
       hintEl.textContent = "";
@@ -670,6 +719,28 @@ export function mountGameUI(game: WebGame) {
       return e.key;
     }
 
+    mapEl?.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.id === "study-copy-btn") {
+        void copyStudyListToClipboard(currentStudyListText);
+        return;
+      }
+      if (target.id === "codeSubmit") {
+        const input = mapEl?.querySelector<HTMLInputElement>("#codeInput");
+        sendCode(input?.value ?? "");
+      }
+    });
+
+    mapEl?.addEventListener("keydown", (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target || target.id !== "codeInput") return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendCode((target as HTMLInputElement).value);
+      }
+    });
+
     window.addEventListener("keydown", (e) => {
       const k = normalizeKey(e);
       const state = game.snapshot();
@@ -684,7 +755,11 @@ export function mountGameUI(game: WebGame) {
     });
 
     function tick() {
-      render(game.snapshot());
+      const state = game.snapshot();
+      const key = renderKey(state);
+      if (key !== lastRenderKey) {
+        render(state);
+      }
     }
 
     tick();
