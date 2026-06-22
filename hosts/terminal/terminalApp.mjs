@@ -70,18 +70,11 @@ import {
   menuItemByNumber,
   partitionMenuStories,
 } from "./storyMenu.mjs";
-import {
-  getActionTargetInFront,
-  listUsableItems,
-  resolveActionApply,
-  applyActionResult,
-} from "./actions.mjs";
 
 let quizHistoryState = emptyQuizHistory();
 let studyBacklogState = emptyStudyBacklog();
 let personRegistryState = emptyPersonRegistry();
 let castListOpen = false;
-let actionOverlay = null;
 let interviewPickNonce = 0;
 let guruPickNonce = 0;
 
@@ -352,112 +345,102 @@ function trySendMapKey(session, keyName) {
   sendMapKey(session, keyName);
 }
 
-function openTerminalActionMenu(session) {
-  let target = null;
-  let items = [];
+async function tryStartPendingStory(session) {
+  if (session.encounterResult !== "action_story" || !session.pendingStoryId) return false;
+  const catalog = new StoryCatalog();
+  const summary = catalog.findById(session.pendingStoryId);
+  const storyJson = loadStoryJson(summary);
   dispatch(session, () => {
-    target = getActionTargetInFront(session);
-    items = listUsableItems(session);
+    session.pendingStoryId = "";
+    session.encounterResult = "";
   });
-  if (!target) {
+  if (!storyJson) {
     dispatch(session, () => {
-      sessionMap(session).lastStatus =
-        "Ei kohdetta — käänny työaseman (K), oven (L) tai vajan oven (+) päin ja paina e.";
+      sessionMap(session).lastStatus = "Tarinan lataus epäonnistui.";
     });
-    return false;
+    return true;
   }
-  if (!items.length) {
-    dispatch(session, () => {
-      sessionMap(session).lastStatus = "Sinulla ei ole esinettä, jota voisit käyttää tähän.";
-    });
-    return false;
-  }
-  actionOverlay = { type: "pick", target, items };
+  await runStoryLoop(session, storyJson);
   return true;
 }
 
-async function applyTerminalActionChoice(session, itemId) {
-  if (!actionOverlay?.target) return;
-  let result = null;
-  dispatch(session, () => {
-    result = resolveActionApply(session, actionOverlay.target, itemId);
-    applyActionResult(session, result);
-  });
-  persist(session);
-  const storyId = result?.storyId;
-  if (storyId) {
-    const catalog = new StoryCatalog();
-    const summary = catalog.findById(storyId);
-    const storyJson = loadStoryJson(summary);
-    if (storyJson) {
-      actionOverlay = null;
-      await runStoryLoop(session, storyJson);
-      persist(session);
-      return;
-    }
-  }
-  actionOverlay = {
-    type: "result",
-    ok: result?.ok === true,
-    message: result?.message || "Mitään ei tapahtunut.",
-  };
-}
-
-async function runActionPickLoop(session) {
-  while (actionOverlay?.type === "pick" && session.screen === "map" && !session.shouldQuit) {
-    const targetName = actionOverlay.target?.name || "Kohde";
+async function runBlockedLoop(session) {
+  while (session.screen === "blocked" && !session.shouldQuit) {
+    const view = session.getBlockedView();
     const lines = [
       BANNER,
-      `  ${styled("═══ Käytä esinettä ═══", FG.cyan, BOLD)}`,
-      "",
-      `  ${styled("Kohde:", FG.gray)} ${targetName}`,
+      `  ${styled("═══ Este edessä ═══", FG.cyan, BOLD)}`,
       "",
     ];
-    for (let i = 0; i < actionOverlay.items.length; i += 1) {
-      const item = actionOverlay.items[i];
-      lines.push(`  ${styled(`[${i + 1}]`, FG.yellow)} ${item.label}`);
+    if (view.targetName) {
+      lines.push(`  ${styled("Kohde:", FG.gray)} ${view.targetName}`);
+      lines.push("");
     }
-    lines.push(`  ${styled("[4]", FG.gray)} Peruuta`);
+    let n = 1;
+    if (view.canTalk) {
+      lines.push(`  ${styled(`[${n}]`, FG.yellow)} Juttele — ${view.talkName}`);
+      n += 1;
+    }
+    if ((view.toolIds?.length ?? 0) > 0) {
+      lines.push(`  ${styled(`[${n}]`, FG.yellow)} Käytä työkalua`);
+      n += 1;
+    }
+    lines.push(`  ${styled(`[${n}]`, FG.gray)} Peruuta`);
     lines.push("");
+    lines.push(`  ${styled(view.hintLine, FG.gray)}`);
     lines.push(`  ${styled(QUIT_HINT, FG.gray)}`);
     drawLinesClear(lines);
     const result = await readLine(styled("\n  Valinta: ", FG.cyan));
     if (handleQuitInput(session, result)) return;
-    const pick = result.value;
-    if (pick === "4") {
-      actionOverlay = null;
-      return;
-    }
-    const idx = Number(pick) - 1;
-    if (Number.isNaN(idx) || idx < 0 || idx >= actionOverlay.items.length) {
-      dispatch(session, () => {
-        sessionMap(session).lastStatus = "Valitse numero listasta tai 4 peruuttaaksesi.";
-      });
-      continue;
-    }
-    await applyTerminalActionChoice(session, actionOverlay.items[idx].id);
-    if (actionOverlay?.type === "result") {
-      await runActionResultLoop(session);
-    }
-    return;
+    sendMapKey(session, String(result.value || "").trim());
+    persist(session);
   }
 }
 
-async function runActionResultLoop(session) {
-  while (actionOverlay?.type === "result" && session.screen === "map" && !session.shouldQuit) {
-    drawLinesClear([
+async function runActionLoop(session) {
+  while (session.screen === "action" && !session.shouldQuit) {
+    const view = session.getActionView();
+    if (view.mode === "result") {
+      drawLinesClear([
+        BANNER,
+        `  ${styled("═══ Tulos ═══", FG.cyan, BOLD)}`,
+        "",
+        wrap(view.resultMessage || ""),
+        "",
+        `  ${styled("Paina Enter...", FG.gray)}`,
+        `  ${styled(QUIT_HINT, FG.gray)}`,
+      ]);
+      const result = await readKey(styled("\n  ", FG.gray));
+      if (handleQuitInput(session, result)) return;
+      sendMapKey(session, result.type === "key" ? result.key : "enter");
+      persist(session);
+      if (session.screen === "map" && session.encounterResult === "action_story") {
+        await tryStartPendingStory(session);
+        persist(session);
+      }
+      continue;
+    }
+    const lines = [
       BANNER,
-      `  ${styled("═══ Tulos ═══", FG.cyan, BOLD)}`,
+      `  ${styled("═══ Käytä työkalua ═══", FG.cyan, BOLD)}`,
       "",
-      wrap(actionOverlay.message || ""),
+      `  ${styled("Kohde:", FG.gray)} ${view.targetName || "Kohde"}`,
       "",
-      `  ${styled("Paina Enter jatkaaksesi...", FG.gray)}`,
-      `  ${styled(QUIT_HINT, FG.gray)}`,
-    ]);
-    const result = await readKey(styled("\n  ", FG.gray));
+    ];
+    const tools = view.toolIds || [];
+    const labels = view.toolLabels || [];
+    for (let i = 0; i < tools.length; i += 1) {
+      lines.push(`  ${styled(`[${i + 1}]`, FG.yellow)} ${labels[i] || tools[i]}`);
+    }
+    lines.push(`  ${styled("[4]", FG.gray)} Peruuta`);
+    lines.push("");
+    lines.push(`  ${styled(view.hintLine, FG.gray)}`);
+    lines.push(`  ${styled(QUIT_HINT, FG.gray)}`);
+    drawLinesClear(lines);
+    const result = await readLine(styled("\n  Valinta: ", FG.cyan));
     if (handleQuitInput(session, result)) return;
-    actionOverlay = null;
-    return;
+    sendMapKey(session, String(result.value || "").trim());
+    persist(session);
   }
 }
 
@@ -1238,18 +1221,20 @@ export async function runTerminalApp(mapJson) {
         continue;
       }
 
-      if (castListOpen) {
-        await runCastListLoop(session);
+      if (session.screen === "blocked") {
+        await runBlockedLoop(session);
         clearMapNext = true;
         continue;
       }
 
-      if (actionOverlay) {
-        if (actionOverlay.type === "pick") {
-          await runActionPickLoop(session);
-        } else if (actionOverlay.type === "result") {
-          await runActionResultLoop(session);
-        }
+      if (session.screen === "action") {
+        await runActionLoop(session);
+        clearMapNext = true;
+        continue;
+      }
+
+      if (castListOpen) {
+        await runCastListLoop(session);
         clearMapNext = true;
         continue;
       }
@@ -1273,17 +1258,11 @@ export async function runTerminalApp(mapJson) {
         continue;
       }
 
-      if (key.name === "e" && session.screen === "map") {
-        if (openTerminalActionMenu(session)) {
-          persist(session);
-          continue;
-        }
-        persist(session);
-        clearMapNext = true;
-        continue;
-      }
-
       trySendMapKey(session, key.name);
+      if (session.screen === "map" && session.encounterResult === "action_story") {
+        await tryStartPendingStory(session);
+        persist(session);
+      }
     }
   } finally {
     flushPersist(session);

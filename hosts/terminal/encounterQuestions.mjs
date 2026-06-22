@@ -600,6 +600,12 @@ export function buildQuizReaction(entity, correct, session = null) {
     const ablative = "joltain";
     return `${name}: "Hmm… kiitos, ehkä kysyn vielä ${ablative}."`;
   }
+  if (entity.id === "staff-f7-hermit") {
+    if (correct) {
+      return `${name}: "Valoa! Ja oikea vastaus — ehkä uskallan mennä lounaalle. Suosittelen sinua lämpimästi."`;
+    }
+    return `${name}: "Ehkä projekti ei ollut valmis… mutta kiitos että yritit. Odotan vielä yhden oikean vastauksen."`;
+  }
   if (kind === "security") {
     const line = pickVariant(entity.id, correct ? SECURITY_RIGHT : SECURITY_WRONG);
     return `${name}: "${line}"`;

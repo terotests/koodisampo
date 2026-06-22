@@ -2,12 +2,6 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
-import {
-  getActionTargetInFront,
-  listUsableItems,
-  resolveActionApply,
-  applyActionResult,
-} from "../hosts/terminal/actions.mjs";
 import { sessionMap } from "../hosts/shared/sessionMap.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -62,20 +56,21 @@ export function runActionsTests() {
       map.facingX = 1;
       map.facingY = 0;
       session.tools.grant("usb_drive");
+      session.actionTargetX = 66;
+      session.actionTargetY = 23;
+      session.actionTargetId = "workstation";
     });
 
-    const target = getActionTargetInFront(session);
-    assert(target?.id === "workstation", "K tile ahead is workstation");
-
-    const items = listUsableItems(session);
-    assert(items.some((i) => i.id === "usb_drive"), "USB in usable items");
-
-    const usbResult = resolveActionApply(session, target, "usb_drive");
-    assert(usbResult.ok, "USB on workstation succeeds");
-    assert(typeof usbResult.message === "string", "USB gives message");
+    dispatch(session, () => {
+      const view = session.getActionView();
+      assert(view.targetId === "workstation", "K tile ahead is workstation");
+      assert(view.toolIds.includes("usb_drive"), "USB in usable tools");
+    });
 
     dispatch(session, () => {
-      applyActionResult(session, usbResult);
+      session.applyToolToTarget("usb_drive");
+      assert(session.actionResultOk, "USB on workstation succeeds");
+      assert(typeof session.actionResultMessage === "string", "USB gives message");
     });
 
     dispatch(session, () => {
@@ -86,12 +81,16 @@ export function runActionsTests() {
       map.facingX = 1;
       map.facingY = 0;
       map.setTileAt(66, 23, "K");
+      session.actionTargetX = 66;
+      session.actionTargetY = 23;
+      session.actionTargetId = "workstation";
+      session.tools.grant("crowbar");
     });
 
-    const hammerResult = resolveActionApply(session, target, "crowbar");
-    assert(hammerResult.ok && hammerResult.karmaDelta < 0, "hammer on PC is bad karma");
     dispatch(session, () => {
-      applyActionResult(session, hammerResult);
+      session.applyToolToTarget("crowbar");
+      assert(session.actionResultOk, "hammer on PC succeeds");
+      assert(session.karma.total() < 50, "hammer on PC is bad karma");
       assert(sessionMap(session).tileAt(66, 23) === "x", "broken workstation tile");
     });
 
@@ -123,6 +122,21 @@ export function runActionsTests() {
       const moved = map.tryMove(1, 0);
       assert(moved, "player walks through off-duty invisible coworker");
       assert(!map.entityBlocksPlayer(coworker), "off-duty entity does not block");
+    });
+
+    dispatch(session, () => {
+      const map = sessionMap(session);
+      map.setTileAt(70, 23, "#");
+      map.playerX = 69;
+      map.playerY = 23;
+      map.facingX = 1;
+      map.facingY = 0;
+      session.tools.grant("shovel");
+      session.actionTargetX = 70;
+      session.actionTargetY = 23;
+      session.applyToolToTarget("shovel");
+      assert(session.actionResultOk, "shovel breaks wall");
+      assert(map.tileAt(70, 23) === ".", "wall tile opened");
     });
   } finally {
     stopSession(root, session);

@@ -12,6 +12,7 @@ Import "../EncounterView.rgr"
 Import "../PlayerConduct.rgr"
 Import "../PlayerTools.rgr"
 Import "../InventoryView.rgr"
+Import "../ActionView.rgr"
 Import "../WorldClock.rgr"
 
 class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBase {
@@ -40,6 +41,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def guruQuizCorrect:int 0
   def quizWinsForPromotion:int 0
   def worldClock:WorldClock
+  def actionTargetX:int 0
+  def actionTargetY:int 0
+  def actionTargetId:string ""
+  def actionTargetTile:string ""
+  def actionPhase:string ""
+  def actionResultOk:boolean false
+  def actionResultMessage:string ""
+  def actionPendingStoryId:string ""
+  def blockedTalkId:string ""
+  def blockedTalkChar:string ""
+  def blockedTalkName:string ""
+  def blockedTalkKind:string ""
+  def blockedTalkStoryId:string ""
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -221,6 +235,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn encounterGreeting:string () {
+    if (pendingEntityId == "staff-f7-hermit") {
+      return (pendingEntityName + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"")
+    }
     if (pendingEntityId == "office-dog") {
       return "Toimistokoira heiluttaa häntää ja katsoo sinua odottaen."
     }
@@ -491,6 +508,551 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     return (map.tryMove(dx dy))
   }
 
+  fn clearBlockedTalk:void () {
+    blockedTalkId = ""
+    blockedTalkChar = ""
+    blockedTalkName = ""
+    blockedTalkKind = ""
+    blockedTalkStoryId = ""
+  }
+
+  fn setBlockedTalk:void (ent:MapEntity) {
+    blockedTalkId = ent.id
+    blockedTalkChar = ent.char
+    blockedTalkName = ent.name
+    blockedTalkKind = ent.kind
+    blockedTalkStoryId = ent.storyId
+  }
+
+  fn computeFacingCell:void () {
+    def fx:int map.facingX
+    def fy:int map.facingY
+    if (fx == 0) {
+      if (fy == 0) {
+        fy = 1
+      }
+    }
+    actionTargetX = map.playerX + fx
+    actionTargetY = map.playerY + fy
+  }
+
+  fn appendToolOption:void (view:ActionView toolId:string label:string) {
+    push view.toolIds toolId
+    push view.toolLabels label
+  }
+
+  fn clearActionTools:void (view:ActionView) {
+    def emptyIds:[string]
+    def emptyLabels:[string]
+    view.toolIds = emptyIds
+    view.toolLabels = emptyLabels
+  }
+
+  fn resolveTargetAt:void (x:int y:int view:ActionView) {
+    view.targetId = ""
+    view.targetName = ""
+    actionTargetTile = ""
+    def ent:MapEntity (map.entityAt(x y))
+    if ((strlen ent.id) > 0) {
+      if (ent.kind == "action") {
+        view.targetId = ent.actionId
+        if ((strlen view.targetId) < 1) {
+          view.targetId = ent.id
+        }
+        view.targetName = ent.name
+        if ((strlen view.targetName) < 1) {
+          view.targetName = "Kohde"
+        }
+        return
+      }
+      if (ent.kind != "item") {
+        return
+      }
+    }
+    def tile:string (map.tileAt(x y))
+    actionTargetTile = tile
+    if (tile == "K") {
+      view.targetId = "workstation"
+      view.targetName = "Työasema"
+      return
+    }
+    if (tile == "L") {
+      view.targetId = "door"
+      view.targetName = "Ovi"
+      return
+    }
+    if (tile == "+") {
+      view.targetId = "shed_door"
+      view.targetName = "Vajan ovi"
+      return
+    }
+    if (map.isBreakableTile(tile "crowbar")) {
+      view.targetId = "breakable"
+      if (tile == "#") {
+        view.targetName = "Seinä"
+      } {
+        if (tile == "%") {
+          view.targetName = "Kipsiseinä"
+        } {
+          if (tile == "=") {
+            view.targetName = "Kaappi"
+          } {
+            view.targetName = "Este"
+          }
+        }
+      }
+      return
+    }
+    if (map.isBreakableTile(tile "shovel")) {
+      view.targetId = "breakable"
+      view.targetName = "Seinä"
+      return
+    }
+    if (map.isBreakableTile(tile "sledgehammer")) {
+      view.targetId = "breakable"
+      view.targetName = "Este"
+    }
+  }
+
+  fn fillToolsForTarget:void (view:ActionView targetId:string tile:string) {
+    this.clearActionTools(view)
+    if (targetId == "workstation") {
+      if (tools.hasUsbDrive) {
+        this.appendToolOption(view "usb_drive" "USB-tikku")
+      }
+      if (tools.hasCrowbar) {
+        this.appendToolOption(view "crowbar" "Vasara (sorkkarauta)")
+      }
+      if (tools.hasShovel) {
+        this.appendToolOption(view "shovel" "Lapio")
+      }
+      if (tools.hasSledgehammer) {
+        this.appendToolOption(view "sledgehammer" "Kivivasara")
+      }
+      return
+    }
+    if (targetId == "door") {
+      if (tools.hasCrowbar) {
+        this.appendToolOption(view "crowbar" "Vasara (sorkkarauta)")
+      }
+      if (tools.hasSledgehammer) {
+        this.appendToolOption(view "sledgehammer" "Kivivasara")
+      }
+      return
+    }
+    if (targetId == "shed_door") {
+      if (tools.hasShedKey) {
+        this.appendToolOption(view "shed_key" "Vajan avain")
+      }
+      if (tools.hasCrowbar) {
+        this.appendToolOption(view "crowbar" "Vasara (sorkkarauta)")
+      }
+      if (tools.hasSledgehammer) {
+        this.appendToolOption(view "sledgehammer" "Kivivasara")
+      }
+      return
+    }
+    if (targetId == "breakable") {
+      if (tools.hasCrowbar) {
+        if (map.isBreakableTile(tile "crowbar")) {
+          this.appendToolOption(view "crowbar" "Vasara (sorkkarauta)")
+        }
+      }
+      if (tools.hasShovel) {
+        if (map.isBreakableTile(tile "shovel")) {
+          this.appendToolOption(view "shovel" "Lapio")
+        }
+      }
+      if (tools.hasSledgehammer) {
+        if (map.isBreakableTile(tile "sledgehammer")) {
+          this.appendToolOption(view "sledgehammer" "Kivivasara")
+        }
+      }
+    }
+  }
+
+  fn actionToolCount:int (view:ActionView) {
+    return (array_length view.toolIds)
+  }
+
+  fn applyBreakSeverity:void (severity:string) {
+    if (severity == "heavy") {
+      conduct.addDamage(15)
+      conduct.addMisconduct(10)
+    }
+    if (severity == "medium") {
+      conduct.addDamage(6)
+      conduct.addMisconduct(4)
+    }
+    if (severity == "light") {
+      conduct.addDamage(2)
+      conduct.addMisconduct(1)
+    }
+  }
+
+  fn usbContentRoll:int (x:int y:int) {
+    def deaths:int (this.exportDeaths())
+    def h:int ((x * 73856093) + (y * 19349663) + (deaths * 97))
+    if (h < 0) {
+      h = (0 - h)
+    }
+    return (h % 8)
+  }
+
+  fn applyToolToTarget:boolean (toolId:string) {
+    actionResultOk = false
+    actionResultMessage = ""
+    actionPendingStoryId = ""
+    def scratch:ActionView (new ActionView)
+    this.resolveTargetAt(actionTargetX actionTargetY scratch)
+    actionTargetId = scratch.targetId
+    def targetId:string actionTargetId
+    def x:int actionTargetX
+    def y:int actionTargetY
+    def witness:boolean (map.hasNearbyWitness(8))
+
+    if (targetId == "workstation") {
+      if (toolId == "usb_drive") {
+        if (tools.hasUsbDrive == false) {
+          actionResultMessage = "Sinulla ei ole USB-tikkua."
+          return false
+        }
+        def roll:int (this.usbContentRoll(x y))
+        if (roll == 0) {
+          actionResultMessage = "USB-tikulla on vain kissavideo ja vanha palkkalista."
+        } {
+          if (roll <= 2) {
+            actionResultMessage = "Tikulla on tiimin C++-tyyliohje — hyödyllinen muistilista (+karma)."
+            karma.add("action:usb_tip" 4)
+          } {
+            if (roll <= 4) {
+              actionResultMessage = "Tikulla on linkki lyhyeen modern-cpp-intro -oppituntiin."
+              karma.add("action:usb_lesson" 2)
+              actionPendingStoryId = "modern-cpp-intro"
+            } {
+              actionResultMessage = "Tikulla on troijalainen — kone kaatuu ja IT hermostuu!"
+              map.setTileAt(x y "x")
+              karma.loseKarma(15)
+              conduct.addMisconduct(18)
+              if (witness) {
+                actionResultMessage = (actionResultMessage + " Kollega näkee ruudun — turvallisuus hälytetään!")
+                map.startPoliceChase()
+              }
+            }
+          }
+        }
+        if (witness) {
+          if (roll <= 2) {
+            if (roll != 0) {
+              actionResultMessage = (actionResultMessage + " Kollega nyökkää hyväksyvästi.")
+            }
+          }
+        }
+        map.lastStatus = actionResultMessage
+        actionResultOk = true
+        return true
+      }
+      if (toolId == "crowbar" || toolId == "sledgehammer" || toolId == "shovel") {
+        map.setTileAt(x y "x")
+        def misconduct:int 12
+        def karmaLoss:int 10
+        if (toolId == "sledgehammer") {
+          misconduct = 22
+          karmaLoss = 18
+        }
+        karma.loseKarma(karmaLoss)
+        conduct.addMisconduct(misconduct)
+        actionResultMessage = "Työkalu + työasema = huono idea. Näyttö meni ja karma laskee."
+        if (witness) {
+          actionResultMessage = (actionResultMessage + " Joku näki tämän!")
+          map.startPoliceChase()
+        }
+        map.lastStatus = actionResultMessage
+        actionResultOk = true
+        return true
+      }
+      actionResultMessage = "Tähän työasemaan ei voi käyttää tuota esinettä."
+      return false
+    }
+
+    if (targetId == "door" || targetId == "shed_door") {
+      if (toolId == "shed_key") {
+        if (targetId != "shed_door") {
+          actionResultMessage = "Oveen ei saa tuota esinettä kiinnitettyä järkevästi."
+          return false
+        }
+        if (tools.hasShedKey == false) {
+          actionResultMessage = "Sinulla ei ole vajan avainta."
+          return false
+        }
+        map.openTileAt(x y)
+        actionResultMessage = "Avain sopii — vajan ovi aukeaa."
+        map.lastStatus = actionResultMessage
+        actionResultOk = true
+        return true
+      }
+      if (toolId == "crowbar" || toolId == "sledgehammer") {
+        map.openTileAt(x y)
+        karma.loseKarma(8)
+        conduct.addMisconduct(10)
+        actionResultMessage = "Murrat oven auki — melkoinen karma-tappio."
+        if (witness) {
+          map.startPoliceChase()
+        }
+        map.lastStatus = actionResultMessage
+        actionResultOk = true
+        return true
+      }
+      actionResultMessage = "Oveen ei saa tuota esinettä kiinnitettyä järkevästi."
+      return false
+    }
+
+    if (targetId == "breakable") {
+      def severity:string (map.tryBreakAt(x y toolId))
+      if ((strlen severity) < 1) {
+        actionResultMessage = "Työkalu ei tepsi tähän esteeseen."
+        return false
+      }
+      this.applyBreakSeverity(severity)
+      def hermit:MapEntity (map.entityAt(70 23))
+      if (hermit.id == "staff-f7-hermit") {
+        def dist:int ((map.playerX - hermit.x))
+        if (dist < 0) {
+          dist = (0 - dist)
+        }
+        def dy:int ((map.playerY - hermit.y))
+        if (dy < 0) {
+          dy = (0 - dy)
+        }
+        if ((dist + dy) <= 3) {
+          map.lastStatus = "Seinän takaa kuuluu kolinaa — joku on hengissä!"
+        }
+      }
+      actionResultMessage = map.lastStatus
+      actionResultOk = true
+      return true
+    }
+
+    actionResultMessage = "Et keksi miten yhdistää esineen ja kohteen."
+    return false
+  }
+
+  fn openBlockedMenu:void (talkEnt:MapEntity) {
+    this.computeFacingCell()
+    def scratch:ActionView (new ActionView)
+    this.resolveTargetAt(actionTargetX actionTargetY scratch)
+    actionTargetId = scratch.targetId
+  }
+
+  fn tryOpenBlockedMenu:boolean (talkEnt:MapEntity) {
+    this.openBlockedMenu(talkEnt)
+    def scratch:ActionView (new ActionView)
+    this.fillToolsForTarget(scratch actionTargetId actionTargetTile)
+    def canTalk:boolean false
+    if ((strlen talkEnt.id) > 0) {
+      if (map.entityBlocksPlayer(talkEnt)) {
+        canTalk = true
+        this.setBlockedTalk(talkEnt)
+      }
+    } {
+      this.clearBlockedTalk()
+    }
+    def toolCount:int (this.actionToolCount(scratch))
+    if (canTalk == false) {
+      if (toolCount < 1) {
+        return false
+      }
+    }
+    actionPhase = ""
+    screen = "blocked"
+    this.markStateDirty()
+    return true
+  }
+
+  fn tryOpenActionPicker:boolean () {
+    this.computeFacingCell()
+    def scratch:ActionView (new ActionView)
+    this.resolveTargetAt(actionTargetX actionTargetY scratch)
+    actionTargetId = scratch.targetId
+    if ((strlen actionTargetId) < 1) {
+      map.lastStatus = "Ei kohdetta — käänny esteen, työaseman (K) tai oven (L/+) päin."
+      return false
+    }
+    this.fillToolsForTarget(scratch actionTargetId actionTargetTile)
+    if ((this.actionToolCount(scratch)) < 1) {
+      map.lastStatus = "Sinulla ei ole työkalua, joka toimisi tähän kohteeseen."
+      return false
+    }
+    actionPhase = "pick"
+    screen = "action"
+    this.markStateDirty()
+    return true
+  }
+
+  fn getBlockedView:ActionView () {
+    def view:ActionView (new ActionView)
+    view.mode = "blocked"
+    def scratch:ActionView (new ActionView)
+    this.resolveTargetAt(actionTargetX actionTargetY scratch)
+    view.targetId = scratch.targetId
+    view.targetName = scratch.targetName
+    this.fillToolsForTarget(view scratch.targetId actionTargetTile)
+    if ((strlen blockedTalkId) > 0) {
+      view.canTalk = true
+      view.talkName = blockedTalkName
+    }
+    def toolCount:int (this.actionToolCount(view))
+    def choiceN:int 1
+    if (view.canTalk) {
+      view.hintLine = "1=juttele"
+      choiceN = 2
+    }
+    if (toolCount > 0) {
+      if ((strlen view.hintLine) > 0) {
+        view.hintLine = (view.hintLine + "  ")
+      }
+      view.hintLine = (view.hintLine + (to_string choiceN) + "=käytä työkalua")
+      choiceN = choiceN + 1
+    }
+    view.hintLine = (view.hintLine + "  " + (to_string choiceN) + "=peruuta")
+    return view
+  }
+
+  fn getActionView:ActionView () {
+    def view:ActionView (new ActionView)
+    if (actionPhase == "result") {
+      view.mode = "result"
+      view.resultOk = actionResultOk
+      view.resultMessage = actionResultMessage
+      view.hintLine = "Enter=ok"
+      return view
+    }
+    view.mode = "pick"
+    def scratch:ActionView (new ActionView)
+    this.resolveTargetAt(actionTargetX actionTargetY scratch)
+    view.targetId = scratch.targetId
+    view.targetName = scratch.targetName
+    this.fillToolsForTarget(view scratch.targetId actionTargetTile)
+    view.hintLine = "1–3=työkalu  4=peruuta"
+    return view
+  }
+
+  fn onBlockedKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    def view:ActionView (this.getBlockedView())
+    def toolCount:int (this.actionToolCount(view))
+    def cancelKey:int 1
+    if (view.canTalk) {
+      cancelKey = cancelKey + 1
+    }
+    if (toolCount > 0) {
+      cancelKey = cancelKey + 1
+    }
+    def cancelCh:string (to_string cancelKey)
+    if (key == cancelCh || key == "4") {
+      screen = "map"
+      map.lastStatus = "Peruutit."
+      this.clearBlockedTalk()
+      this.markStateDirty()
+      return
+    }
+    if (view.canTalk) {
+      if (key == "1") {
+        def ent:MapEntity (new MapEntity)
+        ent.id = blockedTalkId
+        ent.char = blockedTalkChar
+        ent.name = blockedTalkName
+        ent.kind = blockedTalkKind
+        ent.storyId = blockedTalkStoryId
+        this.clearBlockedTalk()
+        map.playerHidden = false
+        map.lastStatus = ""
+        this.startEncounter(ent)
+        this.markStateDirty()
+        return
+      }
+    }
+    def toolKey:int 1
+    if (view.canTalk) {
+      toolKey = 2
+    }
+    if (toolCount > 0) {
+      def toolCh:string (to_string toolKey)
+      if (key == toolCh) {
+        actionPhase = "pick"
+        screen = "action"
+        this.markStateDirty()
+        return
+      }
+    }
+    map.lastStatus = ("Valitse " + view.hintLine + ".")
+    this.markStateDirty()
+  }
+
+  fn onActionKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    if (actionPhase == "result") {
+      if (key == "enter" || key == " ") {
+        actionPhase = ""
+        if ((strlen actionPendingStoryId) > 0) {
+          pendingStoryId = actionPendingStoryId
+          encounterResult = "action_story"
+          actionPendingStoryId = ""
+        } {
+          encounterResult = ""
+        }
+        screen = "map"
+        this.afterPlayerAction()
+        this.handleAgentTick()
+        this.markStateDirty()
+      }
+      return
+    }
+    if (key == "4" || key == "esc") {
+      screen = "map"
+      map.lastStatus = "Peruutit."
+      actionPhase = ""
+      this.clearBlockedTalk()
+      this.markStateDirty()
+      return
+    }
+    def view:ActionView (this.getActionView())
+    def toolCount:int (this.actionToolCount(view))
+    def idx:int -1
+    if (key == "1") {
+      idx = 0
+    }
+    if (key == "2") {
+      idx = 1
+    }
+    if (key == "3") {
+      idx = 2
+    }
+    if (idx < 0) {
+      map.lastStatus = "Valitse työkalu numerolla tai 4 peruuttaaksesi."
+      this.markStateDirty()
+      return
+    }
+    if (idx >= toolCount) {
+      map.lastStatus = "Valitse työkalu numerolla tai 4 peruuttaaksesi."
+      this.markStateDirty()
+      return
+    }
+    def toolId:string (at view.toolIds idx)
+    this.applyToolToTarget(toolId)
+    actionPhase = "result"
+    this.clearBlockedTalk()
+    this.markStateDirty()
+  }
+
   fn canAccessFloor:boolean (floorIndex:int) {
     if (floorIndex == 0) {
       return true
@@ -634,6 +1196,14 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       this.onInventoryKey(key)
       return
     }
+    if (screen == "blocked") {
+      this.onBlockedKey(key)
+      return
+    }
+    if (screen == "action") {
+      this.onActionKey(key)
+      return
+    }
     if (screen != "map") {
       return
     }
@@ -660,6 +1230,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     if (key == "i") {
       screen = "inventory"
+      this.markStateDirty()
+      return
+    }
+    if (key == "e") {
+      this.tryOpenActionPicker()
       this.markStateDirty()
       return
     }
@@ -698,6 +1273,20 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         if (severity == "light") {
           conduct.addDamage(2)
           conduct.addMisconduct(1)
+        }
+        def hermit:MapEntity (map.entityAt(70 23))
+        if (hermit.id == "staff-f7-hermit") {
+          def dist:int ((map.playerX - hermit.x))
+          if (dist < 0) {
+            dist = (0 - dist)
+          }
+          def dy:int ((map.playerY - hermit.y))
+          if (dy < 0) {
+            dy = (0 - dy)
+          }
+          if ((dist + dy) <= 3) {
+            map.lastStatus = "Seinän takaa kuuluu kolinaa — joku on hengissä!"
+          }
         }
         this.afterPlayerAction()
         this.handleAgentTick()
@@ -760,16 +1349,17 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     } {
       def blocker:MapEntity (map.entityAt(targetX targetY))
-      if (map.entityBlocksPlayer(blocker)) {
-        map.playerHidden = false
-        map.lastStatus = ""
-        this.startEncounter(blocker)
+      if (this.tryOpenBlockedMenu(blocker)) {
         this.markStateDirty()
         return
       }
     }
     def bump:MapEntity (map.bumpAtPlayer())
     if (map.entityBlocksPlayer(bump)) {
+      if (this.tryOpenBlockedMenu(bump)) {
+        this.markStateDirty()
+        return
+      }
       this.startEncounter(bump)
     } {
       if (moved) {

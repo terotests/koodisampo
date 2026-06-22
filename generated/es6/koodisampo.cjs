@@ -1204,6 +1204,9 @@ class WorldMap  {
       if ( ch == "=" ) {
         return true;
       }
+      if ( ch == "#" ) {
+        return true;
+      }
       return false;
     }
     if ( tool == "sledgehammer" ) {
@@ -1819,19 +1822,17 @@ class WorldMap  {
       this.setTileAt(x, y, ".");
     }
   };
-  tryBreakFacing (tool) {
+  tryBreakAt (x, y, tool) {
     if ( (tool.length) < 1 ) {
       this.lastStatus = "Ei valittua työkalua (t vaihtaa).";
       return "";
     }
-    const tx = this.playerX + this.facingX;
-    const ty = this.playerY + this.facingY;
-    const tile = this.tileAt(tx, ty);
+    const tile = this.tileAt(x, y);
     if ( this.isBreakableTile(tile, tool) == false ) {
       this.lastStatus = "Työkalu ei tepsi tähän esteeseen.";
       return "";
     }
-    this.setTileAt(tx, ty, ".");
+    this.setTileAt(x, y, ".");
     if ( tool == "sledgehammer" ) {
       this.lastStatus = "Moukarivasara murskaa seinän — melu kantautuu!";
       return "heavy";
@@ -1842,6 +1843,91 @@ class WorldMap  {
     }
     this.lastStatus = "Lapio avaa raon hiljaa.";
     return "light";
+  };
+  tryBreakFacing (tool) {
+    const fx = this.facingX;
+    let fy = this.facingY;
+    if ( fx == 0 ) {
+      if ( fy == 0 ) {
+        fy = 1;
+      }
+    }
+    const tx = this.playerX + fx;
+    const ty = this.playerY + fy;
+    return this.tryBreakAt(tx, ty, tool);
+  };
+  hasNearbyWitness (radius) {
+    const floor = this.activeFloor();
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( e.offDuty == false ) {
+        if ( e.kind == "coworker" ) {
+          let dx = e.x - this.playerX;
+          if ( dx < 0 ) {
+            dx = 0 - dx;
+          }
+          let dy = e.y - this.playerY;
+          if ( dy < 0 ) {
+            dy = 0 - dy;
+          }
+          if ( (dx + dy) > 0 ) {
+            if ( (dx + dy) <= radius ) {
+              return true;
+            }
+          }
+        }
+        if ( e.kind == "role" ) {
+          let dx2 = e.x - this.playerX;
+          if ( dx2 < 0 ) {
+            dx2 = 0 - dx2;
+          }
+          let dy2 = e.y - this.playerY;
+          if ( dy2 < 0 ) {
+            dy2 = 0 - dy2;
+          }
+          if ( (dx2 + dy2) > 0 ) {
+            if ( (dx2 + dy2) <= radius ) {
+              return true;
+            }
+          }
+        }
+        if ( e.kind == "security" ) {
+          let dx3 = e.x - this.playerX;
+          if ( dx3 < 0 ) {
+            dx3 = 0 - dx3;
+          }
+          let dy3 = e.y - this.playerY;
+          if ( dy3 < 0 ) {
+            dy3 = 0 - dy3;
+          }
+          if ( (dx3 + dy3) > 0 ) {
+            if ( (dx3 + dy3) <= radius ) {
+              return true;
+            }
+          }
+        }
+        if ( e.kind == "guru" ) {
+          let dx4 = e.x - this.playerX;
+          if ( dx4 < 0 ) {
+            dx4 = 0 - dx4;
+          }
+          let dy4 = e.y - this.playerY;
+          if ( dy4 < 0 ) {
+            dy4 = 0 - dy4;
+          }
+          if ( (dx4 + dy4) > 0 ) {
+            if ( (dx4 + dy4) <= radius ) {
+              return true;
+            }
+          }
+        }
+      }
+      i = i + 1;
+    };
+    return false;
   };
   tryToggleHide () {
     if ( this.playerHidden ) {
@@ -2342,7 +2428,7 @@ class WorldMap  {
     if ( this.policeChaseActive ) {
       view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!";
     } else {
-      view.hintLine = "wasd | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta";
+      view.hintLine = "wasd | e=työkalu | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta";
     }
     return view;
   };
@@ -2637,6 +2723,20 @@ class InventoryView  {
     this.lines = [];
   }
 }
+class ActionView  {
+  constructor() {
+    this.mode = "";
+    this.targetName = "";
+    this.targetId = "";
+    this.canTalk = false;
+    this.talkName = "";
+    this.toolIds = [];
+    this.toolLabels = [];
+    this.resultOk = false;
+    this.resultMessage = "";
+    this.hintLine = "";
+  }
+}
 class WorldClock  {
   constructor() {
     this.gameMinutes = 480;
@@ -2698,6 +2798,19 @@ class GameSession  extends RangerProcessBase {
     this.guruStoryAttempted = false;
     this.guruQuizCorrect = 0;
     this.quizWinsForPromotion = 0;
+    this.actionTargetX = 0;
+    this.actionTargetY = 0;
+    this.actionTargetId = "";
+    this.actionTargetTile = "";
+    this.actionPhase = "";
+    this.actionResultOk = false;
+    this.actionResultMessage = "";
+    this.actionPendingStoryId = "";
+    this.blockedTalkId = "";
+    this.blockedTalkChar = "";
+    this.blockedTalkName = "";
+    this.blockedTalkKind = "";
+    this.blockedTalkStoryId = "";
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
@@ -2864,6 +2977,9 @@ class GameSession  extends RangerProcessBase {
     this.markStateDirty();
   };
   encounterGreeting () {
+    if ( this.pendingEntityId == "staff-f7-hermit" ) {
+      return this.pendingEntityName + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"";
+    }
     if ( this.pendingEntityId == "office-dog" ) {
       return "Toimistokoira heiluttaa häntää ja katsoo sinua odottaen.";
     }
@@ -3120,6 +3236,529 @@ class GameSession  extends RangerProcessBase {
     }
     return this._map.tryMove(dx, dy);
   };
+  clearBlockedTalk () {
+    this.blockedTalkId = "";
+    this.blockedTalkChar = "";
+    this.blockedTalkName = "";
+    this.blockedTalkKind = "";
+    this.blockedTalkStoryId = "";
+  };
+  setBlockedTalk (ent) {
+    this.blockedTalkId = ent.id;
+    this.blockedTalkChar = ent.char;
+    this.blockedTalkName = ent.name;
+    this.blockedTalkKind = ent.kind;
+    this.blockedTalkStoryId = ent.storyId;
+  };
+  computeFacingCell () {
+    const fx = this._map.facingX;
+    let fy = this._map.facingY;
+    if ( fx == 0 ) {
+      if ( fy == 0 ) {
+        fy = 1;
+      }
+    }
+    this.actionTargetX = this._map.playerX + fx;
+    this.actionTargetY = this._map.playerY + fy;
+  };
+  appendToolOption (view, toolId, label) {
+    view.toolIds.push(toolId);
+    view.toolLabels.push(label);
+  };
+  clearActionTools (view) {
+    let emptyIds = [];
+    let emptyLabels = [];
+    view.toolIds = emptyIds;
+    view.toolLabels = emptyLabels;
+  };
+  resolveTargetAt (x, y, view) {
+    view.targetId = "";
+    view.targetName = "";
+    this.actionTargetTile = "";
+    const ent = this._map.entityAt(x, y);
+    if ( (ent.id.length) > 0 ) {
+      if ( ent.kind == "action" ) {
+        view.targetId = ent.actionId;
+        if ( (view.targetId.length) < 1 ) {
+          view.targetId = ent.id;
+        }
+        view.targetName = ent.name;
+        if ( (view.targetName.length) < 1 ) {
+          view.targetName = "Kohde";
+        }
+        return;
+      }
+      if ( ent.kind != "item" ) {
+        return;
+      }
+    }
+    const tile = this._map.tileAt(x, y);
+    this.actionTargetTile = tile;
+    if ( tile == "K" ) {
+      view.targetId = "workstation";
+      view.targetName = "Työasema";
+      return;
+    }
+    if ( tile == "L" ) {
+      view.targetId = "door";
+      view.targetName = "Ovi";
+      return;
+    }
+    if ( tile == "+" ) {
+      view.targetId = "shed_door";
+      view.targetName = "Vajan ovi";
+      return;
+    }
+    if ( this._map.isBreakableTile(tile, "crowbar") ) {
+      view.targetId = "breakable";
+      if ( tile == "#" ) {
+        view.targetName = "Seinä";
+      } else {
+        if ( tile == "%" ) {
+          view.targetName = "Kipsiseinä";
+        } else {
+          if ( tile == "=" ) {
+            view.targetName = "Kaappi";
+          } else {
+            view.targetName = "Este";
+          }
+        }
+      }
+      return;
+    }
+    if ( this._map.isBreakableTile(tile, "shovel") ) {
+      view.targetId = "breakable";
+      view.targetName = "Seinä";
+      return;
+    }
+    if ( this._map.isBreakableTile(tile, "sledgehammer") ) {
+      view.targetId = "breakable";
+      view.targetName = "Este";
+    }
+  };
+  fillToolsForTarget (view, targetId, tile) {
+    this.clearActionTools(view);
+    if ( targetId == "workstation" ) {
+      if ( this.tools.hasUsbDrive ) {
+        this.appendToolOption(view, "usb_drive", "USB-tikku");
+      }
+      if ( this.tools.hasCrowbar ) {
+        this.appendToolOption(view, "crowbar", "Vasara (sorkkarauta)");
+      }
+      if ( this.tools.hasShovel ) {
+        this.appendToolOption(view, "shovel", "Lapio");
+      }
+      if ( this.tools.hasSledgehammer ) {
+        this.appendToolOption(view, "sledgehammer", "Kivivasara");
+      }
+      return;
+    }
+    if ( targetId == "door" ) {
+      if ( this.tools.hasCrowbar ) {
+        this.appendToolOption(view, "crowbar", "Vasara (sorkkarauta)");
+      }
+      if ( this.tools.hasSledgehammer ) {
+        this.appendToolOption(view, "sledgehammer", "Kivivasara");
+      }
+      return;
+    }
+    if ( targetId == "shed_door" ) {
+      if ( this.tools.hasShedKey ) {
+        this.appendToolOption(view, "shed_key", "Vajan avain");
+      }
+      if ( this.tools.hasCrowbar ) {
+        this.appendToolOption(view, "crowbar", "Vasara (sorkkarauta)");
+      }
+      if ( this.tools.hasSledgehammer ) {
+        this.appendToolOption(view, "sledgehammer", "Kivivasara");
+      }
+      return;
+    }
+    if ( targetId == "breakable" ) {
+      if ( this.tools.hasCrowbar ) {
+        if ( this._map.isBreakableTile(tile, "crowbar") ) {
+          this.appendToolOption(view, "crowbar", "Vasara (sorkkarauta)");
+        }
+      }
+      if ( this.tools.hasShovel ) {
+        if ( this._map.isBreakableTile(tile, "shovel") ) {
+          this.appendToolOption(view, "shovel", "Lapio");
+        }
+      }
+      if ( this.tools.hasSledgehammer ) {
+        if ( this._map.isBreakableTile(tile, "sledgehammer") ) {
+          this.appendToolOption(view, "sledgehammer", "Kivivasara");
+        }
+      }
+    }
+  };
+  actionToolCount (view) {
+    return view.toolIds.length;
+  };
+  applyBreakSeverity (severity) {
+    if ( severity == "heavy" ) {
+      this.conduct.addDamage(15);
+      this.conduct.addMisconduct(10);
+    }
+    if ( severity == "medium" ) {
+      this.conduct.addDamage(6);
+      this.conduct.addMisconduct(4);
+    }
+    if ( severity == "light" ) {
+      this.conduct.addDamage(2);
+      this.conduct.addMisconduct(1);
+    }
+  };
+  usbContentRoll (x, y) {
+    const deaths = this.exportDeaths();
+    let h = ((x * 73856093) + (y * 19349663)) + (deaths * 97);
+    if ( h < 0 ) {
+      h = 0 - h;
+    }
+    return h % 8;
+  };
+  applyToolToTarget (toolId) {
+    this.actionResultOk = false;
+    this.actionResultMessage = "";
+    this.actionPendingStoryId = "";
+    const scratch = new ActionView();
+    this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+    this.actionTargetId = scratch.targetId;
+    const targetId = this.actionTargetId;
+    const x = this.actionTargetX;
+    const y = this.actionTargetY;
+    const witness = this._map.hasNearbyWitness(8);
+    if ( targetId == "workstation" ) {
+      if ( toolId == "usb_drive" ) {
+        if ( this.tools.hasUsbDrive == false ) {
+          this.actionResultMessage = "Sinulla ei ole USB-tikkua.";
+          return false;
+        }
+        const roll = this.usbContentRoll(x, y);
+        if ( roll == 0 ) {
+          this.actionResultMessage = "USB-tikulla on vain kissavideo ja vanha palkkalista.";
+        } else {
+          if ( roll <= 2 ) {
+            this.actionResultMessage = "Tikulla on tiimin C++-tyyliohje — hyödyllinen muistilista (+karma).";
+            this.karma.add("action:usb_tip", 4);
+          } else {
+            if ( roll <= 4 ) {
+              this.actionResultMessage = "Tikulla on linkki lyhyeen modern-cpp-intro -oppituntiin.";
+              this.karma.add("action:usb_lesson", 2);
+              this.actionPendingStoryId = "modern-cpp-intro";
+            } else {
+              this.actionResultMessage = "Tikulla on troijalainen — kone kaatuu ja IT hermostuu!";
+              this._map.setTileAt(x, y, "x");
+              this.karma.loseKarma(15);
+              this.conduct.addMisconduct(18);
+              if ( witness ) {
+                this.actionResultMessage = this.actionResultMessage + " Kollega näkee ruudun — turvallisuus hälytetään!";
+                this._map.startPoliceChase();
+              }
+            }
+          }
+        }
+        if ( witness ) {
+          if ( roll <= 2 ) {
+            if ( roll != 0 ) {
+              this.actionResultMessage = this.actionResultMessage + " Kollega nyökkää hyväksyvästi.";
+            }
+          }
+        }
+        this._map.lastStatus = this.actionResultMessage;
+        this.actionResultOk = true;
+        return true;
+      }
+      if ( ((toolId == "crowbar") || (toolId == "sledgehammer")) || (toolId == "shovel") ) {
+        this._map.setTileAt(x, y, "x");
+        let misconduct = 12;
+        let karmaLoss = 10;
+        if ( toolId == "sledgehammer" ) {
+          misconduct = 22;
+          karmaLoss = 18;
+        }
+        this.karma.loseKarma(karmaLoss);
+        this.conduct.addMisconduct(misconduct);
+        this.actionResultMessage = "Työkalu + työasema = huono idea. Näyttö meni ja karma laskee.";
+        if ( witness ) {
+          this.actionResultMessage = this.actionResultMessage + " Joku näki tämän!";
+          this._map.startPoliceChase();
+        }
+        this._map.lastStatus = this.actionResultMessage;
+        this.actionResultOk = true;
+        return true;
+      }
+      this.actionResultMessage = "Tähän työasemaan ei voi käyttää tuota esinettä.";
+      return false;
+    }
+    if ( (targetId == "door") || (targetId == "shed_door") ) {
+      if ( toolId == "shed_key" ) {
+        if ( targetId != "shed_door" ) {
+          this.actionResultMessage = "Oveen ei saa tuota esinettä kiinnitettyä järkevästi.";
+          return false;
+        }
+        if ( this.tools.hasShedKey == false ) {
+          this.actionResultMessage = "Sinulla ei ole vajan avainta.";
+          return false;
+        }
+        this._map.openTileAt(x, y);
+        this.actionResultMessage = "Avain sopii — vajan ovi aukeaa.";
+        this._map.lastStatus = this.actionResultMessage;
+        this.actionResultOk = true;
+        return true;
+      }
+      if ( (toolId == "crowbar") || (toolId == "sledgehammer") ) {
+        this._map.openTileAt(x, y);
+        this.karma.loseKarma(8);
+        this.conduct.addMisconduct(10);
+        this.actionResultMessage = "Murrat oven auki — melkoinen karma-tappio.";
+        if ( witness ) {
+          this._map.startPoliceChase();
+        }
+        this._map.lastStatus = this.actionResultMessage;
+        this.actionResultOk = true;
+        return true;
+      }
+      this.actionResultMessage = "Oveen ei saa tuota esinettä kiinnitettyä järkevästi.";
+      return false;
+    }
+    if ( targetId == "breakable" ) {
+      const severity = this._map.tryBreakAt(x, y, toolId);
+      if ( (severity.length) < 1 ) {
+        this.actionResultMessage = "Työkalu ei tepsi tähän esteeseen.";
+        return false;
+      }
+      this.applyBreakSeverity(severity);
+      const hermit = this._map.entityAt(70, 23);
+      if ( hermit.id == "staff-f7-hermit" ) {
+        let dist = this._map.playerX - hermit.x;
+        if ( dist < 0 ) {
+          dist = 0 - dist;
+        }
+        let dy = this._map.playerY - hermit.y;
+        if ( dy < 0 ) {
+          dy = 0 - dy;
+        }
+        if ( (dist + dy) <= 3 ) {
+          this._map.lastStatus = "Seinän takaa kuuluu kolinaa — joku on hengissä!";
+        }
+      }
+      this.actionResultMessage = this._map.lastStatus;
+      this.actionResultOk = true;
+      return true;
+    }
+    this.actionResultMessage = "Et keksi miten yhdistää esineen ja kohteen.";
+    return false;
+  };
+  openBlockedMenu (talkEnt) {
+    this.computeFacingCell();
+    const scratch = new ActionView();
+    this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+    this.actionTargetId = scratch.targetId;
+  };
+  tryOpenBlockedMenu (talkEnt) {
+    this.openBlockedMenu(talkEnt);
+    const scratch = new ActionView();
+    this.fillToolsForTarget(scratch, this.actionTargetId, this.actionTargetTile);
+    let canTalk = false;
+    if ( (talkEnt.id.length) > 0 ) {
+      if ( this._map.entityBlocksPlayer(talkEnt) ) {
+        canTalk = true;
+        this.setBlockedTalk(talkEnt);
+      }
+    } else {
+      this.clearBlockedTalk();
+    }
+    const toolCount = this.actionToolCount(scratch);
+    if ( canTalk == false ) {
+      if ( toolCount < 1 ) {
+        return false;
+      }
+    }
+    this.actionPhase = "";
+    this.screen = "blocked";
+    this.markStateDirty();
+    return true;
+  };
+  tryOpenActionPicker () {
+    this.computeFacingCell();
+    const scratch = new ActionView();
+    this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+    this.actionTargetId = scratch.targetId;
+    if ( (this.actionTargetId.length) < 1 ) {
+      this._map.lastStatus = "Ei kohdetta — käänny esteen, työaseman (K) tai oven (L/+) päin.";
+      return false;
+    }
+    this.fillToolsForTarget(scratch, this.actionTargetId, this.actionTargetTile);
+    if ( this.actionToolCount(scratch) < 1 ) {
+      this._map.lastStatus = "Sinulla ei ole työkalua, joka toimisi tähän kohteeseen.";
+      return false;
+    }
+    this.actionPhase = "pick";
+    this.screen = "action";
+    this.markStateDirty();
+    return true;
+  };
+  getBlockedView () {
+    const view = new ActionView();
+    view.mode = "blocked";
+    const scratch = new ActionView();
+    this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+    view.targetId = scratch.targetId;
+    view.targetName = scratch.targetName;
+    this.fillToolsForTarget(view, scratch.targetId, this.actionTargetTile);
+    if ( (this.blockedTalkId.length) > 0 ) {
+      view.canTalk = true;
+      view.talkName = this.blockedTalkName;
+    }
+    const toolCount = this.actionToolCount(view);
+    let choiceN = 1;
+    if ( view.canTalk ) {
+      view.hintLine = "1=juttele";
+      choiceN = 2;
+    }
+    if ( toolCount > 0 ) {
+      if ( (view.hintLine.length) > 0 ) {
+        view.hintLine = view.hintLine + "  ";
+      }
+      view.hintLine = (view.hintLine + ((choiceN.toString()))) + "=käytä työkalua";
+      choiceN = choiceN + 1;
+    }
+    view.hintLine = ((view.hintLine + "  ") + ((choiceN.toString()))) + "=peruuta";
+    return view;
+  };
+  getActionView () {
+    const view = new ActionView();
+    if ( this.actionPhase == "result" ) {
+      view.mode = "result";
+      view.resultOk = this.actionResultOk;
+      view.resultMessage = this.actionResultMessage;
+      view.hintLine = "Enter=ok";
+      return view;
+    }
+    view.mode = "pick";
+    const scratch = new ActionView();
+    this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+    view.targetId = scratch.targetId;
+    view.targetName = scratch.targetName;
+    this.fillToolsForTarget(view, scratch.targetId, this.actionTargetTile);
+    view.hintLine = "1–3=työkalu  4=peruuta";
+    return view;
+  };
+  onBlockedKey (key) {
+    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
+      this.shouldQuit = true;
+      this.markStateDirty();
+      return;
+    }
+    const view = this.getBlockedView();
+    const toolCount = this.actionToolCount(view);
+    let cancelKey = 1;
+    if ( view.canTalk ) {
+      cancelKey = cancelKey + 1;
+    }
+    if ( toolCount > 0 ) {
+      cancelKey = cancelKey + 1;
+    }
+    const cancelCh = (cancelKey.toString());
+    if ( (key == cancelCh) || (key == "4") ) {
+      this.screen = "map";
+      this._map.lastStatus = "Peruutit.";
+      this.clearBlockedTalk();
+      this.markStateDirty();
+      return;
+    }
+    if ( view.canTalk ) {
+      if ( key == "1" ) {
+        const ent = new MapEntity();
+        ent.id = this.blockedTalkId;
+        ent.char = this.blockedTalkChar;
+        ent.name = this.blockedTalkName;
+        ent.kind = this.blockedTalkKind;
+        ent.storyId = this.blockedTalkStoryId;
+        this.clearBlockedTalk();
+        this._map.playerHidden = false;
+        this._map.lastStatus = "";
+        this.startEncounter(ent);
+        this.markStateDirty();
+        return;
+      }
+    }
+    let toolKey = 1;
+    if ( view.canTalk ) {
+      toolKey = 2;
+    }
+    if ( toolCount > 0 ) {
+      const toolCh = (toolKey.toString());
+      if ( key == toolCh ) {
+        this.actionPhase = "pick";
+        this.screen = "action";
+        this.markStateDirty();
+        return;
+      }
+    }
+    this._map.lastStatus = ("Valitse " + view.hintLine) + ".";
+    this.markStateDirty();
+  };
+  onActionKey (key) {
+    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
+      this.shouldQuit = true;
+      this.markStateDirty();
+      return;
+    }
+    if ( this.actionPhase == "result" ) {
+      if ( (key == "enter") || (key == " ") ) {
+        this.actionPhase = "";
+        if ( (this.actionPendingStoryId.length) > 0 ) {
+          this.pendingStoryId = this.actionPendingStoryId;
+          this.encounterResult = "action_story";
+          this.actionPendingStoryId = "";
+        } else {
+          this.encounterResult = "";
+        }
+        this.screen = "map";
+        this.afterPlayerAction();
+        this.handleAgentTick();
+        this.markStateDirty();
+      }
+      return;
+    }
+    if ( (key == "4") || (key == "esc") ) {
+      this.screen = "map";
+      this._map.lastStatus = "Peruutit.";
+      this.actionPhase = "";
+      this.clearBlockedTalk();
+      this.markStateDirty();
+      return;
+    }
+    const view = this.getActionView();
+    const toolCount = this.actionToolCount(view);
+    let idx = -1;
+    if ( key == "1" ) {
+      idx = 0;
+    }
+    if ( key == "2" ) {
+      idx = 1;
+    }
+    if ( key == "3" ) {
+      idx = 2;
+    }
+    if ( idx < 0 ) {
+      this._map.lastStatus = "Valitse työkalu numerolla tai 4 peruuttaaksesi.";
+      this.markStateDirty();
+      return;
+    }
+    if ( idx >= toolCount ) {
+      this._map.lastStatus = "Valitse työkalu numerolla tai 4 peruuttaaksesi.";
+      this.markStateDirty();
+      return;
+    }
+    const toolId = view.toolIds[idx];
+    this.applyToolToTarget(toolId);
+    this.actionPhase = "result";
+    this.clearBlockedTalk();
+    this.markStateDirty();
+  };
   canAccessFloor (floorIndex) {
     if ( floorIndex == 0 ) {
       return true;
@@ -3256,6 +3895,14 @@ class GameSession  extends RangerProcessBase {
       this.onInventoryKey(key);
       return;
     }
+    if ( this.screen == "blocked" ) {
+      this.onBlockedKey(key);
+      return;
+    }
+    if ( this.screen == "action" ) {
+      this.onActionKey(key);
+      return;
+    }
     if ( this.screen != "map" ) {
       return;
     }
@@ -3282,6 +3929,11 @@ class GameSession  extends RangerProcessBase {
     }
     if ( key == "i" ) {
       this.screen = "inventory";
+      this.markStateDirty();
+      return;
+    }
+    if ( key == "e" ) {
+      this.tryOpenActionPicker();
       this.markStateDirty();
       return;
     }
@@ -3321,6 +3973,20 @@ class GameSession  extends RangerProcessBase {
           this.conduct.addDamage(2);
           this.conduct.addMisconduct(1);
         }
+        const hermit = this._map.entityAt(70, 23);
+        if ( hermit.id == "staff-f7-hermit" ) {
+          let dist = this._map.playerX - hermit.x;
+          if ( dist < 0 ) {
+            dist = 0 - dist;
+          }
+          let dy = this._map.playerY - hermit.y;
+          if ( dy < 0 ) {
+            dy = 0 - dy;
+          }
+          if ( (dist + dy) <= 3 ) {
+            this._map.lastStatus = "Seinän takaa kuuluu kolinaa — joku on hengissä!";
+          }
+        }
         this.afterPlayerAction();
         this.handleAgentTick();
       }
@@ -3332,12 +3998,12 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     let dx = 0;
-    let dy = 0;
+    let dy_1 = 0;
     if ( key == "up" ) {
-      dy = -1;
+      dy_1 = -1;
     } else {
       if ( key == "down" ) {
-        dy = 1;
+        dy_1 = 1;
       } else {
         if ( key == "left" ) {
           dx = -1;
@@ -3346,10 +4012,10 @@ class GameSession  extends RangerProcessBase {
             dx = 1;
           } else {
             if ( key == "w" ) {
-              dy = -1;
+              dy_1 = -1;
             } else {
               if ( key == "s" ) {
-                dy = 1;
+                dy_1 = 1;
               } else {
                 if ( key == "a" ) {
                   dx = -1;
@@ -3369,8 +4035,8 @@ class GameSession  extends RangerProcessBase {
       }
     }
     const targetX = this._map.playerX + dx;
-    const targetY = this._map.playerY + dy;
-    const moved = this.tryPlayerMove(dx, dy);
+    const targetY = this._map.playerY + dy_1;
+    const moved = this.tryPlayerMove(dx, dy_1);
     if ( moved ) {
       if ( this.encounterCooldown > 0 ) {
         this.encounterCooldown = this.encounterCooldown - 1;
@@ -3382,16 +4048,17 @@ class GameSession  extends RangerProcessBase {
       }
     } else {
       const blocker = this._map.entityAt(targetX, targetY);
-      if ( this._map.entityBlocksPlayer(blocker) ) {
-        this._map.playerHidden = false;
-        this._map.lastStatus = "";
-        this.startEncounter(blocker);
+      if ( this.tryOpenBlockedMenu(blocker) ) {
         this.markStateDirty();
         return;
       }
     }
     const bump = this._map.bumpAtPlayer();
     if ( this._map.entityBlocksPlayer(bump) ) {
+      if ( this.tryOpenBlockedMenu(bump) ) {
+        this.markStateDirty();
+        return;
+      }
       this.startEncounter(bump);
     } else {
       if ( moved ) {
@@ -4006,6 +4673,7 @@ module.exports.WorldMap = WorldMap;
 module.exports.PlayerConduct = PlayerConduct;
 module.exports.PlayerTools = PlayerTools;
 module.exports.InventoryView = InventoryView;
+module.exports.ActionView = ActionView;
 module.exports.WorldClock = WorldClock;
 module.exports.GameSession = GameSession;
 module.exports.KoodisampoAppRoot = KoodisampoAppRoot;

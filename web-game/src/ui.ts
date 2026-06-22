@@ -353,13 +353,15 @@ export function mountGameUI(game: WebGame) {
         { key: "d", label: "→" },
         { key: "h", label: "h piiloudu" },
         { key: "e", label: "e käytä" },
+        { key: "t", label: "t työkalu" },
+        { key: "x", label: "x käytä" },
         { key: "i", label: "i inventaario" },
         { key: "b", label: "b opiskelu" },
         { key: "?", label: "? valikko" },
         { key: "o", label: "o hahmot (debug)" },
         { key: "reset", label: "↺ alusta", cls: "danger" },
       ]);
-      hintEl.textContent = "WASD | e=käytä kohde | i=inventaario | b=opiskelulista | h piiloudu | ?=valikko | o=hahmot (debug) | ↺ alusta | q lopeta";
+      hintEl.textContent = "WASD | t=työkalu x=murra/kaiva | e=käytä | i=inventaario | b=opiskelu | h piiloudu | ?=valikko | q lopeta";
     }
 
     function updateMobileChrome(state: State) {
@@ -484,6 +486,57 @@ export function mountGameUI(game: WebGame) {
         return;
       }
 
+      if (state.screen === "blocked" || state.screen === "action") {
+        const panel = state.actionPanel || {};
+        let html = screenHeader(state);
+        if (panel.mode === "result") {
+          html += `<div class="overlay-title ${panel.resultOk ? "ok" : "bad"}">═══ Tulos ═══</div>`;
+          html += `<div class="greeting">${esc(panel.resultMessage || "")}</div>`;
+          html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
+          setMapContent(html);
+          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+          hintEl.textContent = panel.hintLine || "Enter = jatka | q = lopeta";
+          return;
+        }
+        if (state.screen === "blocked") {
+          html += `<div class="overlay-title">═══ Este edessä ═══</div>`;
+          if (panel.targetName) {
+            html += `<div class="greeting">Kohde: <b>${esc(panel.targetName)}</b></div>`;
+          }
+          let n = 1;
+          const toolbar = [];
+          if (panel.canTalk) {
+            html += `<div class="choice"><span class="choice-num">[${n}]</span> Juttele — ${esc(panel.talkName || "")}</div>`;
+            toolbar.push({ key: String(n), label: `${n} juttele` });
+            n += 1;
+          }
+          if ((panel.tools || []).length > 0) {
+            html += `<div class="choice"><span class="choice-num">[${n}]</span> Käytä työkalua</div>`;
+            toolbar.push({ key: String(n), label: `${n} työkalu` });
+            n += 1;
+          }
+          html += `<div class="choice muted"><span class="choice-num">[${n}]</span> Peruuta</div>`;
+          toolbar.push({ key: String(n), label: `${n} peru`, cls: "muted" });
+          setMapContent(html);
+          setToolbar(toolbar);
+          hintEl.textContent = panel.hintLine || "q = lopeta";
+          return;
+        }
+        html += `<div class="overlay-title">═══ Käytä työkalua ═══</div>`;
+        html += `<div class="greeting">Kohde: <b>${esc(panel.targetName || "Kohde")}</b></div>`;
+        for (const item of panel.tools || []) {
+          html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.label)}</div>`;
+        }
+        html += `<div class="choice muted"><span class="choice-num">[4]</span> Peruuta</div>`;
+        setMapContent(html);
+        setToolbar([
+          ...(panel.tools || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
+          { key: "4", label: "4 peru", cls: "muted" },
+        ]);
+        hintEl.textContent = panel.hintLine || "Valitse työkalu | 4 = peru | q = lopeta";
+        return;
+      }
+
       if (state.screen === "encounter") {
         renderEncounter(state);
         return;
@@ -575,16 +628,6 @@ export function mountGameUI(game: WebGame) {
       }
 
       if (state.lines) {
-        if (state.overlay && state.screen === "map") {
-          updateMobileChrome(state);
-          setMapContent(renderOverlay(state.overlay, state));
-          if (hintEl) {
-            hintEl.textContent = isMobileLayout()
-              ? ""
-              : "Valitse esine numerolla | 4 = peru | q = lopeta";
-          }
-          return;
-        }
         if (isMobileLayout()) {
           renderMobileMap(state);
           return;
@@ -616,7 +659,7 @@ export function mountGameUI(game: WebGame) {
 
     const GAME_KEYS = new Set([
       "w", "a", "s", "d", "up", "down", "left", "right",
-      "h", "e", "i", "b", "?", "o", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+      "h", "e", "i", "b", "?", "o", "t", "x", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
       "n", "q", "enter", "j", "p", " ", "m",
     ]);
 

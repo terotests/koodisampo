@@ -182,6 +182,9 @@ class WorldMap {
       if (ch == "=") {
         return true
       }
+      if (ch == "#") {
+        return true
+      }
       return false
     }
     if (tool == "sledgehammer") {
@@ -828,19 +831,17 @@ class WorldMap {
     }
   }
 
-  fn tryBreakFacing:string (tool:string) {
+  fn tryBreakAt:string (x:int y:int tool:string) {
     if ((strlen tool) < 1) {
       lastStatus = "Ei valittua työkalua (t vaihtaa)."
       return ""
     }
-    def tx:int (playerX + facingX)
-    def ty:int (playerY + facingY)
-    def tile:string (this.tileAt(tx ty))
+    def tile:string (this.tileAt(x y))
     if (this.isBreakableTile(tile tool) == false) {
       lastStatus = "Työkalu ei tepsi tähän esteeseen."
       return ""
     }
-    this.setTileAt(tx ty ".")
+    this.setTileAt(x y ".")
     if (tool == "sledgehammer") {
       lastStatus = "Moukarivasara murskaa seinän — melu kantautuu!"
       return "heavy"
@@ -851,6 +852,93 @@ class WorldMap {
     }
     lastStatus = "Lapio avaa raon hiljaa."
     return "light"
+  }
+
+  fn tryBreakFacing:string (tool:string) {
+    def fx:int facingX
+    def fy:int facingY
+    if (fx == 0) {
+      if (fy == 0) {
+        fy = 1
+      }
+    }
+    def tx:int (playerX + fx)
+    def ty:int (playerY + fy)
+    return (this.tryBreakAt(tx ty tool))
+  }
+
+  fn hasNearbyWitness:boolean (radius:int) {
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.offDuty == false) {
+        if (e.kind == "coworker") {
+          def dx:int (e.x - playerX)
+          if (dx < 0) {
+            dx = (0 - dx)
+          }
+          def dy:int (e.y - playerY)
+          if (dy < 0) {
+            dy = (0 - dy)
+          }
+          if ((dx + dy) > 0) {
+            if ((dx + dy) <= radius) {
+              return true
+            }
+          }
+        }
+        if (e.kind == "role") {
+          def dx2:int (e.x - playerX)
+          if (dx2 < 0) {
+            dx2 = (0 - dx2)
+          }
+          def dy2:int (e.y - playerY)
+          if (dy2 < 0) {
+            dy2 = (0 - dy2)
+          }
+          if ((dx2 + dy2) > 0) {
+            if ((dx2 + dy2) <= radius) {
+              return true
+            }
+          }
+        }
+        if (e.kind == "security") {
+          def dx3:int (e.x - playerX)
+          if (dx3 < 0) {
+            dx3 = (0 - dx3)
+          }
+          def dy3:int (e.y - playerY)
+          if (dy3 < 0) {
+            dy3 = (0 - dy3)
+          }
+          if ((dx3 + dy3) > 0) {
+            if ((dx3 + dy3) <= radius) {
+              return true
+            }
+          }
+        }
+        if (e.kind == "guru") {
+          def dx4:int (e.x - playerX)
+          if (dx4 < 0) {
+            dx4 = (0 - dx4)
+          }
+          def dy4:int (e.y - playerY)
+          if (dy4 < 0) {
+            dy4 = (0 - dy4)
+          }
+          if ((dx4 + dy4) > 0) {
+            if ((dx4 + dy4) <= radius) {
+              return true
+            }
+          }
+        }
+      }
+      i = i + 1
+    }
+    return false
   }
 
   fn tryToggleHide:boolean () {
@@ -1370,7 +1458,7 @@ class WorldMap {
     if (policeChaseActive) {
       view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!"
     } {
-      view.hintLine = "wasd | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta"
+      view.hintLine = "wasd | e=työkalu | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta"
     }
     return view
   }

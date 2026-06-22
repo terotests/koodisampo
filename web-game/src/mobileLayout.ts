@@ -176,6 +176,8 @@ export function setMobileMapToolbar(
   actions.className = "action-row";
   const actionBtns: ToolbarBtn[] = [
     { key: "e", label: "Käytä" },
+    { key: "t", label: "Työkalu" },
+    { key: "x", label: "Kaiva" },
     { key: "h", label: "Piiloudu" },
     { key: "i", label: "Invent." },
     { key: "b", label: "Opisk." },
