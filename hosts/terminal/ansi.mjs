@@ -18,6 +18,7 @@ export const FG = {
 export const BG = {
   black: "\x1b[40m",
   red: "\x1b[41m",
+  green: "\x1b[42m",
 };
 
 const TILE_COLOR = {
@@ -70,6 +71,10 @@ export function colorizeMapLine(line) {
 
 export function colorizePolice(ch) {
   return `${BG.black}${FG.white}${BOLD}${ch}${RESET}`;
+}
+
+export function colorizeRecommended(ch) {
+  return `${BG.green}${FG.brightGreen}${BOLD}${ch}${RESET}`;
 }
 
 export function styled(text, ...styles) {

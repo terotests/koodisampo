@@ -760,18 +760,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     } {
       def blocker:MapEntity (map.entityAt(targetX targetY))
-      if ((strlen blocker.id) > 0) {
-        if (blocker.kind != "item") {
-          map.playerHidden = false
-          map.lastStatus = ""
-          this.startEncounter(blocker)
-          this.markStateDirty()
-          return
-        }
+      if (map.entityBlocksPlayer(blocker)) {
+        map.playerHidden = false
+        map.lastStatus = ""
+        this.startEncounter(blocker)
+        this.markStateDirty()
+        return
       }
     }
     def bump:MapEntity (map.bumpAtPlayer())
-    if ((strlen bump.id) > 0) {
+    if (map.entityBlocksPlayer(bump)) {
       this.startEncounter(bump)
     } {
       if (moved) {

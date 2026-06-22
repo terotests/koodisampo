@@ -109,6 +109,21 @@ export function runActionsTests() {
       session.tools.grant(picked);
       assert(map.tileAt(item.x, item.y) === ".", "tile cleared after pickup");
     });
+
+    dispatch(session, () => {
+      const map = sessionMap(session);
+      map.currentFloor = 1;
+      const coworker = map.activeFloor().entities.find((e) => e.kind === "coworker");
+      assert(coworker, "coworker on floor 2");
+      coworker.offDuty = true;
+      map.playerX = coworker.x - 1;
+      map.playerY = coworker.y;
+      map.facingX = 1;
+      map.facingY = 0;
+      const moved = map.tryMove(1, 0);
+      assert(moved, "player walks through off-duty invisible coworker");
+      assert(!map.entityBlocksPlayer(coworker), "off-duty entity does not block");
+    });
   } finally {
     stopSession(root, session);
   }

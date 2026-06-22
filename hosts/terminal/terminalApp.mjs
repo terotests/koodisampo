@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BOLD, FG, RESET, BG, colorize, colorizeMapLine, colorizePolice, styled } from "./ansi.mjs";
+import { BOLD, FG, RESET, BG, colorize, colorizeMapLine, colorizePolice, colorizeRecommended, styled } from "./ansi.mjs";
 import { drawFrame, drawFrameClear, drawLines, drawLinesClear, enterGameScreen, leaveGameScreen } from "./screen.mjs";
 import { createKeyReader, getStdinHub } from "./rawKeys.mjs";
 import { isQuitKeyName, isQuitLine, isTerminalClosedKey, readKey, readLine, QUIT_HINT } from "./promptInput.mjs";
@@ -112,15 +112,17 @@ function policeTileSet(session) {
   return set;
 }
 
-function colorizeMapLineAt(line, cameraX, cameraY, policeSet) {
-  if (!policeSet || policeSet.size === 0) return colorizeMapLine(line);
+function colorizeMapLineAt(line, cameraX, cameraY, policeSet, recommendedSet, viewRow) {
+  if (!policeSet?.size && !recommendedSet?.size) return colorizeMapLine(line);
   let out = "";
   for (let i = 0; i < line.length; i += 1) {
     const mx = cameraX + i;
     const my = cameraY;
     const ch = line[i];
-    if (policeSet.has(`${mx},${my}`)) {
+    if (policeSet?.has(`${mx},${my}`)) {
       out += colorizePolice(ch);
+    } else if (recommendedSet?.has(`${viewRow},${i}`)) {
+      out += colorizeRecommended(ch);
     } else {
       out += colorize(ch);
     }
@@ -173,13 +175,14 @@ function buildMapFrame(session) {
     );
   }
   lines.push("");
-  const displayLines = applyMapPersonDisplay(view.lines, map, personRegistryState, {
+  const mapDisplay = applyMapPersonDisplay(view.lines, map, personRegistryState, {
     x: view.cameraX,
     y: view.cameraY,
   });
-  for (let i = 0; i < displayLines.length; i += 1) {
+  const recommendedSet = new Set(mapDisplay.recommendedCells);
+  for (let i = 0; i < mapDisplay.lines.length; i += 1) {
     const mapY = view.cameraY + i;
-    lines.push(`  ${colorizeMapLineAt(displayLines[i], view.cameraX, mapY, policeSet)}`);
+    lines.push(`  ${colorizeMapLineAt(mapDisplay.lines[i], view.cameraX, mapY, policeSet, recommendedSet, i)}`);
   }
   if (view.statusLine) {
     const status = view.statusLine;

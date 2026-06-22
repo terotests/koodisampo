@@ -70,8 +70,12 @@ export function mountGameUI(game: WebGame) {
       return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Karma: <span class="karma">${state.karma}</span>${time}</div>`;
     }
 
-    function colorizeLine(line, state) {
-      return [...line].map((ch) => {
+    function colorizeLine(line, state, row = 0) {
+      const recommended = new Set(state.recommendedCells ?? []);
+      return [...line].map((ch, col) => {
+        if (recommended.has(`${row},${col}`)) {
+          return `<span class="npc-recommended">${esc(ch)}</span>`;
+        }
         if (state.policeChase && ch === "P") return `<span class="police">${ch}</span>`;
         if (ch === "@") return `<span style="color:#f0883e;font-weight:bold">${ch}</span>`;
         if (ch === ".") return `<span style="color:#3fb950">${ch}</span>`;
@@ -319,7 +323,7 @@ export function mountGameUI(game: WebGame) {
       updateMobileChrome(state);
       setMapTextView(false);
       const cropped = cropMapLines(state.lines);
-      const mapHtml = `<pre class="map-grid">${cropped.map((line) => colorizeLine(line, state)).join("\n")}</pre>`;
+      const mapHtml = `<pre class="map-grid">${cropped.map((line, row) => colorizeLine(line, state, row)).join("\n")}</pre>`;
       if (mapEl) mapEl.innerHTML = mapHtml;
       renderMapToolbar(state);
     }
@@ -525,7 +529,7 @@ export function mountGameUI(game: WebGame) {
         const mapHtml = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
           studyLine +
           (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "") +
-          state.lines.map((line) => colorizeLine(line, state)).join("\n") +
+          state.lines.map((line, row) => colorizeLine(line, state, row)).join("\n") +
           (state.hint ? `<div class="hint" style="margin-top:12px">${esc(state.hint)}</div>` : "");
         mapEl.innerHTML = mapHtml;
         renderMapToolbar();

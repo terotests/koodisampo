@@ -250,12 +250,15 @@ function getFloorTitle(session, floorIndex) {
 }
 
 export function applyMapPersonDisplay(lines, map, registry, camera = null) {
-  if (!lines?.length || !map || !registry) return lines;
+  if (!lines?.length || !map || !registry) {
+    return { lines: lines ?? [], recommendedCells: [] };
+  }
   const camX = camera?.x ?? map.cameraX ?? 0;
   const camY = camera?.y ?? map.cameraY ?? 0;
   const ents = map.activeFloor()?.entities ?? [];
   const out = [...lines];
   const painted = new Set();
+  const recommendedCells = [];
   for (const ent of ents) {
     if (!ent?.id || ent.offDuty) continue;
     if (ent.kind === "item") continue;
@@ -269,8 +272,11 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const ch = personMapChar(registry, ent);
     out[dy] = line.slice(0, dx) + ch + line.slice(dx + 1);
     painted.add(cellKey);
+    if (hasPersonRecommendation(registry, ent.id)) {
+      recommendedCells.push(`${dy},${dx}`);
+    }
   }
-  return out;
+  return { lines: out, recommendedCells };
 }
 
 export function formatPersonStatusLine(registry, entity) {

@@ -12,6 +12,7 @@ import {
   checkFloorRecommendationAccess,
   getFloorRecommendationStatus,
   collectFloorRecommendationStaff,
+  applyMapPersonDisplay,
 } from "../hosts/terminal/personStatus.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -72,6 +73,17 @@ export function runPersonStatusTests() {
   });
   const allow = checkFloorRecommendationAccess(session, registry, 2);
   assert(allow.ok === true, "can go to floor 3 after floor 2 recommendations");
+
+  dispatch(session, () => {
+    const map = sessionMap(session);
+    map.currentFloor = 1;
+    const view = session.getMapView();
+    const display = applyMapPersonDisplay(view.lines, map, registry, {
+      x: view.cameraX,
+      y: view.cameraY,
+    });
+    assert(display.recommendedCells.length > 0, "recommended staff highlighted on map");
+  });
 
   stopGameSession(root, session);
 }

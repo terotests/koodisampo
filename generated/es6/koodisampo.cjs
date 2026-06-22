@@ -1684,11 +1684,9 @@ class WorldMap  {
       return false;
     }
     const blocker = this.entityAt(nx, ny);
-    if ( (blocker.id.length) > 0 ) {
-      if ( blocker.kind != "item" ) {
-        this.lastStatus = "Tiellä on joku.";
-        return false;
-      }
+    if ( this.entityBlocksPlayer(blocker) ) {
+      this.lastStatus = "Tiellä on joku.";
+      return false;
     }
     this.playerHidden = false;
     this.playerX = nx;
@@ -1880,6 +1878,18 @@ class WorldMap  {
     }
     return true;
   };
+  entityBlocksPlayer (e) {
+    if ( (e.id.length) < 1 ) {
+      return false;
+    }
+    if ( e.kind == "item" ) {
+      return false;
+    }
+    if ( e.offDuty ) {
+      return false;
+    }
+    return true;
+  };
   stepTowardPlayer (e) {
     let dx = 0;
     let dy = 0;
@@ -1963,7 +1973,7 @@ class WorldMap  {
       return new MapEntity();
     }
     const e = this.entityAt(this.playerX, this.playerY);
-    if ( (e.id.length) > 0 ) {
+    if ( this.entityBlocksPlayer(e) ) {
       return e;
     }
     return new MapEntity();
@@ -2142,6 +2152,12 @@ class WorldMap  {
       if ( this.isActiveAgent(e) == false ) {
         i = i + 1;
         continue;
+      }
+      if ( e.offDuty ) {
+        if ( e.kind != "police" ) {
+          i = i + 1;
+          continue;
+        }
       }
       this.tryAgentAmbient(e);
       if ( e.kind == "police" ) {
@@ -3366,18 +3382,16 @@ class GameSession  extends RangerProcessBase {
       }
     } else {
       const blocker = this._map.entityAt(targetX, targetY);
-      if ( (blocker.id.length) > 0 ) {
-        if ( blocker.kind != "item" ) {
-          this._map.playerHidden = false;
-          this._map.lastStatus = "";
-          this.startEncounter(blocker);
-          this.markStateDirty();
-          return;
-        }
+      if ( this._map.entityBlocksPlayer(blocker) ) {
+        this._map.playerHidden = false;
+        this._map.lastStatus = "";
+        this.startEncounter(blocker);
+        this.markStateDirty();
+        return;
       }
     }
     const bump = this._map.bumpAtPlayer();
-    if ( (bump.id.length) > 0 ) {
+    if ( this._map.entityBlocksPlayer(bump) ) {
       this.startEncounter(bump);
     } else {
       if ( moved ) {

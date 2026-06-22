@@ -528,7 +528,7 @@ function snapshot() {
     const view = session.getMapView();
     const elevator = buildElevatorSnapshot(map);
     const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
-    const lines = applyMapPersonDisplay(view.lines, map, personRegistryState, {
+    const mapDisplay = applyMapPersonDisplay(view.lines, map, personRegistryState, {
       x: view.cameraX,
       y: view.cameraY,
     });
@@ -540,7 +540,8 @@ function snapshot() {
       ambient: view.ambientLine,
       time: view.timeLine,
       hint: view.hintLine,
-      lines,
+      lines: mapDisplay.lines,
+      recommendedCells: mapDisplay.recommendedCells,
       camera: { x: view.cameraX, y: view.cameraY },
       onElevator: elevator.onElevator,
       elevatorFloors: elevator.floors,
