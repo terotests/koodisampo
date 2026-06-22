@@ -160,6 +160,33 @@ export function mountGameUI(game: WebGame) {
         return html;
       }
 
+      if (ov.type === "action") {
+        html += `<div class="overlay-title">═══ Käytä esinettä ═══</div>`;
+        html += `<div class="greeting">Kohde: <b>${esc(ov.targetName)}</b></div>`;
+        for (const item of ov.items || []) {
+          html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.label)}</div>`;
+        }
+        html += `<div class="choice muted"><span class="choice-num">[4]</span> Peruuta</div>`;
+        html += `<div class="hint" style="margin-top:12px">Valitse esine — USB + työasema, vasara + kone…</div>`;
+        setToolbar([
+          ...(ov.items || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
+          { key: "4", label: "4 peru", cls: "muted" },
+        ]);
+        return html;
+      }
+
+      if (ov.type === "actionResult") {
+        const cls = ov.ok ? "ok" : "bad";
+        html += `<div class="overlay-title ${cls}">═══ Tulos ═══</div>`;
+        if (ov.karmaHint) {
+          html += `<div class="stats" style="margin-bottom:8px">${esc(ov.karmaHint)}</div>`;
+        }
+        html += `<div class="greeting">${esc(ov.message)}</div>`;
+        html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
+        setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        return html;
+      }
+
       return html + `<div>Tuntematon overlay: ${esc(ov.type)}</div>`;
     }
 
@@ -273,13 +300,14 @@ export function mountGameUI(game: WebGame) {
         { key: "s", label: "↓" },
         { key: "d", label: "→" },
         { key: "h", label: "h piiloudu" },
+        { key: "e", label: "e käytä" },
         { key: "i", label: "i inventaario" },
         { key: "b", label: "b opiskelu" },
         { key: "?", label: "? valikko" },
         { key: "o", label: "o hahmot (debug)" },
         { key: "reset", label: "↺ alusta", cls: "danger" },
       ]);
-      hintEl.textContent = "WASD | i=inventaario | b=opiskelulista | h piiloudu | ?=valikko | o=hahmot (debug) | ↺ alusta | q lopeta";
+      hintEl.textContent = "WASD | e=käytä kohde | i=inventaario | b=opiskelulista | h piiloudu | ?=valikko | o=hahmot (debug) | ↺ alusta | q lopeta";
     }
 
     function updateMobileChrome(state: State) {
@@ -477,6 +505,16 @@ export function mountGameUI(game: WebGame) {
       }
 
       if (state.lines) {
+        if (state.overlay && state.screen === "map") {
+          updateMobileChrome(state);
+          setMapContent(renderOverlay(state.overlay, state));
+          if (hintEl) {
+            hintEl.textContent = isMobileLayout()
+              ? ""
+              : "Valitse esine numerolla | 4 = peru | q = lopeta";
+          }
+          return;
+        }
         if (isMobileLayout()) {
           renderMobileMap(state);
           return;
@@ -508,7 +546,7 @@ export function mountGameUI(game: WebGame) {
 
     const GAME_KEYS = new Set([
       "w", "a", "s", "d", "up", "down", "left", "right",
-      "h", "i", "b", "?", "o", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+      "h", "e", "i", "b", "?", "o", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
       "n", "q", "enter", "j", "p", " ", "m",
     ]);
 

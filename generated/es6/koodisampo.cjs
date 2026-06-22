@@ -987,6 +987,7 @@ class MapEntity  {
     this.scheduleRole = "";
     this.npcState = "";
     this.offDuty = false;
+    this.actionId = "";
   }
 }
 class EncounterView  {
@@ -1297,16 +1298,22 @@ class WorldMap  {
     const ents = floor.entities;
     let i = 0;
     const n = ents.length;
+    let fallback = new MapEntity();
     while (i < n) {
       const e = ents[i];
       if ( e.x == x ) {
         if ( e.y == y ) {
-          return e;
+          if ( e.offDuty == false ) {
+            return e;
+          }
+          if ( (fallback.id.length) < 1 ) {
+            fallback = e;
+          }
         }
       }
       i = i + 1;
     };
-    return new MapEntity();
+    return fallback;
   };
   isOnElevator () {
     const ch = this.tileAt(this.playerX, this.playerY);
@@ -1461,6 +1468,7 @@ class WorldMap  {
       ent.kind = this.json.objFieldStr(entObj, "kind");
       ent.itemTool = this.json.objFieldStr(entObj, "itemTool");
       ent.itemOwner = this.json.objFieldStr(entObj, "itemOwner");
+      ent.actionId = this.json.objFieldStr(entObj, "actionId");
       ent.sociability = this.json.objFieldInt(entObj, "sociability");
       ent.persistence = this.json.objFieldInt(entObj, "persistence");
       ent.moveMode = this.json.objFieldStr(entObj, "behavior");
@@ -1725,6 +1733,7 @@ class WorldMap  {
     const pick = e.itemTool;
     this.lastPickedOwner = e.itemOwner;
     this.removeEntityAt(x, y);
+    this.setTileAt(x, y, ".");
     return pick;
   };
   hasDroppedCardFrom (coworkerId) {
@@ -2016,6 +2025,15 @@ class WorldMap  {
     }
     this.tryMoveEntity(e, dx, dy);
   };
+  scheduleMoveStride (e, gameMinutes) {
+    const seed = (e.homeX + (e.homeY * 3)) + (e.id.length);
+    const phase = seed % 4;
+    const tick = gameMinutes % 4;
+    if ( phase == tick ) {
+      return true;
+    }
+    return false;
+  };
   applyEntitySchedule (floorIndex, floor, e, gameMinutes) {
     if ( (e.scheduleRole.length) < 1 ) {
       return;
@@ -2076,8 +2094,9 @@ class WorldMap  {
         }
         if ( e.scheduleRole != "desk_lunch" ) {
           if ( floor.cafeteriaX >= 0 ) {
-            tx = floor.cafeteriaX;
-            ty = floor.cafeteriaY;
+            const slot = (e.homeX + e.homeY) % 5;
+            tx = (floor.cafeteriaX + slot) - 2;
+            ty = floor.cafeteriaY + (slot % 2);
             e.npcState = "lunch";
           }
         }
@@ -2092,29 +2111,23 @@ class WorldMap  {
         }
       }
     }
+    if ( this.scheduleMoveStride(e, gameMinutes) == false ) {
+      return;
+    }
     this.stepTowardTile(e, tx, ty);
   };
   tickSchedules (gameMinutes) {
-    let saved = this.currentFloor;
-    saved = this.currentFloor;
-    let fi = 0;
-    const fc = this.floors.length;
-    while (fi < fc) {
-      this.currentFloor = fi;
-      const floor = this.floors[fi];
-      const ents = floor.entities;
-      let i = 0;
-      const n = ents.length;
-      while (i < n) {
-        const e = ents[i];
-        if ( this.isActiveAgent(e) ) {
-          this.applyEntitySchedule(fi, floor, e, gameMinutes);
-        }
-        i = i + 1;
-      };
-      fi = fi + 1;
+    const floor = this.activeFloor();
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( this.isActiveAgent(e) ) {
+        this.applyEntitySchedule(this.currentFloor, floor, e, gameMinutes);
+      }
+      i = i + 1;
     };
-    this.currentFloor = saved;
   };
   tickAgents () {
     this.overheardMsg = "";
@@ -2218,6 +2231,9 @@ class WorldMap  {
   roleDisplayChar (ent) {
     if ( (ent.id.length) < 1 ) {
       return "?";
+    }
+    if ( ent.kind == "action" ) {
+      return ent.char;
     }
     if ( ent.kind == "item" ) {
       return ent.char;
@@ -2380,6 +2396,7 @@ class PlayerTools  {
     this.hasOfficialBadge = false;
     this.hasPromotedCard = false;
     this.hasShedKey = false;
+    this.hasUsbDrive = false;
     this.heldCoworkerCardOwner = "";
     this.accessTier = 0;
     this.activeTool = "";
@@ -2443,6 +2460,10 @@ class PlayerTools  {
     }
     if ( toolId == "shed_key" ) {
       this.hasShedKey = true;
+      return;
+    }
+    if ( toolId == "usb_drive" ) {
+      this.hasUsbDrive = true;
     }
   };
   setCoworkerCardOwner (ownerId) {
@@ -2540,6 +2561,9 @@ class PlayerTools  {
     if ( itemId == "shed_key" ) {
       return "vajan avain";
     }
+    if ( itemId == "usb_drive" ) {
+      return "USB-tikku";
+    }
     return this.activeLabel();
   };
   fillInventory (view) {
@@ -2567,6 +2591,9 @@ class PlayerTools  {
     lines.push("  " + this.accessLabel());
     if ( this.hasShedKey ) {
       lines.push("  vajan avain");
+    }
+    if ( this.hasUsbDrive ) {
+      lines.push("  USB-tikku");
     }
     if ( (this.heldCoworkerCardOwner.length) > 0 ) {
       lines.push("  lainattu kortti (palauta omistajalle)");
@@ -3007,7 +3034,7 @@ class GameSession  extends RangerProcessBase {
     if ( this.screen != "map" ) {
       return;
     }
-    this.worldClock.advance(15);
+    this.worldClock.advance(1);
     this._map.tickSchedules(this.worldClock.gameMinutes);
     this._map.agentHuntFlag = this.conduct.isWanted();
     const agentResult = this._map.tickAgents();
@@ -3037,7 +3064,7 @@ class GameSession  extends RangerProcessBase {
       if ( toolPick == "coworker_card" ) {
         this.tools.setCoworkerCardOwner(this._map.lastPickedOwner);
       }
-      if ( ((toolPick == "crowbar") || (toolPick == "shovel")) || (toolPick == "sledgehammer") ) {
+      if ( (((toolPick == "crowbar") || (toolPick == "shovel")) || (toolPick == "sledgehammer")) || (toolPick == "usb_drive") ) {
         const toolName = this.tools.activeLabel();
         this._map.lastStatus = "Poimit työkalun: " + toolName;
       } else {

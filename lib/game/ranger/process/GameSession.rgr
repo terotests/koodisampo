@@ -418,7 +418,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (screen != "map") {
       return
     }
-    worldClock.advance(15)
+    worldClock.advance(1)
     map.tickSchedules(worldClock.gameMinutes)
     map.agentHuntFlag = (conduct.isWanted())
     def agentResult:MapEntity (map.tickAgents())
@@ -449,7 +449,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (toolPick == "coworker_card") {
         tools.setCoworkerCardOwner(map.lastPickedOwner)
       }
-      if (toolPick == "crowbar" || toolPick == "shovel" || toolPick == "sledgehammer") {
+      if (toolPick == "crowbar" || toolPick == "shovel" || toolPick == "sledgehammer" || toolPick == "usb_drive") {
         def toolName:string (tools.activeLabel())
         map.lastStatus = ("Poimit työkalun: " + toolName)
       } {

@@ -70,11 +70,18 @@ import {
   menuItemByNumber,
   partitionMenuStories,
 } from "./storyMenu.mjs";
+import {
+  getActionTargetInFront,
+  listUsableItems,
+  resolveActionApply,
+  applyActionResult,
+} from "./actions.mjs";
 
 let quizHistoryState = emptyQuizHistory();
 let studyBacklogState = emptyStudyBacklog();
 let personRegistryState = emptyPersonRegistry();
 let castListOpen = false;
+let actionOverlay = null;
 let interviewPickNonce = 0;
 let guruPickNonce = 0;
 
@@ -340,6 +347,115 @@ function trySendMapKey(session, keyName) {
     }
   }
   sendMapKey(session, keyName);
+}
+
+function openTerminalActionMenu(session) {
+  let target = null;
+  let items = [];
+  dispatch(session, () => {
+    target = getActionTargetInFront(session);
+    items = listUsableItems(session);
+  });
+  if (!target) {
+    dispatch(session, () => {
+      sessionMap(session).lastStatus =
+        "Ei kohdetta — käänny työaseman (K), oven (L) tai vajan oven (+) päin ja paina e.";
+    });
+    return false;
+  }
+  if (!items.length) {
+    dispatch(session, () => {
+      sessionMap(session).lastStatus = "Sinulla ei ole esinettä, jota voisit käyttää tähän.";
+    });
+    return false;
+  }
+  actionOverlay = { type: "pick", target, items };
+  return true;
+}
+
+async function applyTerminalActionChoice(session, itemId) {
+  if (!actionOverlay?.target) return;
+  let result = null;
+  dispatch(session, () => {
+    result = resolveActionApply(session, actionOverlay.target, itemId);
+    applyActionResult(session, result);
+  });
+  persist(session);
+  const storyId = result?.storyId;
+  if (storyId) {
+    const catalog = new StoryCatalog();
+    const summary = catalog.findById(storyId);
+    const storyJson = loadStoryJson(summary);
+    if (storyJson) {
+      actionOverlay = null;
+      await runStoryLoop(session, storyJson);
+      persist(session);
+      return;
+    }
+  }
+  actionOverlay = {
+    type: "result",
+    ok: result?.ok === true,
+    message: result?.message || "Mitään ei tapahtunut.",
+  };
+}
+
+async function runActionPickLoop(session) {
+  while (actionOverlay?.type === "pick" && session.screen === "map" && !session.shouldQuit) {
+    const targetName = actionOverlay.target?.name || "Kohde";
+    const lines = [
+      BANNER,
+      `  ${styled("═══ Käytä esinettä ═══", FG.cyan, BOLD)}`,
+      "",
+      `  ${styled("Kohde:", FG.gray)} ${targetName}`,
+      "",
+    ];
+    for (let i = 0; i < actionOverlay.items.length; i += 1) {
+      const item = actionOverlay.items[i];
+      lines.push(`  ${styled(`[${i + 1}]`, FG.yellow)} ${item.label}`);
+    }
+    lines.push(`  ${styled("[4]", FG.gray)} Peruuta`);
+    lines.push("");
+    lines.push(`  ${styled(QUIT_HINT, FG.gray)}`);
+    drawLinesClear(lines);
+    const result = await readLine(styled("\n  Valinta: ", FG.cyan));
+    if (handleQuitInput(session, result)) return;
+    const pick = result.value;
+    if (pick === "4") {
+      actionOverlay = null;
+      return;
+    }
+    const idx = Number(pick) - 1;
+    if (Number.isNaN(idx) || idx < 0 || idx >= actionOverlay.items.length) {
+      dispatch(session, () => {
+        sessionMap(session).lastStatus = "Valitse numero listasta tai 4 peruuttaaksesi.";
+      });
+      continue;
+    }
+    await applyTerminalActionChoice(session, actionOverlay.items[idx].id);
+    if (actionOverlay?.type === "result") {
+      await runActionResultLoop(session);
+    }
+    return;
+  }
+}
+
+async function runActionResultLoop(session) {
+  while (actionOverlay?.type === "result" && session.screen === "map" && !session.shouldQuit) {
+    drawLinesClear([
+      BANNER,
+      `  ${styled("═══ Tulos ═══", FG.cyan, BOLD)}`,
+      "",
+      wrap(actionOverlay.message || ""),
+      "",
+      `  ${styled("Paina Enter jatkaaksesi...", FG.gray)}`,
+      `  ${styled(QUIT_HINT, FG.gray)}`,
+    ]);
+    const result = await readKey(styled("\n  ", FG.gray));
+    if (handleQuitInput(session, result)) return;
+    actionOverlay = null;
+    return;
+  }
 }
 
 function printStory(session) {
@@ -1125,6 +1241,16 @@ export async function runTerminalApp(mapJson) {
         continue;
       }
 
+      if (actionOverlay) {
+        if (actionOverlay.type === "pick") {
+          await runActionPickLoop(session);
+        } else if (actionOverlay.type === "result") {
+          await runActionResultLoop(session);
+        }
+        clearMapNext = true;
+        continue;
+      }
+
       printMap(session, clearMapNext);
       clearMapNext = false;
       const key = await keys.readKey();
@@ -1141,6 +1267,16 @@ export async function runTerminalApp(mapJson) {
 
       if (castListEnabledForTerminal() && key.name === "o") {
         castListOpen = true;
+        continue;
+      }
+
+      if (key.name === "e" && session.screen === "map") {
+        if (openTerminalActionMenu(session)) {
+          persist(session);
+          continue;
+        }
+        persist(session);
+        clearMapNext = true;
         continue;
       }
 

@@ -255,6 +255,7 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
   const camY = camera?.y ?? map.cameraY ?? 0;
   const ents = map.activeFloor()?.entities ?? [];
   const out = [...lines];
+  const painted = new Set();
   for (const ent of ents) {
     if (!ent?.id || ent.offDuty) continue;
     if (ent.kind === "item") continue;
@@ -263,8 +264,11 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     if (dy < 0 || dy >= out.length || dx < 0) continue;
     const line = out[dy];
     if (dx >= line.length) continue;
+    const cellKey = `${dx},${dy}`;
+    if (painted.has(cellKey)) continue;
     const ch = personMapChar(registry, ent);
     out[dy] = line.slice(0, dx) + ch + line.slice(dx + 1);
+    painted.add(cellKey);
   }
   return out;
 }

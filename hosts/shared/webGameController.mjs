@@ -42,6 +42,12 @@ import {
 } from "../terminal/personStatus.mjs";
 import { buildMenuItems, menuItemByNumber } from "../terminal/storyMenu.mjs";
 import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
+import {
+  getActionTargetInFront,
+  listUsableItems,
+  resolveActionApply,
+  applyActionResult,
+} from "../terminal/actions.mjs";
 
 /**
  * @param {{
@@ -110,7 +116,50 @@ export function createWebGameController(deps) {
     sessionMap(session).ensurePlayerOnWalkable();
   });
 
-  function resetWebSession(keepProgress = true) {
+  function openActionMenu() {
+  let target = null;
+  let items = [];
+  dispatch(session, () => {
+    target = getActionTargetInFront(session);
+    items = listUsableItems(session);
+  });
+  if (!target) {
+    dispatch(session, () => {
+      sessionMap(session).lastStatus =
+        "Ei kohdetta — käänny työaseman (K), oven (L) tai vajan oven (+) päin ja paina e.";
+    });
+    return;
+  }
+  if (!items.length) {
+    dispatch(session, () => {
+      sessionMap(session).lastStatus = "Sinulla ei ole esinettä, jota voisit käyttää tähän.";
+    });
+    return;
+  }
+  overlay = { type: "action", target, items };
+}
+
+function applyActionChoice(itemId) {
+  if (!overlay?.target) return;
+  let result = null;
+  dispatch(session, () => {
+    result = resolveActionApply(session, overlay.target, itemId);
+    applyActionResult(session, result);
+  });
+  const storyId = result?.storyId;
+  overlay = {
+    type: "actionResult",
+    ok: result?.ok === true,
+    message: result?.message || "Mitään ei tapahtunut.",
+    karmaDelta: result?.karmaDelta ?? 0,
+  };
+  if (storyId) {
+    startStoryFromId(storyId);
+  }
+  persistWeb();
+}
+
+function resetWebSession(keepProgress = true) {
   overlay = null;
   activeStory = null;
   castListOpen = false;
@@ -393,6 +442,31 @@ function serializeOverlay(ov) {
       entityName: ov.entityName,
     };
   }
+  if (ov.type === "action") {
+    return {
+      type: "action",
+      targetName: ov.target?.name || "Kohde",
+      items: (ov.items || []).map((item, i) => ({
+        n: i + 1,
+        id: item.id,
+        label: item.label,
+      })),
+    };
+  }
+  if (ov.type === "actionResult") {
+    const karmaHint =
+      ov.karmaDelta > 0
+        ? `+${ov.karmaDelta} karma`
+        : ov.karmaDelta < 0
+          ? `${ov.karmaDelta} karma`
+          : "";
+    return {
+      type: "actionResult",
+      ok: ov.ok === true,
+      message: ov.message,
+      karmaHint,
+    };
+  }
   return { type: ov.type };
 }
 
@@ -471,6 +545,7 @@ function snapshot() {
       onElevator: elevator.onElevator,
       elevatorFloors: elevator.floors,
       floorRecommendation: floorRec,
+      ...(overlay ? { overlay: serializeOverlay(overlay) } : {}),
     };
   }
 
@@ -573,6 +648,37 @@ function dismissOverlay() {
 }
 
 function handleOverlayKey(key) {
+  if (overlay?.type === "action") {
+    if (key === "q") {
+      dispatch(session, () => {
+        session.shouldQuit = true;
+      });
+      return true;
+    }
+    if (key === "esc" || key === "4") {
+      overlay = null;
+      return true;
+    }
+    const idx = Number.parseInt(key, 10) - 1;
+    if (!Number.isNaN(idx) && idx >= 0 && idx < overlay.items.length) {
+      applyActionChoice(overlay.items[idx].id);
+      return true;
+    }
+    return true;
+  }
+  if (overlay?.type === "actionResult") {
+    if (key === "enter" || key === " ") {
+      overlay = null;
+      return true;
+    }
+    if (key === "q") {
+      dispatch(session, () => {
+        session.shouldQuit = true;
+      });
+      return true;
+    }
+    return true;
+  }
   if (overlay?.type === "cardReturn") {
     if (key === "1") {
       dispatch(session, () => session.returnCoworkerCard());
@@ -844,6 +950,11 @@ function handleKey(key) {
 
   if (session.screen === "menu") {
     handleMenuKey(key);
+    return;
+  }
+
+  if (session.screen === "map" && key === "e") {
+    openActionMenu();
     return;
   }
 

@@ -7,6 +7,7 @@ class PlayerTools {
   def hasOfficialBadge:boolean false
   def hasPromotedCard:boolean false
   def hasShedKey:boolean false
+  def hasUsbDrive:boolean false
   def heldCoworkerCardOwner:string ""
   def accessTier:int 0
   def activeTool:string ""
@@ -71,6 +72,10 @@ class PlayerTools {
     }
     if (toolId == "shed_key") {
       hasShedKey = true
+      return
+    }
+    if (toolId == "usb_drive") {
+      hasUsbDrive = true
     }
   }
 
@@ -176,6 +181,9 @@ class PlayerTools {
     if (itemId == "shed_key") {
       return "vajan avain"
     }
+    if (itemId == "usb_drive") {
+      return "USB-tikku"
+    }
     return (this.activeLabel())
   }
 
@@ -204,6 +212,9 @@ class PlayerTools {
     push lines ("  " + (this.accessLabel()))
     if (hasShedKey) {
       push lines "  vajan avain"
+    }
+    if (hasUsbDrive) {
+      push lines "  USB-tikku"
     }
     if ((strlen heldCoworkerCardOwner) > 0) {
       push lines "  lainattu kortti (palauta omistajalle)"

@@ -282,16 +282,22 @@ class WorldMap {
     def ents:[MapEntity] (floor.entities)
     def i:int 0
     def n:int (array_length ents)
+    def fallback:MapEntity (new MapEntity)
     while (i < n) {
       def e:MapEntity (at ents i)
       if (e.x == x) {
         if (e.y == y) {
-          return e
+          if (e.offDuty == false) {
+            return e
+          }
+          if ((strlen fallback.id) < 1) {
+            fallback = e
+          }
         }
       }
       i = i + 1
     }
-    return (new MapEntity)
+    return fallback
   }
 
   fn isOnElevator:boolean () {
@@ -453,6 +459,7 @@ class WorldMap {
       ent.kind = (json.objFieldStr(entObj "kind"))
       ent.itemTool = (json.objFieldStr(entObj "itemTool"))
       ent.itemOwner = (json.objFieldStr(entObj "itemOwner"))
+      ent.actionId = (json.objFieldStr(entObj "actionId"))
       ent.sociability = (json.objFieldInt(entObj "sociability"))
       ent.persistence = (json.objFieldInt(entObj "persistence"))
       ent.moveMode = (json.objFieldStr(entObj "behavior"))
@@ -730,6 +737,7 @@ class WorldMap {
     def pick:string e.itemTool
     lastPickedOwner = e.itemOwner
     this.removeEntityAt(x y)
+    this.setTileAt(x y ".")
     return pick
   }
 
@@ -1038,6 +1046,16 @@ class WorldMap {
     this.tryMoveEntity(e dx dy)
   }
 
+  fn scheduleMoveStride:boolean (e:MapEntity gameMinutes:int) {
+    def seed:int (e.homeX + (e.homeY * 3) + (strlen e.id))
+    def phase:int (seed % 4)
+    def tick:int (gameMinutes % 4)
+    if (phase == tick) {
+      return true
+    }
+    return false
+  }
+
   fn applyEntitySchedule:void (floorIndex:int floor:MapFloor e:MapEntity gameMinutes:int) {
     if ((strlen e.scheduleRole) < 1) {
       return
@@ -1098,8 +1116,9 @@ class WorldMap {
         }
         if (e.scheduleRole != "desk_lunch") {
           if (floor.cafeteriaX >= 0) {
-            tx = floor.cafeteriaX
-            ty = floor.cafeteriaY
+            def slot:int ((e.homeX + e.homeY) % 5)
+            tx = floor.cafeteriaX + slot - 2
+            ty = floor.cafeteriaY + (slot % 2)
             e.npcState = "lunch"
           }
         }
@@ -1114,30 +1133,24 @@ class WorldMap {
         }
       }
     }
+    if (this.scheduleMoveStride(e gameMinutes) == false) {
+      return
+    }
     this.stepTowardTile(e tx ty)
   }
 
   fn tickSchedules:void (gameMinutes:int) {
-    def saved:int currentFloor
-    saved = currentFloor
-    def fi:int 0
-    def fc:int (array_length floors)
-    while (fi < fc) {
-      currentFloor = fi
-      def floor:MapFloor (at floors fi)
-      def ents:[MapEntity] (floor.entities)
-      def i:int 0
-      def n:int (array_length ents)
-      while (i < n) {
-        def e:MapEntity (at ents i)
-        if (this.isActiveAgent(e)) {
-          this.applyEntitySchedule(fi floor e gameMinutes)
-        }
-        i = i + 1
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (this.isActiveAgent(e)) {
+        this.applyEntitySchedule(currentFloor floor e gameMinutes)
       }
-      fi = fi + 1
+      i = i + 1
     }
-    currentFloor = saved
   }
 
   fn tickAgents:MapEntity () {
@@ -1243,6 +1256,9 @@ class WorldMap {
   fn roleDisplayChar:string (ent:MapEntity) {
     if ((strlen ent.id) < 1) {
       return "?"
+    }
+    if (ent.kind == "action") {
+      return ent.char
     }
     if (ent.kind == "item") {
       return ent.char
