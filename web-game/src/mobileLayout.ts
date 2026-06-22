@@ -77,7 +77,7 @@ export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (
   el.hidden = !msg;
 }
 
-type ToolbarBtn = { key: string; label: string; cls?: string };
+type ToolbarBtn = { key: string; label: string; cls?: string; action?: () => void };
 
 export type ElevatorFloorBtn = {
   key: string;
@@ -211,6 +211,10 @@ export function setMobileToolbar(
     btn.textContent = spec.label;
     if (spec.cls) btn.className = spec.cls;
     btn.addEventListener("click", () => {
+      if (spec.action) {
+        spec.action();
+        return;
+      }
       if (spec.key === "reset") onReset();
       else onKey(spec.key);
     });

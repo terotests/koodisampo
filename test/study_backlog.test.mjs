@@ -45,7 +45,7 @@ export function runStudyBacklogTests() {
   assert(studyBacklogCounts(backlog).total === 2, "counts total");
 
   const list = formatStudyList(backlog);
-  assert(list.includes("Haluan lisätietoa"), "list section wantMore");
+  assert(list.includes("Kysy AI:lta"), "list section wantMore");
   assert(list.includes("Väärin vastatut"), "list section wrong");
 
   const norm = normalizeStudyBacklog({ wantMore: [{ questionId: "x", prompt: "p" }] });

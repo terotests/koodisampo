@@ -469,7 +469,7 @@ export function buildAiStudyText(question) {
   parts.push("");
   parts.push(question.prompt);
   parts.push("");
-  parts.push("── Miksi oikein? ──");
+  parts.push("── Perustelu ──");
   if (question.studyNotes) {
     parts.push(question.studyNotes);
   } else {
@@ -479,7 +479,7 @@ export function buildAiStudyText(question) {
     parts.push(`\nOikea valinta: ${correct.text}`);
   }
   if (wrong.length > 0) {
-    parts.push("\n── Miksi muut vaihtoehdot eivät kelpaa? ──");
+    parts.push("\n── Miksi muut eivät kelpaa? ──");
     for (const w of wrong) {
       parts.push(`• ${w.text}`);
     }

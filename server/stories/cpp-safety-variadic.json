@@ -96,7 +96,7 @@
           "id": "a",
           "text": "Käytä typeturvallisia vaihtoehtoja kuten std::format (C++20) tai kirjastoja — älä kirjoita omaa",
           "feedback": "Hyvä! Periaate: älä määrittele uutta variadista funktiota — käytä valmiita typeturvallisia työkaluja.",
-          "next": "narrative_code",
+          "next": "victory",
           "correct": true,
           "points": 10,
           "features": [
@@ -121,43 +121,10 @@
         }
       ]
     },
-    "narrative_code": {
-      "type": "narrative",
-      "title": "Viimeinen koetus",
-      "text": "Kirjoita modernin templaten avainsana — se korvaa turvattoman `...`-parametrin.",
-      "next": "code_template"
-    },
-    "code_template": {
-      "type": "code",
-      "title": "Variadic template",
-      "text": "Täydennä avainsana joka aloittaa typeturvallisen templaten:",
-      "template": "_____ <typename... Args>\nvoid turvallinen_loitsu(Args&&... args);",
-      "answers": [
-        "template"
-      ],
-      "minLength": 3,
-      "maxLength": 10,
-      "hint": "Kahdeksan kirjainta — C++ templaten alku",
-      "feedbackCorrect": "Tuulikko asettuu! Variadic template on typeturvallinen — kääntäjä tarkistaa argumentit.",
-      "feedbackWrong": "Vastaus: template",
-      "next": "victory",
-      "wrongNext": "death_code",
-      "features": [
-        {
-          "id": "cpp:templates"
-        }
-      ]
-    },
-    "death_code": {
-      "type": "end",
-      "title": "Loitsu hajoaa",
-      "text": "Ilman templateta jäit vanhan tuulikon armoille.",
-      "outcome": "death"
-    },
     "victory": {
       "type": "end",
       "title": "Myrsky selätetty",
-      "text": "Olet läpäissyt Considering Safety -polun: const, muisti, vector, castit, poikkeukset ja variadiset funktiot. Väinämöinen odottaa — siellä kirjoitat koodia vapaammin.",
+      "text": "Olet läpäissyt Considering Safety -polun: const, muisti, vector, castit, poikkeukset ja variadiset funktiot. Väinämöinen odottaa.",
       "outcome": "victory"
     }
   },

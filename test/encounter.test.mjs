@@ -256,6 +256,7 @@ export function runEncounterTests() {
     assert(avahiQ, "avahi question exists");
     const study = buildAiStudyText(avahiQ);
     assert(study.includes("mDNS"), "AI study text explains mDNS");
+    assert(study.includes("Perustelu"), "AI study has rationale section");
     assert(study.includes("Oikea valinta"), "AI study lists correct answer");
 
     dispatch(session3, () => {

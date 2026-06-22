@@ -108,7 +108,7 @@
           "id": "a",
           "text": "int get_int_value() const { return m_int_value; }",
           "feedback": "Oikein! Palauta yksinkertaiset tyypit arvona. const-metodi kertoo ettei objektia muuteta.",
-          "next": "narrative_code",
+          "next": "victory",
           "correct": true,
           "points": 15,
           "features": [
@@ -137,39 +137,6 @@
       "type": "end",
       "title": "Kilpi murtui",
       "text": "Väärä getter paljasti sisäisen tilan. Vihollinen muokkasi arvoa suoraan.",
-      "outcome": "death"
-    },
-    "narrative_code": {
-      "type": "narrative",
-      "title": "Loitsu viimeistellään",
-      "text": "Velho antaa sinulle lähes valmiin metodin. Täydennä const-suojaus parametrille — et muuta int-arvoa funktiossa.",
-      "next": "code_const_param"
-    },
-    "code_const_param": {
-      "type": "code",
-      "title": "Const-parametri",
-      "text": "Täydennä puuttuva avainsana ennen `int`-tyyppiä:",
-      "template": "void taisto(_____ int voima);",
-      "answers": [
-        "const"
-      ],
-      "minLength": 3,
-      "maxLength": 10,
-      "hint": "Viisi kirjainta — lupaa ettei parametria muuteta",
-      "feedbackCorrect": "Kilpi on vahvistettu! const-parametri dokumentoi intentiosi kääntäjälle ja lukijalle.",
-      "feedbackWrong": "Muista: const ennen int — lupaa lukemisen ilman muutosta.",
-      "next": "victory",
-      "wrongNext": "death_code",
-      "features": [
-        {
-          "id": "cpp:const-correctness"
-        }
-      ]
-    },
-    "death_code": {
-      "type": "end",
-      "title": "Loitsu hylätty",
-      "text": "Ilman const-suojausta velho ei luota sinuun.",
       "outcome": "death"
     },
     "victory": {

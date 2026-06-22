@@ -114,7 +114,7 @@
           "id": "a",
           "text": "Ei tarvitse indeksiä — vähentää off-by-one -virheitä",
           "feedback": "Oikein! Range-for on suositeltu tapa iteroida kokoelmia (C++11+).",
-          "next": "narrative_code",
+          "next": "victory",
           "correct": true,
           "points": 15,
           "features": [
@@ -145,44 +145,10 @@
       "text": "Off-by-one-virhe vei sinut ikuiseen silmukkaan. Tuoni odottaa.",
       "outcome": "death"
     },
-    "narrative_code": {
-      "type": "narrative",
-      "title": "Velhon työpaja",
-      "text": "Kolmas Sampo-pala on lähellä. Velho antaa sinulle tyhjän loitsun — täydennä se itse. Vähintään 3 merkkiä, enintään 10.",
-      "next": "code_const"
-    },
-    "code_const": {
-      "type": "code",
-      "title": "Loitsun täydennys",
-      "text": "Muuta muuttuja vakioksi modernilla avainsanalla (C++11). Tämä estää vahingossa tapahtuvan uudelleenmäärityksen.",
-      "template": "_____ kertaa = 3;",
-      "answers": [
-        "const"
-      ],
-      "minLength": 3,
-      "maxLength": 10,
-      "ignoreCase": false,
-      "hint": "Viisi kirjainta — alkaa c:llä",
-      "feedbackCorrect": "Loistavaa! `const` on perusta turvalliselle koodille. cpp-best-practices suosittelee const-correctnessia.",
-      "feedbackWrong": "Ei aivan. Vihje: viisi kirjainta, alkaa c:llä.",
-      "next": "victory",
-      "wrongNext": "death_code",
-      "features": [
-        {
-          "id": "cpp:const-correctness"
-        }
-      ]
-    },
-    "death_code": {
-      "type": "end",
-      "title": "Loitsu epäonnistui",
-      "text": "Väärä avainsana — loitsu räjähti. Yritä uudelleen.",
-      "outcome": "death"
-    },
     "victory": {
       "type": "end",
       "title": "Sampo palautuu",
-      "text": "Olet kerännyt kolme Sampo-palaa: auto, nullptr ja range-for. Matka jatkuu kohti Väinämöisen haastetta — siellä kirjoitat koodia itse, enemmän kuin yhden sanan.\n\nSeuraava taso: RAII, smart pointerit ja std::optional odottavat.",
+      "text": "Olet kerännyt kolme Sampo-palaa: auto, nullptr ja range-for. Matka jatkuu kohti Väinämöisen haastetta.\n\nSeuraava taso: RAII, smart pointerit ja std::optional odottavat.",
       "outcome": "victory"
     }
   },

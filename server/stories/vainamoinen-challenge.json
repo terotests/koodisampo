@@ -2,7 +2,7 @@
   "id": "vainamoinen-challenge",
   "title": "Väinämöisen haaste",
   "topic": "cpp",
-  "description": "Viimeinen taso. Väinämöinen vaatii että kirjoitat koodia itse — ei pelkkiä monivalintoja.",
+  "description": "Viimeinen taso. Väinämöinen testaa modernin C++:n smart pointer -osaamisen.",
   "sourceRef": "cpp-best-practices/04-Considering_Safety.md#avoid-raw-memory-access",
   "estimatedMinutes": 12,
   "isFinale": true,
@@ -11,30 +11,43 @@
     "intro": {
       "type": "narrative",
       "title": "Väinämöisen sali",
-      "text": "Olet saapunut. Väinämöinen, vanha tietäjä, katsoo sinua:\n\n\"Monivalinta opetti sinut tunnistamaan. Nyt sinun täytyy kirjoittaa. Täydennä smart pointer -loitsu — muista moderni C++: `std::unique_ptr` hallitsee resurssin yksin.\"",
-      "next": "code_unique_ptr"
+      "text": "Olet saapunut. Väinämöinen, vanha tietäjä, katsoo sinua:\n\n\"Monivalinta opetti sinut tunnistamaan. Nyt valitse oikea moderni C++ — `std::unique_ptr` hallitsee resurssin yksin, ja `std::make_unique` on suositeltu tapa luoda se.\"",
+      "next": "q_make_unique"
     },
-    "code_unique_ptr": {
-      "type": "code",
+    "q_make_unique": {
+      "type": "choice",
       "title": "Resurssin hallinta",
-      "text": "Täydennä tyhjä kohta luodaksesi unique_ptr:n (C++14: std::make_unique suositeltu):",
-      "template": "auto miekka = std::_____unique_ptr<int>(new int(7));",
-      "answers": [
-        "make_"
-      ],
-      "minLength": 3,
-      "maxLength": 10,
-      "hint": "make_unique — täytä puuttuva osa (5 merkkiä + alaviiva)",
-      "feedbackCorrect": "Väinämöinen hymyilee. RAII ja smart pointerit — modernin C++:n ydin. Olet valmis.",
-      "feedbackWrong": "Loitsu ei toimi. Muista: std::make_unique",
-      "next": "victory",
-      "wrongNext": "death",
-      "features": [
+      "text": "Mikä rivi luo unique_ptr:n oikein (C++14: std::make_unique suositeltu)?",
+      "choices": [
         {
-          "id": "cpp:make-unique"
+          "id": "a",
+          "text": "auto miekka = std::make_unique<int>(7);",
+          "feedback": "Väinämöinen hymyilee. RAII ja smart pointerit — modernin C++:n ydin. Olet valmis.",
+          "next": "victory",
+          "correct": true,
+          "points": 20,
+          "features": [
+            {
+              "id": "cpp:make-unique"
+            },
+            {
+              "id": "cpp:unique-ptr"
+            }
+          ]
         },
         {
-          "id": "cpp:unique-ptr"
+          "id": "b",
+          "text": "auto miekka = std::unique_ptr<int>(new int(7));",
+          "feedback": "Toimii, mutta make_unique on suositeltu — yksi allokaatio ja exception-safe.",
+          "next": "death",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "auto miekka = new int(7);",
+          "feedback": "Raaka osoitin — unique_ptr tai make_unique hallitsee elinkaaren.",
+          "next": "death",
+          "correct": false
         }
       ]
     },

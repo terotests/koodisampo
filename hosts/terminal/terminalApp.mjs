@@ -159,7 +159,7 @@ function buildMapFrame(session) {
   const studyCounts = studyBacklogCounts(studyBacklogState);
   if (studyCounts.total > 0) {
     lines.push(
-      `  ${styled(`Opiskelulista (b): ${studyCounts.wantMore} lisätietoa, ${studyCounts.wrongAnswers} väärin`, FG.magenta)}`,
+      `  ${styled(`Opiskelulista (b): ${studyCounts.wantMore} Kysy AI:lta, ${studyCounts.wrongAnswers} väärin`, FG.magenta)}`,
     );
   }
   if (view.ambientLine) {
@@ -891,7 +891,7 @@ async function showQuizOutcome(session, quiz, correct) {
 
   while (true) {
     const extra = marked
-      ? [`  ${styled("✓ Merkitty opiskelulistalle — haluan lisätietoa.", FG.brightGreen)}`, ""]
+      ? [`  ${styled("✓ Merkitty opiskelulistalle — Kysy AI:lta.", FG.brightGreen)}`, ""]
       : [];
     drawLinesClear([
       BANNER,

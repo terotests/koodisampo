@@ -530,6 +530,360 @@ Modernissa kehityksessä: `SameSite=Lax` oletuksena + CSRF-token tilallisiin muu
 
 ---
 
+## 9. Opiskelulista — haluan lisätietoa (22.6.2026)
+
+Nämä aiheet tulivat pelin opiskelulistalta (`b`-näppäin). Jokainen vastaa yhtä kohtaamiskysymystä.
+
+### [1] Kiinteälevyiset tyypit wire-protokollassa (`cpp/portability`) — Jarmo
+
+**Ongelma:** `int` ja `long` ovat **eri kokoisia eri alustoilla**. Wire-protokolla (verkko, tiedosto, embedded) vaatii saman binäärimuodon kaikkialla.
+
+**Ratkaisu:** `<cstdint>` — kiinteän levyisyyden tyypit:
+
+```cpp
+#include <cstdint>
+
+struct WireHeader {
+    uint32_t magic;      // aina 4 tavua
+    int32_t  payload_len;
+    uint64_t checksum;
+};
+```
+
+| Tyyppi | Tarkoitus |
+|--------|-----------|
+| `int8_t` / `uint8_t` | 1 tavu |
+| `int32_t` / `uint32_t` | 4 tavua |
+| `int64_t` / `uint64_t` | 8 tavua |
+
+**Älä luota:** `int`, `long`, `short` — niiden koko on platform-riippuvainen (esim. Windows 64-bit: `long` on 4 tavua, Linux 64-bit: 8 tavua).
+
+---
+
+### [2] `std::make_shared` vs `shared_ptr(new T)` (`cpp/safety`) — Emilia Koskinen
+
+**Ongelma:** `std::shared_ptr<T>(new T(args))` tekee **kaksi erillistä allokaatiota**:
+1. objektille (`new T`)
+2. control blockille (refcount + weak count)
+
+**Ratkaisu:** `std::make_shared<T>(args)` yhdistää molemmat **yhteen allokaatioon**:
+
+```cpp
+// Huonompi — kaksi allokaatiota, poikkeus välissä voi vuotaa
+auto p = std::shared_ptr<Foo>(new Foo(1, "x"));
+
+// Parempi — yksi allokaatio, exception-safe
+auto p = std::make_shared<Foo>(1, "x");
+```
+
+**Hyödyt:**
+- vähemmän allokaatioita → nopeampi
+- vähemmän muistifragmentaatiota
+- jos `T`-konstruktori heittää, ei jää roikkuvaa `new`:ia
+
+**Poikkeus:** custom deleter (`shared_ptr(new T, myDeleter)`) — `make_shared` ei tue sitä. Silloin `shared_ptr` + `new` on oikein.
+
+---
+
+### [3] `emplace_back` — rakenna suoraan vectoriin (`cpp/performance`) — Olli Saarinen
+
+**Ongelma:** `push_back(Widget(args))` luo **väliaikaisen Widget-olion** stackille, kopioi/siirtää sen vectoriin, sitten tuhoaa väliaikaisen.
+
+**Ratkaisu:** `emplace_back` rakentaa alkion **suoraan vectorin muistiin**:
+
+```cpp
+std::vector<Widget> widgets;
+
+// Turha väliaikainen
+widgets.push_back(Widget("gui", 42));
+
+// Parempi — konstruktori ajetaan suoraan kontissa
+widgets.emplace_back("gui", 42);
+```
+
+**Yhdistä `reserve`:** jos tiedät määrän etukäteen, `reserve(n)` vähentää uudelleenallokaatioita:
+
+```cpp
+widgets.reserve(1000);
+for (int i = 0; i < 1000; ++i) {
+    widgets.emplace_back(generateName(i), i);
+}
+```
+
+---
+
+### [4] `enable_shared_from_this` async-callbackeissa (`cpp/safety`) — Hanna Lehtonen
+
+**Ongelma:** Async callback tarvitsee `shared_ptr`:n `this`:stä. **`shared_ptr(this)` on vaarallinen** — luo toisen control blockin samalle osoitteelle → **double delete** kun molemmat `shared_ptr`:t tuhoutuvat.
+
+```cpp
+// VAARALLINEN — älä tee näin
+void schedule() {
+    async([this] {
+        auto p = std::shared_ptr<Foo>(this);  // toinen control block!
+    });
+}
+```
+
+**Ratkaisu:** peri `std::enable_shared_from_this` ja käytä `shared_from_this()`:
+
+```cpp
+class Foo : public std::enable_shared_from_this<Foo> {
+public:
+    void schedule() {
+        auto self = shared_from_this();  // sama control block
+        async([self] {
+            self->doWork();  // Foo elää niin kauan kuin callback
+        });
+    }
+};
+
+// Objekti PITÄÄ olla jo shared_ptr:ssä ennen shared_from_this():
+auto obj = std::make_shared<Foo>();
+obj->schedule();
+```
+
+**Sääntö:** `shared_from_this()` toimii vain jos olio on jo hallittu `shared_ptr`:llä (esim. `make_shared`).
+
+---
+
+### [5] `condition_variable::wait` ja spurious wakeup (`cpp/threadability`) — Antti Järvinen
+
+**Ongelma:** Worker-säie odottaa työjonoa. `condition_variable::wait` voi herätä **ilman `notify`-kutsua** (spurious wakeup). Ilman tarkistusta yrität `pop()` tyhjästä jonosta.
+
+**Väärin:**
+
+```cpp
+std::unique_lock lock(m);
+cv.wait(lock);           // voi herätä vaikka jono tyhjä
+auto item = queue.pop(); // crash tai tyhjä data
+```
+
+**Oikein — predikaatti:**
+
+```cpp
+std::unique_lock lock(m);
+cv.wait(lock, [&] { return !queue.empty(); });
+auto item = queue.pop();  // jono varmasti ei-tyhjä
+```
+
+Tai vastaava `while`-silmukka:
+
+```cpp
+std::unique_lock lock(m);
+while (queue.empty()) {
+    cv.wait(lock);
+}
+auto item = queue.pop();
+```
+
+**Miksi:** POSIX ja C++ standardi sallivat heräämisen ilman signaalia. Predikaatti on pakollinen tuotantokoodissa.
+
+---
+
+### [6] False sharing atomisten laskurien kanssa (`cpp/cpp-production`) — Tiina Rantanen
+
+**Ongelma:** Kaksi `std::atomic`-laskuria vierekkäin structissa. Eri säikeet päivittävät **eri** laskuria, mutta ne ovat **samalla cache linellä** (tyypillisesti 64 tavua). CPU invalidoi koko linen → säikeet hidastavat toisiaan (cache line bouncing).
+
+```cpp
+struct Counters {
+    std::atomic<uint64_t> requests;   // säie A päivittää
+    std::atomic<uint64_t> errors;     // säie B päivittää — SAMA cache line!
+};
+```
+
+**Ratkaisu:** erota laskurit eri cache lineille:
+
+```cpp
+struct alignas(64) PaddedCounter {
+    std::atomic<uint64_t> value{0};
+};
+
+struct Counters {
+    PaddedCounter requests;
+    PaddedCounter errors;
+};
+```
+
+C++17:stä: `std::hardware_destructive_interference_size` kertoo turvallisen etäisyyden.
+
+**Huom:** `volatile` ei korjaa false sharingia. Mutex ei auta — ongelma on muistihierarkiassa, ei data racessa.
+
+---
+
+### [7] `string_view` literaaleille (`cpp/maintainability`) — Olli Saarinen
+
+**Ongelma:** Funktio ottaa `const std::string&`, mutta kutsutaan `"hello"`-literaalilla:
+
+```cpp
+void log(const std::string& msg);
+
+log("debug");  // luo turhan std::string-olion heapista!
+```
+
+**Ratkaisu:** `std::string_view` — kevyt näkymä merkkijonoon, **ei allokoi**:
+
+```cpp
+void log(std::string_view msg) {
+    // toimii: std::string, const char*, literaali
+}
+
+log("debug");              // ei allokaatiota
+log(std::string("x"));     // ei kopiota
+log(someString);           // ei kopiota
+```
+
+**Rajoitus:** `string_view` ei omista dataa — älä tallenna sitä jäsenmuuttujaksi ellei takana ole pysyvää `std::string`:iä (ks. luku 5).
+
+---
+
+### [8] `sortLike` ja C++20 concepts (`cpp/tools`) — (template-rajaus)
+
+**Ongelma:** `sortLike(T& a, T& b)` kääntyy outoihin template-virheisiin väärillä tyypeillä.
+
+**Ratkaisu:** C++20 `concept` rajoittaa mitä tyyppejä hyväksytään:
+
+```cpp
+#include <concepts>
+
+template<std::totally_ordered T>
+void sortLike(T& a, T& b) {
+    if (b < a) std::swap(a, b);
+}
+```
+
+Virheellinen tyyppi → **selkeä kääntäjäviesti** heti rajapinnassa, ei syvällä template-instanssoinnissa.
+
+*(Laajempi kertaus: luku 4, kohta "sortLike — C++20-rajapinta". Opiskelulistan kohdassa [9] sama aihe.)*
+
+---
+
+### [9] `override` — virtuaalinen allekirjoitus (`cpp/style`) — Jarmo
+
+**Ongelma:** Aliluokassa kirjoitat `void f(double x)` tarkoittaen ylikirjoittaa emon `void f(int x)`. Ilman `override` se **piilottaa** (`hide`) emon metodin — polymorfismi ei toimi, bugi on hiljainen.
+
+```cpp
+struct Base { virtual void f(int x); };
+struct Derived : Base {
+    void f(int x) override;      // OK — kääntäjä tarkistaa allekirjoituksen
+    // void f(double x) override; // KÄÄNTÄJÄVIRHE — et tarkoittanut tätä
+};
+```
+
+**Sääntö:** käytä `override` aina kun ylikirjoitat `virtual`-metodin. Kääntäjä kaataa signatuurivirheet heti.
+
+*(Laajempi kertaus: luku 2.)*
+
+---
+
+### [10] `string_view` jäsenmuuttujana (`cpp/cpp-production`) — Pekka
+
+**Huom:** luku 9 [7] käsitteli literaaleja **parametrina** — tämä on eri kysymys: **tallennus jäseneksi**.
+
+**Ongelma:** Konstruktori ottaa `std::string_view name` ja tallentaa sen suoraan jäseneksi:
+
+```cpp
+class User {
+    std::string_view name_;  // VAARALLINEN
+public:
+    User(std::string_view name) : name_(name) {}
+};
+```
+
+Jos kutsuja antaa väliaikaisen arvon (`User("Maija")`), puskuri tuhoutuu konstruktorin jälkeen → **dangling view**.
+
+**Ratkaisu:** kopioi omistettuun `std::string`:iin:
+
+```cpp
+class User {
+    std::string name_;
+public:
+    explicit User(std::string_view name) : name_(name) {}
+};
+```
+
+*(Laajempi kertaus: luku 5.)*
+
+---
+
+### [11] `std::variant` — exhaustive käsittely (`cpp/cpp-production`) — Jussi Nieminen
+
+**Ongelma:** Uusi vaihtoehto lisätään `variant`-tyyppiin, mutta jokin `if (holds_alternative<...>)` -haara unohtuu. Kääntäjä ei varoita.
+
+**Ratkaisu:** `std::visit` + **overload per vaihtoehto** — yleinen catch-all lambda **ei** anna exhaustive-tarkistusta:
+
+```cpp
+std::visit(overload{
+    [](const Foo&) { /* ... */ },
+    [](const Bar&) { /* ... */ },
+}, v);
+// Lisäät Baz-tyypin → kääntäjävirhe, jos käsittelijää ei ole
+```
+
+C++23: `static_assert(false)` tavoittamattomassa haarassa auttaa myös.
+
+*(Laajempi kertaus: luku 5.)*
+
+---
+
+### [12] `std::span` jäsenenä — dangling (`cpp/cpp-production`) — Osastopäällikkö
+
+**Ongelma:** Luokka ottaa `std::span<int>` konstruktorissa ja tallentaa jäseneksi:
+
+```cpp
+class Holder {
+    std::span<int> data_;
+public:
+    Holder(std::span<int> s) : data_(s) {}
+    int sum() { /* käyttää data_ myöhemmin */ }
+};
+```
+
+Jos lähde on funktion paikallinen taulukko tai väliaikainen vektori, se tuhoutuu → **roikkuva viite** (UB).
+
+**Ratkaisu:** omista data (`std::vector<int>`) tai varmista, että spanin kohde elää koko `Holder`-olion elinkaaren.
+
+*(Laajempi kertaus: luku 5.)*
+
+---
+
+### [13] Singleton lazy-init säikeissä (`cpp/threadability`) — Tuotejohtaja
+
+**Ongelma:** Singleton alustetaan ensimmäisellä käytöllä. Usea säie voi ajaa alustuksen yhtä aikaa → data race tai kaksi instanssia.
+
+**Ratkaisu:** `std::call_once` + `std::once_flag`:
+
+```cpp
+std::once_flag flag;
+Database* db = nullptr;
+
+Database& getDb() {
+    std::call_once(flag, [] { db = new Database(); });
+    return *db;
+}
+```
+
+Vaihtoehto: Meyers singleton (`static Database inst;` funktiossa) — C++11:stä thread-safe.
+
+*(Laajempi kertaus: luku 1.)*
+
+---
+
+### [14] Tupla-webhook — idempotenssi (`backend/backend-api`) — Mikko Korhonen
+
+**Ongelma:** Maksupalvelu lähettää saman webhookin kahdesti verkkohäiriön jälkeen (at-least-once). Ilman suojaa maksu kirjataan kahdesti.
+
+**Ratkaisu — idempotenssi:** sama pyyntö voidaan toistaa turvallisesti:
+
+1. **`Idempotency-Key`** / **`event_id`** — tallenna käsitellyt tunnisteet, ohita tai palauta sama vastaus toistossa
+2. **Tilakone** — `pending` → `completed`; toinen `completed`-yritys on no-op
+
+Tavoite: at-least-once -toimitus + exactly-once -vaikutus liiketoiminnassa.
+
+*(Laajempi kertaus: luku 7.)*
+
+---
+
 ## Pikamuistilista
 
 | Aihe | Avainsana / ratkaisu |
@@ -550,3 +904,10 @@ Modernissa kehityksessä: `SameSite=Lax` oletuksena + CSRF-token tilallisiin muu
 | SAST Scrumissa | Definition of Done |
 | Tupla-webhook | Idempotency key / event_id |
 | Cross-site POST + cookie | CSRF-token, `SameSite` |
+| Wire-protokolla, kiinteä koko | `int32_t`, `uint64_t` (`<cstdint>`) |
+| `make_shared` vs `new` + `shared_ptr` | Yksi allokaatio, exception-safe |
+| Vectoriin ilman väliaikaista | `emplace_back` (+ `reserve`) |
+| Async + `shared_ptr` this | `enable_shared_from_this` + `shared_from_this()` |
+| CV wait tyhjälle jonolle | `wait(lock, predicate)` |
+| Atomic-laskurit hidas | False sharing → `alignas(64)` / padding |
+| Literaali + string-parametri | `std::string_view` |

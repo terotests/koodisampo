@@ -1,4 +1,4 @@
-/** Opiskelujono — väärät vastaukset + käyttäjän merkinnät "haluan lisätietoa". */
+/** Opiskelujono — väärät vastaukset + käyttäjän merkinnät "Kysy AI:lta". */
 
 export function emptyStudyBacklog() {
   return { wantMore: [], wrongAnswers: [] };
@@ -116,7 +116,7 @@ export function formatStudyList(backlog) {
     "",
   ];
 
-  lines.push(`── Haluan lisätietoa (${b.wantMore.length}) ──`);
+  lines.push(`── Kysy AI:lta (${b.wantMore.length}) ──`);
   if (b.wantMore.length === 0) {
     lines.push("  (tyhjä — merkitse [m] kysymyksen palautteen jälkeen)");
   } else {

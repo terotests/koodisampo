@@ -108,7 +108,7 @@
           "id": "a",
           "text": "Ohjelma voi kaatua tai käyttää arvoa jota ei ole — hiljainen virhe",
           "feedback": "Juuri näin! Siksi poikkeus on usein turvallisempi — sitä ei voi unohtaa tarkistaa.",
-          "next": "narrative_code",
+          "next": "victory",
           "correct": true,
           "points": 10,
           "features": [
@@ -132,39 +132,6 @@
           "correct": false
         }
       ]
-    },
-    "narrative_code": {
-      "type": "narrative",
-      "title": "Castin kirjoitus",
-      "text": "Korvaa C-tyylinen cast modernilla. Täydennä cast-tyyppi.",
-      "next": "code_static_cast"
-    },
-    "code_static_cast": {
-      "type": "code",
-      "title": "static_cast",
-      "text": "Täydennä cast-tyyppi (ilman _cast-päätettä riittää etuliite):",
-      "template": "int voima = _____cast<int>(mana);",
-      "answers": [
-        "static_"
-      ],
-      "minLength": 3,
-      "maxLength": 10,
-      "hint": "static_cast — täytä puuttuva etuliite (7 merkkiä)",
-      "feedbackCorrect": "Loitsu on typeturvallinen! static_cast on helppo löytää ja turvallisempi kuin (int).",
-      "feedbackWrong": "Vastaus: static_ — eli static_cast",
-      "next": "victory",
-      "wrongNext": "death_code",
-      "features": [
-        {
-          "id": "cpp:static-cast"
-        }
-      ]
-    },
-    "death_code": {
-      "type": "end",
-      "title": "Väärä muunnos",
-      "text": "C-tyylinen tapa piilotti virheen — loitsu kääntyi itseään vastaan.",
-      "outcome": "death"
     },
     "victory": {
       "type": "end",

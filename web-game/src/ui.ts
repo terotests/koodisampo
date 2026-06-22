@@ -47,6 +47,50 @@ export function mountGameUI(game: WebGame) {
 
     let elevatorPickerCollapsed = false;
     let wasOnElevator = false;
+    let copyStatusTimeout = 0;
+
+    const STUDY_LIST_HINT = "Kopioi = leikepöydälle | b / Enter = takaisin | q = lopeta";
+
+    async function copyStudyListToClipboard(text: string) {
+      if (!text.trim()) {
+        showCopyStatus("Opiskelulista on tyhjä.");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        showCopyStatus("Kopioitu leikepöydälle.");
+        return;
+      } catch {
+        // fallback vanhemmille selaimille / ilman clipboard-lupaa
+      }
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        if (document.execCommand("copy")) {
+          showCopyStatus("Kopioitu leikepöydälle.");
+        } else {
+          showCopyStatus("Kopiointi epäonnistui.");
+        }
+      } catch {
+        showCopyStatus("Kopiointi epäonnistui.");
+      }
+      document.body.removeChild(ta);
+    }
+
+    function showCopyStatus(msg: string) {
+      if (!hintEl) return;
+      hintEl.textContent = msg;
+      window.clearTimeout(copyStatusTimeout);
+      copyStatusTimeout = window.setTimeout(() => {
+        if (game.snapshot().screen === "studylist") {
+          hintEl.textContent = STUDY_LIST_HINT;
+        }
+      }, 2500);
+    }
 
     function resetGame() {
       game.reset(true);
@@ -121,7 +165,7 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="greeting">${esc(ov.reaction)}</div>`;
         html += `<div class="teaching"><h4>── Selitys ──</h4>${esc(ov.teaching)}</div>`;
         if (ov.marked) {
-          html += `<div style="color:#3fb950;margin-top:12px">✓ Merkitty opiskelulistalle — haluan lisätietoa.</div>`;
+          html += `<div style="color:#3fb950;margin-top:12px">✓ Merkitty opiskelulistalle — Kysy AI:lta.</div>`;
         }
         html += `<div class="hint" style="margin-top:16px">Enter = jatka &nbsp;|&nbsp; <span style="color:#d2a8ff">[m]</span> selitys ei riittänyt — haluan opiskella lisää</div>`;
         setToolbar([
@@ -252,7 +296,7 @@ export function mountGameUI(game: WebGame) {
       setMapContent(html);
     }
 
-    function setToolbar(buttons: { key: string; label: string; cls?: string }[]) {
+    function setToolbar(buttons: { key: string; label: string; cls?: string; action?: () => void }[]) {
       if (!toolbarEl) return;
       if (isMobileLayout()) {
         setMobileToolbar(toolbarEl, buttons, sendKey, resetGame);
@@ -267,6 +311,10 @@ export function mountGameUI(game: WebGame) {
         btn.dataset.key = b.key;
         if (b.cls) btn.className = b.cls;
         btn.addEventListener("click", () => {
+          if (b.action) {
+            b.action();
+            return;
+          }
           if (b.key === "reset") resetGame();
           else sendKey(b.key);
         });
@@ -412,9 +460,27 @@ export function mountGameUI(game: WebGame) {
       }
 
       if (state.screen === "studylist") {
-        mapEl.innerHTML = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0">${esc(state.studyListText || "")}</pre>`;
-        setToolbar([{ key: "enter", label: "Enter — takaisin" }, { key: "b", label: "b takaisin" }]);
-        hintEl.textContent = "b / Enter = takaisin kartalle | q = lopeta";
+        const text = state.studyListText || "";
+        let html = screenHeader(state);
+        html += `<div style="margin:12px 0"><button type="button" id="study-copy-btn">Kopioi leikepöydälle</button></div>`;
+        html += `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(text)}</pre>`;
+        setMapContent(html);
+        document.getElementById("study-copy-btn")?.addEventListener("click", () => {
+          void copyStudyListToClipboard(text);
+        });
+        setToolbar([
+          {
+            key: "copy",
+            label: "Kopioi",
+            cls: "ai",
+            action: () => {
+              void copyStudyListToClipboard(text);
+            },
+          },
+          { key: "enter", label: "Enter — takaisin" },
+          { key: "b", label: "b takaisin" },
+        ]);
+        hintEl.textContent = STUDY_LIST_HINT;
         return;
       }
 
@@ -524,7 +590,7 @@ export function mountGameUI(game: WebGame) {
           return;
         }
         const studyLine = state.studyCounts?.total > 0
-          ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} lisätietoa, ${state.studyCounts.wrongAnswers} väärin</div>`
+          ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
           : "";
         const mapHtml = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
           studyLine +
@@ -563,6 +629,12 @@ export function mountGameUI(game: WebGame) {
 
     window.addEventListener("keydown", (e) => {
       const k = normalizeKey(e);
+      const state = game.snapshot();
+      if (state.screen === "studylist" && k === "c") {
+        e.preventDefault();
+        void copyStudyListToClipboard(state.studyListText || "");
+        return;
+      }
       if (!GAME_KEYS.has(k)) return;
       e.preventDefault();
       sendKey(k);
