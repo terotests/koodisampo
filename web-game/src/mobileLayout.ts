@@ -67,7 +67,10 @@ export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s:
 
 export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
-  let msg = state.status || state.ambient || state.hint || "";
+  let msg = state.status || state.ambient || "";
+  if (!msg && !isMobileLayout()) {
+    msg = state.hint || "";
+  }
   const fr = state.floorRecommendation;
   if (fr && fr.total > 0 && !fr.complete) {
     const rec = `Suositukset: ${fr.done}/${fr.total}`;
@@ -195,7 +198,12 @@ export function setMobileMapToolbar(
     });
     actions.appendChild(btn);
   }
-  toolbarEl.appendChild(actions);
+
+  const controls = document.createElement("div");
+  controls.className = "mobile-controls";
+  controls.appendChild(dpad);
+  controls.appendChild(actions);
+  toolbarEl.appendChild(controls);
 }
 
 export function setMobileToolbar(

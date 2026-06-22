@@ -100,14 +100,14 @@
       body { padding: 0; overflow: hidden; }
       #app {
         display: grid;
-        grid-template-rows: auto auto 1fr 25dvh;
+        grid-template-rows: auto auto minmax(0, 1fr) minmax(210px, 36dvh);
         height: 100dvh;
         max-height: 100dvh;
       }
       h1 { font-size: 0.7rem; margin: 0; padding: 6px 10px 0; }
       #top-bar { padding: 0; margin: 0; border-bottom: 1px solid #30363d; }
       #hud-stats { display: flex; padding: 4px 10px 6px; }
-      #message-bar { display: block; padding: 6px 10px; border-bottom: 1px solid #30363d; margin: 0; }
+      #message-bar { display: block; padding: 4px 10px; border-bottom: 1px solid #30363d; margin: 0; font-size: 12px; }
       .row { display: contents; }
       #game-area { overflow: hidden; min-height: 0; }
       #main {
@@ -121,10 +121,10 @@
       #map-wrap {
         flex: 1;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         overflow: hidden;
-        padding: 4px;
+        padding: 0 6px;
         min-height: 0;
       }
       #map-wrap.map-text-view {
@@ -162,21 +162,20 @@
         margin: 0;
         border-top: 1px solid #30363d;
         background: #0d1117;
-        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+        padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
         align-content: end;
+        min-height: 0;
       }
       html.mobile-layout.elevator-open #app {
-        grid-template-rows: auto auto 1fr minmax(220px, 44dvh);
+        grid-template-rows: auto auto minmax(0, 1fr) minmax(240px, 46dvh);
       }
       #toolbar.toolbar-mobile {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
         justify-content: flex-end;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden;
         min-height: 0;
-        -webkit-overflow-scrolling: touch;
       }
       #toolbar.toolbar-mobile.has-elevator {
         gap: 6px;
@@ -229,30 +228,40 @@
       #toolbar .elevator-btn.disabled {
         opacity: 0.45;
       }
+      #toolbar .mobile-controls {
+        display: grid;
+        grid-template-columns: minmax(92px, 30vw) minmax(0, 1fr);
+        gap: 8px;
+        width: 100%;
+        align-items: end;
+        flex-shrink: 0;
+      }
       #toolbar .dpad {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 6px;
-        max-width: 220px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
         width: 100%;
-        margin: 0 auto;
+        max-width: none;
+        margin: 0;
       }
       #toolbar .dpad-btn {
-        min-height: 48px;
-        font-size: 1.25rem;
+        min-height: 44px;
+        font-size: 1.15rem;
         margin: 0;
         padding: 0;
       }
       #toolbar .action-row {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+        min-width: 0;
       }
       #toolbar .action-row button {
-        min-height: 40px;
+        min-height: 38px;
         margin: 0;
         padding: 4px 2px;
-        font-size: 0.65rem;
+        font-size: 0.62rem;
+        line-height: 1.15;
       }
       #toolbar.toolbar-stack {
         display: grid;
