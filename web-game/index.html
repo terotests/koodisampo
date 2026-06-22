@@ -100,7 +100,7 @@
       body { padding: 0; overflow: hidden; }
       #app {
         display: grid;
-        grid-template-rows: auto auto minmax(0, 1fr) minmax(210px, 36dvh);
+        grid-template-rows: auto auto minmax(0, 1fr) minmax(150px, 26dvh);
         height: 100dvh;
         max-height: 100dvh;
       }
@@ -117,15 +117,75 @@
         flex-direction: column;
         overflow: hidden;
         padding: 0;
+        min-height: 0;
       }
       #map-wrap {
         flex: 1;
         display: flex;
-        align-items: flex-start;
-        justify-content: center;
+        flex-direction: column;
+        align-items: stretch;
         overflow: hidden;
-        padding: 0 6px;
+        padding: 0;
         min-height: 0;
+      }
+      #map-wrap.map-play-view {
+        justify-content: flex-start;
+      }
+      #map-wrap.map-play-view #map {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+      #map-wrap.map-play-view [data-map-shell] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-height: 100%;
+      }
+      #map-wrap.map-play-view [data-map-grid] {
+        margin: 0 auto;
+        line-height: 1.08;
+        flex-shrink: 0;
+      }
+      #map-wrap.map-play-view [data-map-header] {
+        flex-shrink: 0;
+        width: 100%;
+        padding: 4px 8px 2px;
+      }
+      #map-wrap.map-play-view [data-map-hint] {
+        display: none;
+      }
+      #mobile-dpad {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        padding: 6px 12px 4px;
+        border-top: 1px solid #21262d;
+      }
+      #mobile-dpad[hidden] {
+        display: none !important;
+      }
+      #mobile-dpad .dpad {
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        gap: 6px;
+        width: max-content;
+      }
+      #mobile-dpad .dpad-btn {
+        min-height: 52px;
+        min-width: 52px;
+        font-size: 1.45rem;
+        margin: 0;
+        padding: 0;
+      }
+      #mobile-dpad .dpad span {
+        width: 52px;
+        height: 52px;
       }
       #map-wrap.map-text-view {
         align-items: stretch;
@@ -151,6 +211,9 @@
         white-space: pre;
         line-height: 1.05;
         margin: 0 auto;
+      }
+      html.mobile-layout #map {
+        font-size: clamp(9px, 2.65vw, 13px);
       }
       #map.encounter-view {
         flex: 1;
@@ -190,7 +253,7 @@
         min-height: 0;
       }
       html.mobile-layout.elevator-open #app {
-        grid-template-rows: auto auto minmax(0, 1fr) minmax(240px, 46dvh);
+        grid-template-rows: auto auto minmax(0, 1fr) minmax(200px, 38dvh);
       }
       #toolbar.toolbar-mobile {
         display: flex;
@@ -251,39 +314,21 @@
       #toolbar .elevator-btn.disabled {
         opacity: 0.45;
       }
-      #toolbar .mobile-controls {
-        display: grid;
-        grid-template-columns: minmax(92px, 30vw) minmax(0, 1fr);
-        gap: 8px;
-        width: 100%;
-        align-items: end;
-        flex-shrink: 0;
-      }
-      #toolbar .dpad {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 5px;
-        width: 100%;
-        max-width: none;
-        margin: 0;
-      }
-      #toolbar .dpad-btn {
-        min-height: 44px;
-        font-size: 1.15rem;
-        margin: 0;
-        padding: 0;
+      #toolbar .elevator-slot:empty {
+        display: none;
       }
       #toolbar .action-row {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 5px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
         min-width: 0;
+        width: 100%;
       }
       #toolbar .action-row button {
-        min-height: 38px;
+        min-height: 42px;
         margin: 0;
         padding: 4px 2px;
-        font-size: 0.62rem;
+        font-size: 0.7rem;
         line-height: 1.15;
       }
       #toolbar.toolbar-stack {
@@ -347,6 +392,7 @@
           <div id="map-wrap">
             <div id="map">ladataan…</div>
           </div>
+          <div id="mobile-dpad" hidden></div>
           <div class="hint" id="hint"></div>
         </div>
         <aside id="panel">

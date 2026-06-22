@@ -1,19 +1,13 @@
-import { Idiomorph } from "idiomorph";
-
-/** Päivitä elementin sisältö säilyttäen scroll, fokus ja tapahtumakuuntelijat kun mahdollista. */
+/** Päivitä sisältö säilyttäen scroll-sijainti (ei ulkoista morph-kirjastoa). */
 export function patchInnerHtml(el: HTMLElement, html: string) {
   const trimmed = html.trim();
+  const scrollTop = el.scrollTop;
+  const scrollLeft = el.scrollLeft;
   if (!trimmed) {
     el.innerHTML = "";
     return;
   }
-  if (!el.firstChild) {
-    el.innerHTML = trimmed;
-    return;
-  }
-  const scrollTop = el.scrollTop;
-  const scrollLeft = el.scrollLeft;
-  Idiomorph.morph(el, trimmed, { morphStyle: "innerHTML" });
+  el.innerHTML = trimmed;
   if (el.scrollHeight > el.clientHeight) {
     el.scrollTop = scrollTop;
   }

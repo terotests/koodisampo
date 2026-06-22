@@ -2,11 +2,14 @@ import type { WebGame } from "./boot";
 import {
   cropMapLines,
   isMobileLayout,
+  mountMobileControls,
   renderHudStats,
   renderMessageBar,
-  setMobileMapToolbar,
+  setMobileDpadVisible,
+  setMobilePlayView,
   setMobileToolbar,
   syncMobileClass,
+  updateMobileMapToolbar,
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
 import { patchMapGrid } from "./render/mapGrid";
@@ -24,6 +27,7 @@ export function mountGameUI(game: WebGame) {
   const hintEl = document.getElementById("hint");
   const hudStatsEl = document.getElementById("hud-stats");
   const messageBarEl = document.getElementById("message-bar");
+  const mobileDpadEl = document.getElementById("mobile-dpad");
 
   syncMobileClass();
   window.addEventListener("resize", syncMobileClass);
@@ -166,20 +170,25 @@ export function mountGameUI(game: WebGame) {
       }
       setMapTextView(false);
       const { header, grid, hint } = ensureMapShell(mapEl);
-      const studyLine = state.studyCounts?.total > 0
-        ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
-        : "";
-      const headerHtml = (isMobileLayout() ? "" : `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`) +
-        studyLine +
-        (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "");
-      if (headerHtml) {
-        header.innerHTML = headerHtml;
+      if (isMobileLayout()) {
+        header.innerHTML = state.floorTitle
+          ? `<div style="color:#39c5cf;margin-bottom:4px;text-align:center">${esc(state.floorTitle)}</div>`
+          : "";
+        if (state.studyCounts?.total > 0) {
+          header.innerHTML += `<div style="color:#d2a8ff;margin-bottom:4px;text-align:center;font-size:11px">Opiskelu (b): ${state.studyCounts.wantMore}+ / ${state.studyCounts.wrongAnswers}✗</div>`;
+        }
       } else {
-        header.innerHTML = "";
+        const studyLine = state.studyCounts?.total > 0
+          ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
+          : "";
+        const headerHtml = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
+          studyLine +
+          (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "");
+        header.innerHTML = headerHtml;
       }
       patchMapGrid(grid, lines, state, colorizeLine);
-      setText(hint, state.hint || "");
-      if (!state.hint) {
+      setText(hint, isMobileLayout() ? "" : (state.hint || ""));
+      if (!state.hint || isMobileLayout()) {
         hint.style.display = "none";
       } else {
         hint.style.display = "";
@@ -353,6 +362,9 @@ export function mountGameUI(game: WebGame) {
       }
     }
 
+    let lastToolbarKey = "";
+    let lastElevatorToolbarKey = "";
+
     function renderMapToolbar(state?: State) {
       const onElevator = Boolean(state?.onElevator);
       if (!onElevator) {
@@ -364,16 +376,28 @@ export function mountGameUI(game: WebGame) {
       wasOnElevator = onElevator;
 
       if (isMobileLayout()) {
-        if (toolbarEl) {
-          setMobileMapToolbar(toolbarEl, sendKey, resetGame, {
-            onElevator,
-            floors: state?.elevatorFloors,
-            pickerCollapsed: elevatorPickerCollapsed,
-            onExpandPicker: () => {
+        const toolbarKey = `${state?.screen ?? "map"}-${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}`;
+        const onMapScreen = state?.screen === "map" && Boolean(state?.lines);
+        setMobilePlayView(onMapScreen);
+        setMobileDpadVisible(mobileDpadEl, onMapScreen);
+        if (onMapScreen && toolbarEl && mobileDpadEl) {
+          mountMobileControls(toolbarEl, mobileDpadEl, sendKey, resetGame);
+          const elevatorUiKey = `${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}-${state?.elevatorFloors?.length ?? 0}`;
+          if (toolbarKey !== lastToolbarKey || elevatorUiKey !== lastElevatorToolbarKey) {
+            lastToolbarKey = toolbarKey;
+            lastElevatorToolbarKey = elevatorUiKey;
+            updateMobileMapToolbar(toolbarEl, {
+              onElevator,
+              floors: state?.elevatorFloors,
+              pickerCollapsed: elevatorPickerCollapsed,
+            }, () => {
               elevatorPickerCollapsed = false;
+              lastRenderKey = "";
               render(game.snapshot());
-            },
-          });
+            });
+          }
+        } else {
+          lastToolbarKey = "";
         }
         return;
       }
@@ -422,6 +446,13 @@ export function mountGameUI(game: WebGame) {
 
     function render(state) {
       const key = renderKey(state);
+      const onMobileMap = isMobileLayout() && state.screen === "map" && Boolean(state.lines);
+      setMobilePlayView(onMobileMap);
+      setMobileDpadVisible(mobileDpadEl, onMobileMap);
+      if (!onMobileMap) {
+        lastToolbarKey = "";
+        lastElevatorToolbarKey = "";
+      }
       if (key === lastRenderKey) {
         return;
       }

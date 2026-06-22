@@ -1,6 +1,6 @@
 /** Mobile layout helpers — compact map viewport and touch controls. */
 
-export const MOBILE_MAP_SIZE = 25;
+export const MOBILE_MAP_SIZE = 23;
 
 export function isMobileLayout(): boolean {
   return window.matchMedia("(max-width: 768px)").matches;
@@ -96,33 +96,137 @@ export type MobileMapToolbarOptions = {
   onExpandPicker?: () => void;
 };
 
-export function setMobileMapToolbar(
+const ACTION_BUTTONS: ToolbarBtn[] = [
+  { key: "e", label: "Käytä" },
+  { key: "t", label: "Työkalu" },
+  { key: "x", label: "Kaiva" },
+  { key: "h", label: "Piiloudu" },
+  { key: "i", label: "Invent." },
+  { key: "b", label: "Opisk." },
+  { key: "?", label: "Valikko" },
+  { key: "reset", label: "↺", cls: "danger" },
+];
+
+let controlsMounted = false;
+let lastElevatorUiKey = "";
+
+function bindDelegatedClickOnce(root: HTMLElement, onKey: (key: string) => void, onReset: () => void) {
+  if (root.dataset.keyDelegation === "1") return;
+  root.dataset.keyDelegation = "1";
+  root.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const btn = target.closest<HTMLElement>("[data-key]");
+    if (!btn || !root.contains(btn)) return;
+    const key = btn.dataset.key;
+    if (!key) return;
+    e.preventDefault();
+    if (key === "reset") onReset();
+    else onKey(key);
+  });
+}
+
+function buildDpad(dpadEl: HTMLElement) {
+  dpadEl.className = "mobile-dpad";
+  dpadEl.innerHTML = "";
+  const grid = document.createElement("div");
+  grid.className = "dpad";
+  const slots: (ToolbarBtn | null)[][] = [
+    [null, { key: "w", label: "↑" }, null],
+    [
+      { key: "a", label: "←" },
+      { key: "s", label: "↓" },
+      { key: "d", label: "→" },
+    ],
+  ];
+  for (const row of slots) {
+    for (const spec of row) {
+      if (!spec) {
+        grid.appendChild(document.createElement("span"));
+        continue;
+      }
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "dpad-btn";
+      btn.dataset.key = spec.key;
+      btn.textContent = spec.label;
+      grid.appendChild(btn);
+    }
+  }
+  dpadEl.appendChild(grid);
+}
+
+function ensureActionRow(toolbarEl: HTMLElement) {
+  let row = toolbarEl.querySelector<HTMLElement>("[data-action-row]");
+  if (row) return row;
+  row = document.createElement("div");
+  row.className = "action-row";
+  row.dataset.actionRow = "1";
+  for (const spec of ACTION_BUTTONS) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.key = spec.key;
+    btn.textContent = spec.label;
+    if (spec.cls) btn.className = spec.cls;
+    row.appendChild(btn);
+  }
+  toolbarEl.appendChild(row);
+  return row;
+}
+
+export function mountMobileControls(
   toolbarEl: HTMLElement,
+  dpadEl: HTMLElement,
   onKey: (key: string) => void,
   onReset: () => void,
-  elevator?: MobileMapToolbarOptions,
 ) {
-  toolbarEl.className = "toolbar toolbar-mobile";
-  const showElevatorPicker = Boolean(elevator?.onElevator && !elevator?.pickerCollapsed);
-  if (showElevatorPicker) toolbarEl.classList.add("has-elevator");
-  if (elevator?.onElevator && elevator.pickerCollapsed) {
-    toolbarEl.classList.add("has-elevator-collapsed");
-  }
-  toolbarEl.innerHTML = "";
-  document.documentElement.classList.toggle("elevator-open", showElevatorPicker);
+  if (controlsMounted && toolbarEl.querySelector("[data-action-row]")) return;
+  controlsMounted = true;
+  lastElevatorUiKey = "";
 
-  if (elevator?.onElevator && elevator.pickerCollapsed) {
+  buildDpad(dpadEl);
+  bindDelegatedClickOnce(dpadEl, onKey, onReset);
+
+  toolbarEl.className = "toolbar toolbar-mobile";
+  toolbarEl.innerHTML = "";
+  const elevatorSlot = document.createElement("div");
+  elevatorSlot.className = "elevator-slot";
+  elevatorSlot.dataset.elevatorSlot = "1";
+  toolbarEl.appendChild(elevatorSlot);
+  ensureActionRow(toolbarEl);
+  bindDelegatedClickOnce(toolbarEl, onKey, onReset);
+}
+
+export function setMobileDpadVisible(dpadEl: HTMLElement | null, visible: boolean) {
+  if (!dpadEl) return;
+  dpadEl.hidden = !visible;
+}
+
+export function setMobilePlayView(active: boolean) {
+  const wrap = document.getElementById("map-wrap");
+  if (!wrap) return;
+  wrap.classList.toggle("map-play-view", active);
+}
+
+function renderElevatorSlot(slot: HTMLElement, elevator: MobileMapToolbarOptions, onExpand?: () => void) {
+  slot.innerHTML = "";
+  if (elevator.onElevator && elevator.pickerCollapsed) {
     const expandBtn = document.createElement("button");
     expandBtn.type = "button";
     expandBtn.className = "elevator-expand";
     expandBtn.textContent = "Hissi — vaihda kerros";
-    expandBtn.addEventListener("click", () => elevator.onExpandPicker?.());
-    toolbarEl.appendChild(expandBtn);
-  } else if (showElevatorPicker && elevator?.floors?.length) {
+    expandBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      onExpand?.();
+    });
+    slot.appendChild(expandBtn);
+    return;
+  }
+  if (elevator.onElevator && elevator.floors?.length && !elevator.pickerCollapsed) {
     const label = document.createElement("div");
     label.className = "elevator-label";
     label.textContent = "Hissi — valitse kerros";
-    toolbarEl.appendChild(label);
+    slot.appendChild(label);
 
     const elevGrid = document.createElement("div");
     elevGrid.className = "elevator-grid";
@@ -135,75 +239,37 @@ export function setMobileMapToolbar(
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "elevator-btn";
+        btn.dataset.key = floor.key;
         if (floor.current) btn.classList.add("current");
         if (floor.hasElevator === false) btn.classList.add("disabled");
         btn.textContent = floor.key;
         btn.title = floor.title;
-        btn.addEventListener("click", () => onKey(floor.key));
         elevRow.appendChild(btn);
       }
       elevGrid.appendChild(elevRow);
     }
-    toolbarEl.appendChild(elevGrid);
-  } else {
-    document.documentElement.classList.remove("elevator-open");
+    slot.appendChild(elevGrid);
   }
+}
 
-  const dpad = document.createElement("div");
-  dpad.className = "dpad";
-  const slots: (ToolbarBtn | null)[][] = [
-    [null, { key: "w", label: "↑" }, null],
-    [
-      { key: "a", label: "←" },
-      { key: "s", label: "↓" },
-      { key: "d", label: "→" },
-    ],
-  ];
-  for (const row of slots) {
-    for (const spec of row) {
-      if (!spec) {
-        dpad.appendChild(document.createElement("span"));
-        continue;
-      }
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "dpad-btn";
-      btn.textContent = spec.label;
-      btn.addEventListener("click", () => onKey(spec.key));
-      dpad.appendChild(btn);
-    }
+export function updateMobileMapToolbar(
+  toolbarEl: HTMLElement,
+  elevator?: MobileMapToolbarOptions,
+  onExpandPicker?: () => void,
+) {
+  const showElevatorPicker = Boolean(elevator?.onElevator && !elevator?.pickerCollapsed);
+  toolbarEl.classList.toggle("has-elevator", showElevatorPicker);
+  toolbarEl.classList.toggle("has-elevator-collapsed", Boolean(elevator?.onElevator && elevator.pickerCollapsed));
+  document.documentElement.classList.toggle("elevator-open", showElevatorPicker);
+
+  const uiKey = `${elevator?.onElevator ? "1" : "0"}-${elevator?.pickerCollapsed ? "1" : "0"}-${showElevatorPicker ? elevator?.floors?.length : 0}`;
+  if (uiKey === lastElevatorUiKey) return;
+  lastElevatorUiKey = uiKey;
+
+  const slot = toolbarEl.querySelector<HTMLElement>("[data-elevator-slot]");
+  if (slot && elevator) {
+    renderElevatorSlot(slot, elevator, onExpandPicker);
   }
-  toolbarEl.appendChild(dpad);
-
-  const actions = document.createElement("div");
-  actions.className = "action-row";
-  const actionBtns: ToolbarBtn[] = [
-    { key: "e", label: "Käytä" },
-    { key: "t", label: "Työkalu" },
-    { key: "x", label: "Kaiva" },
-    { key: "h", label: "Piiloudu" },
-    { key: "i", label: "Invent." },
-    { key: "b", label: "Opisk." },
-    { key: "?", label: "Valikko" },
-    { key: "reset", label: "↺", cls: "danger" },
-  ];
-  for (const spec of actionBtns) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = spec.label;
-    if (spec.cls) btn.className = spec.cls;
-    btn.addEventListener("click", () => {
-      if (spec.key === "reset") onReset();
-      else onKey(spec.key);
-    });
-    actions.appendChild(btn);
-  }
-
-  const controls = document.createElement("div");
-  controls.className = "mobile-controls";
-  controls.appendChild(dpad);
-  controls.appendChild(actions);
-  toolbarEl.appendChild(controls);
 }
 
 export function setMobileToolbar(
@@ -212,6 +278,8 @@ export function setMobileToolbar(
   onKey: (key: string) => void,
   onReset: () => void,
 ) {
+  controlsMounted = false;
+  lastElevatorUiKey = "";
   document.documentElement.classList.remove("elevator-open");
   toolbarEl.className = "toolbar toolbar-mobile toolbar-stack";
   toolbarEl.innerHTML = "";
@@ -219,6 +287,7 @@ export function setMobileToolbar(
     const btn = document.createElement("button");
     btn.type = "button";
     btn.textContent = spec.label;
+    btn.dataset.key = spec.key;
     if (spec.cls) btn.className = spec.cls;
     btn.addEventListener("click", () => {
       if (spec.action) {
