@@ -108,6 +108,15 @@
         .replace(/>/g, "&gt;");
     }
 
+    function actionButton(key, label, cls = "") {
+      const clsAttr = cls ? ` class="${cls}"` : "";
+      return `<button type="button"${clsAttr} data-key="${esc(key)}">${esc(label)}</button>`;
+    }
+
+    function actionButtonRow(buttons) {
+      return `<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">${buttons.join("")}</div>`;
+    }
+
     function statsLine(state) {
       const time = state.time ? ` &nbsp;|&nbsp; <span style="color:#39c5cf">${esc(state.time)}</span>` : "";
       return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Karma: <span class="karma">${state.karma}</span>${time}</div>`;
@@ -135,9 +144,15 @@
         if (ov.marked) {
           html += `<div style="color:#3fb950;margin-top:12px">✓ Merkitty opiskelulistalle — haluan lisätietoa.</div>`;
         }
-        html += `<div class="hint" style="margin-top:16px">Enter = jatka &nbsp;|&nbsp; <span style="color:#d2a8ff">[m]</span> selitys ei riittänyt — haluan opiskella lisää</div>`;
+        html += actionButtonRow([
+          actionButton("enter", "Jatka", "ai"),
+          ...(!ov.marked ? [actionButton("m", "Merkitse opiskelulistalle")] : []),
+        ]);
+        html += ov.marked
+          ? `<div class="hint" style="margin-top:16px">Enter = jatka</div>`
+          : `<div class="hint" style="margin-top:16px">Enter = jatka &nbsp;|&nbsp; <span style="color:#d2a8ff">[m]</span> selitys ei riittänyt — haluan opiskella lisää</div>`;
         setToolbar([
-          { key: "m", label: "m merkitse", cls: "ai" },
+          ...(!ov.marked ? [{ key: "m", label: "m merkitse", cls: "ai" }] : []),
           { key: "enter", label: "Enter — jatka" },
         ]);
         return html;
@@ -333,7 +348,10 @@
       }
 
       if (state.screen === "studylist") {
-        mapEl.innerHTML = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0">${esc(state.studyListText || "")}</pre>`;
+        mapEl.innerHTML = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}${actionButtonRow([
+          actionButton("enter", "Takaisin kartalle"),
+          actionButton("b", "b takaisin", "muted"),
+        ])}<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0">${esc(state.studyListText || "")}</pre>`;
         setToolbar([{ key: "enter", label: "Enter — takaisin" }, { key: "b", label: "b takaisin" }]);
         hintEl.textContent = "b / Enter = takaisin kartalle | q = lopeta";
         return;
@@ -473,6 +491,17 @@
       if (!GAME_KEYS.has(k)) return;
       e.preventDefault();
       sendKey(k);
+    });
+
+    mapEl?.addEventListener("click", (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const btn = target.closest("[data-key]");
+      if (!(btn instanceof HTMLElement) || !mapEl.contains(btn)) return;
+      const key = btn.dataset.key;
+      if (!key) return;
+      e.preventDefault();
+      sendKey(key);
     });
 
     async function poll() {
