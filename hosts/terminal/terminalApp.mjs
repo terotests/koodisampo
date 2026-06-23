@@ -770,11 +770,6 @@ async function runGameOverLoop(session) {
 
 function printEncounter(session) {
   const view = session.getEncounterView();
-  const attackWarn = view.attackWarning
-    ? styled(view.attackWarning, FG.red)
-    : view.isHostile
-      ? styled(" — battle-tilanteessa karma voi kadota pahasti!", FG.red)
-      : "";
   drawLinesClear([
     BANNER,
     `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}\n`,
@@ -782,9 +777,8 @@ function printEncounter(session) {
     "\n" + wrap(view.greeting),
     "",
     `  ${styled("[1]", FG.yellow)} Juttele`,
-    `  ${styled("[2]", FG.red, BOLD)} Hyökkää kimppuun${attackWarn}`,
-    `  ${styled("[3]", FG.yellow)} Kerro vitsi`,
-    `  ${styled("[4]", FG.gray)} Poistu kohtaamisesta`,
+    `  ${styled("[2]", FG.yellow)} Kerro vitsi`,
+    `  ${styled("[3]", FG.gray)} Poistu kohtaamisesta`,
     `\n  ${styled(view.hintLine, FG.gray)}`,
     `  ${styled(QUIT_HINT, FG.gray)}`,
   ]);
@@ -815,7 +809,6 @@ function printQuizEncounter(session, quiz) {
   lines.push(
     `  ${styled("[i]", FG.gray)} ${side.mehLabel}`,
     `  ${styled("[p]", FG.gray)} ${side.leaveLabel}`,
-    `  ${styled("[h]", FG.red, BOLD)} Hyökkää kimppuun`,
     `\n  ${styled(view.hintLine, FG.gray)}`,
     `  ${styled(QUIT_HINT, FG.gray)}`,
   );
@@ -960,12 +953,6 @@ async function runQuizEncounterLoop(session) {
       persist(session);
       return;
     }
-    if (pick === "h" || pick === "hyökkää") {
-      sendEncounterChoice(session, "attack");
-      clearEncounterQuizCache();
-      persist(session);
-      return;
-    }
     if (pick === "n" || pick === "kollega") {
       if (!buildQuizSideMenu(quiz.entity, session).askColleagueLabel) {
         dispatch(session, () => {
@@ -1083,14 +1070,13 @@ async function runEncounterLoop(session) {
 
     const choiceByKey = {
       "1": "talk",
-      "2": "attack",
-      "3": "joke",
-      "4": "leave",
+      "2": "joke",
+      "3": "leave",
     };
     const choice = choiceByKey[pick];
     if (!choice) {
       dispatch(session, () => {
-        sessionMap(session).lastStatus = "Valitse 1–4.";
+        sessionMap(session).lastStatus = "Valitse 1–3.";
       });
       continue;
     }

@@ -357,9 +357,8 @@ function buildEncounterSnapshot(base) {
   } else {
     payload.dialogOptions = [
       { key: "1", label: "Juttele", style: "normal" },
-      { key: "2", label: "Hyökkää kimppuun", style: "danger" },
-      { key: "3", label: "Kerro vitsi", style: "normal" },
-      { key: "4", label: "Poistu kohtaamisesta", style: "muted" },
+      { key: "2", label: "Kerro vitsi", style: "normal" },
+      { key: "3", label: "Poistu kohtaamisesta", style: "muted" },
     ];
   }
 
@@ -686,14 +685,6 @@ function handleQuizKey(key) {
     return;
   }
 
-  if (key === "h" || key === "hyökkää") {
-    dispatch(session, () => {
-      session.onEncounterChoice("attack");
-    });
-    resetQuizSession();
-    return;
-  }
-
   if (key === "n" || key === "kollega") {
     const side = buildQuizSideMenu(quiz.entity, session);
     if (!side.askColleagueLabel) {
@@ -866,9 +857,8 @@ function handleKey(key) {
     }
     const choiceMap = {
       "1": "talk",
-      "2": "attack",
-      "3": "joke",
-      "4": "leave",
+      "2": "joke",
+      "3": "leave",
     };
     const choice = choiceMap[key];
     if (choice) {

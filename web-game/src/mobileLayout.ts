@@ -1,6 +1,6 @@
 /** Mobile layout helpers — compact map viewport and touch controls. */
 
-export const MOBILE_MAP_SIZE = 23;
+export const MOBILE_MAP_SIZE = 19;
 
 export function isMobileLayout(): boolean {
   return window.matchMedia("(max-width: 768px)").matches;
@@ -303,4 +303,25 @@ export function setMobileToolbar(
 
 export function syncMobileClass() {
   document.documentElement.classList.toggle("mobile-layout", isMobileLayout());
+}
+
+export function syncMobileMapScale(lines: string[]) {
+  if (!isMobileLayout() || !lines?.length) {
+    document.documentElement.style.removeProperty("--map-cols");
+    document.documentElement.style.removeProperty("--map-rows");
+    return;
+  }
+  const cols = Math.max(...lines.map((line) => line.length), 1);
+  document.documentElement.style.setProperty("--map-cols", String(cols));
+  document.documentElement.style.setProperty("--map-rows", String(lines.length));
+}
+
+export function setMobileToolbarVisible(toolbarEl: HTMLElement | null, visible: boolean) {
+  if (!toolbarEl) return;
+  toolbarEl.hidden = !visible;
+  document.documentElement.classList.toggle("mobile-toolbar-hidden", !visible);
+}
+
+export function setMobileTextChoiceMode(active: boolean) {
+  document.documentElement.classList.toggle("mobile-text-choices", active);
 }

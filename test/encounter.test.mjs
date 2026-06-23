@@ -113,20 +113,6 @@ export function runEncounterTests() {
     const view = session.getEncounterView();
     assert(view.isHostile === true, "hostile encounter view");
 
-    const karmaBeforeAttack = session.karma.total();
-    dispatch(session, () => {
-      session.onEncounterChoice("attack");
-    });
-    assert(session.screen === "map", "attack returns to map");
-    if (session._map.policeChaseActive) {
-      assert(session.karma.total() === karmaBeforeAttack - 12, "hostile attack police chase costs 12 karma");
-      assert(session.conduct.misconduct >= 22, "police chase adds misconduct");
-      assert(session._map.activeFloor().entities.some((e) => e.kind === "police"), "police spawned");
-    } else {
-      assert(session.karma.total() === karmaBeforeAttack - 30, "hostile attack costs 30 karma");
-      assert(session.conduct.misconduct >= 12, "attack adds misconduct");
-    }
-
     dispatch(session, () => {
       session.startEncounter(bump);
     });
@@ -151,23 +137,7 @@ export function runEncounterTests() {
     });
     const ceoView = session2.getEncounterView();
     assert(ceoView.greeting.includes("Strateginen") || ceoView.greeting.includes("KPI"), "CEO role greeting");
-    if (session2.needsEncounterQuiz()) {
-      assert(ceoView.attackWarning === "", "quiz encounter hides attack warning");
-    } else {
-      assert(ceoView.attackWarning.length > 0, "CEO attack warning");
-    }
-
-    const deathsBefore = session2.exportDeaths();
-    let firedMsg = "";
-    let deathResult = "";
-    dispatch(session2, () => {
-      session2.onEncounterChoice("attack");
-      firedMsg = session2.getMapView().statusLine;
-      deathResult = session2.encounterResult;
-    });
-    assert(session2.exportDeaths() === deathsBefore + 1, "CEO attack with low karma = death");
-    assert(deathResult === "death", "encounter death result");
-    assert(firedMsg.includes("FIRED"), "CEO fired message");
+    assert(ceoView.attackWarning === "", "attack option hidden from encounter view");
   } finally {
     stopSession(root2, session2);
   }
@@ -280,12 +250,7 @@ export function runEncounterTests() {
       session3.loadMapFromText(mapJson);
       session3.startEncounter(coworker);
     });
-    const attackWarn = session3.getEncounterView().attackWarning;
-    assert(attackWarn === "", "quiz encounter hides attack spoiler");
-    dispatch(session3, () => {
-      session3.onEncounterChoice("attack");
-    });
-    assert(session3.screen === "map", "coworker attack returns to map");
+    assert(session3.getEncounterView().attackWarning === "", "attack option hidden from quiz encounter");
   } finally {
     stopSession(root3, session3);
   }

@@ -4360,12 +4360,11 @@ class GameSession  extends RangerProcessBase {
     view.entityName = this.pendingEntityName;
     view.isHostile = this.isHostileEncounter();
     view.greeting = this.encounterGreeting();
-    view.attackWarning = this.encounterAttackWarning();
+    view.attackWarning = "";
     if ( this.needsEncounterQuiz() ) {
-      view.attackWarning = "";
-      view.hintLine = "1–4=vastaa  n=kollega  a=AI  j=vitsi  i=ei kiinnosta  p=poistu  h=hyökkää";
+      view.hintLine = "1–4=vastaa  n=kollega  a=AI  j=vitsi  i=ei kiinnosta  p=poistu";
     } else {
-      view.hintLine = "1=juttele  2=hyökkää  3=vitsi  4=poistu";
+      view.hintLine = "1=juttele  2=vitsi  3=poistu";
     }
     return view;
   };

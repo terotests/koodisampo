@@ -7,8 +7,11 @@ import {
   renderMessageBar,
   setMobileDpadVisible,
   setMobilePlayView,
+  setMobileTextChoiceMode,
   setMobileToolbar,
+  setMobileToolbarVisible,
   syncMobileClass,
+  syncMobileMapScale,
   updateMobileMapToolbar,
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
@@ -145,6 +148,38 @@ export function mountGameUI(game: WebGame) {
       return `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
     }
 
+    function choiceRow(key: string, inner: string, extraClass = "") {
+      if (!isMobileLayout()) {
+        return `<div class="choice ${extraClass}">${inner}</div>`;
+      }
+      return `<div class="choice touch-choice ${extraClass}" data-key="${esc(key)}" role="button" tabindex="0">${inner}</div>`;
+    }
+
+    function sideOptRow(key: string, inner: string) {
+      if (!isMobileLayout()) {
+        return `<div class="side-opt">${inner}</div>`;
+      }
+      return `<div class="side-opt touch-choice" data-key="${esc(key)}" role="button" tabindex="0">${inner}</div>`;
+    }
+
+    function continueRow(key = "enter", label = "Jatka →") {
+      if (!isMobileLayout()) {
+        return `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
+      }
+      return `<div class="touch-choice touch-continue" data-key="${esc(key)}" role="button" tabindex="0">${esc(label)}</div>`;
+    }
+
+    function hideMobileChoiceToolbar() {
+      if (!isMobileLayout()) return;
+      setMobileToolbarVisible(toolbarEl, false);
+      setMobileTextChoiceMode(true);
+    }
+
+    function showMobilePlayToolbar() {
+      if (!isMobileLayout()) return;
+      setMobileTextChoiceMode(false);
+    }
+
     function setMapTextView(active: boolean) {
       const wrap = document.getElementById("map-wrap");
       if (active) {
@@ -187,6 +222,10 @@ export function mountGameUI(game: WebGame) {
         header.innerHTML = headerHtml;
       }
       patchMapGrid(grid, lines, state, colorizeLine);
+      if (isMobileLayout()) {
+        syncMobileMapScale(lines);
+        showMobilePlayToolbar();
+      }
       setText(hint, isMobileLayout() ? "" : (state.hint || ""));
       if (!state.hint || isMobileLayout()) {
         hint.style.display = "none";
@@ -207,11 +246,18 @@ export function mountGameUI(game: WebGame) {
         if (ov.marked) {
           html += `<div style="color:#3fb950;margin-top:12px">✓ Merkitty opiskelulistalle — Kysy AI:lta.</div>`;
         }
-        html += `<div class="hint" style="margin-top:16px">Enter = jatka &nbsp;|&nbsp; <span style="color:#d2a8ff">[m]</span> selitys ei riittänyt — haluan opiskella lisää</div>`;
-        setToolbar([
-          { key: "m", label: "m merkitse", cls: "ai" },
-          { key: "enter", label: "Enter — jatka" },
-        ]);
+        html += continueRow("enter", "Jatka →");
+        if (!ov.marked) {
+          html += choiceRow("m", '<span class="side-key ai">[m]</span> Selitys ei riittänyt — haluan opiskella lisää', "ai");
+        }
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            { key: "m", label: "m merkitse", cls: "ai" },
+            { key: "enter", label: "Enter — jatka" },
+          ]);
+        }
         return html;
       }
 
@@ -220,8 +266,12 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="stats" style="margin-bottom:8px"><span style="color:#f85149">-${ov.cost} karma</span> &nbsp; Karma: ${state.karma}</div>`;
         html += `<div><span class="entity-name">${esc(ov.entityName)}</span> <span style="color:#8b949e">katselee sivuun kun kaivat puhelimen.</span></div>`;
         html += `<div class="greeting" style="white-space:pre-wrap">${esc(ov.text)}</div>`;
-        html += `<div class="hint" style="margin-top:16px">Paina Enter palataksesi kysymykseen…</div>`;
-        setToolbar([{ key: "enter", label: "Enter — takaisin" }]);
+        html += continueRow("enter", "Takaisin kysymykseen →");
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — takaisin" }]);
+        }
         return html;
       }
 
@@ -229,22 +279,30 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="overlay-title">═══ ${esc(ov.title)} ═══</div>`;
         html += `<div class="banter-line"><span class="banter-you">Sinä:</span> "${esc(ov.playerLine)}"</div>`;
         html += `<div class="banter-line"><span class="banter-npc">${esc(ov.entityName)}:</span> ${esc(ov.npcLine)}</div>`;
-        html += `<div class="hint" style="margin-top:16px">Paina Enter…</div>`;
-        setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        html += continueRow("enter", "Jatka →");
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        }
         return html;
       }
 
       if (ov.type === "cardReturn") {
         html += `<div class="overlay-title">═══ Kulkukortti ═══</div>`;
         html += `<div class="greeting">${esc(ov.entityName)} etsii kadonnutta korttiaan. Sinulla on se taskussa.</div>`;
-        html += `<div class="choice"><span class="choice-num">[1]</span> Palauta kortti (+karma)</div>`;
-        html += `<div class="choice"><span class="choice-num">[2]</span> Väitä ettei ole sinulla</div>`;
-        html += `<div class="choice"><span class="choice-num">[3]</span> Poistu</div>`;
-        setToolbar([
-          { key: "1", label: "1 palauta" },
-          { key: "2", label: "2 valehtele" },
-          { key: "3", label: "3 poistu", cls: "muted" },
-        ]);
+        html += choiceRow("1", '<span class="choice-num">[1]</span> Palauta kortti (+karma)');
+        html += choiceRow("2", '<span class="choice-num">[2]</span> Väitä ettei ole sinulla');
+        html += choiceRow("3", '<span class="choice-num muted">[3]</span> Poistu', "muted");
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            { key: "1", label: "1 palauta" },
+            { key: "2", label: "2 valehtele" },
+            { key: "3", label: "3 poistu", cls: "muted" },
+          ]);
+        }
         return html;
       }
 
@@ -252,14 +310,17 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="overlay-title">═══ Käytä esinettä ═══</div>`;
         html += `<div class="greeting">Kohde: <b>${esc(ov.targetName)}</b></div>`;
         for (const item of ov.items || []) {
-          html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.label)}</div>`;
+          html += choiceRow(String(item.n), `<span class="choice-num">[${item.n}]</span> ${esc(item.label)}`);
         }
-        html += `<div class="choice muted"><span class="choice-num">[4]</span> Peruuta</div>`;
-        html += `<div class="hint" style="margin-top:12px">Valitse esine — USB + työasema, vasara + kone…</div>`;
-        setToolbar([
-          ...(ov.items || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
-          { key: "4", label: "4 peru", cls: "muted" },
-        ]);
+        html += choiceRow("4", '<span class="choice-num muted">[4]</span> Peruuta', "muted");
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            ...(ov.items || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
+            { key: "4", label: "4 peru", cls: "muted" },
+          ]);
+        }
         return html;
       }
 
@@ -270,8 +331,12 @@ export function mountGameUI(game: WebGame) {
           html += `<div class="stats" style="margin-bottom:8px">${esc(ov.karmaHint)}</div>`;
         }
         html += `<div class="greeting">${esc(ov.message)}</div>`;
-        html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
-        setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        html += continueRow("enter", "Jatka →");
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        }
         return html;
       }
 
@@ -295,41 +360,46 @@ export function mountGameUI(game: WebGame) {
         const side = q.sideMenu;
         html += `<div class="greeting">${esc(q.greeting)}</div>`;
         for (const c of q.choices) {
-          html += `<div class="choice"><span class="choice-num">[${c.n}]</span> ${esc(c.text)}</div>`;
+          html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`);
         }
         html += `<div class="divider">── tai ──</div>`;
-        html += `<div class="side-opt"><span class="side-key ai">[a]</span> Kysy AI:lta <span style="color:#f85149">(-${side.aiCost} karma)</span></div>`;
-        html += `<div class="side-opt"><span class="side-key joke">[j]</span> ${esc(side.jokeLabel)}</div>`;
+        html += sideOptRow("a", `<span class="side-key ai">[a]</span> Kysy AI:lta <span style="color:#f85149">(-${side.aiCost} karma)</span>`);
+        html += sideOptRow("j", `<span class="side-key joke">[j]</span> ${esc(side.jokeLabel)}`);
         if (side.askColleagueLabel) {
-          html += `<div class="side-opt"><span class="side-key joke">[n]</span> ${esc(side.askColleagueLabel)}</div>`;
+          html += sideOptRow("n", `<span class="side-key joke">[n]</span> ${esc(side.askColleagueLabel)}`);
         }
-        html += `<div class="side-opt"><span class="side-key meh">[i]</span> ${esc(side.mehLabel)}</div>`;
-        html += `<div class="side-opt"><span class="side-key leave">[p]</span> ${esc(side.leaveLabel)}</div>`;
-        html += `<div class="side-opt"><span class="side-key attack">[h]</span> Hyökkää kimppuun</div>`;
+        html += sideOptRow("i", `<span class="side-key meh">[i]</span> ${esc(side.mehLabel)}`);
+        html += sideOptRow("p", `<span class="side-key leave">[p]</span> ${esc(side.leaveLabel)}`);
 
-        setToolbar([
-          ...q.choices.map((c) => ({ key: String(c.n), label: String(c.n) })),
-          ...(side.askColleagueLabel ? [{ key: "n", label: "n kollega" }] : []),
-          { key: "a", label: "a AI", cls: "ai" },
-          { key: "j", label: "j vitsi" },
-          { key: "i", label: "i sama", cls: "muted" },
-          { key: "p", label: "p poistu", cls: "muted" },
-          { key: "h", label: "h hyökkää", cls: "danger" },
-        ]);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            ...q.choices.map((c) => ({ key: String(c.n), label: String(c.n) })),
+            ...(side.askColleagueLabel ? [{ key: "n", label: "n kollega" }] : []),
+            { key: "a", label: "a AI", cls: "ai" },
+            { key: "j", label: "j vitsi" },
+            { key: "i", label: "i sama", cls: "muted" },
+            { key: "p", label: "p poistu", cls: "muted" },
+          ]);
+        }
         if (hintEl) hintEl.textContent = isMobileLayout() ? "" : enc.hintLine + "  |  q = lopeta";
       } else {
         html += `<div class="greeting">${esc(enc.greeting)}</div>`;
         for (const opt of state.dialogOptions || []) {
-          const cls = opt.style === "danger" ? "attack-warn" : opt.style === "muted" ? "muted" : "choice-num";
-          const warn = opt.key === "2" && enc.attackWarning ? `<span class="attack-warn">${esc(enc.attackWarning)}</span>` : "";
-          html += `<div class="choice"><span class="${cls}">[${opt.key}]</span> ${esc(opt.label)}${warn}</div>`;
+          const cls = opt.style === "muted" ? "muted" : "";
+          const inner = `<span class="${opt.style === "muted" ? "muted" : "choice-num"}">[${opt.key}]</span> ${esc(opt.label)}`;
+          html += choiceRow(opt.key, inner, cls);
         }
-        setToolbar([
-          { key: "1", label: "1 juttele" },
-          { key: "2", label: "2 hyökkää", cls: "danger" },
-          { key: "3", label: "3 vitsi" },
-          { key: "4", label: "4 poistu", cls: "muted" },
-        ]);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar((state.dialogOptions || []).map((opt: { key: string; label: string; style?: string }) => ({
+            key: opt.key,
+            label: ({ "1": "1 juttele", "2": "2 vitsi", "3": "3 poistu" } as Record<string, string>)[opt.key] || opt.key,
+            cls: opt.style === "muted" ? "muted" : undefined,
+          })));
+        }
         if (hintEl) hintEl.textContent = isMobileLayout() ? "" : (enc.hintLine || "") + "  |  q = lopeta";
       }
 
@@ -339,6 +409,12 @@ export function mountGameUI(game: WebGame) {
     function setToolbar(buttons: { key: string; label: string; cls?: string; action?: () => void }[]) {
       if (!toolbarEl) return;
       if (isMobileLayout()) {
+        if (!buttons?.length) {
+          setMobileToolbarVisible(toolbarEl, false);
+          return;
+        }
+        setMobileTextChoiceMode(false);
+        setMobileToolbarVisible(toolbarEl, true);
         setMobileToolbar(toolbarEl, buttons, sendKey, resetGame);
         return;
       }
@@ -381,6 +457,8 @@ export function mountGameUI(game: WebGame) {
         setMobilePlayView(onMapScreen);
         setMobileDpadVisible(mobileDpadEl, onMapScreen);
         if (onMapScreen && toolbarEl && mobileDpadEl) {
+          showMobilePlayToolbar();
+          setMobileToolbarVisible(toolbarEl, true);
           mountMobileControls(toolbarEl, mobileDpadEl, sendKey, resetGame);
           const elevatorUiKey = `${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}-${state?.elevatorFloors?.length ?? 0}`;
           if (toolbarKey !== lastToolbarKey || elevatorUiKey !== lastElevatorToolbarKey) {
@@ -513,7 +591,7 @@ export function mountGameUI(game: WebGame) {
         if (lessons.length) {
           html += `<div style="color:#39c5cf;font-weight:bold;margin:12px 0">═══ Oppitunnit ═══</div>`;
           for (const item of lessons) {
-            html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.title)}</div>`;
+            html += choiceRow(String(item.n), `<span class="choice-num">[${item.n}]</span> ${esc(item.title)}`);
             if (item.description) {
               html += `<div style="color:#8b949e;margin:0 0 8px 1.5em">${esc(item.description)}</div>`;
             }
@@ -522,7 +600,7 @@ export function mountGameUI(game: WebGame) {
         if (social.length) {
           html += `<div style="color:#d2a8ff;font-weight:bold;margin:12px 0">═══ Social chats ═══</div>`;
           for (const item of social) {
-            html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.title)}</div>`;
+            html += choiceRow(String(item.n), `<span class="choice-num">[${item.n}]</span> ${esc(item.title)}`);
             if (item.description) {
               html += `<div style="color:#8b949e;margin:0 0 8px 1.5em">${esc(item.description)}</div>`;
             }
@@ -531,18 +609,22 @@ export function mountGameUI(game: WebGame) {
         if (state.menuMessage) {
           html += `<div class="warn" style="margin-top:8px">${esc(state.menuMessage)}</div>`;
         }
-        html += `<div class="hint" style="margin-top:12px">Valitse numero tai nappi — m / Enter = takaisin toimistolle</div>`;
+        html += choiceRow("m", '<span class="choice-num muted">[m]</span> Takaisin toimistolle', "muted");
         if (!mapEl) return;
         clearMapView(mapEl);
         setMapContent(html);
-        const menuBtns = (state.menuItems || []).map((item) => ({
-          key: String(item.n),
-          label: `${item.n}. ${item.title}`,
-        }));
-        setToolbar([
-          ...menuBtns,
-          { key: "m", label: "m takaisin", cls: "muted" },
-        ]);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          const menuBtns = (state.menuItems || []).map((item) => ({
+            key: String(item.n),
+            label: `${item.n}. ${item.title}`,
+          }));
+          setToolbar([
+            ...menuBtns,
+            { key: "m", label: "m takaisin", cls: "muted" },
+          ]);
+        }
         hintEl.textContent = "1–9 = oppitunti | m / Enter = kartalle | q = lopeta";
         return;
       }
@@ -578,9 +660,13 @@ export function mountGameUI(game: WebGame) {
         if (panel.mode === "result") {
           html += `<div class="overlay-title ${panel.resultOk ? "ok" : "bad"}">═══ Tulos ═══</div>`;
           html += `<div class="greeting">${esc(panel.resultMessage || "")}</div>`;
-          html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
+          html += continueRow("enter", "Jatka →");
           setMapContent(html);
-          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+          if (isMobileLayout()) {
+            hideMobileChoiceToolbar();
+          } else {
+            setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+          }
           hintEl.textContent = panel.hintLine || "Enter = jatka | q = lopeta";
           return;
         }
@@ -592,33 +678,41 @@ export function mountGameUI(game: WebGame) {
           let n = 1;
           const toolbar = [];
           if (panel.canTalk) {
-            html += `<div class="choice"><span class="choice-num">[${n}]</span> Juttele — ${esc(panel.talkName || "")}</div>`;
+            html += choiceRow(String(n), `<span class="choice-num">[${n}]</span> Juttele — ${esc(panel.talkName || "")}`);
             toolbar.push({ key: String(n), label: `${n} juttele` });
             n += 1;
           }
           if ((panel.tools || []).length > 0) {
-            html += `<div class="choice"><span class="choice-num">[${n}]</span> Käytä työkalua</div>`;
+            html += choiceRow(String(n), `<span class="choice-num">[${n}]</span> Käytä työkalua`);
             toolbar.push({ key: String(n), label: `${n} työkalu` });
             n += 1;
           }
-          html += `<div class="choice muted"><span class="choice-num">[${n}]</span> Peruuta</div>`;
+          html += choiceRow(String(n), `<span class="choice-num muted">[${n}]</span> Peruuta`, "muted");
           toolbar.push({ key: String(n), label: `${n} peru`, cls: "muted" });
           setMapContent(html);
-          setToolbar(toolbar);
+          if (isMobileLayout()) {
+            hideMobileChoiceToolbar();
+          } else {
+            setToolbar(toolbar);
+          }
           hintEl.textContent = panel.hintLine || "q = lopeta";
           return;
         }
         html += `<div class="overlay-title">═══ Käytä työkalua ═══</div>`;
         html += `<div class="greeting">Kohde: <b>${esc(panel.targetName || "Kohde")}</b></div>`;
         for (const item of panel.tools || []) {
-          html += `<div class="choice"><span class="choice-num">[${item.n}]</span> ${esc(item.label)}</div>`;
+          html += choiceRow(String(item.n), `<span class="choice-num">[${item.n}]</span> ${esc(item.label)}`);
         }
-        html += `<div class="choice muted"><span class="choice-num">[4]</span> Peruuta</div>`;
+        html += choiceRow("4", '<span class="choice-num muted">[4]</span> Peruuta', "muted");
         setMapContent(html);
-        setToolbar([
-          ...(panel.tools || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
-          { key: "4", label: "4 peru", cls: "muted" },
-        ]);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            ...(panel.tools || []).map((item) => ({ key: String(item.n), label: `${item.n}` })),
+            { key: "4", label: "4 peru", cls: "muted" },
+          ]);
+        }
         hintEl.textContent = panel.hintLine || "Valitse työkalu | 4 = peru | q = lopeta";
         return;
       }
@@ -642,11 +736,15 @@ export function mountGameUI(game: WebGame) {
           if (s.pointsEarned > 0) {
             html += `<div style="color:#3fb950;margin-top:8px">+${s.pointsEarned} pistettä</div>`;
           }
-          html += `<div class="hint" style="margin-top:16px">Enter = jatka</div>`;
+          html += continueRow("enter", "Jatka →");
           if (!mapEl) return;
           clearMapView(mapEl);
           setMapContent(html);
-          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+          if (isMobileLayout()) {
+            hideMobileChoiceToolbar();
+          } else {
+            setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+          }
           hintEl.textContent = "q = lopeta";
           return;
         }
@@ -663,11 +761,15 @@ export function mountGameUI(game: WebGame) {
           if (s.totalPoints != null) {
             html += `<div style="margin-top:8px">Pisteet: ${s.totalPoints}</div>`;
           }
-          html += `<div class="hint" style="margin-top:16px">Enter = palaa kartalle</div>`;
+          html += continueRow("enter", "Palaa kartalle →");
           if (!mapEl) return;
           clearMapView(mapEl);
           setMapContent(html);
-          setToolbar([{ key: "enter", label: "Enter — kartalle" }]);
+          if (isMobileLayout()) {
+            hideMobileChoiceToolbar();
+          } else {
+            setToolbar([{ key: "enter", label: "Enter — kartalle" }]);
+          }
           hintEl.textContent = "q = lopeta";
           return;
         }
@@ -695,20 +797,29 @@ export function mountGameUI(game: WebGame) {
 
         if (s.choiceTexts?.length) {
           s.choiceTexts.forEach((t, i) => {
-            html += `<div class="choice"><span class="choice-num">[${i + 1}]</span> ${esc(t)}</div>`;
+            html += choiceRow(String(i + 1), `<span class="choice-num">[${i + 1}]</span> ${esc(t)}`);
           });
           if (!mapEl) return;
           clearMapView(mapEl);
           setMapContent(html);
-          setToolbar(s.choiceTexts.map((_, i) => ({ key: String(i + 1), label: String(i + 1) })));
+          if (isMobileLayout()) {
+            hideMobileChoiceToolbar();
+          } else {
+            setToolbar(s.choiceTexts.map((_, i) => ({ key: String(i + 1), label: String(i + 1) })));
+          }
           hintEl.textContent = "Valitse 1–" + s.choiceTexts.length + " | q = lopeta";
           return;
         }
 
+        html += continueRow("enter", "Jatka →");
         if (!mapEl) return;
         clearMapView(mapEl);
         setMapContent(html);
-        setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — jatka" }]);
+        }
         hintEl.textContent = "Enter = jatka | q = lopeta";
         return;
       }
@@ -752,14 +863,23 @@ export function mountGameUI(game: WebGame) {
 
     mapEl?.addEventListener("click", (e) => {
       const target = e.target as HTMLElement | null;
-      if (!target) return;
+      if (!target || !mapEl) return;
       if (target.id === "study-copy-btn") {
         void copyStudyListToClipboard(currentStudyListText);
         return;
       }
       if (target.id === "codeSubmit") {
-        const input = mapEl?.querySelector<HTMLInputElement>("#codeInput");
+        const input = mapEl.querySelector<HTMLInputElement>("#codeInput");
         sendCode(input?.value ?? "");
+        return;
+      }
+      const row = target.closest<HTMLElement>("[data-key]");
+      if (row && mapEl.contains(row)) {
+        const key = row.dataset.key;
+        if (key) {
+          e.preventDefault();
+          sendKey(key);
+        }
       }
     });
 
