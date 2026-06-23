@@ -641,9 +641,32 @@ function printPrison(session) {
   ]);
 }
 
+function printEnding(session) {
+  const view = session.getEndingView();
+  drawLinesClear([
+    BANNER,
+    `\n  ${styled("═══ PUTKAAN ═══", FG.red, BOLD)}`,
+    "",
+    ...view.lines.map((line) => `  ${styled(line, FG.white)}`),
+    "",
+    `  ${styled("Paina Enter jatkaaksesi vankilaan...", FG.gray)}`,
+    `  ${styled(QUIT_HINT, FG.gray)}`,
+  ]);
+}
+
 async function runPrisonLoop(session) {
   while (session.screen === "prison" && !session.shouldQuit) {
     printPrison(session);
+    const result = await readKey(styled("\n  ", FG.gray));
+    if (handleQuitInput(session, result)) return;
+    sendMapKey(session, result.type === "key" ? result.key : "enter");
+    persist(session);
+  }
+}
+
+async function runEndingLoop(session) {
+  while (session.screen === "ending" && !session.shouldQuit) {
+    printEnding(session);
     const result = await readKey(styled("\n  ", FG.gray));
     if (handleQuitInput(session, result)) return;
     sendMapKey(session, result.type === "key" ? result.key : "enter");
@@ -1185,6 +1208,12 @@ export async function runTerminalApp(mapJson) {
 
       if (session.screen === "prison") {
         await runPrisonLoop(session);
+        clearMapNext = true;
+        continue;
+      }
+
+      if (session.screen === "ending") {
+        await runEndingLoop(session);
         clearMapNext = true;
         continue;
       }

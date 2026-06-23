@@ -2811,6 +2811,7 @@ class GameSession  extends RangerProcessBase {
     this.blockedTalkName = "";
     this.blockedTalkKind = "";
     this.blockedTalkStoryId = "";
+    this.endingReason = "";
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
@@ -2954,16 +2955,18 @@ class GameSession  extends RangerProcessBase {
     return 5;
   };
   gameOverPolice () {
-    this.ensureEngine();
-    this.engine.deaths = this.engine.deaths + 1;
+    this.beginJailEnding("Poliisi nappasi sinut käytävällä. C++-kysely perutaan — matka jatkuu putkaan.");
+    this.markStateDirty();
+  };
+  beginJailEnding (reason) {
+    this.conduct.arrest();
     this._map.clearPoliceSquad();
-    const floor = this._map.activeFloor();
-    this._map.playerX = floor.spawnX;
-    this._map.playerY = floor.spawnY;
+    this._map.teleportToPrison();
     this._map.playerHidden = false;
-    this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "";
-    this.screen = "gameover";
+    this.endingReason = reason;
+    this._map.lastStatus = reason;
+    this.clearEncounter();
+    this.screen = "ending";
     this.markStateDirty();
   };
   triggerPoliceChaseAfterAttack (victimName) {
@@ -3072,6 +3075,10 @@ class GameSession  extends RangerProcessBase {
     this.encounterCooldown = 3;
   };
   startEncounter (bump) {
+    if ( bump.kind == "police" ) {
+      this.beginJailEnding("Poliisi pysäytti sinut heti. Selitys ei auta — suoraan putkaan.");
+      return;
+    }
     this.pendingEntityId = bump.id;
     this.pendingEntityChar = bump.char;
     this.pendingEntityName = bump.name;
@@ -3116,6 +3123,21 @@ class GameSession  extends RangerProcessBase {
       this._map.lastStatus = "Pääsit vapaaksi. Turvallisuus valvoo yhä.";
     } else {
       this._map.lastStatus = ("Vangittuna — " + ((this.conduct.prisonTurns.toString()))) + " vuoroa jäljellä.";
+    }
+    this.markStateDirty();
+  };
+  onEndingKey (key) {
+    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
+      this.shouldQuit = true;
+      this.markStateDirty();
+      return;
+    }
+    this._map.lastStatus = this.endingReason;
+    this.endingReason = "";
+    if ( this.conduct.arrested ) {
+      this.screen = "prison";
+    } else {
+      this.screen = "map";
     }
     this.markStateDirty();
   };
@@ -3176,9 +3198,7 @@ class GameSession  extends RangerProcessBase {
         return;
       }
       if ( agentResult.kind == "security" ) {
-        this.conduct.arrest();
-        this._map.teleportToPrison();
-        this.screen = "prison";
+        this.beginJailEnding("Turvallisuus nappasi sinut. Toimistokäynti jatkuu putkassa.");
         return;
       }
       if ( this.encounterCooldown > 0 ) {
@@ -3825,9 +3845,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( storyId == "stolen-card-caught" ) {
-      this.conduct.arrest();
-      this._map.teleportToPrison();
-      this.screen = "prison";
+      this.beginJailEnding("Varastettu kulkukortti paljastui. Vastaanotto toimitti sinut putkaan.");
       return;
     }
     if ( storyId == "modern-cpp-intro" ) {
@@ -3879,6 +3897,10 @@ class GameSession  extends RangerProcessBase {
     this.encounterResult = "talk";
   };
   onMapKey (key) {
+    if ( this.screen == "ending" ) {
+      this.onEndingKey(key);
+      return;
+    }
     if ( this.screen == "prison" ) {
       this.onPrisonKey(key);
       return;
@@ -4152,13 +4174,8 @@ class GameSession  extends RangerProcessBase {
       if ( this.pendingEntityKind == "security" ) {
         this.karma.loseKarma(20);
         this.conduct.addMisconduct(20);
-        this.conduct.arrest();
-        this._map.teleportToPrison();
-        this._map.lastStatus = "Turvallisuus neutraloi hyökkäyksen.";
         this.encounterResult = "attack";
-        this.clearEncounter();
-        this.screen = "prison";
-        this.markStateDirty();
+        this.beginJailEnding("Turvallisuus neutraloi hyökkäyksen. Seuraava pysäkki on putka.");
         return;
       }
       if ( this.isCoworkerEncounter() ) {
@@ -4243,6 +4260,84 @@ class GameSession  extends RangerProcessBase {
     this.tools.fillInventory(view);
     return view;
   };
+  hasFeatureIndex (picked, idx) {
+    let i = 0;
+    while (i < (picked.length)) {
+      if ( picked[i] == idx ) {
+        return true;
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  appendRankedFeatures (lines, weakest) {
+    const picked = [];
+    let count = 0;
+    while (count < 3) {
+      let bestIdx = -1;
+      let bestScore = 0;
+      if ( weakest ) {
+        bestScore = 2147483647;
+      }
+      let i = 0;
+      while (i < (this.karma.ids.length)) {
+        if ( this.hasFeatureIndex(picked, i) == false ) {
+          const score = this.karma.amounts[i];
+          if ( score > 0 ) {
+            if ( weakest ) {
+              if ( score < bestScore ) {
+                bestIdx = i;
+                bestScore = score;
+              }
+            } else {
+              if ( score > bestScore ) {
+                bestIdx = i;
+                bestScore = score;
+              }
+            }
+          }
+        }
+        i = i + 1;
+      };
+      if ( bestIdx < 0 ) {
+        return count;
+      }
+      picked.push(bestIdx);
+      lines.push((("  " + this.karma.ids[bestIdx]) + " (") + ((this.karma.amounts[bestIdx].toString())) + " karma)");
+      count = count + 1;
+    };
+    return count;
+  };
+  getEndingView () {
+    const view = new InventoryView();
+    const lines = [];
+    if ( (this.endingReason.length) > 0 ) {
+      lines.push(this.endingReason);
+      lines.push("");
+    }
+    lines.push("── Inventaario ──");
+    this.tools.fillInventory(view);
+    let i = 0;
+    while (i < (view.lines.length)) {
+      lines.push(view.lines[i]);
+      i = i + 1;
+    };
+    lines.push("");
+    lines.push("── Osasit ──");
+    if ( this.appendRankedFeatures(lines, false) == 0 ) {
+      lines.push("  Et ehtinyt kerätä osaamiskarmaa vielä.");
+    }
+    lines.push("");
+    lines.push("── Parannettavaa ──");
+    if ( this.conduct.arrested ) {
+      lines.push("  toimiston säännöt ja kulkuluvat");
+    }
+    if ( this.appendRankedFeatures(lines, true) == 0 ) {
+      lines.push("  C++-perusteet ja rauhallinen eteneminen toimistolla");
+    }
+    view.lines = lines;
+    return view;
+  };
   onStudyListKey (key) {
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
       this.shouldQuit = true;
@@ -4317,7 +4412,7 @@ class GameSession  extends RangerProcessBase {
       const sid = this.engine.storyId;
       this.applyStoryRewards(sid, view.outcome);
       this.engine.returnToMenu();
-      if ( this.screen != "prison" ) {
+      if ( (this.screen != "prison") && (this.screen != "ending") ) {
         this.screen = "map";
       }
       this.clearEncounter();

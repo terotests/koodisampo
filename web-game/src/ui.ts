@@ -584,6 +584,20 @@ export function mountGameUI(game: WebGame) {
         return;
       }
 
+      if (state.screen === "ending") {
+        const endingText = (state.endingLines || []).join("\n");
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(
+          screenHeader(state) +
+          `<div style="color:#ff7b72;font-weight:bold;margin:12px 0">═══ Putkaan ═══</div>` +
+          `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(endingText)}</pre>`,
+        );
+        setToolbar([{ key: "enter", label: "Enter — vankilaan" }]);
+        hintEl.textContent = "Enter = jatka vankilaan | q = lopeta";
+        return;
+      }
+
       if (state.screen === "menu") {
         let html = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
         const lessons = (state.menuItems || []).filter((item) => item.category !== "social");

@@ -54,6 +54,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def blockedTalkName:string ""
   def blockedTalkKind:string ""
   def blockedTalkStoryId:string ""
+  def endingReason:string ""
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -210,16 +211,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn gameOverPolice:void () {
-    this.ensureEngine()
-    engine.deaths = engine.deaths + 1
+    this.beginJailEnding("Poliisi nappasi sinut käytävällä. C++-kysely perutaan — matka jatkuu putkaan.")
+    this.markStateDirty()
+  }
+
+  fn beginJailEnding:void (reason:string) {
+    conduct.arrest()
     map.clearPoliceSquad()
-    def floor:MapFloor (map.activeFloor())
-    map.playerX = floor.spawnX
-    map.playerY = floor.spawnY
+    map.teleportToPrison()
     map.playerHidden = false
-    map.ensurePlayerOnWalkable()
-    map.lastStatus = ""
-    screen = "gameover"
+    endingReason = reason
+    map.lastStatus = reason
+    this.clearEncounter()
+    screen = "ending"
     this.markStateDirty()
   }
 
@@ -334,6 +338,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn startEncounter:void (bump:MapEntity) {
+    if (bump.kind == "police") {
+      this.beginJailEnding("Poliisi pysäytti sinut heti. Selitys ei auta — suoraan putkaan.")
+      return
+    }
     pendingEntityId = bump.id
     pendingEntityChar = bump.char
     pendingEntityName = bump.name
@@ -383,6 +391,22 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       map.lastStatus = "Pääsit vapaaksi. Turvallisuus valvoo yhä."
     } {
       map.lastStatus = ("Vangittuna — " + (to_string conduct.prisonTurns) + " vuoroa jäljellä.")
+    }
+    this.markStateDirty()
+  }
+
+  fn onEndingKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    map.lastStatus = endingReason
+    endingReason = ""
+    if (conduct.arrested) {
+      screen = "prison"
+    } {
+      screen = "map"
     }
     this.markStateDirty()
   }
@@ -445,9 +469,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return
       }
       if (agentResult.kind == "security") {
-        conduct.arrest()
-        map.teleportToPrison()
-        screen = "prison"
+        this.beginJailEnding("Turvallisuus nappasi sinut. Toimistokäynti jatkuu putkassa.")
         return
       }
       if (encounterCooldown > 0) {
@@ -1121,9 +1143,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (storyId == "stolen-card-caught") {
-      conduct.arrest()
-      map.teleportToPrison()
-      screen = "prison"
+      this.beginJailEnding("Varastettu kulkukortti paljastui. Vastaanotto toimitti sinut putkaan.")
       return
     }
     if (storyId == "modern-cpp-intro") {
@@ -1180,6 +1200,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn onMapKey:void (key:string) {
+    if (screen == "ending") {
+      this.onEndingKey(key)
+      return
+    }
     if (screen == "prison") {
       this.onPrisonKey(key)
       return
@@ -1454,13 +1478,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (pendingEntityKind == "security") {
         karma.loseKarma(20)
         conduct.addMisconduct(20)
-        conduct.arrest()
-        map.teleportToPrison()
-        map.lastStatus = "Turvallisuus neutraloi hyökkäyksen."
         encounterResult = "attack"
-        this.clearEncounter()
-        screen = "prison"
-        this.markStateDirty()
+        this.beginJailEnding("Turvallisuus neutraloi hyökkäyksen. Seuraava pysäkki on putka.")
         return
       }
       if (this.isCoworkerEncounter()) {
@@ -1548,6 +1567,87 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     return view
   }
 
+  fn hasFeatureIndex:boolean (picked:[int] idx:int) {
+    def i:int 0
+    while (i < (array_length picked)) {
+      if ((at picked i) == idx) {
+        return true
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn appendRankedFeatures:int (lines:[string] weakest:boolean) {
+    def picked:[int]
+    def count:int 0
+    while (count < 3) {
+      def bestIdx:int -1
+      def bestScore:int 0
+      if (weakest) {
+        bestScore = 2147483647
+      }
+      def i:int 0
+      while (i < (array_length karma.ids)) {
+        if (this.hasFeatureIndex(picked i) == false) {
+          def score:int (at karma.amounts i)
+          if (score > 0) {
+            if (weakest) {
+              if (score < bestScore) {
+                bestIdx = i
+                bestScore = score
+              }
+            } {
+              if (score > bestScore) {
+                bestIdx = i
+                bestScore = score
+              }
+            }
+          }
+        }
+        i = i + 1
+      }
+      if (bestIdx < 0) {
+        return count
+      }
+      push picked bestIdx
+      push lines ("  " + (at karma.ids bestIdx) + " (" + (to_string (at karma.amounts bestIdx)) + " karma)")
+      count = count + 1
+    }
+    return count
+  }
+
+  fn getEndingView:InventoryView () {
+    def view:InventoryView (new InventoryView)
+    def lines:[string]
+    if ((strlen endingReason) > 0) {
+      push lines endingReason
+      push lines ""
+    }
+    push lines "── Inventaario ──"
+    tools.fillInventory(view)
+    def i:int 0
+    while (i < (array_length view.lines)) {
+      push lines (at view.lines i)
+      i = i + 1
+    }
+    push lines ""
+    push lines "── Osasit ──"
+    if (this.appendRankedFeatures(lines false) == 0) {
+      push lines "  Et ehtinyt kerätä osaamiskarmaa vielä."
+    }
+    push lines ""
+    push lines "── Parannettavaa ──"
+    if (conduct.arrested) {
+      push lines "  toimiston säännöt ja kulkuluvat"
+    }
+    if (this.appendRankedFeatures(lines true) == 0) {
+      push lines "  C++-perusteet ja rauhallinen eteneminen toimistolla"
+    }
+    view.lines = lines
+    return view
+  }
+
   fn onStudyListKey:void (key:string) {
     if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
       shouldQuit = true
@@ -1631,7 +1731,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       def sid:string engine.storyId
       this.applyStoryRewards(sid view.outcome)
       engine.returnToMenu()
-      if (screen != "prison") {
+      if (screen != "prison" && screen != "ending") {
         screen = "map"
       }
       this.clearEncounter()

@@ -523,6 +523,14 @@ function snapshot() {
     };
   }
 
+  if (session.screen === "ending") {
+    const view = session.getEndingView();
+    return {
+      ...base,
+      endingLines: [...(view.lines || [])],
+    };
+  }
+
   if (session.screen === "blocked") {
     const panel = serializeActionPanel(session.getBlockedView());
     return {

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
@@ -86,6 +87,10 @@ export function runEncounterTests() {
   assert(karma.total() === 25, "loseKarma subtracts from pool");
 
   const mapJson = JSON.stringify(generateCorporateHq());
+  const caughtStoryJson = readFileSync(
+    resolve(projectRoot, "content/stories/stolen-card-caught.json"),
+    "utf8",
+  );
   const map = new WorldMap();
   assert(map.loadFromText(mapJson), "map load");
 
@@ -287,6 +292,48 @@ export function runEncounterTests() {
     assert(guruQuiz2.question.id !== guruQuiz.question.id, "second guru quiz differs after history");
   } finally {
     stopSession(root4, session4);
+  }
+
+  const police = {
+    id: "police-0-1",
+    char: "P",
+    kind: "police",
+    name: "Pääovien poliisi",
+  };
+
+  const { root: root5, session: session5 } = createSession();
+  try {
+    dispatch(session5, () => {
+      session5.loadMapFromText(mapJson);
+      session5.startEncounter(police);
+    });
+    assert(session5.screen === "ending", "police encounter ends immediately");
+    assert(session5.conduct.arrested === true, "police encounter arrests player");
+    const ending = session5.getEndingView();
+    assert(ending.lines.some((line) => line.includes("Inventaario")), "ending shows inventory");
+    assert(ending.lines.some((line) => line.includes("Osasit")), "ending shows strengths");
+    assert(ending.lines.some((line) => line.includes("Parannettavaa")), "ending shows improvements");
+    dispatch(session5, () => {
+      session5.onMapKey("enter");
+    });
+    assert(session5.screen === "prison", "ending continues to prison view");
+  } finally {
+    stopSession(root5, session5);
+  }
+
+  const { root: root6, session: session6 } = createSession();
+  try {
+    dispatch(session6, () => {
+      session6.loadMapFromText(mapJson);
+      session6.beginStory(caughtStoryJson);
+    });
+    assert(session6.screen === "story", "caught story starts");
+    dispatch(session6, () => {
+      session6.onStoryNarrativeAdvance();
+    });
+    assert(session6.screen === "ending", "caught story ends in jail summary");
+  } finally {
+    stopSession(root6, session6);
   }
 
   return true;
