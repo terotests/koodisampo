@@ -305,15 +305,27 @@ export function syncMobileClass() {
   document.documentElement.classList.toggle("mobile-layout", isMobileLayout());
 }
 
-export function syncMobileMapScale(lines: string[]) {
+export function syncMobileMapScale(lines: string[], anchor?: HTMLElement | null) {
   if (!isMobileLayout() || !lines?.length) {
     document.documentElement.style.removeProperty("--map-cols");
     document.documentElement.style.removeProperty("--map-rows");
+    document.documentElement.style.removeProperty("--map-cell-px");
     return;
   }
   const cols = Math.max(...lines.map((line) => line.length), 1);
+  const rows = lines.length;
+  const viewportW = anchor?.clientWidth
+    || document.getElementById("map-wrap")?.clientWidth
+    || document.documentElement.clientWidth
+    || window.innerWidth;
+  const viewportH = window.innerHeight;
+  const chromeH = 230;
+  const byWidth = viewportW / cols;
+  const byHeight = Math.max((viewportH - chromeH) / rows / 1.05, 8);
+  const cellPx = Math.min(byWidth, byHeight);
   document.documentElement.style.setProperty("--map-cols", String(cols));
-  document.documentElement.style.setProperty("--map-rows", String(lines.length));
+  document.documentElement.style.setProperty("--map-rows", String(rows));
+  document.documentElement.style.setProperty("--map-cell-px", `${cellPx}px`);
 }
 
 export function setMobileToolbarVisible(toolbarEl: HTMLElement | null, visible: boolean) {

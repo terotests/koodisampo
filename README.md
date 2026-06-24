@@ -39,11 +39,13 @@ Ei tasoja — vain kasvava **karma** featureittain (esim. `cpp:auto · 23`).
 
 ```bash
 npm install
-npm run build:ranger   # kerran, tai käytä repoon commitoitua generated/es6/koodisampo.cjs
+npm run build:ranger   # compile .rgr → generated/es6/koodisampo.cjs (uses npm ranger-compiler)
 npm run dev            # http://localhost:5173 — web-game/
 npm run build          # web-game/dist → Pages
 npm run preview
 ```
+
+Cloud agents: see **[AGENTS.md](AGENTS.md)** — no sibling `../agent/Ranger` checkout needed.
 
 Node-debug (sama peli, paikallinen API): `npm run play:web`
 
@@ -57,7 +59,7 @@ npm run dev:stories    # web/ — tarinalista ilman karttaa
 
 ```bash
 npm install
-npm run build:ranger   # vaatii ../agent/Ranger -kääntäjän
+npm run build:ranger   # npm package ranger-compiler (tai ../agent/Ranger paikallisesti)
 npm run play           # aloita suoraan Corporate HQ -kartalla
 npm run test:engine    # headless-testi
 ```

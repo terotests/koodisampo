@@ -40,14 +40,33 @@ export function runIntroWorldTests() {
   assert(map.isBlockedTile("L") === true, "locked door blocked");
   assert(map.isBlockedTile(",") === false, "courtyard walkable");
 
-  assert(map.tileAt(4, 4) === "(", "crowbar on map");
-  assert(map.tileAt(16, 4) === "T", "sledgehammer on map");
+  const crowbar = map.entityAt(4, 4);
+  assert(crowbar.id === "yard-crowbar" && crowbar.itemTool === "crowbar", "crowbar item on courtyard");
+  const sledge = map.entityAt(16, 4);
+  assert(sledge.id === "yard-sledge" && sledge.itemTool === "sledgehammer", "sledgehammer item on courtyard");
 
   const card = map.entityAt(13, 8);
   assert(card.id === "stolen-card", "card entity in shed");
   assert(card.itemTool === "access_card", "card item type");
 
   assert(map.tryMove(0, -1) === true || map.tryMove(1, 0) === true, "player can move from spawn area");
+
+  let atCount = 0;
+  for (let y = 0; y < map.height; y += 1) {
+    for (let x = 0; x < map.width; x += 1) {
+      if (map.tileAt(x, y) === "@") atCount += 1;
+    }
+  }
+  assert(atCount === 0, "map tiles must not contain @ — player is drawn separately");
+
+  const view = map.getView();
+  let viewAtCount = 0;
+  for (const line of view.lines) {
+    for (const ch of line) {
+      if (ch === "@") viewAtCount += 1;
+    }
+  }
+  assert(viewAtCount === 1, "exactly one @ on screen at spawn (the player)");
 
   map.currentFloor = 1;
   map.recomputeSize();

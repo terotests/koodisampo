@@ -31,9 +31,16 @@ export function mountGameUI(game: WebGame) {
   const hudStatsEl = document.getElementById("hud-stats");
   const messageBarEl = document.getElementById("message-bar");
   const mobileDpadEl = document.getElementById("mobile-dpad");
+  let lastMobileMapLines: string[] = [];
 
   syncMobileClass();
-  window.addEventListener("resize", syncMobileClass);
+  window.addEventListener("resize", () => {
+    syncMobileClass();
+    if (isMobileLayout() && lastMobileMapLines.length > 0 && mapEl) {
+      const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
+      if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+    }
+  });
 
     const BANNER = `╔══════════════════════════════════════════════════╗
 ║  KOODISAMPO — Corporate NetHack (terminaali)   ║
@@ -223,7 +230,10 @@ export function mountGameUI(game: WebGame) {
       }
       patchMapGrid(grid, lines, state, colorizeLine);
       if (isMobileLayout()) {
-        syncMobileMapScale(lines);
+        lastMobileMapLines = lines;
+        const syncScale = () => syncMobileMapScale(lines, grid);
+        syncScale();
+        requestAnimationFrame(syncScale);
         showMobilePlayToolbar();
       }
       setText(hint, isMobileLayout() ? "" : (state.hint || ""));

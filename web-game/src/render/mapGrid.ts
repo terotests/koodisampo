@@ -25,10 +25,13 @@ export function patchMapGrid(
   if (!rowContainer) {
     pre.textContent = "";
     rowContainer = document.createElement("span");
+    rowContainer.className = "map-rows";
     rowContainer.dataset.mapRows = "1";
-    rowContainer.style.display = "block";
     pre.appendChild(rowContainer);
   }
+  rowContainer.style.display = "inline-block";
+  rowContainer.style.textAlign = "left";
+  rowContainer.style.verticalAlign = "top";
 
   const existing = rowContainer.querySelectorAll<HTMLElement>("[data-map-row]");
   for (let y = 0; y < lines.length; y += 1) {
