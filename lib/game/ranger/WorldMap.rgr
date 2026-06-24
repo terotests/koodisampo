@@ -33,6 +33,10 @@ class WorldMap {
   def policeChaseActive:boolean false
   def lastPickedOwner:string ""
   def droppedCardOwners:[string]
+  def leaveTargetX:int 0
+  def leaveTargetY:int 0
+  def navStepDx:int 0
+  def navStepDy:int 0
 
   Constructor () {
     json = (new StoryJson)
@@ -993,23 +997,302 @@ class WorldMap {
   }
 
   fn stepTowardPlayer:void (e:MapEntity) {
-    def dx:int 0
-    def dy:int 0
-    if (e.x < playerX) {
-      dx = 1
+    this.stepBestToward(e playerX playerY)
+  }
+
+  fn manhattanTo:int (x:int y:int tx:int ty:int) {
+    def dx:int (x - tx)
+    if (dx < 0) {
+      dx = (0 - dx)
     }
-    if (e.x > playerX) {
-      dx = -1
+    def dy:int (y - ty)
+    if (dy < 0) {
+      dy = (0 - dy)
     }
-    if (dx == 0) {
-      if (e.y < playerY) {
-        dy = 1
+    return (dx + dy)
+  }
+
+  fn canEntityStepTo:boolean (e:MapEntity nx:int ny:int allowLeavingPeers:boolean) {
+    if (nx < 0) {
+      return false
+    }
+    if (ny < 0) {
+      return false
+    }
+    if (nx >= width) {
+      return false
+    }
+    if (ny >= height) {
+      return false
+    }
+    def tile:string (this.tileAt(nx ny))
+    if (this.isBlockedTile(tile)) {
+      return false
+    }
+    def other:MapEntity (this.entityAt(nx ny))
+    if ((strlen other.id) > 0) {
+      if (other.kind != "item") {
+        if (other.id != e.id) {
+          if (allowLeavingPeers) {
+            if (other.npcState != "leaving") {
+              if (other.npcState != "at_elevator") {
+                return false
+              }
+            }
+          } {
+            return false
+          }
+        }
       }
-      if (e.y > playerY) {
-        dy = -1
+    }
+    return true
+  }
+
+  fn cellIndex:int (x:int y:int) {
+    return ((y * width) + x)
+  }
+
+  fn indexX:int (idx:int) {
+    def row:int (to_int (idx / width))
+    return (idx - (row * width))
+  }
+
+  fn indexY:int (idx:int) {
+    return (to_int (idx / width))
+  }
+
+  fn isDiscovered:boolean (cells:[int] idx:int) {
+    def i:int 0
+    def n:int (array_length cells)
+    while (i < n) {
+      if ((at cells i) == idx) {
+        return true
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn parentOfCell:int (cells:[int] parents:[int] idx:int) {
+    def i:int 0
+    def n:int (array_length cells)
+    while (i < n) {
+      if ((at cells i) == idx) {
+        return (at parents i)
+      }
+      i = i + 1
+    }
+    return -1
+  }
+
+  fn tryBfsStep:boolean (e:MapEntity tx:int ty:int allowLeavingPeers:boolean) {
+    def startIdx:int (this.cellIndex(e.x e.y))
+    def goalIdx:int (this.cellIndex(tx ty))
+    if (startIdx == goalIdx) {
+      return false
+    }
+    def queue:[int]
+    def discCells:[int]
+    def discParent:[int]
+    push queue startIdx
+    push discCells startIdx
+    push discParent (-1)
+    def head:int 0
+    def found:boolean false
+    while (head < (array_length queue)) {
+      def cur:int (at queue head)
+      head = head + 1
+      if (cur == goalIdx) {
+        found = true
+        break
+      }
+      def cx:int (this.indexX(cur))
+      def cy:int (this.indexY(cur))
+      def dir:int 0
+      while (dir < 4) {
+        def tdx:int 0
+        def tdy:int 0
+        if (dir == 0) {
+          tdx = 0
+          tdy = -1
+        }
+        if (dir == 1) {
+          tdx = 0
+          tdy = 1
+        }
+        if (dir == 2) {
+          tdx = -1
+          tdy = 0
+        }
+        if (dir == 3) {
+          tdx = 1
+          tdy = 0
+        }
+        def nx:int (cx + tdx)
+        def ny:int (cy + tdy)
+        if (this.canEntityStepTo(e nx ny allowLeavingPeers)) {
+          def ni:int (this.cellIndex(nx ny))
+          if (this.isDiscovered(discCells ni) == false) {
+            push queue ni
+            push discCells ni
+            push discParent cur
+          }
+        }
+        dir = dir + 1
       }
     }
-    this.tryMoveEntity(e dx dy)
+    if (found == false) {
+      return false
+    }
+    def walk:int goalIdx
+    def prev:int (this.parentOfCell(discCells discParent walk))
+    while (prev != startIdx) {
+      if (prev < 0) {
+        return false
+      }
+      walk = prev
+      prev = (this.parentOfCell(discCells discParent walk))
+    }
+    def sx:int (this.indexX(walk))
+    def sy:int (this.indexY(walk))
+    navStepDx = (sx - e.x)
+    navStepDy = (sy - e.y)
+    return true
+  }
+
+  fn stepBestToward:void (e:MapEntity tx:int ty:int) {
+    if (e.x == tx) {
+      if (e.y == ty) {
+        return
+      }
+    }
+    def allowPeers:boolean false
+    if (e.npcState == "leaving") {
+      allowPeers = true
+    }
+    if (this.tryBfsStep(e tx ty allowPeers)) {
+      if (this.canEntityStepTo(e (e.x + navStepDx) (e.y + navStepDy) allowPeers)) {
+        this.tryMoveEntity(e navStepDx navStepDy)
+        return
+      }
+    }
+    def ex:int e.x
+    def ey:int e.y
+    def curDist:int (this.manhattanTo(ex ey tx ty))
+    def pdx:int 0
+    def pdy:int 0
+    if (ex < tx) {
+      pdx = 1
+    }
+    if (ex > tx) {
+      pdx = -1
+    }
+    if (pdx == 0) {
+      if (ey < ty) {
+        pdy = 1
+      }
+      if (ey > ty) {
+        pdy = -1
+      }
+    }
+    if (pdx != 0) {
+      if (pdy != 0) {
+        def pick:int (random 0 1)
+        if (pick == 0) {
+          pdy = 0
+        }
+        if (pick == 1) {
+          pdx = 0
+        }
+      }
+    }
+    if (pdx != 0) {
+      if (this.canEntityStepTo(e (ex + pdx) (ey + pdy) allowPeers)) {
+        def nd:int (this.manhattanTo((ex + pdx) (ey + pdy) tx ty))
+        if (nd < curDist) {
+          this.tryMoveEntity(e pdx pdy)
+          return
+        }
+      }
+    }
+    if (pdy != 0) {
+      if (this.canEntityStepTo(e (ex + pdx) (ey + pdy) allowPeers)) {
+        def nd2:int (this.manhattanTo((ex + pdx) (ey + pdy) tx ty))
+        if (nd2 < curDist) {
+          this.tryMoveEntity(e pdx pdy)
+          return
+        }
+      }
+    }
+    def bestDx:int 0
+    def bestDy:int 0
+    def bestDist:int curDist
+    def found:boolean false
+    def dir:int 0
+    while (dir < 4) {
+      def tdx:int 0
+      def tdy:int 0
+      if (dir == 0) {
+        tdx = 0
+        tdy = -1
+      }
+      if (dir == 1) {
+        tdx = 0
+        tdy = 1
+      }
+      if (dir == 2) {
+        tdx = -1
+        tdy = 0
+      }
+      if (dir == 3) {
+        tdx = 1
+        tdy = 0
+      }
+      def nx:int (ex + tdx)
+      def ny:int (ey + tdy)
+      if (this.canEntityStepTo(e nx ny allowPeers)) {
+        def d:int (this.manhattanTo(nx ny tx ty))
+        if (d < bestDist) {
+          bestDist = d
+          bestDx = tdx
+          bestDy = tdy
+          found = true
+        }
+      }
+      dir = dir + 1
+    }
+    if (found) {
+      this.tryMoveEntity(e bestDx bestDy)
+      return
+    }
+    dir = 0
+    while (dir < 4) {
+      def tdx2:int 0
+      def tdy2:int 0
+      if (dir == 0) {
+        tdx2 = 0
+        tdy2 = -1
+      }
+      if (dir == 1) {
+        tdx2 = 0
+        tdy2 = 1
+      }
+      if (dir == 2) {
+        tdx2 = -1
+        tdy2 = 0
+      }
+      if (dir == 3) {
+        tdx2 = 1
+        tdy2 = 0
+      }
+      def nx2:int (ex + tdx2)
+      def ny2:int (ey + tdy2)
+      if (this.canEntityStepTo(e nx2 ny2 allowPeers)) {
+        this.tryMoveEntity(e tdx2 tdy2)
+        return
+      }
+      dir = dir + 1
+    }
   }
 
   fn stepWander:void (e:MapEntity) {
@@ -1110,49 +1393,131 @@ class WorldMap {
   }
 
   fn stepTowardTile:void (e:MapEntity tx:int ty:int) {
-    if (e.x == tx) {
-      if (e.y == ty) {
+    this.stepBestToward(e tx ty)
+  }
+
+  fn pickLeaveTargetFor:void (e:MapEntity floorIndex:int) {
+    leaveTargetX = foundElevatorX
+    leaveTargetY = foundElevatorY
+    if (this.findElevatorAt(floorIndex) == false) {
+      return
+    }
+    def slot:int (e.homeX + e.homeY + (strlen e.id))
+    def off:int 0
+    while (off < 8) {
+      def oidx:int ((slot + off) % 8)
+      def ox:int 0
+      def oy:int 0
+      if (oidx == 0) {
+        ox = -1
+        oy = 0
+      }
+      if (oidx == 1) {
+        ox = 1
+        oy = 0
+      }
+      if (oidx == 2) {
+        ox = 0
+        oy = -1
+      }
+      if (oidx == 3) {
+        ox = 0
+        oy = 1
+      }
+      if (oidx == 4) {
+        ox = -1
+        oy = -1
+      }
+      if (oidx == 5) {
+        ox = 1
+        oy = -1
+      }
+      if (oidx == 6) {
+        ox = -1
+        oy = 1
+      }
+      if (oidx == 7) {
+        ox = 1
+        oy = 1
+      }
+      def tx:int (foundElevatorX + ox)
+      def ty:int (foundElevatorY + oy)
+      if (this.canEntityStepTo(e tx ty true)) {
+        leaveTargetX = tx
+        leaveTargetY = ty
         return
       }
+      off = off + 1
     }
-    def dx:int 0
-    def dy:int 0
-    if (e.x < tx) {
-      dx = 1
-    }
-    if (e.x > tx) {
-      dx = -1
-    }
-    if (dx == 0) {
-      if (e.y < ty) {
-        dy = 1
-      }
-      if (e.y > ty) {
-        dy = -1
-      }
-    }
-    if (dx != 0) {
-      if (dy != 0) {
-        def pick:int (random 0 1)
-        if (pick == 0) {
-          dy = 0
-        }
-        if (pick == 1) {
-          dx = 0
-        }
-      }
-    }
-    this.tryMoveEntity(e dx dy)
+  }
+
+  fn leaveStaggerStart:int (e:MapEntity) {
+    def seed:int (e.homeX + (e.homeY * 3) + (strlen e.id))
+    return (900 + (seed % 25))
   }
 
   fn scheduleMoveStride:boolean (e:MapEntity gameMinutes:int) {
     def seed:int (e.homeX + (e.homeY * 3) + (strlen e.id))
-    def phase:int (seed % 4)
-    def tick:int (gameMinutes % 4)
-    if (phase == tick) {
+    if (e.npcState == "leaving") {
+      def phase:int (seed % 6)
+      def tick:int (gameMinutes % 6)
+      if (phase == tick) {
+        return true
+      }
+      return false
+    }
+    def phase2:int (seed % 4)
+    def tick2:int (gameMinutes % 4)
+    if (phase2 == tick2) {
       return true
     }
     return false
+  }
+
+  fn retireEntitySeek:void (entityId:string) {
+    def fi:int 0
+    def fc:int (array_length floors)
+    while (fi < fc) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def i:int 0
+      def n:int (array_length ents)
+      while (i < n) {
+        def ent:MapEntity (at ents i)
+        if (ent.id == entityId) {
+          ent.moveMode = "stationary"
+          ent.agentGoal = ""
+          return
+        }
+        i = i + 1
+      }
+      fi = fi + 1
+    }
+  }
+
+  fn activateEntitySeek:void (entityId:string goal:string) {
+    def fi:int 0
+    def fc:int (array_length floors)
+    while (fi < fc) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def i:int 0
+      def n:int (array_length ents)
+      while (i < n) {
+        def ent:MapEntity (at ents i)
+        if (ent.id == entityId) {
+          ent.offDuty = false
+          ent.isAgent = true
+          ent.moveMode = "seek_player"
+          if ((strlen goal) > 0) {
+            ent.agentGoal = goal
+          }
+          return
+        }
+        i = i + 1
+      }
+      fi = fi + 1
+    }
   }
 
   fn applyEntitySchedule:void (floorIndex:int floor:MapFloor e:MapEntity gameMinutes:int) {
@@ -1225,10 +1590,23 @@ class WorldMap {
     }
     if (gameMinutes >= 900) {
       if (gameMinutes < 1020) {
-        if (this.findElevatorAt(floorIndex)) {
-          tx = foundElevatorX
-          ty = foundElevatorY
-          e.npcState = "leaving"
+        def startLeave:int (this.leaveStaggerStart(e))
+        if (gameMinutes >= startLeave) {
+          if (this.findElevatorAt(floorIndex)) {
+            this.pickLeaveTargetFor(e floorIndex)
+            tx = leaveTargetX
+            ty = leaveTargetY
+            e.npcState = "leaving"
+            e.offDuty = false
+            def distElev:int (this.manhattanTo(e.x e.y foundElevatorX foundElevatorY))
+            if (distElev <= 1) {
+              if (gameMinutes >= (startLeave + 8)) {
+                e.offDuty = true
+                e.npcState = "at_elevator"
+                return
+              }
+            }
+          }
         }
       }
     }
@@ -1239,17 +1617,27 @@ class WorldMap {
   }
 
   fn tickSchedules:void (gameMinutes:int) {
-    def floor:MapFloor (this.activeFloor())
-    def ents:[MapEntity] (floor.entities)
-    def i:int 0
-    def n:int (array_length ents)
-    while (i < n) {
-      def e:MapEntity (at ents i)
-      if (this.isActiveAgent(e)) {
-        this.applyEntitySchedule(currentFloor floor e gameMinutes)
+    def savedFloor:int currentFloor
+    def fi:int 0
+    def fc:int (array_length floors)
+    while (fi < fc) {
+      currentFloor = fi
+      this.recomputeSize()
+      def floor:MapFloor (this.activeFloor())
+      def ents:[MapEntity] (floor.entities)
+      def i:int 0
+      def n:int (array_length ents)
+      while (i < n) {
+        def e:MapEntity (at ents i)
+        if (this.isActiveAgent(e)) {
+          this.applyEntitySchedule(fi floor e gameMinutes)
+        }
+        i = i + 1
       }
-      i = i + 1
+      fi = fi + 1
     }
+    currentFloor = savedFloor
+    this.recomputeSize()
   }
 
   fn tickAgents:MapEntity () {
@@ -1309,9 +1697,13 @@ class WorldMap {
         i = i + 1
         continue
       }
+      if (e.moveMode == "stationary") {
+        i = i + 1
+        continue
+      }
       if (e.moveMode == "seek_player") {
         if (this.canNpcSeePlayer(e)) {
-          this.stepTowardPlayer(e)
+          this.stepBestToward(e playerX playerY)
         }
       }
       if (e.moveMode == "wander") {
@@ -1339,8 +1731,11 @@ class WorldMap {
       }
       def manhattan:int (dx + dy)
       if (manhattan <= 1) {
-        if (e.sociability >= 70) {
-          if (this.canNpcSeePlayer(e)) {
+        if (this.canNpcSeePlayer(e)) {
+          if (e.agentGoal == "welcome_hr") {
+            approach = e
+          }
+          if (e.sociability >= 70) {
             if ((strlen e.storyId) > 0) {
               approach = e
             }

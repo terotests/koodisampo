@@ -1064,6 +1064,10 @@ class WorldMap  {
     this.policeChaseActive = false;
     this.lastPickedOwner = "";
     this.droppedCardOwners = [];
+    this.leaveTargetX = 0;
+    this.leaveTargetY = 0;
+    this.navStepDx = 0;
+    this.navStepDy = 0;
     this.json = new StoryJson();
     let emptyFloors = [];
     this.floors = emptyFloors;
@@ -1977,23 +1981,293 @@ class WorldMap  {
     return true;
   };
   stepTowardPlayer (e) {
-    let dx = 0;
-    let dy = 0;
-    if ( e.x < this.playerX ) {
-      dx = 1;
+    this.stepBestToward(e, this.playerX, this.playerY);
+  };
+  manhattanTo (x, y, tx, ty) {
+    let dx = x - tx;
+    if ( dx < 0 ) {
+      dx = 0 - dx;
     }
-    if ( e.x > this.playerX ) {
-      dx = -1;
+    let dy = y - ty;
+    if ( dy < 0 ) {
+      dy = 0 - dy;
     }
-    if ( dx == 0 ) {
-      if ( e.y < this.playerY ) {
-        dy = 1;
+    return dx + dy;
+  };
+  canEntityStepTo (e, nx, ny, allowLeavingPeers) {
+    if ( nx < 0 ) {
+      return false;
+    }
+    if ( ny < 0 ) {
+      return false;
+    }
+    if ( nx >= this.width ) {
+      return false;
+    }
+    if ( ny >= this.height ) {
+      return false;
+    }
+    const tile = this.tileAt(nx, ny);
+    if ( this.isBlockedTile(tile) ) {
+      return false;
+    }
+    const other = this.entityAt(nx, ny);
+    if ( (other.id.length) > 0 ) {
+      if ( other.kind != "item" ) {
+        if ( other.id != e.id ) {
+          if ( allowLeavingPeers ) {
+            if ( other.npcState != "leaving" ) {
+              if ( other.npcState != "at_elevator" ) {
+                return false;
+              }
+            }
+          } else {
+            return false;
+          }
+        }
       }
-      if ( e.y > this.playerY ) {
-        dy = -1;
+    }
+    return true;
+  };
+  cellIndex (x, y) {
+    return (y * this.width) + x;
+  };
+  indexX (idx) {
+    const row = Math.floor( (idx / this.width));
+    return idx - (row * this.width);
+  };
+  indexY (idx) {
+    return Math.floor( (idx / this.width));
+  };
+  isDiscovered (cells, idx) {
+    let i = 0;
+    const n = cells.length;
+    while (i < n) {
+      if ( (cells[i]) == idx ) {
+        return true;
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  parentOfCell (cells, parents, idx) {
+    let i = 0;
+    const n = cells.length;
+    while (i < n) {
+      if ( (cells[i]) == idx ) {
+        return parents[i];
+      }
+      i = i + 1;
+    };
+    return -1;
+  };
+  tryBfsStep (e, tx, ty, allowLeavingPeers) {
+    const startIdx = this.cellIndex(e.x, e.y);
+    const goalIdx = this.cellIndex(tx, ty);
+    if ( startIdx == goalIdx ) {
+      return false;
+    }
+    let queue = [];
+    let discCells = [];
+    let discParent = [];
+    queue.push(startIdx);
+    discCells.push(startIdx);
+    discParent.push(-1);
+    let head = 0;
+    let found = false;
+    while (head < (queue.length)) {
+      const cur = queue[head];
+      head = head + 1;
+      if ( cur == goalIdx ) {
+        found = true;
+        break;
+      }
+      const cx = this.indexX(cur);
+      const cy = this.indexY(cur);
+      let dir = 0;
+      while (dir < 4) {
+        let tdx = 0;
+        let tdy = 0;
+        if ( dir == 0 ) {
+          tdx = 0;
+          tdy = -1;
+        }
+        if ( dir == 1 ) {
+          tdx = 0;
+          tdy = 1;
+        }
+        if ( dir == 2 ) {
+          tdx = -1;
+          tdy = 0;
+        }
+        if ( dir == 3 ) {
+          tdx = 1;
+          tdy = 0;
+        }
+        const nx = cx + tdx;
+        const ny = cy + tdy;
+        if ( this.canEntityStepTo(e, nx, ny, allowLeavingPeers) ) {
+          const ni = this.cellIndex(nx, ny);
+          if ( this.isDiscovered(discCells, ni) == false ) {
+            queue.push(ni);
+            discCells.push(ni);
+            discParent.push(cur);
+          }
+        }
+        dir = dir + 1;
+      };
+    };
+    if ( found == false ) {
+      return false;
+    }
+    let walk = goalIdx;
+    let prev = this.parentOfCell(discCells, discParent, walk);
+    while (prev != startIdx) {
+      if ( prev < 0 ) {
+        return false;
+      }
+      walk = prev;
+      prev = this.parentOfCell(discCells, discParent, walk);
+    };
+    const sx = this.indexX(walk);
+    const sy = this.indexY(walk);
+    this.navStepDx = sx - e.x;
+    this.navStepDy = sy - e.y;
+    return true;
+  };
+  stepBestToward (e, tx, ty) {
+    if ( e.x == tx ) {
+      if ( e.y == ty ) {
+        return;
       }
     }
-    this.tryMoveEntity(e, dx, dy);
+    let allowPeers = false;
+    if ( e.npcState == "leaving" ) {
+      allowPeers = true;
+    }
+    if ( this.tryBfsStep(e, tx, ty, allowPeers) ) {
+      if ( this.canEntityStepTo(e, (e.x + this.navStepDx), (e.y + this.navStepDy), allowPeers) ) {
+        this.tryMoveEntity(e, this.navStepDx, this.navStepDy);
+        return;
+      }
+    }
+    const ex = e.x;
+    const ey = e.y;
+    const curDist = this.manhattanTo(ex, ey, tx, ty);
+    let pdx = 0;
+    let pdy = 0;
+    if ( ex < tx ) {
+      pdx = 1;
+    }
+    if ( ex > tx ) {
+      pdx = -1;
+    }
+    if ( pdx == 0 ) {
+      if ( ey < ty ) {
+        pdy = 1;
+      }
+      if ( ey > ty ) {
+        pdy = -1;
+      }
+    }
+    if ( pdx != 0 ) {
+      if ( pdy != 0 ) {
+        const pick = Math.floor(Math.random()*(1 - 0 + 1) + 0);
+        if ( pick == 0 ) {
+          pdy = 0;
+        }
+        if ( pick == 1 ) {
+          pdx = 0;
+        }
+      }
+    }
+    if ( pdx != 0 ) {
+      if ( this.canEntityStepTo(e, (ex + pdx), (ey + pdy), allowPeers) ) {
+        const nd = this.manhattanTo((ex + pdx), (ey + pdy), tx, ty);
+        if ( nd < curDist ) {
+          this.tryMoveEntity(e, pdx, pdy);
+          return;
+        }
+      }
+    }
+    if ( pdy != 0 ) {
+      if ( this.canEntityStepTo(e, (ex + pdx), (ey + pdy), allowPeers) ) {
+        const nd2 = this.manhattanTo((ex + pdx), (ey + pdy), tx, ty);
+        if ( nd2 < curDist ) {
+          this.tryMoveEntity(e, pdx, pdy);
+          return;
+        }
+      }
+    }
+    let bestDx = 0;
+    let bestDy = 0;
+    let bestDist = curDist;
+    let found = false;
+    let dir = 0;
+    while (dir < 4) {
+      let tdx = 0;
+      let tdy = 0;
+      if ( dir == 0 ) {
+        tdx = 0;
+        tdy = -1;
+      }
+      if ( dir == 1 ) {
+        tdx = 0;
+        tdy = 1;
+      }
+      if ( dir == 2 ) {
+        tdx = -1;
+        tdy = 0;
+      }
+      if ( dir == 3 ) {
+        tdx = 1;
+        tdy = 0;
+      }
+      const nx = ex + tdx;
+      const ny = ey + tdy;
+      if ( this.canEntityStepTo(e, nx, ny, allowPeers) ) {
+        const d = this.manhattanTo(nx, ny, tx, ty);
+        if ( d < bestDist ) {
+          bestDist = d;
+          bestDx = tdx;
+          bestDy = tdy;
+          found = true;
+        }
+      }
+      dir = dir + 1;
+    };
+    if ( found ) {
+      this.tryMoveEntity(e, bestDx, bestDy);
+      return;
+    }
+    dir = 0;
+    while (dir < 4) {
+      let tdx2 = 0;
+      let tdy2 = 0;
+      if ( dir == 0 ) {
+        tdx2 = 0;
+        tdy2 = -1;
+      }
+      if ( dir == 1 ) {
+        tdx2 = 0;
+        tdy2 = 1;
+      }
+      if ( dir == 2 ) {
+        tdx2 = -1;
+        tdy2 = 0;
+      }
+      if ( dir == 3 ) {
+        tdx2 = 1;
+        tdy2 = 0;
+      }
+      const nx2 = ex + tdx2;
+      const ny2 = ey + tdy2;
+      if ( this.canEntityStepTo(e, nx2, ny2, allowPeers) ) {
+        this.tryMoveEntity(e, tdx2, tdy2);
+        return;
+      }
+      dir = dir + 1;
+    };
   };
   stepWander (e) {
     const roll = Math.floor(Math.random()*(3 - 0 + 1) + 0);
@@ -2087,48 +2361,126 @@ class WorldMap  {
     }
   };
   stepTowardTile (e, tx, ty) {
-    if ( e.x == tx ) {
-      if ( e.y == ty ) {
+    this.stepBestToward(e, tx, ty);
+  };
+  pickLeaveTargetFor (e, floorIndex) {
+    this.leaveTargetX = this.foundElevatorX;
+    this.leaveTargetY = this.foundElevatorY;
+    if ( this.findElevatorAt(floorIndex) == false ) {
+      return;
+    }
+    const slot = (e.homeX + e.homeY) + (e.id.length);
+    let off = 0;
+    while (off < 8) {
+      const oidx = (slot + off) % 8;
+      let ox = 0;
+      let oy = 0;
+      if ( oidx == 0 ) {
+        ox = -1;
+        oy = 0;
+      }
+      if ( oidx == 1 ) {
+        ox = 1;
+        oy = 0;
+      }
+      if ( oidx == 2 ) {
+        ox = 0;
+        oy = -1;
+      }
+      if ( oidx == 3 ) {
+        ox = 0;
+        oy = 1;
+      }
+      if ( oidx == 4 ) {
+        ox = -1;
+        oy = -1;
+      }
+      if ( oidx == 5 ) {
+        ox = 1;
+        oy = -1;
+      }
+      if ( oidx == 6 ) {
+        ox = -1;
+        oy = 1;
+      }
+      if ( oidx == 7 ) {
+        ox = 1;
+        oy = 1;
+      }
+      const tx = this.foundElevatorX + ox;
+      const ty = this.foundElevatorY + oy;
+      if ( this.canEntityStepTo(e, tx, ty, true) ) {
+        this.leaveTargetX = tx;
+        this.leaveTargetY = ty;
         return;
       }
-    }
-    let dx = 0;
-    let dy = 0;
-    if ( e.x < tx ) {
-      dx = 1;
-    }
-    if ( e.x > tx ) {
-      dx = -1;
-    }
-    if ( dx == 0 ) {
-      if ( e.y < ty ) {
-        dy = 1;
-      }
-      if ( e.y > ty ) {
-        dy = -1;
-      }
-    }
-    if ( dx != 0 ) {
-      if ( dy != 0 ) {
-        const pick = Math.floor(Math.random()*(1 - 0 + 1) + 0);
-        if ( pick == 0 ) {
-          dy = 0;
-        }
-        if ( pick == 1 ) {
-          dx = 0;
-        }
-      }
-    }
-    this.tryMoveEntity(e, dx, dy);
+      off = off + 1;
+    };
+  };
+  leaveStaggerStart (e) {
+    const seed = (e.homeX + (e.homeY * 3)) + (e.id.length);
+    return 900 + (seed % 25);
   };
   scheduleMoveStride (e, gameMinutes) {
     const seed = (e.homeX + (e.homeY * 3)) + (e.id.length);
-    const phase = seed % 4;
-    const tick = gameMinutes % 4;
-    if ( phase == tick ) {
+    if ( e.npcState == "leaving" ) {
+      const phase = seed % 6;
+      const tick = gameMinutes % 6;
+      if ( phase == tick ) {
+        return true;
+      }
+      return false;
+    }
+    const phase2 = seed % 4;
+    const tick2 = gameMinutes % 4;
+    if ( phase2 == tick2 ) {
       return true;
     }
     return false;
+  };
+  retireEntitySeek (entityId) {
+    let fi = 0;
+    const fc = this.floors.length;
+    while (fi < fc) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let i = 0;
+      const n = ents.length;
+      while (i < n) {
+        const ent = ents[i];
+        if ( ent.id == entityId ) {
+          ent.moveMode = "stationary";
+          ent.agentGoal = "";
+          return;
+        }
+        i = i + 1;
+      };
+      fi = fi + 1;
+    };
+  };
+  activateEntitySeek (entityId, goal) {
+    let fi = 0;
+    const fc = this.floors.length;
+    while (fi < fc) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let i = 0;
+      const n = ents.length;
+      while (i < n) {
+        const ent = ents[i];
+        if ( ent.id == entityId ) {
+          ent.offDuty = false;
+          ent.isAgent = true;
+          ent.moveMode = "seek_player";
+          if ( (goal.length) > 0 ) {
+            ent.agentGoal = goal;
+          }
+          return;
+        }
+        i = i + 1;
+      };
+      fi = fi + 1;
+    };
   };
   applyEntitySchedule (floorIndex, floor, e, gameMinutes) {
     if ( (e.scheduleRole.length) < 1 ) {
@@ -2200,10 +2552,23 @@ class WorldMap  {
     }
     if ( gameMinutes >= 900 ) {
       if ( gameMinutes < 1020 ) {
-        if ( this.findElevatorAt(floorIndex) ) {
-          tx = this.foundElevatorX;
-          ty = this.foundElevatorY;
-          e.npcState = "leaving";
+        const startLeave = this.leaveStaggerStart(e);
+        if ( gameMinutes >= startLeave ) {
+          if ( this.findElevatorAt(floorIndex) ) {
+            this.pickLeaveTargetFor(e, floorIndex);
+            tx = this.leaveTargetX;
+            ty = this.leaveTargetY;
+            e.npcState = "leaving";
+            e.offDuty = false;
+            const distElev = this.manhattanTo(e.x, e.y, this.foundElevatorX, this.foundElevatorY);
+            if ( distElev <= 1 ) {
+              if ( gameMinutes >= (startLeave + 8) ) {
+                e.offDuty = true;
+                e.npcState = "at_elevator";
+                return;
+              }
+            }
+          }
         }
       }
     }
@@ -2213,17 +2578,27 @@ class WorldMap  {
     this.stepTowardTile(e, tx, ty);
   };
   tickSchedules (gameMinutes) {
-    const floor = this.activeFloor();
-    const ents = floor.entities;
-    let i = 0;
-    const n = ents.length;
-    while (i < n) {
-      const e = ents[i];
-      if ( this.isActiveAgent(e) ) {
-        this.applyEntitySchedule(this.currentFloor, floor, e, gameMinutes);
-      }
-      i = i + 1;
+    const savedFloor = this.currentFloor;
+    let fi = 0;
+    const fc = this.floors.length;
+    while (fi < fc) {
+      this.currentFloor = fi;
+      this.recomputeSize();
+      const floor = this.activeFloor();
+      const ents = floor.entities;
+      let i = 0;
+      const n = ents.length;
+      while (i < n) {
+        const e = ents[i];
+        if ( this.isActiveAgent(e) ) {
+          this.applyEntitySchedule(fi, floor, e, gameMinutes);
+        }
+        i = i + 1;
+      };
+      fi = fi + 1;
     };
+    this.currentFloor = savedFloor;
+    this.recomputeSize();
   };
   tickAgents () {
     this.overheardMsg = "";
@@ -2282,9 +2657,13 @@ class WorldMap  {
         i = i + 1;
         continue;
       }
+      if ( e.moveMode == "stationary" ) {
+        i = i + 1;
+        continue;
+      }
       if ( e.moveMode == "seek_player" ) {
         if ( this.canNpcSeePlayer(e) ) {
-          this.stepTowardPlayer(e);
+          this.stepBestToward(e, this.playerX, this.playerY);
         }
       }
       if ( e.moveMode == "wander" ) {
@@ -2312,8 +2691,11 @@ class WorldMap  {
       }
       const manhattan = dx + dy;
       if ( manhattan <= 1 ) {
-        if ( e.sociability >= 70 ) {
-          if ( this.canNpcSeePlayer(e) ) {
+        if ( this.canNpcSeePlayer(e) ) {
+          if ( e.agentGoal == "welcome_hr" ) {
+            approach = e;
+          }
+          if ( e.sociability >= 70 ) {
             if ( (e.storyId.length) > 0 ) {
               approach = e;
             }
@@ -2747,6 +3129,13 @@ class WorldClock  {
       this.gameMinutes = 480;
     }
   };
+  setGameMinutes (minutes) {
+    if ( minutes < 0 ) {
+      this.gameMinutes = 0;
+      return;
+    }
+    this.gameMinutes = minutes;
+  };
   phaseLabel () {
     if ( this.gameMinutes < 660 ) {
       return "aamu";
@@ -2797,6 +3186,7 @@ class GameSession  extends RangerProcessBase {
     this.guruIntroPassed = false;
     this.guruStoryAttempted = false;
     this.guruQuizCorrect = 0;
+    this.hrWelcomeDone = false;
     this.quizWinsForPromotion = 0;
     this.actionTargetX = 0;
     this.actionTargetY = 0;
@@ -2811,12 +3201,22 @@ class GameSession  extends RangerProcessBase {
     this.blockedTalkName = "";
     this.blockedTalkKind = "";
     this.blockedTalkStoryId = "";
+    this.simSeed = 0;
+    this.simRngState = 1;
+    this.simScenarioId = "";
+    this.simOutcome = "running";
+    this.simStepCount = 0;
+    this.simMinutesAccum = 0;
+    this.simEventTypes = [];
+    this.simEventDetails = [];
+    this.simErrors = [];
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
     this.conduct = new PlayerConduct();
     this.tools = new PlayerTools();
     this.worldClock = new WorldClock();
+    this.simJson = new StoryJson();
   }
   ensureEngine () {
     if ( this.engineReady ) {
@@ -2859,6 +3259,12 @@ class GameSession  extends RangerProcessBase {
   needsEncounterQuiz () {
     if ( this.pendingEntityId == "receptionist" ) {
       if ( this.interviewPassed ) {
+        return false;
+      }
+      return true;
+    }
+    if ( this.pendingEntityId == "hr-greeter" ) {
+      if ( this.hrWelcomeDone ) {
         return false;
       }
       return true;
@@ -2914,6 +3320,12 @@ class GameSession  extends RangerProcessBase {
         this.interviewPassed = true;
         this.interviewFailed = false;
         status = status + " Sait virallisen kulkuluvan — haastattelu meni läpi!";
+        this.syncHrGreeter();
+      }
+      if ( this.pendingEntityId == "hr-greeter" ) {
+        this.hrWelcomeDone = true;
+        this._map.retireEntitySeek("hr-greeter");
+        status = status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.";
       }
       this._map.lastStatus = status;
     } else {
@@ -2923,6 +3335,11 @@ class GameSession  extends RangerProcessBase {
         this.interviewFailed = true;
         this.interviewPassed = false;
         failStatus = failStatus + " Haastattelu ei mennyt läpi. Voit yrittää uudelleen tai käyttää varastettua korttia — riskillä.";
+      }
+      if ( this.pendingEntityId == "hr-greeter" ) {
+        this.hrWelcomeDone = true;
+        this._map.retireEntitySeek("hr-greeter");
+        failStatus = failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.";
       }
       this._map.lastStatus = failStatus;
     }
@@ -3000,6 +3417,12 @@ class GameSession  extends RangerProcessBase {
         return "Vastaanottovirkailija: \"Haastattelu ei mennyt läpi. Haluatko yrittää uudelleen?\"";
       }
       return "Vastaanottovirkailija: \"Työhaastatteluun? Yksi C++-kysymys — vastaa oikein niin saat virallisen kulkuluvan.\"";
+    }
+    if ( this.pendingEntityId == "hr-greeter" ) {
+      if ( this.hrWelcomeDone ) {
+        return this.pendingEntityName + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"";
+      }
+      return this.pendingEntityName + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"";
     }
     if ( this.isHostileEncounter() ) {
       return this.pendingEntityName + " katsoo sinua uhkaavasti. Mitä teet?";
@@ -3086,9 +3509,23 @@ class GameSession  extends RangerProcessBase {
     if ( ok == false ) {
       this.menuMessage = "Kartan lataus epäonnistui.";
     }
+    this.syncHrGreeter();
     this.screen = "map";
     this.markStateDirty();
     return ok;
+  };
+  syncHrGreeter () {
+    if ( this.hrWelcomeDone ) {
+      this._map.retireEntitySeek("hr-greeter");
+      return;
+    }
+    if ( this.interviewPassed ) {
+      this._map.activateEntitySeek("hr-greeter", "welcome_hr");
+      return;
+    }
+    if ( this.tools.hasOfficialBadge ) {
+      this._map.activateEntitySeek("hr-greeter", "welcome_hr");
+    }
   };
   applySave (featureIds, featureAmounts, deathCount) {
     this.karma.ids = featureIds;
@@ -3186,6 +3623,9 @@ class GameSession  extends RangerProcessBase {
         return;
       }
       this._map.lastStatus = agentResult.name + " haluaa jutella.";
+      if ( agentResult.agentGoal == "welcome_hr" ) {
+        this._map.lastStatus = agentResult.name + " löysi sinut: \"Hei — pikainen HR-tervehdys!\"";
+      }
       this.startEncounter(agentResult);
     }
   };
@@ -3816,7 +4256,8 @@ class GameSession  extends RangerProcessBase {
         this.tools.grant("official_badge");
         this.interviewPassed = true;
         this.interviewFailed = false;
-        this._map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi!";
+        this._map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! HR odottaa sinua 2. kerroksella.";
+        this.syncHrGreeter();
       } else {
         this.interviewFailed = true;
         this.interviewPassed = false;
@@ -4389,6 +4830,287 @@ class GameSession  extends RangerProcessBase {
   };
   findStoryByIndex (index) {
     return this.catalog.findByIndex(index);
+  };
+  simRngNext (min, max) {
+    this.simRngState = (this.simRngState * 1103515245) + 12345;
+    if ( this.simRngState < 0 ) {
+      this.simRngState = 0 - this.simRngState;
+    }
+    const span = (max - min) + 1;
+    if ( span < 1 ) {
+      return min;
+    }
+    let pick = this.simRngState % span;
+    if ( pick < 0 ) {
+      pick = 0 - pick;
+    }
+    return min + pick;
+  };
+  simClearReport () {
+    this.simScenarioId = "";
+    this.simOutcome = "running";
+    this.simStepCount = 0;
+    this.simMinutesAccum = 0;
+    let emptyTypes = [];
+    let emptyDetails = [];
+    let emptyErrors = [];
+    this.simEventTypes = emptyTypes;
+    this.simEventDetails = emptyDetails;
+    this.simErrors = emptyErrors;
+  };
+  simLogEvent (etype, detail) {
+    this.simEventTypes.push(etype);
+    this.simEventDetails.push(detail);
+  };
+  simLogError (msg) {
+    this.simErrors.push(msg);
+    this.simOutcome = "error";
+  };
+  simEscapeJson (raw) {
+    let out = "";
+    let i = 0;
+    const n = raw.length;
+    while (i < n) {
+      const ch = raw.substring(i, (i + 1) );
+      if ( ch == "\"" ) {
+        out = out + "\\\"";
+      } else {
+        if ( ch == "\\" ) {
+          out = out + "\\\\";
+        } else {
+          out = out + ch;
+        }
+      }
+      i = i + 1;
+    };
+    return out;
+  };
+  simFieldObj (root, key) {
+    const opt = (root[key] instanceof Object ) ? root [key] : undefined ;
+    if ( typeof(opt) === "undefined" ) {
+      const blank = root;
+      return blank;
+    }
+    return opt;
+  };
+  simGrantTools (arr) {
+    let i = 0;
+    const n = arr.length;
+    while (i < n) {
+      const toolObj = this.simJson.arrayObjectAt(arr, i);
+      let toolId = this.simJson.objFieldStr(toolObj, "id");
+      if ( (toolId.length) < 1 ) {
+        toolId = this.simJson.objFieldStr(toolObj, "tool");
+      }
+      if ( (toolId.length) > 0 ) {
+        this.tools.grant(toolId);
+      }
+      i = i + 1;
+    };
+  };
+  simBootstrap (setupJson, worldJson) {
+    this.simClearReport();
+    try {
+      const setupOpt = JSON.parse(setupJson);
+      if ( typeof(setupOpt) === "undefined" ) {
+        this.simLogError("bad setup json");
+        return;
+      }
+      const setup = setupOpt;
+      let scenarioId = this.simJson.objFieldStr(setup, "id");
+      if ( (scenarioId.length) < 1 ) {
+        scenarioId = "unnamed";
+      }
+      this.simScenarioId = scenarioId;
+      let seed = this.simJson.objFieldInt(setup, "seed");
+      if ( seed < 1 ) {
+        seed = 1;
+      }
+      this.simSeed = seed;
+      this.simRngState = seed;
+      const ok = this.loadMapFromText(worldJson);
+      if ( ok == false ) {
+        this.simLogError("world load failed");
+        return;
+      }
+      this.applyScenarioSetup(setup);
+      this.simLogEvent("bootstrap", scenarioId);
+      this.markStateDirty();
+    } catch(e) {
+      this.simLogError("bad setup json");
+    }
+  };
+  applyScenarioSetup (setup) {
+    const clockMinutes = this.simJson.objFieldInt(setup, "clockMinutes");
+    if ( clockMinutes > 0 ) {
+      this.worldClock.setGameMinutes(clockMinutes);
+    }
+    const bootKarma = this.simJson.objFieldInt(setup, "bootKarma");
+    if ( bootKarma > 0 ) {
+      this.karma.add("sim:boot", bootKarma);
+    }
+    const progress = this.simFieldObj(setup, "progress");
+    this.interviewPassed = this.simJson.objFieldBool(progress, "interviewPassed");
+    this.interviewFailed = this.simJson.objFieldBool(progress, "interviewFailed");
+    this.guruIntroPassed = this.simJson.objFieldBool(progress, "guruIntroPassed");
+    this.guruStoryAttempted = this.simJson.objFieldBool(progress, "guruStoryAttempted");
+    this.guruQuizCorrect = this.simJson.objFieldInt(progress, "guruQuizCorrect");
+    this.hrWelcomeDone = this.simJson.objFieldBool(progress, "hrWelcomeDone");
+    const player = this.simFieldObj(setup, "player");
+    const floor = this.simJson.objFieldInt(player, "floor");
+    const floorCount = this._map.floorCount();
+    if ( floor >= 0 ) {
+      if ( floor < floorCount ) {
+        this._map.currentFloor = floor;
+        this._map.recomputeSize();
+      }
+    }
+    const fl = this._map.activeFloor();
+    const px = this.simJson.objFieldInt(player, "x");
+    const py = this.simJson.objFieldInt(player, "y");
+    if ( px > 0 ) {
+      this._map.playerX = px;
+    } else {
+      this._map.playerX = fl.spawnX;
+    }
+    if ( py > 0 ) {
+      this._map.playerY = py;
+    } else {
+      this._map.playerY = fl.spawnY;
+    }
+    if ( this.simJson.objFieldBool(player, "hidden") ) {
+      this._map.playerHidden = true;
+    } else {
+      this._map.playerHidden = false;
+    }
+    const toolsOpt = (setup["tools"] instanceof Array ) ? setup ["tools"] : undefined ;
+    if ( typeof(toolsOpt) === "undefined" ) {
+      const toolOne = this.simJson.objFieldStr(setup, "tool");
+      if ( (toolOne.length) > 0 ) {
+        this.tools.grant(toolOne);
+      }
+    } else {
+      this.simGrantTools(toolsOpt);
+    }
+    this._map.ensurePlayerOnWalkable();
+    this._map.tickSchedules(this.worldClock.gameMinutes);
+    this.syncHrGreeter();
+    this._map.lastStatus = "";
+    this._map.overheardMsg = "";
+  };
+  simTick (minutes) {
+    if ( minutes < 1 ) {
+      return;
+    }
+    this.worldClock.advance(minutes);
+    this._map.tickSchedules(this.worldClock.gameMinutes);
+    this.simMinutesAccum = this.simMinutesAccum + minutes;
+    this.simStepCount = this.simStepCount + 1;
+    this.simLogEvent("tick", (minutes.toString()));
+    this.markStateDirty();
+  };
+  simStep (actionJson) {
+    try {
+      const actionOpt = JSON.parse(actionJson);
+      if ( typeof(actionOpt) === "undefined" ) {
+        this.simLogError("bad action json");
+        return;
+      }
+      const action = actionOpt;
+      const tickMin = this.simJson.objFieldInt(action, "tick");
+      if ( tickMin > 0 ) {
+        this.simTick(tickMin);
+        return;
+      }
+      const moveKey = this.simJson.objFieldStr(action, "move");
+      if ( (moveKey.length) > 0 ) {
+        this.onMapKey(moveKey);
+        this.simStepCount = this.simStepCount + 1;
+        this.simLogEvent("move", moveKey);
+        this.markStateDirty();
+        return;
+      }
+      const key = this.simJson.objFieldStr(action, "key");
+      if ( (key.length) > 0 ) {
+        this.onMapKey(key);
+        this.simStepCount = this.simStepCount + 1;
+        this.simLogEvent("key", key);
+        this.markStateDirty();
+        return;
+      }
+      this.simLogError("unknown sim action");
+    } catch(e) {
+      this.simLogError("bad action json");
+    }
+  };
+  simSnapshotJson () {
+    const view = this.getMapView();
+    const onElev = this._map.isOnElevator();
+    let out = "{";
+    out = ((out + "\"screen\":\"") + this.screen) + "\",";
+    out = ((out + "\"floor\":") + ((this._map.currentFloor.toString()))) + ",";
+    out = ((((out + "\"player\":{\"x\":") + ((this._map.playerX.toString()))) + ",\"y\":") + ((this._map.playerY.toString()))) + ",\"hidden\":";
+    if ( this._map.playerHidden ) {
+      out = out + "true},";
+    } else {
+      out = out + "false},";
+    }
+    out = ((out + "\"clockMinutes\":") + ((this.worldClock.gameMinutes.toString()))) + ",";
+    out = ((out + "\"clockLine\":\"") + this.simEscapeJson(view.timeLine)) + "\",";
+    out = ((out + "\"status\":\"") + this.simEscapeJson(view.statusLine)) + "\",";
+    out = ((out + "\"ambient\":\"") + this.simEscapeJson(view.ambientLine)) + "\",";
+    const karmaTotal = this.karma.total();
+    out = ((out + "\"karma\":") + ((karmaTotal.toString()))) + ",";
+    out = ((out + "\"rngSeed\":") + ((this.simSeed.toString()))) + ",";
+    out = ((out + "\"simSteps\":") + ((this.simStepCount.toString()))) + ",";
+    out = ((out + "\"simMinutes\":") + ((this.simMinutesAccum.toString()))) + ",";
+    out = out + "\"onElevator\":";
+    if ( onElev ) {
+      out = out + "true,";
+    } else {
+      out = out + "false,";
+    }
+    out = out + "\"interviewPassed\":";
+    if ( this.interviewPassed ) {
+      out = out + "true";
+    } else {
+      out = out + "false";
+    }
+    out = out + "}";
+    return out;
+  };
+  simReportJson () {
+    if ( this.simOutcome == "running" ) {
+      this.simOutcome = "pass";
+    }
+    let out = "{";
+    out = ((out + "\"scenarioId\":\"") + this.simEscapeJson(this.simScenarioId)) + "\",";
+    out = ((out + "\"outcome\":\"") + this.simOutcome) + "\",";
+    out = ((out + "\"steps\":") + ((this.simStepCount.toString()))) + ",";
+    out = ((out + "\"simMinutes\":") + ((this.simMinutesAccum.toString()))) + ",";
+    out = ((out + "\"rngSeed\":") + ((this.simSeed.toString()))) + ",";
+    out = out + "\"eventLog\":[";
+    let i = 0;
+    const n = this.simEventTypes.length;
+    while (i < n) {
+      if ( i > 0 ) {
+        out = out + ",";
+      }
+      out = ((((((out + "{\"step\":") + ((i.toString()))) + ",\"type\":\"") + this.simEscapeJson((this.simEventTypes[i]))) + "\",\"detail\":\"") + this.simEscapeJson((this.simEventDetails[i]))) + "\"}";
+      i = i + 1;
+    };
+    out = out + "],\"errors\":[";
+    let ei = 0;
+    const en = this.simErrors.length;
+    while (ei < en) {
+      if ( ei > 0 ) {
+        out = out + ",";
+      }
+      out = ((out + "\"") + this.simEscapeJson((this.simErrors[ei]))) + "\"";
+      ei = ei + 1;
+    };
+    out = out + "]}";
+    return out;
   };
   __rangerRegisterRoot () {
     this.__rangerClassName = "GameSession";

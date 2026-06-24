@@ -22,7 +22,8 @@
     "questions:apply-choices": "node scripts/choices-apply-rewrite.mjs",
     "questions:apply-expansion": "node scripts/apply-question-expansion.mjs",
     "questions:apply-all": "node scripts/apply-question-expansion.mjs --all",
-    "test:engine": "npm run build:ranger && node test/story_engine.test.mjs && node test/player_save.test.mjs && node test/quiz_history.test.mjs && node test/study_backlog.test.mjs && node test/shuffle_choices.test.mjs && node test/stdin_hub.test.mjs && node test/map_generator.test.mjs && node test/world_map.test.mjs && node test/intro_world.test.mjs && node test/floor_access.test.mjs && node test/staff_roster.test.mjs && node test/encounter.test.mjs && node test/editor_world.test.mjs && node test/editor_storage.test.mjs",
+    "test:engine": "npm run build:ranger && node test/story_engine.test.mjs && node test/player_save.test.mjs && node test/quiz_history.test.mjs && node test/study_backlog.test.mjs && node test/shuffle_choices.test.mjs && node test/stdin_hub.test.mjs && node test/map_generator.test.mjs && node test/world_map.test.mjs && node test/intro_world.test.mjs && node test/floor_access.test.mjs && node test/staff_roster.test.mjs && node test/encounter.test.mjs && node test/editor_world.test.mjs && node test/editor_storage.test.mjs && node test/world_clock.test.mjs && node test/game_controller_elevator.test.mjs && node test/game_controller_sim.test.mjs && node test/scenario_sim.test.mjs && node test/npc_navigation.test.mjs",
+    "test:scenarios": "npm run build:ranger && node scripts/run-scenario.mjs content/scenarios/courtyard-move.json",
     "editor:server": "node editor-server/index.mjs",
     "editor": "npm run dev --workspace=editor",
     "editor:dev": "concurrently \"npm run editor:server\" \"npm run editor\"",
@@ -38,6 +39,6 @@
   ],
   "devDependencies": {
     "concurrently": "^9.1.2",
-    "ranger-compiler": "^3.1.0"
+    "ranger-compiler": "^3.1.1"
   }
 }

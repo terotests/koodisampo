@@ -227,6 +227,17 @@
         justify-content: flex-start;
         padding: 0;
       }
+      #map-wrap.map-text-view #map {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #map-wrap.map-text-view #map .map-scroll {
+        flex: 1;
+        min-height: 0;
+      }
       #map {
         border: none;
         border-radius: 0;

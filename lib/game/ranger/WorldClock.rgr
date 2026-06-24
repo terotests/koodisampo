@@ -9,6 +9,14 @@ class WorldClock {
     }
   }
 
+  fn setGameMinutes:void (minutes:int) {
+    if (minutes < 0) {
+      gameMinutes = 0
+      return
+    }
+    gameMinutes = minutes
+  }
+
   fn phaseLabel:string () {
     if (gameMinutes < 660) {
       return "aamu"

@@ -14,6 +14,8 @@ Import "../PlayerTools.rgr"
 Import "../InventoryView.rgr"
 Import "../ActionView.rgr"
 Import "../WorldClock.rgr"
+Import "JSON.rgr"
+Import "../StoryJson.rgr"
 
 class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBase {
   def karma:FeatureKarma
@@ -39,6 +41,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def guruIntroPassed:boolean false
   def guruStoryAttempted:boolean false
   def guruQuizCorrect:int 0
+  def hrWelcomeDone:boolean false
   def quizWinsForPromotion:int 0
   def worldClock:WorldClock
   def actionTargetX:int 0
@@ -54,6 +57,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def blockedTalkName:string ""
   def blockedTalkKind:string ""
   def blockedTalkStoryId:string ""
+  def simJson:StoryJson
+  def simSeed:int 0
+  def simRngState:int 1
+  def simScenarioId:string ""
+  def simOutcome:string "running"
+  def simStepCount:int 0
+  def simMinutesAccum:int 0
+  def simEventTypes:[string]
+  def simEventDetails:[string]
+  def simErrors:[string]
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -62,6 +75,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     conduct = (new PlayerConduct)
     tools = (new PlayerTools)
     worldClock = (new WorldClock)
+    simJson = (new StoryJson)
   }
 
   fn ensureEngine:void () {
@@ -110,6 +124,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn needsEncounterQuiz:boolean () {
     if (pendingEntityId == "receptionist") {
       if (interviewPassed) {
+        return false
+      }
+      return true
+    }
+    if (pendingEntityId == "hr-greeter") {
+      if (hrWelcomeDone) {
         return false
       }
       return true
@@ -166,6 +186,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         interviewPassed = true
         interviewFailed = false
         status = (status + " Sait virallisen kulkuluvan — haastattelu meni läpi!")
+        this.syncHrGreeter()
+      }
+      if (pendingEntityId == "hr-greeter") {
+        hrWelcomeDone = true
+        map.retireEntitySeek("hr-greeter")
+        status = (status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.")
       }
       map.lastStatus = status
     } {
@@ -175,6 +201,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         interviewFailed = true
         interviewPassed = false
         failStatus = (failStatus + " Haastattelu ei mennyt läpi. Voit yrittää uudelleen tai käyttää varastettua korttia — riskillä.")
+      }
+      if (pendingEntityId == "hr-greeter") {
+        hrWelcomeDone = true
+        map.retireEntitySeek("hr-greeter")
+        failStatus = (failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.")
       }
       map.lastStatus = failStatus
     }
@@ -258,6 +289,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return "Vastaanottovirkailija: \"Haastattelu ei mennyt läpi. Haluatko yrittää uudelleen?\""
       }
       return "Vastaanottovirkailija: \"Työhaastatteluun? Yksi C++-kysymys — vastaa oikein niin saat virallisen kulkuluvan.\""
+    }
+    if (pendingEntityId == "hr-greeter") {
+      if (hrWelcomeDone) {
+        return (pendingEntityName + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"")
+      }
+      return (pendingEntityName + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"")
     }
     if (this.isHostileEncounter()) {
       return (pendingEntityName + " katsoo sinua uhkaavasti. Mitä teet?")
@@ -349,9 +386,24 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (ok == false) {
       menuMessage = "Kartan lataus epäonnistui."
     }
+    this.syncHrGreeter()
     screen = "map"
     this.markStateDirty()
     return ok
+  }
+
+  fn syncHrGreeter:void () {
+    if (hrWelcomeDone) {
+      map.retireEntitySeek("hr-greeter")
+      return
+    }
+    if (interviewPassed) {
+      map.activateEntitySeek("hr-greeter" "welcome_hr")
+      return
+    }
+    if (tools.hasOfficialBadge) {
+      map.activateEntitySeek("hr-greeter" "welcome_hr")
+    }
   }
 
   fn applySave:void (featureIds:[string] featureAmounts:[int] deathCount:int) {
@@ -455,6 +507,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return
       }
       map.lastStatus = (agentResult.name + " haluaa jutella.")
+      if (agentResult.agentGoal == "welcome_hr") {
+        map.lastStatus = (agentResult.name + " löysi sinut: \"Hei — pikainen HR-tervehdys!\"")
+      }
       this.startEncounter(agentResult)
     }
   }
@@ -1112,7 +1167,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         tools.grant("official_badge")
         interviewPassed = true
         interviewFailed = false
-        map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi!"
+        map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! HR odottaa sinua 2. kerroksella."
+        this.syncHrGreeter()
       } {
         interviewFailed = true
         interviewPassed = false
@@ -1711,5 +1767,299 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn findStoryByIndex:StorySummary (index:int) {
     return (catalog.findByIndex(index))
+  }
+
+  fn simRngNext:int (min:int max:int) {
+    simRngState = (simRngState * 1103515245) + 12345
+    if (simRngState < 0) {
+      simRngState = 0 - simRngState
+    }
+    def span:int ((max - min) + 1)
+    if (span < 1) {
+      return min
+    }
+    def pick:int (simRngState % span)
+    if (pick < 0) {
+      pick = 0 - pick
+    }
+    return min + pick
+  }
+
+  fn simClearReport:void () {
+    simScenarioId = ""
+    simOutcome = "running"
+    simStepCount = 0
+    simMinutesAccum = 0
+    def emptyTypes:[string]
+    def emptyDetails:[string]
+    def emptyErrors:[string]
+    simEventTypes = emptyTypes
+    simEventDetails = emptyDetails
+    simErrors = emptyErrors
+  }
+
+  fn simLogEvent:void (etype:string detail:string) {
+    push simEventTypes etype
+    push simEventDetails detail
+  }
+
+  fn simLogError:void (msg:string) {
+    push simErrors msg
+    simOutcome = "error"
+  }
+
+  fn simEscapeJson:string (raw:string) {
+    def out:string ""
+    def i:int 0
+    def n:int (strlen raw)
+    while (i < n) {
+      def ch:string (substring raw i (i + 1))
+      if (ch == "\"") {
+        out = (out + "\\\"")
+      } {
+        if (ch == "\\") {
+          out = (out + "\\\\")
+        } {
+          out = (out + ch)
+        }
+      }
+      i = i + 1
+    }
+    return out
+  }
+
+  fn simFieldObj:JSONDataObject (root:JSONDataObject key:string) {
+    def opt@(optional):JSONDataObject (getObject root key)
+    if (null? opt) {
+      def blank:JSONDataObject (root)
+      return blank
+    }
+    return (unwrap opt)
+  }
+
+  fn simGrantTools:void (arr:JSONArrayObject) {
+    def i:int 0
+    def n:int (array_length arr)
+    while (i < n) {
+      def toolObj:JSONDataObject (simJson.arrayObjectAt(arr i))
+      def toolId:string (simJson.objFieldStr(toolObj "id"))
+      if ((strlen toolId) < 1) {
+        toolId = (simJson.objFieldStr(toolObj "tool"))
+      }
+      if ((strlen toolId) > 0) {
+        tools.grant(toolId)
+      }
+      i = i + 1
+    }
+  }
+
+  fn simBootstrap:void (setupJson:string worldJson:string) {
+    this.simClearReport()
+    try {
+      def setupOpt@(optional):JSONDataObject (from_string setupJson)
+      if (null? setupOpt) {
+        this.simLogError("bad setup json")
+        return
+      }
+      def setup:JSONDataObject (unwrap setupOpt)
+      def scenarioId:string (simJson.objFieldStr(setup "id"))
+      if ((strlen scenarioId) < 1) {
+        scenarioId = "unnamed"
+      }
+      simScenarioId = scenarioId
+      def seed:int (simJson.objFieldInt(setup "seed"))
+      if (seed < 1) {
+        seed = 1
+      }
+      simSeed = seed
+      simRngState = seed
+      def ok:boolean (this.loadMapFromText(worldJson))
+      if (ok == false) {
+        this.simLogError("world load failed")
+        return
+      }
+      this.applyScenarioSetup(setup)
+      this.simLogEvent("bootstrap" scenarioId)
+      this.markStateDirty()
+    } {
+      this.simLogError("bad setup json")
+    }
+  }
+
+  fn applyScenarioSetup:void (setup:JSONDataObject) {
+    def clockMinutes:int (simJson.objFieldInt(setup "clockMinutes"))
+    if (clockMinutes > 0) {
+      worldClock.setGameMinutes(clockMinutes)
+    }
+    def bootKarma:int (simJson.objFieldInt(setup "bootKarma"))
+    if (bootKarma > 0) {
+      karma.add("sim:boot" bootKarma)
+    }
+    def progress:JSONDataObject (this.simFieldObj(setup "progress"))
+    interviewPassed = (simJson.objFieldBool(progress "interviewPassed"))
+    interviewFailed = (simJson.objFieldBool(progress "interviewFailed"))
+    guruIntroPassed = (simJson.objFieldBool(progress "guruIntroPassed"))
+    guruStoryAttempted = (simJson.objFieldBool(progress "guruStoryAttempted"))
+    guruQuizCorrect = (simJson.objFieldInt(progress "guruQuizCorrect"))
+    hrWelcomeDone = (simJson.objFieldBool(progress "hrWelcomeDone"))
+    def player:JSONDataObject (this.simFieldObj(setup "player"))
+    def floor:int (simJson.objFieldInt(player "floor"))
+    def floorCount:int (map.floorCount())
+    if (floor >= 0) {
+      if (floor < floorCount) {
+        map.currentFloor = floor
+        map.recomputeSize()
+      }
+    }
+    def fl:MapFloor (map.activeFloor())
+    def px:int (simJson.objFieldInt(player "x"))
+    def py:int (simJson.objFieldInt(player "y"))
+    if (px > 0) {
+      map.playerX = px
+    } {
+      map.playerX = fl.spawnX
+    }
+    if (py > 0) {
+      map.playerY = py
+    } {
+      map.playerY = fl.spawnY
+    }
+    if (simJson.objFieldBool(player "hidden")) {
+      map.playerHidden = true
+    } {
+      map.playerHidden = false
+    }
+    def toolsOpt@(optional):JSONArrayObject (getArray setup "tools")
+    if (null? toolsOpt) {
+      def toolOne:string (simJson.objFieldStr(setup "tool"))
+      if ((strlen toolOne) > 0) {
+        tools.grant(toolOne)
+      }
+    } {
+      this.simGrantTools((unwrap toolsOpt))
+    }
+    map.ensurePlayerOnWalkable()
+    map.tickSchedules(worldClock.gameMinutes)
+    this.syncHrGreeter()
+    map.lastStatus = ""
+    map.overheardMsg = ""
+  }
+
+  fn simTick:void (minutes:int) {
+    if (minutes < 1) {
+      return
+    }
+    worldClock.advance(minutes)
+    map.tickSchedules(worldClock.gameMinutes)
+    simMinutesAccum = simMinutesAccum + minutes
+    simStepCount = simStepCount + 1
+    this.simLogEvent("tick" (to_string minutes))
+    this.markStateDirty()
+  }
+
+  fn simStep:void (actionJson:string) {
+    try {
+      def actionOpt@(optional):JSONDataObject (from_string actionJson)
+      if (null? actionOpt) {
+        this.simLogError("bad action json")
+        return
+      }
+      def action:JSONDataObject (unwrap actionOpt)
+      def tickMin:int (simJson.objFieldInt(action "tick"))
+      if (tickMin > 0) {
+        this.simTick(tickMin)
+        return
+      }
+      def moveKey:string (simJson.objFieldStr(action "move"))
+      if ((strlen moveKey) > 0) {
+        this.onMapKey(moveKey)
+        simStepCount = simStepCount + 1
+        this.simLogEvent("move" moveKey)
+        this.markStateDirty()
+        return
+      }
+      def key:string (simJson.objFieldStr(action "key"))
+      if ((strlen key) > 0) {
+        this.onMapKey(key)
+        simStepCount = simStepCount + 1
+        this.simLogEvent("key" key)
+        this.markStateDirty()
+        return
+      }
+      this.simLogError("unknown sim action")
+    } {
+      this.simLogError("bad action json")
+    }
+  }
+
+  fn simSnapshotJson:string () {
+    def view:MapView (this.getMapView())
+    def onElev:boolean (map.isOnElevator())
+    def out:string "{"
+    out = (out + "\"screen\":\"" + screen + "\",")
+    out = (out + "\"floor\":" + (to_string map.currentFloor) + ",")
+    out = (out + "\"player\":{\"x\":" + (to_string map.playerX) + ",\"y\":" + (to_string map.playerY) + ",\"hidden\":")
+    if (map.playerHidden) {
+      out = (out + "true},")
+    } {
+      out = (out + "false},")
+    }
+    out = (out + "\"clockMinutes\":" + (to_string worldClock.gameMinutes) + ",")
+    out = (out + "\"clockLine\":\"" + (this.simEscapeJson(view.timeLine)) + "\",")
+    out = (out + "\"status\":\"" + (this.simEscapeJson(view.statusLine)) + "\",")
+    out = (out + "\"ambient\":\"" + (this.simEscapeJson(view.ambientLine)) + "\",")
+    def karmaTotal:int (karma.total())
+    out = (out + "\"karma\":" + (to_string karmaTotal) + ",")
+    out = (out + "\"rngSeed\":" + (to_string simSeed) + ",")
+    out = (out + "\"simSteps\":" + (to_string simStepCount) + ",")
+    out = (out + "\"simMinutes\":" + (to_string simMinutesAccum) + ",")
+    out = (out + "\"onElevator\":")
+    if (onElev) {
+      out = (out + "true,")
+    } {
+      out = (out + "false,")
+    }
+    out = (out + "\"interviewPassed\":")
+    if (interviewPassed) {
+      out = (out + "true")
+    } {
+      out = (out + "false")
+    }
+    out = (out + "}")
+    return out
+  }
+
+  fn simReportJson:string () {
+    if (simOutcome == "running") {
+      simOutcome = "pass"
+    }
+    def out:string "{"
+    out = (out + "\"scenarioId\":\"" + (this.simEscapeJson(simScenarioId)) + "\",")
+    out = (out + "\"outcome\":\"" + simOutcome + "\",")
+    out = (out + "\"steps\":" + (to_string simStepCount) + ",")
+    out = (out + "\"simMinutes\":" + (to_string simMinutesAccum) + ",")
+    out = (out + "\"rngSeed\":" + (to_string simSeed) + ",")
+    out = (out + "\"eventLog\":[")
+    def i:int 0
+    def n:int (array_length simEventTypes)
+    while (i < n) {
+      if (i > 0) {
+        out = (out + ",")
+      }
+      out = (out + "{\"step\":" + (to_string i) + ",\"type\":\"" + (this.simEscapeJson((at simEventTypes i))) + "\",\"detail\":\"" + (this.simEscapeJson((at simEventDetails i))) + "\"}")
+      i = i + 1
+    }
+    out = (out + "],\"errors\":[")
+    def ei:int 0
+    def en:int (array_length simErrors)
+    while (ei < en) {
+      if (ei > 0) {
+        out = (out + ",")
+      }
+      out = (out + "\"" + (this.simEscapeJson((at simErrors ei))) + "\"")
+      ei = ei + 1
+    }
+    out = (out + "]}")
+    return out
   }
 }

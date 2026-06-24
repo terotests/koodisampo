@@ -1,0 +1,16 @@
+{
+  "id": "courtyard-move",
+  "seed": 42,
+  "world": "corporate-hq-intro.json",
+  "setup": {
+    "clockMinutes": 480,
+    "bootKarma": 50,
+    "player": { "floor": 0 }
+  },
+  "script": [
+    { "move": "d" },
+    { "move": "d" },
+    { "tick": 15 },
+    { "assert": { "playerXMin": 14, "clockMinutesMin": 495 } }
+  ]
+}

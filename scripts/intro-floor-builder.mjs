@@ -269,6 +269,19 @@ export function buildOfficeCafeteriaFloor() {
 
   const entities = [
     {
+      id: "hr-greeter",
+      char: "H",
+      name: "HR — Liisa",
+      kind: "role",
+      x: 12,
+      y: 24,
+      behavior: "seek_player",
+      agenda: "welcome_hr",
+      sociability: 90,
+      isAgent: 1,
+      offDuty: 1,
+    },
+    {
       id: "mentor", char: "G", name: "Senior-guru", kind: "guru",
       x: 12, y: 5, homeX: 12, homeY: 5, scheduleRole: "mentor",
     },

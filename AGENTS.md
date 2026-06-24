@@ -42,7 +42,15 @@ node node_modules/ranger-compiler/dist/rgrc.js \
 
 with `RANGER_LIB` pointing at `node_modules/ranger-compiler/dist/Lang.rgr` and `dist/lib/`.
 
-**Fallback:** if `ranger-compiler` is missing but `../agent/Ranger/bin/output.js` exists (local monorepo), the script uses the sibling checkout instead.
+**Fallback (optional):** set `RANGER_USE_LOCAL=1` to use `../agent/Ranger/bin/output.js` when developing the compiler itself.
+
+### Kotlin (Android)
+
+```bash
+node scripts/build-ranger-kotlin.mjs
+```
+
+Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Android sync: `android/scripts/sync-ranger.mjs`.
 
 ## Project layout
 
@@ -97,4 +105,10 @@ npm run test:engine
 
 ## Local monorepo (optional)
 
-Developers with `proj/agent/Ranger` next to `proj/koodisampo` can use `npm run compile` in Ranger instead of npm. The build script prefers npm when installed, then falls back to the sibling checkout.
+Developers with `proj/agent/Ranger` next to `proj/koodisampo` can force the sibling compiler:
+
+```bash
+RANGER_USE_LOCAL=1 npm run build:ranger
+```
+
+Default is always npm `ranger-compiler` when installed.

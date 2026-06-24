@@ -42,6 +42,9 @@ import {
 } from "../terminal/personStatus.mjs";
 import { buildMenuItems, menuItemByNumber } from "../terminal/storyMenu.mjs";
 import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
+import { buildElevatorSnapshot } from "./gameController/elevatorSnapshot.mjs";
+import { checkElevatorKeyGate } from "./gameController/elevatorKeyGate.mjs";
+import { createElevatorUiState } from "./gameController/elevatorUiState.mjs";
 
 /**
  * @param {{
@@ -99,6 +102,7 @@ export function createWebGameController(deps) {
   /** @type {null | Record<string, unknown>} */
   let activeStory = null;
   let castListOpen = false;
+  const elevatorUi = createElevatorUiState();
 
   dispatch(session, () => {
     session.loadMapFromText(mapJson);
@@ -124,6 +128,7 @@ export function createWebGameController(deps) {
   overlay = null;
   activeStory = null;
   castListOpen = false;
+  elevatorUi.reset();
   resetQuizSession();
     if (keepProgress) {
       const disk = loadSave();
@@ -423,29 +428,6 @@ function serializeActionPanel(view) {
   };
 }
 
-function elevatorFloorKey(index) {
-  return index === 9 ? "0" : String(index + 1);
-}
-
-function buildElevatorSnapshot(map) {
-  if (!map?.isOnElevator?.()) {
-    return { onElevator: false, floors: [] };
-  }
-  const count = Math.min(map.floorCount?.() ?? 0, 10);
-  const floors = [];
-  for (let i = 0; i < count; i += 1) {
-    const floor = map.floors?.[i];
-    floors.push({
-      key: elevatorFloorKey(i),
-      index: i,
-      title: floor?.title || `Kerros ${i + 1}`,
-      current: i === map.currentFloor,
-      hasElevator: map.findElevatorOnFloor?.(i) ?? false,
-    });
-  }
-  return { onElevator: true, floors };
-}
-
 function snapshot() {
   const map = sessionMap(session);
   const cast = collectAllCastFromSession(session);
@@ -480,6 +462,7 @@ function snapshot() {
   if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover") {
     const view = session.getMapView();
     const elevator = buildElevatorSnapshot(map);
+    elevatorUi.syncOnElevator(elevator.onElevator);
     const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
     const mapDisplay = applyMapPersonDisplay(view.lines, map, personRegistryState, {
       x: view.cameraX,
@@ -498,6 +481,7 @@ function snapshot() {
       camera: { x: view.cameraX, y: view.cameraY },
       onElevator: elevator.onElevator,
       elevatorFloors: elevator.floors,
+      elevatorPickerCollapsed: elevatorUi.pickerCollapsed,
       floorRecommendation: floorRec,
       ...(overlay ? { overlay: serializeOverlay(overlay) } : {}),
     };
@@ -907,27 +891,21 @@ function handleKey(key) {
 
   if (session.screen === "map" && /^[0-9]$/.test(key)) {
     const map = sessionMap(session);
-    if (map?.isOnElevator?.()) {
-      const target = elevatorKeyToFloorIndex(key);
-      if (target >= 0 && target > (map.currentFloor ?? 0)) {
-        let allowed = true;
-        dispatch(session, () => {
-          allowed = session.canAccessFloor(target);
-        });
-        if (allowed) {
-          const recCheck = checkFloorRecommendationAccess(session, personRegistryState, target);
-          if (!recCheck.ok) {
-            dispatch(session, () => {
-              map.lastStatus = recCheck.message;
-            });
-            return;
-          }
-        }
-      }
+    const gate = checkElevatorKeyGate(session, map, personRegistryState, key);
+    if (!gate.proceed) {
+      dispatch(session, () => {
+        map.lastStatus = gate.message;
+      });
+      elevatorUi.collapseAfterElevatorKey(key, map?.isOnElevator?.() ?? false);
+      return;
     }
   }
 
   dispatch(session, () => session.onMapKey(key));
+  if (session.screen === "map") {
+    const map = sessionMap(session);
+    elevatorUi.collapseAfterElevatorKey(key, map?.isOnElevator?.() ?? false);
+  }
   persistWeb();
   if (session.screen === "map" && session.encounterResult === "action_story") {
     tryStartActionStory();
@@ -941,6 +919,9 @@ function handleKey(key) {
     snapshot,
     handleKey,
     handleStoryCode,
+    expandElevatorPicker: () => {
+      elevatorUi.expand();
+    },
     reset: resetWebSession,
     stop: () => stopGameSession(root, session),
   };

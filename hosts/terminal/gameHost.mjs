@@ -45,13 +45,18 @@ export function stopGameSession(root, session) {
 }
 
 export function dispatch(session, work) {
-  const turnRoot = session.__rangerFindRoot();
-  ProcessRuntime.beginDispatchTurn(turnRoot);
-  try {
-    work();
-  } finally {
-    ProcessRuntime.endDispatchTurn(turnRoot);
+  const findRoot = session.__rangerFindRoot;
+  const turnRoot = typeof findRoot === "function" ? findRoot.call(session) : session;
+  if (typeof ProcessRuntime.beginDispatchTurn === "function") {
+    ProcessRuntime.beginDispatchTurn(turnRoot);
+    try {
+      work();
+    } finally {
+      ProcessRuntime.endDispatchTurn(turnRoot);
+    }
+    return;
   }
+  work();
 }
 
 export function sendMapKey(session, keyName) {

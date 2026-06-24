@@ -48,23 +48,11 @@ export function mountGameUI(game: WebGame) {
 ╚══════════════════════════════════════════════════╝`;
 
     function sendKey(key: string) {
-      const before = game.snapshot();
       game.handleKey(key);
-      const after = game.snapshot();
-      if (
-        isMobileLayout()
-        && before.onElevator
-        && /^[0-9]$/.test(key)
-        && after.floor !== before.floor
-      ) {
-        elevatorPickerCollapsed = true;
-      }
       lastRenderKey = "";
-      render(after);
+      render(game.snapshot());
     }
 
-    let elevatorPickerCollapsed = false;
-    let wasOnElevator = false;
     let copyStatusTimeout = 0;
     let lastRenderKey = "";
     let currentStudyListText = "";
@@ -198,11 +186,15 @@ export function mountGameUI(game: WebGame) {
 
     function setMapContent(html: string) {
       if (!mapEl) return;
-      if (mapEl.querySelector("[data-map-shell]")) {
-        clearMapView(mapEl);
-      }
+      clearMapView(mapEl);
       setMapTextView(true);
+      setMobilePlayView(false);
       setScrollContent(mapEl, html);
+      if (isMobileLayout()) {
+        document.documentElement.style.removeProperty("--map-cols");
+        document.documentElement.style.removeProperty("--map-rows");
+        document.documentElement.style.removeProperty("--map-cell-px");
+      }
     }
 
     function renderMapLines(state: State, lines: string[]) {
@@ -453,13 +445,7 @@ export function mountGameUI(game: WebGame) {
 
     function renderMapToolbar(state?: State) {
       const onElevator = Boolean(state?.onElevator);
-      if (!onElevator) {
-        elevatorPickerCollapsed = false;
-        wasOnElevator = false;
-      } else if (!wasOnElevator) {
-        elevatorPickerCollapsed = false;
-      }
-      wasOnElevator = onElevator;
+      const elevatorPickerCollapsed = Boolean(state?.elevatorPickerCollapsed);
 
       if (isMobileLayout()) {
         const toolbarKey = `${state?.screen ?? "map"}-${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}`;
@@ -479,7 +465,7 @@ export function mountGameUI(game: WebGame) {
               floors: state?.elevatorFloors,
               pickerCollapsed: elevatorPickerCollapsed,
             }, () => {
-              elevatorPickerCollapsed = false;
+              game.expandElevatorPicker?.();
               lastRenderKey = "";
               render(game.snapshot());
             });
@@ -528,7 +514,7 @@ export function mountGameUI(game: WebGame) {
         state.story?.screen ?? "",
         state.story?.nodeKind ?? "",
         state.story?.currentNodeId ?? "",
-        elevatorPickerCollapsed ? "1" : "0",
+        state.elevatorPickerCollapsed ? "1" : "0",
       ].join("|");
     }
 
@@ -671,6 +657,7 @@ export function mountGameUI(game: WebGame) {
           html += `<div class="overlay-title ${panel.resultOk ? "ok" : "bad"}">═══ Tulos ═══</div>`;
           html += `<div class="greeting">${esc(panel.resultMessage || "")}</div>`;
           html += continueRow("enter", "Jatka →");
+          if (!mapEl) return;
           setMapContent(html);
           if (isMobileLayout()) {
             hideMobileChoiceToolbar();
@@ -699,6 +686,7 @@ export function mountGameUI(game: WebGame) {
           }
           html += choiceRow(String(n), `<span class="choice-num muted">[${n}]</span> Peruuta`, "muted");
           toolbar.push({ key: String(n), label: `${n} peru`, cls: "muted" });
+          if (!mapEl) return;
           setMapContent(html);
           if (isMobileLayout()) {
             hideMobileChoiceToolbar();
@@ -714,6 +702,7 @@ export function mountGameUI(game: WebGame) {
           html += choiceRow(String(item.n), `<span class="choice-num">[${item.n}]</span> ${esc(item.label)}`);
         }
         html += choiceRow("4", '<span class="choice-num muted">[4]</span> Peruuta', "muted");
+        if (!mapEl) return;
         setMapContent(html);
         if (isMobileLayout()) {
           hideMobileChoiceToolbar();

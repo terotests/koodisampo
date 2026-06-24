@@ -319,7 +319,9 @@ export function syncMobileMapScale(lines: string[], anchor?: HTMLElement | null)
     || document.documentElement.clientWidth
     || window.innerWidth;
   const viewportH = window.innerHeight;
-  const chromeH = 230;
+  const messageBar = document.getElementById("message-bar");
+  const messageBarH = messageBar && !messageBar.hidden ? messageBar.offsetHeight : 0;
+  const chromeH = 230 + messageBarH;
   const byWidth = viewportW / cols;
   const byHeight = Math.max((viewportH - chromeH) / rows / 1.05, 8);
   const cellPx = Math.min(byWidth, byHeight);
