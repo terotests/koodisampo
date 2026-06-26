@@ -145,6 +145,326 @@
       "sourceUrl": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
       "featureId": "git:flaky-tests",
       "featurePoints": 4
+    },
+    {
+      "id": "git-cherry-pick-conflict",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Haluat tuoda yksittäisen commitin toisesta branchista ilman koko haaran mergeä. Mikä komento?",
+      "choices": [
+        { "text": "git cherry-pick <commit-sha> kopioi yksittäisen commitin nykyiselle branchille", "correct": true },
+        { "text": "git merge --squash <branch> tuo vain yhden commitin kerrallaan ilman muita muutoksia", "correct": false },
+        { "text": "git rebase <branch> siirtää kaikki commitit ja valitsee yhden automaattisesti", "correct": false },
+        { "text": "git checkout <branch> -- . kopioi yhden commitin diff:n työhakemistoon", "correct": false }
+      ],
+      "correctFeedback": "cherry-pick kopioi yksittäisen commitin muutokset uudeksi commitiksi nykyiseen branchiin.",
+      "wrongFeedback": "merge ja rebase tuovat aina useita committeja. cherry-pick on yksittäisille.",
+      "sourceRef": "git-scm/docs/git-cherry-pick",
+      "sourceUrl": "https://git-scm.com/docs/git-cherry-pick",
+      "featureId": "git:cherry-pick",
+      "featurePoints": 3
+    },
+    {
+      "id": "git-stash-workflow",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Keskeneräinen työ pitää siirtää sivuun nopeasti ilman committia esim. branchin vaihdon ajaksi. Miten?",
+      "choices": [
+        { "text": "git stash tallentaa uncommitted-muutokset ja palauttaa puhtaan working treen", "correct": true },
+        { "text": "git reset --soft HEAD~1 piilottaa muutokset väliaikaisesti staging-alueelle", "correct": false },
+        { "text": "git commit --amend --no-edit tallentaa työn väliaikaiseksi piilocommitiksi", "correct": false },
+        { "text": "git clean -fd poistaa muutokset turvallisesti ja voit palauttaa ne myöhemmin", "correct": false }
+      ],
+      "correctFeedback": "git stash push/pop on tarkoitettu juuri väliaikaiseen muutosten säilömiseen.",
+      "wrongFeedback": "reset ja clean ovat tuhoavia toimintoja. stash säilöö muutokset pinoon.",
+      "sourceRef": "git-scm/docs/git-stash",
+      "sourceUrl": "https://git-scm.com/docs/git-stash",
+      "featureId": "git:stash",
+      "featurePoints": 3
+    },
+    {
+      "id": "git-rebase-interactive",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Feature-branchissa on 5 pientä committia jotka pitäisi yhdistää siistiksi ennen PR:n luontia. Mikä toimii?",
+      "choices": [
+        { "text": "git rebase -i HEAD~5 — squash/fixup yhdistää commitit interaktiivisesti", "correct": true },
+        { "text": "git merge --squash HEAD~5 tiivistää viimeiset commitit yhteen automaattisesti", "correct": false },
+        { "text": "git commit --amend yhdistää kaikki viisi committia edelliseen kerralla", "correct": false },
+        { "text": "git reset --hard HEAD~5 && git commit tiivistää historian turvallisesti", "correct": false }
+      ],
+      "correctFeedback": "Interaktiivinen rebase antaa squashata, muokata ja järjestää committeja.",
+      "wrongFeedback": "amend muokkaa vain viimeistä committia. rebase -i käsittelee monta.",
+      "sourceRef": "git-scm/docs/git-rebase",
+      "sourceUrl": "https://git-scm.com/docs/git-rebase#_interactive_mode",
+      "featureId": "git:rebase-interactive",
+      "featurePoints": 4
+    },
+    {
+      "id": "git-reflog-recovery",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat ne?",
+      "choices": [
+        { "text": "git reflog näyttää HEAD-historian — löydä sha ja git checkout/reset siihen", "correct": true },
+        { "text": "git log --all näyttää aina kaikki commitit mukaan lukien resetoidut", "correct": false },
+        { "text": "git fsck palauttaa automaattisesti kadonneet commitit working treehen", "correct": false },
+        { "text": "git stash pop palauttaa viimeisimmän resetin kumoamat muutokset", "correct": false }
+      ],
+      "correctFeedback": "reflog tallentaa jokaisen HEAD-muutoksen — committeja voi palauttaa ~30 päivän ajan.",
+      "wrongFeedback": "git log ei näytä orpoja committeja. reflog on pelastusrengas.",
+      "sourceRef": "git-scm/docs/git-reflog",
+      "sourceUrl": "https://git-scm.com/docs/git-reflog",
+      "featureId": "git:reflog",
+      "featurePoints": 4
+    },
+    {
+      "id": "git-reset-vs-revert",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Viimeisin commit mainiin on buginen ja kollegat ovat jo pullanneet sen. Miten korjaat turvallisesti?",
+      "choices": [
+        { "text": "git revert <sha> luo käänteisen commitin tuhoamatta jaettua historiaa", "correct": true },
+        { "text": "git reset --hard HEAD~1 && force push korjaa historian kaikille nopeimmin", "correct": false },
+        { "text": "git commit --amend korjaa julkaistun commitin ilman uutta committia", "correct": false },
+        { "text": "git checkout HEAD~1 palauttaa edellisen tilan ja jakaa sen kaikille automaattisesti", "correct": false }
+      ],
+      "correctFeedback": "revert on turvallinen jaetulla branchilla — se ei kirjoita historiaa uudelleen.",
+      "wrongFeedback": "force push julkaistulla branchilla rikkoo kollegoiden paikallisen repon.",
+      "sourceRef": "git-scm/docs/git-revert",
+      "sourceUrl": "https://git-scm.com/docs/git-revert",
+      "featureId": "git:revert",
+      "featurePoints": 3
+    },
+    {
+      "id": "git-merge-conflict-resolve",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnkulku konfliktin ratkaisemiseksi?",
+      "choices": [
+        { "text": "Muokkaa konfliktoiva tiedosto, poista <<<< ==== >>>> merkit, git add ja git commit", "correct": true },
+        { "text": "git merge --abort && git merge --force ohittaa konfliktit automaattisesti", "correct": false },
+        { "text": "Poista konfliktoiva tiedosto ja commitoi — Git luo sen uudelleen mergestä", "correct": false },
+        { "text": "git reset --mixed palauttaa tilan ennen mergeä ja soveltaa muutokset uudelleen", "correct": false }
+      ],
+      "correctFeedback": "Konfliktien ratkaisu vaatii manuaalista muokkausta ja uutta committia.",
+      "wrongFeedback": "--force ei ole merge-optio. Ratko konfliktit, add ja commit.",
+      "sourceRef": "git-scm/docs/git-merge",
+      "sourceUrl": "https://git-scm.com/docs/git-merge#_how_conflicts_are_presented",
+      "featureId": "git:merge-conflict",
+      "featurePoints": 3
+    },
+    {
+      "id": "git-log-filtering",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Haluat nähdä vain yhden tiedoston muutoshistorian viimeisen kuukauden ajalta. Mikä komento?",
+      "choices": [
+        { "text": "git log --since='1 month ago' -- path/to/file.js rajaa ajan ja tiedoston", "correct": true },
+        { "text": "git blame path/to/file.js näyttää kaikki commitit aikarajauksella automaattisesti", "correct": false },
+        { "text": "git diff --stat --since='1 month' näyttää tiedoston commit-historian", "correct": false },
+        { "text": "git show --follow path/to/file.js listaa muutokset kuukauden ajalta", "correct": false }
+      ],
+      "correctFeedback": "git log tukee --since/--until ja polkufiltteriä -- <path> yhdessä.",
+      "wrongFeedback": "blame näyttää rivi kerrallaan. log + polkufiltteri näyttää commit-historian.",
+      "sourceRef": "git-scm/docs/git-log",
+      "sourceUrl": "https://git-scm.com/docs/git-log",
+      "featureId": "git:log-filter",
+      "featurePoints": 3
+    },
+    {
+      "id": "git-tag-release",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "project-lead"],
+      "prompt": "Release pitää merkitä niin että CI voi triggata deployment tietystä versiosta. Mikä on paras tapa?",
+      "choices": [
+        { "text": "git tag -a v1.2.0 -m 'Release 1.2.0' luo annotoidun tagin josta CI voi trigata", "correct": true },
+        { "text": "git branch release-v1.2.0 luo branchin joka toimii samoin kuin tag CI:ssä", "correct": false },
+        { "text": "git commit --message='v1.2.0' merkitsee version riittävästi CI-pipelinelle", "correct": false },
+        { "text": "git notes add -m 'v1.2.0' kiinnittää version commitiin CI:tä varten", "correct": false }
+      ],
+      "correctFeedback": "Annotoidut tagit ovat parhaita release-merkintöjä — sisältävät metadatan ja ovat pushattavissa.",
+      "wrongFeedback": "Branch ei ole sama kuin tag. Annotated tag on immutable versio-osoitin.",
+      "sourceRef": "git-scm/docs/git-tag",
+      "sourceUrl": "https://git-scm.com/docs/git-tag",
+      "featureId": "git:tag",
+      "featurePoints": 3
+    },
+    {
+      "id": "jenkins-pipeline-stages",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "project-lead", "guru"],
+      "prompt": "Jenkins Declarative Pipelinessa build, test ja deploy tulisi ajaa peräkkäin. Mikä rakenne Jenkinsfilessä?",
+      "choices": [
+        { "text": "pipeline { stages { stage('Build') {...} stage('Test') {...} stage('Deploy') {...} } }", "correct": true },
+        { "text": "node { build(); test(); deploy(); } — funktioita kutsutaan järjestyksessä", "correct": false },
+        { "text": "freestyle project → lisää build step jokaiselle vaiheelle UI:sta", "correct": false },
+        { "text": "pipeline { parallel { stage('Build') stage('Test') stage('Deploy') } }", "correct": false }
+      ],
+      "correctFeedback": "Declarative pipeline käyttää stages-lohkoa peräkkäisiin vaiheisiin.",
+      "wrongFeedback": "node {} on scripted syntax. Declarative pipeline käyttää stages {}.",
+      "sourceRef": "jenkins.io/doc/book/pipeline/syntax",
+      "sourceUrl": "https://www.jenkins.io/doc/book/pipeline/syntax/",
+      "featureId": "git:jenkins-pipeline",
+      "featurePoints": 4
+    },
+    {
+      "id": "jenkins-shared-library",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 5,
+      "audiences": ["guru", "project-lead"],
+      "prompt": "Useassa Jenkins-projektissa toistetaan samaa pipeline-logiikkaa. Miten vältetään kopiointi?",
+      "choices": [
+        { "text": "Shared Library — organisaation Git-repo josta @Library-annotaatiolla tuodaan funktioita", "correct": true },
+        { "text": "Kopioi Jenkinsfile-fragmentti jokaiseen repoon ja päivitä manuaalisesti muuttuessa", "correct": false },
+        { "text": "Jenkins Global Tool Configuration asentaa jaetut skriptit jokaiselle agentille", "correct": false },
+        { "text": "Multibranch Pipeline jakaa automaattisesti staget kaikkien repojen kesken", "correct": false }
+      ],
+      "correctFeedback": "Shared Libraries keskittävät CI-logiikan yhteen repoon joka versionhallitaan.",
+      "wrongFeedback": "Kopiointi ei skaalaudu. Shared Library on Jenkinsin mekanismi jaetulle logiikalle.",
+      "sourceRef": "jenkins.io/doc/book/pipeline/shared-libraries",
+      "sourceUrl": "https://www.jenkins.io/doc/book/pipeline/shared-libraries/",
+      "featureId": "git:jenkins-shared-lib",
+      "featurePoints": 5
+    },
+    {
+      "id": "jenkins-agent-label",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "project-lead"],
+      "prompt": "Jenkins-pipeline pitää ajaa tietyllä agentilla jossa on Docker asennettuna. Miten määrität sen?",
+      "choices": [
+        { "text": "agent { label 'docker' } kohdistaa pipelinen agentille jolla on kyseinen label", "correct": true },
+        { "text": "node('any') ajaa automaattisesti Docker-agentilla jos sellainen on vapaana", "correct": false },
+        { "text": "agent any valitsee aina Docker-agentin ensisijaisesti muiden edelle", "correct": false },
+        { "text": "tools { docker 'latest' } asentaa Dockerin mille tahansa agentille ajon aikana", "correct": false }
+      ],
+      "correctFeedback": "agent { label } kohdistaa buildin oikeaan ympäristöön labelien perusteella.",
+      "wrongFeedback": "agent any ei takaa Docker-tukea. Label ohjaa oikealle agentille.",
+      "sourceRef": "jenkins.io/doc/book/pipeline/syntax/#agent",
+      "sourceUrl": "https://www.jenkins.io/doc/book/pipeline/syntax/#agent",
+      "featureId": "git:jenkins-agent",
+      "featurePoints": 3
+    },
+    {
+      "id": "ci-parallel-stages",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "CI-pipelinessa unit-testit ja lintterit voitaisiin ajaa rinnakkain nopeuttamaan buildia. Miten toteutat?",
+      "choices": [
+        { "text": "parallel-lohko tai matrix strategy ajaa riippumattomat vaiheen rinnakkain", "correct": true },
+        { "text": "Lisää molemmat samaan stage-skriptiin — shell ajaa ne luontaisesti rinnakkain", "correct": false },
+        { "text": "Luo kaksi erillistä pipelinea ja triggeroi ne samasta webhookista ajastettuina", "correct": false },
+        { "text": "Poista lintteri testivaiheesta koska se hidastaa aina buildeja tarpeettomasti", "correct": false }
+      ],
+      "correctFeedback": "parallel-vaiheet (Jenkins/GitHub Actions matrix) hyödyntävät resursseja tehokkaasti.",
+      "wrongFeedback": "Yksi shell-skripti ajaa peräkkäin ellei tausta & käytetä, mikä ei anna virheraporttia.",
+      "sourceRef": "jenkins.io/doc/book/pipeline/syntax/#parallel",
+      "sourceUrl": "https://www.jenkins.io/doc/book/pipeline/syntax/#parallel",
+      "featureId": "git:ci-parallel",
+      "featurePoints": 4
+    },
+    {
+      "id": "ci-artifact-retention",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": ["coworker", "project-lead"],
+      "prompt": "CI-build tuottaa binäärin joka pitää olla ladattavissa myöhemmin QA-testaajille. Miten tallennat?",
+      "choices": [
+        { "text": "Julkaise build-tuotos artefaktina (archiveArtifacts / upload-artifact) CI:n sisällä", "correct": true },
+        { "text": "Committaa binääri Git-repoon jotta se on aina saatavilla branchilla", "correct": false },
+        { "text": "Tulosta binäärin base64-sisältö build-lokiin josta sen voi kopioida", "correct": false },
+        { "text": "Siirrä tiedosto agentin /tmp-hakemistoon josta QA voi noutaa SSH:lla", "correct": false }
+      ],
+      "correctFeedback": "CI-artefaktit tallentuvat buildiin liitettynä ja ovat ladattavissa UI:sta tai API:sta.",
+      "wrongFeedback": "Binäärit eivät kuulu Git-repoon. CI-artefakti on oikea ratkaisu.",
+      "sourceRef": "docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts",
+      "sourceUrl": "https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts",
+      "featureId": "git:ci-artifacts",
+      "featurePoints": 3
+    },
+    {
+      "id": "ci-secret-management",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "security", "project-lead"],
+      "prompt": "Pipeline tarvitsee API-avaimen deployta varten. Missä avain säilytetään turvallisesti?",
+      "choices": [
+        { "text": "CI-ympäristön secrets/credentials-storagessa — injektoidaan environment-muuttujana ajon aikana", "correct": true },
+        { "text": "Kovakoodaa .env-tiedostoon repossa — .gitignore suojaa sen julkaisulta", "correct": false },
+        { "text": "Kirjoita avain Jenkinsfile-kommenttiin josta pipeline parsii sen ajossa", "correct": false },
+        { "text": "Tallenna avain README.md:hen salatulla base64-koodauksella", "correct": false }
+      ],
+      "correctFeedback": "CI secrets (Jenkins Credentials, GH Secrets) piilottavat avaimen lokeista ja reposta.",
+      "wrongFeedback": "Avaimet repossa ovat tietoturvariski. Käytä CI:n salaisuushallintaa.",
+      "sourceRef": "docs.github.com/actions/security-guides/encrypted-secrets",
+      "sourceUrl": "https://docs.github.com/en/actions/security-guides/encrypted-secrets",
+      "featureId": "git:ci-secrets",
+      "featurePoints": 4
+    },
+    {
+      "id": "git-worktree",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["guru", "coworker"],
+      "prompt": "Haluat työstää kahta branchia samanaikaisesti ilman stashia tai committia keskeneräisistä muutoksista. Mikä auttaa?",
+      "choices": [
+        { "text": "git worktree add ../hotfix hotfix-branch luo toisen working treen samasta reposta", "correct": true },
+        { "text": "git clone . ../copy tekee erillisen kopion jonka voi linkittää alkuperäiseen", "correct": false },
+        { "text": "git branch --copy luo branchin ja vaihtaa siihen automaattisesti uudessa ikkunassa", "correct": false },
+        { "text": "git checkout --detach avaa erillisen työtilan nykyisestä commitista", "correct": false }
+      ],
+      "correctFeedback": "worktree mahdollistaa usean branchin rinnakkaisen työstämisen yhdestä reposta.",
+      "wrongFeedback": "clone on raskas. worktree jakaa saman .git-hakemiston kevyesti.",
+      "sourceRef": "git-scm/docs/git-worktree",
+      "sourceUrl": "https://git-scm.com/docs/git-worktree",
+      "featureId": "git:worktree",
+      "featurePoints": 4
+    },
+    {
+      "id": "ci-github-actions-matrix",
+      "chapter": "git-ci",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Projekti pitää testata kolmella Node-versiolla ja kahdella käyttöjärjestelmällä. Miten GitHub Actionsissa?",
+      "choices": [
+        { "text": "strategy: matrix: node: [16,18,20] os: [ubuntu, windows] ajaa kaikki yhdistelmät", "correct": true },
+        { "text": "Luo erillinen workflow-tiedosto jokaiselle versio+OS -yhdistelmälle", "correct": false },
+        { "text": "Käytä if-ehtoja yhdessä jobissa vaihtamaan versiota peräkkäin samassa runnerissa", "correct": false },
+        { "text": "Testaa vain uusimmalla versiolla ja luota semver-yhteensopivuuteen muille", "correct": false }
+      ],
+      "correctFeedback": "Matrix strategy generoi yhdistelmät automaattisesti ja ajaa ne rinnakkain.",
+      "wrongFeedback": "Erilliset workflowt eivät skaalaudu. Matrix on tarkoitettu kombinatoriseen testaukseen.",
+      "sourceRef": "docs.github.com/actions/using-jobs/using-a-matrix-for-your-jobs",
+      "sourceUrl": "https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs",
+      "featureId": "git:actions-matrix",
+      "featurePoints": 4
     }
   ]
 }

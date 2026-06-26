@@ -4894,6 +4894,166 @@
       "sourceUrl": "https://avahi.org/",
       "featureId": "linux:avahi-troubleshoot",
       "featurePoints": 4
+    },
+    {
+      "id": "apt-update-vs-upgrade",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru", "security"],
+      "prompt": "Uusi palvelin — haluat asentaa tuoreimmat tietoturvapäivitykset. Mikä on oikea järjestys?",
+      "choices": [
+        { "text": "apt update päivittää pakettilistauksen, sitten apt upgrade asentaa päivitykset", "correct": true },
+        { "text": "apt upgrade riittää yksinään — se hakee automaattisesti uusimmat listat", "correct": false },
+        { "text": "apt install --update asentaa ja päivittää kaikki paketit yhdellä komennolla", "correct": false },
+        { "text": "apt refresh && apt patch on oikea pari turvallisuuspäivityksille", "correct": false }
+      ],
+      "correctFeedback": "apt update hakee metatiedot, apt upgrade asentaa. Molemmat tarvitaan.",
+      "wrongFeedback": "upgrade ilman updatea käyttää vanhoja listoja eikä löydä uusia versioita.",
+      "sourceRef": "man/apt(8)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt.8.en.html",
+      "featureId": "linux:apt-update",
+      "featurePoints": 2
+    },
+    {
+      "id": "apt-pinning-version",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "security"],
+      "prompt": "Tuotantopalvelimella tietty paketti pitää lukita versioon 2.4.1 estäen automaattiset päivitykset. Miten?",
+      "choices": [
+        { "text": "apt-mark hold <paketti> estää paketin päivittymisen apt upgrade -komennolla", "correct": true },
+        { "text": "apt install <paketti>=2.4.1 --lock lukitsee version pysyvästi apt-tietokantaan", "correct": false },
+        { "text": "Poista paketti sources.list:stä niin päivitykset eivät koske sitä", "correct": false },
+        { "text": "chmod 444 /var/lib/dpkg/info/<paketti>.list estää tiedoston muuttumisen", "correct": false }
+      ],
+      "correctFeedback": "apt-mark hold lukitsee paketin nykyiseen versioon kunnes kumoat holdilla unhold.",
+      "wrongFeedback": "sources.list vaikuttaa kaikkiin paketteihin. apt-mark hold on pakettikohtainen.",
+      "sourceRef": "man/apt-mark(8)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt-mark.8.en.html",
+      "featureId": "linux:apt-hold",
+      "featurePoints": 4
+    },
+    {
+      "id": "apt-autoremove",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Palvelimelle on kertynyt turhia riippuvuuspaketteja poistettujen ohjelmien jäljiltä. Miten siivoot?",
+      "choices": [
+        { "text": "apt autoremove poistaa orvot riippuvuudet joita mikään asennettu paketti ei enää tarvitse", "correct": true },
+        { "text": "apt clean poistaa turhat paketit ja vapauttaa levytilan automaattisesti", "correct": false },
+        { "text": "dpkg --purge * poistaa kaikki manuaalisesti asennetut paketit turvallisesti", "correct": false },
+        { "text": "apt remove --unused poistaa kaikki paketit joita ei ole käytetty 30 päivään", "correct": false }
+      ],
+      "correctFeedback": "autoremove tunnistaa ja poistaa orvot riippuvuudet turvallisesti.",
+      "wrongFeedback": "apt clean tyhjentää vain ladatut .deb-tiedostot cachesta, ei asennettuja paketteja.",
+      "sourceRef": "man/apt(8)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt.8.en.html",
+      "featureId": "linux:apt-autoremove",
+      "featurePoints": 3
+    },
+    {
+      "id": "apt-repository-add",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "security"],
+      "prompt": "Tarvitset kolmannen osapuolen PPA:n tai repon lisäämistä Ubuntuun. Mikä on turvallinen tapa?",
+      "choices": [
+        { "text": "Lisää GPG-avain ja repo /etc/apt/sources.list.d/-hakemistoon erilliseksi .list-tiedostoksi", "correct": true },
+        { "text": "Muokkaa suoraan /etc/apt/sources.list pääkonfiguraatiota lisäämällä repo loppuun", "correct": false },
+        { "text": "curl | bash asennusskripti lisää repon ja avaimen automaattisesti turvallisesti", "correct": false },
+        { "text": "Lataa .deb manuaalisesti ja asenna dpkg -i — välttää repon tarpeen kokonaan", "correct": false }
+      ],
+      "correctFeedback": "Erillinen .list + GPG-avain mahdollistaa helpon hallinnan ja turvallisen verifioinnin.",
+      "wrongFeedback": "Pääkonfiguraation muokkaus vaikeuttaa hallintaa. curl|bash on tietoturvariski.",
+      "sourceRef": "wiki.debian.org/SourcesList",
+      "sourceUrl": "https://wiki.debian.org/SourcesList",
+      "featureId": "linux:apt-repo",
+      "featurePoints": 4
+    },
+    {
+      "id": "apt-cache-search",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Et muista paketin tarkkaa nimeä mutta tiedät sen liittyvän JSON-käsittelyyn. Miten etsit?",
+      "choices": [
+        { "text": "apt search json tai apt-cache search json etsii pakettinimistä ja kuvauksista", "correct": true },
+        { "text": "dpkg -l | grep json näyttää vain asennetut paketit, ei saatavilla olevia", "correct": false },
+        { "text": "apt list json listaa kaikki paketit joiden nimi on tasan 'json'", "correct": false },
+        { "text": "find /var/cache/apt json etsii ladattuja paketteja nimellä paikallisesti", "correct": false }
+      ],
+      "correctFeedback": "apt search etsii nimen ja kuvauksen perusteella kaikista saatavilla olevista paketeista.",
+      "wrongFeedback": "dpkg -l näyttää vain jo asennetut. apt search löytää myös asentamattomat.",
+      "sourceRef": "man/apt-cache(8)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt-cache.8.en.html",
+      "featureId": "linux:apt-search",
+      "featurePoints": 2
+    },
+    {
+      "id": "apt-dpkg-deb-install",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Ladattu .deb-paketti ei asennu koska riippuvuudet puuttuvat. Miten korjaat?",
+      "choices": [
+        { "text": "dpkg -i paketti.deb && apt install -f korjaa puuttuvat riippuvuudet jälkikäteen", "correct": true },
+        { "text": "apt install paketti.deb asentaa suoraan ja ratkaisee riippuvuudet — ei tarvita dpkg:ta", "correct": false },
+        { "text": "dpkg --force-depends -i paketti.deb ohittaa riippuvuudet turvallisesti", "correct": false },
+        { "text": "apt update korjaa riippuvuusongelmat automaattisesti seuraavassa päivityksessä", "correct": false }
+      ],
+      "correctFeedback": "dpkg asentaa paketin ja apt install -f täyttää puuttuvat riippuvuudet reposta.",
+      "wrongFeedback": "--force-depends jättää systeemin rikkinäiseen tilaan. apt -f korjaa oikein.",
+      "sourceRef": "man/dpkg(1)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/dpkg/dpkg.1.en.html",
+      "featureId": "linux:dpkg-fix",
+      "featurePoints": 3
+    },
+    {
+      "id": "apt-unattended-upgrades",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "security"],
+      "prompt": "Palvelimelle halutaan automaattiset tietoturvapäivitykset ilman manuaalista ylläpitoa. Mikä ratkaisu?",
+      "choices": [
+        { "text": "unattended-upgrades-paketti + /etc/apt/apt.conf.d/50unattended-upgrades konfiguraatio", "correct": true },
+        { "text": "Crontab-rivi 'apt upgrade -y' joka yö ajaa kaikki päivitykset turvallisesti", "correct": false },
+        { "text": "apt autoinstall --security aktivoi automaattiset päivitykset pysyvästi", "correct": false },
+        { "text": "systemd-timer apt-daily riittää yksinään — se myös asentaa päivitykset", "correct": false }
+      ],
+      "correctFeedback": "unattended-upgrades on Debianin/Ubuntun virallinen ratkaisu turvapäivitysten automatisointiin.",
+      "wrongFeedback": "Pelkkä cron + apt upgrade voi rikkoa palvelun. unattended-upgrades on kontrolloitu.",
+      "sourceRef": "wiki.debian.org/UnattendedUpgrades",
+      "sourceUrl": "https://wiki.debian.org/UnattendedUpgrades",
+      "featureId": "linux:apt-unattended",
+      "featurePoints": 4
+    },
+    {
+      "id": "apt-dist-upgrade",
+      "chapter": "apt",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "apt upgrade ilmoittaa 'held back packages'. Mikä komento asentaa myös nämä?",
+      "choices": [
+        { "text": "apt full-upgrade (tai apt-get dist-upgrade) sallii pakettien poistamisen/lisäämisen tarvittaessa", "correct": true },
+        { "text": "apt upgrade --force asentaa kaikki paketit ohittaen rajoitukset", "correct": false },
+        { "text": "apt install --reinstall asentaa pidetyt paketit uudelleen uusina", "correct": false },
+        { "text": "dpkg --configure -a pakottaa held back -pakettien konfiguroinnin", "correct": false }
+      ],
+      "correctFeedback": "full-upgrade/dist-upgrade ratkaisee monimutkaiset riippuvuusmuutokset joita upgrade ei tee.",
+      "wrongFeedback": "apt upgrade ei poista paketteja koskaan. full-upgrade sallii muutokset.",
+      "sourceRef": "man/apt(8)",
+      "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt.8.en.html",
+      "featureId": "linux:apt-full-upgrade",
+      "featurePoints": 3
     }
   ]
 }

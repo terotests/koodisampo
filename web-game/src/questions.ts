@@ -14,6 +14,7 @@ const BANK_FILES = [
   "linux-ops.json",
   "postgresql-tuning.json",
   "qt-dev.json",
+  "robot-framework.json",
   "scrum-best-practices.json",
   "web-security.json",
 ];

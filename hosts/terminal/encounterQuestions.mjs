@@ -95,6 +95,7 @@ const TOPIC_DOMAINS = {
   journald: "linux",
   "linux-network": "linux",
   avahi: "linux",
+  apt: "linux",
   docker: "docker",
   "docker-network": "docker",
   "docker-volumes": "docker",
@@ -121,6 +122,10 @@ const TOPIC_DOMAINS = {
   "backend-api": "backend",
   "ops-incident": "backend",
   "web-security": "security",
+  "rf-basics": "robotframework",
+  "rf-web": "robotframework",
+  "rf-execution": "robotframework",
+  "rf-advanced": "robotframework",
 };
 
 function audienceTags(entity) {
@@ -226,6 +231,9 @@ const VOICES = {
     if (ctx.domain === "security") {
       return `${name} auditoi API:a: "${prompt}"`;
     }
+    if (ctx.domain === "robotframework") {
+      return `${name} avaa Robot Framework -lokin: "Testiraportti punainen — ${prompt}"`;
+    }
     return `${name} kysyy koodikatselmassa (${ctx.topicLabel}): "${prompt}"`;
   },
   security: (name, prompt) =>
@@ -258,6 +266,7 @@ const TOPIC_LABELS = {
   journald: "journald",
   "linux-network": "verkko",
   avahi: "Avahi/mDNS",
+  apt: "apt/dpkg",
   docker: "Docker",
   "docker-network": "Docker-verkot",
   "docker-volumes": "Docker-volumet",
@@ -284,6 +293,10 @@ const TOPIC_LABELS = {
   "backend-api": "backend-API",
   "ops-incident": "incident-hallinta",
   "web-security": "web-turvallisuus",
+  "rf-basics": "Robot Framework",
+  "rf-web": "RF web-testaus",
+  "rf-execution": "RF suoritus/CI",
+  "rf-advanced": "RF-laajennukset",
 };
 
 function scoreQuestion(q, profile, targetDiff) {
