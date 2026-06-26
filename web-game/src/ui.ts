@@ -133,7 +133,7 @@ export function mountGameUI(game: WebGame) {
         if (state.policeChase && ch === "P") return `<span class="police">${ch}</span>`;
         if (ch === "@") return `<span style="color:#f0883e;font-weight:bold">${ch}</span>`;
         if (ch === ".") return `<span style="color:#3fb950">${ch}</span>`;
-        if (ch === "#" || ch === "%") return `<span style="color:#484f58">${ch}</span>`;
+        if (ch === "#" || ch === "%") return `<span style="color:#ffffff">${ch}</span>`;
         return esc(ch);
       }).join("");
     }
