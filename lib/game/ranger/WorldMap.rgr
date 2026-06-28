@@ -1653,6 +1653,7 @@ class WorldMap {
 
   fn emitAmbient:void (e:MapEntity line:string) {
     overheardMsg = (e.name + ": \"" + line + "\"")
+    lastStatus = ""
   }
 
   fn tryAgentAmbient:void (e:MapEntity) {

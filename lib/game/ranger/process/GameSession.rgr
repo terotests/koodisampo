@@ -198,7 +198,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if ((strlen featureId) > 0) {
         karma.add(featureId points)
       }
-      def status:string ("✓ " + pendingEntityName + ": " + msg)
+      def status:string ("✓ " + msg)
       if (this.isCoworkerEncounter()) {
         quizWinsForPromotion = quizWinsForPromotion + 1
         def promoRoll:int (random 0 2)
@@ -234,10 +234,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         map.retireEntitySeek("hr-greeter")
         status = (status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.")
       }
+      map.overheardMsg = ""
       map.lastStatus = status
     } {
       karma.loseKarma(3)
-      def failStatus:string ("✗ " + pendingEntityName + ": " + msg)
+      def failStatus:string ("✗ " + msg)
       if (pendingEntityId == "receptionist") {
         interviewFailed = true
         interviewPassed = false
@@ -248,6 +249,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         map.retireEntitySeek("hr-greeter")
         failStatus = (failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.")
       }
+      map.overheardMsg = ""
       map.lastStatus = failStatus
     }
     this.clearEncounter()
@@ -649,6 +651,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.startPendingGreet(best.id)
     def line:string (proximityGreeting.buildLine(best rel playerDisplayName))
     map.overheardMsg = line
+    map.lastStatus = ""
     best.greetCooldownUntil = (worldClock.gameMinutes + 20)
     this.markStateDirty()
   }
@@ -876,7 +879,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     }
     def socialRoll:int (random 0 99)
-    if (socialRoll < 30) {
+    if (socialRoll < 45) {
       return true
     }
     return false
@@ -974,6 +977,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     }
     map.pushWorldEvent(evt)
+    map.overheardMsg = ""
     map.lastStatus = status
   }
 

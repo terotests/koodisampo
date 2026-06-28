@@ -409,7 +409,7 @@ function ensureQuizRecorded(quiz) {
 function buildEncounterSnapshot(base) {
   // For coworker encounters, let the engine decide between emotional dialogue
   // and quiz before building the snapshot. The engine's onEncounterChoice("talk")
-  // checks shouldUseEmotionalDialogue (30% random + emotion-based triggers).
+  // checks shouldUseEmotionalDialogue (45% random + emotion-based triggers).
   if (
     session.encounterResult === "" &&
     session.pendingEntityKind === "coworker" &&
@@ -961,6 +961,7 @@ function handleKey(key) {
     if (session.encounterResult === "emotional") {
       const emotionalKey = key === "p" ? "leave" : key;
       dispatch(session, () => session.onEncounterChoice(emotionalKey));
+      processEncounterAfterChoice();
       persistWeb();
       return;
     }

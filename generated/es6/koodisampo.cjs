@@ -3046,6 +3046,7 @@ class WorldMap  {
   };
   emitAmbient (e, line) {
     this.overheardMsg = ((e.name + ": \"") + line) + "\"";
+    this.lastStatus = "";
   };
   tryAgentAmbient (e) {
     if ( e.agentGoal != "seek_larry" ) {
@@ -4526,7 +4527,10 @@ class DialogueCatalog  {
     };
     return -1;
   };
-  pickCategoryIndex (category, relation) {
+  pickCategoryIndex (category, relation, entId) {
+    let matches = [];
+    let empty = [];
+    matches = empty;
     let i = 0;
     const n = this.dialogues.length;
     while (i < n) {
@@ -4534,34 +4538,42 @@ class DialogueCatalog  {
       if ( dlg.category == category ) {
         if ( relation.matchesAngerBand(dlg.minAnger, dlg.maxAnger) ) {
           if ( relation.matchesLoveBand(dlg.minLove, dlg.maxLove) ) {
-            return i;
+            matches.push(i);
           }
         }
       }
       i = i + 1;
     };
-    return -1;
+    const m = matches.length;
+    if ( m < 1 ) {
+      return -1;
+    }
+    if ( m == 1 ) {
+      return matches[0];
+    }
+    const pick = Math.floor(Math.random()*((m - 1) - 0 + 1) + 0);
+    return matches[pick];
   };
   pickForEncounter (relation, ent) {
     if ( ent.mainTask == "searching_item" ) {
-      const helpIdx = this.pickCategoryIndex("help", relation);
+      const helpIdx = this.pickCategoryIndex("help", relation, ent.id);
       if ( helpIdx >= 0 ) {
         return helpIdx;
       }
     }
     if ( relation.isAngryNoticeable() ) {
-      const angryIdx = this.pickCategoryIndex("angry", relation);
+      const angryIdx = this.pickCategoryIndex("angry", relation, ent.id);
       if ( angryIdx >= 0 ) {
         return angryIdx;
       }
     }
     if ( relation.isLoveNoticeable() ) {
-      const romanticIdx = this.pickCategoryIndex("romantic", relation);
+      const romanticIdx = this.pickCategoryIndex("romantic", relation, ent.id);
       if ( romanticIdx >= 0 ) {
         return romanticIdx;
       }
     }
-    const neutralIdx = this.pickCategoryIndex("neutral", relation);
+    const neutralIdx = this.pickCategoryIndex("neutral", relation, ent.id);
     if ( neutralIdx >= 0 ) {
       return neutralIdx;
     }
@@ -5128,7 +5140,7 @@ class GameSession  extends RangerProcessBase {
       if ( (featureId.length) > 0 ) {
         this.karma.add(featureId, points);
       }
-      let status = (("✓ " + this.pendingEntityName) + ": ") + msg;
+      let status = "✓ " + msg;
       if ( this.isCoworkerEncounter() ) {
         this.quizWinsForPromotion = this.quizWinsForPromotion + 1;
         let promoRoll = Math.floor(Math.random()*(2 - 0 + 1) + 0);
@@ -5164,10 +5176,11 @@ class GameSession  extends RangerProcessBase {
         this._map.retireEntitySeek("hr-greeter");
         status = status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.";
       }
+      this._map.overheardMsg = "";
       this._map.lastStatus = status;
     } else {
       this.karma.loseKarma(3);
-      let failStatus = (("✗ " + this.pendingEntityName) + ": ") + msg;
+      let failStatus = "✗ " + msg;
       if ( this.pendingEntityId == "receptionist" ) {
         this.interviewFailed = true;
         this.interviewPassed = false;
@@ -5178,6 +5191,7 @@ class GameSession  extends RangerProcessBase {
         this._map.retireEntitySeek("hr-greeter");
         failStatus = failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.";
       }
+      this._map.overheardMsg = "";
       this._map.lastStatus = failStatus;
     }
     this.clearEncounter();
@@ -5556,6 +5570,7 @@ class GameSession  extends RangerProcessBase {
     this.startPendingGreet(best.id);
     const line = this.proximityGreeting.buildLine(best, rel, this.playerDisplayName);
     this._map.overheardMsg = line;
+    this._map.lastStatus = "";
     best.greetCooldownUntil = this.worldClock.gameMinutes + 20;
     this.markStateDirty();
   };
@@ -5768,7 +5783,7 @@ class GameSession  extends RangerProcessBase {
       }
     }
     const socialRoll = Math.floor(Math.random()*(99 - 0 + 1) + 0);
-    if ( socialRoll < 30 ) {
+    if ( socialRoll < 45 ) {
       return true;
     }
     return false;
@@ -5862,6 +5877,7 @@ class GameSession  extends RangerProcessBase {
       }
     }
     this._map.pushWorldEvent(evt);
+    this._map.overheardMsg = "";
     this._map.lastStatus = status;
   };
   checkEscalation () {

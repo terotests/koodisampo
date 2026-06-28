@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { generateCorporateHq } from "../hosts/terminal/mapGenerator.mjs";
 import { getEncounterQuiz, pickQuestion, listAllQuestions, buildQuizReaction, buildAiStudyText, AI_STUDY_KARMA_COST, buildDismissiveLine, needsEncounterQuiz, clearEncounterQuizCache } from "../hosts/terminal/encounterQuestions.mjs";
 import { getMasteredQuestionIds, emptyQuizHistory, recordQuizAnswer } from "../hosts/terminal/quizHistory.mjs";
+import { sessionMap } from "../hosts/shared/sessionMap.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
@@ -215,6 +216,10 @@ export function runEncounterTests() {
     });
     assert(session3.screen === "map", "quiz returns to map");
     assert(session3.karma.total() > karmaBefore, "correct answer grants karma");
+    assert(
+      sessionMap(session3).lastStatus === `✓ ${reaction}`,
+      `quiz status uses reaction once: ${sessionMap(session3).lastStatus}`,
+    );
 
     const wrongReaction = buildQuizReaction(quiz.entity, false, session3);
     assert(

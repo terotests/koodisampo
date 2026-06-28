@@ -90,9 +90,17 @@ type HudState = {
   policeChase?: boolean;
   status?: string;
   ambient?: string;
+  actionLine?: string;
   hint?: string;
   floorRecommendation?: { total?: number; done?: number; complete?: boolean };
 };
+
+export function actionLineFromState(state: HudState): string {
+  if (state.actionLine) return state.actionLine;
+  const status = String(state.status ?? "").trim();
+  const ambient = String(state.ambient ?? "").trim();
+  return status || ambient;
+}
 
 export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
@@ -110,17 +118,20 @@ export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s:
 export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
   const parts: string[] = [];
-  if (state.status) parts.push(state.status);
-  if (state.ambient && state.ambient !== state.status) parts.push(state.ambient);
-  if (!parts.length && !isMobileLayout()) {
-    const hint = state.hint || "";
-    if (hint) parts.push(hint);
-  }
+  if (state.floorTitle) parts.push(state.floorTitle);
+  if (state.time) parts.push(state.time);
   const fr = state.floorRecommendation;
   if (fr && fr.total > 0 && !fr.complete) {
     parts.push(`Suositukset: ${fr.done}/${fr.total}`);
   }
   const msg = parts.join(" · ");
+  el.textContent = msg;
+  el.hidden = !msg;
+}
+
+export function renderActionBar(el: HTMLElement | null, state: HudState) {
+  if (!el) return;
+  const msg = actionLineFromState(state);
   el.textContent = msg;
   el.hidden = !msg;
 }
@@ -411,9 +422,11 @@ export function syncMobileMapScale(lines: string[], anchor?: HTMLElement | null)
   const viewportH = window.innerHeight;
   const messageBar = document.getElementById("message-bar");
   const messageBarH = messageBar && !messageBar.hidden ? messageBar.offsetHeight : 0;
+  const actionBar = document.getElementById("action-bar");
+  const actionBarH = actionBar && !actionBar.hidden ? actionBar.offsetHeight : 0;
   const elevEl = getMobileElevatorEl();
   const elevatorH = elevEl && !elevEl.hidden ? elevEl.offsetHeight : 0;
-  const chromeH = 230 + messageBarH + elevatorH;
+  const chromeH = 230 + messageBarH + actionBarH + elevatorH;
   const byWidth = viewportW / cols;
   const byHeight = Math.max((viewportH - chromeH) / rows / 1.05, 8);
   const cellPx = Math.min(byWidth, byHeight);

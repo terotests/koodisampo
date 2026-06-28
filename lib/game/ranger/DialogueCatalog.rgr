@@ -217,7 +217,10 @@ class DialogueCatalog {
     return -1
   }
 
-  fn pickCategoryIndex:int (category:string relation:NpcRelation) {
+  fn pickCategoryIndex:int (category:string relation:NpcRelation entId:string) {
+    def matches:[int]
+    def empty:[int]
+    matches = empty
     def i:int 0
     def n:int (array_length dialogues)
     while (i < n) {
@@ -225,35 +228,43 @@ class DialogueCatalog {
       if (dlg.category == category) {
         if (relation.matchesAngerBand(dlg.minAnger dlg.maxAnger)) {
           if (relation.matchesLoveBand(dlg.minLove dlg.maxLove)) {
-            return i
+            push matches i
           }
         }
       }
       i = i + 1
     }
-    return -1
+    def m:int (array_length matches)
+    if (m < 1) {
+      return -1
+    }
+    if (m == 1) {
+      return (at matches 0)
+    }
+    def pick:int (random 0 (m - 1))
+    return (at matches pick)
   }
 
   fn pickForEncounter:int (relation:NpcRelation ent:MapEntity) {
     if (ent.mainTask == "searching_item") {
-      def helpIdx:int (this.pickCategoryIndex("help" relation))
+      def helpIdx:int (this.pickCategoryIndex("help" relation ent.id))
       if (helpIdx >= 0) {
         return helpIdx
       }
     }
     if (relation.isAngryNoticeable()) {
-      def angryIdx:int (this.pickCategoryIndex("angry" relation))
+      def angryIdx:int (this.pickCategoryIndex("angry" relation ent.id))
       if (angryIdx >= 0) {
         return angryIdx
       }
     }
     if (relation.isLoveNoticeable()) {
-      def romanticIdx:int (this.pickCategoryIndex("romantic" relation))
+      def romanticIdx:int (this.pickCategoryIndex("romantic" relation ent.id))
       if (romanticIdx >= 0) {
         return romanticIdx
       }
     }
-    def neutralIdx:int (this.pickCategoryIndex("neutral" relation))
+    def neutralIdx:int (this.pickCategoryIndex("neutral" relation ent.id))
     if (neutralIdx >= 0) {
       return neutralIdx
     }

@@ -10,6 +10,7 @@ import {
   mountMobileControls,
   renderHudStats,
   renderMessageBar,
+  renderActionBar,
   resetMobileControlsMount,
   setMobileDpadVisible,
   setMobilePlayView,
@@ -38,6 +39,7 @@ export function mountGameUI(game: WebGame) {
   const hintEl = document.getElementById("hint");
   const hudStatsEl = document.getElementById("hud-stats");
   const messageBarEl = document.getElementById("message-bar");
+  const actionBarEl = document.getElementById("action-bar");
   const mobileDpadEl = document.getElementById("mobile-dpad");
   const debugToggleEl = document.getElementById("debug-json-toggle");
   const profileSetupEl = document.getElementById("profile-setup");
@@ -706,20 +708,14 @@ export function mountGameUI(game: WebGame) {
 
     function updateDesktopChrome(state: State) {
       renderHudStats(hudStatsEl, state, esc);
-      if (messageBarEl) {
-        const parts = [];
-        if (state.floorTitle) parts.push(state.floorTitle);
-        if (state.time) parts.push(state.time);
-        if (state.status) parts.push(state.status);
-        if (state.ambient && state.ambient !== state.status) parts.push(state.ambient);
-        messageBarEl.hidden = parts.length === 0;
-        messageBarEl.textContent = parts.join(" · ");
-      }
+      renderMessageBar(messageBarEl, state, esc);
+      renderActionBar(actionBarEl, state);
     }
 
     function updateMobileChrome(state: State) {
       renderHudStats(hudStatsEl, state, esc);
       renderMessageBar(messageBarEl, state, esc);
+      renderActionBar(actionBarEl, state);
     }
 
     function renderMobileMap(state: State) {

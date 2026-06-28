@@ -38,6 +38,16 @@ export function runEmotionalDialogueTests() {
   const angry2 = new NpcRelation();
   angry2.setStat("anger", 60);
   assert(catalog2.pickIndex(angry2) === 1, "json angry pick");
+
+  const neutral = new NpcRelation();
+  neutral.setStat("anger", 10);
+  const ent = { id: "staff-test-1", kind: "coworker", name: "Testi" };
+  const picks = new Set();
+  for (let i = 0; i < 40; i += 1) {
+    const idx = catalog2.pickForEncounter(neutral, ent);
+    picks.add(catalog2.dialogueAt(idx).id);
+  }
+  assert(picks.size >= 3, `neutral dialogue variety: ${[...picks].join(", ")}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
