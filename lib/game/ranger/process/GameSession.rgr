@@ -875,6 +875,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return true
       }
     }
+    def socialRoll:int (random 0 99)
+    if (socialRoll < 30) {
+      return true
+    }
     return false
   }
 
