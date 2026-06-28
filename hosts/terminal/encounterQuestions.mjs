@@ -113,6 +113,11 @@ const TOPIC_DOMAINS = {
   "pg-explain": "postgres",
   "pg-vacuum": "postgres",
   "pg-config": "postgres",
+  "pg-query-design": "postgres",
+  "pg-cte-window": "postgres",
+  "pg-joins": "postgres",
+  "pg-json": "postgres",
+  "pg-sql-security": "postgres",
   "cpp-production": "cpp",
   "docker-production": "docker",
   "js-typescript": "javascript",
@@ -128,7 +133,7 @@ const TOPIC_DOMAINS = {
   "rf-advanced": "robotframework",
 };
 
-function audienceTags(entity) {
+function audienceTags(entity, playerSpecialty = "") {
   if (entity.id === "receptionist") {
     return {
       tags: ["interview", "secretary", "coworker", "guru"],
@@ -195,11 +200,16 @@ function audienceTags(entity) {
       tags: ["coworker"],
       voice: "colleague",
       preferChapter: topic,
-      preferDomain,
+      preferDomain: preferDomain || playerSpecialty || "",
+      playerSpecialty,
       minDifficulty: 3,
     };
   }
-  return { tags: ["coworker"], voice: "colleague", minDifficulty: 3 };
+  const base = { tags: ["coworker"], voice: "colleague", playerSpecialty, minDifficulty: 3 };
+  if (playerSpecialty && !base.preferDomain) {
+    base.preferDomain = playerSpecialty;
+  }
+  return base;
 }
 
 const VOICES = {
@@ -284,6 +294,11 @@ const TOPIC_LABELS = {
   "pg-explain": "EXPLAIN/suunnitelmat",
   "pg-vacuum": "VACUUM/autovacuum",
   "pg-config": "PostgreSQL-konfig",
+  "pg-query-design": "SQL-kyselysuunnittelu",
+  "pg-cte-window": "CTE ja ikkunafunktiot",
+  "pg-joins": "JOIN-kuviot",
+  "pg-json": "JSON/JSONB-kyselyt",
+  "pg-sql-security": "SQL-turvallisuus",
   "cpp-production": "C++ tuotanto",
   "docker-production": "Docker tuotanto",
   "js-typescript": "TypeScript",
@@ -309,6 +324,7 @@ function scoreQuestion(q, profile, targetDiff) {
 
   if (profile.preferChapter && q.chapter === profile.preferChapter) score += 35;
   if (profile.preferDomain && q.domain === profile.preferDomain) score += 20;
+  if (profile.playerSpecialty && q.domain === profile.playerSpecialty) score += 22;
   if (profile.preferDomains?.includes(q.domain)) score += 12;
   if (profile.preferChapters?.includes(q.chapter)) score += 15;
 
@@ -344,7 +360,8 @@ function filterAndScoreQuestions(questions, profile, targetDiff, excludeIds) {
 
 export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOptions = null) {
   const questions = loadAllQuestions();
-  const profile = audienceTags(entity);
+  const playerSpecialty = pickOptions?.playerSpecialty ?? "";
+  const profile = audienceTags(entity, playerSpecialty);
   const targetDiff = targetDifficulty(entity, karmaTotal);
   const entityId = entity.id || "";
   const pickNonce = pickOptions?.pickNonce ?? 0;
@@ -451,6 +468,7 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
   const picked = pickQuestion(quizEntity, session.karma.total(), quizHistory, {
     pickNonce,
     deaths: session.exportDeaths?.() ?? 0,
+    playerSpecialty: session.playerSpecialty ?? "",
   });
   if (!picked?.question?.id) {
     clearEncounterQuizCache();

@@ -6,19 +6,40 @@ import * as gameHost from "./gameHost";
 import { loadPlayerSave, savePlayerSave } from "./playerSave";
 import { loadAllQuestionsFromPublic } from "./questions";
 
-export type WebGame = ReturnType<typeof createWebGameController>;
+const WORLD_FILE = "corporate-hq-intro.json";
+
+export type WebGame = ReturnType<typeof createWebGameController> & {
+  /** Dev: hae tuorein maailma levyltä ennen reset() — ei backend-API:a. */
+  reloadWorldFromSource?: () => Promise<void>;
+};
+
+function worldAssetUrl(base: string, bust = false): string {
+  const path = `${base}content/worlds/${WORLD_FILE}`;
+  return bust && import.meta.env.DEV ? `${path}?v=${Date.now()}` : path;
+}
+
+async function fetchWorldText(base: string, bust = false): Promise<string> {
+  const res = await fetch(worldAssetUrl(base, bust));
+  if (!res.ok) {
+    throw new Error("Maailman lataus epäonnistui");
+  }
+  return res.text();
+}
 
 export async function createBrowserGame(): Promise<WebGame> {
   const base = import.meta.env.BASE_URL;
-  const [mapRes, questions] = await Promise.all([
-    fetch(`${base}content/worlds/corporate-hq-intro.json`),
+  const dialoguePath = `${base}content/dialogues/pack.json`;
+  const dialogueUrl = import.meta.env.DEV ? `${dialoguePath}?v=${Date.now()}` : dialoguePath;
+  let currentMapJson = await fetchWorldText(base, import.meta.env.DEV);
+  const [dialogueRes, questions] = await Promise.all([
+    fetch(dialogueUrl),
     loadAllQuestionsFromPublic(base),
   ]);
   setQuestionLoader(() => questions);
-  if (!mapRes.ok) {
-    throw new Error("Maailman lataus epäonnistui");
+  if (!dialogueRes.ok) {
+    throw new Error("Dialogipaketin lataus epäonnistui");
   }
-  const mapJson = await mapRes.text();
+  const dialoguePackJson = await dialogueRes.text();
   let cachedSave = (await loadPlayerSave()) ?? {};
   const storyCatalog = new StoryCatalog();
 
@@ -32,8 +53,10 @@ export async function createBrowserGame(): Promise<WebGame> {
     }),
   );
 
-  return createWebGameController({
-    mapJson,
+  const game = createWebGameController({
+    mapJson: currentMapJson,
+    getMapJson: import.meta.env.DEV ? () => currentMapJson : undefined,
+    dialoguePackJson,
     storyCatalog,
     gameHost,
     loadSave: () => cachedSave,
@@ -48,5 +71,15 @@ export async function createBrowserGame(): Promise<WebGame> {
       return storyTextByFile.get(summary.filename) ?? null;
     },
     castListEnabled: () => true,
+  });
+
+  if (!import.meta.env.DEV) {
+    return game;
+  }
+
+  return Object.assign(game, {
+    async reloadWorldFromSource() {
+      currentMapJson = await fetchWorldText(base, true);
+    },
   });
 }

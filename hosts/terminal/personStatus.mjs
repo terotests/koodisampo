@@ -1,4 +1,5 @@
 import { sessionMap } from "../shared/sessionMap.mjs";
+import { isEmojiGlyph, mapLineColumnCount, replaceMapCell } from "../shared/mapGlyphs.mjs";
 
 function parseDisplayFirstName(displayName) {
   const s = String(displayName || "").trim();
@@ -147,6 +148,7 @@ export function recordPersonEncounter(registry, entity, { correct = null, tone =
 
 export function personMapChar(registry, entity) {
   if (!entity?.id) return "?";
+  if (isEmojiGlyph(entity.char)) return entity.char;
   if (entity.kind === "item" || entity.kind === "pet") return entity.char || "?";
   if (isImportantPerson(entity)) return importantMapChar(entity);
   const rec = ensurePerson(registry, entity);
@@ -162,6 +164,9 @@ export function countsForFloorRecommendation(entity) {
   if (entity.kind === "item" || entity.kind === "pet") return false;
   if (entity.id === "janitor" || entity.id === "office-dog") return false;
   if (entity.scheduleRole === "janitor") return false;
+  // Lounaskävelytoimitusjohtaja on tilapäinen vieras, ei pysyvä kerrossuositus.
+  if (entity.scheduleRole === "ceo_lunch") return false;
+  if (entity.id === "ceo-lunch-walk") return false;
   if (entity.isAgent && entity.kind === "police") return false;
   return (
     entity.kind === "coworker"
@@ -266,11 +271,11 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const dy = ent.y - camY;
     if (dy < 0 || dy >= out.length || dx < 0) continue;
     const line = out[dy];
-    if (dx >= line.length) continue;
+    if (dx >= mapLineColumnCount(line)) continue;
     const cellKey = `${dx},${dy}`;
     if (painted.has(cellKey)) continue;
     const ch = personMapChar(registry, ent);
-    out[dy] = line.slice(0, dx) + ch + line.slice(dx + 1);
+    out[dy] = replaceMapCell(line, dx, ch);
     painted.add(cellKey);
     if (hasPersonRecommendation(registry, ent.id)) {
       recommendedCells.push(`${dy},${dx}`);

@@ -1,0 +1,98 @@
+
+Import "WorldEvent.rgr"
+
+class WorldEventLog {
+  def events:[WorldEvent]
+
+  Constructor () {
+    def empty:[WorldEvent]
+    events = empty
+  }
+
+  fn reset:void () {
+    def empty:[WorldEvent]
+    events = empty
+  }
+
+  fn count:int () {
+    return (array_length events)
+  }
+
+  fn at:WorldEvent (index:int) {
+    if (index < 0) {
+      def blank:WorldEvent (new WorldEvent)
+      return blank
+    }
+    if (index >= (array_length events)) {
+      def blank2:WorldEvent (new WorldEvent)
+      return blank2
+    }
+    return (at events index)
+  }
+
+  fn push:void (evt:WorldEvent) {
+    push events evt
+    this.trimTo(32)
+  }
+
+  fn trimTo:void (maxSize:int) {
+    def n:int (array_length events)
+    if (n <= maxSize) {
+      return
+    }
+    def trimmed:[WorldEvent]
+    def start:int (n - maxSize)
+    def i:int start
+    while (i < n) {
+      push trimmed (at events i)
+      i = i + 1
+    }
+    events = trimmed
+  }
+
+  fn countOnFloor:int (floor:int) {
+    def c:int 0
+    def i:int 0
+    def n:int (array_length events)
+    while (i < n) {
+      def e:WorldEvent (at events i)
+      if (e.floor == floor) {
+        c = c + 1
+      }
+      i = i + 1
+    }
+    return c
+  }
+
+  fn lastOnFloor:WorldEvent (floor:int) {
+    def blank:WorldEvent (new WorldEvent)
+    def i:int (array_length events)
+    while (i > 0) {
+      i = i - 1
+      def e:WorldEvent (at events i)
+      if (e.floor == floor) {
+        return e
+      }
+    }
+    return blank
+  }
+
+  fn countOnFloorSince:int (floor:int sinceMinutes:int nowMinutes:int) {
+    def c:int 0
+    def i:int 0
+    def n:int (array_length events)
+    while (i < n) {
+      def e:WorldEvent (at events i)
+      if (e.floor == floor) {
+        def age:int (nowMinutes - e.timeMinutes)
+        if (age >= 0) {
+          if (age <= sinceMinutes) {
+            c = c + 1
+          }
+        }
+      }
+      i = i + 1
+    }
+    return c
+  }
+}

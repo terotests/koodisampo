@@ -4,6 +4,9 @@ Import "StoryJson.rgr"
 Import "MapEntity.rgr"
 Import "MapFloor.rgr"
 Import "MapView.rgr"
+Import "NpcRelation.rgr"
+Import "WorldEvent.rgr"
+Import "WorldEventLog.rgr"
 
 class WorldMap {
   def json:StoryJson
@@ -37,9 +40,13 @@ class WorldMap {
   def leaveTargetY:int 0
   def navStepDx:int 0
   def navStepDy:int 0
+  def eventLog:WorldEventLog
+  def lastBrokenTile:string ""
+  def playerWasWitnessed:boolean false
 
   Constructor () {
     json = (new StoryJson)
+    eventLog = (new WorldEventLog)
     def emptyFloors:[MapFloor]
     floors = emptyFloors
     def emptyOwners:[string]
@@ -484,6 +491,10 @@ class WorldMap {
       if (offFlag != 0) {
         ent.offDuty = true
       }
+      ent.romanticPreference = (json.objFieldStr(entObj "romanticPreference"))
+      if ((strlen ent.romanticPreference) < 1) {
+        ent.romanticPreference = "any"
+      }
       this.normalizeEntity(ent)
       push loadedEnt ent
       ei = ei + 1
@@ -702,10 +713,99 @@ class WorldMap {
     playerY = ny
     if (this.isOnElevator()) {
       lastStatus = "Hissi — 1-9/0 vaihtaa kerrosta."
-    } {
-      lastStatus = ""
     }
     return true
+  }
+
+  fn emojiStepMessage:string (x:int y:int) {
+    def e:MapEntity (this.entityAt(x y))
+    if ((strlen e.id) < 1) {
+      return ""
+    }
+    return (this.emojiFeelingForEntity(e))
+  }
+
+  fn emojiFeelingForEntity:string (ent:MapEntity) {
+    if (ent.kind == "security") {
+      return ""
+    }
+    if (ent.kind == "hostile") {
+      return ""
+    }
+    if (ent.kind == "police") {
+      return ""
+    }
+    if ((strlen ent.itemTool) > 0) {
+      return ""
+    }
+    def ch:string ent.char
+    if (ch == "🚽") {
+      return "Tunnet olosi helpottuneeksi."
+    }
+    if (ch == "☕") {
+      return "Kahvin tuoksu piristää hetkeksi."
+    }
+    if (ch == "💻") {
+      return "Ruutu houkuttelee sähköpostiin."
+    }
+    if (ch == "🖥️") {
+      return "Työpöytä odottaa — yksi välilehti liikaa."
+    }
+    if (ch == "🗄️") {
+      return "Palvelinhallista humisee rauhoittavasti."
+    }
+    if (ch == "📚") {
+      return "Muistat jotain tärkeää oppikirjasta."
+    }
+    if (ch == "🖨️") {
+      return "Tulostin yskäisee vanhaa paperia."
+    }
+    if (ch == "📱") {
+      return "Puhelin värisee taskussasi muistutuksena."
+    }
+    if (ch == "📶") {
+      return "Yhteys tuntuu hetken luotettavalta."
+    }
+    if (ch == "👥") {
+      return "Tunnet hiljaisen paniikin ennen kokousta."
+    }
+    if (ch == "🧑‍💻") {
+      return "Koodari-energia väreilee ilmassa."
+    }
+    if (ch == "💼") {
+      return "Salkku muistuttaa vastuista."
+    }
+    if (ch == "🏢") {
+      return "Toimiston betoni tuntuu tutulta."
+    }
+    if (ch == "🛗") {
+      return "Hissi humisee odottaen seuraavaa kerrosta."
+    }
+    if (ch == "🚪") {
+      return "Kynnyksen takana voisi olla jotain uutta."
+    }
+    if (ch == "🔒") {
+      return "Lukko tuntuu turvalliselta — tai turhauttavalta."
+    }
+    if (ch == "📊") {
+      return "Raportti lupaa selityksen kaikkeen."
+    }
+    if (ch == "📝") {
+      return "Muistilapun reunat kertovat kiireestä."
+    }
+    if (ch == "🗂️") {
+      return "Arkistokaapit tuoksuvat vanhalle paperille."
+    }
+    if (ch == "🍱") {
+      return "Vatsa asettuu hetkeksi."
+    }
+    if (ch == "📠") {
+      return "Faksi muistuttaa menneitä aikoja."
+    }
+    if (ch == "♻️") {
+      return "Kierrätys tuntuu pieneltä hyvältä teolta."
+    }
+    return ""
   }
 
   fn removeEntityAt:void (x:int y:int) {
@@ -726,6 +826,48 @@ class WorldMap {
       i = i + 1
     }
     floor.entities = kept
+  }
+
+  fn isConsumableItemEntity:boolean (e:MapEntity) {
+    if ((strlen e.id) < 1) {
+      return false
+    }
+    if (e.kind != "item") {
+      return false
+    }
+    if ((strlen e.itemTool) > 0) {
+      return false
+    }
+    def id:string e.id
+    if ((strlen id) >= 18) {
+      def coffeeTag:string (substring id 7 18)
+      if (coffeeTag == "emoji-coffee") {
+        return true
+      }
+    }
+    if ((strlen id) >= 17) {
+      def lunchTag:string (substring id 7 17)
+      if (lunchTag == "emoji-lunch") {
+        return true
+      }
+    }
+    def ch:string e.char
+    if (ch == "☕") {
+      return true
+    }
+    if (ch == "🍱") {
+      return true
+    }
+    return false
+  }
+
+  fn consumeItemAt:boolean (x:int y:int) {
+    def e:MapEntity (this.entityAt(x y))
+    if (this.isConsumableItemEntity(e) == false) {
+      return false
+    }
+    this.removeEntityAt(x y)
+    return true
   }
 
   fn pickupItemAt:string (x:int y:int) {
@@ -835,7 +977,38 @@ class WorldMap {
     }
   }
 
-  fn tryBreakAt:string (x:int y:int tool:string) {
+  fn recordBreakEvent:void (x:int y:int tile:string severity:string timeMinutes:int) {
+    def evt:WorldEvent (new WorldEvent)
+    evt.floor = currentFloor
+    evt.x = x
+    evt.y = y
+    evt.timeMinutes = timeMinutes
+    evt.playerSource = true
+    if (tile == "L") {
+      evt.applyDoorBroken()
+    } {
+      if (tile == "+") {
+        evt.applyDoorBroken()
+      } {
+        if (severity == "heavy") {
+          evt.applyWallBrokenHeavy()
+        } {
+          if (severity == "medium") {
+            evt.applyWallBrokenMedium()
+          } {
+            evt.applyWallBrokenLight()
+          }
+        }
+      }
+    }
+    eventLog.push(evt)
+  }
+
+  fn pushWorldEvent:void (evt:WorldEvent) {
+    eventLog.push(evt)
+  }
+
+  fn tryBreakAt:string (x:int y:int tool:string timeMinutes:int) {
     if ((strlen tool) < 1) {
       lastStatus = "Ei valittua työkalua (t vaihtaa)."
       return ""
@@ -845,20 +1018,28 @@ class WorldMap {
       lastStatus = "Työkalu ei tepsi tähän esteeseen."
       return ""
     }
+    lastBrokenTile = tile
     this.setTileAt(x y ".")
+    def severity:string ""
     if (tool == "sledgehammer") {
       lastStatus = "Moukarivasara murskaa seinän — melu kantautuu!"
-      return "heavy"
+      severity = "heavy"
+    } {
+      if (tool == "crowbar") {
+        lastStatus = "Sorkkarauta taivuttaa esteen."
+        severity = "medium"
+      } {
+        lastStatus = "Lapio avaa raon hiljaa."
+        severity = "light"
+      }
     }
-    if (tool == "crowbar") {
-      lastStatus = "Sorkkarauta taivuttaa esteen."
-      return "medium"
+    if (timeMinutes >= 0) {
+      this.recordBreakEvent(x y tile severity timeMinutes)
     }
-    lastStatus = "Lapio avaa raon hiljaa."
-    return "light"
+    return severity
   }
 
-  fn tryBreakFacing:string (tool:string) {
+  fn tryBreakFacing:string (tool:string timeMinutes:int) {
     def fx:int facingX
     def fy:int facingY
     if (fx == 0) {
@@ -868,10 +1049,46 @@ class WorldMap {
     }
     def tx:int (playerX + fx)
     def ty:int (playerY + fy)
-    return (this.tryBreakAt(tx ty tool))
+    return (this.tryBreakAt(tx ty tool timeMinutes))
   }
 
-  fn hasNearbyWitness:boolean (radius:int) {
+  fn hasRecentLoudEventNear:boolean (radius:int nowMinutes:int maxAge:int minNoise:int) {
+    def i:int 0
+    def n:int (eventLog.count())
+    while (i < n) {
+      def evt:WorldEvent (eventLog.at(i))
+      if (evt.floor == currentFloor) {
+        if (evt.noise >= minNoise) {
+          def age:int (nowMinutes - evt.timeMinutes)
+          if (age >= 0) {
+            if (age <= maxAge) {
+              def dx:int (evt.x - playerX)
+              if (dx < 0) {
+                dx = (0 - dx)
+              }
+              def dy:int (evt.y - playerY)
+              if (dy < 0) {
+                dy = (0 - dy)
+              }
+              if ((dx + dy) <= radius) {
+                return true
+              }
+            }
+          }
+        }
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn hasNearbyWitness:boolean (radius:int nowMinutes:int) {
+    if (playerWasWitnessed) {
+      return true
+    }
+    if (this.hasRecentLoudEventNear(radius nowMinutes 3 12)) {
+      return true
+    }
     def floor:MapFloor (this.activeFloor())
     def ents:[MapEntity] (floor.entities)
     def i:int 0
@@ -966,6 +1183,72 @@ class WorldMap {
     }
     if (e.persistence >= 90) {
       return true
+    }
+    return false
+  }
+
+  fn hasLineOfSight:boolean (x0:int y0:int x1:int y1:int) {
+    if (x0 == x1) {
+      if (y0 == y1) {
+        return true
+      }
+    }
+    def x:int x0
+    def y:int y0
+    def dx:int (x1 - x0)
+    def adx:int dx
+    if (adx < 0) {
+      adx = (0 - adx)
+    }
+    def dy:int (y1 - y0)
+    def ady:int dy
+    if (ady < 0) {
+      ady = (0 - ady)
+    }
+    def sx:int 1
+    if (x0 > x1) {
+      sx = -1
+    }
+    def sy:int 1
+    if (y0 > y1) {
+      sy = -1
+    }
+    def err:int (adx - ady)
+    def done:boolean false
+    while (done == false) {
+      def atStart:boolean false
+      if (x == x0) {
+        if (y == y0) {
+          atStart = true
+        }
+      }
+      def atEnd:boolean false
+      if (x == x1) {
+        if (y == y1) {
+          atEnd = true
+        }
+      }
+      if (atStart == false) {
+        if (atEnd) {
+          return true
+        }
+        def ch:string (this.tileAt(x y))
+        if (this.isBlockedTile(ch)) {
+          return false
+        }
+      }
+      if (atEnd) {
+        return true
+      }
+      def e2:int (2 * err)
+      if (e2 > (0 - ady)) {
+        err = (err - ady)
+        x = (x + sx)
+      }
+      if (e2 < adx) {
+        err = (err + adx)
+        y = (y + sy)
+      }
     }
     return false
   }
@@ -1641,7 +1924,6 @@ class WorldMap {
   }
 
   fn tickAgents:MapEntity () {
-    overheardMsg = ""
     def empty:MapEntity (new MapEntity)
     def floor:MapFloor (this.activeFloor())
     def ents:[MapEntity] (floor.entities)
@@ -1773,6 +2055,9 @@ class WorldMap {
       return ent.char
     }
     if (ent.kind == "security") {
+      if (ent.char != "!") {
+        return ent.char
+      }
       return "u"
     }
     if (ent.kind == "police") {
@@ -1819,6 +2104,214 @@ class WorldMap {
       return (this.roleDisplayChar(e))
     }
     return (this.tileAt(x y))
+  }
+
+  fn findEntityById:MapEntity (entityId:string) {
+    def blank:MapEntity (new MapEntity)
+    if ((strlen entityId) < 1) {
+      return blank
+    }
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if (e.id == entityId) {
+          return e
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+    return blank
+  }
+
+  fn tickNpcMainTasks:void (gameMinutes:int) {
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if ((strlen e.scheduleRole) > 0) {
+          if (e.npcState == "lunch") {
+            e.mainTask = "eating"
+          } {
+            if (e.npcState == "desk_lunch") {
+              e.mainTask = "eating"
+            } {
+              if (e.npcState == "lunch_out") {
+                e.mainTask = "eating"
+              } {
+                if (gameMinutes >= 660) {
+                  if (gameMinutes < 780) {
+                    if (e.scheduleRole == "desk_lunch") {
+                      e.mainTask = "eating"
+                    }
+                  }
+                }
+                def roll:int (random 0 99)
+                if (roll < 3) {
+                  e.mainTask = "toilet"
+                } {
+                  if (roll < 5) {
+                    e.mainTask = "searching_item"
+                  } {
+                  if (roll > 96) {
+                    e.mainTask = "coffee"
+                  } {
+                    if (e.mainTask != "eating") {
+                      if (e.mainTask != "toilet") {
+                        if (e.mainTask != "coffee") {
+                          if (e.mainTask != "searching_item") {
+                            e.mainTask = "working"
+                          }
+                        }
+                      }
+                    }
+                  }
+                  }
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+  }
+
+  fn emitGossipNearPlayer:void (speaker:MapEntity line:string) {
+    def dist:int (this.manhattanTo(speaker.x speaker.y playerX playerY))
+    if (dist > 8) {
+      return
+    }
+    this.emitAmbient(speaker line)
+  }
+
+  fn countMainTaskOnFloor:int (floorIndex:int task:string) {
+    def saved:int currentFloor
+    currentFloor = floorIndex
+    this.recomputeSize()
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def count:int 0
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.mainTask == task) {
+        count = count + 1
+      }
+      i = i + 1
+    }
+    currentFloor = saved
+    this.recomputeSize()
+    return count
+  }
+
+  fn countMainTask:int (task:string) {
+    def total:int 0
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      total = total + (this.countMainTaskOnFloor(fi task))
+      fi = fi + 1
+    }
+    return total
+  }
+
+  fn applyPanicFleeing:void (npcIds:[string] relations:[NpcRelation]) {
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if ((strlen e.id) < 1) {
+          ei = ei + 1
+          continue
+        }
+        def idx:int -1
+        def ri:int 0
+        def rn:int (array_length npcIds)
+        while (ri < rn) {
+          if ((at npcIds ri) == e.id) {
+            idx = ri
+            break
+          }
+          ri = ri + 1
+        }
+        if (idx >= 0) {
+          def rel:NpcRelation (at relations idx)
+          if (rel.isPanicSevere()) {
+            e.mainTask = "fleeing"
+          }
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+  }
+
+  fn syncNpcOverlayEmotions:void (npcIds:[string] relations:[NpcRelation]) {
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if ((strlen e.id) < 1) {
+          ei = ei + 1
+          continue
+        }
+        def idx:int -1
+        def ri:int 0
+        def rn:int (array_length npcIds)
+        while (ri < rn) {
+          if ((at npcIds ri) == e.id) {
+            idx = ri
+            break
+          }
+          ri = ri + 1
+        }
+        e.overlayEmotion = "none"
+        if (idx >= 0) {
+          def rel:NpcRelation (at relations idx)
+          if (rel.isPanicHigh()) {
+            e.overlayEmotion = "panicked"
+          } {
+            if (rel.isAngryStrong()) {
+              e.overlayEmotion = "angry"
+            } {
+              if (rel.isLoveStrong()) {
+                e.overlayEmotion = "in_love"
+              } {
+                if (rel.isJealousyHigh()) {
+                  e.overlayEmotion = "jealous"
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
   }
 
   fn getView:MapView () {

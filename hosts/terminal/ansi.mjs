@@ -55,6 +55,8 @@ const TILE_COLOR = {
   A: FG.green,
 };
 
+import { formatMapLineTerminal } from "../shared/mapGlyphs.mjs";
+
 export function colorize(ch) {
   const style = TILE_COLOR[ch];
   if (!style) return ch;
@@ -62,11 +64,7 @@ export function colorize(ch) {
 }
 
 export function colorizeMapLine(line) {
-  let out = "";
-  for (let i = 0; i < line.length; i += 1) {
-    out += colorize(line[i]);
-  }
-  return out;
+  return formatMapLineTerminal(line, (glyph) => colorize(glyph));
 }
 
 export function colorizePolice(ch) {

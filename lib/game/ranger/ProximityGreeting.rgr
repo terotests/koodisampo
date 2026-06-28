@@ -1,0 +1,242 @@
+
+Import "MapEntity.rgr"
+Import "NpcRelation.rgr"
+
+class ProximityGreeting {
+  fn playerLabel:string (playerName:string) {
+    if ((strlen playerName) > 0) {
+      return playerName
+    }
+    return "sinä"
+  }
+
+  fn wrapSpeech:string (npcName:string speech:string) {
+    return (npcName + ": \"" + speech + "\"")
+  }
+
+  fn wrapNarration:string (npcName:string narration:string) {
+    return (npcName + " " + narration)
+  }
+
+  fn pickPoolIndex:int (seed:int poolSize:int) {
+    if (poolSize < 1) {
+      return 0
+    }
+    def idx:int seed
+    while (idx >= poolSize) {
+      idx = (idx - poolSize)
+    }
+    while (idx < 0) {
+      idx = (idx + poolSize)
+    }
+    return idx
+  }
+
+  fn neutralSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei " + who + "!")
+    }
+    if (index == 1) {
+      return ("Huomenta " + who + ".")
+    }
+    if (index == 2) {
+      return ("Päivää " + who + "!")
+    }
+    if (index == 3) {
+      return ("Moro " + who + "!")
+    }
+    if (index == 4) {
+      return ("Hei hei " + who + "!")
+    }
+    if (index == 5) {
+      return (who + " — hyvä nähdä.")
+    }
+    if (index == 6) {
+      return ("Ai " + who + "?")
+    }
+    if (index == 7) {
+      return ("Terve " + who + "!")
+    }
+    if (index == 8) {
+      return ("No hei " + who + ".")
+    }
+    return ("Hei " + who + ", mitä kuuluu?")
+  }
+
+  fn friendlySpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei " + who + "! Hyvä nähdä.")
+    }
+    if (index == 1) {
+      return ("Oi " + who + " — mitä kuuluu?")
+    }
+    if (index == 2) {
+      return (who + ", sinulla näyttää olevan hyvä päivä.")
+    }
+    if (index == 3) {
+      return ("Haikaa " + who + "!")
+    }
+    if (index == 4) {
+      return ("Hei kollega " + who + "!")
+    }
+    return (who + ", olipa kiva törmätä.")
+  }
+
+  fn loveSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei " + who + "…")
+    }
+    if (index == 1) {
+      return (who + ", sinä taas täällä.")
+    }
+    if (index == 2) {
+      return ("Voi " + who + ", sinä loistat tänään.")
+    }
+    return ("Hei " + who + ", olin juuri ajatellut sinua.")
+  }
+
+  fn angryMildSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei.")
+    }
+    if (index == 1) {
+      return (who + ".")
+    }
+    if (index == 2) {
+      return ("Ai, sinä.")
+    }
+    if (index == 3) {
+      return ("No terve sitten.")
+    }
+    return ("Hm. " + who + ".")
+  }
+
+  fn angryStrongSpeech:string (index:int) {
+    if (index == 0) {
+      return "..."
+    }
+    if (index == 1) {
+      return "Mitä?"
+    }
+    if (index == 2) {
+      return "Älä häiritse."
+    }
+    return "Häh."
+  }
+
+  fn fearSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei… " + who + ".")
+    }
+    if (index == 1) {
+      return ("Ai, " + who + "…")
+    }
+    return ("Öö… hei " + who + ".")
+  }
+
+  fn jealousSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei " + who + ".")
+    }
+    if (index == 1) {
+      return (who + "… taas.")
+    }
+    return ("No hei sitten, " + who + ".")
+  }
+
+  fn coldSpeech:string (index:int who:string) {
+    if (index == 0) {
+      return ("Hei.")
+    }
+    if (index == 1) {
+      return (who + ".")
+    }
+    return ("Päivää.")
+  }
+
+  fn janitorSpeech:string (index:int who:string angry:boolean) {
+    if (angry) {
+      if (index == 0) {
+        return "Hei."
+      }
+      return "Kiirettä."
+    }
+    if (index == 0) {
+      return ("Hei " + who + "! Piha on rauhallinen tänään.")
+    }
+    if (index == 1) {
+      return ("Päivää " + who + " — aurinko paistaa.")
+    }
+    if (index == 2) {
+      return ("Moro " + who + ", kaikki kunnossa pihalla.")
+    }
+    return ("Hei " + who + ", hyvä että tulit ulos.")
+  }
+
+  fn buildLine:string (npc:MapEntity rel:NpcRelation playerName:string) {
+    def who:string (this.playerLabel(playerName))
+    def seed:int rel.greetCount
+    if (npc.id == "janitor") {
+      def jIdx:int (this.pickPoolIndex(seed 4))
+      def jAngry:boolean false
+      if (rel.isAngryStrong()) {
+        jAngry = true
+      }
+      return (this.wrapSpeech(npc.name (this.janitorSpeech(jIdx who jAngry))))
+    }
+    if (rel.isPanicHigh()) {
+      if (npc.overlayEmotion == "panicked") {
+        return (this.wrapNarration(npc.name "hengästyy: \"Anteeksi — en ehdi nyt.\""))
+      }
+      return (this.wrapNarration(npc.name "näyttää paniikissa."))
+    }
+    if (rel.isAngrySevere()) {
+      if (npc.overlayEmotion == "angry") {
+        return (this.wrapNarration(npc.name "näyttää jotenkin vaikealta."))
+      }
+      def aIdx:int (this.pickPoolIndex(seed 4))
+      return (this.wrapSpeech(npc.name (this.angryStrongSpeech(aIdx))))
+    }
+    if (rel.isAngryNoticeable()) {
+      if (npc.overlayEmotion == "angry") {
+        return (this.wrapNarration(npc.name "näyttää jotenkin vaikealta."))
+      }
+      def amIdx:int (this.pickPoolIndex(seed 5))
+      return (this.wrapSpeech(npc.name (this.angryMildSpeech(amIdx who))))
+    }
+    if (rel.isLoveStrong()) {
+      if (npc.overlayEmotion == "in_love") {
+        def lvIdx:int (this.pickPoolIndex(seed 4))
+        return (this.wrapSpeech(npc.name (this.loveSpeech(lvIdx who))))
+      }
+    }
+    if (npc.overlayEmotion == "in_love") {
+      def lv2Idx:int (this.pickPoolIndex(seed 4))
+      return (this.wrapSpeech(npc.name (this.loveSpeech(lv2Idx who))))
+    }
+    if (rel.isJealousyHigh()) {
+      def jelIdx:int (this.pickPoolIndex(seed 3))
+      return (this.wrapSpeech(npc.name (this.jealousSpeech(jelIdx who))))
+    }
+    if (npc.overlayEmotion == "jealous") {
+      def jel2Idx:int (this.pickPoolIndex(seed 3))
+      return (this.wrapSpeech(npc.name (this.jealousSpeech(jel2Idx who))))
+    }
+    if (rel.isFearHigh()) {
+      def fIdx:int (this.pickPoolIndex(seed 3))
+      return (this.wrapSpeech(npc.name (this.fearSpeech(fIdx who))))
+    }
+    if (rel.isFriendlinessWarm()) {
+      def frIdx:int (this.pickPoolIndex(seed 6))
+      return (this.wrapSpeech(npc.name (this.friendlySpeech(frIdx who))))
+    }
+    if (rel.isRespectLow()) {
+      if (rel.isFriendlinessCold()) {
+        def cIdx:int (this.pickPoolIndex(seed 3))
+        return (this.wrapSpeech(npc.name (this.coldSpeech(cIdx who))))
+      }
+    }
+    def nIdx:int (this.pickPoolIndex(seed 10))
+    return (this.wrapSpeech(npc.name (this.neutralSpeech(nIdx who))))
+  }
+}

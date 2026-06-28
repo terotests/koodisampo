@@ -1,10 +1,16 @@
 import type { WebGame } from "./boot";
+import { colorizeMapLineHtml } from "../../hosts/shared/mapGlyphs.mjs";
+import { mountElevatorToolbar } from "../../hosts/shared/elevatorToolbarDom.mjs";
+import { PLAYER_SPECIALTY_OPTIONS } from "../../hosts/shared/playerSpecialty.mjs";
 import {
   cropMapLines,
+  clearMobileElevator,
+  initMobileLayoutOptions,
   isMobileLayout,
   mountMobileControls,
   renderHudStats,
   renderMessageBar,
+  resetMobileControlsMount,
   setMobileDpadVisible,
   setMobilePlayView,
   setMobileTextChoiceMode,
@@ -13,6 +19,8 @@ import {
   syncMobileClass,
   syncMobileMapScale,
   updateMobileMapToolbar,
+  viewportWidth,
+  watchViewportLayout,
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
 import { patchMapGrid } from "./render/mapGrid";
@@ -31,16 +39,62 @@ export function mountGameUI(game: WebGame) {
   const hudStatsEl = document.getElementById("hud-stats");
   const messageBarEl = document.getElementById("message-bar");
   const mobileDpadEl = document.getElementById("mobile-dpad");
+  const debugToggleEl = document.getElementById("debug-json-toggle");
+  const profileSetupEl = document.getElementById("profile-setup");
+  const profileNameEl = document.getElementById("profile-name") as HTMLInputElement | null;
+  const profileSpecialtyEl = document.getElementById("profile-specialty") as HTMLSelectElement | null;
+  const profileFormEl = document.getElementById("profile-setup-form");
+  const profileStartBtn = document.getElementById("profile-start-btn");
+  const profileErrorEl = document.getElementById("profile-setup-error");
   let lastMobileMapLines: string[] = [];
+  let showDebugJson = new URLSearchParams(window.location.search).has("debug");
+  let showRelationsDebug = false;
+  const DEBUG_UNLOCK = "debug";
+  let debugUnlockBuffer = "";
+  let debugUnlockTimer = 0;
 
-  syncMobileClass();
-  window.addEventListener("resize", () => {
-    syncMobileClass();
-    if (isMobileLayout() && lastMobileMapLines.length > 0 && mapEl) {
-      const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
-      if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+  function feedDebugUnlock(key: string): "toggled" | "swallow" | null {
+    if (key.length !== 1 || !/^[a-z]$/.test(key)) {
+      debugUnlockBuffer = "";
+      return null;
     }
+    debugUnlockBuffer = (debugUnlockBuffer + key).slice(-DEBUG_UNLOCK.length);
+    if (debugUnlockBuffer === DEBUG_UNLOCK) {
+      debugUnlockBuffer = "";
+      window.clearTimeout(debugUnlockTimer);
+      return "toggled";
+    }
+    if (DEBUG_UNLOCK.startsWith(debugUnlockBuffer)) {
+      window.clearTimeout(debugUnlockTimer);
+      debugUnlockTimer = window.setTimeout(() => {
+        debugUnlockBuffer = "";
+      }, 2000);
+      return "swallow";
+    }
+    debugUnlockBuffer = "";
+    return null;
+  }
+
+  function syncDebugJsonPanel() {
+    document.body.classList.toggle("show-debug-json", showDebugJson);
+    if (debugToggleEl) {
+      debugToggleEl.textContent = showDebugJson ? "Piilota JSON" : "Näytä JSON";
+    }
+    if (!showDebugJson && jsonEl) {
+      jsonEl.textContent = "";
+    }
+  }
+
+  syncDebugJsonPanel();
+  debugToggleEl?.addEventListener("click", () => {
+    showDebugJson = !showDebugJson;
+    syncDebugJsonPanel();
+    lastRenderKey = "";
+    render(game.snapshot());
   });
+
+  initMobileLayoutOptions();
+  syncMobileClass();
 
     const BANNER = `╔══════════════════════════════════════════════════╗
 ║  KOODISAMPO — Corporate NetHack (terminaali)   ║
@@ -48,6 +102,7 @@ export function mountGameUI(game: WebGame) {
 ╚══════════════════════════════════════════════════╝`;
 
     function sendKey(key: string) {
+      if (needsProfileSetup(game.snapshot())) return;
       game.handleKey(key);
       lastRenderKey = "";
       render(game.snapshot());
@@ -56,6 +111,107 @@ export function mountGameUI(game: WebGame) {
     let copyStatusTimeout = 0;
     let lastRenderKey = "";
     let currentStudyListText = "";
+
+    function needsProfileSetup(state: State): boolean {
+      if (typeof state.needsProfileSetup === "boolean") return state.needsProfileSetup;
+      if (!state.profileComplete) return true;
+      return !String(state.playerDisplayName ?? "").trim();
+    }
+
+    function isEditableGameTarget(target: EventTarget | null): boolean {
+      if (!(target instanceof HTMLElement)) return false;
+      if (target.id === "codeInput") return false;
+      if (profileFormEl?.contains(target) && target.closest("input, textarea, select, button")) {
+        return true;
+      }
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || target.isContentEditable;
+    }
+
+    function showProfileSetupError(message: string) {
+      if (!profileErrorEl) return;
+      profileErrorEl.textContent = message;
+      profileErrorEl.hidden = false;
+    }
+
+    function clearProfileSetupError() {
+      if (!profileErrorEl) return;
+      profileErrorEl.textContent = "";
+      profileErrorEl.hidden = true;
+    }
+
+    function commitProfileSetup(): boolean {
+      if (!profileFormEl || !profileNameEl) return false;
+      const name = profileNameEl.value.trim();
+      const specialty = profileSpecialtyEl?.value ?? "cpp";
+      if (!name) {
+        showProfileSetupError("Anna nimesi.");
+        profileNameEl.focus();
+        return false;
+      }
+      if (typeof game.setPlayerProfile !== "function") {
+        showProfileSetupError("Pelin profiilikäsittelijä puuttuu.");
+        return false;
+      }
+      let ok = false;
+      try {
+        ok = game.setPlayerProfile(name, specialty) === true;
+      } catch (err) {
+        console.error("Profiilin tallennus epäonnistui:", err);
+        ok = false;
+      }
+      if (!ok) {
+        showProfileSetupError("Profiilin tallennus epäonnistui. Päivitä sivu (Cmd+Shift+R).");
+        return false;
+      }
+      clearProfileSetupError();
+      profileFormDirty = false;
+      profileFormSeeded = false;
+      if (profileSetupEl) profileSetupEl.hidden = true;
+      lastRenderKey = "";
+      render(game.snapshot());
+      return true;
+    }
+
+    function isProfileFormFocused(): boolean {
+      const active = document.activeElement;
+      return !!(active instanceof HTMLElement && profileSetupEl?.contains(active));
+    }
+
+    let profileFormSeeded = false;
+    let profileFormDirty = false;
+
+    function syncProfileSetupVisible(state: State) {
+      if (!profileSetupEl) return;
+      const show = needsProfileSetup(state);
+      profileSetupEl.hidden = !show;
+      if (!show) {
+        profileFormSeeded = false;
+        profileFormDirty = false;
+      }
+    }
+
+    function applyProfileSetupChrome(state: State) {
+      const needsSetup = needsProfileSetup(state);
+      setMobilePlayView(false);
+      setMobileDpadVisible(mobileDpadEl, false);
+      setMobileToolbarVisible(toolbarEl, !needsSetup);
+    }
+
+    function seedProfileFormOnce(state: State) {
+      if (profileFormSeeded || profileFormDirty || isProfileFormFocused()) return;
+      if (profileNameEl && !profileNameEl.value && state.playerDisplayName) {
+        profileNameEl.value = state.playerDisplayName;
+      }
+      if (profileSpecialtyEl) {
+        if (state.playerSpecialty) {
+          profileSpecialtyEl.value = state.playerSpecialty;
+        } else if (!profileSpecialtyEl.value) {
+          profileSpecialtyEl.value = "cpp";
+        }
+      }
+      profileFormSeeded = true;
+    }
 
     const STUDY_LIST_HINT = "Kopioi = leikepöydälle | b / Enter = takaisin | q = lopeta";
 
@@ -100,7 +256,10 @@ export function mountGameUI(game: WebGame) {
       }, 2500);
     }
 
-    function resetGame() {
+    async function resetGame() {
+      if (game.reloadWorldFromSource) {
+        await game.reloadWorldFromSource();
+      }
       game.reset(true);
       lastRenderKey = "";
       render(game.snapshot());
@@ -121,21 +280,12 @@ export function mountGameUI(game: WebGame) {
 
     function statsLine(state) {
       const time = state.time ? ` &nbsp;|&nbsp; <span style="color:#39c5cf">${esc(state.time)}</span>` : "";
-      return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Karma: <span class="karma">${state.karma}</span>${time}</div>`;
+      const needs = state.needsLine ? ` &nbsp;|&nbsp; <span style="color:#d2a8ff">${esc(state.needsLine)}</span>` : "";
+      return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Karma: <span class="karma">${state.karma}</span>${time}${needs}</div>`;
     }
 
     function colorizeLine(line, state, row = 0) {
-      const recommended = new Set(state.recommendedCells ?? []);
-      return [...line].map((ch, col) => {
-        if (recommended.has(`${row},${col}`)) {
-          return `<span class="npc-recommended">${esc(ch)}</span>`;
-        }
-        if (state.policeChase && ch === "P") return `<span class="police">${ch}</span>`;
-        if (ch === "@") return `<span style="color:#f0883e;font-weight:bold">${ch}</span>`;
-        if (ch === ".") return `<span style="color:#3fb950">${ch}</span>`;
-        if (ch === "#" || ch === "%") return `<span style="color:#ffffff">${ch}</span>`;
-        return esc(ch);
-      }).join("");
+      return colorizeMapLineHtml(line, state, row, esc);
     }
 
     function screenHeader(state: State) {
@@ -213,12 +363,10 @@ export function mountGameUI(game: WebGame) {
         }
       } else {
         const studyLine = state.studyCounts?.total > 0
-          ? `<div style="color:#d2a8ff;margin-bottom:8px">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
+          ? `<div style="color:#d2a8ff;margin-bottom:8px;text-align:center">Opiskelulista (b): ${state.studyCounts.wantMore} Kysy AI:lta, ${state.studyCounts.wrongAnswers} väärin</div>`
           : "";
-        const headerHtml = `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}` +
-          studyLine +
-          (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px">${esc(state.floorTitle)}</div>` : "");
-        header.innerHTML = headerHtml;
+        header.innerHTML = studyLine +
+          (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px;text-align:center">${esc(state.floorTitle)}</div>` : "");
       }
       patchMapGrid(grid, lines, state, colorizeLine);
       if (isMobileLayout()) {
@@ -229,7 +377,7 @@ export function mountGameUI(game: WebGame) {
         showMobilePlayToolbar();
       }
       setText(hint, isMobileLayout() ? "" : (state.hint || ""));
-      if (!state.hint || isMobileLayout()) {
+      if (!state.hint) {
         hint.style.display = "none";
       } else {
         hint.style.display = "";
@@ -347,6 +495,8 @@ export function mountGameUI(game: WebGame) {
 
     function renderEncounter(state) {
       updateMobileChrome(state);
+      setMobilePlayView(false);
+      setMobileDpadVisible(mobileDpadEl, false);
       const enc = state.encounter;
       let html = screenHeader(state);
       html += `<div class="entity"><span class="entity-char">[ ${esc(enc.char)} ]</span> <span class="entity-name">${esc(enc.name)}</span></div>`;
@@ -357,7 +507,27 @@ export function mountGameUI(game: WebGame) {
         return;
       }
 
-      if (enc.mode === "quiz" && state.quiz) {
+      if (enc.mode === "emotional" && enc.question) {
+        html += `<div class="greeting">${esc(enc.greeting)}</div>`;
+        html += `<div class="greeting" style="margin-top:10px;font-style:italic">${esc(enc.question)}</div>`;
+        for (const c of enc.choices || []) {
+          html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`);
+        }
+        html += sideOptRow("p", `<span class="side-key leave">[p]</span> Poistu`);
+
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            ...(enc.choices || []).map((c: { n: number; text: string }) => ({
+              key: String(c.n),
+              label: String(c.n),
+            })),
+            { key: "p", label: "p poistu", cls: "muted" },
+          ]);
+        }
+        if (hintEl) hintEl.textContent = isMobileLayout() ? "" : (enc.hintLine || "1–3=vastaa  p=poistu") + "  |  q = lopeta";
+      } else if (enc.mode === "quiz" && state.quiz) {
         const q = state.quiz;
         const side = q.sideMenu;
         html += `<div class="greeting">${esc(q.greeting)}</div>`;
@@ -469,13 +639,23 @@ export function mountGameUI(game: WebGame) {
               lastRenderKey = "";
               render(game.snapshot());
             });
+            if (lastMobileMapLines.length > 0 && mapEl) {
+              requestAnimationFrame(() => {
+                const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
+                if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+              });
+            }
           }
         } else {
           lastToolbarKey = "";
+          clearMobileElevator();
         }
         return;
       }
-      setToolbar([
+      if (!toolbarEl) return;
+      toolbarEl.className = "toolbar toolbar-desktop";
+      toolbarEl.innerHTML = "";
+      const movementButtons = [
         { key: "w", label: "↑" },
         { key: "a", label: "←" },
         { key: "s", label: "↓" },
@@ -487,10 +667,54 @@ export function mountGameUI(game: WebGame) {
         { key: "i", label: "i inventaario" },
         { key: "b", label: "b opiskelu" },
         { key: "?", label: "? valikko" },
-        { key: "o", label: "o hahmot (debug)" },
+        { key: "o", label: "o hahmot" },
         { key: "reset", label: "↺ alusta", cls: "danger" },
-      ]);
-      hintEl.textContent = "WASD | t=työkalu x=murra/kaiva | e=käytä | i=inventaario | b=opiskelu | h piiloudu | ?=valikko | q lopeta";
+      ];
+      for (const b of movementButtons) {
+        const btn = document.createElement("button");
+        btn.textContent = b.label;
+        btn.dataset.key = b.key;
+        if (b.cls) btn.className = b.cls;
+        btn.addEventListener("click", () => {
+          if (b.key === "reset") resetGame();
+          else sendKey(b.key);
+        });
+        toolbarEl.appendChild(btn);
+      }
+      mountElevatorToolbar(
+        toolbarEl,
+        {
+          onElevator: state?.onElevator,
+          elevatorPickerCollapsed: state?.elevatorPickerCollapsed,
+          elevatorFloors: state?.elevatorFloors,
+        },
+        {
+          onKey: sendKey,
+          onExpand: () => {
+            game.expandElevatorPicker?.();
+            lastRenderKey = "";
+            render(game.snapshot());
+          },
+        },
+      );
+      if (hintEl) {
+        hintEl.textContent = onElevator
+          ? "Hissi: valitse kerros 1–9/0 | WASD liiku | q lopeta"
+          : "WASD | t=työkalu x=murra/kaiva | e=käytä | i=inventaario | b=opiskelu | h piiloudu | ?=valikko | q lopeta";
+      }
+    }
+
+    function updateDesktopChrome(state: State) {
+      renderHudStats(hudStatsEl, state, esc);
+      if (messageBarEl) {
+        const parts = [];
+        if (state.floorTitle) parts.push(state.floorTitle);
+        if (state.time) parts.push(state.time);
+        if (state.status) parts.push(state.status);
+        if (state.ambient && state.ambient !== state.status) parts.push(state.ambient);
+        messageBarEl.hidden = parts.length === 0;
+        messageBarEl.textContent = parts.join(" · ");
+      }
     }
 
     function updateMobileChrome(state: State) {
@@ -504,10 +728,21 @@ export function mountGameUI(game: WebGame) {
       renderMapToolbar(state);
     }
 
+    let lastLayoutMobile = isMobileLayout();
+
     function renderKey(state: State): string {
       return [
+        isMobileLayout() ? "m" : "d",
+        showRelationsDebug ? "relDbg1" : "relDbg0",
+        Math.floor(viewportWidth() / 40),
         state.generation,
+        state.player?.x ?? "",
+        state.player?.y ?? "",
+        state.entityCount ?? "",
+        state.floor ?? "",
         state.screen,
+        state.needsProfileSetup ? "needProf1" : "needProf0",
+        state.profileComplete ? "prof1" : "prof0",
         state.overlay?.type ?? "",
         state.actionPanel?.mode ?? "",
         state.encounter?.mode ?? "",
@@ -515,10 +750,19 @@ export function mountGameUI(game: WebGame) {
         state.story?.nodeKind ?? "",
         state.story?.currentNodeId ?? "",
         state.elevatorPickerCollapsed ? "1" : "0",
+        state.status ?? "",
+        state.ambient ?? "",
       ].join("|");
     }
 
     function render(state) {
+      const needsSetup = needsProfileSetup(state);
+      syncProfileSetupVisible(state);
+      if (needsSetup) {
+        applyProfileSetupChrome(state);
+        seedProfileFormOnce(state);
+        return;
+      }
       const key = renderKey(state);
       const onMobileMap = isMobileLayout() && state.screen === "map" && Boolean(state.lines);
       setMobilePlayView(onMobileMap);
@@ -526,6 +770,7 @@ export function mountGameUI(game: WebGame) {
       if (!onMobileMap) {
         lastToolbarKey = "";
         lastElevatorToolbarKey = "";
+        clearMobileElevator();
       }
       if (key === lastRenderKey) {
         return;
@@ -533,22 +778,45 @@ export function mountGameUI(game: WebGame) {
       lastRenderKey = key;
       if (isMobileLayout()) {
         updateMobileChrome(state);
-      } else if (jsonEl && metaEl) {
-        jsonEl.textContent = JSON.stringify(state, null, 2);
-        metaEl.innerHTML = `screen=<b>${state.screen}</b> karma=${state.karma} deaths=${state.deaths} ` +
-          `agents=${state.agentCount} gen=${state.generation}`;
-        if (state.policeChase) metaEl.innerHTML += ` <span class="warn">POLIISIT</span>`;
-        if (state.studyCounts?.total > 0) {
-          metaEl.innerHTML += ` <span style="color:#d2a8ff">opiskelu: ${state.studyCounts.wantMore}+${state.studyCounts.wrongAnswers}✗</span>`;
-        }
-        if (state.staffRoster?.length) {
-          const names = state.staffRoster.map((s: { firstName?: string; name?: string }) => s.firstName || s.name).join(", ");
-          metaEl.innerHTML += `<div style="color:#8b949e;font-size:11px;margin-top:4px">Henkilöstö: ${esc(names)}</div>`;
+      } else {
+        updateDesktopChrome(state);
+        if (showDebugJson && jsonEl && metaEl) {
+          jsonEl.textContent = JSON.stringify(state, null, 2);
+          metaEl.innerHTML = `screen=<b>${state.screen}</b> karma=${state.karma} deaths=${state.deaths} ` +
+            `agents=${state.agentCount} gen=${state.generation}`;
+          if (state.policeChase) metaEl.innerHTML += ` <span class="warn">POLIISIT</span>`;
+          if (state.studyCounts?.total > 0) {
+            metaEl.innerHTML += ` <span style="color:#d2a8ff">opiskelu: ${state.studyCounts.wantMore}+${state.studyCounts.wrongAnswers}✗</span>`;
+          }
+          if (state.staffRoster?.length) {
+            const names = state.staffRoster.map((s: { firstName?: string; name?: string }) => s.firstName || s.name).join(", ");
+            metaEl.innerHTML += `<div style="color:#8b949e;font-size:11px;margin-top:4px">Henkilöstö: ${esc(names)}</div>`;
+          }
         }
       }
 
       if (!isMobileLayout() && statusEl) {
-        statusEl.textContent = state.status || "";
+        statusEl.textContent = "";
+      }
+
+      if (showRelationsDebug) {
+        const debugText = game.getRelationsDebugText?.() ?? "";
+        if (!mapEl) return;
+        clearMapView(mapEl);
+        setMapContent(
+          screenHeader(state) +
+          `<pre class="relations-debug" style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:12px 0;color:#c9d1d9;font-size:12px;line-height:1.45">${esc(debugText)}</pre>`,
+        );
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            { key: "enter", label: "Enter sulje" },
+            { key: "escape", label: "Esc sulje" },
+          ]);
+        }
+        hintEl.textContent = "DEBUG — tunnetilat | kirjoita debug tai Enter/Esc = sulje";
+        return;
       }
 
       if (state.castListOpen) {
@@ -562,7 +830,7 @@ export function mountGameUI(game: WebGame) {
           { key: "o", label: "o sulje" },
           { key: "enter", label: "Enter sulje" },
         ]);
-        hintEl.textContent = "DEBUG — hahmolista poistuu tuotannosta | o / Enter = sulje | q = lopeta";
+        hintEl.textContent = "Hahmot ja tunnetilat | o / Enter = sulje | q = lopeta";
         return;
       }
 
@@ -823,6 +1091,21 @@ export function mountGameUI(game: WebGame) {
         return;
       }
 
+      if (state.screen === "epilogue") {
+        let html = screenHeader(state);
+        html += `<div class="overlay-title bad">═══ Päivän loppu ═══</div>`;
+        html += `<div class="greeting">${esc(state.status || "")}</div>`;
+        html += continueRow("enter", "Aloita uusi päivä →");
+        setMapContent(html);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — uusi päivä" }]);
+        }
+        hintEl.textContent = "Enter = uusi päivä | q = lopeta";
+        return;
+      }
+
       if (state.lines) {
         if (isMobileLayout()) {
           renderMobileMap(state);
@@ -892,8 +1175,45 @@ export function mountGameUI(game: WebGame) {
     });
 
     window.addEventListener("keydown", (e) => {
+      if (isEditableGameTarget(e.target)) return;
+
       const k = normalizeKey(e);
       const state = game.snapshot();
+      if (needsProfileSetup(state)) return;
+
+      const unlock = feedDebugUnlock(k);
+      if (unlock === "toggled") {
+        e.preventDefault();
+        showRelationsDebug = !showRelationsDebug;
+        lastRenderKey = "";
+        render(game.snapshot());
+        return;
+      }
+      if (unlock === "swallow") {
+        e.preventDefault();
+        return;
+      }
+
+      if (showRelationsDebug) {
+        if (e.key === "Escape" || k === "enter" || k === "q") {
+          e.preventDefault();
+          showRelationsDebug = false;
+          lastRenderKey = "";
+          render(game.snapshot());
+          return;
+        }
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === "`" && !isMobileLayout()) {
+        e.preventDefault();
+        showDebugJson = !showDebugJson;
+        syncDebugJsonPanel();
+        lastRenderKey = "";
+        render(game.snapshot());
+        return;
+      }
       if (state.screen === "studylist" && k === "c") {
         e.preventDefault();
         void copyStudyListToClipboard(state.studyListText || "");
@@ -904,14 +1224,69 @@ export function mountGameUI(game: WebGame) {
       sendKey(k);
     });
 
+    function onViewportChange() {
+      const mobile = isMobileLayout();
+      const state = game.snapshot();
+      if (needsProfileSetup(state)) {
+        syncProfileSetupVisible(state);
+        applyProfileSetupChrome(state);
+        if (isProfileFormFocused()) return;
+      }
+      if (mobile !== lastLayoutMobile) {
+        resetMobileControlsMount();
+        lastLayoutMobile = mobile;
+        if (toolbarEl && !mobile) {
+          toolbarEl.className = "toolbar";
+          toolbarEl.innerHTML = "";
+          toolbarEl.hidden = false;
+        }
+      }
+      syncMobileClass();
+      if (mobile && lastMobileMapLines.length > 0 && mapEl) {
+        const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
+        if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+      }
+      lastRenderKey = "";
+      render(game.snapshot());
+    }
+
+    watchViewportLayout(onViewportChange);
+
+    if (profileSpecialtyEl) {
+      profileSpecialtyEl.innerHTML = PLAYER_SPECIALTY_OPTIONS.map(
+        (o) => `<option value="${esc(o.id)}">${esc(o.label)}</option>`,
+      ).join("");
+    }
+    profileNameEl?.addEventListener("input", () => {
+      profileFormDirty = true;
+      clearProfileSetupError();
+    });
+    profileSpecialtyEl?.addEventListener("change", () => {
+      profileFormDirty = true;
+    });
+    profileFormEl?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      commitProfileSetup();
+    });
+    profileStartBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      commitProfileSetup();
+    });
+
     function tick() {
       const state = game.snapshot();
+      syncProfileSetupVisible(state);
+      if (needsProfileSetup(state)) {
+        applyProfileSetupChrome(state);
+        seedProfileFormOnce(state);
+        return;
+      }
       const key = renderKey(state);
       if (key !== lastRenderKey) {
         render(state);
       }
     }
 
-    tick();
+    render(game.snapshot());
     setInterval(tick, 500);
 }

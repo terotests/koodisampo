@@ -8,12 +8,26 @@ Import "../StoryView.rgr"
 Import "../WorldMap.rgr"
 Import "../MapView.rgr"
 Import "../MapEntity.rgr"
+Import "../MapFloor.rgr"
 Import "../EncounterView.rgr"
 Import "../PlayerConduct.rgr"
 Import "../PlayerTools.rgr"
+Import "../PlayerNeeds.rgr"
+Import "../PlayerCoreStats.rgr"
+Import "../NpcRelationStore.rgr"
+Import "../NpcRelation.rgr"
+Import "../EmotionMath.rgr"
+Import "../DialogueCatalog.rgr"
+Import "../EmotionalDialogue.rgr"
+Import "../EmotionalAnswer.rgr"
 Import "../InventoryView.rgr"
 Import "../ActionView.rgr"
+Import "../ProximityGreeting.rgr"
 Import "../WorldClock.rgr"
+Import "../WorldEvent.rgr"
+Import "../WorldEventLog.rgr"
+Import "../EventPerception.rgr"
+Import "../Escalation.rgr"
 Import "JSON.rgr"
 Import "../StoryJson.rgr"
 
@@ -34,6 +48,20 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def encounterResult:string ""
   def conduct:PlayerConduct
   def tools:PlayerTools
+  def playerNeeds:PlayerNeeds
+  def playerStats:PlayerCoreStats
+  def npcRelations:NpcRelationStore
+  def dialogueCatalog:DialogueCatalog
+  def emotionMath:EmotionMath
+  def eventPerception:EventPerception
+  def escalation:Escalation
+  def relationTickAccum:int 0
+  def socialTickAccum:int 0
+  def escalatedAngry:boolean false
+  def escalatedPanic:boolean false
+  def escalatedJealous:boolean false
+  def pendingEmotionalDialogueIndex:int -1
+  def gameOverReason:string ""
   def encounterCooldown:int 0
   def interviewPassed:boolean false
   def interviewFailed:boolean false
@@ -67,6 +95,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def simEventTypes:[string]
   def simEventDetails:[string]
   def simErrors:[string]
+  def playerDisplayName:string ""
+  def playerSpecialty:string ""
+  def profileComplete:boolean false
+  def proximityGreeting:ProximityGreeting
+  def pendingGreetNpcId:string ""
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -74,8 +107,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     catalog = (new StoryCatalog)
     conduct = (new PlayerConduct)
     tools = (new PlayerTools)
+    playerNeeds = (new PlayerNeeds)
+    playerStats = (new PlayerCoreStats)
+    npcRelations = (new NpcRelationStore)
+    dialogueCatalog = (new DialogueCatalog)
+    emotionMath = (new EmotionMath)
+    eventPerception = (new EventPerception)
+    escalation = (new Escalation)
     worldClock = (new WorldClock)
     simJson = (new StoryJson)
+    proximityGreeting = (new ProximityGreeting)
   }
 
   fn ensureEngine:void () {
@@ -211,6 +252,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     this.clearEncounter()
     screen = "map"
+    this.afterTimedAction("quiz_answer")
     this.markStateDirty()
   }
 
@@ -233,6 +275,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     this.clearEncounter()
     screen = "map"
+    this.afterTimedAction("talk")
     this.markStateDirty()
   }
 
@@ -367,10 +410,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     pendingEntityName = ""
     pendingEntityKind = ""
     encounterResult = ""
+    pendingEmotionalDialogueIndex = -1
     encounterCooldown = 3
   }
 
   fn startEncounter:void (bump:MapEntity) {
+    this.clearPendingGreetWithAck(bump.id)
     pendingEntityId = bump.id
     pendingEntityChar = bump.char
     pendingEntityName = bump.name
@@ -386,10 +431,226 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (ok == false) {
       menuMessage = "Kartan lataus epäonnistui."
     }
+    this.bootstrapPlayerVitals()
     this.syncHrGreeter()
-    screen = "map"
+    this.syncProfileScreen()
     this.markStateDirty()
     return ok
+  }
+
+  fn needsProfileSetup:boolean () {
+    if (profileComplete == false) {
+      return true
+    }
+    if ((strlen playerDisplayName) < 1) {
+      return true
+    }
+    return false
+  }
+
+  fn syncProfileScreen:void () {
+    if (this.needsProfileSetup()) {
+      profileComplete = false
+      screen = "setup"
+    } {
+      screen = "map"
+    }
+  }
+
+  fn applyPlayerProfile:void (name:string specialty:string) {
+    if ((strlen name) < 1) {
+      return
+    }
+    playerDisplayName = name
+    playerSpecialty = specialty
+    profileComplete = true
+    map.playerAlias = name
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn clearPlayerProfile:void () {
+    playerDisplayName = ""
+    playerSpecialty = ""
+    profileComplete = false
+    screen = "setup"
+    this.markStateDirty()
+  }
+
+  fn manhattanToPlayer:int (ex:int ey:int) {
+    def dx:int (ex - map.playerX)
+    if (dx < 0) {
+      dx = (0 - dx)
+    }
+    def dy:int (ey - map.playerY)
+    if (dy < 0) {
+      dy = (0 - dy)
+    }
+    return (dx + dy)
+  }
+
+  fn isNpcNearPlayer:boolean (npcId:string) {
+    def ent:MapEntity (map.findEntityById(npcId))
+    if ((strlen ent.id) < 1) {
+      return false
+    }
+    if (ent.offDuty) {
+      return false
+    }
+    def dist:int (this.manhattanToPlayer(ent.x ent.y))
+    if (dist > 3) {
+      return false
+    }
+    if (map.hasLineOfSight(ent.x ent.y map.playerX map.playerY) == false) {
+      return false
+    }
+    return true
+  }
+
+  fn applyGreetSnub:void (npcId:string) {
+    def rel:NpcRelation (npcRelations.getOrCreate(npcId))
+    rel.applyStatDelta("respect" -4)
+    rel.applyStatDelta("friendliness" -3)
+    rel.applyStatDelta("anger" 6)
+    rel.snubCount = (rel.snubCount + 1)
+    map.syncNpcOverlayEmotions(npcRelations.npcIds npcRelations.relations)
+  }
+
+  fn applyGreetAck:void (npcId:string) {
+    def rel:NpcRelation (npcRelations.getOrCreate(npcId))
+    rel.applyStatDelta("respect" 5)
+    rel.applyStatDelta("friendliness" 4)
+    if (rel.anger > 0) {
+      if (rel.anger >= 6) {
+        rel.applyStatDelta("anger" -6)
+      } {
+        rel.setStat("anger" 0)
+      }
+    }
+    map.syncNpcOverlayEmotions(npcRelations.npcIds npcRelations.relations)
+  }
+
+  fn evaluatePendingGreetSnub:void () {
+    if ((strlen pendingGreetNpcId) < 1) {
+      return
+    }
+    if (this.isNpcNearPlayer(pendingGreetNpcId)) {
+      return
+    }
+    this.applyGreetSnub(pendingGreetNpcId)
+    pendingGreetNpcId = ""
+  }
+
+  fn clearPendingGreetWithAck:void (npcId:string) {
+    if ((strlen pendingGreetNpcId) < 1) {
+      return
+    }
+    if (pendingGreetNpcId == npcId) {
+      this.applyGreetAck(npcId)
+      pendingGreetNpcId = ""
+      return
+    }
+    this.applyGreetSnub(pendingGreetNpcId)
+    pendingGreetNpcId = ""
+  }
+
+  fn startPendingGreet:void (npcId:string) {
+    if ((strlen pendingGreetNpcId) > 0) {
+      if (pendingGreetNpcId != npcId) {
+        this.applyGreetSnub(pendingGreetNpcId)
+      }
+    }
+    pendingGreetNpcId = npcId
+  }
+
+  fn checkProximityGreetings:void () {
+    if (screen != "map") {
+      return
+    }
+    if (profileComplete == false) {
+      return
+    }
+    this.evaluatePendingGreetSnub()
+    def floor:MapFloor (map.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    def best:MapEntity (new MapEntity)
+    def bestDist:int 99
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if ((strlen e.id) < 1) {
+        i = i + 1
+        continue
+      }
+      if (e.kind == "item") {
+        i = i + 1
+        continue
+      }
+      if (e.kind == "police") {
+        i = i + 1
+        continue
+      }
+      if (e.kind == "hostile") {
+        i = i + 1
+        continue
+      }
+      if (e.kind == "pet") {
+        i = i + 1
+        continue
+      }
+      if (e.offDuty) {
+        i = i + 1
+        continue
+      }
+      if (e.kind != "coworker") {
+        if (e.kind != "guru") {
+          if (e.kind != "role") {
+            i = i + 1
+            continue
+          }
+        }
+      }
+      if (map.canNpcSeePlayer(e) == false) {
+        i = i + 1
+        continue
+      }
+      if (map.hasLineOfSight(e.x e.y map.playerX map.playerY) == false) {
+        i = i + 1
+        continue
+      }
+      if (e.greetCooldownUntil > worldClock.gameMinutes) {
+        i = i + 1
+        continue
+      }
+      def dx:int (e.x - map.playerX)
+      if (dx < 0) {
+        dx = (0 - dx)
+      }
+      def dy:int (e.y - map.playerY)
+      if (dy < 0) {
+        dy = (0 - dy)
+      }
+      def dist:int (dx + dy)
+      if (dist <= 3) {
+        if (dist < bestDist) {
+          bestDist = dist
+          best = e
+        }
+      }
+      i = i + 1
+    }
+    if ((strlen best.id) < 1) {
+      return
+    }
+    map.syncNpcOverlayEmotions(npcRelations.npcIds npcRelations.relations)
+    def rel:NpcRelation (npcRelations.getOrCreate(best.id))
+    rel.greetCount = (rel.greetCount + 1)
+    this.startPendingGreet(best.id)
+    def line:string (proximityGreeting.buildLine(best rel playerDisplayName))
+    map.overheardMsg = line
+    best.greetCooldownUntil = (worldClock.gameMinutes + 20)
+    this.markStateDirty()
   }
 
   fn syncHrGreeter:void () {
@@ -483,12 +744,689 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
   }
 
-  fn handleAgentTick:void () {
+  fn rollPlayerCoreStats:void () {
+    def g:int (random 0 1)
+    if (simSeed > 0) {
+      g = (this.simRngNext(0 1))
+    }
+    if (g == 0) {
+      playerStats.gender = "M"
+    } {
+      playerStats.gender = "F"
+    }
+    if (simSeed > 0) {
+      playerStats.intelligence = (this.simRngNext(1 20))
+      playerStats.appearance = (this.simRngNext(1 20))
+      playerStats.luck = (this.simRngNext(1 20))
+      playerStats.intuition = (this.simRngNext(1 20))
+      playerStats.humour = (this.simRngNext(1 20))
+    } {
+      playerStats.intelligence = (random 1 20)
+      playerStats.appearance = (random 1 20)
+      playerStats.luck = (random 1 20)
+      playerStats.intuition = (random 1 20)
+      playerStats.humour = (random 1 20)
+    }
+  }
+
+  fn bootstrapPlayerVitals:void () {
+    playerNeeds.resetDefaults()
+    npcRelations.reset()
+    dialogueCatalog.loadDefaults()
+    relationTickAccum = 0
+    socialTickAccum = 0
+    escalatedAngry = false
+    escalatedPanic = false
+    escalatedJealous = false
+    pendingEmotionalDialogueIndex = -1
+    this.rollPlayerCoreStats()
+    gameOverReason = ""
+  }
+
+  fn loadEmotionalDialoguesFromText:boolean (raw:string) {
+    def ok:boolean (dialogueCatalog.loadFromText(raw))
+    this.markStateDirty()
+    return ok
+  }
+
+  fn setNpcRelationStat:void (npcId:string stat:string value:int) {
+    def rel:NpcRelation (npcRelations.getOrCreate(npcId))
+    rel.setStat(stat value)
+    this.markStateDirty()
+  }
+
+  fn needsEmotionalEncounter:boolean () {
+    if (pendingEntityId == "receptionist") {
+      return false
+    }
+    if (pendingEntityId == "hr-greeter") {
+      return false
+    }
+    if (pendingEntityKind == "guru") {
+      return false
+    }
+    if (pendingEntityKind == "security") {
+      return false
+    }
+    if (pendingEntityKind == "hostile") {
+      return false
+    }
+    if (pendingEntityKind == "police") {
+      return false
+    }
+    if (this.isCoworkerEncounter() == false) {
+      return false
+    }
+    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+    if (rel.isAngryNoticeable()) {
+      return true
+    }
+    return false
+  }
+
+  fn applyWcTalkAngerIfNeeded:void () {
+    def ent:MapEntity (map.findEntityById(pendingEntityId))
+    if ((strlen ent.id) < 1) {
+      return
+    }
+    if (ent.mainTask != "toilet") {
+      return
+    }
+    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+    rel.applyStatDelta("anger" 15)
+    map.lastStatus = (pendingEntityName + " ärsyyntyi — häiritsit WC:llä!")
+  }
+
+  fn tickNpcRelations:void () {
+    map.tickNpcMainTasks(worldClock.gameMinutes)
+    map.syncNpcOverlayEmotions(npcRelations.npcIds npcRelations.relations)
+    this.checkEscalation()
+    this.evaluateNpcReporting()
+    this.checkFiredGameOver()
+    socialTickAccum = socialTickAccum + 5
+    while (socialTickAccum >= 10) {
+      socialTickAccum = socialTickAccum - 10
+      this.trySocialGossipTick()
+    }
+  }
+
+  fn romanticMatch:boolean (ent:MapEntity) {
+    if (ent.romanticPreference == "any") {
+      return true
+    }
+    if (ent.romanticPreference == playerStats.gender) {
+      return true
+    }
+    return false
+  }
+
+  fn shouldUseEmotionalDialogue:boolean (ent:MapEntity rel:NpcRelation) {
+    if (this.isCoworkerEncounter() == false) {
+      return false
+    }
+    if (ent.mainTask == "searching_item") {
+      return true
+    }
+    if (rel.isAngryNoticeable()) {
+      return true
+    }
+    if (rel.isLoveNoticeable()) {
+      if (this.romanticMatch(ent)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  fn applyTalkLoveBump:void (ent:MapEntity rel:NpcRelation) {
+    if (this.romanticMatch(ent) == false) {
+      return
+    }
+    if (playerStats.appearance < 8) {
+      return
+    }
+    rel.applyStatDelta("love" 5)
+  }
+
+  fn applyHelpAnswerEffects:void (ent:MapEntity answerIndex:int dialogueIndex:int) {
+    def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(dialogueIndex))
+    if (dlg.category != "help") {
+      return
+    }
+    if (answerIndex != 0) {
+      return
+    }
+    if (tools.hasUsbDrive) {
+      karma.add("help_usb" 5)
+      ent.mainTask = "working"
+      map.lastStatus = (ent.name + " kiittää — USB pelasti päivän!")
+    } {
+      map.lastStatus = "Sinulla ei ole USB-tikkua taskussa."
+    }
+  }
+
+  fn applyLoveFollowup:void (ent:MapEntity rel:NpcRelation) {
+    if (rel.isLoveModerate()) {
+      ent.moveMode = "seek_player"
+      ent.agentGoal = "socialize"
+    }
+    if (rel.isLoveNoticeable()) {
+      def savedFloor:int map.currentFloor
+      def fi:int 0
+      def fn:int (map.floorCount())
+      while (fi < fn) {
+        map.currentFloor = fi
+        map.recomputeSize()
+        def floor:MapFloor (map.activeFloor())
+        def ents:[MapEntity] (floor.entities)
+        def ei:int 0
+        def en:int (array_length ents)
+        while (ei < en) {
+          def other:MapEntity (at ents ei)
+          if (other.kind == "coworker") {
+            if (other.id != ent.id) {
+              def dx:int (other.x - ent.x)
+              if (dx < 0) {
+                dx = (0 - dx)
+              }
+              def dy:int (other.y - ent.y)
+              if (dy < 0) {
+                dy = (0 - dy)
+              }
+              if ((dx + dy) <= 4) {
+                def otherRel:NpcRelation (npcRelations.getOrCreate(other.id))
+                otherRel.applyStatDelta("jealousy" 5)
+              }
+            }
+          }
+          ei = ei + 1
+        }
+        fi = fi + 1
+      }
+      map.currentFloor = savedFloor
+      map.recomputeSize()
+    }
+  }
+
+  fn triggerEscalationEvent:void (eventType:string status:string) {
+    def evt:WorldEvent (new WorldEvent)
+    evt.timeMinutes = worldClock.gameMinutes
+    evt.x = map.playerX
+    evt.y = map.playerY
+    evt.playerSource = false
+    if (eventType == "WorkplacePanic") {
+      evt.applyWorkplacePanic()
+    } {
+      if (eventType == "AngryGroupComplaint") {
+        evt.applyAngryGroupComplaint()
+      } {
+        if (eventType == "GossipStarted") {
+          evt.applyGossipStarted()
+        } {
+          if (eventType == "PraisePlayer") {
+            evt.applyPraisePlayer()
+          }
+        }
+      }
+    }
+    map.pushWorldEvent(evt)
+    map.lastStatus = status
+  }
+
+  fn checkEscalation:void () {
+    if (escalatedAngry == false) {
+      if (escalation.shouldAngryGroup((unwrap npcRelations))) {
+        escalatedAngry = true
+        this.triggerEscalationEvent("AngryGroupComplaint" "Kollegat valittavat yhdessä — ilmapiiri kiristyy.")
+      }
+    }
+    if (escalatedPanic == false) {
+      if (escalation.shouldWorkplacePanic((unwrap npcRelations))) {
+        escalatedPanic = true
+        this.triggerEscalationEvent("WorkplacePanic" "Toimistossa puhkeaa paniikki!")
+        map.applyPanicFleeing(npcRelations.npcIds npcRelations.relations)
+      }
+    }
+    if (escalatedJealous == false) {
+      if (escalation.shouldBackstabbingGossip((unwrap npcRelations))) {
+        escalatedJealous = true
+        this.triggerEscalationEvent("GossipStarted" "Käytäväkuiskaukset leviävät.")
+        this.tryGossipFromJealousNpc()
+      }
+    }
+    def fleeing:int (map.countMainTask("fleeing"))
+    if (fleeing >= (escalation.fleeingEvacuationThreshold())) {
+      this.gameOverEvacuated()
+    }
+  }
+
+  fn tryGossipFromJealousNpc:void () {
+    def i:int 0
+    def n:int (array_length npcRelations.npcIds)
+    while (i < n) {
+      def rel:NpcRelation (at npcRelations.relations i)
+      if (rel.isJealousySevere()) {
+        def npcId:string (at npcRelations.npcIds i)
+        def ent:MapEntity (map.findEntityById(npcId))
+        if ((strlen ent.id) > 0) {
+          map.emitGossipNearPlayer(ent "Kuulin jotain epäilyttävää Larrysta…")
+          return
+        }
+      }
+      i = i + 1
+    }
+  }
+
+  fn trySocialGossipTick:void () {
+    def roll:int (this.gameRollPercent())
+    if (roll >= 20) {
+      return
+    }
+    def i:int 0
+    def n:int (array_length npcRelations.npcIds)
+    while (i < n) {
+      def rel:NpcRelation (at npcRelations.relations i)
+      if (rel.isJealousyHigh()) {
+        def npcId:string (at npcRelations.npcIds i)
+        def ent:MapEntity (map.findEntityById(npcId))
+        if ((strlen ent.id) > 0) {
+          map.emitGossipNearPlayer(ent "Sanovat että Larry ei ole ihan rehellinen…")
+          def evt:WorldEvent (new WorldEvent)
+          evt.applyGossipStarted()
+          evt.x = ent.x
+          evt.y = ent.y
+          evt.timeMinutes = worldClock.gameMinutes
+          map.pushWorldEvent(evt)
+          return
+        }
+      }
+      i = i + 1
+    }
+    if (npcRelations.countWithLoveAtLeast(70) >= 1) {
+      this.triggerEscalationEvent("PraisePlayer" "Joku kehuu sinua käytävällä.")
+    }
+  }
+
+  fn enterEpilogue:void (reason:string) {
+    this.ensureEngine()
+    gameOverReason = reason
+    screen = "epilogue"
+    this.markStateDirty()
+  }
+
+  fn gameOverEvacuated:void () {
+    if (screen == "epilogue") {
+      return
+    }
+    if (screen == "gameover") {
+      return
+    }
+    map.lastStatus = "Liian moni kollega pakeni — toimisto evakuoitiin."
+    this.enterEpilogue("WorkplaceEvacuated")
+  }
+
+  fn buildEpilogueJson:string () {
+    def out:string "{"
+    out = (out + "\"reason\":\"" + (this.simEscapeJson(gameOverReason)) + "\",")
+    out = (out + "\"karma\":" + (to_string (karma.total())) + ",")
+    out = (out + "\"deaths\":" + (to_string (this.exportDeaths())) + ",")
+    out = (out + "\"appearance\":" + (to_string playerStats.appearance) + ",")
+    out = (out + "\"intelligence\":" + (to_string playerStats.intelligence) + ",")
+    out = (out + "\"enemies\":" + (to_string (npcRelations.countWithAngerAtLeast(75))) + ",")
+    out = (out + "\"lovers\":" + (to_string (npcRelations.countWithLoveAtLeast(70))) + ",")
+    out = (out + "\"reports\":" + (to_string (map.countMainTask("reporting"))) + "}")
+    return out
+  }
+
+  fn epilogueSummaryLine:string () {
+    def line:string map.lastStatus
+    if ((strlen line) < 1) {
+      line = ("Päivä päättyi: " + gameOverReason)
+    }
+    line = (line + " | Karma " + (to_string (karma.total())))
+    line = (line + " | Vihamiehiä " + (to_string (npcRelations.countWithAngerAtLeast(75))))
+    line = (line + " | Rakkaudet " + (to_string (npcRelations.countWithLoveAtLeast(70))))
+    return line
+  }
+
+  fn gameRollPercent:int () {
+    if ((strlen simScenarioId) > 0) {
+      return (this.simRngNext(0 99))
+    }
+    return (random 0 99)
+  }
+
+  fn emitWorldEvent:void (evt:WorldEvent) {
+    if (evt.timeMinutes < 1) {
+      evt.timeMinutes = worldClock.gameMinutes
+    }
+    evt.floor = map.currentFloor
+    map.pushWorldEvent(evt)
+    this.propagateEventNotices(evt)
+  }
+
+  fn propagateEventNotices:void (evt:WorldEvent) {
+    def savedFloor:int map.currentFloor
+    map.currentFloor = evt.floor
+    map.recomputeSize()
+    def floor:MapFloor (map.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def ei:int 0
+    def en:int (array_length ents)
+    while (ei < en) {
+      def npc:MapEntity (at ents ei)
+      if (npc.offDuty == false) {
+        if (npc.kind == "coworker") {
+          this.tryNpcNoticeEvent(npc evt)
+        } {
+          if (npc.kind == "security") {
+            this.tryNpcNoticeEvent(npc evt)
+          } {
+            if (npc.kind == "role") {
+              this.tryNpcNoticeEvent(npc evt)
+            }
+          }
+        }
+      }
+      ei = ei + 1
+    }
+    map.currentFloor = savedFloor
+    map.recomputeSize()
+  }
+
+  fn tryNpcNoticeEvent:void (npc:MapEntity evt:WorldEvent) {
+    def rel:NpcRelation (npcRelations.getOrCreate(npc.id))
+    def percent:int (eventPerception.noticePercent(npc evt rel))
+    def roll:int (this.gameRollPercent())
+    if (eventPerception.noticesWithRoll(percent roll) == false) {
+      return
+    }
+    this.onNpcNoticedEvent(npc evt rel)
+  }
+
+  fn onNpcNoticedEvent:void (npc:MapEntity evt:WorldEvent rel:NpcRelation) {
+    if (evt.playerSource) {
+      map.playerWasWitnessed = true
+    }
+    def susDelta:int ((to_int (evt.suspiciousness / 4)) + 1)
+    rel.applyStatDelta("suspicion" susDelta)
+    if (evt.type == "PlayerFarted") {
+      rel.applyStatDelta("respect" -10)
+      rel.applyStatDelta("love" -10)
+      rel.applyStatDelta("anger" 10)
+      map.lastStatus = (npc.name + " nyppi nenäänsä.")
+    } {
+      if (npc.mainTask != "reporting") {
+        if (npc.mainTask != "seeking_player") {
+          npc.mainTask = "investigating"
+        }
+      }
+      map.lastStatus = (npc.name + " huomasi jotain epäilyttävää.")
+    }
+  }
+
+  fn computeReportScore:int (npc:MapEntity rel:NpcRelation observedSeverity:int) {
+    def responsibility:int (to_int (npc.persistence / 5))
+    if (responsibility < 1) {
+      responsibility = 1
+    }
+    def score:int ((rel.anger * 2) + (rel.suspicion * 3) + responsibility + (observedSeverity * 2))
+    score = score - (rel.respect * 2)
+    score = score - rel.love
+    score = score - rel.friendliness
+    return score
+  }
+
+  fn evaluateNpcReporting:void () {
+    def savedFloor:int map.currentFloor
+    def fi:int 0
+    def fn:int (map.floorCount())
+    while (fi < fn) {
+      map.currentFloor = fi
+      map.recomputeSize()
+      def floor:MapFloor (map.activeFloor())
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def npc:MapEntity (at ents ei)
+        if (npc.offDuty == false) {
+          if ((strlen npc.id) > 0) {
+            def rel:NpcRelation (npcRelations.getOrCreate(npc.id))
+            def observed:int 0
+            def lastEvt:WorldEvent (map.eventLog.lastOnFloor(fi))
+            if ((strlen lastEvt.type) > 0) {
+              observed = lastEvt.severity
+            }
+            def score:int (this.computeReportScore(npc rel observed))
+            if (npc.kind == "security") {
+              if (score >= 40) {
+                npc.mainTask = "seeking_player"
+              }
+            } {
+              if (npc.kind == "coworker") {
+                if (score >= 50) {
+                  npc.mainTask = "reporting"
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+    map.currentFloor = savedFloor
+    map.recomputeSize()
+  }
+
+  fn tryPlayerFartEvent:void () {
+    if (playerNeeds.gas < 15) {
+      return
+    }
+    def roll:int (this.gameRollPercent())
+    if (roll >= 5) {
+      return
+    }
+    def evt:WorldEvent (new WorldEvent)
+    evt.x = map.playerX
+    evt.y = map.playerY
+    evt.timeMinutes = worldClock.gameMinutes
+    evt.applyPlayerFarted()
+    this.emitWorldEvent(evt)
+    playerNeeds.gas = playerNeeds.gas - 4
+    playerNeeds.clampAll()
+    map.lastStatus = "Ilmaan lehahti epämiellyttävä haju."
+  }
+
+  fn consumeWitnessFlag:boolean () {
+    def witnessed:boolean map.playerWasWitnessed
+    map.playerWasWitnessed = false
+    return witnessed
+  }
+
+  fn emitMisconductEvent:void (eventType:string x:int y:int) {
+    def evt:WorldEvent (new WorldEvent)
+    evt.x = x
+    evt.y = y
+    evt.timeMinutes = worldClock.gameMinutes
+    evt.playerSource = true
+    if (eventType == "ComputerBroken") {
+      evt.applyComputerBroken()
+    } {
+      if (eventType == "ToiletBroken") {
+        evt.applyToiletBroken()
+      } {
+        if (eventType == "DoorBroken") {
+          evt.applyDoorBroken()
+        }
+      }
+    }
+    this.emitWorldEvent(evt)
+  }
+
+  fn propagateLastBreakEvent:void () {
+    def evt:WorldEvent (map.eventLog.lastOnFloor(map.currentFloor))
+    if ((strlen evt.type) < 1) {
+      return
+    }
+    this.propagateEventNotices(evt)
+  }
+
+  fn checkFiredGameOver:void () {
+    if (screen == "gameover") {
+      return
+    }
+    if (screen == "epilogue") {
+      return
+    }
+    def angryCount:int (npcRelations.countWithAngerAtLeast(75))
+    if (angryCount >= 3) {
+      this.gameOverFired()
+    }
+  }
+
+  fn gameOverFired:void () {
+    map.lastStatus = "Liian monta vihamiestä — HR potki sinut ulos."
+    this.enterEpilogue("Fired")
+  }
+
+  fn applyEmotionalPlayerEffects:void (dialogueIndex:int answerIndex:int) {
+    def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(dialogueIndex))
+    if (answerIndex < 0) {
+      return
+    }
+    if (answerIndex >= (array_length dlg.answers)) {
+      return
+    }
+    def ans:EmotionalAnswer (at dlg.answers answerIndex)
+    def i:int 0
+    def n:int (array_length ans.effectStats)
+    while (i < n) {
+      def target:string (at ans.effectTargets i)
+      def stat:string (at ans.effectStats i)
+      def delta:int (at ans.effectDeltas i)
+      if (target == "player") {
+        if (stat == "karma") {
+          if (delta < 0) {
+            karma.loseKarma((0 - delta))
+          } {
+            karma.add("emotional" delta)
+          }
+        }
+        if (stat == "alertness") {
+          playerNeeds.applyStatDelta(stat delta)
+        }
+        if (stat == "satiety") {
+          playerNeeds.applyStatDelta(stat delta)
+        }
+        if (stat == "thirst") {
+          playerNeeds.applyStatDelta(stat delta)
+        }
+        if (stat == "gas") {
+          playerNeeds.applyStatDelta(stat delta)
+        }
+      }
+      i = i + 1
+    }
+  }
+
+  fn finishEmotionalChoice:void (answerIndex:int) {
+    if (pendingEmotionalDialogueIndex < 0) {
+      return
+    }
+    def ent:MapEntity (map.findEntityById(pendingEntityId))
+    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+    dialogueCatalog.applyAnswerToRelation(pendingEmotionalDialogueIndex answerIndex rel)
+    this.applyEmotionalPlayerEffects(pendingEmotionalDialogueIndex answerIndex)
+    this.applyHelpAnswerEffects(ent answerIndex pendingEmotionalDialogueIndex)
+    this.applyLoveFollowup(ent rel)
+    def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(pendingEmotionalDialogueIndex))
+    if ((strlen map.lastStatus) < 1) {
+      map.lastStatus = (pendingEntityName + ": " + dlg.text)
+    }
+    pendingEmotionalDialogueIndex = -1
+    this.clearEncounter()
+    screen = "map"
+    this.afterTimedAction("talk")
+    this.checkFiredGameOver()
+    this.markStateDirty()
+  }
+
+  fn actionTimeCost:int (actionId:string) {
+    if (actionId == "move") {
+      return 1
+    }
+    if (actionId == "talk") {
+      return 3
+    }
+    if (actionId == "quiz_answer") {
+      return 5
+    }
+    if (actionId == "drink_coffee") {
+      return 5
+    }
+    if (actionId == "eat") {
+      return 15
+    }
+    if (actionId == "break_wall") {
+      return 30
+    }
+    if (actionId == "break_door") {
+      return 15
+    }
+    return 1
+  }
+
+  fn spendTime:void (minutes:int) {
+    if (minutes < 1) {
+      return
+    }
+    if (screen == "gameover") {
+      return
+    }
+    worldClock.spendTime(minutes)
+    playerNeeds.tickMinutes(minutes)
+    map.tickSchedules(worldClock.gameMinutes)
+    simMinutesAccum = simMinutesAccum + minutes
+    relationTickAccum = relationTickAccum + minutes
+    while (relationTickAccum >= 5) {
+      relationTickAccum = relationTickAccum - 5
+      this.tickNpcRelations()
+    }
+    def fartMin:int 0
+    while (fartMin < minutes) {
+      this.tryPlayerFartEvent()
+      fartMin = fartMin + 1
+    }
+    if (playerNeeds.satiety <= 0) {
+      this.gameOverNeeds("Kuolit nälkään.")
+      return
+    }
+    if (playerNeeds.thirst <= 0) {
+      this.gameOverNeeds("Kuolit nestehukkaan.")
+      return
+    }
+    this.checkExhaustionStatus()
+  }
+
+  fn checkExhaustionStatus:void () {
+    if (playerNeeds.alertness <= 0) {
+      if ((strlen map.lastStatus) < 1) {
+        map.lastStatus = "Olet täysin uupunut."
+      }
+    }
+  }
+
+  fn gameOverNeeds:void (reason:string) {
+    map.lastStatus = reason
+    this.enterEpilogue(reason)
+  }
+
+  fn runAgentPass:void () {
     if (screen != "map") {
       return
     }
-    worldClock.advance(1)
-    map.tickSchedules(worldClock.gameMinutes)
     map.agentHuntFlag = (conduct.isWanted())
     def agentResult:MapEntity (map.tickAgents())
     if ((strlen agentResult.id) > 0) {
@@ -514,6 +1452,25 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
   }
 
+  fn afterTimedAction:void (actionId:string) {
+    def minutes:int (this.actionTimeCost(actionId))
+    this.spendTime(minutes)
+    if (screen == "gameover") {
+      return
+    }
+    this.runAgentPass()
+  }
+
+  fn handleAgentTick:void () {
+    if (screen != "map") {
+      return
+    }
+    worldClock.advance(1)
+    map.tickSchedules(worldClock.gameMinutes)
+    simMinutesAccum = simMinutesAccum + 1
+    this.runAgentPass()
+  }
+
   fn afterPlayerAction:void () {
     def toolPick:string (map.pickupItemAt(map.playerX map.playerY))
     if ((strlen toolPick) > 0) {
@@ -527,6 +1484,29 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       } {
         def itemName:string (tools.pickupLabel(toolPick))
         map.lastStatus = ("Poimit: " + itemName + "  (i = inventaario)")
+      }
+      return
+    }
+    def ent:MapEntity (map.entityAt(map.playerX map.playerY))
+    if ((strlen ent.id) < 1) {
+      return
+    }
+    if (map.isConsumableItemEntity(ent)) {
+      def feeling:string (map.emojiFeelingForEntity(ent))
+      if ((strlen feeling) > 0) {
+        map.lastStatus = feeling
+      }
+      if ((strlen ent.char) > 0) {
+        playerNeeds.applyEmojiChar(ent.char)
+      }
+      map.consumeItemAt(map.playerX map.playerY)
+      return
+    }
+    def feeling:string (map.emojiFeelingForEntity(ent))
+    if ((strlen feeling) > 0) {
+      map.lastStatus = feeling
+      if ((strlen ent.char) > 0) {
+        playerNeeds.applyEmojiChar(ent.char)
       }
     }
   }
@@ -764,7 +1744,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     def targetId:string actionTargetId
     def x:int actionTargetX
     def y:int actionTargetY
-    def witness:boolean (map.hasNearbyWitness(8))
+    def witness:boolean (map.hasNearbyWitness(8 worldClock.gameMinutes))
 
     if (targetId == "workstation") {
       if (toolId == "usb_drive") {
@@ -789,6 +1769,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
               map.setTileAt(x y "x")
               karma.loseKarma(15)
               conduct.addMisconduct(18)
+              this.emitMisconductEvent("ComputerBroken" x y)
+              if (this.consumeWitnessFlag()) {
+                witness = true
+              }
               if (witness) {
                 actionResultMessage = (actionResultMessage + " Kollega näkee ruudun — turvallisuus hälytetään!")
                 map.startPoliceChase()
@@ -817,6 +1801,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         }
         karma.loseKarma(karmaLoss)
         conduct.addMisconduct(misconduct)
+        this.emitMisconductEvent("ComputerBroken" x y)
+        if (this.consumeWitnessFlag()) {
+          witness = true
+        }
         actionResultMessage = "Työkalu + työasema = huono idea. Näyttö meni ja karma laskee."
         if (witness) {
           actionResultMessage = (actionResultMessage + " Joku näki tämän!")
@@ -850,6 +1838,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         map.openTileAt(x y)
         karma.loseKarma(8)
         conduct.addMisconduct(10)
+        this.emitMisconductEvent("DoorBroken" x y)
+        if (this.consumeWitnessFlag()) {
+          witness = true
+        }
         actionResultMessage = "Murrat oven auki — melkoinen karma-tappio."
         if (witness) {
           map.startPoliceChase()
@@ -863,12 +1855,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
 
     if (targetId == "breakable") {
-      def severity:string (map.tryBreakAt(x y toolId))
+      def severity:string (map.tryBreakAt(x y toolId worldClock.gameMinutes))
       if ((strlen severity) < 1) {
         actionResultMessage = "Työkalu ei tepsi tähän esteeseen."
         return false
       }
       this.applyBreakSeverity(severity)
+      this.propagateLastBreakEvent()
+      if (this.consumeWitnessFlag()) {
+        witness = true
+      }
       def hermit:MapEntity (map.entityAt(70 23))
       if (hermit.id == "staff-f7-hermit") {
         def dist:int ((map.playerX - hermit.x))
@@ -1236,8 +2232,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn onMapKey:void (key:string) {
+    if (this.needsProfileSetup()) {
+      screen = "setup"
+      return
+    }
+    if (screen == "setup") {
+      return
+    }
     if (screen == "prison") {
       this.onPrisonKey(key)
+      return
+    }
+    if (screen == "epilogue") {
+      this.onEpilogueKey(key)
       return
     }
     if (screen == "gameover") {
@@ -1316,7 +2323,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (key == "x") {
-      def severity:string (map.tryBreakFacing(tools.activeTool))
+      def severity:string (map.tryBreakFacing(tools.activeTool worldClock.gameMinutes))
       if ((strlen severity) > 0) {
         if (severity == "heavy") {
           conduct.addDamage(15)
@@ -1330,6 +2337,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
           conduct.addDamage(2)
           conduct.addMisconduct(1)
         }
+        this.propagateLastBreakEvent()
+        this.consumeWitnessFlag()
         def hermit:MapEntity (map.entityAt(70 23))
         if (hermit.id == "staff-f7-hermit") {
           def dist:int ((map.playerX - hermit.x))
@@ -1345,7 +2354,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
           }
         }
         this.afterPlayerAction()
-        this.handleAgentTick()
+        def breakAction:string "break_door"
+        if (severity == "heavy") {
+          breakAction = "break_wall"
+        }
+        this.afterTimedAction(breakAction)
       }
       this.markStateDirty()
       return
@@ -1422,11 +2435,49 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         this.handleAgentTick()
       }
     }
+    if (screen == "map") {
+      this.checkProximityGreetings()
+    }
     this.markStateDirty()
+  }
+
+  fn onEmotionalAnswerKey:void (key:string) {
+    if (screen != "encounter") {
+      return
+    }
+    if (encounterResult != "emotional") {
+      return
+    }
+    if (key == "leave" || key == "p" || key == "3") {
+      map.lastStatus = "Vetäydyt takaisin."
+      pendingEmotionalDialogueIndex = -1
+      this.clearEncounter()
+      screen = "map"
+      this.markStateDirty()
+      return
+    }
+    def idx:int -1
+    if (key == "1") {
+      idx = 0
+    }
+    if (key == "2") {
+      idx = 1
+    }
+    if (key == "3") {
+      idx = 2
+    }
+    if (idx < 0) {
+      return
+    }
+    this.finishEmotionalChoice(idx)
   }
 
   fn onEncounterChoice:void (choice:string) {
     if (screen != "encounter") {
+      return
+    }
+    if (encounterResult == "emotional") {
+      this.onEmotionalAnswerKey(choice)
       return
     }
     if (choice == "leave") {
@@ -1473,6 +2524,20 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         encounterResult = "quiz"
         this.markStateDirty()
         return
+      }
+      this.applyWcTalkAngerIfNeeded()
+      def ent:MapEntity (map.findEntityById(pendingEntityId))
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      if (this.isCoworkerEncounter()) {
+        this.applyTalkLoveBump(ent rel)
+      }
+      if (this.shouldUseEmotionalDialogue(ent rel)) {
+        pendingEmotionalDialogueIndex = (dialogueCatalog.pickForEncounter(rel ent))
+        if (pendingEmotionalDialogueIndex >= 0) {
+          encounterResult = "emotional"
+          this.markStateDirty()
+          return
+        }
       }
       if ((strlen pendingStoryId) < 1) {
         if (this.needsEncounterQuiz()) {
@@ -1615,6 +2680,32 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.markStateDirty()
   }
 
+  fn onEpilogueKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    map.clearPoliceSquad()
+    playerNeeds.resetDefaults()
+    npcRelations.reset()
+    dialogueCatalog.loadDefaults()
+    relationTickAccum = 0
+    socialTickAccum = 0
+    escalatedAngry = false
+    escalatedPanic = false
+    escalatedJealous = false
+    gameOverReason = ""
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    map.lastStatus = "Uusi päivä alkaa — muista syödä ja juoda."
+    screen = "map"
+    this.markStateDirty()
+  }
+
   fn onGameOverKey:void (key:string) {
     if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
       shouldQuit = true
@@ -1622,12 +2713,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     map.clearPoliceSquad()
+    def respawnMsg:string "Selvitit hengissä — mutta poliisit muistavat kasvosi."
+    if ((strlen gameOverReason) > 0) {
+      respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda."
+      playerNeeds.resetDefaults()
+      npcRelations.reset()
+      dialogueCatalog.loadDefaults()
+      relationTickAccum = 0
+      gameOverReason = ""
+    }
     def floor:MapFloor (map.activeFloor())
     map.playerX = floor.spawnX
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    map.lastStatus = "Selvitit hengissä — mutta poliisit muistavat kasvosi."
+    map.lastStatus = respawnMsg
     screen = "map"
     this.markStateDirty()
   }
@@ -1735,6 +2835,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     view.isHostile = (this.isHostileEncounter())
     view.greeting = (this.encounterGreeting())
     view.attackWarning = ""
+    if (encounterResult == "emotional") {
+      view.isEmotional = true
+      def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(pendingEmotionalDialogueIndex))
+      view.emotionalQuestion = dlg.text
+      def emptyAnswers:[string]
+      view.emotionalAnswers = emptyAnswers
+      def ac:int (dialogueCatalog.answerCount(pendingEmotionalDialogueIndex))
+      def ai:int 0
+      while (ai < ac) {
+        push view.emotionalAnswers (dialogueCatalog.answerText(pendingEmotionalDialogueIndex ai))
+        ai = ai + 1
+      }
+      view.hintLine = "1–3=vastaa  p=poistu"
+      return view
+    }
     if (this.needsEncounterQuiz()) {
       view.hintLine = "1–4=vastaa  n=kollega  a=AI  j=vitsi  i=ei kiinnosta  p=poistu"
     } {
@@ -1753,8 +2868,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       view.conductLine = (view.conductLine + "  |  ETSINTÄKUULUTUS")
     }
     view.timeLine = worldClock.formatLine()
+    view.needsLine = (playerNeeds.formatLine())
     view.ambientLine = map.overheardMsg
+    if (screen == "epilogue") {
+      view.statusLine = (this.epilogueSummaryLine())
+    }
     return view
+  }
+
+  fn simEpilogueJson:string () {
+    return (this.buildEpilogueJson())
   }
 
   fn getStoryView:StoryView () {
@@ -1940,6 +3063,128 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     map.ensurePlayerOnWalkable()
     map.tickSchedules(worldClock.gameMinutes)
+    def needsObj:JSONDataObject (this.simFieldObj(setup "needs"))
+    def needSatiety:int (simJson.objFieldInt(needsObj "satiety"))
+    if (needSatiety > 0) {
+      playerNeeds.satiety = needSatiety
+    }
+    def needThirst:int (simJson.objFieldInt(needsObj "thirst"))
+    if (needThirst > 0) {
+      playerNeeds.thirst = needThirst
+    }
+    def needAlertness:int (simJson.objFieldInt(needsObj "alertness"))
+    if (needAlertness > 0) {
+      playerNeeds.alertness = needAlertness
+    }
+    def needGas:int (simJson.objFieldInt(needsObj "gas"))
+    if (needGas > 0) {
+      playerNeeds.gas = needGas
+    }
+    playerNeeds.clampAll()
+    def relationsOpt@(optional):JSONArrayObject (getArray setup "relations")
+    if (null? relationsOpt) {
+      def relOne:JSONDataObject (this.simFieldObj(setup "relation"))
+      def relNpcId:string (simJson.objFieldStr(relOne "npcId"))
+      if ((strlen relNpcId) > 0) {
+        def rel:NpcRelation (npcRelations.getOrCreate(relNpcId))
+        def angerVal:int (simJson.objFieldInt(relOne "anger"))
+        if (angerVal > 0) {
+          rel.setStat("anger" angerVal)
+        }
+        def respectVal:int (simJson.objFieldInt(relOne "respect"))
+        if (respectVal > 0) {
+          rel.setStat("respect" respectVal)
+        }
+        def suspicionVal:int (simJson.objFieldInt(relOne "suspicion"))
+        if (suspicionVal > 0) {
+          rel.setStat("suspicion" suspicionVal)
+        }
+        def friendlinessVal:int (simJson.objFieldInt(relOne "friendliness"))
+        if (friendlinessVal > 0) {
+          rel.setStat("friendliness" friendlinessVal)
+        }
+        def loveVal:int (simJson.objFieldInt(relOne "love"))
+        if (loveVal > 0) {
+          rel.setStat("love" loveVal)
+        }
+      }
+    } {
+      def relations:JSONArrayObject (unwrap relationsOpt)
+      def ri:int 0
+      def rn:int (array_length relations)
+      while (ri < rn) {
+        def relObj:JSONDataObject (simJson.arrayObjectAt(relations ri))
+        def relNpcId:string (simJson.objFieldStr(relObj "npcId"))
+        if ((strlen relNpcId) > 0) {
+          def rel:NpcRelation (npcRelations.getOrCreate(relNpcId))
+          def angerVal:int (simJson.objFieldInt(relObj "anger"))
+          if (angerVal > 0) {
+            rel.setStat("anger" angerVal)
+          }
+          def respectVal:int (simJson.objFieldInt(relObj "respect"))
+          if (respectVal > 0) {
+            rel.setStat("respect" respectVal)
+          }
+          def suspicionVal:int (simJson.objFieldInt(relObj "suspicion"))
+          if (suspicionVal > 0) {
+            rel.setStat("suspicion" suspicionVal)
+          }
+          def friendlinessVal:int (simJson.objFieldInt(relObj "friendliness"))
+          if (friendlinessVal > 0) {
+            rel.setStat("friendliness" friendlinessVal)
+          }
+          def loveVal:int (simJson.objFieldInt(relObj "love"))
+          if (loveVal > 0) {
+            rel.setStat("love" loveVal)
+          }
+        }
+        ri = ri + 1
+      }
+    }
+    def npcTasksOpt@(optional):JSONArrayObject (getArray setup "npcTasks")
+    if (null? npcTasksOpt) {
+      def taskOne:JSONDataObject (this.simFieldObj(setup "npcTask"))
+      def taskNpcId:string (simJson.objFieldStr(taskOne "id"))
+      def taskName:string (simJson.objFieldStr(taskOne "mainTask"))
+      if ((strlen taskNpcId) > 0) {
+        if ((strlen taskName) > 0) {
+          def ent:MapEntity (map.findEntityById(taskNpcId))
+          if ((strlen ent.id) > 0) {
+            ent.mainTask = taskName
+          }
+        }
+      }
+    } {
+      def npcTasks:JSONArrayObject (unwrap npcTasksOpt)
+      def ti:int 0
+      def tn:int (array_length npcTasks)
+      while (ti < tn) {
+        def taskObj:JSONDataObject (simJson.arrayObjectAt(npcTasks ti))
+        def taskNpcId:string (simJson.objFieldStr(taskObj "id"))
+        def taskName:string (simJson.objFieldStr(taskObj "mainTask"))
+        if ((strlen taskNpcId) > 0) {
+          if ((strlen taskName) > 0) {
+            def ent:MapEntity (map.findEntityById(taskNpcId))
+            if ((strlen ent.id) > 0) {
+              ent.mainTask = taskName
+            }
+          }
+        }
+        ti = ti + 1
+      }
+    }
+    def skipProfile:boolean (simJson.objFieldBool(setup "skipProfile"))
+    if (skipProfile == false) {
+      def simPlayerName:string (simJson.objFieldStr(player "name"))
+      if ((strlen simPlayerName) < 1) {
+        simPlayerName = "Larry"
+      }
+      def simSpecialty:string (simJson.objFieldStr(player "specialty"))
+      if ((strlen simSpecialty) < 1) {
+        simSpecialty = "cpp"
+      }
+      this.applyPlayerProfile(simPlayerName simSpecialty)
+    }
     this.syncHrGreeter()
     map.lastStatus = ""
     map.overheardMsg = ""
@@ -1949,9 +3194,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (minutes < 1) {
       return
     }
-    worldClock.advance(minutes)
-    map.tickSchedules(worldClock.gameMinutes)
-    simMinutesAccum = simMinutesAccum + minutes
+    this.spendTime(minutes)
     simStepCount = simStepCount + 1
     this.simLogEvent("tick" (to_string minutes))
     this.markStateDirty()
@@ -2005,6 +3248,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       out = (out + "false},")
     }
     out = (out + "\"clockMinutes\":" + (to_string worldClock.gameMinutes) + ",")
+    out = (out + "\"needs\":{\"satiety\":" + (to_string playerNeeds.satiety) + ",\"thirst\":" + (to_string playerNeeds.thirst) + ",\"alertness\":" + (to_string playerNeeds.alertness) + ",\"gas\":" + (to_string playerNeeds.gas) + "},")
     out = (out + "\"clockLine\":\"" + (this.simEscapeJson(view.timeLine)) + "\",")
     out = (out + "\"status\":\"" + (this.simEscapeJson(view.statusLine)) + "\",")
     out = (out + "\"ambient\":\"" + (this.simEscapeJson(view.ambientLine)) + "\",")
@@ -2026,6 +3270,58 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       out = (out + "false")
     }
     out = (out + "}")
+    return out
+  }
+
+  fn simDebugRelationsJson:string () {
+    def out:string "{\"relations\":["
+    def i:int 0
+    def n:int (array_length npcRelations.npcIds)
+    while (i < n) {
+      if (i > 0) {
+        out = (out + ",")
+      }
+      def npcId:string (at npcRelations.npcIds i)
+      def rel:NpcRelation (at npcRelations.relations i)
+      out = (out + "{\"npcId\":\"" + (this.simEscapeJson(npcId)) + "\",")
+      out = (out + "\"anger\":" + (to_string rel.anger) + ",")
+      out = (out + "\"respect\":" + (to_string rel.respect) + ",")
+      out = (out + "\"friendliness\":" + (to_string rel.friendliness) + ",")
+      out = (out + "\"love\":" + (to_string rel.love) + ",")
+      out = (out + "\"jealousy\":" + (to_string rel.jealousy) + ",")
+      out = (out + "\"fear\":" + (to_string rel.fear) + ",")
+      out = (out + "\"suspicion\":" + (to_string rel.suspicion) + ",")
+      out = (out + "\"followTendency\":" + (to_string rel.followTendency) + ",")
+      out = (out + "\"panic\":" + (to_string rel.panic) + ",")
+      out = (out + "\"stress\":" + (to_string rel.stress) + ",")
+      out = (out + "\"embarrassment\":" + (to_string rel.embarrassment) + "}")
+      i = i + 1
+    }
+    out = (out + "]}")
+    return out
+  }
+
+  fn simDebugEventsJson:string () {
+    def out:string "{\"events\":["
+    def i:int 0
+    def n:int (map.eventLog.count())
+    while (i < n) {
+      if (i > 0) {
+        out = (out + ",")
+      }
+      def evt:WorldEvent (map.eventLog.at(i))
+      out = (out + "{\"type\":\"" + (this.simEscapeJson(evt.type)) + "\",")
+      out = (out + "\"floor\":" + (to_string evt.floor) + ",")
+      out = (out + "\"x\":" + (to_string evt.x) + ",")
+      out = (out + "\"y\":" + (to_string evt.y) + ",")
+      out = (out + "\"timeMinutes\":" + (to_string evt.timeMinutes) + ",")
+      out = (out + "\"noise\":" + (to_string evt.noise) + ",")
+      out = (out + "\"visibility\":" + (to_string evt.visibility) + ",")
+      out = (out + "\"severity\":" + (to_string evt.severity) + ",")
+      out = (out + "\"suspiciousness\":" + (to_string evt.suspiciousness) + "}")
+      i = i + 1
+    }
+    out = (out + "]}")
     return out
   }
 

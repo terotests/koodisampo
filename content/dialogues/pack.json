@@ -1,0 +1,114 @@
+{
+  "dialogues": [
+    {
+      "id": "neutral_work_stress",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 45,
+      "text": "Miten sinä pysyt noin rauhallisena täällä?",
+      "answers": [
+        {
+          "text": "En pysykään, esitän vain.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 5 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Hyvä prosessi voittaa paniikin.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 10 }]
+        },
+        {
+          "text": "En minä ehdi miettiä muiden ongelmia.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 10 },
+            { "target": "npc", "stat": "friendliness", "delta": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_confrontation_noise",
+      "category": "angry",
+      "minAnger": 50,
+      "maxAnger": 100,
+      "text": "Kuuluiko tuo meteli sinusta jotenkin normaalilta?",
+      "answers": [
+        {
+          "text": "En kuullut mitään.",
+          "effects": [
+            { "target": "npc", "stat": "suspicion", "delta": 15 },
+            { "target": "npc", "stat": "anger", "delta": 10 }
+          ]
+        },
+        {
+          "text": "Selvitän asian heti.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 5 },
+            { "target": "npc", "stat": "anger", "delta": -5 }
+          ]
+        },
+        {
+          "text": "Seinä aloitti.",
+          "effects": [{ "target": "npc", "stat": "anger", "delta": 20 }]
+        }
+      ]
+    },
+    {
+      "id": "romantic_compliment",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 60,
+      "minLove": 50,
+      "maxLove": 100,
+      "text": "Sinä näytät tänään… poikkeuksellisen keskittyneeltä.",
+      "answers": [
+        {
+          "text": "Kiitos, yritän parhaani.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 10 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Flirttailetko minulle?",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 15 },
+            { "target": "npc", "stat": "jealousy", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Älä häiritse työntekoa.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -10 },
+            { "target": "npc", "stat": "anger", "delta": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "help_usb_search",
+      "category": "help",
+      "minAnger": 0,
+      "maxAnger": 100,
+      "text": "Oletko nähnyt minun USB-tikkuani? Se katosi jonnekin.",
+      "answers": [
+        {
+          "text": "Minulla on tikku — tässä.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 15 },
+            { "target": "player", "stat": "karma", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En ole nähnyt.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
+        },
+        {
+          "text": "Kysy IT:ltä.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
+        }
+      ]
+    }
+  ]
+}

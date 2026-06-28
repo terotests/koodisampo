@@ -47,7 +47,7 @@ npm run preview
 
 Cloud agents: see **[AGENTS.md](AGENTS.md)** — no sibling `../agent/Ranger` checkout needed.
 
-Node-debug (sama peli, paikallinen API): `npm run play:web`
+Alias dev-palvelimelle: `npm run play:web` (= `npm run dev`)
 
 ### Web — tarinakokeilu (React)
 
@@ -99,7 +99,8 @@ Web-sovelluksessa vaihda lähde: **Vaihda** → Paikallinen palvelin. Vite proxy
 
 - [Story JSON -skeema](docs/story-schema.md) — nykyiset tarinat ja featuret
 - [Maailma, inventaario ja taistelu](docs/world-and-combat-plan.md) — tuleva kartta, gurut, taistelu
-- [Opiskeluopas](opiskelu/opiskelu-opas.md) — kertaus C++/Scrum/backend-aiheista
+- [Oppitunnit](opiskelu/oppitunnit.md) — kertaus opiskelulistan aiheista (b / ? pelissä)
+- [Opiskeluopas](opiskelu/opiskelu-opas.md) — laajempi taustamateriaali (PIMPL, planning poker, …)
 
 ## Rakenne
 

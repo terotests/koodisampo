@@ -1,0 +1,86 @@
+
+class EmotionMath {
+  fn normalizedStat:int (value:int) {
+    def scaled:int (to_int (value / 5))
+    if (scaled < 1) {
+      return 1
+    }
+    if (scaled > 20) {
+      return 20
+    }
+    return scaled
+  }
+
+  fn chanceBps:int (value:int) {
+    value = (this.normalizedStat(value))
+    if (value <= 1) {
+      return 1
+    }
+    if (value >= 20) {
+      return 2000
+    }
+    if (value == 2) {
+      return 2
+    }
+    if (value == 3) {
+      return 5
+    }
+    if (value == 4) {
+      return 10
+    }
+    if (value == 5) {
+      return 20
+    }
+    if (value == 6) {
+      return 40
+    }
+    if (value == 7) {
+      return 75
+    }
+    if (value == 8) {
+      return 125
+    }
+    if (value == 9) {
+      return 175
+    }
+    if (value == 10) {
+      return 200
+    }
+    if (value == 11) {
+      return 280
+    }
+    if (value == 12) {
+      return 390
+    }
+    if (value == 13) {
+      return 540
+    }
+    if (value == 14) {
+      return 750
+    }
+    if (value == 15) {
+      return 1050
+    }
+    if (value == 16) {
+      return 1300
+    }
+    if (value == 17) {
+      return 1550
+    }
+    if (value == 18) {
+      return 1750
+    }
+    if (value == 19) {
+      return 1900
+    }
+    return 2000
+  }
+
+  fn rollTriggers:boolean (value:int roll:int) {
+    def bps:int (this.chanceBps(value))
+    if (roll < bps) {
+      return true
+    }
+    return false
+  }
+}

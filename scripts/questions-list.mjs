@@ -14,6 +14,7 @@ const EXPECTED_CHAPTERS = [
   "qt-widgets", "qt-signals", "qt-threading", "qt-models", "qt-opengl", "qt-shaders",
   "js-async", "js-types", "js-modules", "js-runtime", "js-typescript",
   "pg-indexes", "pg-explain", "pg-vacuum", "pg-config",
+  "pg-query-design", "pg-cte-window", "pg-joins", "pg-json", "pg-sql-security",
   "cpp-production", "docker-production",
   "git-workflow", "git-ci",
   "backend-data", "backend-api", "ops-incident",

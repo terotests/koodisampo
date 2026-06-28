@@ -1,6 +1,9 @@
 /**
- * Shared Corporate NetHack web game controller — Node (play:web) and static browser build.
+ * Shared web game controller — browser (web-game dev + static build).
  */
+import { readFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   getEncounterQuiz,
   needsEncounterQuiz,
@@ -42,9 +45,57 @@ import {
 } from "../terminal/personStatus.mjs";
 import { buildMenuItems, menuItemByNumber } from "../terminal/storyMenu.mjs";
 import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
+import { formatRelationsDebugText } from "./formatRelationsDebug.mjs";
 import { buildElevatorSnapshot } from "./gameController/elevatorSnapshot.mjs";
 import { checkElevatorKeyGate } from "./gameController/elevatorKeyGate.mjs";
 import { createElevatorUiState } from "./gameController/elevatorUiState.mjs";
+
+const __webDir = dirname(fileURLToPath(import.meta.url));
+
+function loadDialoguePackJson(deps) {
+  if (deps.dialoguePackJson) return deps.dialoguePackJson;
+  return readFileSync(
+    resolve(__webDir, "../../content/dialogues/pack.json"),
+    "utf8",
+  );
+}
+
+function sessionNeedsProfileSetup(session) {
+  if (typeof session.needsProfileSetup === "function") {
+    return session.needsProfileSetup();
+  }
+  if (!session.profileComplete) return true;
+  return !String(session.playerDisplayName ?? "").trim();
+}
+
+function clearPlayerProfileOnSession(session) {
+  if (typeof session.clearPlayerProfile === "function") {
+    session.clearPlayerProfile();
+    return;
+  }
+  session.playerDisplayName = "";
+  session.playerSpecialty = "";
+  session.profileComplete = false;
+  session.screen = "setup";
+  session.markStateDirty?.();
+}
+
+function applyPlayerProfileOnSession(session, map, name, specialty) {
+  const trimmedName = String(name || "").trim();
+  const trimmedSpecialty = String(specialty || "cpp").trim();
+  if (!trimmedName) return false;
+  if (typeof session.applyPlayerProfile === "function") {
+    session.applyPlayerProfile(trimmedName, trimmedSpecialty);
+    return true;
+  }
+  session.playerDisplayName = trimmedName;
+  session.playerSpecialty = trimmedSpecialty;
+  session.profileComplete = true;
+  session.screen = "map";
+  if (map) map.playerAlias = trimmedName;
+  session.markStateDirty?.();
+  return true;
+}
 
 /**
  * @param {{
@@ -64,12 +115,14 @@ import { createElevatorUiState } from "./gameController/elevatorUiState.mjs";
  *   loadSave: () => Record<string, unknown> | null,
  *   persistSave: (karma: unknown, deaths: number, quizHistory: unknown, studyBacklog: unknown, progress: unknown, personRegistry: unknown) => void,
  *   loadStoryJson: (summary: { id?: string, filename?: string } | null) => string | null,
+ *   dialoguePackJson?: string,
  *   castListEnabled?: () => boolean,
  * }} deps
  */
 export function createWebGameController(deps) {
   const {
-    mapJson,
+    mapJson: initialMapJson,
+    getMapJson,
     storyCatalog,
     gameHost,
     loadSave,
@@ -77,6 +130,8 @@ export function createWebGameController(deps) {
     loadStoryJson,
     castListEnabled = () => true,
   } = deps;
+  const dialoguePackJson = loadDialoguePackJson(deps);
+  let mapJson = initialMapJson ?? (getMapJson ? getMapJson() : "");
   const {
     createGameSession,
     dispatch,
@@ -104,8 +159,24 @@ export function createWebGameController(deps) {
   let castListOpen = false;
   const elevatorUi = createElevatorUiState();
 
+  function refreshMapJson() {
+    if (getMapJson) mapJson = getMapJson();
+  }
+
   dispatch(session, () => {
+    refreshMapJson();
     session.loadMapFromText(mapJson);
+    session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    if (save?.progress?.profileComplete && save?.progress?.playerName) {
+      applyPlayerProfileOnSession(
+        session,
+        sessionMap(session),
+        save.progress.playerName,
+        save.progress.playerSpecialty ?? "cpp",
+      );
+    } else {
+      clearPlayerProfileOnSession(session);
+    }
     if (save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
     } else {
@@ -142,7 +213,19 @@ export function createWebGameController(deps) {
     }
   }
   dispatch(session, () => {
+    refreshMapJson();
     session.loadMapFromText(mapJson);
+    session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    if (keepProgress && save?.progress?.profileComplete && save?.progress?.playerName) {
+      applyPlayerProfileOnSession(
+        session,
+        sessionMap(session),
+        save.progress.playerName,
+        save.progress.playerSpecialty ?? "cpp",
+      );
+    } else {
+      clearPlayerProfileOnSession(session);
+    }
     if (keepProgress && save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
       session.applyGuruProgress(
@@ -155,7 +238,9 @@ export function createWebGameController(deps) {
     }
     session.interviewPassed = false;
     session.interviewFailed = false;
-    sessionMap(session).lastStatus = "Peli aloitettu alusta — pihamaalta.";
+    sessionMap(session).lastStatus = getMapJson
+      ? "Peli aloitettu alusta — kartta ladattu levyltä."
+      : "Peli aloitettu alusta — pihamaalta.";
     sessionMap(session).ensurePlayerOnWalkable();
   });
 }
@@ -173,6 +258,9 @@ function updateLocalSave() {
     guruQuizCorrect: session.guruQuizCorrect ?? 0,
     interviewPickNonce,
     guruPickNonce,
+    profileComplete: !!session.profileComplete,
+    playerName: session.playerDisplayName ?? "",
+    playerSpecialty: session.playerSpecialty ?? "",
   };
   save.quizHistory = quizHistoryState;
   save.studyBacklog = studyBacklogState;
@@ -320,6 +408,23 @@ function ensureQuizRecorded(quiz) {
 
 function buildEncounterSnapshot(base) {
   const view = session.getEncounterView();
+  if (view.isEmotional || session.encounterResult === "emotional") {
+    return {
+      ...base,
+      encounter: {
+        mode: "emotional",
+        char: view.entityChar,
+        name: view.entityName,
+        greeting: view.greeting,
+        hintLine: view.hintLine,
+        question: view.emotionalQuestion,
+        choices: (view.emotionalAnswers || []).map((text, i) => ({
+          n: i + 1,
+          text,
+        })),
+      },
+    };
+  }
   const isQuiz = needsEncounterQuiz(session);
   const payload = {
     ...base,
@@ -456,10 +561,14 @@ function snapshot() {
     debugCastList: castListEnabled(),
     castListOpen,
     castList: cast,
-    castListText: formatCastRosterText(cast),
+    castListText: formatCastRosterText(cast, { session }),
+    profileComplete: !!session.profileComplete,
+    needsProfileSetup: sessionNeedsProfileSetup(session),
+    playerDisplayName: session.playerDisplayName ?? "",
+    playerSpecialty: session.playerSpecialty ?? "",
   };
 
-  if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover") {
+  if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {
     const view = session.getMapView();
     const elevator = buildElevatorSnapshot(map);
     elevatorUi.syncOnElevator(elevator.onElevator);
@@ -814,6 +923,9 @@ function handleStoryKey(key) {
 }
 
 function handleKey(key) {
+  if (session.screen === "setup" || sessionNeedsProfileSetup(session)) {
+    return;
+  }
   if (castListOpen) {
     if (key === "q") {
       dispatch(session, () => {
@@ -835,6 +947,12 @@ function handleKey(key) {
   }
 
   if (session.screen === "encounter") {
+    if (session.encounterResult === "emotional") {
+      const emotionalKey = key === "p" ? "leave" : key;
+      dispatch(session, () => session.onEncounterChoice(emotionalKey));
+      persistWeb();
+      return;
+    }
     if (needsEncounterQuiz(session)) {
       handleQuizKey(key);
       return;
@@ -881,6 +999,7 @@ function handleKey(key) {
     if (
       session.screen === "prison" ||
       session.screen === "gameover" ||
+      session.screen === "epilogue" ||
       session.screen === "studylist" ||
       session.screen === "inventory"
     ) {
@@ -921,6 +1040,16 @@ function handleKey(key) {
     handleStoryCode,
     expandElevatorPicker: () => {
       elevatorUi.expand();
+    },
+    getRelationsDebugText: () => formatRelationsDebugText(session, session.pendingEntityId || ""),
+    setPlayerProfile: (name, specialty) => {
+      let ok = false;
+      dispatch(session, () => {
+        ok = applyPlayerProfileOnSession(session, sessionMap(session), name, specialty);
+      });
+      if (!ok) return false;
+      persistWeb();
+      return !sessionNeedsProfileSetup(session);
     },
     reset: resetWebSession,
     stop: () => stopGameSession(root, session),

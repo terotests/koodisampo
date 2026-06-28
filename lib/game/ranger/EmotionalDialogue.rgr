@@ -1,0 +1,13 @@
+
+Import "EmotionalAnswer.rgr"
+
+class EmotionalDialogue {
+  def id:string ""
+  def text:string ""
+  def category:string "neutral"
+  def minAnger:int 0
+  def maxAnger:int 20
+  def minLove:int 0
+  def maxLove:int 20
+  def answers:[EmotionalAnswer]
+}

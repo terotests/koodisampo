@@ -1,6 +1,33 @@
 # Android vs web: kontrollerilogiikka ja hissipariteetti
 
-Analyysi (2026-06-24): missä pelilogiikka asuu Rangerissa, missä host-kontrollerissa (web/terminaali), ja mitä Androidista puuttuu — erityisesti **hissin numeronäyttö** ja yläkerroksiin pääsyn tarkistukset.
+Analyysi päivitetty **2026-06-22**: missä pelilogiikka asuu Rangerissa, missä host-kontrollerissa (web/terminaali), ja mitä Androidista vielä puuttuu.
+
+---
+
+## Tilanne nyt (2026-06-22)
+
+| Ominaisuus | Web | Android |
+|------------|-----|---------|
+| Ranger-ydin (liike, hissi, kohtaukset) | ✅ | ✅ |
+| Hissinumeroruudukko + collapse | ✅ | ✅ `ElevatorPanel` + `ElevatorUiState` |
+| Kerroslukot (`canAccessFloor`) | ✅ | ✅ |
+| Suositusportti ylöspäin | ✅ `personStatus.mjs` | ✅ `PersonRegistry` + `ElevatorKeyGate` |
+| Encounter-dialogi (1–3) | ✅ | ✅ |
+| Encounter-quiz + vastaukset | ✅ | ✅ |
+| Quiz-sivutoiminnot (n/a/j/i/m) | ✅ | ✅ (2026-06-22) |
+| Kortin palautus -overlay | ✅ | ✅ (2026-06-22) |
+| Opiskelulista (`b`) | ✅ + tallennus | ✅ UI + `StudyBacklog` (ei persist) |
+| Inventaario (`i`) | ✅ | ✅ UI |
+| Valikko (`?`) | ✅ | ✅ `MenuController` |
+| Vankila / game over | ✅ | ✅ kartta + Jatka-nappi |
+| `action_story` työkalukohtauksista | ✅ | ✅ `tryStartActionStory` |
+| HR 2. kerroksella + seek | ✅ Ranger | ✅ Ranger + `syncHrGreeter` |
+| Kartta: suositusmerkit `!` | ✅ `applyMapPersonDisplay` | ❌ |
+| Tallennus (karma, registry, quiz-historia) | ✅ localStorage | ❌ |
+| Cast list debug (`o`) | ✅ | ❌ |
+| Quiz-kysymysvalinta | `encounterQuestions.mjs` | `EncounterQuizEngine.kt` (kopio) |
+
+**Host-pariteetti arvio:** ~**75%** (aiemmin ~28%). Suurimmat jäljellä olevat gapit: persistenssi, karttanäytön personDisplay, quiz-engine deduplikaatio.
 
 ---
 
@@ -17,9 +44,9 @@ Arviot perustuvat rivimääriin (`lib/game/ranger/` ~5 700, web-host ~2 700, web
 | Kerros | Rivejä (noin) | Uudelleenkäyttö nyt | Uudelleenkäyttö tavoite | Pariteetti nyt | Pariteetti tavoite |
 |--------|---------------|--------------------:|------------------------:|---------------:|-------------------:|
 | **Ranger** (peliydin) | ~5 700 | **100%** | **100%** | **100%** | **100%** |
-| **Host-kontrolleri** | ~2 700 JS / ~750 Kotlin | **~15%** | **~75%** | **~28%** | **~92%** |
-| **Näkymä** (UI) | ~1 300 TS / ~650 Compose | **0%**¹ | **~10%**² | **~45%** | **~90%** |
-| **Yhteensä (client)** | ~10 400 | **~55%** | **~78%** | **~52%** | **~90%** |
+| **Host-kontrolleri** | ~2 700 JS / ~1 100 Kotlin | **~15%** | **~75%** | **~75%** | **~92%** |
+| **Näkymä** (UI) | ~1 300 TS / ~900 Compose | **0%**¹ | **~10%**² | **~70%** | **~90%** |
+| **Yhteensä (client)** | ~10 400 | **~55%** | **~78%** | **~72%** | **~90%** |
 
 ¹ Eri teknologia (DOM vs Compose) — jaettavissa vain snapshot-skeema, ei renderöintikoodia.  
 ² Tavoite: sama snapshot-JSON/struct molemmille; UI pysyy alustakohtaisena.
@@ -30,14 +57,14 @@ Arviot perustuvat rivimääriin (`lib/game/ranger/` ~5 700, web-host ~2 700, web
 |------|--------------------:|------------------------:|---------------:|-------------------:|----------------------------------|
 | Kartta & liike | **100%** | **100%** | **~85%** | **~95%** | Ranger ✅; tavoite: `applyMapPersonDisplay` Androidiin |
 | Hissi — matka & lukot | **100%** | **100%** | **100%** | **100%** | Ranger ✅ |
-| Hissi — numeronäyttö | **0%** | **~85%**³ | **0%** | **100%** | Vaihe 1: jaettu `buildElevatorSnapshot` + `ElevatorPanel` |
-| Suositusportti (ylöspäin) | **0%** | **~90%** | **0%** | **100%** | Vaihe 2: `personStatus` → `PersonRegistry.kt` |
+| Hissi — numeronäyttö | **0%** | **~85%**³ | **100%** | **100%** | ✅ toteutettu |
+| Suositusportti (ylöspäin) | **0%** | **~90%** | **100%** | **100%** | ✅ `PersonRegistry.kt` |
 | Encounter — dialogi | **100%** | **100%** | **~90%** | **~95%** | Ranger ✅ |
-| Encounter — quiz | **0%**⁴ | **~95%** | **~55%** | **~95%** | Vaihe 3: poista `EncounterQuizEngine`-kopio; yksi lähde |
+| Encounter — quiz | **0%**⁴ | **~95%** | **~90%** | **~95%** | Sivutoiminnot + study backlog lisätty |
 | Story | **~65%** | **~80%** | **~75%** | **~90%** | Ranger-moottori ✅; host yhtenäistyy |
 | Blocked / action | **100%** | **100%** | **~80%** | **~95%** | Ranger ✅ |
-| Henkilörekisteri | **0%** | **~90%** | **0%** | **100%** | Vaihe 2: porttaus + tallennus |
-| Opiskelulista / quiz-historia | **0%** | **~85%** | **~15%** | **~90%** | Jaettu moduuli web + Android |
+| Henkilörekisteri | **0%** | **~90%** | **~80%** | **100%** | Muistissa; ei tallennusta |
+| Opiskelulista / quiz-historia | **0%** | **~85%** | **~70%** | **~90%** | `StudyBacklog.kt` sessiossa |
 | Tallennus | **0%** | **~50%** | **~10%** | **~80%** | Eri storage (localStorage / DataStore); sama skeema |
 
 ³ ~85%: snapshot-rakentaja jaettu; vain Compose/DOM-renderöinti erillinen.  
@@ -45,11 +72,27 @@ Arviot perustuvat rivimääriin (`lib/game/ranger/` ~5 700, web-host ~2 700, web
 
 ### Johtopäätös yhdellä lauseella
 
-**Nyt:** ~55% client-logiikasta on aidosti uudelleenkäytettävää (pääosin Ranger), host **~15%**, Android kattaa **~28%** webin kontrollerista. **Tavoite:** ~78% uudelleenkäyttö (Ranger + yhteinen host-skeema + quiz yhdestä lähteestä) ja **~90%** web↔Android-pariteetti — suurin hyppy hissigridistä, `personRegistry`-portista ja kontrollerin yhdistämisestä.
+**Nyt:** ~55% client-logiikasta on aidosti uudelleenkäytettävää (pääosin Ranger), host **~75%** web-pariteetista Androidissa. **Jäljellä:** persistenssi, `applyMapPersonDisplay`, quiz-engine yhteinen lähde.
 
 ---
 
-## Tiivistelmä
+## Android-tiedostot (2026-06-22)
+
+| Tiedosto | Vastuu |
+|----------|--------|
+| `GameHost.kt` | Reititys (menu/encounter/map/action), snapshot |
+| `GameController.kt` | Hissi-UI + suositusportti |
+| `EncounterController.kt` | Quiz, overlayt, kortin palautus |
+| `EncounterQuizEngine.kt` | Kysymysvalinta (JS-kopio) |
+| `MenuController.kt` | `?`-valikko |
+| `StudyBacklog.kt` | Opiskelulista (sessio) |
+| `PersonRegistry.kt` | Suositusportti |
+| `ElevatorPanel.kt` / `ElevatorSnapshot.kt` | Hissinumerot |
+| `SecondaryScreens.kt` | Menu/inventory/study UI |
+
+---
+
+## Tiivistelmä (vanha rakenne)
 
 | Kerros | Rooli | Web | Android |
 |--------|-------|-----|---------|
@@ -57,9 +100,9 @@ Arviot perustuvat rivimääriin (`lib/game/ranger/` ~5 700, web-host ~2 700, web
 | **Host-kontrolleri** | Snapshot, overlay, tallennus, host-spesifiset portit | `webGameController.mjs` (~950 riviä) + `terminalApp.mjs` | `GameHost.kt` (~110 riviä) + erilliset `*Controller.kt` |
 | **Näkymä** | Renderöinti, kosketusnäppäimet | `ui.ts`, `mobileLayout.ts` | `GameScreen.kt`, `GameControls.kt` |
 
-**Hissi Androidissa:** pelilogiikka toimii (näppäin 1–9/0 → `GameSession.tryElevatorKey`), mutta **numeronäyttöä ei ole lainkaan**. Web-mobiilissa näyttö on host-näkymässä, data tulee kontrollerin snapshotista.
+**Hissi Androidissa:** numeronäyttö, collapse ja suositusportti toimivat. Ranger hoitaa matkan ja tier-lukot.
 
-**Tavoite:** web ja Android käyttäisivät samaa kontrollerimallia — ohut näkymä, yhteinen snapshot-API, duplikaattilogiikka pois Kotlinista/JS:stä missä mahdollista.
+**Seuraava askel:** DataStore-tallennus, `applyMapPersonDisplay` kartalle, quiz-engine yhteinen lähde.
 
 ---
 
@@ -399,6 +442,6 @@ Harkitse vain jos **sääntö on sama kaikilla alustoilla eikä riipu tallennusf
 
 - **Ranger** hoitaa oikein hissin *matkan* ja *kortti/guru-tier*-lukot.
 - **Web-kontrolleri** hoitaa hissille *numeronäytön datan*, *suositusportin*, *collapse-tilan* (UI) ja *rikkaan encounter-kokemuksen*.
-- **Android** on tällä hetkellä lähempänä “suora Ranger + Compose” -mallia kuin web-kontrolleria — siksi numeronäyttö ja yläkerros-suositus puuttuvat.
+- **Android** vastaa nyt suurinta osaa web-kontrollerista; jäljellä persistenssi ja kartta-overlayt.
 
-**Seuraava askel:** toteuta Vaihe 1 (ElevatorPanel + snapshot), sitten Vaihe 2 (personRegistry-portti). Pitkällä aikavälillä Androidin `GameHost` kasvaa webGameControllerin rinnalle, ei erillisten ad hoc -kontrollerien joukoksi.
+**Seuraava askel:** DataStore + `applyMapPersonDisplay`. Pitkällä aikavälillä yhteinen quiz-lähde.

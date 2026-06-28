@@ -7,7 +7,7 @@
   --muted: #8b9cb3;
   --accent: #5eb1ff;
   --accent-dim: #2a4a6b;
-  --wall: #4a5568;
+  --wall: #c5d0dc;
   --floor: #1e2a3a;
   --desk: #3d5a80;
   --elevator: #f4d35e;
@@ -175,6 +175,17 @@ code {
 .error { color: #ff8a8a; }
 .banner { padding: 1rem 1.25rem; margin: 0; }
 
+.api-banner ol.api-help {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.api-banner code {
+  color: #ffb4b4;
+}
+
 .floor-studio {
   display: grid;
   grid-template-columns: 220px 1fr 300px;
@@ -217,12 +228,144 @@ code {
 
 .panel-header h2 { margin: 0 0 0.25rem; font-size: 1.1rem; }
 
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.btn-primary {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+}
+
+.btn-secondary {
+  background: transparent;
+}
+
+.btn-primary:disabled, .btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.map-editor-toolbar {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.75rem;
+  background: var(--panel);
+}
+
+.toolbar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.toolbar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cursor-info {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.65rem;
+}
+
+.brush-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brush-group-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.brush-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.brush-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.25rem 0.45rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.brush-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.brush-char {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 700;
+  min-width: 1ch;
+}
+
+.brush-char-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", emoji, sans-serif;
+  font-weight: 400;
+  min-width: 1.25em;
+  font-size: 1.1em;
+}
+
+.brush-label {
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brush-btn kbd {
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0 0.25rem;
+  border-radius: 3px;
+}
+
 .ascii-map-wrap {
   overflow: auto;
   background: #0a0e14;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.5rem;
+}
+
+.ascii-map-wrap.edit-mode {
+  outline: 2px solid var(--accent-dim);
+}
+
+.ascii-map-wrap.edit-mode:focus {
+  outline: 2px solid var(--accent);
 }
 
 .ascii-map {
@@ -247,7 +390,15 @@ code {
   text-align: center;
 }
 
-.tile-wall { color: var(--wall); }
+.tile-emoji {
+  width: 1.3em;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", emoji, sans-serif;
+  font-size: 1.15em;
+  line-height: 1;
+  vertical-align: -0.05em;
+}
+
+.tile-wall { color: var(--wall); font-weight: 600; }
 .tile-floor { color: #3d5a4a; }
 .tile-yard { color: #4a6b4a; }
 .tile-desk { color: var(--desk); }
@@ -260,12 +411,49 @@ code {
 .tile-other { color: #666; }
 .zone-hl { background: rgba(94, 177, 255, 0.15); }
 
+.tile-edit {
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 0.65em;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.tile-cursor {
+  background: rgba(94, 177, 255, 0.42) !important;
+  outline: 1px solid var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.tile-cursor-blocked {
+  background: rgba(248, 81, 73, 0.35) !important;
+  outline: 1px solid #f85149;
+}
+
+.paint-hint-warn {
+  color: #f85149;
+}
+
+.brush-group-hint {
+  margin: 0 0 0.35rem;
+}
+
+.tile-spawn {
+  box-shadow: inset 0 0 0 1px #9ae6b4;
+}
+
 .tile.entity {
   border: none;
   padding: 0;
   margin: 0;
   width: 0.65em;
   font: inherit;
+  color: inherit;
+  background: transparent;
   cursor: pointer;
   border-radius: 2px;
 }

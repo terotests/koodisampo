@@ -233,6 +233,45 @@ export function analyzeFloor(world, floorIndex) {
   };
 }
 
+export function getWorldClone(filePath = cachedPath) {
+  const world = loadWorld(filePath);
+  return JSON.parse(JSON.stringify(world));
+}
+
+function assertRowDimensions(floor, rows) {
+  const height = floor.rows.length;
+  if (rows.length !== height) {
+    throw new Error(`Rivimäärä ei täsmää: odotettiin ${height}, saatiin ${rows.length}`);
+  }
+  for (let y = 0; y < rows.length; y += 1) {
+    const expected = floor.rows[y]?.line?.length ?? 0;
+    if (rows[y].length !== expected) {
+      throw new Error(`Rivi ${y} leveys ei täsmää: odotettiin ${expected}, saatiin ${rows[y].length}`);
+    }
+  }
+}
+
+export function patchFloor(world, floorIndex, patch) {
+  const floor = world.floors[floorIndex];
+  if (!floor) throw new Error(`Kerrosta ${floorIndex} ei löydy`);
+
+  if (patch.rows) {
+    assertRowDimensions(floor, patch.rows);
+    floor.rows = patch.rows.map((line) => ({ line }));
+  }
+
+  if (patch.entities !== undefined) {
+    if (!Array.isArray(patch.entities)) throw new Error("entities pitää olla taulukko");
+    floor.entities = patch.entities;
+  }
+
+  if (patch.spawn !== undefined) floor.spawn = patch.spawn;
+  if (patch.cafeteria !== undefined) floor.cafeteria = patch.cafeteria;
+  if (patch.door !== undefined) floor.door = patch.door;
+
+  return floor;
+}
+
 export function worldSummary(world) {
   return {
     id: world.id,

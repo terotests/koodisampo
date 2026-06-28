@@ -1,9 +1,50 @@
 /** Mobile layout helpers — compact map viewport and touch controls. */
 
+import { mapLineDisplayWidth, splitMapGraphemes } from "../../hosts/shared/mapGlyphs.mjs";
+
 export const MOBILE_MAP_SIZE = 19;
 
+/** Match CSS @media (max-width: …) in index.html */
+export const MOBILE_BREAKPOINT_PX = 768;
+
+let forceMobile: boolean | null = null;
+
+/** Readable viewport width (DevTools device frame, not always === innerWidth). */
+export function viewportWidth(): number {
+  const vv = window.visualViewport;
+  if (vv && vv.width > 0) {
+    return Math.round(vv.width);
+  }
+  const docW = document.documentElement.clientWidth;
+  if (docW > 0) {
+    return docW;
+  }
+  return window.innerWidth;
+}
+
+export function initMobileLayoutOptions() {
+  const mobileParam = new URLSearchParams(window.location.search).get("mobile");
+  if (mobileParam === "1" || mobileParam === "true") {
+    forceMobile = true;
+  } else if (mobileParam === "0" || mobileParam === "false") {
+    forceMobile = false;
+  }
+}
+
 export function isMobileLayout(): boolean {
-  return window.matchMedia("(max-width: 768px)").matches;
+  if (forceMobile === true) {
+    return true;
+  }
+  if (forceMobile === false) {
+    return false;
+  }
+  if (viewportWidth() <= MOBILE_BREAKPOINT_PX) {
+    return true;
+  }
+  if (window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT_PX}px)`).matches) {
+    return true;
+  }
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
 
 export function cropMapLines(lines: string[], size = MOBILE_MAP_SIZE): string[] {
@@ -12,7 +53,8 @@ export function cropMapLines(lines: string[], size = MOBILE_MAP_SIZE): string[] 
   let py = -1;
   let px = -1;
   for (let y = 0; y < lines.length; y += 1) {
-    const x = lines[y].indexOf("@");
+    const cells = splitMapGraphemes(lines[y]);
+    const x = cells.indexOf("@");
     if (x >= 0) {
       py = y;
       px = x;
@@ -29,11 +71,11 @@ export function cropMapLines(lines: string[], size = MOBILE_MAP_SIZE): string[] 
       out.push(" ".repeat(size));
       continue;
     }
-    const start = px - half;
+    const cells = splitMapGraphemes(row);
     let slice = "";
     for (let dx = 0; dx < size; dx += 1) {
-      const ci = start + dx;
-      slice += ci >= 0 && ci < row.length ? row[ci] : " ";
+      const ci = px - half + dx;
+      slice += ci >= 0 && ci < cells.length ? cells[ci] : " ";
     }
     out.push(slice);
   }
@@ -67,15 +109,18 @@ export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s:
 
 export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
-  let msg = state.status || state.ambient || "";
-  if (!msg && !isMobileLayout()) {
-    msg = state.hint || "";
+  const parts: string[] = [];
+  if (state.status) parts.push(state.status);
+  if (state.ambient && state.ambient !== state.status) parts.push(state.ambient);
+  if (!parts.length && !isMobileLayout()) {
+    const hint = state.hint || "";
+    if (hint) parts.push(hint);
   }
   const fr = state.floorRecommendation;
   if (fr && fr.total > 0 && !fr.complete) {
-    const rec = `Suositukset: ${fr.done}/${fr.total}`;
-    msg = msg ? `${msg} · ${rec}` : rec;
+    parts.push(`Suositukset: ${fr.done}/${fr.total}`);
   }
+  const msg = parts.join(" · ");
   el.textContent = msg;
   el.hidden = !msg;
 }
@@ -109,6 +154,14 @@ const ACTION_BUTTONS: ToolbarBtn[] = [
 
 let controlsMounted = false;
 let lastElevatorUiKey = "";
+let mobileElevatorEl: HTMLElement | null = null;
+
+function getMobileElevatorEl(): HTMLElement | null {
+  if (!mobileElevatorEl) {
+    mobileElevatorEl = document.getElementById("mobile-elevator");
+  }
+  return mobileElevatorEl;
+}
 
 function bindDelegatedClickOnce(root: HTMLElement, onKey: (key: string) => void, onReset: () => void) {
   if (root.dataset.keyDelegation === "1") return;
@@ -189,12 +242,13 @@ export function mountMobileControls(
 
   toolbarEl.className = "toolbar toolbar-mobile";
   toolbarEl.innerHTML = "";
-  const elevatorSlot = document.createElement("div");
-  elevatorSlot.className = "elevator-slot";
-  elevatorSlot.dataset.elevatorSlot = "1";
-  toolbarEl.appendChild(elevatorSlot);
   ensureActionRow(toolbarEl);
   bindDelegatedClickOnce(toolbarEl, onKey, onReset);
+
+  const elevEl = getMobileElevatorEl();
+  if (elevEl) {
+    bindDelegatedClickOnce(elevEl, onKey, onReset);
+  }
 }
 
 export function setMobileDpadVisible(dpadEl: HTMLElement | null, visible: boolean) {
@@ -252,23 +306,37 @@ function renderElevatorSlot(slot: HTMLElement, elevator: MobileMapToolbarOptions
   }
 }
 
+export function clearMobileElevator() {
+  const elevEl = getMobileElevatorEl();
+  if (elevEl) {
+    elevEl.hidden = true;
+    elevEl.innerHTML = "";
+  }
+  document.documentElement.classList.remove("elevator-open");
+  lastElevatorUiKey = "";
+}
+
 export function updateMobileMapToolbar(
-  toolbarEl: HTMLElement,
+  _toolbarEl: HTMLElement,
   elevator?: MobileMapToolbarOptions,
   onExpandPicker?: () => void,
 ) {
-  const showElevatorPicker = Boolean(elevator?.onElevator && !elevator?.pickerCollapsed);
-  toolbarEl.classList.toggle("has-elevator", showElevatorPicker);
-  toolbarEl.classList.toggle("has-elevator-collapsed", Boolean(elevator?.onElevator && elevator.pickerCollapsed));
+  const elevEl = getMobileElevatorEl();
+  if (!elevEl) return;
+
+  const onElevator = Boolean(elevator?.onElevator);
+  const showElevatorPicker = Boolean(onElevator && !elevator?.pickerCollapsed);
+  elevEl.hidden = !onElevator;
   document.documentElement.classList.toggle("elevator-open", showElevatorPicker);
 
-  const uiKey = `${elevator?.onElevator ? "1" : "0"}-${elevator?.pickerCollapsed ? "1" : "0"}-${showElevatorPicker ? elevator?.floors?.length : 0}`;
+  const uiKey = `${onElevator ? "1" : "0"}-${elevator?.pickerCollapsed ? "1" : "0"}-${showElevatorPicker ? elevator?.floors?.length : 0}`;
   if (uiKey === lastElevatorUiKey) return;
   lastElevatorUiKey = uiKey;
 
-  const slot = toolbarEl.querySelector<HTMLElement>("[data-elevator-slot]");
-  if (slot && elevator) {
-    renderElevatorSlot(slot, elevator, onExpandPicker);
+  if (elevator) {
+    renderElevatorSlot(elevEl, elevator, onExpandPicker);
+  } else {
+    elevEl.innerHTML = "";
   }
 }
 
@@ -301,8 +369,31 @@ export function setMobileToolbar(
   }
 }
 
+export function resetMobileControlsMount() {
+  controlsMounted = false;
+  lastElevatorUiKey = "";
+}
+
 export function syncMobileClass() {
   document.documentElement.classList.toggle("mobile-layout", isMobileLayout());
+}
+
+export function watchViewportLayout(onChange: () => void): () => void {
+  const handler = () => {
+    syncMobileClass();
+    onChange();
+  };
+  const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT_PX}px)`);
+  mql.addEventListener("change", handler);
+  window.addEventListener("resize", handler);
+  window.addEventListener("orientationchange", handler);
+  window.visualViewport?.addEventListener("resize", handler);
+  return () => {
+    mql.removeEventListener("change", handler);
+    window.removeEventListener("resize", handler);
+    window.removeEventListener("orientationchange", handler);
+    window.visualViewport?.removeEventListener("resize", handler);
+  };
 }
 
 export function syncMobileMapScale(lines: string[], anchor?: HTMLElement | null) {
@@ -312,16 +403,17 @@ export function syncMobileMapScale(lines: string[], anchor?: HTMLElement | null)
     document.documentElement.style.removeProperty("--map-cell-px");
     return;
   }
-  const cols = Math.max(...lines.map((line) => line.length), 1);
+  const cols = Math.max(...lines.map((line) => mapLineDisplayWidth(line)), 1);
   const rows = lines.length;
   const viewportW = anchor?.clientWidth
     || document.getElementById("map-wrap")?.clientWidth
-    || document.documentElement.clientWidth
-    || window.innerWidth;
+    || viewportWidth();
   const viewportH = window.innerHeight;
   const messageBar = document.getElementById("message-bar");
   const messageBarH = messageBar && !messageBar.hidden ? messageBar.offsetHeight : 0;
-  const chromeH = 230 + messageBarH;
+  const elevEl = getMobileElevatorEl();
+  const elevatorH = elevEl && !elevEl.hidden ? elevEl.offsetHeight : 0;
+  const chromeH = 230 + messageBarH + elevatorH;
   const byWidth = viewportW / cols;
   const byHeight = Math.max((viewportH - chromeH) / rows / 1.05, 8);
   const cellPx = Math.min(byWidth, byHeight);

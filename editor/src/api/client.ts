@@ -1,11 +1,13 @@
 import type {
   FloorAnalysis,
+  FloorPatchResult,
   QuestionList,
   QuestionPreview,
   QuestionStats,
 } from "../types";
 import type {
   BackupEntry,
+  GameSyncInfo,
   WorldFilesResponse,
   WorldSummaryResponse,
 } from "../types/storage";
@@ -30,6 +32,14 @@ async function post<T>(path: string, body: unknown = {}): Promise<T> {
   }));
 }
 
+async function patchJson<T>(path: string, body: unknown = {}): Promise<T> {
+  return parseJson<T>(await fetch(path, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }));
+}
+
 async function del<T>(path: string): Promise<T> {
   return parseJson<T>(await fetch(path, { method: "DELETE" }));
 }
@@ -46,7 +56,10 @@ export const api = {
       overwrite: opts?.overwrite !== false,
     }),
   saveActiveWorld: (overwrite = true) =>
-    post<{ path: string; activeFile: string; summary: WorldSummaryResponse }>("/api/world/save-active", { overwrite }),
+    post<{ path: string; activeFile: string; summary: WorldSummaryResponse; gameSync?: GameSyncInfo }>(
+      "/api/world/save-active",
+      { overwrite },
+    ),
   createBackup: (name: string, note = "") =>
     post<{ id: string; name: string; createdAt: string; sourceFile: string }>("/api/world/backups", { name, note }),
   restoreBackup: (id: string, opts?: { saveToSource?: boolean; saveActive?: boolean }) =>
@@ -56,6 +69,14 @@ export const api = {
     ),
   deleteBackup: (id: string) => del<{ id: string; deleted: boolean }>(`/api/world/backups/${encodeURIComponent(id)}`),
   floorAnalysis: (index: number) => get<FloorAnalysis>(`/api/world/floors/${index}/analysis`),
+  patchFloor: (index: number, patch: {
+    rows?: string[];
+    entities?: unknown[];
+    spawn?: { x: number; y: number } | null;
+    cafeteria?: { x: number; y: number } | null;
+    door?: { x: number; y: number } | null;
+  }) => patchJson<FloorPatchResult>(`/api/world/floors/${index}`, patch),
+  syncGameWorld: () => post<{ activeFile: string; gameSync: FloorPatchResult["gameSync"] }>("/api/world/sync-game"),
   questionStats: () => get<QuestionStats>("/api/questions/stats"),
   questions: (params: { chapter?: string; domain?: string; q?: string; limit?: number }) => {
     const sp = new URLSearchParams();

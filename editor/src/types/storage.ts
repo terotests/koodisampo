@@ -27,3 +27,10 @@ export type WorldSummaryResponse = WorldSummary & {
   activeFile: string;
   defaultFile: string;
 };
+
+export type GameSyncInfo = {
+  synced: boolean;
+  source?: string;
+  dest?: string;
+  reason?: string;
+};

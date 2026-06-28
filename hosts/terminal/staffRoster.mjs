@@ -1,5 +1,10 @@
 import { sessionMap } from "../shared/sessionMap.mjs";
 import { personMapChar } from "./personStatus.mjs";
+import {
+  formatMoodTowardsPlayerLine,
+  loadRelationMap,
+  overlayLabel,
+} from "../shared/npcRelationText.mjs";
 
 function hashString(s) {
   let h = 2166136261;
@@ -133,6 +138,7 @@ function collectEntitiesFromSession(session, filterFn) {
         firstName: parseDisplayFirstName(e.name),
         topic: e.topic || "",
         storyId: e.storyId || "",
+        overlayEmotion: e.overlayEmotion || "none",
       });
     }
   }
@@ -163,8 +169,14 @@ export function kindLabel(kind) {
   return CAST_KIND_LABELS[kind] || kind || "?";
 }
 
-export function formatCastRosterText(cast, { includeLegend = true } = {}) {
-  const lines = ["═══ Hahmolista (DEBUG) ═══", "Poistuu lopullisesta versiosta.", ""];
+export function formatCastRosterText(cast, { includeLegend = true, session = null } = {}) {
+  const withMoods = Boolean(session);
+  const lines = [
+    withMoods ? "═══ Hahmot ja tunnetilat ═══" : "═══ Hahmolista (DEBUG) ═══",
+    withMoods ? "Sinua kohtaan — tunne ja suhdeluvut." : "Poistuu lopullisesta versiosta.",
+    "",
+  ];
+  const relationById = withMoods ? loadRelationMap(session) : null;
   if (includeLegend) {
     lines.push("── Karttamerkit (roolin alkukirjain) ──");
     for (const row of CAST_KIND_HELP) {
@@ -190,6 +202,19 @@ export function formatCastRosterText(cast, { includeLegend = true } = {}) {
     lines.push(
       `  [${mapCh}] ${e.name} — ${kindLabel(e.kind)} (${e.id}${topic}${story})`,
     );
+    if (withMoods) {
+      const rel = relationById?.get(e.id);
+      if (rel) {
+        lines.push(`    ${formatMoodTowardsPlayerLine(rel, e.overlayEmotion)}`);
+      } else {
+        const overlay = overlayLabel(e.overlayEmotion);
+        lines.push(
+          overlay
+            ? `    sinua kohtaan: ${overlay} (ei tallennettua suhdetta)`
+            : "    sinua kohtaan: — (ei vielä tavattu)",
+        );
+      }
+    }
   }
   return lines.join("\n");
 }

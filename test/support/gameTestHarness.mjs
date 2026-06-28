@@ -71,6 +71,61 @@ export function grantFloorRecommendations(ctrl, floorIndex) {
   }
 }
 
+export function findEntityOnFloor(map, floorIndex, id) {
+  const saved = map.currentFloor;
+  map.currentFloor = floorIndex;
+  map.recomputeSize?.();
+  const floor = map.activeFloor();
+  const ent = floor.entities?.find?.((e) => e.id === id) ?? null;
+  map.currentFloor = saved;
+  map.recomputeSize?.();
+  return ent;
+}
+
+/** Siirrä pelaajan viereen ja törmää kohteeseen. */
+export function bumpIntoEntity(ctrl, floorIndex, entityId) {
+  const { session } = ctrl;
+  const map = gameHost.sessionMap(session);
+  const ent = findEntityOnFloor(map, floorIndex, entityId);
+  if (!ent) throw new Error(`Entity not found: ${entityId}`);
+  const approaches = [
+    { px: ent.x - 1, py: ent.y, key: "d", fx: 1, fy: 0 },
+    { px: ent.x + 1, py: ent.y, key: "a", fx: -1, fy: 0 },
+    { px: ent.x, py: ent.y - 1, key: "s", fx: 0, fy: 1 },
+    { px: ent.x, py: ent.y + 1, key: "w", fx: 0, fy: -1 },
+  ];
+  for (const step of approaches) {
+    gameHost.dispatch(session, () => {
+      map.currentFloor = floorIndex;
+      map.recomputeSize();
+      map.playerX = step.px;
+      map.playerY = step.py;
+      map.facingX = step.fx;
+      map.facingY = step.fy;
+      map.ensurePlayerOnWalkable?.();
+    });
+    const snap = ctrl.handleKey(step.key);
+    if (snap.screen === "encounter" || snap.screen === "blocked") {
+      return snap;
+    }
+  }
+  throw new Error(`Could not bump into ${entityId}`);
+}
+
+/** Törmäys → blocked-valikko → puhu (1) → encounter. */
+export function startEncounterViaBump(ctrl, floorIndex, entityId) {
+  const snap = bumpIntoEntity(ctrl, floorIndex, entityId);
+  if (snap.screen === "encounter") {
+    return snap;
+  }
+  if (snap.screen === "blocked") {
+    return ctrl.handleKey("1");
+  }
+  throw new Error(`Unexpected screen after bump into ${entityId}: ${snap.screen}`);
+}
+
+export { dispatch, sessionMap } from "../../hosts/terminal/gameHost.mjs";
+
 export function assert(cond, msg) {
   if (!cond) throw new Error(msg);
 }

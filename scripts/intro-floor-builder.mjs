@@ -21,7 +21,7 @@ const TOPICS = {
   ops: ["systemd", "docker", "docker-network", "journald", "ops-incident"],
   product: ["scrum-sprint", "scrum-dor", "scrum-estimation", "backend-api"],
   hr: ["web-security", "git-workflow", "scrum-team"],
-  finance: ["pg-config", "pg-explain", "backend-data"],
+  finance: ["pg-config", "pg-explain", "pg-query-design", "pg-cte-window", "pg-joins", "backend-data"],
   it: ["linux-network", "avahi", "pg-vacuum"],
 };
 

@@ -66,6 +66,16 @@ export type FloorAnalysis = {
   roomCount: number;
 };
 
+export type FloorPatchResult = FloorAnalysis & {
+  savedTo?: string | null;
+  gameSync?: {
+    synced: boolean;
+    source?: string;
+    dest?: string;
+    reason?: string;
+  } | null;
+};
+
 export type QuestionItem = {
   id: string;
   chapter: string;

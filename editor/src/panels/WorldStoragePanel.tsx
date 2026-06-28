@@ -100,7 +100,11 @@ export function WorldStoragePanel({ activeFile, onWorldChanged }: Props) {
                   if (!window.confirm(`Korvataanko ${activeFile}?`)) return;
                   const r = await api.saveActiveWorld(true);
                   onWorldChanged({ ...r.summary, activeFile: r.activeFile });
-                  setStatus(`Päivitetty: ${activeFile}`);
+                  setStatus(
+                    r.gameSync?.synced
+                      ? `Päivitetty: ${activeFile} — peli synkattu (F5 pelissä)`
+                      : `Päivitetty: ${activeFile}`,
+                  );
                 })}
               >
                 Tallenna aktiivinen tiedosto

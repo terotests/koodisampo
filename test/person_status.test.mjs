@@ -55,6 +55,13 @@ export function runPersonStatusTests() {
     session.tools.grant("access_card");
   });
 
+  const floor0 = getFloorRecommendationStatus(session, registry, 0);
+  assert(floor0.total >= 1, "courtyard has recommendation NPCs");
+  assert(
+    !floor0.missing.some((m) => m.id === "ceo-lunch-walk"),
+    "lunch CEO walk does not count toward courtyard recommendations",
+  );
+
   const floor1 = getFloorRecommendationStatus(session, registry, 1);
   assert(floor1.total > 0, "floor 2 has recommendation NPCs");
   assert(floor1.complete === false, "empty registry has incomplete floor");

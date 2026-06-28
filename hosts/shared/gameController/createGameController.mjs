@@ -2,12 +2,21 @@
  * UI-agnostic game controller — pelilogiikka simuloitavissa ilman näkymää.
  * Web (`webGameController`) ja testit käyttävät samaa snapshot-skeemaa.
  */
+import { readFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { sessionMap } from "../sessionMap.mjs";
 import { normalizePersonRegistry, emptyPersonRegistry } from "../../terminal/personStatus.mjs";
 import { buildElevatorSnapshot } from "./elevatorSnapshot.mjs";
 import { checkElevatorKeyGate } from "./elevatorKeyGate.mjs";
 import { wrapVirtualClock } from "./virtualClock.mjs";
 import { createElevatorUiState } from "./elevatorUiState.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const dialoguePackJson = readFileSync(
+  resolve(__dirname, "../../../content/dialogues/pack.json"),
+  "utf8",
+);
 
 /**
  * @param {{
@@ -31,10 +40,16 @@ export function createGameController(deps) {
 
   dispatch(session, () => {
     session.loadMapFromText(mapJson);
+    session.loadEmotionalDialoguesFromText(dialoguePackJson);
     if (save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
     } else if (bootKarma > 0) {
       session.karma.add("debug:boot", bootKarma);
+    }
+    if (save?.playerDisplayName) {
+      session.applyPlayerProfile(save.playerDisplayName, save.playerSpecialty ?? "cpp");
+    } else if (save?.profileComplete !== false) {
+      session.applyPlayerProfile("Larry", "cpp");
     }
     sessionMap(session)?.ensurePlayerOnWalkable?.();
   });
@@ -54,9 +69,15 @@ export function createGameController(deps) {
       status: map?.lastStatus ?? "",
       clockMinutes: session.worldClock?.gameMinutes ?? 0,
       clockLine: session.worldClock?.formatLine?.() ?? "",
+      needs: {
+        satiety: session.playerNeeds?.satiety ?? 0,
+        thirst: session.playerNeeds?.thirst ?? 0,
+        alertness: session.playerNeeds?.alertness ?? 0,
+        gas: session.playerNeeds?.gas ?? 0,
+      },
     };
 
-    if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover") {
+    if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {
       const view = session.getMapView();
       const elevator = buildElevatorSnapshot(map);
       elevatorUi.syncOnElevator(elevator.onElevator);
@@ -67,6 +88,7 @@ export function createGameController(deps) {
         status: view.statusLine || base.status,
         ambient: view.ambientLine,
         time: view.timeLine,
+        needsLine: view.needsLine,
         hint: view.hintLine,
         lines: view.lines,
         camera: { x: view.cameraX, y: view.cameraY },
@@ -77,12 +99,17 @@ export function createGameController(deps) {
     }
 
     if (session.screen === "encounter") {
+      const view = session.getEncounterView();
       return {
         ...base,
         encounter: {
           entityName: session.pendingEntityName,
           entityChar: session.pendingEntityChar,
           needsQuiz: session.needsEncounterQuiz?.() ?? false,
+          isEmotional: view.isEmotional ?? false,
+          emotionalQuestion: view.emotionalQuestion ?? "",
+          emotionalAnswers: [...(view.emotionalAnswers || [])],
+          hintLine: view.hintLine ?? "",
         },
       };
     }
@@ -110,7 +137,73 @@ export function createGameController(deps) {
   }
 
   function handleKey(key) {
-    const before = snapshot();
+    if (session.screen === "encounter") {
+      if (session.encounterResult === "emotional") {
+        const emotionalKey = key === "p" ? "leave" : key;
+        dispatch(session, () => {
+          session.onEncounterChoice(emotionalKey);
+        });
+        return snapshot();
+      }
+      const choiceMap = {
+        "1": "talk",
+        "2": "joke",
+        "3": "leave",
+      };
+      const choice = choiceMap[key];
+      if (choice) {
+        dispatch(session, () => {
+          session.onEncounterChoice(choice);
+        });
+      }
+      return snapshot();
+    }
+
+    if (session.screen === "blocked" || session.screen === "action") {
+      dispatch(session, () => {
+        session.onMapKey(key);
+      });
+      return snapshot();
+    }
+
+    if (session.screen === "menu") {
+      if (key === "q" || key === "esc" || key === "ctrl-x" || key === "ctrl-c" || key === "ctrl-d") {
+        dispatch(session, () => {
+          session.onMenuPick("q");
+        });
+      } else if (key === "enter" || key === "m") {
+        dispatch(session, () => {
+          session.onMenuPick("m");
+        });
+      } else {
+        dispatch(session, () => {
+          session.onMenuPick("???");
+        });
+      }
+      return snapshot();
+    }
+
+    if (session.screen === "inventory" || session.screen === "studylist") {
+      dispatch(session, () => {
+        session.onMapKey(key);
+      });
+      return snapshot();
+    }
+
+    if (key === "enter") {
+      if (
+        session.screen === "prison"
+        || session.screen === "gameover"
+        || session.screen === "epilogue"
+        || session.screen === "studylist"
+        || session.screen === "inventory"
+      ) {
+        dispatch(session, () => {
+          session.onMapKey("enter");
+        });
+        return snapshot();
+      }
+    }
 
     if (session.screen === "map" && /^[0-9]$/.test(key)) {
       const map = sessionMap(session);
@@ -154,6 +247,7 @@ export function createGameController(deps) {
       : emptyPersonRegistry();
     dispatch(session, () => {
       session.loadMapFromText(mapJson);
+    session.loadEmotionalDialoguesFromText(dialoguePackJson);
       if (keepProgress && save?.features?.ids) {
         session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
       } else if (bootKarma > 0) {

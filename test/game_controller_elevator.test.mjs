@@ -48,6 +48,13 @@ export function runGameControllerElevatorTests() {
 
     snap = ctrl.handleKey("1");
     assert(snap.floor === 0, "can go back down to floor 0");
+    assert(!snap.status.includes("suosituksen"), `down should not require recommendations: ${snap.status}`);
+
+    teleportToElevator(session, dispatch, 1);
+    grantFloorRecommendations(ctrl, 1);
+    snap = ctrl.handleKey("1");
+    assert(snap.floor === 0, "down from office without courtyard CEO suositus");
+    assert(!snap.status.includes("Toimitusjohtaja"), `no CEO block when descending: ${snap.status}`);
 
     teleportToElevator(session, dispatch, 0);
     grantFloorRecommendations(ctrl, 0);

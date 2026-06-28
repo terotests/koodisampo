@@ -1,6 +1,6 @@
 /**
  * Debug-ominaisuudet — pois tuotantopelistä.
- * Web-debug (play:web): hahmolista päällä.
+ * Web-game dev (?debug=1): hahmolista päällä.
  * Terminaali: vain kun KOODISAMPO_DEBUG=1
  */
 export function castListEnabledForTerminal() {

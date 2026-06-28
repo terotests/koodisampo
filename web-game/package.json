@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node ../scripts/sync-web-game-assets.mjs",
+    "predev": "node ../scripts/build-ranger.mjs && node ../scripts/sync-web-game-assets.mjs && node ../scripts/clear-vite-ranger-cache.mjs",
     "dev": "vite",
     "prebuild": "node ../scripts/sync-web-game-assets.mjs",
     "build": "vite build",

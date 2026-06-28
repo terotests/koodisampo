@@ -70,7 +70,7 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | `npm run build:ranger` | Compile Ranger → `generated/es6/koodisampo.cjs` |
 | `npm run test:engine` | Rebuild + run all engine tests |
 | `npm run play` | Terminal game (TTY) |
-| `npm run play:web` | Local web debug host |
+| `npm run play:web` | Alias → `npm run dev` (sama web-game UI) |
 | `npm run dev` | Vite dev server (`web-game/`) |
 | `npm run build` | Production static build (uses committed `.cjs`, syncs to `web-game/public/`) |
 

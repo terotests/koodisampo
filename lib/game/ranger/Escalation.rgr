@@ -1,0 +1,44 @@
+
+Import "NpcRelationStore.rgr"
+
+class Escalation {
+  fn angryGroupThreshold:int () {
+    return 3
+  }
+
+  fn panicThreshold:int () {
+    return 3
+  }
+
+  fn jealousyGossipThreshold:int () {
+    return 2
+  }
+
+  fn fleeingEvacuationThreshold:int () {
+    return 3
+  }
+
+  fn shouldAngryGroup:boolean (store:NpcRelationStore) {
+    def count:int (store.countWithAngerAtLeast(75))
+    if (count >= (this.angryGroupThreshold())) {
+      return true
+    }
+    return false
+  }
+
+  fn shouldWorkplacePanic:boolean (store:NpcRelationStore) {
+    def count:int (store.countWithPanicAtLeast(75))
+    if (count >= (this.panicThreshold())) {
+      return true
+    }
+    return false
+  }
+
+  fn shouldBackstabbingGossip:boolean (store:NpcRelationStore) {
+    def count:int (store.countWithJealousyAtLeast(75))
+    if (count >= (this.jealousyGossipThreshold())) {
+      return true
+    }
+    return false
+  }
+}

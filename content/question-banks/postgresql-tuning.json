@@ -49,7 +49,7 @@
         "guru",
         "security"
       ],
-      "prompt": "Kysely on hidas tuotannossa. Miten näet todelliset ajat ja rivimäärät turvallisesti?",
+      "prompt": "Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet todelliset ajat ja rivimäärät turvallisesti?",
       "choices": [
         {
           "text": "EXPLAIN (ANALYZE, BUFFERS) staging-kopiossa tai testiympäristössä",
@@ -68,7 +68,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "ANALYZE ajaa kyselyn — testaa kopiossa, vertaa suunnitelmia.",
+      "correctFeedback": "EXPLAIN ANALYZE kopiossa — ymmärrä suunnitelma ennen indeksi-/GUC-säätöä.",
       "wrongFeedback": "EXPLAIN ANALYZE muuttaa tilastoja ja kuormittaa — varovasti prodissa.",
       "sourceRef": "postgresql/sql-explain",
       "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",

@@ -1,0 +1,313 @@
+
+Import "JSON.rgr"
+Import "StoryJson.rgr"
+Import "EmotionalDialogue.rgr"
+Import "EmotionalAnswer.rgr"
+Import "NpcRelation.rgr"
+
+class DialogueCatalog {
+  def dialogues:[EmotionalDialogue]
+  def json:StoryJson
+
+  Constructor () {
+    json = (new StoryJson)
+    def empty:[EmotionalDialogue]
+    dialogues = empty
+  }
+
+  fn reset:void () {
+    def empty:[EmotionalDialogue]
+    dialogues = empty
+  }
+
+  fn addEffect:void (answer:EmotionalAnswer target:string stat:string delta:int) {
+    push answer.effectTargets target
+    push answer.effectStats stat
+    push answer.effectDeltas delta
+  }
+
+  fn loadDefaults:void () {
+    this.reset()
+
+    def neutral:EmotionalDialogue (new EmotionalDialogue)
+    neutral.id = "neutral_work_stress"
+    neutral.category = "neutral"
+    neutral.text = "Miten sinä pysyt noin rauhallisena täällä?"
+    neutral.minAnger = 0
+    neutral.maxAnger = 45
+    def na1:EmotionalAnswer (new EmotionalAnswer)
+    na1.text = "En pysykään, esitän vain."
+    this.addEffect(na1 "npc" "friendliness" 5)
+    this.addEffect(na1 "npc" "respect" 5)
+    def na2:EmotionalAnswer (new EmotionalAnswer)
+    na2.text = "Hyvä prosessi voittaa paniikin."
+    this.addEffect(na2 "npc" "respect" 10)
+    def na3:EmotionalAnswer (new EmotionalAnswer)
+    na3.text = "En minä ehdi miettiä muiden ongelmia."
+    this.addEffect(na3 "npc" "anger" 10)
+    this.addEffect(na3 "npc" "friendliness" -10)
+    push neutral.answers na1
+    push neutral.answers na2
+    push neutral.answers na3
+    push dialogues neutral
+
+    def angry:EmotionalDialogue (new EmotionalDialogue)
+    angry.id = "angry_confrontation_noise"
+    angry.category = "angry"
+    angry.text = "Kuuluiko tuo meteli sinusta jotenkin normaalilta?"
+    angry.minAnger = 50
+    angry.maxAnger = 100
+    def aa1:EmotionalAnswer (new EmotionalAnswer)
+    aa1.text = "En kuullut mitään."
+    this.addEffect(aa1 "npc" "suspicion" 15)
+    this.addEffect(aa1 "npc" "anger" 10)
+    def aa2:EmotionalAnswer (new EmotionalAnswer)
+    aa2.text = "Selvitän asian heti."
+    this.addEffect(aa2 "npc" "respect" 5)
+    this.addEffect(aa2 "npc" "anger" -5)
+    def aa3:EmotionalAnswer (new EmotionalAnswer)
+    aa3.text = "Seinä aloitti."
+    this.addEffect(aa3 "npc" "anger" 20)
+    push angry.answers aa1
+    push angry.answers aa2
+    push angry.answers aa3
+    push dialogues angry
+
+    def romantic:EmotionalDialogue (new EmotionalDialogue)
+    romantic.id = "romantic_compliment"
+    romantic.category = "romantic"
+    romantic.text = "Sinä näytät tänään… poikkeuksellisen keskittyneeltä."
+    romantic.minAnger = 0
+    romantic.maxAnger = 60
+    romantic.minLove = 50
+    romantic.maxLove = 100
+    def ro1:EmotionalAnswer (new EmotionalAnswer)
+    ro1.text = "Kiitos, yritän parhaani."
+    this.addEffect(ro1 "npc" "love" 10)
+    this.addEffect(ro1 "npc" "respect" 5)
+    def ro2:EmotionalAnswer (new EmotionalAnswer)
+    ro2.text = "Flirttailetko minulle?"
+    this.addEffect(ro2 "npc" "love" 15)
+    this.addEffect(ro2 "npc" "jealousy" 5)
+    def ro3:EmotionalAnswer (new EmotionalAnswer)
+    ro3.text = "Älä häiritse työntekoa."
+    this.addEffect(ro3 "npc" "love" -10)
+    this.addEffect(ro3 "npc" "anger" 15)
+    push romantic.answers ro1
+    push romantic.answers ro2
+    push romantic.answers ro3
+    push dialogues romantic
+
+    def help:EmotionalDialogue (new EmotionalDialogue)
+    help.id = "help_usb_search"
+    help.category = "help"
+    help.text = "Oletko nähnyt minun USB-tikkuani? Se katosi jonnekin."
+    help.minAnger = 0
+    help.maxAnger = 100
+    def h1:EmotionalAnswer (new EmotionalAnswer)
+    h1.text = "Minulla on tikku — tässä."
+    this.addEffect(h1 "npc" "respect" 15)
+    this.addEffect(h1 "player" "karma" 5)
+    def h2:EmotionalAnswer (new EmotionalAnswer)
+    h2.text = "En ole nähnyt."
+    this.addEffect(h2 "npc" "friendliness" -5)
+    def h3:EmotionalAnswer (new EmotionalAnswer)
+    h3.text = "Kysy IT:ltä."
+    this.addEffect(h3 "npc" "respect" 5)
+    push help.answers h1
+    push help.answers h2
+    push help.answers h3
+    push dialogues help
+  }
+
+  fn parseAnswer:void (dlg:EmotionalDialogue answerObj:JSONDataObject) {
+    def ans:EmotionalAnswer (new EmotionalAnswer)
+    ans.text = (json.objFieldStr(answerObj "text"))
+    def effectsOpt@(optional):JSONArrayObject (getArray answerObj "effects")
+    if (null? effectsOpt) {
+      push dlg.answers ans
+      return
+    }
+    def effects:JSONArrayObject (unwrap effectsOpt)
+    def ei:int 0
+    def en:int (array_length effects)
+    while (ei < en) {
+      def eff:JSONDataObject (json.arrayObjectAt(effects ei))
+      def target:string (json.objFieldStr(eff "target"))
+      def stat:string (json.objFieldStr(eff "stat"))
+      def delta:int (json.objFieldInt(eff "delta"))
+      if ((strlen stat) > 0) {
+        this.addEffect(ans target stat delta)
+      }
+      ei = ei + 1
+    }
+    push dlg.answers ans
+  }
+
+  fn loadFromText:boolean (raw:string) {
+    this.reset()
+    try {
+      def rootOpt@(optional):JSONDataObject (from_string raw)
+      if (null? rootOpt) {
+        this.loadDefaults()
+        return false
+      }
+      def root:JSONDataObject (unwrap rootOpt)
+      def arrOpt@(optional):JSONArrayObject (getArray root "dialogues")
+      if (null? arrOpt) {
+        this.loadDefaults()
+        return false
+      }
+      def rootArr:JSONArrayObject (unwrap arrOpt)
+      def i:int 0
+      def n:int (array_length rootArr)
+      while (i < n) {
+        def dlgObj:JSONDataObject (json.arrayObjectAt(rootArr i))
+        def dlg:EmotionalDialogue (new EmotionalDialogue)
+        dlg.id = (json.objFieldStr(dlgObj "id"))
+        dlg.text = (json.objFieldStr(dlgObj "text"))
+        dlg.category = (json.objFieldStr(dlgObj "category"))
+        if ((strlen dlg.category) < 1) {
+          dlg.category = "neutral"
+        }
+        dlg.minAnger = (json.objFieldInt(dlgObj "minAnger"))
+        dlg.maxAnger = (json.objFieldInt(dlgObj "maxAnger"))
+        dlg.minLove = (json.objFieldInt(dlgObj "minLove"))
+        dlg.maxLove = (json.objFieldInt(dlgObj "maxLove"))
+        if (dlg.maxLove < 1) {
+          dlg.maxLove = 100
+        }
+        def answersOpt@(optional):JSONArrayObject (getArray dlgObj "answers")
+        if (null? answersOpt) {
+          push dialogues dlg
+          i = i + 1
+          continue
+        }
+        def answers:JSONArrayObject (unwrap answersOpt)
+        def ai:int 0
+        def an:int (array_length answers)
+        while (ai < an) {
+          this.parseAnswer(dlg (json.arrayObjectAt(answers ai)))
+          ai = ai + 1
+        }
+        push dialogues dlg
+        i = i + 1
+      }
+      if ((array_length dialogues) < 1) {
+        this.loadDefaults()
+        return false
+      }
+      return true
+    } {
+      this.loadDefaults()
+    }
+    return false
+  }
+
+  fn pickIndex:int (relation:NpcRelation) {
+    def i:int 0
+    def n:int (array_length dialogues)
+    while (i < n) {
+      def dlg:EmotionalDialogue (at dialogues i)
+      if (relation.matchesAngerBand(dlg.minAnger dlg.maxAnger)) {
+        return i
+      }
+      i = i + 1
+    }
+    return -1
+  }
+
+  fn pickCategoryIndex:int (category:string relation:NpcRelation) {
+    def i:int 0
+    def n:int (array_length dialogues)
+    while (i < n) {
+      def dlg:EmotionalDialogue (at dialogues i)
+      if (dlg.category == category) {
+        if (relation.matchesAngerBand(dlg.minAnger dlg.maxAnger)) {
+          if (relation.matchesLoveBand(dlg.minLove dlg.maxLove)) {
+            return i
+          }
+        }
+      }
+      i = i + 1
+    }
+    return -1
+  }
+
+  fn pickForEncounter:int (relation:NpcRelation ent:MapEntity) {
+    if (ent.mainTask == "searching_item") {
+      def helpIdx:int (this.pickCategoryIndex("help" relation))
+      if (helpIdx >= 0) {
+        return helpIdx
+      }
+    }
+    if (relation.isAngryNoticeable()) {
+      def angryIdx:int (this.pickCategoryIndex("angry" relation))
+      if (angryIdx >= 0) {
+        return angryIdx
+      }
+    }
+    if (relation.isLoveNoticeable()) {
+      def romanticIdx:int (this.pickCategoryIndex("romantic" relation))
+      if (romanticIdx >= 0) {
+        return romanticIdx
+      }
+    }
+    def neutralIdx:int (this.pickCategoryIndex("neutral" relation))
+    if (neutralIdx >= 0) {
+      return neutralIdx
+    }
+    return (this.pickIndex(relation))
+  }
+
+  fn dialogueAt:EmotionalDialogue (index:int) {
+    if (index < 0) {
+      def blank:EmotionalDialogue (new EmotionalDialogue)
+      return blank
+    }
+    if (index >= (array_length dialogues)) {
+      def blank:EmotionalDialogue (new EmotionalDialogue)
+      return blank
+    }
+    return (at dialogues index)
+  }
+
+  fn answerCount:int (dialogueIndex:int) {
+    def dlg:EmotionalDialogue (this.dialogueAt(dialogueIndex))
+    return (array_length dlg.answers)
+  }
+
+  fn answerText:string (dialogueIndex:int answerIndex:int) {
+    def dlg:EmotionalDialogue (this.dialogueAt(dialogueIndex))
+    if (answerIndex < 0) {
+      return ""
+    }
+    if (answerIndex >= (array_length dlg.answers)) {
+      return ""
+    }
+    def ans:EmotionalAnswer (at dlg.answers answerIndex)
+    return ans.text
+  }
+
+  fn applyAnswerToRelation:void (dialogueIndex:int answerIndex:int relation:NpcRelation) {
+    def dlg:EmotionalDialogue (this.dialogueAt(dialogueIndex))
+    if (answerIndex < 0) {
+      return
+    }
+    if (answerIndex >= (array_length dlg.answers)) {
+      return
+    }
+    def ans:EmotionalAnswer (at dlg.answers answerIndex)
+    def i:int 0
+    def n:int (array_length ans.effectStats)
+    while (i < n) {
+      def target:string (at ans.effectTargets i)
+      def stat:string (at ans.effectStats i)
+      def delta:int (at ans.effectDeltas i)
+      if (target == "npc") {
+        relation.applyStatDelta(stat delta)
+      }
+      i = i + 1
+    }
+  }
+}

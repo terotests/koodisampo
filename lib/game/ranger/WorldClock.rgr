@@ -1,12 +1,26 @@
 
 class WorldClock {
   def gameMinutes:int 480
+  def lastSpentMinutes:int 0
 
   fn advance:void (delta:int) {
+    if (delta < 1) {
+      return
+    }
     gameMinutes = gameMinutes + delta
     if (gameMinutes >= 1080) {
       gameMinutes = 480
     }
+  }
+
+  fn spendTime:int (delta:int) {
+    if (delta < 1) {
+      lastSpentMinutes = 0
+      return 0
+    }
+    this.advance(delta)
+    lastSpentMinutes = delta
+    return delta
   }
 
   fn setGameMinutes:void (minutes:int) {

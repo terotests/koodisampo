@@ -1,0 +1,269 @@
+
+class NpcRelation {
+  def friendliness:int 50
+  def respect:int 50
+  def love:int 0
+  def anger:int 0
+  def jealousy:int 0
+  def fear:int 0
+  def suspicion:int 0
+  def followTendency:int 50
+  def panic:int 0
+  def stress:int 0
+  def embarrassment:int 0
+  def greetCount:int 0
+  def snubCount:int 0
+
+  fn resetDefaults:void () {
+    friendliness = 50
+    respect = 50
+    love = 0
+    anger = 0
+    jealousy = 0
+    fear = 0
+    suspicion = 0
+    followTendency = 50
+    panic = 0
+    stress = 0
+    embarrassment = 0
+    greetCount = 0
+    snubCount = 0
+  }
+
+  fn clampRelation:int (value:int) {
+    if (value < 0) {
+      return 0
+    }
+    if (value > 100) {
+      return 100
+    }
+    return value
+  }
+
+  fn clampMood:int (value:int) {
+    if (value < 0) {
+      return 0
+    }
+    if (value > 100) {
+      return 100
+    }
+    return value
+  }
+
+  fn isPanicHigh:boolean () {
+    if (panic >= 50) {
+      return true
+    }
+    return false
+  }
+
+  fn isPanicSevere:boolean () {
+    if (panic >= 75) {
+      return true
+    }
+    return false
+  }
+
+  fn isAngryNoticeable:boolean () {
+    if (anger >= 50) {
+      return true
+    }
+    return false
+  }
+
+  fn isAngryStrong:boolean () {
+    if (anger >= 60) {
+      return true
+    }
+    return false
+  }
+
+  fn isAngrySevere:boolean () {
+    if (anger >= 70) {
+      return true
+    }
+    return false
+  }
+
+  fn isLoveStrong:boolean () {
+    if (love >= 70) {
+      return true
+    }
+    return false
+  }
+
+  fn isLoveModerate:boolean () {
+    if (love >= 60) {
+      return true
+    }
+    return false
+  }
+
+  fn isLoveNoticeable:boolean () {
+    if (love >= 50) {
+      return true
+    }
+    return false
+  }
+
+  fn isFriendlinessWarm:boolean () {
+    if (friendliness >= 70) {
+      return true
+    }
+    return false
+  }
+
+  fn isFriendlinessCold:boolean () {
+    if (friendliness <= 30) {
+      return true
+    }
+    return false
+  }
+
+  fn isRespectHigh:boolean () {
+    if (respect >= 70) {
+      return true
+    }
+    return false
+  }
+
+  fn isRespectLow:boolean () {
+    if (respect <= 30) {
+      return true
+    }
+    return false
+  }
+
+  fn isJealousyHigh:boolean () {
+    if (jealousy >= 60) {
+      return true
+    }
+    return false
+  }
+
+  fn isJealousySevere:boolean () {
+    if (jealousy >= 75) {
+      return true
+    }
+    return false
+  }
+
+  fn isFearHigh:boolean () {
+    if (fear >= 60) {
+      return true
+    }
+    return false
+  }
+
+  fn firedAngerThreshold:int () {
+    return 75
+  }
+
+  fn statValue:int (stat:string) {
+    if (stat == "friendliness") {
+      return friendliness
+    }
+    if (stat == "respect") {
+      return respect
+    }
+    if (stat == "love") {
+      return love
+    }
+    if (stat == "anger") {
+      return anger
+    }
+    if (stat == "jealousy") {
+      return jealousy
+    }
+    if (stat == "fear") {
+      return fear
+    }
+    if (stat == "suspicion") {
+      return suspicion
+    }
+    if (stat == "followTendency") {
+      return followTendency
+    }
+    if (stat == "panic") {
+      return panic
+    }
+    if (stat == "stress") {
+      return stress
+    }
+    if (stat == "embarrassment") {
+      return embarrassment
+    }
+    return 50
+  }
+
+  fn setStat:void (stat:string value:int) {
+    if (stat == "friendliness") {
+      friendliness = (this.clampRelation(value))
+      return
+    }
+    if (stat == "respect") {
+      respect = (this.clampRelation(value))
+      return
+    }
+    if (stat == "love") {
+      love = (this.clampRelation(value))
+      return
+    }
+    if (stat == "anger") {
+      anger = (this.clampRelation(value))
+      return
+    }
+    if (stat == "jealousy") {
+      jealousy = (this.clampRelation(value))
+      return
+    }
+    if (stat == "fear") {
+      fear = (this.clampRelation(value))
+      return
+    }
+    if (stat == "suspicion") {
+      suspicion = (this.clampRelation(value))
+      return
+    }
+    if (stat == "followTendency") {
+      followTendency = (this.clampRelation(value))
+      return
+    }
+    if (stat == "panic") {
+      panic = (this.clampMood(value))
+      return
+    }
+    if (stat == "stress") {
+      stress = (this.clampMood(value))
+      return
+    }
+    if (stat == "embarrassment") {
+      embarrassment = (this.clampMood(value))
+    }
+  }
+
+  fn applyStatDelta:void (stat:string delta:int) {
+    def cur:int (this.statValue(stat))
+    this.setStat(stat (cur + delta))
+  }
+
+  fn matchesAngerBand:boolean (minAnger:int maxAnger:int) {
+    if (anger < minAnger) {
+      return false
+    }
+    if (anger > maxAnger) {
+      return false
+    }
+    return true
+  }
+
+  fn matchesLoveBand:boolean (minLove:int maxLove:int) {
+    if (love < minLove) {
+      return false
+    }
+    if (love > maxLove) {
+      return false
+    }
+    return true
+  }
+}

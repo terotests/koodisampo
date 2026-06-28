@@ -68,8 +68,17 @@ export function runStaffRosterTests() {
     assert(roleMapChar({ id: "c1", kind: "coworker", char: "c" }) === "t", "työkaveri t");
     assert(roleMapChar({ id: "ceo", kind: "role", char: "C" }) === "T", "toimitusjohtaja T");
     const rosterText = formatCastRosterText(cast);
-    assert(rosterText.includes("DEBUG"), "hahmolista merkitty debugiksi");
+    assert(rosterText.includes("DEBUG"), "hahmolista merkitty debugiksi ilman sessionia");
     assert(rosterText.includes("Pekka"), "Pekka näkyy hahmolistassa");
+
+    dispatch(session, () => {
+      session.setNpcRelationStat("staff-f2-1", "anger", 80);
+      session.setNpcRelationStat("staff-f2-1", "friendliness", 30);
+    });
+    const rosterWithMoods = formatCastRosterText(cast, { session });
+    assert(rosterWithMoods.includes("tunnetilat"), "session mukana otsikossa");
+    assert(rosterWithMoods.includes("sinua kohtaan:"), "tunnetila per hahmo");
+    assert(rosterWithMoods.includes("viha 80"), "suhdeluvut näkyvät");
     const floorAfter = sessionMap(session)?.currentFloor;
     dispatch(session, () => {});
     assert(sessionMap(session)?.currentFloor === floorAfter, "kerros palautuu listauksen jälkeen");

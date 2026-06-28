@@ -1,6 +1,8 @@
 # Opiskeluopas
 
-Lyhyt kertaus opiskelulistan aiheista. Jokainen luku vastaa yhtä aihekokonaisuutta — noin 1–2 sivua.
+> **Ajantasainen opiskelulista:** katso [oppitunnit.md](oppitunnit.md) — sama rakenne kuin pelin `═══ OPISKELULISTA ═══`.
+
+Laajempi taustamateriaali aiheittain. Jokainen luku vastaa yhtä aihekokonaisuutta — noin 1–2 sivua.
 
 ---
 

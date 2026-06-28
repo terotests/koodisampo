@@ -4,7 +4,7 @@
  * Käyttö: node editor-server/index.mjs
  */
 import http from "node:http";
-import { loadWorld, analyzeFloor, worldSummary } from "./services/world.mjs";
+import { loadWorld, analyzeFloor, worldSummary, patchFloor, injectWorld } from "./services/world.mjs";
 import { listQuestions, previewQuestionsForTopic, questionStats } from "./services/questions.mjs";
 import {
   getActiveWorldRel,
@@ -19,12 +19,15 @@ import {
   deleteBackup,
   DEFAULT_WORLD_REL,
 } from "./services/storage.mjs";
+import { syncWorldToGame } from "./services/gameSync.mjs";
 
-const PORT = Number(process.env.KOODISAMPO_EDITOR_PORT ?? 3847);
+import { EDITOR_API_PORT, EDITOR_UI_PORT } from "../editor/ports.mjs";
+
+const PORT = Number(process.env.KOODISAMPO_EDITOR_PORT ?? EDITOR_API_PORT);
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -94,6 +97,28 @@ async function handle(req, res) {
       return;
     }
 
+    const floorPatchMatch = url.pathname.match(/^\/api\/world\/floors\/(\d+)$/);
+    if (req.method === "PATCH" && floorPatchMatch) {
+      const floorIndex = Number.parseInt(floorPatchMatch[1], 10);
+      const body = await readBody(req);
+      const world = loadWorld(getActiveWorldAbs());
+      patchFloor(world, floorIndex, body);
+      injectWorld(getActiveWorldAbs(), world);
+      const persist = body.persist !== false;
+      let saved = null;
+      let gameSync = null;
+      if (persist) {
+        saved = saveActiveWorld(getActiveWorldRel(), { overwrite: true });
+        gameSync = syncWorldToGame(getActiveWorldRel());
+      }
+      json(res, 200, {
+        ...analyzeFloor(world, floorIndex),
+        savedTo: saved?.path ?? null,
+        gameSync,
+      });
+      return;
+    }
+
     if (req.method === "POST" && url.pathname === "/api/world/load") {
       const body = await readBody(req);
       const result = switchActiveWorld(body.path);
@@ -126,11 +151,19 @@ async function handle(req, res) {
     if (req.method === "POST" && url.pathname === "/api/world/save-active") {
       const body = await readBody(req);
       const saved = saveActiveWorld(getActiveWorldRel(), { overwrite: body.overwrite !== false });
+      const gameSync = syncWorldToGame(getActiveWorldRel());
       json(res, 200, {
         ...saved,
         activeFile: getActiveWorldRel(),
         summary: worldSummary(loadWorld(getActiveWorldAbs())),
+        gameSync,
       });
+      return;
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/world/sync-game") {
+      const gameSync = syncWorldToGame(getActiveWorldRel());
+      json(res, 200, { activeFile: getActiveWorldRel(), gameSync });
       return;
     }
 
@@ -196,4 +229,13 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Koodisampo editor API http://localhost:${PORT}`);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Portti ${PORT} on jo käytössä — editor-API on todennäköisesti jo käynnissä.`);
+    console.error(`Avaa http://localhost:${EDITOR_UI_PORT} tai pysäytä vanha prosessi: npm run editor:stop`);
+    process.exit(1);
+  }
+  throw err;
 });

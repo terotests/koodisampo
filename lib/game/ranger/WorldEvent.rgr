@@ -1,0 +1,105 @@
+
+class WorldEvent {
+  def type:string ""
+  def floor:int 0
+  def x:int 0
+  def y:int 0
+  def timeMinutes:int 0
+  def noise:int 0
+  def visibility:int 0
+  def severity:int 0
+  def suspiciousness:int 0
+  def playerSource:boolean true
+
+  fn applyWallBrokenHeavy:void () {
+    type = "WallBroken"
+    noise = 18
+    visibility = 12
+    severity = 16
+    suspiciousness = 20
+  }
+
+  fn applyWallBrokenMedium:void () {
+    type = "WallBroken"
+    noise = 12
+    visibility = 8
+    severity = 10
+    suspiciousness = 12
+  }
+
+  fn applyWallBrokenLight:void () {
+    type = "WallBroken"
+    noise = 6
+    visibility = 4
+    severity = 4
+    suspiciousness = 6
+  }
+
+  fn applyDoorBroken:void () {
+    type = "DoorBroken"
+    noise = 14
+    visibility = 10
+    severity = 12
+    suspiciousness = 16
+  }
+
+  fn applyComputerBroken:void () {
+    type = "ComputerBroken"
+    noise = 4
+    visibility = 16
+    severity = 14
+    suspiciousness = 18
+  }
+
+  fn applyToiletBroken:void () {
+    type = "ToiletBroken"
+    noise = 10
+    visibility = 8
+    severity = 8
+    suspiciousness = 10
+  }
+
+  fn applyPlayerFarted:void () {
+    type = "PlayerFarted"
+    noise = 8
+    visibility = 6
+    severity = 4
+    suspiciousness = 6
+  }
+
+  fn applyWorkplacePanic:void () {
+    type = "WorkplacePanic"
+    noise = 12
+    visibility = 14
+    severity = 18
+    suspiciousness = 10
+    playerSource = false
+  }
+
+  fn applyAngryGroupComplaint:void () {
+    type = "AngryGroupComplaint"
+    noise = 10
+    visibility = 8
+    severity = 14
+    suspiciousness = 12
+    playerSource = false
+  }
+
+  fn applyGossipStarted:void () {
+    type = "GossipStarted"
+    noise = 4
+    visibility = 10
+    severity = 6
+    suspiciousness = 8
+    playerSource = false
+  }
+
+  fn applyPraisePlayer:void () {
+    type = "PraisePlayer"
+    noise = 3
+    visibility = 8
+    severity = 2
+    suspiciousness = 0
+    playerSource = false
+  }
+}

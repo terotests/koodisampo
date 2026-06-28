@@ -1,0 +1,94 @@
+
+Import "NpcRelation.rgr"
+
+class NpcRelationStore {
+  def npcIds:[string]
+  def relations:[NpcRelation]
+
+  fn reset:void () {
+    def emptyIds:[string]
+    def emptyRels:[NpcRelation]
+    npcIds = emptyIds
+    relations = emptyRels
+  }
+
+  fn findIndex:int (npcId:string) {
+    def i:int 0
+    def n:int (array_length npcIds)
+    while (i < n) {
+      if ((at npcIds i) == npcId) {
+        return i
+      }
+      i = i + 1
+    }
+    return -1
+  }
+
+  fn getOrCreate:NpcRelation (npcId:string) {
+    def idx:int (this.findIndex(npcId))
+    if (idx >= 0) {
+      return (at relations idx)
+    }
+    def rel:NpcRelation (new NpcRelation)
+    rel.resetDefaults()
+    push npcIds npcId
+    push relations rel
+    return rel
+  }
+
+  fn countWithAngerAtLeast:int (threshold:int) {
+    def count:int 0
+    def i:int 0
+    def n:int (array_length relations)
+    while (i < n) {
+      def rel:NpcRelation (at relations i)
+      if (rel.anger >= threshold) {
+        count = count + 1
+      }
+      i = i + 1
+    }
+    return count
+  }
+
+  fn countWithPanicAtLeast:int (threshold:int) {
+    def count:int 0
+    def i:int 0
+    def n:int (array_length relations)
+    while (i < n) {
+      def rel:NpcRelation (at relations i)
+      if (rel.panic >= threshold) {
+        count = count + 1
+      }
+      i = i + 1
+    }
+    return count
+  }
+
+  fn countWithJealousyAtLeast:int (threshold:int) {
+    def count:int 0
+    def i:int 0
+    def n:int (array_length relations)
+    while (i < n) {
+      def rel:NpcRelation (at relations i)
+      if (rel.jealousy >= threshold) {
+        count = count + 1
+      }
+      i = i + 1
+    }
+    return count
+  }
+
+  fn countWithLoveAtLeast:int (threshold:int) {
+    def count:int 0
+    def i:int 0
+    def n:int (array_length relations)
+    while (i < n) {
+      def rel:NpcRelation (at relations i)
+      if (rel.love >= threshold) {
+        count = count + 1
+      }
+      i = i + 1
+    }
+    return count
+  }
+}

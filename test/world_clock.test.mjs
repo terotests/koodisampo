@@ -38,6 +38,12 @@ export function runWorldClockTests() {
   clock.advance(30);
   assert(clock.gameMinutes === 530, "advance adds delta");
 
+  clock.setGameMinutes(600);
+  const spent = clock.spendTime(10);
+  assert(spent === 10, "spendTime returns minutes");
+  assert(clock.gameMinutes === 610, "spendTime advances clock");
+  assert(clock.lastSpentMinutes === 10, "lastSpentMinutes tracked");
+
   const { root, session } = createGameSession();
   dispatch(session, () => {
     session.worldClock.setGameMinutes(780);

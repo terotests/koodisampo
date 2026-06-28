@@ -1,0 +1,103 @@
+
+class PlayerNeeds {
+  def satiety:int 18
+  def thirst:int 18
+  def alertness:int 16
+  def gas:int 0
+  def satietyAccum:int 0
+  def thirstAccum:int 0
+  def alertnessAccum:int 0
+
+  fn resetDefaults:void () {
+    satiety = 18
+    thirst = 18
+    alertness = 16
+    gas = 0
+    satietyAccum = 0
+    thirstAccum = 0
+    alertnessAccum = 0
+  }
+
+  fn clampAll:void () {
+    if (satiety < 0) {
+      satiety = 0
+    }
+    if (satiety > 20) {
+      satiety = 20
+    }
+    if (thirst < 0) {
+      thirst = 0
+    }
+    if (thirst > 20) {
+      thirst = 20
+    }
+    if (alertness < 0) {
+      alertness = 0
+    }
+    if (alertness > 20) {
+      alertness = 20
+    }
+    if (gas < 0) {
+      gas = 0
+    }
+    if (gas > 20) {
+      gas = 20
+    }
+  }
+
+  fn tickMinutes:void (minutes:int) {
+    if (minutes < 1) {
+      return
+    }
+    satietyAccum = satietyAccum + minutes
+    while (satietyAccum >= 100) {
+      satiety = satiety - 1
+      satietyAccum = satietyAccum - 100
+    }
+    thirstAccum = thirstAccum + (minutes * 2)
+    while (thirstAccum >= 100) {
+      thirst = thirst - 1
+      thirstAccum = thirstAccum - 100
+    }
+    alertnessAccum = alertnessAccum + (minutes * 15)
+    while (alertnessAccum >= 1000) {
+      alertness = alertness - 1
+      alertnessAccum = alertnessAccum - 1000
+    }
+    this.clampAll()
+  }
+
+  fn applyEmojiChar:void (ch:string) {
+    if (ch == "☕") {
+      alertness = alertness + 4
+      gas = gas + 1
+    }
+    if (ch == "🍱") {
+      satiety = satiety + 5
+    }
+    if (ch == "🚽") {
+      gas = gas - 4
+    }
+    this.clampAll()
+  }
+
+  fn applyStatDelta:void (stat:string delta:int) {
+    if (stat == "satiety") {
+      satiety = satiety + delta
+    }
+    if (stat == "thirst") {
+      thirst = thirst + delta
+    }
+    if (stat == "alertness") {
+      alertness = alertness + delta
+    }
+    if (stat == "gas") {
+      gas = gas + delta
+    }
+    this.clampAll()
+  }
+
+  fn formatLine:string () {
+    return ("Nälkä:" + (to_string satiety) + " Jano:" + (to_string thirst) + " Valppaus:" + (to_string alertness) + " Kaasu:" + (to_string gas))
+  }
+}

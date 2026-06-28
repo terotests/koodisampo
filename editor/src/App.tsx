@@ -54,7 +54,17 @@ export default function App() {
       </header>
 
       <main>
-        {error && <p className="error banner">API-yhteys epäonnistui: {error}. Käynnistä <code>npm run editor:server</code>.</p>}
+        {error && (
+          <div className="error banner api-banner">
+            <p><strong>Editor-API ei vastaa.</strong> {error}</p>
+            <ol className="api-help">
+              <li>Käynnistä molemmat: <code>cd koodisampo && npm run editor</code></li>
+              <li>Avaa <strong>http://localhost:5188</strong></li>
+              <li>Jos konsolissa näkyy <code>workbox</code>: poista service worker (DevTools → Application → Service Workers → Unregister) tai käytä incognito-ikkunaa</li>
+              <li>Testaa API: <a href="/api/health" target="_blank" rel="noreferrer">/api/health</a> pitäisi palauttaa <code>{`{"ok":true}`}</code></li>
+            </ol>
+          </div>
+        )}
         {tab === "floors" && world && <FloorStudio key={worldKey} world={world} />}
         {tab === "questions" && <QuestionBrowser />}
       </main>

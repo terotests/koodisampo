@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { BOLD, FG, RESET, BG, colorize, colorizeMapLine, colorizePolice, colorizeRecommended, styled } from "./ansi.mjs";
+import { formatMapLineTerminal } from "../shared/mapGlyphs.mjs";
 import { drawFrame, drawFrameClear, drawLines, drawLinesClear, enterGameScreen, leaveGameScreen } from "./screen.mjs";
 import { createKeyReader, getStdinHub } from "./rawKeys.mjs";
 import { isQuitKeyName, isQuitLine, isTerminalClosedKey, readKey, readLine, QUIT_HINT } from "./promptInput.mjs";
@@ -107,20 +108,13 @@ function policeTileSet(session) {
 
 function colorizeMapLineAt(line, cameraX, cameraY, policeSet, recommendedSet, viewRow) {
   if (!policeSet?.size && !recommendedSet?.size) return colorizeMapLine(line);
-  let out = "";
-  for (let i = 0; i < line.length; i += 1) {
-    const mx = cameraX + i;
+  return formatMapLineTerminal(line, (glyph, col) => {
+    const mx = cameraX + col;
     const my = cameraY;
-    const ch = line[i];
-    if (policeSet?.has(`${mx},${my}`)) {
-      out += colorizePolice(ch);
-    } else if (recommendedSet?.has(`${viewRow},${i}`)) {
-      out += colorizeRecommended(ch);
-    } else {
-      out += colorize(ch);
-    }
-  }
-  return out;
+    if (policeSet?.has(`${mx},${my}`)) return colorizePolice(glyph);
+    if (recommendedSet?.has(`${viewRow},${col}`)) return colorizeRecommended(glyph);
+    return colorize(glyph);
+  });
 }
 
 function buildMapFrame(session) {
@@ -740,7 +734,7 @@ async function runStudyListLoop(session) {
 
 async function runCastListLoop(session) {
   while (castListOpen && session.screen === "map" && !session.shouldQuit) {
-    const body = formatCastRosterText(collectAllCastFromSession(session))
+    const body = formatCastRosterText(collectAllCastFromSession(session), { session })
       .split("\n")
       .map((line) => (line ? `  ${line}` : ""));
     drawLinesClear([
@@ -761,6 +755,27 @@ async function runCastListLoop(session) {
 async function runGameOverLoop(session) {
   while (session.screen === "gameover" && !session.shouldQuit) {
     printGameOver(session);
+    const result = await readKey(styled("\n  ", FG.gray));
+    if (handleQuitInput(session, result)) return;
+    sendMapKey(session, result.type === "key" ? result.key : "enter");
+    persist(session);
+  }
+}
+
+async function runEpilogueLoop(session) {
+  while (session.screen === "epilogue" && !session.shouldQuit) {
+    const view = session.getMapView();
+    drawLinesClear([
+      BANNER,
+      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}`,
+      "",
+      `  ${styled("═══ Päivän loppu ═══", FG.yellow, BOLD)}`,
+      "",
+      `  ${wrap(view.statusLine || session.map.lastStatus)}`,
+      "",
+      `  ${styled("Paina Enter aloittaaksesi uuden päivän...", FG.gray)}`,
+      `  ${styled(QUIT_HINT, FG.gray)}`,
+    ]);
     const result = await readKey(styled("\n  ", FG.gray));
     if (handleQuitInput(session, result)) return;
     sendMapKey(session, result.type === "key" ? result.key : "enter");
@@ -1191,6 +1206,12 @@ export async function runTerminalApp(mapJson) {
 
       if (session.screen === "gameover") {
         await runGameOverLoop(session);
+        clearMapNext = true;
+        continue;
+      }
+
+      if (session.screen === "epilogue") {
+        await runEpilogueLoop(session);
         clearMapNext = true;
         continue;
       }

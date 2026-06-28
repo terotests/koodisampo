@@ -986,8 +986,12 @@ class MapEntity  {
     this.homeY = 0;
     this.scheduleRole = "";
     this.npcState = "";
+    this.mainTask = "working";
+    this.overlayEmotion = "none";
+    this.romanticPreference = "any";
     this.offDuty = false;
     this.actionId = "";
+    this.greetCooldownUntil = 0;
   }
 }
 class EncounterView  {
@@ -998,6 +1002,9 @@ class EncounterView  {
     this.isHostile = false;
     this.hintLine = "";
     this.attackWarning = "";
+    this.isEmotional = false;
+    this.emotionalQuestion = "";
+    this.emotionalAnswers = [];
   }
 }
 class MapFloor  {
@@ -1035,7 +1042,435 @@ class MapView  {
     this.toolsLine = "";
     this.ambientLine = "";
     this.timeLine = "";
+    this.needsLine = "";
   }
+}
+class NpcRelation  {
+  constructor() {
+    this.friendliness = 50;
+    this.respect = 50;
+    this.love = 0;
+    this.anger = 0;
+    this.jealousy = 0;
+    this.fear = 0;
+    this.suspicion = 0;
+    this.followTendency = 50;
+    this.panic = 0;
+    this.stress = 0;
+    this.embarrassment = 0;
+    this.greetCount = 0;
+    this.snubCount = 0;
+  }
+  resetDefaults () {
+    this.friendliness = 50;
+    this.respect = 50;
+    this.love = 0;
+    this.anger = 0;
+    this.jealousy = 0;
+    this.fear = 0;
+    this.suspicion = 0;
+    this.followTendency = 50;
+    this.panic = 0;
+    this.stress = 0;
+    this.embarrassment = 0;
+    this.greetCount = 0;
+    this.snubCount = 0;
+  };
+  clampRelation (value) {
+    if ( value < 0 ) {
+      return 0;
+    }
+    if ( value > 100 ) {
+      return 100;
+    }
+    return value;
+  };
+  clampMood (value) {
+    if ( value < 0 ) {
+      return 0;
+    }
+    if ( value > 100 ) {
+      return 100;
+    }
+    return value;
+  };
+  isPanicHigh () {
+    if ( this.panic >= 50 ) {
+      return true;
+    }
+    return false;
+  };
+  isPanicSevere () {
+    if ( this.panic >= 75 ) {
+      return true;
+    }
+    return false;
+  };
+  isAngryNoticeable () {
+    if ( this.anger >= 50 ) {
+      return true;
+    }
+    return false;
+  };
+  isAngryStrong () {
+    if ( this.anger >= 60 ) {
+      return true;
+    }
+    return false;
+  };
+  isAngrySevere () {
+    if ( this.anger >= 70 ) {
+      return true;
+    }
+    return false;
+  };
+  isLoveStrong () {
+    if ( this.love >= 70 ) {
+      return true;
+    }
+    return false;
+  };
+  isLoveModerate () {
+    if ( this.love >= 60 ) {
+      return true;
+    }
+    return false;
+  };
+  isLoveNoticeable () {
+    if ( this.love >= 50 ) {
+      return true;
+    }
+    return false;
+  };
+  isFriendlinessWarm () {
+    if ( this.friendliness >= 70 ) {
+      return true;
+    }
+    return false;
+  };
+  isFriendlinessCold () {
+    if ( this.friendliness <= 30 ) {
+      return true;
+    }
+    return false;
+  };
+  isRespectHigh () {
+    if ( this.respect >= 70 ) {
+      return true;
+    }
+    return false;
+  };
+  isRespectLow () {
+    if ( this.respect <= 30 ) {
+      return true;
+    }
+    return false;
+  };
+  isJealousyHigh () {
+    if ( this.jealousy >= 60 ) {
+      return true;
+    }
+    return false;
+  };
+  isJealousySevere () {
+    if ( this.jealousy >= 75 ) {
+      return true;
+    }
+    return false;
+  };
+  isFearHigh () {
+    if ( this.fear >= 60 ) {
+      return true;
+    }
+    return false;
+  };
+  firedAngerThreshold () {
+    return 75;
+  };
+  statValue (stat) {
+    if ( stat == "friendliness" ) {
+      return this.friendliness;
+    }
+    if ( stat == "respect" ) {
+      return this.respect;
+    }
+    if ( stat == "love" ) {
+      return this.love;
+    }
+    if ( stat == "anger" ) {
+      return this.anger;
+    }
+    if ( stat == "jealousy" ) {
+      return this.jealousy;
+    }
+    if ( stat == "fear" ) {
+      return this.fear;
+    }
+    if ( stat == "suspicion" ) {
+      return this.suspicion;
+    }
+    if ( stat == "followTendency" ) {
+      return this.followTendency;
+    }
+    if ( stat == "panic" ) {
+      return this.panic;
+    }
+    if ( stat == "stress" ) {
+      return this.stress;
+    }
+    if ( stat == "embarrassment" ) {
+      return this.embarrassment;
+    }
+    return 50;
+  };
+  setStat (stat, value) {
+    if ( stat == "friendliness" ) {
+      this.friendliness = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "respect" ) {
+      this.respect = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "love" ) {
+      this.love = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "anger" ) {
+      this.anger = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "jealousy" ) {
+      this.jealousy = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "fear" ) {
+      this.fear = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "suspicion" ) {
+      this.suspicion = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "followTendency" ) {
+      this.followTendency = this.clampRelation(value);
+      return;
+    }
+    if ( stat == "panic" ) {
+      this.panic = this.clampMood(value);
+      return;
+    }
+    if ( stat == "stress" ) {
+      this.stress = this.clampMood(value);
+      return;
+    }
+    if ( stat == "embarrassment" ) {
+      this.embarrassment = this.clampMood(value);
+    }
+  };
+  applyStatDelta (stat, delta) {
+    const cur = this.statValue(stat);
+    this.setStat(stat, cur + delta);
+  };
+  matchesAngerBand (minAnger, maxAnger) {
+    if ( this.anger < minAnger ) {
+      return false;
+    }
+    if ( this.anger > maxAnger ) {
+      return false;
+    }
+    return true;
+  };
+  matchesLoveBand (minLove, maxLove) {
+    if ( this.love < minLove ) {
+      return false;
+    }
+    if ( this.love > maxLove ) {
+      return false;
+    }
+    return true;
+  };
+}
+class WorldEvent  {
+  constructor() {
+    this.type = "";
+    this.floor = 0;
+    this.x = 0;
+    this.y = 0;
+    this.timeMinutes = 0;
+    this.noise = 0;
+    this.visibility = 0;
+    this.severity = 0;
+    this.suspiciousness = 0;
+    this.playerSource = true;
+  }
+  applyWallBrokenHeavy () {
+    this.type = "WallBroken";
+    this.noise = 18;
+    this.visibility = 12;
+    this.severity = 16;
+    this.suspiciousness = 20;
+  };
+  applyWallBrokenMedium () {
+    this.type = "WallBroken";
+    this.noise = 12;
+    this.visibility = 8;
+    this.severity = 10;
+    this.suspiciousness = 12;
+  };
+  applyWallBrokenLight () {
+    this.type = "WallBroken";
+    this.noise = 6;
+    this.visibility = 4;
+    this.severity = 4;
+    this.suspiciousness = 6;
+  };
+  applyDoorBroken () {
+    this.type = "DoorBroken";
+    this.noise = 14;
+    this.visibility = 10;
+    this.severity = 12;
+    this.suspiciousness = 16;
+  };
+  applyComputerBroken () {
+    this.type = "ComputerBroken";
+    this.noise = 4;
+    this.visibility = 16;
+    this.severity = 14;
+    this.suspiciousness = 18;
+  };
+  applyToiletBroken () {
+    this.type = "ToiletBroken";
+    this.noise = 10;
+    this.visibility = 8;
+    this.severity = 8;
+    this.suspiciousness = 10;
+  };
+  applyPlayerFarted () {
+    this.type = "PlayerFarted";
+    this.noise = 8;
+    this.visibility = 6;
+    this.severity = 4;
+    this.suspiciousness = 6;
+  };
+  applyWorkplacePanic () {
+    this.type = "WorkplacePanic";
+    this.noise = 12;
+    this.visibility = 14;
+    this.severity = 18;
+    this.suspiciousness = 10;
+    this.playerSource = false;
+  };
+  applyAngryGroupComplaint () {
+    this.type = "AngryGroupComplaint";
+    this.noise = 10;
+    this.visibility = 8;
+    this.severity = 14;
+    this.suspiciousness = 12;
+    this.playerSource = false;
+  };
+  applyGossipStarted () {
+    this.type = "GossipStarted";
+    this.noise = 4;
+    this.visibility = 10;
+    this.severity = 6;
+    this.suspiciousness = 8;
+    this.playerSource = false;
+  };
+  applyPraisePlayer () {
+    this.type = "PraisePlayer";
+    this.noise = 3;
+    this.visibility = 8;
+    this.severity = 2;
+    this.suspiciousness = 0;
+    this.playerSource = false;
+  };
+}
+class WorldEventLog  {
+  constructor() {
+    this.events = [];
+    let empty_3 = [];
+    this.events = empty_3;
+  }
+  reset () {
+    let empty = [];
+    this.events = empty;
+  };
+  count () {
+    return this.events.length;
+  };
+  at (index) {
+    if ( index < 0 ) {
+      const blank = new WorldEvent();
+      return blank;
+    }
+    if ( index >= (this.events.length) ) {
+      const blank2 = new WorldEvent();
+      return blank2;
+    }
+    return this.events[index];
+  };
+  push (evt) {
+    this.events.push(evt);
+    this.trimTo(32);
+  };
+  trimTo (maxSize) {
+    const n = this.events.length;
+    if ( n <= maxSize ) {
+      return;
+    }
+    let trimmed = [];
+    const start = n - maxSize;
+    let i = start;
+    while (i < n) {
+      trimmed.push(this.events[i]);
+      i = i + 1;
+    };
+    this.events = trimmed;
+  };
+  countOnFloor (floor) {
+    let c = 0;
+    let i = 0;
+    const n = this.events.length;
+    while (i < n) {
+      const e = this.events[i];
+      if ( e.floor == floor ) {
+        c = c + 1;
+      }
+      i = i + 1;
+    };
+    return c;
+  };
+  lastOnFloor (floor) {
+    const blank = new WorldEvent();
+    let i = this.events.length;
+    while (i > 0) {
+      i = i - 1;
+      const e = this.events[i];
+      if ( e.floor == floor ) {
+        return e;
+      }
+    };
+    return blank;
+  };
+  countOnFloorSince (floor, sinceMinutes, nowMinutes) {
+    let c = 0;
+    let i = 0;
+    const n = this.events.length;
+    while (i < n) {
+      const e = this.events[i];
+      if ( e.floor == floor ) {
+        const age = nowMinutes - e.timeMinutes;
+        if ( age >= 0 ) {
+          if ( age <= sinceMinutes ) {
+            c = c + 1;
+          }
+        }
+      }
+      i = i + 1;
+    };
+    return c;
+  };
 }
 class WorldMap  {
   constructor() {
@@ -1068,7 +1503,10 @@ class WorldMap  {
     this.leaveTargetY = 0;
     this.navStepDx = 0;
     this.navStepDy = 0;
+    this.lastBrokenTile = "";
+    this.playerWasWitnessed = false;
     this.json = new StoryJson();
+    this.eventLog = new WorldEventLog();
     let emptyFloors = [];
     this.floors = emptyFloors;
     let emptyOwners = [];
@@ -1493,6 +1931,10 @@ class WorldMap  {
       if ( offFlag != 0 ) {
         ent.offDuty = true;
       }
+      ent.romanticPreference = this.json.objFieldStr(entObj, "romanticPreference");
+      if ( (ent.romanticPreference.length) < 1 ) {
+        ent.romanticPreference = "any";
+      }
       this.normalizeEntity(ent);
       loadedEnt.push(ent);
       ei = ei + 1;
@@ -1700,10 +2142,97 @@ class WorldMap  {
     this.playerY = ny;
     if ( this.isOnElevator() ) {
       this.lastStatus = "Hissi — 1-9/0 vaihtaa kerrosta.";
-    } else {
-      this.lastStatus = "";
     }
     return true;
+  };
+  emojiStepMessage (x, y) {
+    const e = this.entityAt(x, y);
+    if ( (e.id.length) < 1 ) {
+      return "";
+    }
+    return this.emojiFeelingForEntity(e);
+  };
+  emojiFeelingForEntity (ent) {
+    if ( ent.kind == "security" ) {
+      return "";
+    }
+    if ( ent.kind == "hostile" ) {
+      return "";
+    }
+    if ( ent.kind == "police" ) {
+      return "";
+    }
+    if ( (ent.itemTool.length) > 0 ) {
+      return "";
+    }
+    const ch = ent.char;
+    if ( ch == "🚽" ) {
+      return "Tunnet olosi helpottuneeksi.";
+    }
+    if ( ch == "☕" ) {
+      return "Kahvin tuoksu piristää hetkeksi.";
+    }
+    if ( ch == "💻" ) {
+      return "Ruutu houkuttelee sähköpostiin.";
+    }
+    if ( ch == "🖥️" ) {
+      return "Työpöytä odottaa — yksi välilehti liikaa.";
+    }
+    if ( ch == "🗄️" ) {
+      return "Palvelinhallista humisee rauhoittavasti.";
+    }
+    if ( ch == "📚" ) {
+      return "Muistat jotain tärkeää oppikirjasta.";
+    }
+    if ( ch == "🖨️" ) {
+      return "Tulostin yskäisee vanhaa paperia.";
+    }
+    if ( ch == "📱" ) {
+      return "Puhelin värisee taskussasi muistutuksena.";
+    }
+    if ( ch == "📶" ) {
+      return "Yhteys tuntuu hetken luotettavalta.";
+    }
+    if ( ch == "👥" ) {
+      return "Tunnet hiljaisen paniikin ennen kokousta.";
+    }
+    if ( ch == "🧑‍💻" ) {
+      return "Koodari-energia väreilee ilmassa.";
+    }
+    if ( ch == "💼" ) {
+      return "Salkku muistuttaa vastuista.";
+    }
+    if ( ch == "🏢" ) {
+      return "Toimiston betoni tuntuu tutulta.";
+    }
+    if ( ch == "🛗" ) {
+      return "Hissi humisee odottaen seuraavaa kerrosta.";
+    }
+    if ( ch == "🚪" ) {
+      return "Kynnyksen takana voisi olla jotain uutta.";
+    }
+    if ( ch == "🔒" ) {
+      return "Lukko tuntuu turvalliselta — tai turhauttavalta.";
+    }
+    if ( ch == "📊" ) {
+      return "Raportti lupaa selityksen kaikkeen.";
+    }
+    if ( ch == "📝" ) {
+      return "Muistilapun reunat kertovat kiireestä.";
+    }
+    if ( ch == "🗂️" ) {
+      return "Arkistokaapit tuoksuvat vanhalle paperille.";
+    }
+    if ( ch == "🍱" ) {
+      return "Vatsa asettuu hetkeksi.";
+    }
+    if ( ch == "📠" ) {
+      return "Faksi muistuttaa menneitä aikoja.";
+    }
+    if ( ch == "♻️" ) {
+      return "Kierrätys tuntuu pieneltä hyvältä teolta.";
+    }
+    return "";
   };
   removeEntityAt (x, y) {
     const floor = this.activeFloor();
@@ -1723,6 +2252,46 @@ class WorldMap  {
       i = i + 1;
     };
     floor.entities = kept;
+  };
+  isConsumableItemEntity (e) {
+    if ( (e.id.length) < 1 ) {
+      return false;
+    }
+    if ( e.kind != "item" ) {
+      return false;
+    }
+    if ( (e.itemTool.length) > 0 ) {
+      return false;
+    }
+    const id = e.id;
+    if ( (id.length) >= 18 ) {
+      const coffeeTag = id.substring(7, 18 );
+      if ( coffeeTag == "emoji-coffee" ) {
+        return true;
+      }
+    }
+    if ( (id.length) >= 17 ) {
+      const lunchTag = id.substring(7, 17 );
+      if ( lunchTag == "emoji-lunch" ) {
+        return true;
+      }
+    }
+    const ch = e.char;
+    if ( ch == "☕" ) {
+      return true;
+    }
+    if ( ch == "🍱" ) {
+      return true;
+    }
+    return false;
+  };
+  consumeItemAt (x, y) {
+    const e = this.entityAt(x, y);
+    if ( this.isConsumableItemEntity(e) == false ) {
+      return false;
+    }
+    this.removeEntityAt(x, y);
+    return true;
   };
   pickupItemAt (x, y) {
     const e = this.entityAt(x, y);
@@ -1826,7 +2395,36 @@ class WorldMap  {
       this.setTileAt(x, y, ".");
     }
   };
-  tryBreakAt (x, y, tool) {
+  recordBreakEvent (x, y, tile, severity, timeMinutes) {
+    const evt = new WorldEvent();
+    evt.floor = this.currentFloor;
+    evt.x = x;
+    evt.y = y;
+    evt.timeMinutes = timeMinutes;
+    evt.playerSource = true;
+    if ( tile == "L" ) {
+      evt.applyDoorBroken();
+    } else {
+      if ( tile == "+" ) {
+        evt.applyDoorBroken();
+      } else {
+        if ( severity == "heavy" ) {
+          evt.applyWallBrokenHeavy();
+        } else {
+          if ( severity == "medium" ) {
+            evt.applyWallBrokenMedium();
+          } else {
+            evt.applyWallBrokenLight();
+          }
+        }
+      }
+    }
+    (this.eventLog).push(evt);
+  };
+  pushWorldEvent (evt) {
+    (this.eventLog).push(evt);
+  };
+  tryBreakAt (x, y, tool, timeMinutes) {
     if ( (tool.length) < 1 ) {
       this.lastStatus = "Ei valittua työkalua (t vaihtaa).";
       return "";
@@ -1836,19 +2434,27 @@ class WorldMap  {
       this.lastStatus = "Työkalu ei tepsi tähän esteeseen.";
       return "";
     }
+    this.lastBrokenTile = tile;
     this.setTileAt(x, y, ".");
+    let severity = "";
     if ( tool == "sledgehammer" ) {
       this.lastStatus = "Moukarivasara murskaa seinän — melu kantautuu!";
-      return "heavy";
+      severity = "heavy";
+    } else {
+      if ( tool == "crowbar" ) {
+        this.lastStatus = "Sorkkarauta taivuttaa esteen.";
+        severity = "medium";
+      } else {
+        this.lastStatus = "Lapio avaa raon hiljaa.";
+        severity = "light";
+      }
     }
-    if ( tool == "crowbar" ) {
-      this.lastStatus = "Sorkkarauta taivuttaa esteen.";
-      return "medium";
+    if ( timeMinutes >= 0 ) {
+      this.recordBreakEvent(x, y, tile, severity, timeMinutes);
     }
-    this.lastStatus = "Lapio avaa raon hiljaa.";
-    return "light";
+    return severity;
   };
-  tryBreakFacing (tool) {
+  tryBreakFacing (tool, timeMinutes) {
     const fx = this.facingX;
     let fy = this.facingY;
     if ( fx == 0 ) {
@@ -1858,9 +2464,44 @@ class WorldMap  {
     }
     const tx = this.playerX + fx;
     const ty = this.playerY + fy;
-    return this.tryBreakAt(tx, ty, tool);
+    return this.tryBreakAt(tx, ty, tool, timeMinutes);
   };
-  hasNearbyWitness (radius) {
+  hasRecentLoudEventNear (radius, nowMinutes, maxAge, minNoise) {
+    let i = 0;
+    const n = (this.eventLog).count();
+    while (i < n) {
+      const evt = (this.eventLog).at(i);
+      if ( evt.floor == this.currentFloor ) {
+        if ( evt.noise >= minNoise ) {
+          const age = nowMinutes - evt.timeMinutes;
+          if ( age >= 0 ) {
+            if ( age <= maxAge ) {
+              let dx = evt.x - this.playerX;
+              if ( dx < 0 ) {
+                dx = 0 - dx;
+              }
+              let dy = evt.y - this.playerY;
+              if ( dy < 0 ) {
+                dy = 0 - dy;
+              }
+              if ( (dx + dy) <= radius ) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  hasNearbyWitness (radius, nowMinutes) {
+    if ( this.playerWasWitnessed ) {
+      return true;
+    }
+    if ( this.hasRecentLoudEventNear(radius, nowMinutes, 3, 12) ) {
+      return true;
+    }
     const floor = this.activeFloor();
     const ents = floor.entities;
     let i = 0;
@@ -1954,6 +2595,71 @@ class WorldMap  {
     if ( e.persistence >= 90 ) {
       return true;
     }
+    return false;
+  };
+  hasLineOfSight (x0, y0, x1, y1) {
+    if ( x0 == x1 ) {
+      if ( y0 == y1 ) {
+        return true;
+      }
+    }
+    let x = x0;
+    let y = y0;
+    const dx = x1 - x0;
+    let adx = dx;
+    if ( adx < 0 ) {
+      adx = 0 - adx;
+    }
+    const dy = y1 - y0;
+    let ady = dy;
+    if ( ady < 0 ) {
+      ady = 0 - ady;
+    }
+    let sx = 1;
+    if ( x0 > x1 ) {
+      sx = -1;
+    }
+    let sy = 1;
+    if ( y0 > y1 ) {
+      sy = -1;
+    }
+    let err = adx - ady;
+    const done = false;
+    while (done == false) {
+      let atStart = false;
+      if ( x == x0 ) {
+        if ( y == y0 ) {
+          atStart = true;
+        }
+      }
+      let atEnd = false;
+      if ( x == x1 ) {
+        if ( y == y1 ) {
+          atEnd = true;
+        }
+      }
+      if ( atStart == false ) {
+        if ( atEnd ) {
+          return true;
+        }
+        const ch = this.tileAt(x, y);
+        if ( this.isBlockedTile(ch) ) {
+          return false;
+        }
+      }
+      if ( atEnd ) {
+        return true;
+      }
+      const e2 = 2 * err;
+      if ( e2 > (0 - ady) ) {
+        err = err - ady;
+        x = x + sx;
+      }
+      if ( e2 < adx ) {
+        err = err + adx;
+        y = y + sy;
+      }
+    };
     return false;
   };
   isActiveAgent (e) {
@@ -2601,7 +3307,6 @@ class WorldMap  {
     this.recomputeSize();
   };
   tickAgents () {
-    this.overheardMsg = "";
     const empty = new MapEntity();
     const floor = this.activeFloor();
     const ents = floor.entities;
@@ -2732,6 +3437,9 @@ class WorldMap  {
       return ent.char;
     }
     if ( ent.kind == "security" ) {
+      if ( ent.char != "!" ) {
+        return ent.char;
+      }
       return "u";
     }
     if ( ent.kind == "police" ) {
@@ -2777,6 +3485,207 @@ class WorldMap  {
       return this.roleDisplayChar(e);
     }
     return this.tileAt(x, y);
+  };
+  findEntityById (entityId) {
+    const blank = new MapEntity();
+    if ( (entityId.length) < 1 ) {
+      return blank;
+    }
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( e.id == entityId ) {
+          return e;
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+    return blank;
+  };
+  tickNpcMainTasks (gameMinutes) {
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( (e.scheduleRole.length) > 0 ) {
+          if ( e.npcState == "lunch" ) {
+            e.mainTask = "eating";
+          } else {
+            if ( e.npcState == "desk_lunch" ) {
+              e.mainTask = "eating";
+            } else {
+              if ( e.npcState == "lunch_out" ) {
+                e.mainTask = "eating";
+              } else {
+                if ( gameMinutes >= 660 ) {
+                  if ( gameMinutes < 780 ) {
+                    if ( e.scheduleRole == "desk_lunch" ) {
+                      e.mainTask = "eating";
+                    }
+                  }
+                }
+                const roll = Math.floor(Math.random()*(99 - 0 + 1) + 0);
+                if ( roll < 3 ) {
+                  e.mainTask = "toilet";
+                } else {
+                  if ( roll < 5 ) {
+                    e.mainTask = "searching_item";
+                  } else {
+                    if ( roll > 96 ) {
+                      e.mainTask = "coffee";
+                    } else {
+                      if ( e.mainTask != "eating" ) {
+                        if ( e.mainTask != "toilet" ) {
+                          if ( e.mainTask != "coffee" ) {
+                            if ( e.mainTask != "searching_item" ) {
+                              e.mainTask = "working";
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+  };
+  emitGossipNearPlayer (speaker, line) {
+    const dist = this.manhattanTo(speaker.x, speaker.y, this.playerX, this.playerY);
+    if ( dist > 8 ) {
+      return;
+    }
+    this.emitAmbient(speaker, line);
+  };
+  countMainTaskOnFloor (floorIndex, task) {
+    const saved = this.currentFloor;
+    this.currentFloor = floorIndex;
+    this.recomputeSize();
+    const floor = this.activeFloor();
+    const ents = floor.entities;
+    let count = 0;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( e.mainTask == task ) {
+        count = count + 1;
+      }
+      i = i + 1;
+    };
+    this.currentFloor = saved;
+    this.recomputeSize();
+    return count;
+  };
+  countMainTask (task) {
+    let total = 0;
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      total = total + this.countMainTaskOnFloor(fi, task);
+      fi = fi + 1;
+    };
+    return total;
+  };
+  applyPanicFleeing (npcIds, relations) {
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( (e.id.length) < 1 ) {
+          ei = ei + 1;
+          continue;
+        }
+        let idx = -1;
+        let ri = 0;
+        const rn = npcIds.length;
+        while (ri < rn) {
+          if ( (npcIds[ri]) == e.id ) {
+            idx = ri;
+            break;
+          }
+          ri = ri + 1;
+        };
+        if ( idx >= 0 ) {
+          const rel = relations[idx];
+          if ( rel.isPanicSevere() ) {
+            e.mainTask = "fleeing";
+          }
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+  };
+  syncNpcOverlayEmotions (npcIds, relations) {
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( (e.id.length) < 1 ) {
+          ei = ei + 1;
+          continue;
+        }
+        let idx = -1;
+        let ri = 0;
+        const rn = npcIds.length;
+        while (ri < rn) {
+          if ( (npcIds[ri]) == e.id ) {
+            idx = ri;
+            break;
+          }
+          ri = ri + 1;
+        };
+        e.overlayEmotion = "none";
+        if ( idx >= 0 ) {
+          const rel = relations[idx];
+          if ( rel.isPanicHigh() ) {
+            e.overlayEmotion = "panicked";
+          } else {
+            if ( rel.isAngryStrong() ) {
+              e.overlayEmotion = "angry";
+            } else {
+              if ( rel.isLoveStrong() ) {
+                e.overlayEmotion = "in_love";
+              } else {
+                if ( rel.isJealousyHigh() ) {
+                  e.overlayEmotion = "jealous";
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
   };
   getView () {
     const view = new MapView();
@@ -3119,15 +4028,842 @@ class ActionView  {
     this.hintLine = "";
   }
 }
+class PlayerNeeds  {
+  constructor() {
+    this.satiety = 18;
+    this.thirst = 18;
+    this.alertness = 16;
+    this.gas = 0;
+    this.satietyAccum = 0;
+    this.thirstAccum = 0;
+    this.alertnessAccum = 0;
+  }
+  resetDefaults () {
+    this.satiety = 18;
+    this.thirst = 18;
+    this.alertness = 16;
+    this.gas = 0;
+    this.satietyAccum = 0;
+    this.thirstAccum = 0;
+    this.alertnessAccum = 0;
+  };
+  clampAll () {
+    if ( this.satiety < 0 ) {
+      this.satiety = 0;
+    }
+    if ( this.satiety > 20 ) {
+      this.satiety = 20;
+    }
+    if ( this.thirst < 0 ) {
+      this.thirst = 0;
+    }
+    if ( this.thirst > 20 ) {
+      this.thirst = 20;
+    }
+    if ( this.alertness < 0 ) {
+      this.alertness = 0;
+    }
+    if ( this.alertness > 20 ) {
+      this.alertness = 20;
+    }
+    if ( this.gas < 0 ) {
+      this.gas = 0;
+    }
+    if ( this.gas > 20 ) {
+      this.gas = 20;
+    }
+  };
+  tickMinutes (minutes) {
+    if ( minutes < 1 ) {
+      return;
+    }
+    this.satietyAccum = this.satietyAccum + minutes;
+    while (this.satietyAccum >= 100) {
+      this.satiety = this.satiety - 1;
+      this.satietyAccum = this.satietyAccum - 100;
+    };
+    this.thirstAccum = this.thirstAccum + (minutes * 2);
+    while (this.thirstAccum >= 100) {
+      this.thirst = this.thirst - 1;
+      this.thirstAccum = this.thirstAccum - 100;
+    };
+    this.alertnessAccum = this.alertnessAccum + (minutes * 15);
+    while (this.alertnessAccum >= 1000) {
+      this.alertness = this.alertness - 1;
+      this.alertnessAccum = this.alertnessAccum - 1000;
+    };
+    this.clampAll();
+  };
+  applyEmojiChar (ch) {
+    if ( ch == "☕" ) {
+      this.alertness = this.alertness + 4;
+      this.gas = this.gas + 1;
+    }
+    if ( ch == "🍱" ) {
+      this.satiety = this.satiety + 5;
+    }
+    if ( ch == "🚽" ) {
+      this.gas = this.gas - 4;
+    }
+    this.clampAll();
+  };
+  applyStatDelta (stat, delta) {
+    if ( stat == "satiety" ) {
+      this.satiety = this.satiety + delta;
+    }
+    if ( stat == "thirst" ) {
+      this.thirst = this.thirst + delta;
+    }
+    if ( stat == "alertness" ) {
+      this.alertness = this.alertness + delta;
+    }
+    if ( stat == "gas" ) {
+      this.gas = this.gas + delta;
+    }
+    this.clampAll();
+  };
+  formatLine () {
+    return (((((("Nälkä:" + ((this.satiety.toString()))) + " Jano:") + ((this.thirst.toString()))) + " Valppaus:") + ((this.alertness.toString()))) + " Kaasu:") + ((this.gas.toString()));
+  };
+}
+class PlayerCoreStats  {
+  constructor() {
+    this.gender = "?";
+    this.intelligence = 10;
+    this.appearance = 10;
+    this.luck = 10;
+    this.intuition = 10;
+    this.humour = 10;
+  }
+}
+class NpcRelationStore  {
+  constructor() {
+    this.npcIds = [];
+    this.relations = [];
+  }
+  reset () {
+    let emptyIds = [];
+    let emptyRels = [];
+    this.npcIds = emptyIds;
+    this.relations = emptyRels;
+  };
+  findIndex (npcId) {
+    let i = 0;
+    const n = this.npcIds.length;
+    while (i < n) {
+      if ( (this.npcIds[i]) == npcId ) {
+        return i;
+      }
+      i = i + 1;
+    };
+    return -1;
+  };
+  getOrCreate (npcId) {
+    const idx = this.findIndex(npcId);
+    if ( idx >= 0 ) {
+      return this.relations[idx];
+    }
+    const rel = new NpcRelation();
+    rel.resetDefaults();
+    this.npcIds.push(npcId);
+    this.relations.push(rel);
+    return rel;
+  };
+  countWithAngerAtLeast (threshold) {
+    let count = 0;
+    let i = 0;
+    const n = this.relations.length;
+    while (i < n) {
+      const rel = this.relations[i];
+      if ( rel.anger >= threshold ) {
+        count = count + 1;
+      }
+      i = i + 1;
+    };
+    return count;
+  };
+  countWithPanicAtLeast (threshold) {
+    let count = 0;
+    let i = 0;
+    const n = this.relations.length;
+    while (i < n) {
+      const rel = this.relations[i];
+      if ( rel.panic >= threshold ) {
+        count = count + 1;
+      }
+      i = i + 1;
+    };
+    return count;
+  };
+  countWithJealousyAtLeast (threshold) {
+    let count = 0;
+    let i = 0;
+    const n = this.relations.length;
+    while (i < n) {
+      const rel = this.relations[i];
+      if ( rel.jealousy >= threshold ) {
+        count = count + 1;
+      }
+      i = i + 1;
+    };
+    return count;
+  };
+  countWithLoveAtLeast (threshold) {
+    let count = 0;
+    let i = 0;
+    const n = this.relations.length;
+    while (i < n) {
+      const rel = this.relations[i];
+      if ( rel.love >= threshold ) {
+        count = count + 1;
+      }
+      i = i + 1;
+    };
+    return count;
+  };
+}
+class EmotionMath  {
+  constructor() {
+  }
+  normalizedStat (value) {
+    const scaled = Math.floor( (value / 5));
+    if ( scaled < 1 ) {
+      return 1;
+    }
+    if ( scaled > 20 ) {
+      return 20;
+    }
+    return scaled;
+  };
+  chanceBps (value) {
+    value = this.normalizedStat(value);
+    if ( value <= 1 ) {
+      return 1;
+    }
+    if ( value >= 20 ) {
+      return 2000;
+    }
+    if ( value == 2 ) {
+      return 2;
+    }
+    if ( value == 3 ) {
+      return 5;
+    }
+    if ( value == 4 ) {
+      return 10;
+    }
+    if ( value == 5 ) {
+      return 20;
+    }
+    if ( value == 6 ) {
+      return 40;
+    }
+    if ( value == 7 ) {
+      return 75;
+    }
+    if ( value == 8 ) {
+      return 125;
+    }
+    if ( value == 9 ) {
+      return 175;
+    }
+    if ( value == 10 ) {
+      return 200;
+    }
+    if ( value == 11 ) {
+      return 280;
+    }
+    if ( value == 12 ) {
+      return 390;
+    }
+    if ( value == 13 ) {
+      return 540;
+    }
+    if ( value == 14 ) {
+      return 750;
+    }
+    if ( value == 15 ) {
+      return 1050;
+    }
+    if ( value == 16 ) {
+      return 1300;
+    }
+    if ( value == 17 ) {
+      return 1550;
+    }
+    if ( value == 18 ) {
+      return 1750;
+    }
+    if ( value == 19 ) {
+      return 1900;
+    }
+    return 2000;
+  };
+  rollTriggers (value, roll) {
+    const bps = this.chanceBps(value);
+    if ( roll < bps ) {
+      return true;
+    }
+    return false;
+  };
+}
+class EmotionalAnswer  {
+  constructor() {
+    this.text = "";
+    this.effectTargets = [];
+    this.effectStats = [];
+    this.effectDeltas = [];
+  }
+}
+class EmotionalDialogue  {
+  constructor() {
+    this.id = "";
+    this.text = "";
+    this.category = "neutral";
+    this.minAnger = 0;
+    this.maxAnger = 20;
+    this.minLove = 0;
+    this.maxLove = 20;
+    this.answers = [];
+  }
+}
+class DialogueCatalog  {
+  constructor() {
+    this.dialogues = [];
+    this.json = new StoryJson();
+    let empty_6 = [];
+    this.dialogues = empty_6;
+  }
+  reset () {
+    let empty = [];
+    this.dialogues = empty;
+  };
+  addEffect (answer, target, stat, delta) {
+    answer.effectTargets.push(target);
+    answer.effectStats.push(stat);
+    answer.effectDeltas.push(delta);
+  };
+  loadDefaults () {
+    this.reset();
+    const neutral = new EmotionalDialogue();
+    neutral.id = "neutral_work_stress";
+    neutral.category = "neutral";
+    neutral.text = "Miten sinä pysyt noin rauhallisena täällä?";
+    neutral.minAnger = 0;
+    neutral.maxAnger = 45;
+    const na1 = new EmotionalAnswer();
+    na1.text = "En pysykään, esitän vain.";
+    this.addEffect(na1, "npc", "friendliness", 5);
+    this.addEffect(na1, "npc", "respect", 5);
+    const na2 = new EmotionalAnswer();
+    na2.text = "Hyvä prosessi voittaa paniikin.";
+    this.addEffect(na2, "npc", "respect", 10);
+    const na3 = new EmotionalAnswer();
+    na3.text = "En minä ehdi miettiä muiden ongelmia.";
+    this.addEffect(na3, "npc", "anger", 10);
+    this.addEffect(na3, "npc", "friendliness", -10);
+    neutral.answers.push(na1);
+    neutral.answers.push(na2);
+    neutral.answers.push(na3);
+    this.dialogues.push(neutral);
+    const angry = new EmotionalDialogue();
+    angry.id = "angry_confrontation_noise";
+    angry.category = "angry";
+    angry.text = "Kuuluiko tuo meteli sinusta jotenkin normaalilta?";
+    angry.minAnger = 50;
+    angry.maxAnger = 100;
+    const aa1 = new EmotionalAnswer();
+    aa1.text = "En kuullut mitään.";
+    this.addEffect(aa1, "npc", "suspicion", 15);
+    this.addEffect(aa1, "npc", "anger", 10);
+    const aa2 = new EmotionalAnswer();
+    aa2.text = "Selvitän asian heti.";
+    this.addEffect(aa2, "npc", "respect", 5);
+    this.addEffect(aa2, "npc", "anger", -5);
+    const aa3 = new EmotionalAnswer();
+    aa3.text = "Seinä aloitti.";
+    this.addEffect(aa3, "npc", "anger", 20);
+    angry.answers.push(aa1);
+    angry.answers.push(aa2);
+    angry.answers.push(aa3);
+    this.dialogues.push(angry);
+    const romantic = new EmotionalDialogue();
+    romantic.id = "romantic_compliment";
+    romantic.category = "romantic";
+    romantic.text = "Sinä näytät tänään… poikkeuksellisen keskittyneeltä.";
+    romantic.minAnger = 0;
+    romantic.maxAnger = 60;
+    romantic.minLove = 50;
+    romantic.maxLove = 100;
+    const ro1 = new EmotionalAnswer();
+    ro1.text = "Kiitos, yritän parhaani.";
+    this.addEffect(ro1, "npc", "love", 10);
+    this.addEffect(ro1, "npc", "respect", 5);
+    const ro2 = new EmotionalAnswer();
+    ro2.text = "Flirttailetko minulle?";
+    this.addEffect(ro2, "npc", "love", 15);
+    this.addEffect(ro2, "npc", "jealousy", 5);
+    const ro3 = new EmotionalAnswer();
+    ro3.text = "Älä häiritse työntekoa.";
+    this.addEffect(ro3, "npc", "love", -10);
+    this.addEffect(ro3, "npc", "anger", 15);
+    romantic.answers.push(ro1);
+    romantic.answers.push(ro2);
+    romantic.answers.push(ro3);
+    this.dialogues.push(romantic);
+    const help = new EmotionalDialogue();
+    help.id = "help_usb_search";
+    help.category = "help";
+    help.text = "Oletko nähnyt minun USB-tikkuani? Se katosi jonnekin.";
+    help.minAnger = 0;
+    help.maxAnger = 100;
+    const h1 = new EmotionalAnswer();
+    h1.text = "Minulla on tikku — tässä.";
+    this.addEffect(h1, "npc", "respect", 15);
+    this.addEffect(h1, "player", "karma", 5);
+    const h2 = new EmotionalAnswer();
+    h2.text = "En ole nähnyt.";
+    this.addEffect(h2, "npc", "friendliness", -5);
+    const h3 = new EmotionalAnswer();
+    h3.text = "Kysy IT:ltä.";
+    this.addEffect(h3, "npc", "respect", 5);
+    help.answers.push(h1);
+    help.answers.push(h2);
+    help.answers.push(h3);
+    this.dialogues.push(help);
+  };
+  parseAnswer (dlg, answerObj) {
+    const ans = new EmotionalAnswer();
+    ans.text = this.json.objFieldStr(answerObj, "text");
+    const effectsOpt = (answerObj["effects"] instanceof Array ) ? answerObj ["effects"] : undefined ;
+    if ( typeof(effectsOpt) === "undefined" ) {
+      dlg.answers.push(ans);
+      return;
+    }
+    const effects = effectsOpt;
+    let ei = 0;
+    const en = effects.length;
+    while (ei < en) {
+      const eff = this.json.arrayObjectAt(effects, ei);
+      const target = this.json.objFieldStr(eff, "target");
+      const stat = this.json.objFieldStr(eff, "stat");
+      const delta = this.json.objFieldInt(eff, "delta");
+      if ( (stat.length) > 0 ) {
+        this.addEffect(ans, target, stat, delta);
+      }
+      ei = ei + 1;
+    };
+    dlg.answers.push(ans);
+  };
+  loadFromText (raw) {
+    this.reset();
+    try {
+      const rootOpt = JSON.parse(raw);
+      if ( typeof(rootOpt) === "undefined" ) {
+        this.loadDefaults();
+        return false;
+      }
+      const root = rootOpt;
+      const arrOpt = (root["dialogues"] instanceof Array ) ? root ["dialogues"] : undefined ;
+      if ( typeof(arrOpt) === "undefined" ) {
+        this.loadDefaults();
+        return false;
+      }
+      const rootArr = arrOpt;
+      let i = 0;
+      const n = rootArr.length;
+      while (i < n) {
+        const dlgObj = this.json.arrayObjectAt(rootArr, i);
+        const dlg = new EmotionalDialogue();
+        dlg.id = this.json.objFieldStr(dlgObj, "id");
+        dlg.text = this.json.objFieldStr(dlgObj, "text");
+        dlg.category = this.json.objFieldStr(dlgObj, "category");
+        if ( (dlg.category.length) < 1 ) {
+          dlg.category = "neutral";
+        }
+        dlg.minAnger = this.json.objFieldInt(dlgObj, "minAnger");
+        dlg.maxAnger = this.json.objFieldInt(dlgObj, "maxAnger");
+        dlg.minLove = this.json.objFieldInt(dlgObj, "minLove");
+        dlg.maxLove = this.json.objFieldInt(dlgObj, "maxLove");
+        if ( dlg.maxLove < 1 ) {
+          dlg.maxLove = 100;
+        }
+        const answersOpt = (dlgObj["answers"] instanceof Array ) ? dlgObj ["answers"] : undefined ;
+        if ( typeof(answersOpt) === "undefined" ) {
+          this.dialogues.push(dlg);
+          i = i + 1;
+          continue;
+        }
+        const answers = answersOpt;
+        let ai = 0;
+        const an = answers.length;
+        while (ai < an) {
+          this.parseAnswer(dlg, this.json.arrayObjectAt(answers, ai));
+          ai = ai + 1;
+        };
+        this.dialogues.push(dlg);
+        i = i + 1;
+      };
+      if ( (this.dialogues.length) < 1 ) {
+        this.loadDefaults();
+        return false;
+      }
+      return true;
+    } catch(e) {
+      this.loadDefaults();
+    }
+    return false;
+  };
+  pickIndex (relation) {
+    let i = 0;
+    const n = this.dialogues.length;
+    while (i < n) {
+      const dlg = this.dialogues[i];
+      if ( relation.matchesAngerBand(dlg.minAnger, dlg.maxAnger) ) {
+        return i;
+      }
+      i = i + 1;
+    };
+    return -1;
+  };
+  pickCategoryIndex (category, relation) {
+    let i = 0;
+    const n = this.dialogues.length;
+    while (i < n) {
+      const dlg = this.dialogues[i];
+      if ( dlg.category == category ) {
+        if ( relation.matchesAngerBand(dlg.minAnger, dlg.maxAnger) ) {
+          if ( relation.matchesLoveBand(dlg.minLove, dlg.maxLove) ) {
+            return i;
+          }
+        }
+      }
+      i = i + 1;
+    };
+    return -1;
+  };
+  pickForEncounter (relation, ent) {
+    if ( ent.mainTask == "searching_item" ) {
+      const helpIdx = this.pickCategoryIndex("help", relation);
+      if ( helpIdx >= 0 ) {
+        return helpIdx;
+      }
+    }
+    if ( relation.isAngryNoticeable() ) {
+      const angryIdx = this.pickCategoryIndex("angry", relation);
+      if ( angryIdx >= 0 ) {
+        return angryIdx;
+      }
+    }
+    if ( relation.isLoveNoticeable() ) {
+      const romanticIdx = this.pickCategoryIndex("romantic", relation);
+      if ( romanticIdx >= 0 ) {
+        return romanticIdx;
+      }
+    }
+    const neutralIdx = this.pickCategoryIndex("neutral", relation);
+    if ( neutralIdx >= 0 ) {
+      return neutralIdx;
+    }
+    return this.pickIndex(relation);
+  };
+  dialogueAt (index) {
+    if ( index < 0 ) {
+      const blank = new EmotionalDialogue();
+      return blank;
+    }
+    if ( index >= (this.dialogues.length) ) {
+      const blank_1 = new EmotionalDialogue();
+      return blank_1;
+    }
+    return this.dialogues[index];
+  };
+  answerCount (dialogueIndex) {
+    const dlg = this.dialogueAt(dialogueIndex);
+    return dlg.answers.length;
+  };
+  answerText (dialogueIndex, answerIndex) {
+    const dlg = this.dialogueAt(dialogueIndex);
+    if ( answerIndex < 0 ) {
+      return "";
+    }
+    if ( answerIndex >= (dlg.answers.length) ) {
+      return "";
+    }
+    const ans = dlg.answers[answerIndex];
+    return ans.text;
+  };
+  applyAnswerToRelation (dialogueIndex, answerIndex, relation) {
+    const dlg = this.dialogueAt(dialogueIndex);
+    if ( answerIndex < 0 ) {
+      return;
+    }
+    if ( answerIndex >= (dlg.answers.length) ) {
+      return;
+    }
+    const ans = dlg.answers[answerIndex];
+    let i = 0;
+    const n = ans.effectStats.length;
+    while (i < n) {
+      const target = ans.effectTargets[i];
+      const stat = ans.effectStats[i];
+      const delta = ans.effectDeltas[i];
+      if ( target == "npc" ) {
+        relation.applyStatDelta(stat, delta);
+      }
+      i = i + 1;
+    };
+  };
+}
+class ProximityGreeting  {
+  constructor() {
+  }
+  playerLabel (playerName) {
+    if ( (playerName.length) > 0 ) {
+      return playerName;
+    }
+    return "sinä";
+  };
+  wrapSpeech (npcName, speech) {
+    return ((npcName + ": \"") + speech) + "\"";
+  };
+  wrapNarration (npcName, narration) {
+    return (npcName + " ") + narration;
+  };
+  pickPoolIndex (seed, poolSize) {
+    if ( poolSize < 1 ) {
+      return 0;
+    }
+    let idx = seed;
+    while (idx >= poolSize) {
+      idx = idx - poolSize;
+    };
+    while (idx < 0) {
+      idx = idx + poolSize;
+    };
+    return idx;
+  };
+  neutralSpeech (index, who) {
+    if ( index == 0 ) {
+      return ("Hei " + who) + "!";
+    }
+    if ( index == 1 ) {
+      return ("Huomenta " + who) + ".";
+    }
+    if ( index == 2 ) {
+      return ("Päivää " + who) + "!";
+    }
+    if ( index == 3 ) {
+      return ("Moro " + who) + "!";
+    }
+    if ( index == 4 ) {
+      return ("Hei hei " + who) + "!";
+    }
+    if ( index == 5 ) {
+      return who + " — hyvä nähdä.";
+    }
+    if ( index == 6 ) {
+      return ("Ai " + who) + "?";
+    }
+    if ( index == 7 ) {
+      return ("Terve " + who) + "!";
+    }
+    if ( index == 8 ) {
+      return ("No hei " + who) + ".";
+    }
+    return ("Hei " + who) + ", mitä kuuluu?";
+  };
+  friendlySpeech (index, who) {
+    if ( index == 0 ) {
+      return ("Hei " + who) + "! Hyvä nähdä.";
+    }
+    if ( index == 1 ) {
+      return ("Oi " + who) + " — mitä kuuluu?";
+    }
+    if ( index == 2 ) {
+      return who + ", sinulla näyttää olevan hyvä päivä.";
+    }
+    if ( index == 3 ) {
+      return ("Haikaa " + who) + "!";
+    }
+    if ( index == 4 ) {
+      return ("Hei kollega " + who) + "!";
+    }
+    return who + ", olipa kiva törmätä.";
+  };
+  loveSpeech (index, who) {
+    if ( index == 0 ) {
+      return ("Hei " + who) + "…";
+    }
+    if ( index == 1 ) {
+      return who + ", sinä taas täällä.";
+    }
+    if ( index == 2 ) {
+      return ("Voi " + who) + ", sinä loistat tänään.";
+    }
+    return ("Hei " + who) + ", olin juuri ajatellut sinua.";
+  };
+  angryMildSpeech (index, who) {
+    if ( index == 0 ) {
+      return "Hei.";
+    }
+    if ( index == 1 ) {
+      return who + ".";
+    }
+    if ( index == 2 ) {
+      return "Ai, sinä.";
+    }
+    if ( index == 3 ) {
+      return "No terve sitten.";
+    }
+    return ("Hm. " + who) + ".";
+  };
+  angryStrongSpeech (index) {
+    if ( index == 0 ) {
+      return "...";
+    }
+    if ( index == 1 ) {
+      return "Mitä?";
+    }
+    if ( index == 2 ) {
+      return "Älä häiritse.";
+    }
+    return "Häh.";
+  };
+  fearSpeech (index, who) {
+    if ( index == 0 ) {
+      return ("Hei… " + who) + ".";
+    }
+    if ( index == 1 ) {
+      return ("Ai, " + who) + "…";
+    }
+    return ("Öö… hei " + who) + ".";
+  };
+  jealousSpeech (index, who) {
+    if ( index == 0 ) {
+      return ("Hei " + who) + ".";
+    }
+    if ( index == 1 ) {
+      return who + "… taas.";
+    }
+    return ("No hei sitten, " + who) + ".";
+  };
+  coldSpeech (index, who) {
+    if ( index == 0 ) {
+      return "Hei.";
+    }
+    if ( index == 1 ) {
+      return who + ".";
+    }
+    return "Päivää.";
+  };
+  janitorSpeech (index, who, angry) {
+    if ( angry ) {
+      if ( index == 0 ) {
+        return "Hei.";
+      }
+      return "Kiirettä.";
+    }
+    if ( index == 0 ) {
+      return ("Hei " + who) + "! Piha on rauhallinen tänään.";
+    }
+    if ( index == 1 ) {
+      return ("Päivää " + who) + " — aurinko paistaa.";
+    }
+    if ( index == 2 ) {
+      return ("Moro " + who) + ", kaikki kunnossa pihalla.";
+    }
+    return ("Hei " + who) + ", hyvä että tulit ulos.";
+  };
+  buildLine (npc, rel, playerName) {
+    const who = this.playerLabel(playerName);
+    const seed = rel.greetCount;
+    if ( npc.id == "janitor" ) {
+      const jIdx = this.pickPoolIndex(seed, 4);
+      let jAngry = false;
+      if ( rel.isAngryStrong() ) {
+        jAngry = true;
+      }
+      return this.wrapSpeech(npc.name, this.janitorSpeech(jIdx, who, jAngry));
+    }
+    if ( rel.isPanicHigh() ) {
+      if ( npc.overlayEmotion == "panicked" ) {
+        return this.wrapNarration(npc.name, "hengästyy: \"Anteeksi — en ehdi nyt.\"");
+      }
+      return this.wrapNarration(npc.name, "näyttää paniikissa.");
+    }
+    if ( rel.isAngrySevere() ) {
+      if ( npc.overlayEmotion == "angry" ) {
+        return this.wrapNarration(npc.name, "näyttää jotenkin vaikealta.");
+      }
+      const aIdx = this.pickPoolIndex(seed, 4);
+      return this.wrapSpeech(npc.name, this.angryStrongSpeech(aIdx));
+    }
+    if ( rel.isAngryNoticeable() ) {
+      if ( npc.overlayEmotion == "angry" ) {
+        return this.wrapNarration(npc.name, "näyttää jotenkin vaikealta.");
+      }
+      const amIdx = this.pickPoolIndex(seed, 5);
+      return this.wrapSpeech(npc.name, this.angryMildSpeech(amIdx, who));
+    }
+    if ( rel.isLoveStrong() ) {
+      if ( npc.overlayEmotion == "in_love" ) {
+        const lvIdx = this.pickPoolIndex(seed, 4);
+        return this.wrapSpeech(npc.name, this.loveSpeech(lvIdx, who));
+      }
+    }
+    if ( npc.overlayEmotion == "in_love" ) {
+      const lv2Idx = this.pickPoolIndex(seed, 4);
+      return this.wrapSpeech(npc.name, this.loveSpeech(lv2Idx, who));
+    }
+    if ( rel.isJealousyHigh() ) {
+      const jelIdx = this.pickPoolIndex(seed, 3);
+      return this.wrapSpeech(npc.name, this.jealousSpeech(jelIdx, who));
+    }
+    if ( npc.overlayEmotion == "jealous" ) {
+      const jel2Idx = this.pickPoolIndex(seed, 3);
+      return this.wrapSpeech(npc.name, this.jealousSpeech(jel2Idx, who));
+    }
+    if ( rel.isFearHigh() ) {
+      const fIdx = this.pickPoolIndex(seed, 3);
+      return this.wrapSpeech(npc.name, this.fearSpeech(fIdx, who));
+    }
+    if ( rel.isFriendlinessWarm() ) {
+      const frIdx = this.pickPoolIndex(seed, 6);
+      return this.wrapSpeech(npc.name, this.friendlySpeech(frIdx, who));
+    }
+    if ( rel.isRespectLow() ) {
+      if ( rel.isFriendlinessCold() ) {
+        const cIdx = this.pickPoolIndex(seed, 3);
+        return this.wrapSpeech(npc.name, this.coldSpeech(cIdx, who));
+      }
+    }
+    const nIdx = this.pickPoolIndex(seed, 10);
+    return this.wrapSpeech(npc.name, this.neutralSpeech(nIdx, who));
+  };
+}
 class WorldClock  {
   constructor() {
     this.gameMinutes = 480;
+    this.lastSpentMinutes = 0;
   }
   advance (delta) {
+    if ( delta < 1 ) {
+      return;
+    }
     this.gameMinutes = this.gameMinutes + delta;
     if ( this.gameMinutes >= 1080 ) {
       this.gameMinutes = 480;
     }
+  };
+  spendTime (delta) {
+    if ( delta < 1 ) {
+      this.lastSpentMinutes = 0;
+      return 0;
+    }
+    this.advance(delta);
+    this.lastSpentMinutes = delta;
+    return delta;
   };
   setGameMinutes (minutes) {
     if ( minutes < 0 ) {
@@ -3166,6 +4902,88 @@ class WorldClock  {
     return (this.formatTime() + " — ") + this.phaseLabel();
   };
 }
+class EventPerception  {
+  constructor() {
+  }
+  manhattan (x1, y1, x2, y2) {
+    let dx = x1 - x2;
+    if ( dx < 0 ) {
+      dx = 0 - dx;
+    }
+    let dy = y1 - y2;
+    if ( dy < 0 ) {
+      dy = 0 - dy;
+    }
+    return dx + dy;
+  };
+  curiosity (npc) {
+    let c = Math.floor( (npc.sociability / 10));
+    if ( c < 2 ) {
+      c = 2;
+    }
+    if ( c > 10 ) {
+      c = 10;
+    }
+    return c;
+  };
+  noticePercent (npc, evt, rel) {
+    const dist = this.manhattan(npc.x, npc.y, evt.x, evt.y);
+    const cur = this.curiosity(npc);
+    const hearing = (((evt.noise * 3) - (dist * 2)) + cur) + rel.suspicion;
+    const seeing = ((evt.visibility * 3) - (dist * 3)) + cur;
+    let total = hearing + seeing;
+    if ( total < 0 ) {
+      total = 0;
+    }
+    if ( total > 95 ) {
+      total = 95;
+    }
+    return total;
+  };
+  noticesWithRoll (percent, roll) {
+    if ( roll < percent ) {
+      return true;
+    }
+    return false;
+  };
+}
+class Escalation  {
+  constructor() {
+  }
+  angryGroupThreshold () {
+    return 3;
+  };
+  panicThreshold () {
+    return 3;
+  };
+  jealousyGossipThreshold () {
+    return 2;
+  };
+  fleeingEvacuationThreshold () {
+    return 3;
+  };
+  shouldAngryGroup (store) {
+    const count = store.countWithAngerAtLeast(75);
+    if ( count >= this.angryGroupThreshold() ) {
+      return true;
+    }
+    return false;
+  };
+  shouldWorkplacePanic (store) {
+    const count = store.countWithPanicAtLeast(75);
+    if ( count >= this.panicThreshold() ) {
+      return true;
+    }
+    return false;
+  };
+  shouldBackstabbingGossip (store) {
+    const count = store.countWithJealousyAtLeast(75);
+    if ( count >= this.jealousyGossipThreshold() ) {
+      return true;
+    }
+    return false;
+  };
+}
 class GameSession  extends RangerProcessBase {
   constructor() {
     super()
@@ -3179,6 +4997,13 @@ class GameSession  extends RangerProcessBase {
     this.pendingEntityName = "";
     this.pendingEntityKind = "";
     this.encounterResult = "";
+    this.relationTickAccum = 0;
+    this.socialTickAccum = 0;
+    this.escalatedAngry = false;
+    this.escalatedPanic = false;
+    this.escalatedJealous = false;
+    this.pendingEmotionalDialogueIndex = -1;
+    this.gameOverReason = "";
     this.encounterCooldown = 0;
     this.interviewPassed = false;
     this.interviewFailed = false;
@@ -3210,13 +5035,25 @@ class GameSession  extends RangerProcessBase {
     this.simEventTypes = [];
     this.simEventDetails = [];
     this.simErrors = [];
+    this.playerDisplayName = "";
+    this.playerSpecialty = "";
+    this.profileComplete = false;
+    this.pendingGreetNpcId = "";
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
     this.conduct = new PlayerConduct();
     this.tools = new PlayerTools();
+    this.playerNeeds = new PlayerNeeds();
+    this.playerStats = new PlayerCoreStats();
+    this.npcRelations = new NpcRelationStore();
+    this.dialogueCatalog = new DialogueCatalog();
+    this.emotionMath = new EmotionMath();
+    this.eventPerception = new EventPerception();
+    this.escalation = new Escalation();
     this.worldClock = new WorldClock();
     this.simJson = new StoryJson();
+    this.proximityGreeting = new ProximityGreeting();
   }
   ensureEngine () {
     if ( this.engineReady ) {
@@ -3345,6 +5182,7 @@ class GameSession  extends RangerProcessBase {
     }
     this.clearEncounter();
     this.screen = "map";
+    this.afterTimedAction("quiz_answer");
     this.markStateDirty();
   };
   askEncounterAiStudy (cost) {
@@ -3365,6 +5203,7 @@ class GameSession  extends RangerProcessBase {
     }
     this.clearEncounter();
     this.screen = "map";
+    this.afterTimedAction("talk");
     this.markStateDirty();
   };
   encounterAiStudyCost () {
@@ -3492,9 +5331,11 @@ class GameSession  extends RangerProcessBase {
     this.pendingEntityName = "";
     this.pendingEntityKind = "";
     this.encounterResult = "";
+    this.pendingEmotionalDialogueIndex = -1;
     this.encounterCooldown = 3;
   };
   startEncounter (bump) {
+    this.clearPendingGreetWithAck(bump.id);
     this.pendingEntityId = bump.id;
     this.pendingEntityChar = bump.char;
     this.pendingEntityName = bump.name;
@@ -3509,10 +5350,214 @@ class GameSession  extends RangerProcessBase {
     if ( ok == false ) {
       this.menuMessage = "Kartan lataus epäonnistui.";
     }
+    this.bootstrapPlayerVitals();
     this.syncHrGreeter();
-    this.screen = "map";
+    this.syncProfileScreen();
     this.markStateDirty();
     return ok;
+  };
+  needsProfileSetup () {
+    if ( this.profileComplete == false ) {
+      return true;
+    }
+    if ( (this.playerDisplayName.length) < 1 ) {
+      return true;
+    }
+    return false;
+  };
+  syncProfileScreen () {
+    if ( this.needsProfileSetup() ) {
+      this.profileComplete = false;
+      this.screen = "setup";
+    } else {
+      this.screen = "map";
+    }
+  };
+  applyPlayerProfile (name, specialty) {
+    if ( (name.length) < 1 ) {
+      return;
+    }
+    this.playerDisplayName = name;
+    this.playerSpecialty = specialty;
+    this.profileComplete = true;
+    this._map.playerAlias = name;
+    this.screen = "map";
+    this.markStateDirty();
+  };
+  clearPlayerProfile () {
+    this.playerDisplayName = "";
+    this.playerSpecialty = "";
+    this.profileComplete = false;
+    this.screen = "setup";
+    this.markStateDirty();
+  };
+  manhattanToPlayer (ex, ey) {
+    let dx = ex - this._map.playerX;
+    if ( dx < 0 ) {
+      dx = 0 - dx;
+    }
+    let dy = ey - this._map.playerY;
+    if ( dy < 0 ) {
+      dy = 0 - dy;
+    }
+    return dx + dy;
+  };
+  isNpcNearPlayer (npcId) {
+    const ent = this._map.findEntityById(npcId);
+    if ( (ent.id.length) < 1 ) {
+      return false;
+    }
+    if ( ent.offDuty ) {
+      return false;
+    }
+    const dist = this.manhattanToPlayer(ent.x, ent.y);
+    if ( dist > 3 ) {
+      return false;
+    }
+    if ( this._map.hasLineOfSight(ent.x, ent.y, this._map.playerX, this._map.playerY) == false ) {
+      return false;
+    }
+    return true;
+  };
+  applyGreetSnub (npcId) {
+    const rel = this.npcRelations.getOrCreate(npcId);
+    rel.applyStatDelta("respect", -4);
+    rel.applyStatDelta("friendliness", -3);
+    rel.applyStatDelta("anger", 6);
+    rel.snubCount = rel.snubCount + 1;
+    this._map.syncNpcOverlayEmotions(this.npcRelations.npcIds, this.npcRelations.relations);
+  };
+  applyGreetAck (npcId) {
+    const rel = this.npcRelations.getOrCreate(npcId);
+    rel.applyStatDelta("respect", 5);
+    rel.applyStatDelta("friendliness", 4);
+    if ( rel.anger > 0 ) {
+      if ( rel.anger >= 6 ) {
+        rel.applyStatDelta("anger", -6);
+      } else {
+        rel.setStat("anger", 0);
+      }
+    }
+    this._map.syncNpcOverlayEmotions(this.npcRelations.npcIds, this.npcRelations.relations);
+  };
+  evaluatePendingGreetSnub () {
+    if ( (this.pendingGreetNpcId.length) < 1 ) {
+      return;
+    }
+    if ( this.isNpcNearPlayer(this.pendingGreetNpcId) ) {
+      return;
+    }
+    this.applyGreetSnub(this.pendingGreetNpcId);
+    this.pendingGreetNpcId = "";
+  };
+  clearPendingGreetWithAck (npcId) {
+    if ( (this.pendingGreetNpcId.length) < 1 ) {
+      return;
+    }
+    if ( this.pendingGreetNpcId == npcId ) {
+      this.applyGreetAck(npcId);
+      this.pendingGreetNpcId = "";
+      return;
+    }
+    this.applyGreetSnub(this.pendingGreetNpcId);
+    this.pendingGreetNpcId = "";
+  };
+  startPendingGreet (npcId) {
+    if ( (this.pendingGreetNpcId.length) > 0 ) {
+      if ( this.pendingGreetNpcId != npcId ) {
+        this.applyGreetSnub(this.pendingGreetNpcId);
+      }
+    }
+    this.pendingGreetNpcId = npcId;
+  };
+  checkProximityGreetings () {
+    if ( this.screen != "map" ) {
+      return;
+    }
+    if ( this.profileComplete == false ) {
+      return;
+    }
+    this.evaluatePendingGreetSnub();
+    const floor = this._map.activeFloor();
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    let best = new MapEntity();
+    let bestDist = 99;
+    while (i < n) {
+      const e = ents[i];
+      if ( (e.id.length) < 1 ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.kind == "item" ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.kind == "police" ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.kind == "hostile" ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.kind == "pet" ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.offDuty ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.kind != "coworker" ) {
+        if ( e.kind != "guru" ) {
+          if ( e.kind != "role" ) {
+            i = i + 1;
+            continue;
+          }
+        }
+      }
+      if ( this._map.canNpcSeePlayer(e) == false ) {
+        i = i + 1;
+        continue;
+      }
+      if ( this._map.hasLineOfSight(e.x, e.y, this._map.playerX, this._map.playerY) == false ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.greetCooldownUntil > this.worldClock.gameMinutes ) {
+        i = i + 1;
+        continue;
+      }
+      let dx = e.x - this._map.playerX;
+      if ( dx < 0 ) {
+        dx = 0 - dx;
+      }
+      let dy = e.y - this._map.playerY;
+      if ( dy < 0 ) {
+        dy = 0 - dy;
+      }
+      const dist = dx + dy;
+      if ( dist <= 3 ) {
+        if ( dist < bestDist ) {
+          bestDist = dist;
+          best = e;
+        }
+      }
+      i = i + 1;
+    };
+    if ( (best.id.length) < 1 ) {
+      return;
+    }
+    this._map.syncNpcOverlayEmotions(this.npcRelations.npcIds, this.npcRelations.relations);
+    const rel = this.npcRelations.getOrCreate(best.id);
+    rel.greetCount = rel.greetCount + 1;
+    this.startPendingGreet(best.id);
+    const line = this.proximityGreeting.buildLine(best, rel, this.playerDisplayName);
+    this._map.overheardMsg = line;
+    best.greetCooldownUntil = this.worldClock.gameMinutes + 20;
+    this.markStateDirty();
   };
   syncHrGreeter () {
     if ( this.hrWelcomeDone ) {
@@ -3599,12 +5644,650 @@ class GameSession  extends RangerProcessBase {
       }
     }
   };
-  handleAgentTick () {
+  rollPlayerCoreStats () {
+    let g = Math.floor(Math.random()*(1 - 0 + 1) + 0);
+    if ( this.simSeed > 0 ) {
+      g = this.simRngNext(0, 1);
+    }
+    if ( g == 0 ) {
+      this.playerStats.gender = "M";
+    } else {
+      this.playerStats.gender = "F";
+    }
+    if ( this.simSeed > 0 ) {
+      this.playerStats.intelligence = this.simRngNext(1, 20);
+      this.playerStats.appearance = this.simRngNext(1, 20);
+      this.playerStats.luck = this.simRngNext(1, 20);
+      this.playerStats.intuition = this.simRngNext(1, 20);
+      this.playerStats.humour = this.simRngNext(1, 20);
+    } else {
+      this.playerStats.intelligence = Math.floor(Math.random()*(20 - 1 + 1) + 1);
+      this.playerStats.appearance = Math.floor(Math.random()*(20 - 1 + 1) + 1);
+      this.playerStats.luck = Math.floor(Math.random()*(20 - 1 + 1) + 1);
+      this.playerStats.intuition = Math.floor(Math.random()*(20 - 1 + 1) + 1);
+      this.playerStats.humour = Math.floor(Math.random()*(20 - 1 + 1) + 1);
+    }
+  };
+  bootstrapPlayerVitals () {
+    this.playerNeeds.resetDefaults();
+    this.npcRelations.reset();
+    this.dialogueCatalog.loadDefaults();
+    this.relationTickAccum = 0;
+    this.socialTickAccum = 0;
+    this.escalatedAngry = false;
+    this.escalatedPanic = false;
+    this.escalatedJealous = false;
+    this.pendingEmotionalDialogueIndex = -1;
+    this.rollPlayerCoreStats();
+    this.gameOverReason = "";
+  };
+  loadEmotionalDialoguesFromText (raw) {
+    const ok = this.dialogueCatalog.loadFromText(raw);
+    this.markStateDirty();
+    return ok;
+  };
+  setNpcRelationStat (npcId, stat, value) {
+    const rel = this.npcRelations.getOrCreate(npcId);
+    rel.setStat(stat, value);
+    this.markStateDirty();
+  };
+  needsEmotionalEncounter () {
+    if ( this.pendingEntityId == "receptionist" ) {
+      return false;
+    }
+    if ( this.pendingEntityId == "hr-greeter" ) {
+      return false;
+    }
+    if ( this.pendingEntityKind == "guru" ) {
+      return false;
+    }
+    if ( this.pendingEntityKind == "security" ) {
+      return false;
+    }
+    if ( this.pendingEntityKind == "hostile" ) {
+      return false;
+    }
+    if ( this.pendingEntityKind == "police" ) {
+      return false;
+    }
+    if ( this.isCoworkerEncounter() == false ) {
+      return false;
+    }
+    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+    if ( rel.isAngryNoticeable() ) {
+      return true;
+    }
+    return false;
+  };
+  applyWcTalkAngerIfNeeded () {
+    const ent = this._map.findEntityById(this.pendingEntityId);
+    if ( (ent.id.length) < 1 ) {
+      return;
+    }
+    if ( ent.mainTask != "toilet" ) {
+      return;
+    }
+    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+    rel.applyStatDelta("anger", 15);
+    this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — häiritsit WC:llä!";
+  };
+  tickNpcRelations () {
+    this._map.tickNpcMainTasks(this.worldClock.gameMinutes);
+    this._map.syncNpcOverlayEmotions(this.npcRelations.npcIds, this.npcRelations.relations);
+    this.checkEscalation();
+    this.evaluateNpcReporting();
+    this.checkFiredGameOver();
+    this.socialTickAccum = this.socialTickAccum + 5;
+    while (this.socialTickAccum >= 10) {
+      this.socialTickAccum = this.socialTickAccum - 10;
+      this.trySocialGossipTick();
+    };
+  };
+  romanticMatch (ent) {
+    if ( ent.romanticPreference == "any" ) {
+      return true;
+    }
+    if ( ent.romanticPreference == this.playerStats.gender ) {
+      return true;
+    }
+    return false;
+  };
+  shouldUseEmotionalDialogue (ent, rel) {
+    if ( this.isCoworkerEncounter() == false ) {
+      return false;
+    }
+    if ( ent.mainTask == "searching_item" ) {
+      return true;
+    }
+    if ( rel.isAngryNoticeable() ) {
+      return true;
+    }
+    if ( rel.isLoveNoticeable() ) {
+      if ( this.romanticMatch(ent) ) {
+        return true;
+      }
+    }
+    return false;
+  };
+  applyTalkLoveBump (ent, rel) {
+    if ( this.romanticMatch(ent) == false ) {
+      return;
+    }
+    if ( this.playerStats.appearance < 8 ) {
+      return;
+    }
+    rel.applyStatDelta("love", 5);
+  };
+  applyHelpAnswerEffects (ent, answerIndex, dialogueIndex) {
+    const dlg = this.dialogueCatalog.dialogueAt(dialogueIndex);
+    if ( dlg.category != "help" ) {
+      return;
+    }
+    if ( answerIndex != 0 ) {
+      return;
+    }
+    if ( this.tools.hasUsbDrive ) {
+      this.karma.add("help_usb", 5);
+      ent.mainTask = "working";
+      this._map.lastStatus = ent.name + " kiittää — USB pelasti päivän!";
+    } else {
+      this._map.lastStatus = "Sinulla ei ole USB-tikkua taskussa.";
+    }
+  };
+  applyLoveFollowup (ent, rel) {
+    if ( rel.isLoveModerate() ) {
+      ent.moveMode = "seek_player";
+      ent.agentGoal = "socialize";
+    }
+    if ( rel.isLoveNoticeable() ) {
+      const savedFloor = this._map.currentFloor;
+      let fi = 0;
+      const fn = this._map.floorCount();
+      while (fi < fn) {
+        this._map.currentFloor = fi;
+        this._map.recomputeSize();
+        const floor = this._map.activeFloor();
+        const ents = floor.entities;
+        let ei = 0;
+        const en = ents.length;
+        while (ei < en) {
+          const other = ents[ei];
+          if ( other.kind == "coworker" ) {
+            if ( other.id != ent.id ) {
+              let dx = other.x - ent.x;
+              if ( dx < 0 ) {
+                dx = 0 - dx;
+              }
+              let dy = other.y - ent.y;
+              if ( dy < 0 ) {
+                dy = 0 - dy;
+              }
+              if ( (dx + dy) <= 4 ) {
+                const otherRel = this.npcRelations.getOrCreate(other.id);
+                otherRel.applyStatDelta("jealousy", 5);
+              }
+            }
+          }
+          ei = ei + 1;
+        };
+        fi = fi + 1;
+      };
+      this._map.currentFloor = savedFloor;
+      this._map.recomputeSize();
+    }
+  };
+  triggerEscalationEvent (eventType, status) {
+    const evt = new WorldEvent();
+    evt.timeMinutes = this.worldClock.gameMinutes;
+    evt.x = this._map.playerX;
+    evt.y = this._map.playerY;
+    evt.playerSource = false;
+    if ( eventType == "WorkplacePanic" ) {
+      evt.applyWorkplacePanic();
+    } else {
+      if ( eventType == "AngryGroupComplaint" ) {
+        evt.applyAngryGroupComplaint();
+      } else {
+        if ( eventType == "GossipStarted" ) {
+          evt.applyGossipStarted();
+        } else {
+          if ( eventType == "PraisePlayer" ) {
+            evt.applyPraisePlayer();
+          }
+        }
+      }
+    }
+    this._map.pushWorldEvent(evt);
+    this._map.lastStatus = status;
+  };
+  checkEscalation () {
+    if ( this.escalatedAngry == false ) {
+      if ( this.escalation.shouldAngryGroup((this.npcRelations)) ) {
+        this.escalatedAngry = true;
+        this.triggerEscalationEvent("AngryGroupComplaint", "Kollegat valittavat yhdessä — ilmapiiri kiristyy.");
+      }
+    }
+    if ( this.escalatedPanic == false ) {
+      if ( this.escalation.shouldWorkplacePanic((this.npcRelations)) ) {
+        this.escalatedPanic = true;
+        this.triggerEscalationEvent("WorkplacePanic", "Toimistossa puhkeaa paniikki!");
+        this._map.applyPanicFleeing(this.npcRelations.npcIds, this.npcRelations.relations);
+      }
+    }
+    if ( this.escalatedJealous == false ) {
+      if ( this.escalation.shouldBackstabbingGossip((this.npcRelations)) ) {
+        this.escalatedJealous = true;
+        this.triggerEscalationEvent("GossipStarted", "Käytäväkuiskaukset leviävät.");
+        this.tryGossipFromJealousNpc();
+      }
+    }
+    const fleeing = this._map.countMainTask("fleeing");
+    if ( fleeing >= this.escalation.fleeingEvacuationThreshold() ) {
+      this.gameOverEvacuated();
+    }
+  };
+  tryGossipFromJealousNpc () {
+    let i = 0;
+    const n = this.npcRelations.npcIds.length;
+    while (i < n) {
+      const rel = this.npcRelations.relations[i];
+      if ( rel.isJealousySevere() ) {
+        const npcId = this.npcRelations.npcIds[i];
+        const ent = this._map.findEntityById(npcId);
+        if ( (ent.id.length) > 0 ) {
+          this._map.emitGossipNearPlayer(ent, "Kuulin jotain epäilyttävää Larrysta…");
+          return;
+        }
+      }
+      i = i + 1;
+    };
+  };
+  trySocialGossipTick () {
+    const roll = this.gameRollPercent();
+    if ( roll >= 20 ) {
+      return;
+    }
+    let i = 0;
+    const n = this.npcRelations.npcIds.length;
+    while (i < n) {
+      const rel = this.npcRelations.relations[i];
+      if ( rel.isJealousyHigh() ) {
+        const npcId = this.npcRelations.npcIds[i];
+        const ent = this._map.findEntityById(npcId);
+        if ( (ent.id.length) > 0 ) {
+          this._map.emitGossipNearPlayer(ent, "Sanovat että Larry ei ole ihan rehellinen…");
+          const evt = new WorldEvent();
+          evt.applyGossipStarted();
+          evt.x = ent.x;
+          evt.y = ent.y;
+          evt.timeMinutes = this.worldClock.gameMinutes;
+          this._map.pushWorldEvent(evt);
+          return;
+        }
+      }
+      i = i + 1;
+    };
+    if ( this.npcRelations.countWithLoveAtLeast(70) >= 1 ) {
+      this.triggerEscalationEvent("PraisePlayer", "Joku kehuu sinua käytävällä.");
+    }
+  };
+  enterEpilogue (reason) {
+    this.ensureEngine();
+    this.gameOverReason = reason;
+    this.screen = "epilogue";
+    this.markStateDirty();
+  };
+  gameOverEvacuated () {
+    if ( this.screen == "epilogue" ) {
+      return;
+    }
+    if ( this.screen == "gameover" ) {
+      return;
+    }
+    this._map.lastStatus = "Liian moni kollega pakeni — toimisto evakuoitiin.";
+    this.enterEpilogue("WorkplaceEvacuated");
+  };
+  buildEpilogueJson () {
+    let out = "{";
+    out = ((out + "\"reason\":\"") + this.simEscapeJson(this.gameOverReason)) + "\",";
+    out = ((out + "\"karma\":") + ((this.karma.total().toString()))) + ",";
+    out = ((out + "\"deaths\":") + ((this.exportDeaths().toString()))) + ",";
+    out = ((out + "\"appearance\":") + ((this.playerStats.appearance.toString()))) + ",";
+    out = ((out + "\"intelligence\":") + ((this.playerStats.intelligence.toString()))) + ",";
+    out = ((out + "\"enemies\":") + ((this.npcRelations.countWithAngerAtLeast(75).toString()))) + ",";
+    out = ((out + "\"lovers\":") + ((this.npcRelations.countWithLoveAtLeast(70).toString()))) + ",";
+    out = ((out + "\"reports\":") + ((this._map.countMainTask("reporting").toString()))) + "}";
+    return out;
+  };
+  epilogueSummaryLine () {
+    let line = this._map.lastStatus;
+    if ( (line.length) < 1 ) {
+      line = "Päivä päättyi: " + this.gameOverReason;
+    }
+    line = (line + " | Karma ") + ((this.karma.total().toString()));
+    line = (line + " | Vihamiehiä ") + ((this.npcRelations.countWithAngerAtLeast(75).toString()));
+    line = (line + " | Rakkaudet ") + ((this.npcRelations.countWithLoveAtLeast(70).toString()));
+    return line;
+  };
+  gameRollPercent () {
+    if ( (this.simScenarioId.length) > 0 ) {
+      return this.simRngNext(0, 99);
+    }
+    return Math.floor(Math.random()*(99 - 0 + 1) + 0);
+  };
+  emitWorldEvent (evt) {
+    if ( evt.timeMinutes < 1 ) {
+      evt.timeMinutes = this.worldClock.gameMinutes;
+    }
+    evt.floor = this._map.currentFloor;
+    this._map.pushWorldEvent(evt);
+    this.propagateEventNotices(evt);
+  };
+  propagateEventNotices (evt) {
+    const savedFloor = this._map.currentFloor;
+    this._map.currentFloor = evt.floor;
+    this._map.recomputeSize();
+    const floor = this._map.activeFloor();
+    const ents = floor.entities;
+    let ei = 0;
+    const en = ents.length;
+    while (ei < en) {
+      const npc = ents[ei];
+      if ( npc.offDuty == false ) {
+        if ( npc.kind == "coworker" ) {
+          this.tryNpcNoticeEvent(npc, evt);
+        } else {
+          if ( npc.kind == "security" ) {
+            this.tryNpcNoticeEvent(npc, evt);
+          } else {
+            if ( npc.kind == "role" ) {
+              this.tryNpcNoticeEvent(npc, evt);
+            }
+          }
+        }
+      }
+      ei = ei + 1;
+    };
+    this._map.currentFloor = savedFloor;
+    this._map.recomputeSize();
+  };
+  tryNpcNoticeEvent (npc, evt) {
+    const rel = this.npcRelations.getOrCreate(npc.id);
+    const percent = this.eventPerception.noticePercent(npc, evt, rel);
+    const roll = this.gameRollPercent();
+    if ( this.eventPerception.noticesWithRoll(percent, roll) == false ) {
+      return;
+    }
+    this.onNpcNoticedEvent(npc, evt, rel);
+  };
+  onNpcNoticedEvent (npc, evt, rel) {
+    if ( evt.playerSource ) {
+      this._map.playerWasWitnessed = true;
+    }
+    const susDelta = (Math.floor( (evt.suspiciousness / 4))) + 1;
+    rel.applyStatDelta("suspicion", susDelta);
+    if ( evt.type == "PlayerFarted" ) {
+      rel.applyStatDelta("respect", -10);
+      rel.applyStatDelta("love", -10);
+      rel.applyStatDelta("anger", 10);
+      this._map.lastStatus = npc.name + " nyppi nenäänsä.";
+    } else {
+      if ( npc.mainTask != "reporting" ) {
+        if ( npc.mainTask != "seeking_player" ) {
+          npc.mainTask = "investigating";
+        }
+      }
+      this._map.lastStatus = npc.name + " huomasi jotain epäilyttävää.";
+    }
+  };
+  computeReportScore (npc, rel, observedSeverity) {
+    let responsibility = Math.floor( (npc.persistence / 5));
+    if ( responsibility < 1 ) {
+      responsibility = 1;
+    }
+    let score = (((rel.anger * 2) + (rel.suspicion * 3)) + responsibility) + (observedSeverity * 2);
+    score = score - (rel.respect * 2);
+    score = score - rel.love;
+    score = score - rel.friendliness;
+    return score;
+  };
+  evaluateNpcReporting () {
+    const savedFloor = this._map.currentFloor;
+    let fi = 0;
+    const fn = this._map.floorCount();
+    while (fi < fn) {
+      this._map.currentFloor = fi;
+      this._map.recomputeSize();
+      const floor = this._map.activeFloor();
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const npc = ents[ei];
+        if ( npc.offDuty == false ) {
+          if ( (npc.id.length) > 0 ) {
+            const rel = this.npcRelations.getOrCreate(npc.id);
+            let observed = 0;
+            const lastEvt = this._map.eventLog.lastOnFloor(fi);
+            if ( (lastEvt.type.length) > 0 ) {
+              observed = lastEvt.severity;
+            }
+            const score = this.computeReportScore(npc, rel, observed);
+            if ( npc.kind == "security" ) {
+              if ( score >= 40 ) {
+                npc.mainTask = "seeking_player";
+              }
+            } else {
+              if ( npc.kind == "coworker" ) {
+                if ( score >= 50 ) {
+                  npc.mainTask = "reporting";
+                }
+              }
+            }
+          }
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+    this._map.currentFloor = savedFloor;
+    this._map.recomputeSize();
+  };
+  tryPlayerFartEvent () {
+    if ( this.playerNeeds.gas < 15 ) {
+      return;
+    }
+    const roll = this.gameRollPercent();
+    if ( roll >= 5 ) {
+      return;
+    }
+    const evt = new WorldEvent();
+    evt.x = this._map.playerX;
+    evt.y = this._map.playerY;
+    evt.timeMinutes = this.worldClock.gameMinutes;
+    evt.applyPlayerFarted();
+    this.emitWorldEvent(evt);
+    this.playerNeeds.gas = this.playerNeeds.gas - 4;
+    this.playerNeeds.clampAll();
+    this._map.lastStatus = "Ilmaan lehahti epämiellyttävä haju.";
+  };
+  consumeWitnessFlag () {
+    const witnessed = this._map.playerWasWitnessed;
+    this._map.playerWasWitnessed = false;
+    return witnessed;
+  };
+  emitMisconductEvent (eventType, x, y) {
+    const evt = new WorldEvent();
+    evt.x = x;
+    evt.y = y;
+    evt.timeMinutes = this.worldClock.gameMinutes;
+    evt.playerSource = true;
+    if ( eventType == "ComputerBroken" ) {
+      evt.applyComputerBroken();
+    } else {
+      if ( eventType == "ToiletBroken" ) {
+        evt.applyToiletBroken();
+      } else {
+        if ( eventType == "DoorBroken" ) {
+          evt.applyDoorBroken();
+        }
+      }
+    }
+    this.emitWorldEvent(evt);
+  };
+  propagateLastBreakEvent () {
+    const evt = this._map.eventLog.lastOnFloor(this._map.currentFloor);
+    if ( (evt.type.length) < 1 ) {
+      return;
+    }
+    this.propagateEventNotices(evt);
+  };
+  checkFiredGameOver () {
+    if ( this.screen == "gameover" ) {
+      return;
+    }
+    if ( this.screen == "epilogue" ) {
+      return;
+    }
+    const angryCount = this.npcRelations.countWithAngerAtLeast(75);
+    if ( angryCount >= 3 ) {
+      this.gameOverFired();
+    }
+  };
+  gameOverFired () {
+    this._map.lastStatus = "Liian monta vihamiestä — HR potki sinut ulos.";
+    this.enterEpilogue("Fired");
+  };
+  applyEmotionalPlayerEffects (dialogueIndex, answerIndex) {
+    const dlg = this.dialogueCatalog.dialogueAt(dialogueIndex);
+    if ( answerIndex < 0 ) {
+      return;
+    }
+    if ( answerIndex >= (dlg.answers.length) ) {
+      return;
+    }
+    const ans = dlg.answers[answerIndex];
+    let i = 0;
+    const n = ans.effectStats.length;
+    while (i < n) {
+      const target = ans.effectTargets[i];
+      const stat = ans.effectStats[i];
+      const delta = ans.effectDeltas[i];
+      if ( target == "player" ) {
+        if ( stat == "karma" ) {
+          if ( delta < 0 ) {
+            this.karma.loseKarma(0 - delta);
+          } else {
+            this.karma.add("emotional", delta);
+          }
+        }
+        if ( stat == "alertness" ) {
+          this.playerNeeds.applyStatDelta(stat, delta);
+        }
+        if ( stat == "satiety" ) {
+          this.playerNeeds.applyStatDelta(stat, delta);
+        }
+        if ( stat == "thirst" ) {
+          this.playerNeeds.applyStatDelta(stat, delta);
+        }
+        if ( stat == "gas" ) {
+          this.playerNeeds.applyStatDelta(stat, delta);
+        }
+      }
+      i = i + 1;
+    };
+  };
+  finishEmotionalChoice (answerIndex) {
+    if ( this.pendingEmotionalDialogueIndex < 0 ) {
+      return;
+    }
+    const ent = this._map.findEntityById(this.pendingEntityId);
+    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+    this.dialogueCatalog.applyAnswerToRelation(this.pendingEmotionalDialogueIndex, answerIndex, rel);
+    this.applyEmotionalPlayerEffects(this.pendingEmotionalDialogueIndex, answerIndex);
+    this.applyHelpAnswerEffects(ent, answerIndex, this.pendingEmotionalDialogueIndex);
+    this.applyLoveFollowup(ent, rel);
+    const dlg = this.dialogueCatalog.dialogueAt(this.pendingEmotionalDialogueIndex);
+    if ( (this._map.lastStatus.length) < 1 ) {
+      this._map.lastStatus = (this.pendingEntityName + ": ") + dlg.text;
+    }
+    this.pendingEmotionalDialogueIndex = -1;
+    this.clearEncounter();
+    this.screen = "map";
+    this.afterTimedAction("talk");
+    this.checkFiredGameOver();
+    this.markStateDirty();
+  };
+  actionTimeCost (actionId) {
+    if ( actionId == "move" ) {
+      return 1;
+    }
+    if ( actionId == "talk" ) {
+      return 3;
+    }
+    if ( actionId == "quiz_answer" ) {
+      return 5;
+    }
+    if ( actionId == "drink_coffee" ) {
+      return 5;
+    }
+    if ( actionId == "eat" ) {
+      return 15;
+    }
+    if ( actionId == "break_wall" ) {
+      return 30;
+    }
+    if ( actionId == "break_door" ) {
+      return 15;
+    }
+    return 1;
+  };
+  spendTime (minutes) {
+    if ( minutes < 1 ) {
+      return;
+    }
+    if ( this.screen == "gameover" ) {
+      return;
+    }
+    this.worldClock.spendTime(minutes);
+    this.playerNeeds.tickMinutes(minutes);
+    this._map.tickSchedules(this.worldClock.gameMinutes);
+    this.simMinutesAccum = this.simMinutesAccum + minutes;
+    this.relationTickAccum = this.relationTickAccum + minutes;
+    while (this.relationTickAccum >= 5) {
+      this.relationTickAccum = this.relationTickAccum - 5;
+      this.tickNpcRelations();
+    };
+    let fartMin = 0;
+    while (fartMin < minutes) {
+      this.tryPlayerFartEvent();
+      fartMin = fartMin + 1;
+    };
+    if ( this.playerNeeds.satiety <= 0 ) {
+      this.gameOverNeeds("Kuolit nälkään.");
+      return;
+    }
+    if ( this.playerNeeds.thirst <= 0 ) {
+      this.gameOverNeeds("Kuolit nestehukkaan.");
+      return;
+    }
+    this.checkExhaustionStatus();
+  };
+  checkExhaustionStatus () {
+    if ( this.playerNeeds.alertness <= 0 ) {
+      if ( (this._map.lastStatus.length) < 1 ) {
+        this._map.lastStatus = "Olet täysin uupunut.";
+      }
+    }
+  };
+  gameOverNeeds (reason) {
+    this._map.lastStatus = reason;
+    this.enterEpilogue(reason);
+  };
+  runAgentPass () {
     if ( this.screen != "map" ) {
       return;
     }
-    this.worldClock.advance(1);
-    this._map.tickSchedules(this.worldClock.gameMinutes);
     this._map.agentHuntFlag = this.conduct.isWanted();
     const agentResult = this._map.tickAgents();
     if ( (agentResult.id.length) > 0 ) {
@@ -3629,6 +6312,23 @@ class GameSession  extends RangerProcessBase {
       this.startEncounter(agentResult);
     }
   };
+  afterTimedAction (actionId) {
+    const minutes = this.actionTimeCost(actionId);
+    this.spendTime(minutes);
+    if ( this.screen == "gameover" ) {
+      return;
+    }
+    this.runAgentPass();
+  };
+  handleAgentTick () {
+    if ( this.screen != "map" ) {
+      return;
+    }
+    this.worldClock.advance(1);
+    this._map.tickSchedules(this.worldClock.gameMinutes);
+    this.simMinutesAccum = this.simMinutesAccum + 1;
+    this.runAgentPass();
+  };
   afterPlayerAction () {
     const toolPick = this._map.pickupItemAt(this._map.playerX, this._map.playerY);
     if ( (toolPick.length) > 0 ) {
@@ -3642,6 +6342,29 @@ class GameSession  extends RangerProcessBase {
       } else {
         const itemName = this.tools.pickupLabel(toolPick);
         this._map.lastStatus = ("Poimit: " + itemName) + "  (i = inventaario)";
+      }
+      return;
+    }
+    const ent = this._map.entityAt(this._map.playerX, this._map.playerY);
+    if ( (ent.id.length) < 1 ) {
+      return;
+    }
+    if ( this._map.isConsumableItemEntity(ent) ) {
+      const feeling = this._map.emojiFeelingForEntity(ent);
+      if ( (feeling.length) > 0 ) {
+        this._map.lastStatus = feeling;
+      }
+      if ( (ent.char.length) > 0 ) {
+        this.playerNeeds.applyEmojiChar(ent.char);
+      }
+      this._map.consumeItemAt(this._map.playerX, this._map.playerY);
+      return;
+    }
+    const feeling_1 = this._map.emojiFeelingForEntity(ent);
+    if ( (feeling_1.length) > 0 ) {
+      this._map.lastStatus = feeling_1;
+      if ( (ent.char.length) > 0 ) {
+        this.playerNeeds.applyEmojiChar(ent.char);
       }
     }
   };
@@ -3867,7 +6590,7 @@ class GameSession  extends RangerProcessBase {
     const targetId = this.actionTargetId;
     const x = this.actionTargetX;
     const y = this.actionTargetY;
-    const witness = this._map.hasNearbyWitness(8);
+    let witness = this._map.hasNearbyWitness(8, this.worldClock.gameMinutes);
     if ( targetId == "workstation" ) {
       if ( toolId == "usb_drive" ) {
         if ( this.tools.hasUsbDrive == false ) {
@@ -3891,6 +6614,10 @@ class GameSession  extends RangerProcessBase {
               this._map.setTileAt(x, y, "x");
               this.karma.loseKarma(15);
               this.conduct.addMisconduct(18);
+              this.emitMisconductEvent("ComputerBroken", x, y);
+              if ( this.consumeWitnessFlag() ) {
+                witness = true;
+              }
               if ( witness ) {
                 this.actionResultMessage = this.actionResultMessage + " Kollega näkee ruudun — turvallisuus hälytetään!";
                 this._map.startPoliceChase();
@@ -3919,6 +6646,10 @@ class GameSession  extends RangerProcessBase {
         }
         this.karma.loseKarma(karmaLoss);
         this.conduct.addMisconduct(misconduct);
+        this.emitMisconductEvent("ComputerBroken", x, y);
+        if ( this.consumeWitnessFlag() ) {
+          witness = true;
+        }
         this.actionResultMessage = "Työkalu + työasema = huono idea. Näyttö meni ja karma laskee.";
         if ( witness ) {
           this.actionResultMessage = this.actionResultMessage + " Joku näki tämän!";
@@ -3951,6 +6682,10 @@ class GameSession  extends RangerProcessBase {
         this._map.openTileAt(x, y);
         this.karma.loseKarma(8);
         this.conduct.addMisconduct(10);
+        this.emitMisconductEvent("DoorBroken", x, y);
+        if ( this.consumeWitnessFlag() ) {
+          witness = true;
+        }
         this.actionResultMessage = "Murrat oven auki — melkoinen karma-tappio.";
         if ( witness ) {
           this._map.startPoliceChase();
@@ -3963,12 +6698,16 @@ class GameSession  extends RangerProcessBase {
       return false;
     }
     if ( targetId == "breakable" ) {
-      const severity = this._map.tryBreakAt(x, y, toolId);
+      const severity = this._map.tryBreakAt(x, y, toolId, this.worldClock.gameMinutes);
       if ( (severity.length) < 1 ) {
         this.actionResultMessage = "Työkalu ei tepsi tähän esteeseen.";
         return false;
       }
       this.applyBreakSeverity(severity);
+      this.propagateLastBreakEvent();
+      if ( this.consumeWitnessFlag() ) {
+        witness = true;
+      }
       const hermit = this._map.entityAt(70, 23);
       if ( hermit.id == "staff-f7-hermit" ) {
         let dist = this._map.playerX - hermit.x;
@@ -4320,8 +7059,19 @@ class GameSession  extends RangerProcessBase {
     this.encounterResult = "talk";
   };
   onMapKey (key) {
+    if ( this.needsProfileSetup() ) {
+      this.screen = "setup";
+      return;
+    }
+    if ( this.screen == "setup" ) {
+      return;
+    }
     if ( this.screen == "prison" ) {
       this.onPrisonKey(key);
+      return;
+    }
+    if ( this.screen == "epilogue" ) {
+      this.onEpilogueKey(key);
       return;
     }
     if ( this.screen == "gameover" ) {
@@ -4400,7 +7150,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( key == "x" ) {
-      const severity = this._map.tryBreakFacing(this.tools.activeTool);
+      const severity = this._map.tryBreakFacing(this.tools.activeTool, this.worldClock.gameMinutes);
       if ( (severity.length) > 0 ) {
         if ( severity == "heavy" ) {
           this.conduct.addDamage(15);
@@ -4414,6 +7164,8 @@ class GameSession  extends RangerProcessBase {
           this.conduct.addDamage(2);
           this.conduct.addMisconduct(1);
         }
+        this.propagateLastBreakEvent();
+        this.consumeWitnessFlag();
         const hermit = this._map.entityAt(70, 23);
         if ( hermit.id == "staff-f7-hermit" ) {
           let dist = this._map.playerX - hermit.x;
@@ -4429,7 +7181,11 @@ class GameSession  extends RangerProcessBase {
           }
         }
         this.afterPlayerAction();
-        this.handleAgentTick();
+        let breakAction = "break_door";
+        if ( severity == "heavy" ) {
+          breakAction = "break_wall";
+        }
+        this.afterTimedAction(breakAction);
       }
       this.markStateDirty();
       return;
@@ -4506,10 +7262,47 @@ class GameSession  extends RangerProcessBase {
         this.handleAgentTick();
       }
     }
+    if ( this.screen == "map" ) {
+      this.checkProximityGreetings();
+    }
     this.markStateDirty();
+  };
+  onEmotionalAnswerKey (key) {
+    if ( this.screen != "encounter" ) {
+      return;
+    }
+    if ( this.encounterResult != "emotional" ) {
+      return;
+    }
+    if ( ((key == "leave") || (key == "p")) || (key == "3") ) {
+      this._map.lastStatus = "Vetäydyt takaisin.";
+      this.pendingEmotionalDialogueIndex = -1;
+      this.clearEncounter();
+      this.screen = "map";
+      this.markStateDirty();
+      return;
+    }
+    let idx = -1;
+    if ( key == "1" ) {
+      idx = 0;
+    }
+    if ( key == "2" ) {
+      idx = 1;
+    }
+    if ( key == "3" ) {
+      idx = 2;
+    }
+    if ( idx < 0 ) {
+      return;
+    }
+    this.finishEmotionalChoice(idx);
   };
   onEncounterChoice (choice) {
     if ( this.screen != "encounter" ) {
+      return;
+    }
+    if ( this.encounterResult == "emotional" ) {
+      this.onEmotionalAnswerKey(choice);
       return;
     }
     if ( choice == "leave" ) {
@@ -4556,6 +7349,20 @@ class GameSession  extends RangerProcessBase {
         this.encounterResult = "quiz";
         this.markStateDirty();
         return;
+      }
+      this.applyWcTalkAngerIfNeeded();
+      const ent = this._map.findEntityById(this.pendingEntityId);
+      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+      if ( this.isCoworkerEncounter() ) {
+        this.applyTalkLoveBump(ent, rel);
+      }
+      if ( this.shouldUseEmotionalDialogue(ent, rel) ) {
+        this.pendingEmotionalDialogueIndex = this.dialogueCatalog.pickForEncounter(rel, ent);
+        if ( this.pendingEmotionalDialogueIndex >= 0 ) {
+          this.encounterResult = "emotional";
+          this.markStateDirty();
+          return;
+        }
       }
       if ( (this.pendingStoryId.length) < 1 ) {
         if ( this.needsEncounterQuiz() ) {
@@ -4694,6 +7501,31 @@ class GameSession  extends RangerProcessBase {
     this._map.lastStatus = "Takaisin toimistolla.";
     this.markStateDirty();
   };
+  onEpilogueKey (key) {
+    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
+      this.shouldQuit = true;
+      this.markStateDirty();
+      return;
+    }
+    this._map.clearPoliceSquad();
+    this.playerNeeds.resetDefaults();
+    this.npcRelations.reset();
+    this.dialogueCatalog.loadDefaults();
+    this.relationTickAccum = 0;
+    this.socialTickAccum = 0;
+    this.escalatedAngry = false;
+    this.escalatedPanic = false;
+    this.escalatedJealous = false;
+    this.gameOverReason = "";
+    const floor = this._map.activeFloor();
+    this._map.playerX = floor.spawnX;
+    this._map.playerY = floor.spawnY;
+    this._map.playerHidden = false;
+    this._map.ensurePlayerOnWalkable();
+    this._map.lastStatus = "Uusi päivä alkaa — muista syödä ja juoda.";
+    this.screen = "map";
+    this.markStateDirty();
+  };
   onGameOverKey (key) {
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
       this.shouldQuit = true;
@@ -4701,12 +7533,21 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     this._map.clearPoliceSquad();
+    let respawnMsg = "Selvitit hengissä — mutta poliisit muistavat kasvosi.";
+    if ( (this.gameOverReason.length) > 0 ) {
+      respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda.";
+      this.playerNeeds.resetDefaults();
+      this.npcRelations.reset();
+      this.dialogueCatalog.loadDefaults();
+      this.relationTickAccum = 0;
+      this.gameOverReason = "";
+    }
     const floor = this._map.activeFloor();
     this._map.playerX = floor.spawnX;
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "Selvitit hengissä — mutta poliisit muistavat kasvosi.";
+    this._map.lastStatus = respawnMsg;
     this.screen = "map";
     this.markStateDirty();
   };
@@ -4802,6 +7643,21 @@ class GameSession  extends RangerProcessBase {
     view.isHostile = this.isHostileEncounter();
     view.greeting = this.encounterGreeting();
     view.attackWarning = "";
+    if ( this.encounterResult == "emotional" ) {
+      view.isEmotional = true;
+      const dlg = this.dialogueCatalog.dialogueAt(this.pendingEmotionalDialogueIndex);
+      view.emotionalQuestion = dlg.text;
+      let emptyAnswers = [];
+      view.emotionalAnswers = emptyAnswers;
+      const ac = this.dialogueCatalog.answerCount(this.pendingEmotionalDialogueIndex);
+      let ai = 0;
+      while (ai < ac) {
+        view.emotionalAnswers.push(this.dialogueCatalog.answerText(this.pendingEmotionalDialogueIndex, ai));
+        ai = ai + 1;
+      };
+      view.hintLine = "1–3=vastaa  p=poistu";
+      return view;
+    }
     if ( this.needsEncounterQuiz() ) {
       view.hintLine = "1–4=vastaa  n=kollega  a=AI  j=vitsi  i=ei kiinnosta  p=poistu";
     } else {
@@ -4819,8 +7675,15 @@ class GameSession  extends RangerProcessBase {
       view.conductLine = view.conductLine + "  |  ETSINTÄKUULUTUS";
     }
     view.timeLine = this.worldClock.formatLine();
+    view.needsLine = this.playerNeeds.formatLine();
     view.ambientLine = this._map.overheardMsg;
+    if ( this.screen == "epilogue" ) {
+      view.statusLine = this.epilogueSummaryLine();
+    }
     return view;
+  };
+  simEpilogueJson () {
+    return this.buildEpilogueJson();
   };
   getStoryView () {
     return this.engine.getView();
@@ -4994,6 +7857,128 @@ class GameSession  extends RangerProcessBase {
     }
     this._map.ensurePlayerOnWalkable();
     this._map.tickSchedules(this.worldClock.gameMinutes);
+    const needsObj = this.simFieldObj(setup, "needs");
+    const needSatiety = this.simJson.objFieldInt(needsObj, "satiety");
+    if ( needSatiety > 0 ) {
+      this.playerNeeds.satiety = needSatiety;
+    }
+    const needThirst = this.simJson.objFieldInt(needsObj, "thirst");
+    if ( needThirst > 0 ) {
+      this.playerNeeds.thirst = needThirst;
+    }
+    const needAlertness = this.simJson.objFieldInt(needsObj, "alertness");
+    if ( needAlertness > 0 ) {
+      this.playerNeeds.alertness = needAlertness;
+    }
+    const needGas = this.simJson.objFieldInt(needsObj, "gas");
+    if ( needGas > 0 ) {
+      this.playerNeeds.gas = needGas;
+    }
+    this.playerNeeds.clampAll();
+    const relationsOpt = (setup["relations"] instanceof Array ) ? setup ["relations"] : undefined ;
+    if ( typeof(relationsOpt) === "undefined" ) {
+      const relOne = this.simFieldObj(setup, "relation");
+      const relNpcId = this.simJson.objFieldStr(relOne, "npcId");
+      if ( (relNpcId.length) > 0 ) {
+        const rel = this.npcRelations.getOrCreate(relNpcId);
+        const angerVal = this.simJson.objFieldInt(relOne, "anger");
+        if ( angerVal > 0 ) {
+          rel.setStat("anger", angerVal);
+        }
+        const respectVal = this.simJson.objFieldInt(relOne, "respect");
+        if ( respectVal > 0 ) {
+          rel.setStat("respect", respectVal);
+        }
+        const suspicionVal = this.simJson.objFieldInt(relOne, "suspicion");
+        if ( suspicionVal > 0 ) {
+          rel.setStat("suspicion", suspicionVal);
+        }
+        const friendlinessVal = this.simJson.objFieldInt(relOne, "friendliness");
+        if ( friendlinessVal > 0 ) {
+          rel.setStat("friendliness", friendlinessVal);
+        }
+        const loveVal = this.simJson.objFieldInt(relOne, "love");
+        if ( loveVal > 0 ) {
+          rel.setStat("love", loveVal);
+        }
+      }
+    } else {
+      const relations = relationsOpt;
+      let ri = 0;
+      const rn = relations.length;
+      while (ri < rn) {
+        const relObj = this.simJson.arrayObjectAt(relations, ri);
+        const relNpcId_1 = this.simJson.objFieldStr(relObj, "npcId");
+        if ( (relNpcId_1.length) > 0 ) {
+          const rel_1 = this.npcRelations.getOrCreate(relNpcId_1);
+          const angerVal_1 = this.simJson.objFieldInt(relObj, "anger");
+          if ( angerVal_1 > 0 ) {
+            rel_1.setStat("anger", angerVal_1);
+          }
+          const respectVal_1 = this.simJson.objFieldInt(relObj, "respect");
+          if ( respectVal_1 > 0 ) {
+            rel_1.setStat("respect", respectVal_1);
+          }
+          const suspicionVal_1 = this.simJson.objFieldInt(relObj, "suspicion");
+          if ( suspicionVal_1 > 0 ) {
+            rel_1.setStat("suspicion", suspicionVal_1);
+          }
+          const friendlinessVal_1 = this.simJson.objFieldInt(relObj, "friendliness");
+          if ( friendlinessVal_1 > 0 ) {
+            rel_1.setStat("friendliness", friendlinessVal_1);
+          }
+          const loveVal_1 = this.simJson.objFieldInt(relObj, "love");
+          if ( loveVal_1 > 0 ) {
+            rel_1.setStat("love", loveVal_1);
+          }
+        }
+        ri = ri + 1;
+      };
+    }
+    const npcTasksOpt = (setup["npcTasks"] instanceof Array ) ? setup ["npcTasks"] : undefined ;
+    if ( typeof(npcTasksOpt) === "undefined" ) {
+      const taskOne = this.simFieldObj(setup, "npcTask");
+      const taskNpcId = this.simJson.objFieldStr(taskOne, "id");
+      const taskName = this.simJson.objFieldStr(taskOne, "mainTask");
+      if ( (taskNpcId.length) > 0 ) {
+        if ( (taskName.length) > 0 ) {
+          const ent = this._map.findEntityById(taskNpcId);
+          if ( (ent.id.length) > 0 ) {
+            ent.mainTask = taskName;
+          }
+        }
+      }
+    } else {
+      const npcTasks = npcTasksOpt;
+      let ti = 0;
+      const tn = npcTasks.length;
+      while (ti < tn) {
+        const taskObj = this.simJson.arrayObjectAt(npcTasks, ti);
+        const taskNpcId_1 = this.simJson.objFieldStr(taskObj, "id");
+        const taskName_1 = this.simJson.objFieldStr(taskObj, "mainTask");
+        if ( (taskNpcId_1.length) > 0 ) {
+          if ( (taskName_1.length) > 0 ) {
+            const ent_1 = this._map.findEntityById(taskNpcId_1);
+            if ( (ent_1.id.length) > 0 ) {
+              ent_1.mainTask = taskName_1;
+            }
+          }
+        }
+        ti = ti + 1;
+      };
+    }
+    const skipProfile = this.simJson.objFieldBool(setup, "skipProfile");
+    if ( skipProfile == false ) {
+      let simPlayerName = this.simJson.objFieldStr(player, "name");
+      if ( (simPlayerName.length) < 1 ) {
+        simPlayerName = "Larry";
+      }
+      let simSpecialty = this.simJson.objFieldStr(player, "specialty");
+      if ( (simSpecialty.length) < 1 ) {
+        simSpecialty = "cpp";
+      }
+      this.applyPlayerProfile(simPlayerName, simSpecialty);
+    }
     this.syncHrGreeter();
     this._map.lastStatus = "";
     this._map.overheardMsg = "";
@@ -5002,9 +7987,7 @@ class GameSession  extends RangerProcessBase {
     if ( minutes < 1 ) {
       return;
     }
-    this.worldClock.advance(minutes);
-    this._map.tickSchedules(this.worldClock.gameMinutes);
-    this.simMinutesAccum = this.simMinutesAccum + minutes;
+    this.spendTime(minutes);
     this.simStepCount = this.simStepCount + 1;
     this.simLogEvent("tick", (minutes.toString()));
     this.markStateDirty();
@@ -5056,6 +8039,7 @@ class GameSession  extends RangerProcessBase {
       out = out + "false},";
     }
     out = ((out + "\"clockMinutes\":") + ((this.worldClock.gameMinutes.toString()))) + ",";
+    out = ((((((((out + "\"needs\":{\"satiety\":") + ((this.playerNeeds.satiety.toString()))) + ",\"thirst\":") + ((this.playerNeeds.thirst.toString()))) + ",\"alertness\":") + ((this.playerNeeds.alertness.toString()))) + ",\"gas\":") + ((this.playerNeeds.gas.toString()))) + "},";
     out = ((out + "\"clockLine\":\"") + this.simEscapeJson(view.timeLine)) + "\",";
     out = ((out + "\"status\":\"") + this.simEscapeJson(view.statusLine)) + "\",";
     out = ((out + "\"ambient\":\"") + this.simEscapeJson(view.ambientLine)) + "\",";
@@ -5077,6 +8061,56 @@ class GameSession  extends RangerProcessBase {
       out = out + "false";
     }
     out = out + "}";
+    return out;
+  };
+  simDebugRelationsJson () {
+    let out = "{\"relations\":[";
+    let i = 0;
+    const n = this.npcRelations.npcIds.length;
+    while (i < n) {
+      if ( i > 0 ) {
+        out = out + ",";
+      }
+      const npcId = this.npcRelations.npcIds[i];
+      const rel = this.npcRelations.relations[i];
+      out = ((out + "{\"npcId\":\"") + this.simEscapeJson(npcId)) + "\",";
+      out = ((out + "\"anger\":") + ((rel.anger.toString()))) + ",";
+      out = ((out + "\"respect\":") + ((rel.respect.toString()))) + ",";
+      out = ((out + "\"friendliness\":") + ((rel.friendliness.toString()))) + ",";
+      out = ((out + "\"love\":") + ((rel.love.toString()))) + ",";
+      out = ((out + "\"jealousy\":") + ((rel.jealousy.toString()))) + ",";
+      out = ((out + "\"fear\":") + ((rel.fear.toString()))) + ",";
+      out = ((out + "\"suspicion\":") + ((rel.suspicion.toString()))) + ",";
+      out = ((out + "\"followTendency\":") + ((rel.followTendency.toString()))) + ",";
+      out = ((out + "\"panic\":") + ((rel.panic.toString()))) + ",";
+      out = ((out + "\"stress\":") + ((rel.stress.toString()))) + ",";
+      out = ((out + "\"embarrassment\":") + ((rel.embarrassment.toString()))) + "}";
+      i = i + 1;
+    };
+    out = out + "]}";
+    return out;
+  };
+  simDebugEventsJson () {
+    let out = "{\"events\":[";
+    let i = 0;
+    const n = (this._map.eventLog).count();
+    while (i < n) {
+      if ( i > 0 ) {
+        out = out + ",";
+      }
+      const evt = (this._map.eventLog).at(i);
+      out = ((out + "{\"type\":\"") + this.simEscapeJson(evt.type)) + "\",";
+      out = ((out + "\"floor\":") + ((evt.floor.toString()))) + ",";
+      out = ((out + "\"x\":") + ((evt.x.toString()))) + ",";
+      out = ((out + "\"y\":") + ((evt.y.toString()))) + ",";
+      out = ((out + "\"timeMinutes\":") + ((evt.timeMinutes.toString()))) + ",";
+      out = ((out + "\"noise\":") + ((evt.noise.toString()))) + ",";
+      out = ((out + "\"visibility\":") + ((evt.visibility.toString()))) + ",";
+      out = ((out + "\"severity\":") + ((evt.severity.toString()))) + ",";
+      out = ((out + "\"suspiciousness\":") + ((evt.suspiciousness.toString()))) + "}";
+      i = i + 1;
+    };
+    out = out + "]}";
     return out;
   };
   simReportJson () {
@@ -5390,12 +8424,25 @@ module.exports.MapEntity = MapEntity;
 module.exports.EncounterView = EncounterView;
 module.exports.MapFloor = MapFloor;
 module.exports.MapView = MapView;
+module.exports.NpcRelation = NpcRelation;
+module.exports.WorldEvent = WorldEvent;
+module.exports.WorldEventLog = WorldEventLog;
 module.exports.WorldMap = WorldMap;
 module.exports.PlayerConduct = PlayerConduct;
 module.exports.PlayerTools = PlayerTools;
 module.exports.InventoryView = InventoryView;
 module.exports.ActionView = ActionView;
+module.exports.PlayerNeeds = PlayerNeeds;
+module.exports.PlayerCoreStats = PlayerCoreStats;
+module.exports.NpcRelationStore = NpcRelationStore;
+module.exports.EmotionMath = EmotionMath;
+module.exports.EmotionalAnswer = EmotionalAnswer;
+module.exports.EmotionalDialogue = EmotionalDialogue;
+module.exports.DialogueCatalog = DialogueCatalog;
+module.exports.ProximityGreeting = ProximityGreeting;
 module.exports.WorldClock = WorldClock;
+module.exports.EventPerception = EventPerception;
+module.exports.Escalation = Escalation;
 module.exports.GameSession = GameSession;
 module.exports.KoodisampoAppRoot = KoodisampoAppRoot;
 module.exports.KoodisampoLib = KoodisampoLib;

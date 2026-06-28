@@ -30,6 +30,11 @@ fs.copyFileSync(rangerSrc, rangerDest);
 
 copyDir(path.join(root, "content/stories"), path.join(out, "stories"));
 copyDir(path.join(root, "content/question-banks"), path.join(out, "question-banks"));
+fs.mkdirSync(path.join(out, "dialogues"), { recursive: true });
+fs.copyFileSync(
+  path.join(root, "content/dialogues/pack.json"),
+  path.join(out, "dialogues/pack.json"),
+);
 fs.mkdirSync(path.join(out, "worlds"), { recursive: true });
 fs.copyFileSync(
   path.join(root, "content/worlds/corporate-hq-intro.json"),
