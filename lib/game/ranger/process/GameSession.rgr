@@ -1350,6 +1350,13 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       map.lastStatus = (pendingEntityName + ": " + dlg.text)
     }
     pendingEmotionalDialogueIndex = -1
+    if (this.needsEncounterQuiz()) {
+      encounterResult = "quiz"
+      this.afterTimedAction("talk")
+      this.checkFiredGameOver()
+      this.markStateDirty()
+      return
+    }
     this.clearEncounter()
     screen = "map"
     this.afterTimedAction("talk")

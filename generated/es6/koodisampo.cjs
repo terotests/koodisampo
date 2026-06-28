@@ -6216,6 +6216,13 @@ class GameSession  extends RangerProcessBase {
       this._map.lastStatus = (this.pendingEntityName + ": ") + dlg.text;
     }
     this.pendingEmotionalDialogueIndex = -1;
+    if ( this.needsEncounterQuiz() ) {
+      this.encounterResult = "quiz";
+      this.afterTimedAction("talk");
+      this.checkFiredGameOver();
+      this.markStateDirty();
+      return;
+    }
     this.clearEncounter();
     this.screen = "map";
     this.afterTimedAction("talk");
