@@ -5767,6 +5767,10 @@ class GameSession  extends RangerProcessBase {
         return true;
       }
     }
+    const socialRoll = Math.floor(Math.random()*(99 - 0 + 1) + 0);
+    if ( socialRoll < 30 ) {
+      return true;
+    }
     return false;
   };
   applyTalkLoveBump (ent, rel) {

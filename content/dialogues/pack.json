@@ -109,6 +109,144 @@
           "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
         }
       ]
+    },
+    {
+      "id": "neutral_coffee_offer",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 40,
+      "text": "Haluatko kahvia? Keitin juuri tuoreen pannullisen.",
+      "answers": [
+        {
+          "text": "Kiitos, otan mielelläni!",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 10 },
+            { "target": "player", "stat": "karma", "delta": 2 }
+          ]
+        },
+        {
+          "text": "Ei kiitos, minulla on kiire.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
+        },
+        {
+          "text": "Voisitko tuoda sen pöydälleni?",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 10 },
+            { "target": "npc", "stat": "respect", "delta": -5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_weekend_plans",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 50,
+      "text": "Onko sinulla viikonlopuksi jotain suunnitelmia?",
+      "answers": [
+        {
+          "text": "Aion koodata omaa projektia.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 5 },
+            { "target": "npc", "stat": "friendliness", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Ei mitään erikoista. Entä sinulla?",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 10 }]
+        },
+        {
+          "text": "En halua puhua yksityisasioista töissä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -10 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_new_here",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 30,
+      "text": "Olet aika uusi täällä, vai? Miten homma on lähtenyt käyntiin?",
+      "answers": [
+        {
+          "text": "Hyvin! Porukka on ollut tosi avuliasta.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 10 },
+            { "target": "npc", "stat": "respect", "delta": 5 },
+            { "target": "player", "stat": "karma", "delta": 2 }
+          ]
+        },
+        {
+          "text": "Onhan tässä opittavaa, mutta pärjään.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 10 }]
+        },
+        {
+          "text": "Ei kuulu sinulle.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 15 },
+            { "target": "npc", "stat": "friendliness", "delta": -15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_lunch_invite",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 35,
+      "text": "Menemme porukalla lounaalle. Tuletko mukaan?",
+      "answers": [
+        {
+          "text": "Tottakai! Hyvä idea.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 15 },
+            { "target": "player", "stat": "karma", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Kiitos kutsusta, mutta syön omalla ajallani.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
+        },
+        {
+          "text": "Miksi minua kutsutaan? Onko joku syy?",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -5 },
+            { "target": "npc", "stat": "respect", "delta": -5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_help_offer",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 40,
+      "text": "Näytät olevan jumissa jonkin kanssa. Voinko auttaa?",
+      "answers": [
+        {
+          "text": "Kiitos tarjouksesta! Katsotaan yhdessä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 10 },
+            { "target": "npc", "stat": "respect", "delta": 5 },
+            { "target": "player", "stat": "karma", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Ei hätää, selvitän itse.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
+        },
+        {
+          "text": "Sinähän et edes ymmärrä tätä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 20 },
+            { "target": "npc", "stat": "friendliness", "delta": -15 },
+            { "target": "npc", "stat": "respect", "delta": -10 }
+          ]
+        }
+      ]
     }
   ]
 }
