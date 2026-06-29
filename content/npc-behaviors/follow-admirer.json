@@ -1,0 +1,16 @@
+{
+  "id": "follow_admirer",
+  "label": "Ihaileva seuraaja",
+  "moveMode": "follow_player",
+  "params": { "minDist": 3, "maxDist": 5 },
+  "enter": {
+    "event": "quiz_correct",
+    "requires": { "behaviorEligible": "follow_candidate" }
+  },
+  "exit": {
+    "events": ["quiz_wrong", "behavior_timeout", "schedule_interrupt"]
+  },
+  "timeoutMinutes": 30,
+  "statusOnEnter": "{name} näyttää vaikuttuneelta — alkaa seurata sinua etäältä.",
+  "statusOnExit": "{name} palaa työhönsä."
+}

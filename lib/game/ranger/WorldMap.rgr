@@ -495,6 +495,7 @@ class WorldMap {
       if ((strlen ent.romanticPreference) < 1) {
         ent.romanticPreference = "any"
       }
+      ent.behaviorEligible = (json.objFieldStr(entObj "behaviorEligible"))
       this.normalizeEntity(ent)
       push loadedEnt ent
       ei = ei + 1
@@ -1808,6 +1809,9 @@ class WorldMap {
     if ((strlen e.scheduleRole) < 1) {
       return
     }
+    if ((strlen e.activeBehavior) > 0) {
+      return
+    }
     if (e.scheduleRole == "janitor") {
       return
     }
@@ -1924,6 +1928,62 @@ class WorldMap {
     this.recomputeSize()
   }
 
+  fn stepAwayFromPlayer:void (e:MapEntity) {
+    def bestDx:int 0
+    def bestDy:int 0
+    def bestDist:int -1
+    def tryDx:[int]
+    def tryDy:[int]
+    push tryDx 1
+    push tryDy 0
+    push tryDx -1
+    push tryDy 0
+    push tryDx 0
+    push tryDy 1
+    push tryDx 0
+    push tryDy -1
+    def di:int 0
+    while (di < 4) {
+      def dx:int (at tryDx di)
+      def dy:int (at tryDy di)
+      def nx:int (e.x + dx)
+      def ny:int (e.y + dy)
+      if (this.canEntityStepTo(e nx ny false)) {
+        def nd:int (this.manhattanTo(nx ny playerX playerY))
+        if (nd > bestDist) {
+          bestDist = nd
+          bestDx = dx
+          bestDy = dy
+        }
+      }
+      di = di + 1
+    }
+    if (bestDist >= 0) {
+      this.tryMoveEntity(e bestDx bestDy)
+    }
+  }
+
+  fn stepFollowPlayer:void (e:MapEntity) {
+    if (this.canNpcSeePlayer(e) == false) {
+      return
+    }
+    def targetDist:int e.behaviorParam
+    if (targetDist < 3) {
+      targetDist = 3
+    }
+    if (targetDist > 5) {
+      targetDist = 5
+    }
+    def dist:int (this.manhattanTo(e.x e.y playerX playerY))
+    if (dist < targetDist) {
+      this.stepAwayFromPlayer(e)
+    } {
+      if (dist > targetDist) {
+        this.stepBestToward(e playerX playerY)
+      }
+    }
+  }
+
   fn tickAgents:MapEntity () {
     def empty:MapEntity (new MapEntity)
     def floor:MapFloor (this.activeFloor())
@@ -1981,6 +2041,13 @@ class WorldMap {
         continue
       }
       if (e.moveMode == "stationary") {
+        i = i + 1
+        continue
+      }
+      if (e.moveMode == "follow_player") {
+        if (this.canNpcSeePlayer(e)) {
+          this.stepFollowPlayer(e)
+        }
         i = i + 1
         continue
       }

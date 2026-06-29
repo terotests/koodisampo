@@ -992,6 +992,10 @@ class MapEntity  {
     this.offDuty = false;
     this.actionId = "";
     this.greetCooldownUntil = 0;
+    this.activeBehavior = "";
+    this.behaviorEligible = "";
+    this.behaviorParam = 0;
+    this.behaviorStartedAt = 0;
   }
 }
 class EncounterView  {
@@ -1935,6 +1939,7 @@ class WorldMap  {
       if ( (ent.romanticPreference.length) < 1 ) {
         ent.romanticPreference = "any";
       }
+      ent.behaviorEligible = this.json.objFieldStr(entObj, "behaviorEligible");
       this.normalizeEntity(ent);
       loadedEnt.push(ent);
       ei = ei + 1;
@@ -3193,6 +3198,9 @@ class WorldMap  {
     if ( (e.scheduleRole.length) < 1 ) {
       return;
     }
+    if ( (e.activeBehavior.length) > 0 ) {
+      return;
+    }
     if ( e.scheduleRole == "janitor" ) {
       return;
     }
@@ -3307,6 +3315,60 @@ class WorldMap  {
     this.currentFloor = savedFloor;
     this.recomputeSize();
   };
+  stepAwayFromPlayer (e) {
+    let bestDx = 0;
+    let bestDy = 0;
+    let bestDist = -1;
+    let tryDx = [];
+    let tryDy = [];
+    tryDx.push(1);
+    tryDy.push(0);
+    tryDx.push(-1);
+    tryDy.push(0);
+    tryDx.push(0);
+    tryDy.push(1);
+    tryDx.push(0);
+    tryDy.push(-1);
+    let di = 0;
+    while (di < 4) {
+      const dx = tryDx[di];
+      const dy = tryDy[di];
+      const nx = e.x + dx;
+      const ny = e.y + dy;
+      if ( this.canEntityStepTo(e, nx, ny, false) ) {
+        const nd = this.manhattanTo(nx, ny, this.playerX, this.playerY);
+        if ( nd > bestDist ) {
+          bestDist = nd;
+          bestDx = dx;
+          bestDy = dy;
+        }
+      }
+      di = di + 1;
+    };
+    if ( bestDist >= 0 ) {
+      this.tryMoveEntity(e, bestDx, bestDy);
+    }
+  };
+  stepFollowPlayer (e) {
+    if ( this.canNpcSeePlayer(e) == false ) {
+      return;
+    }
+    let targetDist = e.behaviorParam;
+    if ( targetDist < 3 ) {
+      targetDist = 3;
+    }
+    if ( targetDist > 5 ) {
+      targetDist = 5;
+    }
+    const dist = this.manhattanTo(e.x, e.y, this.playerX, this.playerY);
+    if ( dist < targetDist ) {
+      this.stepAwayFromPlayer(e);
+    } else {
+      if ( dist > targetDist ) {
+        this.stepBestToward(e, this.playerX, this.playerY);
+      }
+    }
+  };
   tickAgents () {
     const empty = new MapEntity();
     const floor = this.activeFloor();
@@ -3364,6 +3426,13 @@ class WorldMap  {
         continue;
       }
       if ( e.moveMode == "stationary" ) {
+        i = i + 1;
+        continue;
+      }
+      if ( e.moveMode == "follow_player" ) {
+        if ( this.canNpcSeePlayer(e) ) {
+          this.stepFollowPlayer(e);
+        }
         i = i + 1;
         continue;
       }
@@ -4996,6 +5065,240 @@ class Escalation  {
     return false;
   };
 }
+class NpcBehaviorRegistry  {
+  constructor() {
+    this.followAdmirerEnabled = true;
+    this.followMinDist = 3;
+    this.followMaxDist = 5;
+    this.followTimeoutMinutes = 30;
+    this.json = new StoryJson();
+  }
+  loadDefaults () {
+    this.followAdmirerEnabled = true;
+    this.followMinDist = 3;
+    this.followMaxDist = 5;
+    this.followTimeoutMinutes = 30;
+  };
+  loadFromText (raw) {
+    this.loadDefaults();
+    if ( (raw.length) < 2 ) {
+      return true;
+    }
+    try {
+      const rootOpt = JSON.parse(raw);
+      if ( typeof(rootOpt) === "undefined" ) {
+        return false;
+      }
+      const root = rootOpt;
+      const behaviorsOpt = (root["behaviors"] instanceof Array ) ? root ["behaviors"] : undefined ;
+      if ( (typeof(behaviorsOpt) === "undefined") == false ) {
+        const behaviors = behaviorsOpt;
+        let bi = 0;
+        const bn = behaviors.length;
+        while (bi < bn) {
+          const bObj = this.json.arrayObjectAt(behaviors, bi);
+          const bid = this.json.objFieldStr(bObj, "id");
+          if ( bid == "follow_admirer" ) {
+            if ( this.json.objFieldBool(bObj, "enabled") == false ) {
+              this.followAdmirerEnabled = false;
+            }
+          }
+          bi = bi + 1;
+        };
+      }
+      const defaultsOpt = (root["defaults"] instanceof Object ) ? root ["defaults"] : undefined ;
+      if ( (typeof(defaultsOpt) === "undefined") == false ) {
+        const defaults = defaultsOpt;
+        const followOpt = (defaults["follow_admirer"] instanceof Object ) ? defaults ["follow_admirer"] : undefined ;
+        if ( (typeof(followOpt) === "undefined") == false ) {
+          const followDef = followOpt;
+          const minD = this.json.objFieldInt(followDef, "minDist");
+          const maxD = this.json.objFieldInt(followDef, "maxDist");
+          const timeout = this.json.objFieldInt(followDef, "timeoutMinutes");
+          if ( minD >= 2 ) {
+            this.followMinDist = minD;
+          }
+          if ( maxD >= minD ) {
+            this.followMaxDist = maxD;
+          }
+          if ( timeout > 0 ) {
+            this.followTimeoutMinutes = timeout;
+          }
+        }
+      }
+      return true;
+    } catch(e) {
+    }
+    return false;
+  };
+  hashPick (seed, floorIndex, tag, count) {
+    if ( count < 1 ) {
+      return 0;
+    }
+    let h = (seed + (floorIndex * 997)) + ((tag.length) * 31);
+    if ( h < 0 ) {
+      h = 0 - h;
+    }
+    return h % count;
+  };
+  pickFollowDistance (seed, entityId) {
+    const span = (this.followMaxDist - this.followMinDist) + 1;
+    if ( span < 1 ) {
+      return this.followMinDist;
+    }
+    let h = seed + ((entityId.length) * 13);
+    if ( h < 0 ) {
+      h = 0 - h;
+    }
+    return this.followMinDist + (h % span);
+  };
+  assignEligibility (floors, root, seed) {
+    const rollsOpt = (root["behaviorRolls"] instanceof Array ) ? root ["behaviorRolls"] : undefined ;
+    if ( typeof(rollsOpt) === "undefined" ) {
+      return;
+    }
+    const rolls = rollsOpt;
+    let ri = 0;
+    const rn = rolls.length;
+    while (ri < rn) {
+      const rollObj = this.json.arrayObjectAt(rolls, ri);
+      const floorIndex = this.json.objFieldInt(rollObj, "floor");
+      const assignTag = this.json.objFieldStr(rollObj, "assign");
+      let pickKind = this.json.objFieldStr(rollObj, "kind");
+      if ( (assignTag.length) < 1 ) {
+        ri = ri + 1;
+        continue;
+      }
+      if ( (pickKind.length) < 1 ) {
+        pickKind = "coworker";
+      }
+      if ( floorIndex < 0 ) {
+        ri = ri + 1;
+        continue;
+      }
+      if ( floorIndex >= (floors.length) ) {
+        ri = ri + 1;
+        continue;
+      }
+      const floor = floors[floorIndex];
+      const ents = floor.entities;
+      let candidates = [];
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( e.kind == pickKind ) {
+          if ( e.offDuty == false ) {
+            if ( (e.behaviorEligible.length) < 1 ) {
+              candidates.push(ei);
+            }
+          }
+        }
+        ei = ei + 1;
+      };
+      const candCount = candidates.length;
+      if ( candCount > 0 ) {
+        const pick = this.hashPick(seed, floorIndex, assignTag, candCount);
+        const chosenIdx = candidates[pick];
+        const chosen = ents[chosenIdx];
+        chosen.behaviorEligible = assignTag;
+      }
+      ri = ri + 1;
+    };
+  };
+  restoreDefaultMoveMode (ent) {
+    if ( (ent.scheduleRole.length) > 0 ) {
+      ent.moveMode = "schedule";
+    } else {
+      if ( ent.kind == "coworker" ) {
+        ent.moveMode = "wander";
+      }
+    }
+  };
+  clearBehavior (ent, status) {
+    if ( (ent.activeBehavior.length) < 1 ) {
+      return "";
+    }
+    ent.activeBehavior = "";
+    ent.behaviorParam = 0;
+    ent.behaviorStartedAt = 0;
+    this.restoreDefaultMoveMode(ent);
+    return status;
+  };
+  activateFollowAdmirer (ent, gameMinutes, seed) {
+    ent.activeBehavior = "follow_admirer";
+    ent.behaviorStartedAt = gameMinutes;
+    ent.behaviorParam = this.pickFollowDistance(seed, ent.id);
+    ent.moveMode = "follow_player";
+    return ent.name + " näyttää vaikuttuneelta — alkaa seurata sinua etäältä.";
+  };
+  onQuizCorrect (ent, gameMinutes, seed) {
+    if ( this.followAdmirerEnabled == false ) {
+      return "";
+    }
+    if ( ent.behaviorEligible != "follow_candidate" ) {
+      return "";
+    }
+    if ( ent.kind != "coworker" ) {
+      return "";
+    }
+    if ( (ent.activeBehavior.length) > 0 ) {
+      return "";
+    }
+    return this.activateFollowAdmirer(ent, gameMinutes, seed);
+  };
+  onQuizWrong (ent) {
+    if ( ent.activeBehavior == "follow_admirer" ) {
+      return this.clearBehavior(ent, (ent.name + " huokaisee ja palaa työhönsä."));
+    }
+    return "";
+  };
+  shouldInterruptForSchedule (ent) {
+    if ( ent.npcState == "lunch" ) {
+      return true;
+    }
+    if ( ent.npcState == "leaving" ) {
+      return true;
+    }
+    if ( ent.npcState == "at_elevator" ) {
+      return true;
+    }
+    if ( ent.npcState == "gone" ) {
+      return true;
+    }
+    if ( ent.offDuty ) {
+      return true;
+    }
+    return false;
+  };
+  tick (floors, gameMinutes) {
+    let fi = 0;
+    const fn = floors.length;
+    while (fi < fn) {
+      const floor = floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( e.activeBehavior == "follow_admirer" ) {
+          if ( this.shouldInterruptForSchedule(e) ) {
+            this.clearBehavior(e, e.name + " poistuu — päivärutiini keskeyttää seurannan.");
+          } else {
+            if ( e.behaviorStartedAt > 0 ) {
+              const elapsed = gameMinutes - e.behaviorStartedAt;
+              if ( elapsed >= this.followTimeoutMinutes ) {
+                this.clearBehavior(e, e.name + " palaa työpisteelleen.");
+              }
+            }
+          }
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+  };
+}
 class GameSession  extends RangerProcessBase {
   constructor() {
     super()
@@ -5051,6 +5354,7 @@ class GameSession  extends RangerProcessBase {
     this.playerSpecialty = "";
     this.profileComplete = false;
     this.pendingGreetNpcId = "";
+    this.behaviorSeed = 0;
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
@@ -5066,6 +5370,8 @@ class GameSession  extends RangerProcessBase {
     this.worldClock = new WorldClock();
     this.simJson = new StoryJson();
     this.proximityGreeting = new ProximityGreeting();
+    this.npcBehaviors = new NpcBehaviorRegistry();
+    this.npcBehaviors.loadDefaults();
   }
   ensureEngine () {
     if ( this.engineReady ) {
@@ -5193,6 +5499,18 @@ class GameSession  extends RangerProcessBase {
       }
       this._map.overheardMsg = "";
       this._map.lastStatus = failStatus;
+    }
+    const quizEnt = this._map.findEntityById(this.pendingEntityId);
+    if ( (quizEnt.id.length) > 0 ) {
+      let behaviorMsg = "";
+      if ( correct ) {
+        behaviorMsg = this.npcBehaviors.onQuizCorrect(quizEnt, this.worldClock.gameMinutes, this.behaviorSeed);
+      } else {
+        behaviorMsg = this.npcBehaviors.onQuizWrong(quizEnt);
+      }
+      if ( (behaviorMsg.length) > 0 ) {
+        this._map.lastStatus = (this._map.lastStatus + " ") + behaviorMsg;
+      }
     }
     this.clearEncounter();
     this.screen = "map";
@@ -5363,10 +5681,22 @@ class GameSession  extends RangerProcessBase {
     const ok = this._map.loadFromText(mapJson);
     if ( ok == false ) {
       this.menuMessage = "Kartan lataus epäonnistui.";
+    } else {
+      if ( this.behaviorSeed < 1 ) {
+        this.behaviorSeed = Math.floor(Math.random()*(999999 - 1 + 1) + 1);
+      }
+      if ( this._map.hasMap ) {
+        this.npcBehaviors.assignEligibility(this._map.floors, this._map.root, this.behaviorSeed);
+      }
     }
     this.bootstrapPlayerVitals();
     this.syncHrGreeter();
     this.syncProfileScreen();
+    this.markStateDirty();
+    return ok;
+  };
+  loadNpcBehaviorsFromText (raw) {
+    const ok = this.npcBehaviors.loadFromText(raw);
     this.markStateDirty();
     return ok;
   };
@@ -5748,6 +6078,7 @@ class GameSession  extends RangerProcessBase {
   };
   tickNpcRelations () {
     this._map.tickNpcMainTasks(this.worldClock.gameMinutes);
+    this.npcBehaviors.tick(this._map.floors, this.worldClock.gameMinutes);
     this._map.syncNpcOverlayEmotions(this.npcRelations.npcIds, this.npcRelations.relations);
     this.checkEscalation();
     this.evaluateNpcReporting();
@@ -7818,6 +8149,7 @@ class GameSession  extends RangerProcessBase {
       }
       this.simSeed = seed;
       this.simRngState = seed;
+      this.behaviorSeed = seed;
       const ok = this.loadMapFromText(worldJson);
       if ( ok == false ) {
         this.simLogError("world load failed");
@@ -8470,6 +8802,7 @@ module.exports.ProximityGreeting = ProximityGreeting;
 module.exports.WorldClock = WorldClock;
 module.exports.EventPerception = EventPerception;
 module.exports.Escalation = Escalation;
+module.exports.NpcBehaviorRegistry = NpcBehaviorRegistry;
 module.exports.GameSession = GameSession;
 module.exports.KoodisampoAppRoot = KoodisampoAppRoot;
 module.exports.KoodisampoLib = KoodisampoLib;

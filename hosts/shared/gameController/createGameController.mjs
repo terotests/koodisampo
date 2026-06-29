@@ -17,6 +17,10 @@ const dialoguePackJson = readFileSync(
   resolve(__dirname, "../../../content/dialogues/pack.json"),
   "utf8",
 );
+const npcBehaviorPackJson = readFileSync(
+  resolve(__dirname, "../../../content/npc-behaviors/pack.json"),
+  "utf8",
+);
 
 /**
  * @param {{
@@ -41,6 +45,7 @@ export function createGameController(deps) {
   dispatch(session, () => {
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
     if (save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
     } else if (bootKarma > 0) {
@@ -248,6 +253,7 @@ export function createGameController(deps) {
     dispatch(session, () => {
       session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
       if (keepProgress && save?.features?.ids) {
         session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
       } else if (bootKarma > 0) {

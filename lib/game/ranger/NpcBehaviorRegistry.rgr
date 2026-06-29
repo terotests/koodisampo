@@ -1,0 +1,254 @@
+
+Import "JSON.rgr"
+Import "StoryJson.rgr"
+Import "MapEntity.rgr"
+Import "MapFloor.rgr"
+
+class NpcBehaviorRegistry {
+  def json:StoryJson
+  def followAdmirerEnabled:boolean true
+  def followMinDist:int 3
+  def followMaxDist:int 5
+  def followTimeoutMinutes:int 30
+
+  Constructor () {
+    json = (new StoryJson)
+  }
+
+  fn loadDefaults:void () {
+    followAdmirerEnabled = true
+    followMinDist = 3
+    followMaxDist = 5
+    followTimeoutMinutes = 30
+  }
+
+  fn loadFromText:boolean (raw:string) {
+    this.loadDefaults()
+    if ((strlen raw) < 2) {
+      return true
+    }
+    try {
+      def rootOpt@(optional):JSONDataObject (from_string raw)
+      if (null? rootOpt) {
+        return false
+      }
+      def root:JSONDataObject (unwrap rootOpt)
+      def behaviorsOpt@(optional):JSONArrayObject (getArray root "behaviors")
+      if ((null? behaviorsOpt) == false) {
+        def behaviors:JSONArrayObject (unwrap behaviorsOpt)
+        def bi:int 0
+        def bn:int (array_length behaviors)
+        while (bi < bn) {
+          def bObj:JSONDataObject (json.arrayObjectAt(behaviors bi))
+          def bid:string (json.objFieldStr(bObj "id"))
+          if (bid == "follow_admirer") {
+            if (json.objFieldBool(bObj "enabled") == false) {
+              followAdmirerEnabled = false
+            }
+          }
+          bi = bi + 1
+        }
+      }
+      def defaultsOpt@(optional):JSONDataObject (getObject root "defaults")
+      if ((null? defaultsOpt) == false) {
+        def defaults:JSONDataObject (unwrap defaultsOpt)
+        def followOpt@(optional):JSONDataObject (getObject defaults "follow_admirer")
+        if ((null? followOpt) == false) {
+          def followDef:JSONDataObject (unwrap followOpt)
+          def minD:int (json.objFieldInt(followDef "minDist"))
+          def maxD:int (json.objFieldInt(followDef "maxDist"))
+          def timeout:int (json.objFieldInt(followDef "timeoutMinutes"))
+          if (minD >= 2) {
+            followMinDist = minD
+          }
+          if (maxD >= minD) {
+            followMaxDist = maxD
+          }
+          if (timeout > 0) {
+            followTimeoutMinutes = timeout
+          }
+        }
+      }
+      return true
+    } {
+    }
+    return false
+  }
+
+  fn hashPick:int (seed:int floorIndex:int tag:string count:int) {
+    if (count < 1) {
+      return 0
+    }
+    def h:int (seed + (floorIndex * 997) + ((strlen tag) * 31))
+    if (h < 0) {
+      h = (0 - h)
+    }
+    return (h % count)
+  }
+
+  fn pickFollowDistance:int (seed:int entityId:string) {
+    def span:int ((followMaxDist - followMinDist) + 1)
+    if (span < 1) {
+      return followMinDist
+    }
+    def h:int (seed + ((strlen entityId) * 13))
+    if (h < 0) {
+      h = (0 - h)
+    }
+    return (followMinDist + (h % span))
+  }
+
+  fn assignEligibility:void (floors:[MapFloor] root:JSONDataObject seed:int) {
+    def rollsOpt@(optional):JSONArrayObject (getArray root "behaviorRolls")
+    if (null? rollsOpt) {
+      return
+    }
+    def rolls:JSONArrayObject (unwrap rollsOpt)
+    def ri:int 0
+    def rn:int (array_length rolls)
+    while (ri < rn) {
+      def rollObj:JSONDataObject (json.arrayObjectAt(rolls ri))
+      def floorIndex:int (json.objFieldInt(rollObj "floor"))
+      def assignTag:string (json.objFieldStr(rollObj "assign"))
+      def pickKind:string (json.objFieldStr(rollObj "kind"))
+      if ((strlen assignTag) < 1) {
+        ri = ri + 1
+        continue
+      }
+      if ((strlen pickKind) < 1) {
+        pickKind = "coworker"
+      }
+      if (floorIndex < 0) {
+        ri = ri + 1
+        continue
+      }
+      if (floorIndex >= (array_length floors)) {
+        ri = ri + 1
+        continue
+      }
+      def floor:MapFloor (at floors floorIndex)
+      def ents:[MapEntity] (floor.entities)
+      def candidates:[int]
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if (e.kind == pickKind) {
+          if (e.offDuty == false) {
+            if ((strlen e.behaviorEligible) < 1) {
+              push candidates ei
+            }
+          }
+        }
+        ei = ei + 1
+      }
+      def candCount:int (array_length candidates)
+      if (candCount > 0) {
+        def pick:int (this.hashPick(seed floorIndex assignTag candCount))
+        def chosenIdx:int (at candidates pick)
+        def chosen:MapEntity (at ents chosenIdx)
+        chosen.behaviorEligible = assignTag
+      }
+      ri = ri + 1
+    }
+  }
+
+  fn restoreDefaultMoveMode:void (ent:MapEntity) {
+    if ((strlen ent.scheduleRole) > 0) {
+      ent.moveMode = "schedule"
+    } {
+      if (ent.kind == "coworker") {
+        ent.moveMode = "wander"
+      }
+    }
+  }
+
+  fn clearBehavior:string (ent:MapEntity status:string) {
+    if ((strlen ent.activeBehavior) < 1) {
+      return ""
+    }
+    ent.activeBehavior = ""
+    ent.behaviorParam = 0
+    ent.behaviorStartedAt = 0
+    this.restoreDefaultMoveMode(ent)
+    return status
+  }
+
+  fn activateFollowAdmirer:string (ent:MapEntity gameMinutes:int seed:int) {
+    ent.activeBehavior = "follow_admirer"
+    ent.behaviorStartedAt = gameMinutes
+    ent.behaviorParam = (this.pickFollowDistance(seed ent.id))
+    ent.moveMode = "follow_player"
+    return (ent.name + " näyttää vaikuttuneelta — alkaa seurata sinua etäältä.")
+  }
+
+  fn onQuizCorrect:string (ent:MapEntity gameMinutes:int seed:int) {
+    if (followAdmirerEnabled == false) {
+      return ""
+    }
+    if (ent.behaviorEligible != "follow_candidate") {
+      return ""
+    }
+    if (ent.kind != "coworker") {
+      return ""
+    }
+    if ((strlen ent.activeBehavior) > 0) {
+      return ""
+    }
+    return (this.activateFollowAdmirer(ent gameMinutes seed))
+  }
+
+  fn onQuizWrong:string (ent:MapEntity) {
+    if (ent.activeBehavior == "follow_admirer") {
+      return (this.clearBehavior(ent (ent.name + " huokaisee ja palaa työhönsä.")))
+    }
+    return ""
+  }
+
+  fn shouldInterruptForSchedule:boolean (ent:MapEntity) {
+    if (ent.npcState == "lunch") {
+      return true
+    }
+    if (ent.npcState == "leaving") {
+      return true
+    }
+    if (ent.npcState == "at_elevator") {
+      return true
+    }
+    if (ent.npcState == "gone") {
+      return true
+    }
+    if (ent.offDuty) {
+      return true
+    }
+    return false
+  }
+
+  fn tick:void (floors:[MapFloor] gameMinutes:int) {
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if (e.activeBehavior == "follow_admirer") {
+          if (this.shouldInterruptForSchedule(e)) {
+            this.clearBehavior(e (e.name + " poistuu — päivärutiini keskeyttää seurannan."))
+          } {
+            if (e.behaviorStartedAt > 0) {
+              def elapsed:int (gameMinutes - e.behaviorStartedAt)
+              if (elapsed >= followTimeoutMinutes) {
+                this.clearBehavior(e (e.name + " palaa työpisteelleen."))
+              }
+            }
+          }
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+  }
+}
