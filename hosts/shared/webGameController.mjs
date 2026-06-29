@@ -15,6 +15,7 @@ import {
   pickOfficeJoke,
   AI_STUDY_KARMA_COST,
   clearEncounterQuizCache,
+  randomEncounterPickNonce,
 } from "../terminal/encounterQuestions.mjs";
 import {
   normalizeQuizHistory,
@@ -153,6 +154,10 @@ export function createWebGameController(deps) {
   let personRegistryState = normalizePersonRegistry(save?.personRegistry);
   let interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   let guruPickNonce = save?.progress?.guruPickNonce ?? 0;
+  let encounterPickNonce = save?.progress?.encounterPickNonce ?? 0;
+  if (!encounterPickNonce && !save?.features?.ids?.length) {
+    encounterPickNonce = randomEncounterPickNonce();
+  }
   /** @type {null | { type: string, [key: string]: unknown }} */
   let overlay = null;
   let quizRecordedKey = "";
@@ -204,6 +209,7 @@ export function createWebGameController(deps) {
     personRegistryState = emptyPersonRegistry();
     interviewPickNonce = 0;
     guruPickNonce = 0;
+    encounterPickNonce = randomEncounterPickNonce();
   }
 
   function resetWebSession(keepProgress = false) {
@@ -221,6 +227,7 @@ export function createWebGameController(deps) {
       personRegistryState = normalizePersonRegistry(save.personRegistry);
       interviewPickNonce = save.progress?.interviewPickNonce ?? 0;
       guruPickNonce = save.progress?.guruPickNonce ?? 0;
+      encounterPickNonce = save.progress?.encounterPickNonce ?? 0;
     }
   } else {
     clearAllProgress();
@@ -277,6 +284,7 @@ function updateLocalSave() {
     guruQuizCorrect: session.guruQuizCorrect ?? 0,
     interviewPickNonce,
     guruPickNonce,
+    encounterPickNonce,
     profileComplete: !!session.profileComplete,
     playerName: session.playerDisplayName ?? "",
     playerSpecialty: session.playerSpecialty ?? "",
@@ -309,14 +317,20 @@ function pendingEncounterEntity() {
 
 function makeQuizPickOptions() {
   return {
-    nextPickNonce(entityId) {
+    nextPickNonce(entityId, kind) {
       if (entityId === "receptionist") {
         interviewPickNonce += 1;
-      } else if (entityId === "mentor" || session.pendingEntityKind === "guru") {
-        guruPickNonce += 1;
+        persistWeb();
+        return interviewPickNonce;
       }
+      if (entityId === "mentor" || kind === "guru") {
+        guruPickNonce += 1;
+        persistWeb();
+        return guruPickNonce;
+      }
+      encounterPickNonce += 1;
       persistWeb();
-      return entityId === "receptionist" ? interviewPickNonce : guruPickNonce;
+      return encounterPickNonce;
     },
   };
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { pickQuestion, listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
+import { pickQuestion, listAllQuestions, randomEncounterPickNonce } from "../hosts/terminal/encounterQuestions.mjs";
 import { emptyQuizHistory, recordQuizAnswer } from "../hosts/terminal/quizHistory.mjs";
 
 /**
@@ -88,6 +88,41 @@ for (let nonce = 0; nonce < 30; nonce += 1) {
 assert(
   nonceResults.size >= 5,
   `30 nonce-varied picks yielded only ${nonceResults.size} unique — expected at least 5`,
+);
+
+// 7) Security patrol (Partio): without nonce salt, first pick is always the same
+const partio = { id: "editor-police-car-24-3", kind: "security", char: "🚓", name: "Partio" };
+const stalePartioPicks = new Set();
+for (let i = 0; i < 5; i += 1) {
+  const { question } = pickQuestion(partio, 50, emptyQuizHistory(), { pickNonce: 0, deaths: 0 });
+  stalePartioPicks.add(question.id);
+}
+assert(
+  stalePartioPicks.size === 1,
+  "pickNonce=0 reproduces same Partio question (regression guard)",
+);
+
+const partioNoncePicks = new Set();
+for (let nonce = 1; nonce <= 10; nonce += 1) {
+  const { question } = pickQuestion(partio, 50, emptyQuizHistory(), { pickNonce: nonce, deaths: 0 });
+  partioNoncePicks.add(question.id);
+}
+assert(
+  partioNoncePicks.size >= 5,
+  `Partio with encounterPickNonce yielded only ${partioNoncePicks.size} unique — expected at least 5`,
+);
+
+const randomPartioStarts = new Set();
+for (let i = 0; i < 20; i += 1) {
+  const { question } = pickQuestion(partio, 50, emptyQuizHistory(), {
+    pickNonce: randomEncounterPickNonce(),
+    deaths: 0,
+  });
+  randomPartioStarts.add(question.id);
+}
+assert(
+  randomPartioStarts.size >= 2,
+  `randomEncounterPickNonce should vary first Partio question (${randomPartioStarts.size} unique / 20)`,
 );
 
 console.log("question_randomness.test.mjs OK");
