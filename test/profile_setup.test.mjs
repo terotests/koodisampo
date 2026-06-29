@@ -81,4 +81,26 @@ snap = restored.game.snapshot();
 assert(snap.screen === "map", `saved profile should skip setup, got ${snap.screen}`);
 assert(snap.playerDisplayName === "Liisa", "saved profile name should restore");
 
+const fullReset = createController({
+  features: { ids: ["debug:boot", "cpp:test"], amounts: [50, 100] },
+  deaths: 3,
+  progress: {
+    profileComplete: true,
+    playerName: "Liisa",
+    playerSpecialty: "python",
+    guruIntroPassed: true,
+    guruQuizCorrect: 2,
+  },
+});
+fullReset.game.setPlayerProfile("Liisa", "python");
+assert(fullReset.getSave().progress?.playerName === "Liisa", "profile should persist before reset");
+fullReset.game.reset(false);
+snap = fullReset.game.snapshot();
+assert(snap.screen === "setup", `full reset should show setup, got ${snap.screen}`);
+assert(snap.needsProfileSetup === true, "full reset should need profile setup");
+assert(snap.karma === 50, `full reset karma should be boot only, got ${snap.karma}`);
+assert(fullReset.getSave().deaths === 0, "full reset should clear deaths");
+assert(!fullReset.getSave().progress?.profileComplete, "full reset should clear saved profile");
+assert(fullReset.getSave().progress?.playerName === "", "full reset should clear saved name");
+
 console.log("profile_setup.test.mjs OK");

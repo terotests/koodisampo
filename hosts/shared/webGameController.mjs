@@ -20,6 +20,7 @@ import {
   normalizeQuizHistory,
   recordQuizAnswer,
   recordQuizShown,
+  emptyQuizHistory,
 } from "../terminal/quizHistory.mjs";
 import {
   normalizeStudyBacklog,
@@ -28,6 +29,7 @@ import {
   questionMetaFromQuiz,
   studyBacklogCounts,
   formatStudyList,
+  emptyStudyBacklog,
 } from "../terminal/studyBacklog.mjs";
 import {
   collectAllCastFromSession,
@@ -195,7 +197,16 @@ export function createWebGameController(deps) {
     return startStoryFromId(storyId);
   }
 
-  function resetWebSession(keepProgress = true) {
+  function clearAllProgress() {
+    save = {};
+    quizHistoryState = emptyQuizHistory();
+    studyBacklogState = emptyStudyBacklog();
+    personRegistryState = emptyPersonRegistry();
+    interviewPickNonce = 0;
+    guruPickNonce = 0;
+  }
+
+  function resetWebSession(keepProgress = false) {
   overlay = null;
   activeStory = null;
   castListOpen = false;
@@ -211,6 +222,8 @@ export function createWebGameController(deps) {
       interviewPickNonce = save.progress?.interviewPickNonce ?? 0;
       guruPickNonce = save.progress?.guruPickNonce ?? 0;
     }
+  } else {
+    clearAllProgress();
   }
   dispatch(session, () => {
     refreshMapJson();
@@ -234,15 +247,21 @@ export function createWebGameController(deps) {
         save.progress?.guruQuizCorrect ?? 0,
       );
     } else {
+      session.applySave([], [], 0);
+      session.applyGuruProgress(false, false, 0);
       session.karma.add("debug:boot", 50);
     }
     session.interviewPassed = false;
     session.interviewFailed = false;
+    sessionMap(session).overheardMsg = "";
     sessionMap(session).lastStatus = getMapJson
       ? "Peli aloitettu alusta — kartta ladattu levyltä."
       : "Peli aloitettu alusta — pihamaalta.";
     sessionMap(session).ensurePlayerOnWalkable();
   });
+  if (!keepProgress) {
+    persistWeb();
+  }
 }
 
 function updateLocalSave() {

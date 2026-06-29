@@ -262,7 +262,11 @@ export function mountGameUI(game: WebGame) {
       if (game.reloadWorldFromSource) {
         await game.reloadWorldFromSource();
       }
-      game.reset(true);
+      game.reset(false);
+      profileFormSeeded = false;
+      profileFormDirty = false;
+      if (profileNameEl) profileNameEl.value = "";
+      if (profileSpecialtyEl) profileSpecialtyEl.value = "cpp";
       lastRenderKey = "";
       render(game.snapshot());
     }
