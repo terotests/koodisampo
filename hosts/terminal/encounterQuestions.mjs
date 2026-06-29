@@ -60,6 +60,11 @@ function hashString(s) {
   return h >>> 0;
 }
 
+/** Satunnainen alkuarvo uuden pelin kysymysvalinnalle (Partio, kollegat, …). */
+export function randomEncounterPickNonce() {
+  return ((Date.now() ^ ((Math.random() * 0x7fffffff) | 0)) >>> 0) % 2147483646 + 1;
+}
+
 function floorFromEntity(entity) {
   const m = entity?.id?.match(/(?:coworker|ceo|security)-(\d+)-/);
   if (m) return Number(m[1]);
@@ -358,6 +363,21 @@ function filterAndScoreQuestions(questions, profile, targetDiff, excludeIds) {
     .sort((a, b) => b.score - a.score || a.q.id.localeCompare(b.q.id));
 }
 
+function buildQuestionTier(scored, minSize = 6) {
+  if (scored.length === 0) return scored;
+  const topScore = scored[0].score;
+  let band = 8;
+  let tier = scored.filter((x) => x.score >= topScore - band);
+  while (tier.length < minSize && band < 64) {
+    band += 8;
+    tier = scored.filter((x) => x.score >= topScore - band);
+  }
+  if (tier.length < minSize) {
+    return scored.slice(0, Math.min(scored.length, Math.max(minSize, 12)));
+  }
+  return tier;
+}
+
 export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOptions = null) {
   const questions = loadAllQuestions();
   const playerSpecialty = pickOptions?.playerSpecialty ?? "";
@@ -422,8 +442,8 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   }
 
   const topScore = scored[0].score;
-  const tier = scored.filter((x) => x.score >= topScore - 8);
-  const salt = `${pickNonce}:${entityAsked.length}:${deaths}:${globalAsked.length}:${recent.length}:${tier.length}`;
+  const tier = buildQuestionTier(scored);
+  const salt = `${pickNonce}:${entityAsked.length}:${deaths}:${globalAsked.length}:${recent.length}:${topScore}:${tier.length}`;
   const idx =
     hashString(`${entityId}:${salt}:${tier.map((x) => x.q.id).join("|")}`) % tier.length;
   return { question: tier[idx].q, profile, targetDiff };
@@ -458,11 +478,8 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
   }
 
   let pickNonce = pickOptions?.pickNonce ?? session.exportDeaths?.() ?? 0;
-  if (
-    (entityId === "receptionist" || entity.kind === "guru")
-    && typeof pickOptions?.nextPickNonce === "function"
-  ) {
-    pickNonce = pickOptions.nextPickNonce(entityId);
+  if (typeof pickOptions?.nextPickNonce === "function") {
+    pickNonce = pickOptions.nextPickNonce(entityId, entity.kind);
   }
 
   const picked = pickQuestion(quizEntity, session.karma.total(), quizHistory, {

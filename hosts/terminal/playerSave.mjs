@@ -56,6 +56,7 @@ export function savePlayerSave(
       guruQuizCorrect: progress?.guruQuizCorrect ?? 0,
       interviewPickNonce: progress?.interviewPickNonce ?? 0,
       guruPickNonce: progress?.guruPickNonce ?? 0,
+      encounterPickNonce: progress?.encounterPickNonce ?? 0,
     },
   };
   writeFileSync(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");

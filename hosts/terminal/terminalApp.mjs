@@ -54,6 +54,7 @@ import {
   buildNpcMehReply,
   buildAskColleagueReply,
   clearEncounterQuizCache,
+  randomEncounterPickNonce,
 } from "./encounterQuestions.mjs";
 import { castListEnabledForTerminal } from "./debugFlags.mjs";
 import { collectAllCastFromSession, formatCastRosterText } from "./staffRoster.mjs";
@@ -78,6 +79,7 @@ let personRegistryState = emptyPersonRegistry();
 let castListOpen = false;
 let interviewPickNonce = 0;
 let guruPickNonce = 0;
+let encounterPickNonce = 0;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../..");
@@ -240,15 +242,20 @@ function loadStoryJson(summary) {
 
 function makeQuizPickOptions(session) {
   return {
-    nextPickNonce(entityId) {
+    nextPickNonce(entityId, kind) {
       if (entityId === "receptionist") {
         interviewPickNonce += 1;
         if (session) persist(session);
         return interviewPickNonce;
       }
-      guruPickNonce += 1;
+      if (entityId === "mentor" || kind === "guru") {
+        guruPickNonce += 1;
+        if (session) persist(session);
+        return guruPickNonce;
+      }
+      encounterPickNonce += 1;
       if (session) persist(session);
-      return guruPickNonce;
+      return encounterPickNonce;
     },
   };
 }
@@ -260,6 +267,7 @@ function persistProgress(session) {
     guruQuizCorrect: session.guruQuizCorrect,
     interviewPickNonce,
     guruPickNonce,
+    encounterPickNonce,
   };
 }
 
@@ -1140,6 +1148,10 @@ export async function runTerminalApp(mapJson) {
   personRegistryState = normalizePersonRegistry(save?.personRegistry);
   interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   guruPickNonce = save?.progress?.guruPickNonce ?? 0;
+  encounterPickNonce = save?.progress?.encounterPickNonce ?? 0;
+  if (!encounterPickNonce && !save?.features?.ids?.length) {
+    encounterPickNonce = randomEncounterPickNonce();
+  }
   const { root, session } = createGameSession(save);
 
   let mapOk = false;
