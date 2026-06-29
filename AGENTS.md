@@ -61,6 +61,7 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | `hosts/` | Thin Node hosts (terminal, web controller) |
 | `web-game/` | Static Vite UI for browser / GitHub Pages |
 | `content/` | Worlds, stories, question banks (JSON) |
+| `content/npc-behaviors/` | Data-driven NPC behavior packs (`pack.json`) |
 | `test/` | Headless tests (import `koodisampo.cjs`) |
 
 ## Common commands
@@ -84,6 +85,17 @@ Workflow `.github/workflows/pages.yml` runs `npm ci && npm run build` only. It d
 - **Hosts are thin:** render UI, forward keys to `GameSession`, persist save data.
 - **Web UI** (`web-game/src/ui.ts`) is presentation only — map rendering, mobile layout, key forwarding.
 
+### Browser build (`web-game/`)
+
+The Vite bundle **cannot use Node `fs`** at runtime. `web-game/vite.config.ts` aliases `node:fs` to a shim that throws `filesystem not available in browser build`.
+
+Implications for agents:
+
+1. **Static JSON** (worlds, dialogues, question banks, NPC behavior packs) must be loaded in `web-game/src/boot.ts` via `fetch()` and passed into `createWebGameController` (e.g. `dialoguePackJson`, `npcBehaviorPackJson`).
+2. **Do not** call `readFileSync` from code paths that end up in the browser bundle unless guarded by an injected dependency (same pattern as `setQuestionLoader` for quiz banks).
+3. **Sync assets** before dev/build: `scripts/sync-web-game-assets.mjs` copies runtime files to `web-game/public/`. `npm run dev` runs this automatically (`predev`). When adding new `content/` assets for the web game, extend that sync script.
+4. **Ranger `.rgr` changes** still require `npm run build:ranger` and committing `generated/es6/koodisampo.cjs`.
+
 ## Ranger compiler version
 
 Pinned in root `package.json` devDependency `ranger-compiler`. Bump there when a new compiler is published:
@@ -102,6 +114,7 @@ npm run test:engine
 | `[FAIL] Compilation FAILED` | Read compiler output; fix syntax/types in `.rgr` |
 | `Undefined variable` in compile | Missing import or typo in Ranger source |
 | Tests fail after `.rgr` change | Re-run `npm run build:ranger` |
+| `filesystem not available in browser build` | Host code is calling `readFileSync` in the browser bundle. Load the JSON in `web-game/src/boot.ts` with `fetch`, pass it to the controller, and add the file to `scripts/sync-web-game-assets.mjs` if needed |
 
 ## Local monorepo (optional)
 

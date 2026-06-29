@@ -35,6 +35,7 @@ fs.copyFileSync(
   path.join(root, "content/dialogues/pack.json"),
   path.join(out, "dialogues/pack.json"),
 );
+copyDir(path.join(root, "content/npc-behaviors"), path.join(out, "npc-behaviors"));
 fs.mkdirSync(path.join(out, "worlds"), { recursive: true });
 fs.copyFileSync(
   path.join(root, "content/worlds/corporate-hq-intro.json"),
