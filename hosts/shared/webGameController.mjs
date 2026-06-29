@@ -127,6 +127,7 @@ function applyPlayerProfileOnSession(session, map, name, specialty) {
  *   persistSave: (karma: unknown, deaths: number, quizHistory: unknown, studyBacklog: unknown, progress: unknown, personRegistry: unknown) => void,
  *   loadStoryJson: (summary: { id?: string, filename?: string } | null) => string | null,
  *   dialoguePackJson?: string,
+ *   npcBehaviorPackJson?: string,
  *   castListEnabled?: () => boolean,
  * }} deps
  */

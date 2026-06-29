@@ -31,15 +31,24 @@ export async function createBrowserGame(): Promise<WebGame> {
   const dialoguePath = `${base}content/dialogues/pack.json`;
   const dialogueUrl = import.meta.env.DEV ? `${dialoguePath}?v=${Date.now()}` : dialoguePath;
   let currentMapJson = await fetchWorldText(base, import.meta.env.DEV);
-  const [dialogueRes, questions] = await Promise.all([
+  const [dialogueRes, npcBehaviorRes, questions] = await Promise.all([
     fetch(dialogueUrl),
+    fetch(
+      import.meta.env.DEV
+        ? `${base}content/npc-behaviors/pack.json?v=${Date.now()}`
+        : `${base}content/npc-behaviors/pack.json`,
+    ),
     loadAllQuestionsFromPublic(base),
   ]);
   setQuestionLoader(() => questions);
   if (!dialogueRes.ok) {
     throw new Error("Dialogipaketin lataus epäonnistui");
   }
+  if (!npcBehaviorRes.ok) {
+    throw new Error("NPC-käyttäytymispaketin lataus epäonnistui");
+  }
   const dialoguePackJson = await dialogueRes.text();
+  const npcBehaviorPackJson = await npcBehaviorRes.text();
   let cachedSave = (await loadPlayerSave()) ?? {};
   const storyCatalog = new StoryCatalog();
 
@@ -57,6 +66,7 @@ export async function createBrowserGame(): Promise<WebGame> {
     mapJson: currentMapJson,
     getMapJson: import.meta.env.DEV ? () => currentMapJson : undefined,
     dialoguePackJson,
+    npcBehaviorPackJson,
     storyCatalog,
     gameHost,
     loadSave: () => cachedSave,
