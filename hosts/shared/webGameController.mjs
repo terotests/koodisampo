@@ -63,6 +63,14 @@ function loadDialoguePackJson(deps) {
   );
 }
 
+function loadNpcBehaviorPackJson(deps) {
+  if (deps.npcBehaviorPackJson) return deps.npcBehaviorPackJson;
+  return readFileSync(
+    resolve(__webDir, "../../content/npc-behaviors/pack.json"),
+    "utf8",
+  );
+}
+
 function sessionNeedsProfileSetup(session) {
   if (typeof session.needsProfileSetup === "function") {
     return session.needsProfileSetup();
@@ -134,6 +142,7 @@ export function createWebGameController(deps) {
     castListEnabled = () => true,
   } = deps;
   const dialoguePackJson = loadDialoguePackJson(deps);
+  const npcBehaviorPackJson = loadNpcBehaviorPackJson(deps);
   let mapJson = initialMapJson ?? (getMapJson ? getMapJson() : "");
   const {
     createGameSession,
@@ -174,6 +183,7 @@ export function createWebGameController(deps) {
     refreshMapJson();
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
     if (save?.progress?.profileComplete && save?.progress?.playerName) {
       applyPlayerProfileOnSession(
         session,
@@ -236,6 +246,7 @@ export function createWebGameController(deps) {
     refreshMapJson();
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
+    session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
     if (keepProgress && save?.progress?.profileComplete && save?.progress?.playerName) {
       applyPlayerProfileOnSession(
         session,

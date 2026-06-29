@@ -29,6 +29,7 @@ Import "../WorldEventLog.rgr"
 Import "../EventPerception.rgr"
 Import "../Escalation.rgr"
 Import "JSON.rgr"
+Import "../NpcBehaviorRegistry.rgr"
 Import "../StoryJson.rgr"
 
 class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBase {
@@ -100,6 +101,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def profileComplete:boolean false
   def proximityGreeting:ProximityGreeting
   def pendingGreetNpcId:string ""
+  def npcBehaviors:NpcBehaviorRegistry
+  def behaviorSeed:int 0
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -117,6 +120,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     worldClock = (new WorldClock)
     simJson = (new StoryJson)
     proximityGreeting = (new ProximityGreeting)
+    npcBehaviors = (new NpcBehaviorRegistry)
+    npcBehaviors.loadDefaults()
   }
 
   fn ensureEngine:void () {
@@ -251,6 +256,18 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
       map.overheardMsg = ""
       map.lastStatus = failStatus
+    }
+    def quizEnt:MapEntity (map.findEntityById(pendingEntityId))
+    if ((strlen quizEnt.id) > 0) {
+      def behaviorMsg:string ""
+      if (correct) {
+        behaviorMsg = (npcBehaviors.onQuizCorrect(quizEnt worldClock.gameMinutes behaviorSeed))
+      } {
+        behaviorMsg = (npcBehaviors.onQuizWrong(quizEnt))
+      }
+      if ((strlen behaviorMsg) > 0) {
+        map.lastStatus = (map.lastStatus + " " + behaviorMsg)
+      }
     }
     this.clearEncounter()
     screen = "map"
@@ -432,10 +449,23 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     def ok:boolean (map.loadFromText(mapJson))
     if (ok == false) {
       menuMessage = "Kartan lataus epäonnistui."
+    } {
+      if (behaviorSeed < 1) {
+        behaviorSeed = (random 1 999999)
+      }
+      if (map.hasMap) {
+        npcBehaviors.assignEligibility(map.floors (unwrap map.root) behaviorSeed)
+      }
     }
     this.bootstrapPlayerVitals()
     this.syncHrGreeter()
     this.syncProfileScreen()
+    this.markStateDirty()
+    return ok
+  }
+
+  fn loadNpcBehaviorsFromText:boolean (raw:string) {
+    def ok:boolean (npcBehaviors.loadFromText(raw))
     this.markStateDirty()
     return ok
   }
@@ -842,6 +872,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn tickNpcRelations:void () {
     map.tickNpcMainTasks(worldClock.gameMinutes)
+    npcBehaviors.tick(map.floors worldClock.gameMinutes)
     map.syncNpcOverlayEmotions(npcRelations.npcIds npcRelations.relations)
     this.checkEscalation()
     this.evaluateNpcReporting()
@@ -3011,6 +3042,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
       simSeed = seed
       simRngState = seed
+      behaviorSeed = seed
       def ok:boolean (this.loadMapFromText(worldJson))
       if (ok == false) {
         this.simLogError("world load failed")
