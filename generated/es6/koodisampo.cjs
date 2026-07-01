@@ -6128,6 +6128,33 @@ class GameSession  extends RangerProcessBase {
     }
     rel.applyStatDelta("love", 5);
   };
+  isEmotionalAnswerVisible (dialogueIndex, answerIndex) {
+    const dlg = this.dialogueCatalog.dialogueAt(dialogueIndex);
+    if ( dlg.id == "help_usb_search" ) {
+      if ( answerIndex == 0 ) {
+        return this.tools.hasUsbDrive;
+      }
+    }
+    return true;
+  };
+  emotionalVisibleAnswerIndex (displayIndex) {
+    if ( this.pendingEmotionalDialogueIndex < 0 ) {
+      return -1;
+    }
+    const ac = this.dialogueCatalog.answerCount(this.pendingEmotionalDialogueIndex);
+    let ai = 0;
+    let visible = 0;
+    while (ai < ac) {
+      if ( this.isEmotionalAnswerVisible(this.pendingEmotionalDialogueIndex, ai) ) {
+        if ( visible == displayIndex ) {
+          return ai;
+        }
+        visible = visible + 1;
+      }
+      ai = ai + 1;
+    };
+    return -1;
+  };
   applyHelpAnswerEffects (ent, answerIndex, dialogueIndex) {
     const dlg = this.dialogueCatalog.dialogueAt(dialogueIndex);
     if ( dlg.category != "help" ) {
@@ -7632,7 +7659,7 @@ class GameSession  extends RangerProcessBase {
     if ( this.encounterResult != "emotional" ) {
       return;
     }
-    if ( ((key == "leave") || (key == "p")) || (key == "3") ) {
+    if ( (key == "leave") || (key == "p") ) {
       this._map.lastStatus = "Vetäydyt takaisin.";
       this.pendingEmotionalDialogueIndex = -1;
       this.clearEncounter();
@@ -7642,13 +7669,13 @@ class GameSession  extends RangerProcessBase {
     }
     let idx = -1;
     if ( key == "1" ) {
-      idx = 0;
+      idx = this.emotionalVisibleAnswerIndex(0);
     }
     if ( key == "2" ) {
-      idx = 1;
+      idx = this.emotionalVisibleAnswerIndex(1);
     }
     if ( key == "3" ) {
-      idx = 2;
+      idx = this.emotionalVisibleAnswerIndex(2);
     }
     if ( idx < 0 ) {
       return;
@@ -8010,10 +8037,21 @@ class GameSession  extends RangerProcessBase {
       const ac = this.dialogueCatalog.answerCount(this.pendingEmotionalDialogueIndex);
       let ai = 0;
       while (ai < ac) {
-        view.emotionalAnswers.push(this.dialogueCatalog.answerText(this.pendingEmotionalDialogueIndex, ai));
+        if ( this.isEmotionalAnswerVisible(this.pendingEmotionalDialogueIndex, ai) ) {
+          view.emotionalAnswers.push(this.dialogueCatalog.answerText(this.pendingEmotionalDialogueIndex, ai));
+        }
         ai = ai + 1;
       };
-      view.hintLine = "1–3=vastaa  p=poistu";
+      const visibleCount = view.emotionalAnswers.length;
+      if ( visibleCount < 2 ) {
+        view.hintLine = "1=vastaa  p=poistu";
+      } else {
+        if ( visibleCount < 3 ) {
+          view.hintLine = "1–2=vastaa  p=poistu";
+        } else {
+          view.hintLine = "1–3=vastaa  p=poistu";
+        }
+      }
       return view;
     }
     if ( this.needsEncounterQuiz() ) {
