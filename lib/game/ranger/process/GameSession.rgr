@@ -926,6 +926,35 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     rel.applyStatDelta("love" 5)
   }
 
+  fn isEmotionalAnswerVisible:boolean (dialogueIndex:int answerIndex:int) {
+    def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(dialogueIndex))
+    if (dlg.id == "help_usb_search") {
+      if (answerIndex == 0) {
+        return tools.hasUsbDrive
+      }
+    }
+    return true
+  }
+
+  fn emotionalVisibleAnswerIndex:int (displayIndex:int) {
+    if (pendingEmotionalDialogueIndex < 0) {
+      return -1
+    }
+    def ac:int (dialogueCatalog.answerCount(pendingEmotionalDialogueIndex))
+    def ai:int 0
+    def visible:int 0
+    while (ai < ac) {
+      if (this.isEmotionalAnswerVisible(pendingEmotionalDialogueIndex ai)) {
+        if (visible == displayIndex) {
+          return ai
+        }
+        visible = visible + 1
+      }
+      ai = ai + 1
+    }
+    return -1
+  }
+
   fn applyHelpAnswerEffects:void (ent:MapEntity answerIndex:int dialogueIndex:int) {
     def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(dialogueIndex))
     if (dlg.category != "help") {
@@ -2494,7 +2523,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (encounterResult != "emotional") {
       return
     }
-    if (key == "leave" || key == "p" || key == "3") {
+    if (key == "leave" || key == "p") {
       map.lastStatus = "Vetäydyt takaisin."
       pendingEmotionalDialogueIndex = -1
       this.clearEncounter()
@@ -2504,13 +2533,13 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     def idx:int -1
     if (key == "1") {
-      idx = 0
+      idx = (this.emotionalVisibleAnswerIndex(0))
     }
     if (key == "2") {
-      idx = 1
+      idx = (this.emotionalVisibleAnswerIndex(1))
     }
     if (key == "3") {
-      idx = 2
+      idx = (this.emotionalVisibleAnswerIndex(2))
     }
     if (idx < 0) {
       return
@@ -2890,10 +2919,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       def ac:int (dialogueCatalog.answerCount(pendingEmotionalDialogueIndex))
       def ai:int 0
       while (ai < ac) {
-        push view.emotionalAnswers (dialogueCatalog.answerText(pendingEmotionalDialogueIndex ai))
+        if (this.isEmotionalAnswerVisible(pendingEmotionalDialogueIndex ai)) {
+          push view.emotionalAnswers (dialogueCatalog.answerText(pendingEmotionalDialogueIndex ai))
+        }
         ai = ai + 1
       }
-      view.hintLine = "1–3=vastaa  p=poistu"
+      def visibleCount:int (array_length view.emotionalAnswers)
+      if (visibleCount < 2) {
+        view.hintLine = "1=vastaa  p=poistu"
+      } {
+        if (visibleCount < 3) {
+          view.hintLine = "1–2=vastaa  p=poistu"
+        } {
+          view.hintLine = "1–3=vastaa  p=poistu"
+        }
+      }
       return view
     }
     if (this.needsEncounterQuiz()) {
