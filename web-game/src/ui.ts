@@ -9,6 +9,7 @@ import {
   isMobileLayout,
   mountMobileControls,
   renderHudStats,
+  formatSalary,
   renderMessageBar,
   renderActionBar,
   resetMobileControlsMount,
@@ -287,7 +288,7 @@ export function mountGameUI(game: WebGame) {
     function statsLine(state) {
       const time = state.time ? ` &nbsp;|&nbsp; <span style="color:#39c5cf">${esc(state.time)}</span>` : "";
       const needs = state.needsLine ? ` &nbsp;|&nbsp; <span style="color:#d2a8ff">${esc(state.needsLine)}</span>` : "";
-      return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Karma: <span class="karma">${state.karma}</span>${time}${needs}</div>`;
+      return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Palkka: <span class="salary">${esc(formatSalary(state.salary))}</span>${time}${needs}</div>`;
     }
 
     function colorizeLine(line, state, row = 0) {
@@ -396,7 +397,7 @@ export function mountGameUI(game: WebGame) {
       if (ov.type === "outcome") {
         const cls = ov.correct ? "ok" : "bad";
         const mark = ov.correct ? "✓ OIKEIN" : "✗ VÄÄRIN";
-        html += `<div class="overlay-title ${cls}">${mark} &nbsp; ${esc(ov.karmaHint)}</div>`;
+        html += `<div class="overlay-title ${cls}">${mark}</div>`;
         html += `<div class="greeting">${esc(ov.reaction)}</div>`;
         html += `<div class="teaching"><h4>── Selitys ──</h4>${esc(ov.teaching)}</div>`;
         if (ov.marked) {
@@ -419,7 +420,7 @@ export function mountGameUI(game: WebGame) {
 
       if (ov.type === "aiStudy") {
         html += `<div class="overlay-title ai">═══ AI-opetus (ChatCorp™) ═══</div>`;
-        html += `<div class="stats" style="margin-bottom:8px"><span style="color:#f85149">-${ov.cost} karma</span> &nbsp; Karma: ${state.karma}</div>`;
+        html += `<div class="stats" style="margin-bottom:8px">Palkka: ${esc(formatSalary(state.salary))}</div>`;
         html += `<div><span class="entity-name">${esc(ov.entityName)}</span> <span style="color:#8b949e">katselee sivuun kun kaivat puhelimen.</span></div>`;
         html += `<div class="greeting" style="white-space:pre-wrap">${esc(ov.text)}</div>`;
         html += continueRow("enter", "Takaisin kysymykseen →");
@@ -447,7 +448,7 @@ export function mountGameUI(game: WebGame) {
       if (ov.type === "cardReturn") {
         html += `<div class="overlay-title">═══ Kulkukortti ═══</div>`;
         html += `<div class="greeting">${esc(ov.entityName)} etsii kadonnutta korttiaan. Sinulla on se taskussa.</div>`;
-        html += choiceRow("1", '<span class="choice-num">[1]</span> Palauta kortti (+karma)');
+        html += choiceRow("1", '<span class="choice-num">[1]</span> Palauta kortti');
         html += choiceRow("2", '<span class="choice-num">[2]</span> Väitä ettei ole sinulla');
         html += choiceRow("3", '<span class="choice-num muted">[3]</span> Poistu', "muted");
         if (isMobileLayout()) {
@@ -483,9 +484,6 @@ export function mountGameUI(game: WebGame) {
       if (ov.type === "actionResult") {
         const cls = ov.ok ? "ok" : "bad";
         html += `<div class="overlay-title ${cls}">═══ Tulos ═══</div>`;
-        if (ov.karmaHint) {
-          html += `<div class="stats" style="margin-bottom:8px">${esc(ov.karmaHint)}</div>`;
-        }
         html += `<div class="greeting">${esc(ov.message)}</div>`;
         html += continueRow("enter", "Jatka →");
         if (isMobileLayout()) {
@@ -541,7 +539,7 @@ export function mountGameUI(game: WebGame) {
           html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`);
         }
         html += `<div class="divider">── tai ──</div>`;
-        html += sideOptRow("a", `<span class="side-key ai">[a]</span> Kysy AI:lta <span style="color:#f85149">(-${side.aiCost} karma)</span>`);
+        html += sideOptRow("a", `<span class="side-key ai">[a]</span> Kysy AI:lta`);
         html += sideOptRow("j", `<span class="side-key joke">[j]</span> ${esc(side.jokeLabel)}`);
         if (side.askColleagueLabel) {
           html += sideOptRow("n", `<span class="side-key joke">[n]</span> ${esc(side.askColleagueLabel)}`);
@@ -782,7 +780,7 @@ export function mountGameUI(game: WebGame) {
         updateDesktopChrome(state);
         if (showDebugJson && jsonEl && metaEl) {
           jsonEl.textContent = JSON.stringify(state, null, 2);
-          metaEl.innerHTML = `screen=<b>${state.screen}</b> karma=${state.karma} deaths=${state.deaths} ` +
+          metaEl.innerHTML = `screen=<b>${state.screen}</b> salary=${state.salary} deaths=${state.deaths} ` +
             `agents=${state.agentCount} gen=${state.generation}`;
           if (state.policeChase) metaEl.innerHTML += ` <span class="warn">POLIISIT</span>`;
           if (state.studyCounts?.total > 0) {

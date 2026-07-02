@@ -68,6 +68,7 @@ export function createGameController(deps) {
       shouldQuit: session.shouldQuit,
       deaths: session.exportDeaths(),
       karma: session.karma.total(),
+      salary: session.playerSalary(),
       generation: session.__rangerStateGeneration,
       floor: map?.currentFloor ?? 0,
       player: { x: map?.playerX, y: map?.playerY, hidden: map?.playerHidden },

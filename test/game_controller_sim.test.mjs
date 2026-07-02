@@ -15,6 +15,8 @@ export function runGameControllerSimTests() {
     assert(snap.screen === "map", "sim: map screen");
     assert(snap.lines?.length > 0, "sim: map lines without UI");
     assert(typeof snap.karma === "number", "sim: karma in snapshot");
+    assert(typeof snap.salary === "number", "sim: salary in snapshot");
+    assert(snap.salary === 0, "sim: salary 0 before employment");
 
     const startX = snap.player.x;
     snap = ctrl.handleKey("d");

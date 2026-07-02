@@ -108,6 +108,11 @@ function policeTileSet(session) {
   return set;
 }
 
+function formatSalary(session) {
+  const amount = session.playerSalary?.() ?? 0;
+  return `${Number(amount).toLocaleString("fi-FI")} €`;
+}
+
 function colorizeMapLineAt(line, cameraX, cameraY, policeSet, recommendedSet, viewRow) {
   if (!policeSet?.size && !recommendedSet?.size) return colorizeMapLine(line);
   return formatMapLineTerminal(line, (glyph, col) => {
@@ -130,7 +135,7 @@ function buildMapFrame(session) {
     lines.push(`  ${styled(view.floorTitle, FG.cyan)}`);
   }
   lines.push(
-    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}   |   ${styled(`@${view.playerMapX},${view.playerMapY}`, FG.gray)} / ${view.mapWidth}×${view.mapHeight}`,
+    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}   |   ${styled(`@${view.playerMapX},${view.playerMapY}`, FG.gray)} / ${view.mapWidth}×${view.mapHeight}`,
   );
   if (view.toolsLine) {
     lines.push(`  ${styled(view.toolsLine, FG.magenta)}`);
@@ -498,7 +503,7 @@ function printStory(session) {
 function printMenu(session) {
   const lines = [BANNER];
   lines.push(
-    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${session.karma.total()}\n`,
+    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${formatSalary(session)}\n`,
   );
   const { lessons, social } = partitionMenuStories(session.catalogList());
   if (lessons.length) {
@@ -672,7 +677,7 @@ async function runInventoryLoop(session) {
     const view = session.getInventoryView();
     const lines = [BANNER];
     lines.push(
-      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}`,
+      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}`,
     );
     lines.push(`\n  ${styled("═══ Inventaario ═══", FG.cyan, BOLD)}`);
     for (let i = 0; i < view.lines.length; i += 1) {
@@ -698,7 +703,7 @@ async function runCardReturnLoop(session) {
       "",
       `  ${name} etsii kadonnutta korttiaan. Sinulla on se taskussa.`,
       "",
-      `  ${styled("[1]", FG.brightGreen)} Palauta kortti (+karma)`,
+      `  ${styled("[1]", FG.brightGreen)} Palauta kortti`,
       `  ${styled("[2]", FG.red)} Väitä ettei ole sinulla (pidät kortin)`,
       `  ${styled("[3]", FG.gray)} Poistu`,
       "",
@@ -727,7 +732,7 @@ async function runStudyListLoop(session) {
   while (session.screen === "studylist" && !session.shouldQuit) {
     drawLinesClear([
       BANNER,
-      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}`,
+      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}`,
       "",
       formatStudyList(studyBacklogState),
       "",
@@ -747,7 +752,7 @@ async function runCastListLoop(session) {
       .map((line) => (line ? `  ${line}` : ""));
     drawLinesClear([
       BANNER,
-      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}`,
+      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}`,
       "",
       ...body,
       "",
@@ -775,7 +780,7 @@ async function runEpilogueLoop(session) {
     const view = session.getMapView();
     drawLinesClear([
       BANNER,
-      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}`,
+      `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}`,
       "",
       `  ${styled("═══ Päivän loppu ═══", FG.yellow, BOLD)}`,
       "",
@@ -795,7 +800,7 @@ function printEncounter(session) {
   const view = session.getEncounterView();
   drawLinesClear([
     BANNER,
-    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}\n`,
+    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}\n`,
     `  ${styled(`[ ${view.entityChar} ]`, FG.magenta, BOLD)} ${styled(view.entityName, FG.yellow, BOLD)}`,
     "\n" + wrap(view.greeting),
     "",
@@ -812,7 +817,7 @@ function printQuizEncounter(session, quiz) {
   const side = buildQuizSideMenu(quiz.entity, session);
   const lines = [
     BANNER,
-    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Karma:", FG.gray)} ${styled(String(session.karma.total()), FG.brightGreen)}\n`,
+    `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}\n`,
     `  ${styled(`[ ${view.entityChar} ]`, FG.magenta, BOLD)} ${styled(view.entityName, FG.yellow, BOLD)}`,
     `\n${wrap(quiz.greeting)}`,
     "",
@@ -823,7 +828,7 @@ function printQuizEncounter(session, quiz) {
   lines.push(
     "",
     `  ${styled("── tai ──", FG.gray)}`,
-    `  ${styled("[a]", FG.magenta)} Kysy AI:lta ${styled(`(-${AI_STUDY_KARMA_COST} karma)`, FG.red)}`,
+    `  ${styled("[a]", FG.magenta)} Kysy AI:lta`,
     `  ${styled("[j]", FG.cyan)} ${side.jokeLabel}`,
   );
   if (side.askColleagueLabel) {
@@ -883,18 +888,14 @@ async function showQuizOutcome(session, quiz, correct) {
   const mark = correct
     ? styled("✓ OIKEIN", FG.brightGreen, BOLD)
     : styled("✗ VÄÄRIN", FG.red, BOLD);
-  const karmaHint = correct
-    ? styled(`+${points} karma`, FG.brightGreen)
-    : styled("-3 karma", FG.red);
   let marked = false;
-
   while (true) {
     const extra = marked
       ? [`  ${styled("✓ Merkitty opiskelulistalle — Kysy AI:lta.", FG.brightGreen)}`, ""]
       : [];
     drawLinesClear([
       BANNER,
-      `  ${mark}   ${karmaHint}`,
+      `  ${mark}`,
       "",
       wrap(reaction),
       "",
@@ -932,7 +933,7 @@ async function showAiStudy(session, quiz) {
   drawLinesClear([
     BANNER,
     `  ${styled("═══ AI-opetus (ChatCorp™) ═══", FG.magenta, BOLD)}`,
-    `  ${styled(`-${cost} karma`, FG.red)}   ${styled(`Karma: ${session.karma.total()}`, FG.gray)}`,
+    `  ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.gray)}`,
     `  ${styled(entityName, FG.yellow)} ${styled("katselee sivuun kun kaivat puhelimen.", FG.gray)}`,
     "",
     wrap(text),
@@ -1019,7 +1020,7 @@ async function runQuizEncounterLoop(session) {
       const cost = AI_STUDY_KARMA_COST;
       if (session.karma.total() < cost) {
         dispatch(session, () => {
-          sessionMap(session).lastStatus = `Tarvitset vähintään ${cost} karmaa AI-opetukseen.`;
+          sessionMap(session).lastStatus = "Tarvitset lisää kokemusta ennen AI-opetusta.";
         });
         continue;
       }

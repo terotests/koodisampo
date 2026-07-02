@@ -214,7 +214,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
           if (tools.accessTier < 3) {
             tools.grant("promoted_card")
             quizWinsForPromotion = 0
-            status = (status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)!")
+            status = (status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)! Palkka nousee.")
           }
         }
       }
@@ -231,7 +231,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         tools.grant("official_badge")
         interviewPassed = true
         interviewFailed = false
-        status = (status + " Sait virallisen kulkuluvan — haastattelu meni läpi!")
+        status = (status + " Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €.")
         this.syncHrGreeter()
       }
       if (pendingEntityId == "hr-greeter") {
@@ -1137,6 +1137,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     def out:string "{"
     out = (out + "\"reason\":\"" + (this.simEscapeJson(gameOverReason)) + "\",")
     out = (out + "\"karma\":" + (to_string (karma.total())) + ",")
+    out = (out + "\"salary\":" + (to_string (this.playerSalary())) + ",")
     out = (out + "\"deaths\":" + (to_string (this.exportDeaths())) + ",")
     out = (out + "\"appearance\":" + (to_string playerStats.appearance) + ",")
     out = (out + "\"intelligence\":" + (to_string playerStats.intelligence) + ",")
@@ -1151,7 +1152,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if ((strlen line) < 1) {
       line = ("Päivä päättyi: " + gameOverReason)
     }
-    line = (line + " | Karma " + (to_string (karma.total())))
+    line = (line + " | Palkka " + (to_string (this.playerSalary())) + " €")
     line = (line + " | Vihamiehiä " + (to_string (npcRelations.countWithAngerAtLeast(75))))
     line = (line + " | Rakkaudet " + (to_string (npcRelations.countWithLoveAtLeast(70))))
     return line
@@ -2207,6 +2208,29 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     return false
   }
 
+  fn isEmployed:boolean () {
+    if (interviewPassed) {
+      return true
+    }
+    if (tools.hasOfficialBadge) {
+      return true
+    }
+    return false
+  }
+
+  fn playerSalary:int () {
+    if (this.isEmployed() == false) {
+      return 0
+    }
+    def base:int 2500
+    def floor:int map.currentFloor
+    def bonus:int 0
+    if (floor > 1) {
+      bonus = (floor - 1) * 500
+    }
+    return (base + bonus)
+  }
+
   fn elevatorDeniedMessage:string (floorIndex:int) {
     if (floorIndex >= 9) {
       return "10. kerros vaatii virallisen kulkuluvan — varastettu kortti ei riitä."
@@ -2238,7 +2262,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         tools.grant("official_badge")
         interviewPassed = true
         interviewFailed = false
-        map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! HR odottaa sinua 2. kerroksella."
+        map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €. HR odottaa sinua 2. kerroksella."
         this.syncHrGreeter()
       } {
         interviewFailed = true

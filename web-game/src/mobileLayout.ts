@@ -84,7 +84,7 @@ export function cropMapLines(lines: string[], size = MOBILE_MAP_SIZE): string[] 
 
 type HudState = {
   deaths?: number;
-  karma?: number;
+  salary?: number;
   time?: string;
   floorTitle?: string;
   policeChase?: boolean;
@@ -102,6 +102,11 @@ export function actionLineFromState(state: HudState): string {
   return status || ambient;
 }
 
+export function formatSalary(amount: number | undefined): string {
+  const n = Number(amount) || 0;
+  return `${n.toLocaleString("fi-FI")} €`;
+}
+
 export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s: unknown) => string) {
   if (!el) return;
   const time = state.time ? `<span class="hud-time">${esc(state.time)}</span>` : "";
@@ -109,7 +114,7 @@ export function renderHudStats(el: HTMLElement | null, state: HudState, esc: (s:
   const police = state.policeChase ? `<span class="hud-warn">POLIISIT</span>` : "";
   el.innerHTML =
     `<span class="hud-item">☠ ${state.deaths ?? 0}</span>` +
-    `<span class="hud-item karma">✨ ${state.karma ?? 0}</span>` +
+    `<span class="hud-item salary">${formatSalary(state.salary)}</span>` +
     time +
     floor +
     police;
