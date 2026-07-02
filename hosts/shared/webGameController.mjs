@@ -538,9 +538,7 @@ function serializeOverlay(ov) {
       correct: ov.correct,
       reaction: ov.reaction,
       teaching: ov.teaching,
-      karmaHint: ov.correct
-        ? `+${ov.points} karma`
-        : "-3 karma",
+      karmaHint: ov.correct ? "" : "",
       marked: ov.marked === true,
     };
   }
@@ -597,6 +595,7 @@ function snapshot() {
     shouldQuit: session.shouldQuit,
     deaths: session.exportDeaths(),
     karma: session.karma.total(),
+    salary: session.playerSalary(),
     generation: session.__rangerStateGeneration,
     encounterCooldown: session.encounterCooldown ?? 0,
     policeChase: map?.policeChaseActive ?? false,
@@ -883,7 +882,7 @@ function handleQuizKey(key) {
     const cost = AI_STUDY_KARMA_COST;
     if (session.karma.total() < cost) {
       dispatch(session, () => {
-        sessionMap(session).lastStatus = `Tarvitset vähintään ${cost} karmaa AI-opetukseen.`;
+        sessionMap(session).lastStatus = "Tarvitset lisää kokemusta ennen AI-opetusta.";
       });
       return;
     }

@@ -5457,7 +5457,7 @@ class GameSession  extends RangerProcessBase {
           if ( this.tools.accessTier < 3 ) {
             this.tools.grant("promoted_card");
             this.quizWinsForPromotion = 0;
-            status = status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)!";
+            status = status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)! Palkka nousee.";
           }
         }
       }
@@ -5474,7 +5474,7 @@ class GameSession  extends RangerProcessBase {
         this.tools.grant("official_badge");
         this.interviewPassed = true;
         this.interviewFailed = false;
-        status = status + " Sait virallisen kulkuluvan — haastattelu meni läpi!";
+        status = status + " Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €.";
         this.syncHrGreeter();
       }
       if ( this.pendingEntityId == "hr-greeter" ) {
@@ -6329,6 +6329,7 @@ class GameSession  extends RangerProcessBase {
     let out = "{";
     out = ((out + "\"reason\":\"") + this.simEscapeJson(this.gameOverReason)) + "\",";
     out = ((out + "\"karma\":") + ((this.karma.total().toString()))) + ",";
+    out = ((out + "\"salary\":") + ((this.playerSalary().toString()))) + ",";
     out = ((out + "\"deaths\":") + ((this.exportDeaths().toString()))) + ",";
     out = ((out + "\"appearance\":") + ((this.playerStats.appearance.toString()))) + ",";
     out = ((out + "\"intelligence\":") + ((this.playerStats.intelligence.toString()))) + ",";
@@ -6342,7 +6343,7 @@ class GameSession  extends RangerProcessBase {
     if ( (line.length) < 1 ) {
       line = "Päivä päättyi: " + this.gameOverReason;
     }
-    line = (line + " | Karma ") + ((this.karma.total().toString()));
+    line = ((line + " | Palkka ") + ((this.playerSalary().toString()))) + " €";
     line = (line + " | Vihamiehiä ") + ((this.npcRelations.countWithAngerAtLeast(75).toString()));
     line = (line + " | Rakkaudet ") + ((this.npcRelations.countWithLoveAtLeast(70).toString()));
     return line;
@@ -7350,6 +7351,27 @@ class GameSession  extends RangerProcessBase {
     }
     return false;
   };
+  isEmployed () {
+    if ( this.interviewPassed ) {
+      return true;
+    }
+    if ( this.tools.hasOfficialBadge ) {
+      return true;
+    }
+    return false;
+  };
+  playerSalary () {
+    if ( this.isEmployed() == false ) {
+      return 0;
+    }
+    const base = 2500;
+    const floor = this._map.currentFloor;
+    let bonus = 0;
+    if ( floor > 1 ) {
+      bonus = (floor - 1) * 500;
+    }
+    return base + bonus;
+  };
   elevatorDeniedMessage (floorIndex) {
     if ( floorIndex >= 9 ) {
       return "10. kerros vaatii virallisen kulkuluvan — varastettu kortti ei riitä.";
@@ -7380,7 +7402,7 @@ class GameSession  extends RangerProcessBase {
         this.tools.grant("official_badge");
         this.interviewPassed = true;
         this.interviewFailed = false;
-        this._map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! HR odottaa sinua 2. kerroksella.";
+        this._map.lastStatus = "Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €. HR odottaa sinua 2. kerroksella.";
         this.syncHrGreeter();
       } else {
         this.interviewFailed = true;

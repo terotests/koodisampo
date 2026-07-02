@@ -30,6 +30,7 @@ export function runEpilogueTests() {
     assert(summary.reason === "Fired", `epilogue reason Fired (${summary.reason})`);
     assert(summary.enemies >= 3, `epilogue lists enemies (${summary.enemies})`);
     assert(typeof summary.karma === "number", "epilogue includes karma");
+    assert(typeof summary.salary === "number", "epilogue includes salary");
   } finally {
     sim.stop();
   }
