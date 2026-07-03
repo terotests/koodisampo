@@ -120,9 +120,106 @@ class DialogueCatalog {
     push dialogues help
   }
 
+  fn deriveStatusReaction:string (answer:EmotionalAnswer) {
+    def bestStat:string ""
+    def bestDelta:int 0
+    def i:int 0
+    def n:int (array_length answer.effectStats)
+    while (i < n) {
+      def target:string (at answer.effectTargets i)
+      def stat:string (at answer.effectStats i)
+      def delta:int (at answer.effectDeltas i)
+      if (target == "npc") {
+        def absDelta:int delta
+        if (absDelta < 0) {
+          absDelta = (0 - absDelta)
+        }
+        if (absDelta > bestDelta) {
+          bestDelta = absDelta
+          bestStat = stat
+        }
+      }
+      i = i + 1
+    }
+    if (bestDelta < 1) {
+      return "nyökkää ja jatkaa matkaa."
+    }
+    def pos:boolean true
+    def j:int 0
+    while (j < n) {
+      def target2:string (at answer.effectTargets j)
+      def stat2:string (at answer.effectStats j)
+      if (target2 == "npc") {
+        if (stat2 == bestStat) {
+          def d:int (at answer.effectDeltas j)
+          if (d < 0) {
+            pos = false
+          }
+        }
+      }
+      j = j + 1
+    }
+    if (bestStat == "anger") {
+      if (pos) {
+        return "näyttää ärtyneeltä."
+      }
+      return "rauhoittuu hieman."
+    }
+    if (bestStat == "love") {
+      if (pos) {
+        return "näyttää ihastuneelta."
+      }
+      return "näyttää pettyneeltä."
+    }
+    if (bestStat == "friendliness") {
+      if (pos) {
+        return "näyttää ystävälliseltä."
+      }
+      return "näyttää etäiseltä."
+    }
+    if (bestStat == "respect") {
+      if (pos) {
+        return "näyttää vaikuttuneelta."
+      }
+      return "näyttää halveksivalta."
+    }
+    if (bestStat == "suspicion") {
+      if (pos) {
+        return "katsoo sinua epäilevästi."
+      }
+      return "näyttää luottavaisemmalta."
+    }
+    if (bestStat == "jealousy") {
+      if (pos) {
+        return "näyttää mustasukkaiselta."
+      }
+      return "rentoutuu hieman."
+    }
+    if (bestStat == "fear") {
+      if (pos) {
+        return "näyttää peloissaan."
+      }
+      return "rauhoittuu."
+    }
+    if (bestStat == "panic") {
+      if (pos) {
+        return "näyttää paniikissa."
+      }
+      return "hengähtää helpotuksesta."
+    }
+    if (bestStat == "stress") {
+      if (pos) {
+        return "näyttää stressaantuneelta."
+      }
+      return "rentoutuu hieman."
+    }
+    return "nyökkää ja jatkaa matkaa."
+  }
+
   fn parseAnswer:void (dlg:EmotionalDialogue answerObj:JSONDataObject) {
     def ans:EmotionalAnswer (new EmotionalAnswer)
     ans.text = (json.objFieldStr(answerObj "text"))
+    ans.statusReaction = (json.objFieldStr(answerObj "statusReaction"))
     def effectsOpt@(optional):JSONArrayObject (getArray answerObj "effects")
     if (null? effectsOpt) {
       push dlg.answers ans
@@ -298,6 +395,21 @@ class DialogueCatalog {
     }
     def ans:EmotionalAnswer (at dlg.answers answerIndex)
     return ans.text
+  }
+
+  fn answerStatusReaction:string (dialogueIndex:int answerIndex:int) {
+    def dlg:EmotionalDialogue (this.dialogueAt(dialogueIndex))
+    if (answerIndex < 0) {
+      return ""
+    }
+    if (answerIndex >= (array_length dlg.answers)) {
+      return ""
+    }
+    def ans:EmotionalAnswer (at dlg.answers answerIndex)
+    if ((strlen ans.statusReaction) > 0) {
+      return ans.statusReaction
+    }
+    return (this.deriveStatusReaction(ans))
   }
 
   fn applyAnswerToRelation:void (dialogueIndex:int answerIndex:int relation:NpcRelation) {

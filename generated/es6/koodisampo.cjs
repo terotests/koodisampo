@@ -4533,6 +4533,7 @@ class EmotionMath  {
 class EmotionalAnswer  {
   constructor() {
     this.text = "";
+    this.statusReaction = "";
     this.effectTargets = [];
     this.effectStats = [];
     this.effectDeltas = [];
@@ -4655,9 +4656,105 @@ class DialogueCatalog  {
     help.answers.push(h3);
     this.dialogues.push(help);
   };
+  deriveStatusReaction (answer) {
+    let bestStat = "";
+    let bestDelta = 0;
+    let i = 0;
+    const n = answer.effectStats.length;
+    while (i < n) {
+      const target = answer.effectTargets[i];
+      const stat = answer.effectStats[i];
+      const delta = answer.effectDeltas[i];
+      if ( target == "npc" ) {
+        let absDelta = delta;
+        if ( absDelta < 0 ) {
+          absDelta = 0 - absDelta;
+        }
+        if ( absDelta > bestDelta ) {
+          bestDelta = absDelta;
+          bestStat = stat;
+        }
+      }
+      i = i + 1;
+    };
+    if ( bestDelta < 1 ) {
+      return "nyökkää ja jatkaa matkaa.";
+    }
+    let pos = true;
+    let j = 0;
+    while (j < n) {
+      const target2 = answer.effectTargets[j];
+      const stat2 = answer.effectStats[j];
+      if ( target2 == "npc" ) {
+        if ( stat2 == bestStat ) {
+          const d = answer.effectDeltas[j];
+          if ( d < 0 ) {
+            pos = false;
+          }
+        }
+      }
+      j = j + 1;
+    };
+    if ( bestStat == "anger" ) {
+      if ( pos ) {
+        return "näyttää ärtyneeltä.";
+      }
+      return "rauhoittuu hieman.";
+    }
+    if ( bestStat == "love" ) {
+      if ( pos ) {
+        return "näyttää ihastuneelta.";
+      }
+      return "näyttää pettyneeltä.";
+    }
+    if ( bestStat == "friendliness" ) {
+      if ( pos ) {
+        return "näyttää ystävälliseltä.";
+      }
+      return "näyttää etäiseltä.";
+    }
+    if ( bestStat == "respect" ) {
+      if ( pos ) {
+        return "näyttää vaikuttuneelta.";
+      }
+      return "näyttää halveksivalta.";
+    }
+    if ( bestStat == "suspicion" ) {
+      if ( pos ) {
+        return "katsoo sinua epäilevästi.";
+      }
+      return "näyttää luottavaisemmalta.";
+    }
+    if ( bestStat == "jealousy" ) {
+      if ( pos ) {
+        return "näyttää mustasukkaiselta.";
+      }
+      return "rentoutuu hieman.";
+    }
+    if ( bestStat == "fear" ) {
+      if ( pos ) {
+        return "näyttää peloissaan.";
+      }
+      return "rauhoittuu.";
+    }
+    if ( bestStat == "panic" ) {
+      if ( pos ) {
+        return "näyttää paniikissa.";
+      }
+      return "hengähtää helpotuksesta.";
+    }
+    if ( bestStat == "stress" ) {
+      if ( pos ) {
+        return "näyttää stressaantuneelta.";
+      }
+      return "rentoutuu hieman.";
+    }
+    return "nyökkää ja jatkaa matkaa.";
+  };
   parseAnswer (dlg, answerObj) {
     const ans = new EmotionalAnswer();
     ans.text = this.json.objFieldStr(answerObj, "text");
+    ans.statusReaction = this.json.objFieldStr(answerObj, "statusReaction");
     const effectsOpt = (answerObj["effects"] instanceof Array ) ? answerObj ["effects"] : undefined ;
     if ( typeof(effectsOpt) === "undefined" ) {
       dlg.answers.push(ans);
@@ -4826,6 +4923,20 @@ class DialogueCatalog  {
     }
     const ans = dlg.answers[answerIndex];
     return ans.text;
+  };
+  answerStatusReaction (dialogueIndex, answerIndex) {
+    const dlg = this.dialogueAt(dialogueIndex);
+    if ( answerIndex < 0 ) {
+      return "";
+    }
+    if ( answerIndex >= (dlg.answers.length) ) {
+      return "";
+    }
+    const ans = dlg.answers[answerIndex];
+    if ( (ans.statusReaction.length) > 0 ) {
+      return ans.statusReaction;
+    }
+    return this.deriveStatusReaction(ans);
   };
   applyAnswerToRelation (dialogueIndex, answerIndex, relation) {
     const dlg = this.dialogueAt(dialogueIndex);
@@ -6953,9 +7064,14 @@ class GameSession  extends RangerProcessBase {
     this.applyEmotionalPlayerEffects(this.pendingEmotionalDialogueIndex, answerIndex);
     this.applyHelpAnswerEffects(ent, answerIndex, this.pendingEmotionalDialogueIndex);
     this.applyLoveFollowup(ent, rel);
-    const dlg = this.dialogueCatalog.dialogueAt(this.pendingEmotionalDialogueIndex);
     if ( (this._map.lastStatus.length) < 1 ) {
-      this._map.lastStatus = (this.pendingEntityName + ": ") + dlg.text;
+      const reaction = this.dialogueCatalog.answerStatusReaction(this.pendingEmotionalDialogueIndex, answerIndex);
+      if ( (reaction.length) > 0 ) {
+        this._map.lastStatus = (this.pendingEntityName + " ") + reaction;
+      } else {
+        const dlg = this.dialogueCatalog.dialogueAt(this.pendingEmotionalDialogueIndex);
+        this._map.lastStatus = (this.pendingEntityName + ": ") + dlg.text;
+      }
     }
     this.pendingEmotionalDialogueIndex = -1;
     if ( this.needsEncounterQuiz() ) {

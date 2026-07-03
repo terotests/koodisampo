@@ -9,6 +9,7 @@
       "answers": [
         {
           "text": "En pysykään, esitän vain.",
+          "statusReaction": "näyttää ymmärtäväiseltä ja hymyilee.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": 5 },
             { "target": "npc", "stat": "respect", "delta": 5 }
@@ -16,10 +17,12 @@
         },
         {
           "text": "Hyvä prosessi voittaa paniikin.",
+          "statusReaction": "nyökkää arvostavasti.",
           "effects": [{ "target": "npc", "stat": "respect", "delta": 10 }]
         },
         {
           "text": "En minä ehdi miettiä muiden ongelmia.",
+          "statusReaction": "näyttää loukkaantuneelta.",
           "effects": [
             { "target": "npc", "stat": "anger", "delta": 10 },
             { "target": "npc", "stat": "friendliness", "delta": -10 }
@@ -36,6 +39,7 @@
       "answers": [
         {
           "text": "En kuullut mitään.",
+          "statusReaction": "katsoo sinua epäilevästi.",
           "effects": [
             { "target": "npc", "stat": "suspicion", "delta": 15 },
             { "target": "npc", "stat": "anger", "delta": 10 }
@@ -43,6 +47,7 @@
         },
         {
           "text": "Selvitän asian heti.",
+          "statusReaction": "rauhoittuu hieman, mutta katse pysyy terävänä.",
           "effects": [
             { "target": "npc", "stat": "respect", "delta": 5 },
             { "target": "npc", "stat": "anger", "delta": -5 }
@@ -50,6 +55,7 @@
         },
         {
           "text": "Seinä aloitti.",
+          "statusReaction": "näyttää raivostuneelta.",
           "effects": [{ "target": "npc", "stat": "anger", "delta": 20 }]
         }
       ]
@@ -65,6 +71,7 @@
       "answers": [
         {
           "text": "Kiitos, yritän parhaani.",
+          "statusReaction": "näyttää ihastuneelta.",
           "effects": [
             { "target": "npc", "stat": "love", "delta": 10 },
             { "target": "npc", "stat": "respect", "delta": 5 }
@@ -72,6 +79,7 @@
         },
         {
           "text": "Flirttailetko minulle?",
+          "statusReaction": "punastuu ja hymyilee ujosti.",
           "effects": [
             { "target": "npc", "stat": "love", "delta": 15 },
             { "target": "npc", "stat": "jealousy", "delta": 5 }
@@ -79,6 +87,7 @@
         },
         {
           "text": "Älä häiritse työntekoa.",
+          "statusReaction": "näyttää pettyneeltä ja kääntyy pois.",
           "effects": [
             { "target": "npc", "stat": "love", "delta": -10 },
             { "target": "npc", "stat": "anger", "delta": 15 }
@@ -95,6 +104,7 @@
       "answers": [
         {
           "text": "Minulla on tikku — tässä.",
+          "statusReaction": "näyttää helpottuneelta ja kiitolliselta.",
           "effects": [
             { "target": "npc", "stat": "respect", "delta": 15 },
             { "target": "player", "stat": "karma", "delta": 5 }
@@ -102,10 +112,12 @@
         },
         {
           "text": "En ole nähnyt.",
+          "statusReaction": "huokaisee pettyneenä.",
           "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
         },
         {
           "text": "Kysy IT:ltä.",
+          "statusReaction": "nyökkää ja jatkaa etsimistä.",
           "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
         }
       ]
@@ -119,6 +131,7 @@
       "answers": [
         {
           "text": "Kiitos, otan mielelläni!",
+          "statusReaction": "näyttää iloiselta.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": 10 },
             { "target": "player", "stat": "karma", "delta": 2 }
@@ -126,10 +139,12 @@
         },
         {
           "text": "Ei kiitos, minulla on kiire.",
+          "statusReaction": "nyökkää ymmärtäväisesti.",
           "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
         },
         {
           "text": "Voisitko tuoda sen pöydälleni?",
+          "statusReaction": "näyttää ärtyneeltä.",
           "effects": [
             { "target": "npc", "stat": "anger", "delta": 10 },
             { "target": "npc", "stat": "respect", "delta": -5 }
@@ -146,6 +161,7 @@
       "answers": [
         {
           "text": "Aion koodata omaa projektia.",
+          "statusReaction": "näyttää kunnioittavalta.",
           "effects": [
             { "target": "npc", "stat": "respect", "delta": 5 },
             { "target": "npc", "stat": "friendliness", "delta": 5 }
@@ -153,10 +169,12 @@
         },
         {
           "text": "Ei mitään erikoista. Entä sinulla?",
+          "statusReaction": "näyttää ystävälliseltä ja uteliaalta.",
           "effects": [{ "target": "npc", "stat": "friendliness", "delta": 10 }]
         },
         {
           "text": "En halua puhua yksityisasioista töissä.",
+          "statusReaction": "näyttää etäiseltä.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": -10 },
             { "target": "npc", "stat": "anger", "delta": 5 }
@@ -173,6 +191,7 @@
       "answers": [
         {
           "text": "Hyvin! Porukka on ollut tosi avuliasta.",
+          "statusReaction": "näyttää lämpimältä ja tyytyväiseltä.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": 10 },
             { "target": "npc", "stat": "respect", "delta": 5 },
@@ -181,10 +200,12 @@
         },
         {
           "text": "Onhan tässä opittavaa, mutta pärjään.",
+          "statusReaction": "nyökkää kannustavasti.",
           "effects": [{ "target": "npc", "stat": "respect", "delta": 10 }]
         },
         {
           "text": "Ei kuulu sinulle.",
+          "statusReaction": "näyttää loukkaantuneelta.",
           "effects": [
             { "target": "npc", "stat": "anger", "delta": 15 },
             { "target": "npc", "stat": "friendliness", "delta": -15 }
@@ -201,6 +222,7 @@
       "answers": [
         {
           "text": "Tottakai! Hyvä idea.",
+          "statusReaction": "näyttää iloiselta.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": 15 },
             { "target": "player", "stat": "karma", "delta": 3 }
@@ -208,10 +230,12 @@
         },
         {
           "text": "Kiitos kutsusta, mutta syön omalla ajallani.",
+          "statusReaction": "nyökkää ymmärtäväisesti.",
           "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
         },
         {
           "text": "Miksi minua kutsutaan? Onko joku syy?",
+          "statusReaction": "näyttää hämmentyneeltä.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": -5 },
             { "target": "npc", "stat": "respect", "delta": -5 }
@@ -228,6 +252,7 @@
       "answers": [
         {
           "text": "Kiitos tarjouksesta! Katsotaan yhdessä.",
+          "statusReaction": "näyttää tyytyväiseltä.",
           "effects": [
             { "target": "npc", "stat": "friendliness", "delta": 10 },
             { "target": "npc", "stat": "respect", "delta": 5 },
@@ -236,15 +261,710 @@
         },
         {
           "text": "Ei hätää, selvitän itse.",
+          "statusReaction": "nyökkää kunnioittavasti.",
           "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
         },
         {
           "text": "Sinähän et edes ymmärrä tätä.",
+          "statusReaction": "näyttää loukkaantuneelta.",
           "effects": [
             { "target": "npc", "stat": "anger", "delta": 20 },
             { "target": "npc", "stat": "friendliness", "delta": -15 },
             { "target": "npc", "stat": "respect", "delta": -10 }
           ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_team_mood",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 45,
+      "text": "Miltä tiimin fiilis tuntuu tänään?",
+      "answers": [
+        {
+          "text": "Hyvältä — kaikki vetävät yhtä köyttä.",
+          "statusReaction": "näyttää innostuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 8 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Normaalia. Ei mitään dramaattista.",
+          "statusReaction": "nyökkää neutraalisti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 3 }]
+        },
+        {
+          "text": "Huonolta. En halua puhua siitä.",
+          "statusReaction": "näyttää huolestuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -5 },
+            { "target": "npc", "stat": "stress", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_deadline",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 50,
+      "text": "Luuletko, että ehdimme deadlineen?",
+      "answers": [
+        {
+          "text": "Kyllä, jos keskitymme olennaiseen.",
+          "statusReaction": "näyttää rauhoittuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 8 },
+            { "target": "npc", "stat": "stress", "delta": -5 }
+          ]
+        },
+        {
+          "text": "En tiedä, mutta yritän parhaani.",
+          "statusReaction": "näyttää mietteliäältä.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 5 }]
+        },
+        {
+          "text": "Se ei ole minun ongelmani.",
+          "statusReaction": "näyttää ärtyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 12 },
+            { "target": "npc", "stat": "respect", "delta": -8 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_remote_work",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 40,
+      "text": "Olisitko valmis etätöihin huomenna?",
+      "answers": [
+        {
+          "text": "Kyllä, se sopii minulle hyvin.",
+          "statusReaction": "näyttää tyytyväiseltä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 8 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Mieluummin tulen toimistolle.",
+          "statusReaction": "nyökkää hyväksyvästi.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
+        },
+        {
+          "text": "En tee töitä kotona.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -8 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_feedback",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 45,
+      "text": "Haluaisitko palautetta viime sprintistä?",
+      "answers": [
+        {
+          "text": "Kyllä, mielelläni kuulen.",
+          "statusReaction": "näyttää arvostavalta.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 10 },
+            { "target": "npc", "stat": "friendliness", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Ehkä myöhemmin, nyt on kiire.",
+          "statusReaction": "nyökkää ymmärtäväisesti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -3 }]
+        },
+        {
+          "text": "En tarvitse palautetta.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 8 },
+            { "target": "npc", "stat": "respect", "delta": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_elevator",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 50,
+      "text": "Hissi on taas jumissa. Harmittaako sinua?",
+      "answers": [
+        {
+          "text": "Vähän, mutta portaat ovat hyväksi.",
+          "statusReaction": "hymyilee kevyesti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 8 }]
+        },
+        {
+          "text": "En oikeastaan huomaa.",
+          "statusReaction": "nyökkää neutraalisti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 2 }]
+        },
+        {
+          "text": "Kyllä harmittaa — ja se on jonkun vika.",
+          "statusReaction": "näyttää ärtyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 8 },
+            { "target": "npc", "stat": "stress", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_music",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 40,
+      "text": "Sopisiko musiikki toimistoon työpäivän aikana?",
+      "answers": [
+        {
+          "text": "Kyllä, se voisi piristää tunnelmaa.",
+          "statusReaction": "näyttää iloiselta.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 10 }]
+        },
+        {
+          "text": "Riippuu genrestä.",
+          "statusReaction": "näyttää mietteliäältä.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 3 }]
+        },
+        {
+          "text": "Ei, se häiritsee keskittymistä.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -8 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_late_meeting",
+      "category": "angry",
+      "minAnger": 50,
+      "maxAnger": 100,
+      "text": "Miksi myöhästyit kokouksesta? Se ei ole ensimmäinen kerta.",
+      "answers": [
+        {
+          "text": "Pahoittelut, unohdin kalenterin.",
+          "statusReaction": "rauhoittuu hieman, mutta näyttää edelleen ärtyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": -5 },
+            { "target": "npc", "stat": "respect", "delta": -5 }
+          ]
+        },
+        {
+          "text": "Kokous alkoi liian aikaisin.",
+          "statusReaction": "näyttää raivostuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 15 },
+            { "target": "npc", "stat": "respect", "delta": -10 }
+          ]
+        },
+        {
+          "text": "Olin kiireinen tärkeässä tehtävässä.",
+          "statusReaction": "katsoo sinua epäilevästi.",
+          "effects": [
+            { "target": "npc", "stat": "suspicion", "delta": 10 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_noisy_keyboard",
+      "category": "angry",
+      "minAnger": 50,
+      "maxAnger": 100,
+      "text": "Näppäimistösi klikkaa koko ajan. Eikö se häiritse sinuakaan?",
+      "answers": [
+        {
+          "text": "Vaihdan hiljaisempaan näppäimistöön.",
+          "statusReaction": "rauhoittuu hieman.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": -8 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En huomaa sitä itse.",
+          "statusReaction": "näyttää ärtyneeltä.",
+          "effects": [{ "target": "npc", "stat": "anger", "delta": 12 }]
+        },
+        {
+          "text": "Käytä kuulokkeita.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 18 },
+            { "target": "npc", "stat": "friendliness", "delta": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_messy_desk",
+      "category": "angry",
+      "minAnger": 50,
+      "maxAnger": 100,
+      "text": "Työpöytäsi on sekaisin. Näyttääkö se sinusta ammattimaiselta?",
+      "answers": [
+        {
+          "text": "Siivoan sen heti.",
+          "statusReaction": "nyökkää tyytyväisenä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": -10 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Luova kaaos on tehokasta.",
+          "statusReaction": "purseuttaa huuliaan.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 8 },
+            { "target": "npc", "stat": "respect", "delta": -8 }
+          ]
+        },
+        {
+          "text": "Sinun pöytäsi on myös.",
+          "statusReaction": "näyttää raivostuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 20 },
+            { "target": "npc", "stat": "friendliness", "delta": -15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_ignored_message",
+      "category": "angry",
+      "minAnger": 50,
+      "maxAnger": 100,
+      "text": "Lähetin sinulle viestin tunti sitten. Miksi et vastannut?",
+      "answers": [
+        {
+          "text": "Pahoittelut, olin keskittynyt koodiin.",
+          "statusReaction": "rauhoittuu hieman.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": -5 },
+            { "target": "npc", "stat": "friendliness", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En nähnyt viestiä.",
+          "statusReaction": "katsoo sinua epäilevästi.",
+          "effects": [
+            { "target": "npc", "stat": "suspicion", "delta": 12 },
+            { "target": "npc", "stat": "anger", "delta": 8 }
+          ]
+        },
+        {
+          "text": "En vastaa kiireellisiin viesteihin.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 15 },
+            { "target": "npc", "stat": "respect", "delta": -12 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "angry_stolen_lunch",
+      "category": "angry",
+      "minAnger": 55,
+      "maxAnger": 100,
+      "text": "Joku otti lounaani jääkaapista. Tiedätkö jotain?",
+      "answers": [
+        {
+          "text": "En, mutta autan etsimään syyllistä.",
+          "statusReaction": "näyttää hieman helpottuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": -5 },
+            { "target": "npc", "stat": "friendliness", "delta": 8 },
+            { "target": "player", "stat": "karma", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Ehkä se oli vahinko.",
+          "statusReaction": "näyttää ärtyneeltä.",
+          "effects": [{ "target": "npc", "stat": "anger", "delta": 10 }]
+        },
+        {
+          "text": "Ehkä sinä unohdit sen kotia.",
+          "statusReaction": "näyttää raivostuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 25 },
+            { "target": "npc", "stat": "friendliness", "delta": -20 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_eyes",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 60,
+      "minLove": 50,
+      "maxLove": 100,
+      "text": "Sinulla on kauniit silmät, tiesitkö?",
+      "answers": [
+        {
+          "text": "Kiitos, se oli ystävällistä.",
+          "statusReaction": "näyttää ihastuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 12 },
+            { "target": "npc", "stat": "friendliness", "delta": 8 }
+          ]
+        },
+        {
+          "text": "Oletko aina näin suora?",
+          "statusReaction": "punastuu ja hymyilee.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 15 },
+            { "target": "npc", "stat": "jealousy", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Tämä on työpaikka, ei deittisovellus.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -12 },
+            { "target": "npc", "stat": "anger", "delta": 10 },
+            { "target": "npc", "stat": "embarrassment", "delta": 10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_lunch_alone",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 55,
+      "minLove": 50,
+      "maxLove": 100,
+      "text": "Syötäänkö lounas yhdessä tänään? Kahdestaan.",
+      "answers": [
+        {
+          "text": "Mielelläni!",
+          "statusReaction": "näyttää iloiselta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 15 },
+            { "target": "npc", "stat": "friendliness", "delta": 10 }
+          ]
+        },
+        {
+          "text": "Mennään porukalla mieluummin.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -5 },
+            { "target": "npc", "stat": "friendliness", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Minulla on kiire.",
+          "statusReaction": "näyttää surulliselta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -10 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_stay_late",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 50,
+      "minLove": 55,
+      "maxLove": 100,
+      "text": "Jäätkö vielä hetkeksi? Haluaisin jutella rauhassa.",
+      "answers": [
+        {
+          "text": "Jään mielelläni.",
+          "statusReaction": "näyttää ihastuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 12 },
+            { "target": "npc", "stat": "friendliness", "delta": 8 }
+          ]
+        },
+        {
+          "text": "Vain viisi minuuttia.",
+          "statusReaction": "nyökkää ymmärtäväisesti.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 5 },
+            { "target": "npc", "stat": "friendliness", "delta": 5 }
+          ]
+        },
+        {
+          "text": "Minun pitää lähteä nyt.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -8 },
+            { "target": "npc", "stat": "anger", "delta": 8 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_gift",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 55,
+      "minLove": 50,
+      "maxLove": 100,
+      "text": "Toin sinulle pienen suklaapatukan. Haluatko?",
+      "answers": [
+        {
+          "text": "Kiitos, se on söpöä!",
+          "statusReaction": "näyttää iloiselta ja punastuu.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 15 },
+            { "target": "npc", "stat": "friendliness", "delta": 10 }
+          ]
+        },
+        {
+          "text": "Kiitos, mutta en voi ottaa vastaan.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -5 },
+            { "target": "npc", "stat": "respect", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En ota lahjoja kollegoilta.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -12 },
+            { "target": "npc", "stat": "anger", "delta": 10 },
+            { "target": "npc", "stat": "embarrassment", "delta": 8 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_walk_home",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 50,
+      "minLove": 60,
+      "maxLove": 100,
+      "text": "Asutko samaan suuntaan? Voisimme kävellä yhdessä.",
+      "answers": [
+        {
+          "text": "Mennään!",
+          "statusReaction": "näyttää ihastuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 18 },
+            { "target": "npc", "stat": "friendliness", "delta": 10 }
+          ]
+        },
+        {
+          "text": "Menen bussilla tänään.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -5 },
+            { "target": "npc", "stat": "friendliness", "delta": 2 }
+          ]
+        },
+        {
+          "text": "En halua seurata ketään kotiin.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -15 },
+            { "target": "npc", "stat": "anger", "delta": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "romantic_secret_admirer",
+      "category": "romantic",
+      "minAnger": 0,
+      "maxAnger": 55,
+      "minLove": 50,
+      "maxLove": 100,
+      "text": "Joku toimistolla puhuu sinusta paljon hyvää. Arvaatko kuka?",
+      "answers": [
+        {
+          "text": "Ehkä sinä?",
+          "statusReaction": "punastuu ja hymyilee leveästi.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": 15 },
+            { "target": "npc", "stat": "jealousy", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En tiedä, en seuraa juoruja.",
+          "statusReaction": "näyttää pettyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -5 },
+            { "target": "npc", "stat": "friendliness", "delta": -3 }
+          ]
+        },
+        {
+          "text": "En ole kiinnostunut.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "love", "delta": -12 },
+            { "target": "npc", "stat": "anger", "delta": 10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "help_lost_badge",
+      "category": "help",
+      "minAnger": 0,
+      "maxAnger": 100,
+      "text": "Kadotin kulkukorttini! Oletko nähnyt sitä?",
+      "answers": [
+        {
+          "text": "Löysin sen — tässä on sinun korttisi.",
+          "statusReaction": "näyttää helpottuneelta ja kiitolliselta.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 15 },
+            { "target": "npc", "stat": "friendliness", "delta": 10 },
+            { "target": "player", "stat": "karma", "delta": 5 }
+          ]
+        },
+        {
+          "text": "En ole nähnyt.",
+          "statusReaction": "näyttää huolestuneelta.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -3 }]
+        },
+        {
+          "text": "Soita turvallisuudelle.",
+          "statusReaction": "nyökkää ja kaivaa puhelimen.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 5 }]
+        }
+      ]
+    },
+    {
+      "id": "help_printer_jam",
+      "category": "help",
+      "minAnger": 0,
+      "maxAnger": 100,
+      "text": "Tulostin on jumissa taas. Osaisitko auttaa?",
+      "answers": [
+        {
+          "text": "Katsotaan yhdessä, osaan korjata sen.",
+          "statusReaction": "näyttää kiitolliselta.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 12 },
+            { "target": "npc", "stat": "friendliness", "delta": 8 },
+            { "target": "player", "stat": "karma", "delta": 3 }
+          ]
+        },
+        {
+          "text": "En osaa, kutsu IT.",
+          "statusReaction": "huokaisee pettyneenä.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": -5 }]
+        },
+        {
+          "text": "Tulostin on aina rikki, en auta.",
+          "statusReaction": "näyttää ärtyneeltä.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 10 },
+            { "target": "npc", "stat": "friendliness", "delta": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "help_password_reset",
+      "category": "help",
+      "minAnger": 0,
+      "maxAnger": 100,
+      "text": "Salasanani vanheni ja en pääse sisään. Voitko auttaa?",
+      "answers": [
+        {
+          "text": "Autan sinua resetoimaan sen.",
+          "statusReaction": "näyttää helpottuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "respect", "delta": 12 },
+            { "target": "npc", "stat": "friendliness", "delta": 8 },
+            { "target": "player", "stat": "karma", "delta": 4 }
+          ]
+        },
+        {
+          "text": "Soita IT-tukeen.",
+          "statusReaction": "nyökkää ja tarttuu puhelimeen.",
+          "effects": [{ "target": "npc", "stat": "respect", "delta": 3 }]
+        },
+        {
+          "text": "Pitäisikö sinun muistaa salasanasi itse.",
+          "statusReaction": "näyttää loukkaantuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "anger", "delta": 12 },
+            { "target": "npc", "stat": "friendliness", "delta": -12 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_hobby",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 45,
+      "text": "Mitä teet vapaa-ajallasi? Onko sinulla harrastuksia?",
+      "answers": [
+        {
+          "text": "Koodaan omia projekteja ja pelaan.",
+          "statusReaction": "näyttää kiinnostuneelta.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 10 },
+            { "target": "npc", "stat": "respect", "delta": 3 }
+          ]
+        },
+        {
+          "text": "Liikun ja luen kirjoja.",
+          "statusReaction": "nyökkää hyväksyvästi.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 8 }]
+        },
+        {
+          "text": "Se on yksityisasia.",
+          "statusReaction": "näyttää etäiseltä.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": -10 },
+            { "target": "npc", "stat": "anger", "delta": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neutral_parking",
+      "category": "neutral",
+      "minAnger": 0,
+      "maxAnger": 40,
+      "text": "Löysitkö parkkipaikan helposti tänään?",
+      "answers": [
+        {
+          "text": "Kyllä, onneksi oli tilaa.",
+          "statusReaction": "hymyilee kevyesti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 5 }]
+        },
+        {
+          "text": "Jouduin kiertämään kauan.",
+          "statusReaction": "nyökkää sympaattisesti.",
+          "effects": [
+            { "target": "npc", "stat": "friendliness", "delta": 5 },
+            { "target": "npc", "stat": "stress", "delta": 3 }
+          ]
+        },
+        {
+          "text": "En aja autoa.",
+          "statusReaction": "nyökkää neutraalisti.",
+          "effects": [{ "target": "npc", "stat": "friendliness", "delta": 2 }]
         }
       ]
     }
