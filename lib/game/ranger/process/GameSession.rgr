@@ -3096,32 +3096,38 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.markStateDirty()
   }
 
-  fn onEpilogueKey:void (key:string) {
-    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
-      shouldQuit = true
-      this.markStateDirty()
-      return
-    }
+  fn reviveFromGameEnd:void (statusMsg:string) {
     map.clearPoliceSquad()
     map.clearOuterWallBreaches()
     this.clearMemorial()
     playerNeeds.resetDefaults()
     npcRelations.reset()
     dialogueCatalog.loadDefaults()
+    conduct.resetDefaults()
     relationTickAccum = 0
     socialTickAccum = 0
     escalatedAngry = false
     escalatedPanic = false
     escalatedJealous = false
     gameOverReason = ""
+    worldClock.setGameMinutes(480)
     def floor:MapFloor (map.activeFloor())
     map.playerX = floor.spawnX
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    map.lastStatus = "Uusi päivä alkaa — muista syödä ja juoda."
+    map.lastStatus = statusMsg
     screen = "map"
     this.markStateDirty()
+  }
+
+  fn onEpilogueKey:void (key:string) {
+    if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
+      shouldQuit = true
+      this.markStateDirty()
+      return
+    }
+    this.reviveFromGameEnd("Uusi päivä alkaa — muista syödä ja juoda.")
   }
 
   fn onGameOverKey:void (key:string) {
@@ -3130,26 +3136,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       this.markStateDirty()
       return
     }
-    map.clearPoliceSquad()
-    map.clearOuterWallBreaches()
-    this.clearMemorial()
-    def respawnMsg:string "Selvitit hengissä — mutta poliisit muistavat kasvosi."
-    if ((strlen gameOverReason) > 0) {
-      respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda."
-      playerNeeds.resetDefaults()
-      npcRelations.reset()
-      dialogueCatalog.loadDefaults()
-      relationTickAccum = 0
-      gameOverReason = ""
-    }
-    def floor:MapFloor (map.activeFloor())
-    map.playerX = floor.spawnX
-    map.playerY = floor.spawnY
-    map.playerHidden = false
-    map.ensurePlayerOnWalkable()
-    map.lastStatus = respawnMsg
-    screen = "map"
-    this.markStateDirty()
+    this.reviveFromGameEnd("Heräsit toimiston alkuun — muista syödä ja juoda.")
   }
 
   fn finishEncounterTalk:void () {
