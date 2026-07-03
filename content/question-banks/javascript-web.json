@@ -4675,6 +4675,3485 @@
       "sourceUrl": "https://nodejs.org/api/process.html#event-unhandledrejection",
       "featureId": "javascript:unhandled-rejection",
       "featurePoints": 4
+    },
+    {
+      "id": "b12-js-types-const-reassign",
+      "chapter": "js-types",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Junior yrittää `const x = 1; x = 2;` — linter valittaa. Miksi?",
+      "choices": [
+        {
+          "text": "const estää uudelleensijoituksen — arvo ei voi vaihtua",
+          "correct": true
+        },
+        {
+          "text": "const muuttujat poistetaan automaattisesti käytön jälkeen",
+          "correct": false
+        },
+        {
+          "text": "const toimii vain funktioiden sisällä",
+          "correct": false
+        },
+        {
+          "text": "const vaatii aina tyypityksen TypeScriptissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "const sitoo identiteetin uudelleen — MDN const.",
+      "wrongFeedback": "const ≠ immutable objekti, mutta uudelleensijoitus on kielletty.",
+      "sourceRef": "mdn/const",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const",
+      "featureId": "js:const-binding",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-let-block",
+      "chapter": "js-types",
+      "difficulty": 1,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "for-silmukassa `var i` vuotaa loopin ulkopuolelle. Turvallisempi vaihtoehto?",
+      "choices": [
+        {
+          "text": "let — lohkoscoped muuttuja",
+          "correct": true
+        },
+        {
+          "text": "global i ilman avainsanaa",
+          "correct": false
+        },
+        {
+          "text": "var on ainoa tapa loop-muuttujalle",
+          "correct": false
+        },
+        {
+          "text": "const i++ toimii silmukassa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "let on block-scoped — MDN let vs var.",
+      "wrongFeedback": "var on function-scoped ja vuotaa for-loopista.",
+      "sourceRef": "mdn/let",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let",
+      "featureId": "js:let-block-scope",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-template-literal",
+      "chapter": "js-types",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi?",
+      "choices": [
+        {
+          "text": "Template literal backtick-merkeillä: `Hei ${name}`",
+          "correct": true
+        },
+        {
+          "text": "'Hei $name' yksinkertaisilla heittomerkeillä",
+          "correct": false
+        },
+        {
+          "text": "sprintf() on ainoa tapa JS:ssä",
+          "correct": false
+        },
+        {
+          "text": "String.concat vaatii kolme argumenttia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Template literals tukevat ${} interpolointia — MDN.",
+      "wrongFeedback": "Yksittäiset lainausmerkit eivät interpoloi muuttujia.",
+      "sourceRef": "mdn/template_literals",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals",
+      "featureId": "js:template-literals",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-array-push",
+      "chapter": "js-types",
+      "difficulty": 1,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Lista `items = []` — haluat lisätä uuden rivin loppuun. Metodi?",
+      "choices": [
+        {
+          "text": "items.push(newItem)",
+          "correct": true
+        },
+        {
+          "text": "items.add(newItem) kuten Setissä",
+          "correct": false
+        },
+        {
+          "text": "items.append() on Array-API",
+          "correct": false
+        },
+        {
+          "text": "items[length] = undefined lisää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "push lisää elementin taulukon loppuun — MDN Array.push.",
+      "wrongFeedback": "Array käyttää push/pop — add on Set/Map.",
+      "sourceRef": "mdn/array_push",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push",
+      "featureId": "js:array-push",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-typeof-string",
+      "chapter": "js-types",
+      "difficulty": 1,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Mikä `typeof 'hello'` palauttaa?",
+      "choices": [
+        {
+          "text": "'string'",
+          "correct": true
+        },
+        {
+          "text": "'text'",
+          "correct": false
+        },
+        {
+          "text": "'String'",
+          "correct": false
+        },
+        {
+          "text": "'object'",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "typeof primitiivistä string palauttaa 'string' — MDN typeof.",
+      "wrongFeedback": "typeof palauttaa pienellä kirjoitetun tyypin merkkijonon.",
+      "sourceRef": "mdn/typeof",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof",
+      "featureId": "js:typeof-primitive",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-json-stringify",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "API lähettää objektin HTTP-bodyna. Miten muunnat JS-objektin JSON-merkkijonoksi?",
+      "choices": [
+        {
+          "text": "JSON.stringify(obj)",
+          "correct": true
+        },
+        {
+          "text": "obj.toString() riittää aina",
+          "correct": false
+        },
+        {
+          "text": "String(obj) säilyttää avaimet",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse muuntaa objektista stringiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "JSON.stringify serialisoi objektin — MDN JSON.",
+      "wrongFeedback": "parse on päinvastainen suunta — string → objekti.",
+      "sourceRef": "mdn/json_stringify",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify",
+      "featureId": "js:json-stringify",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-isarray",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Funktio saa `data` joka voi olla array tai array-like. Luotettava tarkistus?",
+      "choices": [
+        {
+          "text": "Array.isArray(data)",
+          "correct": true
+        },
+        {
+          "text": "typeof data === 'array'",
+          "correct": false
+        },
+        {
+          "text": "data instanceof Object",
+          "correct": false
+        },
+        {
+          "text": "data.length > 0 tarkoittaa arraya",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Array.isArray tunnistaa oikeat taulukot — MDN.",
+      "wrongFeedback": "typeof array on 'object' — array-like ei ole array.",
+      "sourceRef": "mdn/array_isarray",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray",
+      "featureId": "js:array-isarray",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-nan-check",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Laskenta palauttaa NaN — `value === NaN` on aina false. Miten tarkistat?",
+      "choices": [
+        {
+          "text": "Number.isNaN(value) tai Object.is(value, NaN)",
+          "correct": true
+        },
+        {
+          "text": "value == NaN toimii loose equalityllä",
+          "correct": false
+        },
+        {
+          "text": "typeof value === 'nan'",
+          "correct": false
+        },
+        {
+          "text": "isNaN ei ole JavaScriptissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "NaN ei ole yhtä kuin itsensä kanssa — Number.isNaN on tarkka — MDN.",
+      "wrongFeedback": "Globaali isNaN coercion — Number.isNaN suositeltu.",
+      "sourceRef": "mdn/number_isnan",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN",
+      "featureId": "js:nan-check",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-spread-copy",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?",
+      "choices": [
+        {
+          "text": "const copy = [...original]",
+          "correct": true
+        },
+        {
+          "text": "const copy = original — riittää erillinen muuttujanimi",
+          "correct": false
+        },
+        {
+          "text": "original.clone() on natiivi",
+          "correct": false
+        },
+        {
+          "text": "Spread toimii vain objekteissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Spread luo uuden taulukon — MDN spread syntax.",
+      "wrongFeedback": "Viittaus kopioi osoitteen — molemmat viittaavat samaan arrayhin.",
+      "sourceRef": "mdn/spread_syntax",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax",
+      "featureId": "js:spread-array",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-types-object-shorthand",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?",
+      "choices": [
+        {
+          "text": "{ id, name } — property shorthand",
+          "correct": true
+        },
+        {
+          "text": "{ id: id, name: name } on ainoa tapa",
+          "correct": false
+        },
+        {
+          "text": "Object.create(id, name)",
+          "correct": false
+        },
+        {
+          "text": "new Map(id, name)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shorthand property kun avain = muuttujanimi — MDN object initializer.",
+      "wrongFeedback": "ES6 shorthand on standardi — ei tarvitse toistaa nimeä.",
+      "sourceRef": "mdn/object_initializer",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer",
+      "featureId": "js:object-shorthand",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-callback-to-promise",
+      "chapter": "js-async",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käärit sen await-yhteensopivaksi?",
+      "choices": [
+        {
+          "text": "util.promisify(readFile) tai new Promise wrapper",
+          "correct": true
+        },
+        {
+          "text": "Callbacks eivät voi muuttua promiseiksi",
+          "correct": false
+        },
+        {
+          "text": "await toimii suoraan callback-funktiossa",
+          "correct": false
+        },
+        {
+          "text": "setTimeout korvaa promisen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "promisify muuntaa error-first callbackin promiseksi — Node util.",
+      "wrongFeedback": "Promise wrapper tai promisify on standardi migraatiotapa.",
+      "sourceRef": "nodejs/util/promisify",
+      "sourceUrl": "https://nodejs.org/api/util.html#utilpromisifyoriginal",
+      "featureId": "js:promisify",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-promise-then-chain",
+      "chapter": "js-async",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "fetch palauttaa promisen — haluat JSON-objektin. Ensimmäinen then-ketju?",
+      "choices": [
+        {
+          "text": ".then(res => res.json())",
+          "correct": true
+        },
+        {
+          "text": ".then(JSON.parse) suoraan Response-objektille",
+          "correct": false
+        },
+        {
+          "text": "await ei toimi promisen kanssa",
+          "correct": false
+        },
+        {
+          "text": "res.body on aina valmis objekti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Response.json() palauttaa promisen parsitusta varten — MDN fetch.",
+      "wrongFeedback": "Response ei ole JSON-string — tarvitsee .json() metodin.",
+      "sourceRef": "mdn/response_json",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Response/json",
+      "featureId": "js:fetch-then-json",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-async-returns-promise",
+      "chapter": "js-async",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä `async function foo() { return 42; }` palauttaa kutsujalle?",
+      "choices": [
+        {
+          "text": "Promise joka resolvaantuu arvoon 42",
+          "correct": true
+        },
+        {
+          "text": "Synkroninen number 42",
+          "correct": false
+        },
+        {
+          "text": "undefined — return ei toimi asyncissa",
+          "correct": false
+        },
+        {
+          "text": "Generator-objekti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "async funktio wrapaa return-arvon promiseen — MDN async.",
+      "wrongFeedback": "async funktio palauttaa aina promisen.",
+      "sourceRef": "mdn/async_function",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
+      "featureId": "js:async-return-promise",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-promise-finally",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Latausnäkymä pitää piilottaa sekä onnistumisessa että virheessä. Mikä Promise-metodi?",
+      "choices": [
+        {
+          "text": "finally(() => hideSpinner())",
+          "correct": true
+        },
+        {
+          "text": "then() ilman catchia riittää virheille",
+          "correct": false
+        },
+        {
+          "text": "catch() ajetaan onnistumisessa",
+          "correct": false
+        },
+        {
+          "text": "finally muuttaa promisen tuloksen aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "finally ajetaan settled-tilassa — MDN Promise.finally.",
+      "wrongFeedback": "finally ei korvaa catchia — se on cleanup.",
+      "sourceRef": "mdn/promise_finally",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally",
+      "featureId": "js:promise-finally",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-queue-microtask",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Haluat ajaa funktion heti synkronisen koodin jälkeen mutta ennen setTimeout(0). API?",
+      "choices": [
+        {
+          "text": "queueMicrotask(fn)",
+          "correct": true
+        },
+        {
+          "text": "setImmediate(fn) selaimessa aina",
+          "correct": false
+        },
+        {
+          "text": "requestAnimationFrame on microtask",
+          "correct": false
+        },
+        {
+          "text": "process.nextTick on standardi selaimessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "queueMicrotask lisää microtask-jonoon — MDN.",
+      "wrongFeedback": "setTimeout on macrotask — myöhäisempi kuin microtask.",
+      "sourceRef": "mdn/queueMicrotask",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/queueMicrotask",
+      "featureId": "js:queue-microtask",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-promise-with-resolvers",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Rakennat deferred-patternin: ulkopuolinen koodi resolveaa promisen myöhemmin. ES2024+ tapa?",
+      "choices": [
+        {
+          "text": "Promise.withResolvers() — { promise, resolve, reject }",
+          "correct": true
+        },
+        {
+          "text": "new Promise ilman executor-funktiota",
+          "correct": false
+        },
+        {
+          "text": "Promise.defer() on natiivi",
+          "correct": false
+        },
+        {
+          "text": "async function ei voi odottaa ulkoista signaalia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "withResolvers palauttaa promise + resolve/reject — MDN.",
+      "wrongFeedback": "Manuaalinen deferred toimii, mutta withResolvers on standardi.",
+      "sourceRef": "mdn/promise_withresolvers",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers",
+      "featureId": "js:promise-with-resolvers",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-generator-async",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?",
+      "choices": [
+        {
+          "text": "async function* — async generator",
+          "correct": true
+        },
+        {
+          "text": "function* riittää awaitille sisällä",
+          "correct": false
+        },
+        {
+          "text": "async function palauttaa arrayn automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Generators eivät tue promiseja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "async generator tuottaa async iterable — MDN async function*.",
+      "wrongFeedback": "Tavallinen generator ei awaitaa — tarvitsee async function*.",
+      "sourceRef": "mdn/async_generator",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*",
+      "featureId": "js:async-generator",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-microtask-starvation",
+      "chapter": "js-async",
+      "difficulty": 5,
+      "audiences": [
+        "guru",
+        "security"
+      ],
+      "prompt": "while(true) { queueMicrotask(() => {}) } — UI jäätyy vaikka ei ole synkronista silmukkaa. Miksi?",
+      "choices": [
+        {
+          "text": "Microtask-jono tyhjennetään ennen renderiä — infinite microtasks estävät macrotaskit",
+          "correct": true
+        },
+        {
+          "text": "queueMicrotask on synkroninen",
+          "correct": false
+        },
+        {
+          "text": "Selain ei käytä microtask-jonoa",
+          "correct": false
+        },
+        {
+          "text": "setTimeout(0) ajetaan aina ensin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Event loop tyhjentää microtaskit — starvation estää paintin — MDN event loop.",
+      "wrongFeedback": "Microtask-loop voi estää käyttöliittymän päivityksen.",
+      "sourceRef": "mdn/event_loop",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
+      "featureId": "js:microtask-starvation",
+      "featurePoints": 5,
+      "studyNotes": "Microtask-jono suoritetaan loppuun ennen seuraavaa macrotaskia. Rekursiivinen queueMicrotask voi jumittaa selaimen ilman synkronista while-silmukkaa.",
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-settled-vs-resolve",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "finally-blokissa tarvitset tietää onnistuiko promise. Miten saat tuloksen ilman then-ketjua?",
+      "choices": [
+        {
+          "text": "Tallenna flag then/catchissa — finally ei saa tulosta parametrina",
+          "correct": true
+        },
+        {
+          "text": "finally(result) palauttaa resolve-arvon",
+          "correct": false
+        },
+        {
+          "text": "await finally palauttaa arvon",
+          "correct": false
+        },
+        {
+          "text": "Promise.status on natiivi property",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "finally ei saa fulfillment/rejection arvoa — MDN Promise.finally.",
+      "wrongFeedback": "finally on cleanup — tulos pitää siepata then/catchissa.",
+      "sourceRef": "mdn/promise_finally",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally",
+      "featureId": "js:promise-finally-semantics",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-async-retry-backoff",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "API palauttaa 503 — haluat uudelleenyrityksen eksponentiaalisella viiveellä. Rakenne?",
+      "choices": [
+        {
+          "text": "Loop/silmukka: try await, catch, odota delay * 2^n, max retries",
+          "correct": true
+        },
+        {
+          "text": "while(true) ilman max retries — loputon retry",
+          "correct": false
+        },
+        {
+          "text": "Promise.all retry kaikille kerralla",
+          "correct": false
+        },
+        {
+          "text": "fetch cachettaa 503 automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Exponential backoff + max retries on standardi resilienssi — AWS/Google best practices.",
+      "wrongFeedback": "Loputon retry voi pahentaa kuormaa — rajoita ja kasvata viivettä.",
+      "sourceRef": "mdn/fetch",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/fetch",
+      "featureId": "js:retry-backoff",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-modules-type-module",
+      "chapter": "js-modules",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Node-projekti käyttää `import` ilman Babelia. package.json-asetus?",
+      "choices": [
+        {
+          "text": "\"type\": \"module\"",
+          "correct": true
+        },
+        {
+          "text": "\"esm\": true\"",
+          "correct": false
+        },
+        {
+          "text": "\"module\": \"es6\" automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "import toimii ilman konfiguraatiota CommonJS-projektissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "type module kertoo Nodelle ESM:stä — Node.js packages docs.",
+      "wrongFeedback": "CommonJS oletus — ESM vaatii type module tai .mjs.",
+      "sourceRef": "nodejs/packages/type",
+      "sourceUrl": "https://nodejs.org/api/packages.html#type",
+      "featureId": "js:package-type-module",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-modules-reexport",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?",
+      "choices": [
+        {
+          "text": "export * from './utils.js' ja export { x } from './api.js'",
+          "correct": true
+        },
+        {
+          "text": "import then window.exports",
+          "correct": false
+        },
+        {
+          "text": "re-export vaatii CommonJS",
+          "correct": false
+        },
+        {
+          "text": "export from on TypeScript-only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "export ... from on ESM re-export — MDN export.",
+      "wrongFeedback": "Barrel-tiedostot käyttävät export from -syntaksia.",
+      "sourceRef": "mdn/export",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export",
+      "featureId": "js:reexport",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-modules-side-effects",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Bundleri poistaa `import './polyfill.js'` tree-shakingissa ja polyfill puuttuu prodissa. Syy?",
+      "choices": [
+        {
+          "text": "Side-effect import pitää merkitä package.json sideEffects: false huomio — tai säilyttää import",
+          "correct": true
+        },
+        {
+          "text": "Polyfill import on aina turvallinen",
+          "correct": false
+        },
+        {
+          "text": "Vite ei tree-shake",
+          "correct": false
+        },
+        {
+          "text": "Side-effect importit eivät voi poistua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Bundler voi dropata käyttämättömät moduulit — sideEffects-kenttä — webpack docs.",
+      "wrongFeedback": "Pelkkä side-effect import voi poistua jos bundleri luulee moduulin tarpeettomaksi.",
+      "sourceRef": "webpack/sideEffects",
+      "sourceUrl": "https://webpack.js.org/guides/tree-shaking/",
+      "featureId": "js:side-effects",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-modules-import-attributes",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Haluat importata JSON-moduulin ESM:llä selaimessa. Moderni syntaksi?",
+      "choices": [
+        {
+          "text": "import data from './config.json' with { type: 'json' }",
+          "correct": true
+        },
+        {
+          "text": "require('./config.json') selaimessa",
+          "correct": false
+        },
+        {
+          "text": "import json ei tarvitse attribuutteja",
+          "correct": false
+        },
+        {
+          "text": "#include config.json",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Import attributes määrittävät moduulityypin — MDN import attributes.",
+      "wrongFeedback": "JSON import vaatii type assertion/attribute riippuen ympäristöstä.",
+      "sourceRef": "mdn/import_attributes",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import/with",
+      "featureId": "js:import-attributes",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-modules-resolve-alias",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Monorepossa `@app/utils` pitää resolvautua `packages/utils/src`. Missä konfiguroit bundlerissa?",
+      "choices": [
+        {
+          "text": "resolve.alias (Vite/webpack) tai tsconfig paths",
+          "correct": true
+        },
+        {
+          "text": "package.json name riittää aina",
+          "correct": false
+        },
+        {
+          "text": "import ei tue aliaksia",
+          "correct": false
+        },
+        {
+          "text": "Symlink riittää ilman konfiguraatiota aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Path alias bundlerin resolve + TypeScript paths — Vite resolve.alias.",
+      "wrongFeedback": "Import-polku ei automaattisesti tunne @-aliaksia.",
+      "sourceRef": "vite/resolve",
+      "sourceUrl": "https://vitejs.dev/config/shared-options.html#resolve-alias",
+      "featureId": "js:resolve-alias",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-runtime-raf-vs-timeout",
+      "chapter": "js-runtime",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Animaatio päivittää DOM-elementin sijaintia 60 fps. Parempi kuin setInterval(16)?",
+      "choices": [
+        {
+          "text": "requestAnimationFrame — synkronoituu näytön päivitykseen",
+          "correct": true
+        },
+        {
+          "text": "setTimeout(0) riittää animaatioon",
+          "correct": false
+        },
+        {
+          "text": "while-loop DOM-päivityksessä",
+          "correct": false
+        },
+        {
+          "text": "requestAnimationFrame on Node-only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "rAF optimoi animaatiot — MDN requestAnimationFrame.",
+      "wrongFeedback": "setInterval ei synkronoidu refresh rateen.",
+      "sourceRef": "mdn/requestAnimationFrame",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame",
+      "featureId": "js:request-animation-frame",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-runtime-object-freeze",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Redux-tyylinen store haluaa estää suoran state-mutaation. Shallow-immutability?",
+      "choices": [
+        {
+          "text": "Object.freeze(state) — shallow; deep freeze erikseen jos tarvitaan",
+          "correct": true
+        },
+        {
+          "text": "const state riittää deep immutabilityyn",
+          "correct": false
+        },
+        {
+          "text": "freeze estää myös nested objektien muutokset automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse(JSON.stringify) on ainoa tapa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Object.freeze on shallow — MDN Object.freeze.",
+      "wrongFeedback": "const + freeze eivät deep-freezaa ilman rekursiota.",
+      "sourceRef": "mdn/object_freeze",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze",
+      "featureId": "js:object-freeze",
+      "featurePoints": 3,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-runtime-proxy-trap",
+      "chapter": "js-runtime",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Haluat logata kaikki objektin property-luvut debugissa. Metaprogramming-ratkaisu?",
+      "choices": [
+        {
+          "text": "new Proxy(target, { get(trap) { log; return Reflect.get(...) } })",
+          "correct": true
+        },
+        {
+          "text": "Object.observe on standardi ES2024",
+          "correct": false
+        },
+        {
+          "text": "getter jokaiselle avaimelle manuaalisesti skaalautuu",
+          "correct": false
+        },
+        {
+          "text": "Proxy estää kaiken property accessin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Proxy handler get-trap — MDN Proxy.",
+      "wrongFeedback": "Manuaaliset getterit eivät skaalaudu — Proxy on tarkoitettu tähän.",
+      "sourceRef": "mdn/proxy",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+      "featureId": "js:proxy-get-trap",
+      "featurePoints": 4,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-runtime-weakref-cache",
+      "chapter": "js-runtime",
+      "difficulty": 5,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Cache viittaa isoihin objekteihin ja estää GC:n vaikka UI on vapauttanut ne. Etenevä ratkaisu?",
+      "choices": [
+        {
+          "text": "WeakRef + FinalizationRegistry — ei pidä objektia elossa",
+          "correct": true
+        },
+        {
+          "text": "Map aina — GC hoitaa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "global.gc() tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "WeakRef estää objektin keräämisen ikuisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WeakRef ei estä GC:tä — MDN WeakRef.",
+      "wrongFeedback": "Vahva viittaus Mapissa estää GC:n — WeakRef on heikko.",
+      "sourceRef": "mdn/weakref",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakRef",
+      "featureId": "js:weakref",
+      "featurePoints": 5,
+      "studyNotes": "WeakRef sallii objektin keräämisen jos ei muita viittauksia. FinalizationRegistry ilmoittaa kun objekti on GC:tty.",
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-js-runtime-event-delegation",
+      "chapter": "js-runtime",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Lista renderöi 500 riviä — jokaiselle riville oma click-listener. Suorituskykyongelma. Korjaus?",
+      "choices": [
+        {
+          "text": "Event delegation — yksi listener parentille, event.target tarkistus",
+          "correct": true
+        },
+        {
+          "text": "500 listeneriä on aina OK",
+          "correct": false
+        },
+        {
+          "text": "onclick inline HTML aina nopein",
+          "correct": false
+        },
+        {
+          "text": "removeEventListener ei toimi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Delegation vähentää listenereitä — MDN event delegation.",
+      "wrongFeedback": "Satoja listenereitä kuluttaa muistia — delegoi parentille.",
+      "sourceRef": "mdn/event_delegation",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling",
+      "featureId": "js:event-delegation",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-ts-basic-primitive-types",
+      "chapter": "js-typescript",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "TypeScriptissä haluat merkitä että `age` on kokonaisluku. Tyyppi?",
+      "choices": [
+        {
+          "text": "let age: number",
+          "correct": true
+        },
+        {
+          "text": "let age: int",
+          "correct": false
+        },
+        {
+          "text": "let age: integer",
+          "correct": false
+        },
+        {
+          "text": "let age: Number wrapper aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "TS primitiivit: number, string, boolean — TS handbook basic types.",
+      "wrongFeedback": "TS:ssä on number — ei erillistä int-tyyppiä oletuksena.",
+      "sourceRef": "typescript/basic-types",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#the-primitives-string-number-and-boolean",
+      "featureId": "ts:primitive-types",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-ts-basic-interface-shape",
+      "chapter": "js-typescript",
+      "difficulty": 1,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "API-vastauksella on kentät `id` ja `title`. Miten kuvailet muodon TS:ssä?",
+      "choices": [
+        {
+          "text": "interface User { id: string; title: string }",
+          "correct": true
+        },
+        {
+          "text": "type User = class { id, title }",
+          "correct": false
+        },
+        {
+          "text": "User implements JSON",
+          "correct": false
+        },
+        {
+          "text": "interface vaatii aina extends Object",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "interface kuvaa objektin muodon — TS handbook interfaces.",
+      "wrongFeedback": "interface on rakenne — ei luokkaa.",
+      "sourceRef": "typescript/interfaces",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/objects.html",
+      "featureId": "ts:interface",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-ts-basic-union-null",
+      "chapter": "js-typescript",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Funktio voi palauttaa käyttäjän tai null jos ei löydy. Paluutyyppi?",
+      "choices": [
+        {
+          "text": "User | null",
+          "correct": true
+        },
+        {
+          "text": "User? on virallinen TS-syntaksi nullille",
+          "correct": false
+        },
+        {
+          "text": "any riittää",
+          "correct": false
+        },
+        {
+          "text": "User null ei ole union",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Union type | yhdistää vaihtoehdot — TS handbook unions.",
+      "wrongFeedback": "Union kuvaa useita mahdollisia tyyppejä.",
+      "sourceRef": "typescript/unions",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types",
+      "featureId": "ts:union-null",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-ts-basic-type-annotation-fn",
+      "chapter": "js-typescript",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Funktio `add(a, b)` palauttaa summan. Parametrien ja paluuarvon tyypitys?",
+      "choices": [
+        {
+          "text": "function add(a: number, b: number): number",
+          "correct": true
+        },
+        {
+          "text": "function add(number a, number b)",
+          "correct": false
+        },
+        {
+          "text": "add: Function riittää",
+          "correct": false
+        },
+        {
+          "text": "Paluutyyppi ei ole TS:ssä sallittu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Parametrit ja return type annotoidaan — TS functions.",
+      "wrongFeedback": "TS käyttää sulkumerkintää — ei C-tyylistä syntaksia.",
+      "sourceRef": "typescript/functions",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#functions",
+      "featureId": "ts:function-annotations",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "id": "b12-ts-basic-enum-string",
+      "chapter": "js-typescript",
+      "difficulty": 2,
+      "audiences": [
+        "coworker"
+      ],
+      "prompt": "Tila voi olla 'draft' | 'published' | 'archived'. Tyypitetty vakiomuoto ilman runtime enumia?",
+      "choices": [
+        {
+          "text": "type Status = 'draft' | 'published' | 'archived'",
+          "correct": true
+        },
+        {
+          "text": "enum Status { draft, published } aina pakollinen",
+          "correct": false
+        },
+        {
+          "text": "const Status = string",
+          "correct": false
+        },
+        {
+          "text": "Union stringeistä ei ole sallittu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "String literal union on kevyt vaihtoehto enumille — TS handbook.",
+      "wrongFeedback": "String union ei tuota runtime-koodia — usein suositeltu.",
+      "sourceRef": "typescript/literal-types",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types",
+      "featureId": "ts:string-literal-union",
+      "featurePoints": 2,
+      "domain": "javascript"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-destructure-default",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "prompt": "Destructuroit { name, role = 'user' } — role puuttuu. Arvo?",
+      "choices": [
+        {
+          "text": "role on 'user' — default destructuringissä",
+          "correct": true
+        },
+        {
+          "text": "undefined",
+          "correct": false
+        },
+        {
+          "text": "Tyhjä string",
+          "correct": false
+        },
+        {
+          "text": "Virhe heitetään",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Default arvo kun property puuttuu — MDN destructuring.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/destructuring",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment",
+      "featureId": "js:destructure-default",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-rest-params",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "prompt": "Funktio `sum(...nums)` — mitä ...nums tarkoittaa?",
+      "choices": [
+        {
+          "text": "Rest parameter kerää loput argumentit taulukoksi",
+          "correct": true
+        },
+        {
+          "text": "Spread kopioi taulukon",
+          "correct": false
+        },
+        {
+          "text": "Vain arrow-funktioissa",
+          "correct": false
+        },
+        {
+          "text": "nums on aina tyhjä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rest ... kerää argumentit — MDN rest parameters.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/rest_parameters",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters",
+      "featureId": "js:rest-parameters",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-object-keys-values",
+      "chapter": "js-types",
+      "difficulty": 3,
+      "prompt": "Haluat iteroida objektin arvot ilman for...in prototyypin perintää. Metodi?",
+      "choices": [
+        {
+          "text": "Object.values(obj) tai Object.entries(obj)",
+          "correct": true
+        },
+        {
+          "text": "for...in ilman hasOwnProperty aina turvallinen",
+          "correct": false
+        },
+        {
+          "text": "obj.map()",
+          "correct": false
+        },
+        {
+          "text": "Object.keys palauttaa arvot",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Object.values/entries — MDN Object.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/object_values",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values",
+      "featureId": "js:object-values",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-instanceof-array",
+      "chapter": "js-types",
+      "difficulty": 3,
+      "prompt": "Miksi `[] instanceof Object` on true mutta Array.isArray suositeltu?",
+      "choices": [
+        {
+          "text": "instanceof ei erota arraya cross-realm / iframe kontekstissa luotavasta",
+          "correct": true
+        },
+        {
+          "text": "instanceof on aina väärä",
+          "correct": false
+        },
+        {
+          "text": "Array ei ole Object",
+          "correct": false
+        },
+        {
+          "text": "isArray on deprecated",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Array.isArray luotettavampi — MDN.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/array_isarray",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray",
+      "featureId": "js:instanceof-array",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-truthy-falsy",
+      "chapter": "js-types",
+      "difficulty": 2,
+      "prompt": "Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus tyhjälle kentälle?",
+      "choices": [
+        {
+          "text": "value === '' || value == null — älä käytä pelkkää falsy",
+          "correct": true
+        },
+        {
+          "text": "!value on aina oikein",
+          "correct": false
+        },
+        {
+          "text": "Boolean(value) erottaa 0:n",
+          "correct": false
+        },
+        {
+          "text": "value === false riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "0 on falsy mutta validi — MDN truthy/falsy.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/truthy",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Glossary/Truthy",
+      "featureId": "js:truthy-falsy",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-parseint-radix",
+      "chapter": "js-types",
+      "difficulty": 3,
+      "prompt": "parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen?",
+      "choices": [
+        {
+          "text": "Ilman radixia etunolla voi tulkita oktaaliksi historiallisesti",
+          "correct": true
+        },
+        {
+          "text": "parseInt ei ota radixia",
+          "correct": false
+        },
+        {
+          "text": "Radix 16 aina",
+          "correct": false
+        },
+        {
+          "text": "parseInt on deprecated",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "parseInt radix — MDN.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/parseint",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt",
+      "featureId": "js:parseint-radix",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-symbol-tostring",
+      "chapter": "js-types",
+      "difficulty": 4,
+      "prompt": "Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne?",
+      "choices": [
+        {
+          "text": "Object.getOwnPropertySymbols(obj)",
+          "correct": true
+        },
+        {
+          "text": "Object.keys sisältää symbolit",
+          "correct": false
+        },
+        {
+          "text": "JSON.stringify säilyttää symbolit",
+          "correct": false
+        },
+        {
+          "text": "Symbolit ovat enumerable oletuksena",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Symbol keys erillisellä API:lla — MDN.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/getownpropertysymbols",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols",
+      "featureId": "js:symbol-keys",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-structured-equality",
+      "chapter": "js-types",
+      "difficulty": 3,
+      "prompt": "Kaksi eri objektia {a:1} ja {a:1} — {} === {} on false. Miksi?",
+      "choices": [
+        {
+          "text": "Objektit vertaillaan viittauksella — eri instanssit",
+          "correct": true
+        },
+        {
+          "text": "Sisältövertailu automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Object.is vertaa deep",
+          "correct": false
+        },
+        {
+          "text": "JSON.stringify vertailu on standardi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Reference equality — MDN equality.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/equality",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness",
+      "featureId": "js:reference-equality",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-temporal-api",
+      "chapter": "js-types",
+      "difficulty": 4,
+      "prompt": "Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi?",
+      "choices": [
+        {
+          "text": "Temporal API (stage 3) — immutable datetime",
+          "correct": true
+        },
+        {
+          "text": "moment.js on standardi",
+          "correct": false
+        },
+        {
+          "text": "Date.setUTC riittää",
+          "correct": false
+        },
+        {
+          "text": "Timestamp number aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Temporal korvaa Date-painetta — TC39.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "tc39/temporal",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal",
+      "featureId": "js:temporal",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-types-intl-numberformat",
+      "chapter": "js-types",
+      "difficulty": 3,
+      "prompt": "Näytät hinnan suomalaiselle käyttäjälle: 1234.5 → '1 234,50 €'. API?",
+      "choices": [
+        {
+          "text": "new Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR' })",
+          "correct": true
+        },
+        {
+          "text": "toFixed + manuaalinen pilkku",
+          "correct": false
+        },
+        {
+          "text": "Number.toLocaleString ei tue valuuttaa",
+          "correct": false
+        },
+        {
+          "text": "printf JS:ssä natiivi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Intl.NumberFormat lokalisointiin — MDN.",
+      "wrongFeedback": "Tarkista MDN/TS docs — väärä vastaus johtaa yleiseen virheeseen.",
+      "sourceRef": "mdn/intl_numberformat",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat",
+      "featureId": "js:intl-numberformat",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-await-top-level",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "prompt": "config.mjs lataa env-tiedoston ennen muita importteja. Ratkaisu?",
+      "choices": [
+        {
+          "text": "top-level await ES-moduulissa",
+          "correct": true
+        },
+        {
+          "text": "import() synkroninen",
+          "correct": false
+        },
+        {
+          "text": "require await",
+          "correct": false
+        },
+        {
+          "text": "TLA vain TypeScriptissä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "top-level await ES-moduulissa — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "TLA moduuleissa — MDN.",
+      "sourceUrl": "mdn/tla",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await",
+      "featurePoints": "js:tla"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-promise-all-error",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "prompt": "Promise.all — yksi reject. Mitä tapahtuu?",
+      "choices": [
+        {
+          "text": "Koko all hylätään ensimmäisestä virheestä",
+          "correct": true
+        },
+        {
+          "text": "Muut jatkuvat",
+          "correct": false
+        },
+        {
+          "text": "allSettled automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Virhe ignoroitu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Koko all hylätään ensimmäisestä virheestä — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "all fail-fast — MDN.",
+      "sourceUrl": "mdn/promise_all",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all",
+      "featurePoints": "js:promise-all-fail"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-sleep-pattern",
+      "chapter": "js-async",
+      "difficulty": 2,
+      "prompt": "Testissä haluat odottaa 100ms ilman busy-waitiä. Pattern?",
+      "choices": [
+        {
+          "text": "await new Promise(r => setTimeout(r, 100))",
+          "correct": true
+        },
+        {
+          "text": "while(Date.now())",
+          "correct": false
+        },
+        {
+          "text": "Thread.sleep",
+          "correct": false
+        },
+        {
+          "text": "busy loop",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "await new Promise(r => setTimeout(r, 100)) — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "Promise + setTimeout delay — MDN.",
+      "sourceUrl": "mdn/settimeout",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/API/setTimeout",
+      "featurePoints": "js:sleep-pattern"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-iterator-for-await",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "prompt": "ReadableStream data async iterable. Silmukka?",
+      "choices": [
+        {
+          "text": "for await (const chunk of stream)",
+          "correct": true
+        },
+        {
+          "text": "for (chunk of stream) synkroninen",
+          "correct": false
+        },
+        {
+          "text": "stream.read() kerran",
+          "correct": false
+        },
+        {
+          "text": "callback only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "for await (const chunk of stream) — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "for await of async iterable — MDN.",
+      "sourceUrl": "mdn/for-await-of",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of",
+      "featurePoints": "js:for-await-of"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-signal-combine",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "prompt": "Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?",
+      "choices": [
+        {
+          "text": "AbortSignal.any([signal1, signal2])",
+          "correct": true
+        },
+        {
+          "text": "signal1 + signal2 merge",
+          "correct": false
+        },
+        {
+          "text": "AbortController.combine",
+          "correct": false
+        },
+        {
+          "text": "ei tuettu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "AbortSignal.any([signal1, signal2]) — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "AbortSignal.any yhdistää — MDN.",
+      "sourceUrl": "mdn/abortsignal_any",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static",
+      "featurePoints": "js:abortsignal-any"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-eventemitter-memory",
+      "chapter": "js-async",
+      "difficulty": 4,
+      "prompt": "Node EventEmitter 'data' listenerit kasaantuvat — MaxListenersExceededWarning. Korjaus?",
+      "choices": [
+        {
+          "text": "Poista listener removeListener/off tai käytä once",
+          "correct": true
+        },
+        {
+          "text": "Lisää lisää listenereitä",
+          "correct": false
+        },
+        {
+          "text": "ignore warning",
+          "correct": false
+        },
+        {
+          "text": "process.exit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Poista listener removeListener/off tai käytä once — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "Listener leak — Node events docs.",
+      "sourceUrl": "nodejs/events",
+      "featureId": "https://nodejs.org/api/events.html",
+      "featurePoints": "js:eventemitter-leak"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-fetch-keepalive",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "prompt": "Analytics beacon sivun unloadissa — fetch katkeaa. Vaihtoehto?",
+      "choices": [
+        {
+          "text": "fetch(url, { keepalive: true }) tai navigator.sendBeacon",
+          "correct": true
+        },
+        {
+          "text": "sync XHR",
+          "correct": false
+        },
+        {
+          "text": "localStorage",
+          "correct": false
+        },
+        {
+          "text": "WebSocket aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "fetch(url, { keepalive: true }) tai navigator.sendBeacon — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "keepalive/beacon unloadissa — MDN.",
+      "sourceUrl": "mdn/fetch_keepalive",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/API/fetch#keepalive",
+      "featurePoints": "js:fetch-keepalive"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-promise-race-cancel",
+      "chapter": "js-async",
+      "difficulty": 3,
+      "prompt": "Käyttäjä peruuttaa — haluat että hitain fetch häviää kilpajuoksussa. Metodi?",
+      "choices": [
+        {
+          "text": "Promise.race([fetch(...), abortPromise])",
+          "correct": true
+        },
+        {
+          "text": "Promise.all",
+          "correct": false
+        },
+        {
+          "text": "setInterval cancel",
+          "correct": false
+        },
+        {
+          "text": "fetch abort automaattinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Promise.race([fetch(...), abortPromise]) — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "race ensimmäinen settled — MDN.",
+      "sourceUrl": "mdn/promise_race",
+      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race",
+      "featurePoints": "js:promise-race"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-async-stack",
+      "chapter": "js-async",
+      "difficulty": 5,
+      "prompt": "async stack trace katkeaa await-kohdassa debugissa. Node/DevTools apu?",
+      "choices": [
+        {
+          "text": "async_hooks / source map / await boundary säilyttää linkin Error.stack:ssa moderneissa engingeissä",
+          "correct": true
+        },
+        {
+          "text": "Stack ei koskaan toimi asyncissa",
+          "correct": false
+        },
+        {
+          "text": "Poista async",
+          "correct": false
+        },
+        {
+          "text": "console.trace riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "async_hooks / source map / await boundary säilyttää linkin Error.stack:ssa moderneissa engingeissä — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "async stack — V8/Node docs.",
+      "sourceUrl": "v8/async-stack",
+      "featureId": "https://developer.chrome.com/docs/devtools/javascript/reference/#async-stack",
+      "featurePoints": "js:async-stack"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-async-stream-backpressure",
+      "chapter": "js-async",
+      "difficulty": 5,
+      "prompt": "Node transform stream tulvii muistia — kirjoittaja nopeampi kuin lukija. Mekanismi?",
+      "choices": [
+        {
+          "text": "backpressure — stream.write() false + 'drain' event",
+          "correct": true
+        },
+        {
+          "text": "Lisää buffer RAM",
+          "correct": false
+        },
+        {
+          "text": "Poista pipe",
+          "correct": false
+        },
+        {
+          "text": "sync write",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "backpressure — stream.write() false + 'drain' event — katso lähde.",
+      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
+      "sourceRef": "Streams backpressure — Node.js streams.",
+      "sourceUrl": "nodejs/stream_backpressure",
+      "featureId": "https://nodejs.org/api/stream.html#backpressure",
+      "featurePoints": "js:stream-backpressure"
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-default-export",
+      "chapter": "js-modules",
+      "difficulty": 2,
+      "prompt": "export default function App() — import?",
+      "choices": [
+        {
+          "text": "import App from './App.js'",
+          "correct": true
+        },
+        {
+          "text": "import { App } default",
+          "correct": false
+        },
+        {
+          "text": "require default",
+          "correct": false
+        },
+        {
+          "text": "App from ilman polkua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import App from './App.js' — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/export",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export",
+      "featureId": "js:default-export",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-namespace-import",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "prompt": "import * as utils from './utils.js' — utils on?",
+      "choices": [
+        {
+          "text": "Namespace-objekti kaikilla exporteilla",
+          "correct": true
+        },
+        {
+          "text": "Array exporteista",
+          "correct": false
+        },
+        {
+          "text": "Funktio",
+          "correct": false
+        },
+        {
+          "text": "undefined",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Namespace-objekti kaikilla exporteilla — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/import",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import",
+      "featureId": "js:namespace-import",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-dynamic-conditional",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "prompt": "Lataa moduuli vain adminille. Pattern?",
+      "choices": [
+        {
+          "text": "if (isAdmin) { const m = await import('./admin.js') }",
+          "correct": true
+        },
+        {
+          "text": "import('./admin') top level aina",
+          "correct": false
+        },
+        {
+          "text": "require dynamic",
+          "correct": false
+        },
+        {
+          "text": "script tag",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "if (isAdmin) { const m = await import('./admin.js') } — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/import",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
+      "featureId": "js:conditional-dynamic-import",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-cjs-esm-interop",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "Node ESM importtaa CommonJS-moduulin — default export?",
+      "choices": [
+        {
+          "text": "default voi olla module.exports wrapper — tarkista Node interop",
+          "correct": true
+        },
+        {
+          "text": "Aina named exportit",
+          "correct": false
+        },
+        {
+          "text": "Ei toimi",
+          "correct": false
+        },
+        {
+          "text": "require only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "default voi olla module.exports wrapper — tarkista Node interop — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/esm",
+      "sourceUrl": "https://nodejs.org/api/esm.html",
+      "featureId": "js:cjs-esm-interop",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-package-exports",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "package.json exports kenttä — miksi?",
+      "choices": [
+        {
+          "text": "Määrittää julkiset import-polut ja estää syväimportit",
+          "correct": true
+        },
+        {
+          "text": "Vain npm metadata",
+          "correct": false
+        },
+        {
+          "text": "Korvaa main",
+          "correct": false
+        },
+        {
+          "text": "TypeScript only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Määrittää julkiset import-polut ja estää syväimportit — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/packages",
+      "sourceUrl": "https://nodejs.org/api/packages.html#exports",
+      "featureId": "js:package-exports",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-import-meta-resolve",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "Node 20+ resolvaa specifierin suhteessa moduuliin?",
+      "choices": [
+        {
+          "text": "import.meta.resolve(specifier)",
+          "correct": true
+        },
+        {
+          "text": "path.resolve",
+          "correct": false
+        },
+        {
+          "text": "__dirname",
+          "correct": false
+        },
+        {
+          "text": "require.resolve vain CJS",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import.meta.resolve(specifier) — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/esm",
+      "sourceUrl": "https://nodejs.org/api/esm.html#importmetaresolvespecifier",
+      "featureId": "js:import-meta-resolve",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-treeshake-pure",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "Bundleri säilyttää kuolleen koodin side-effect funktiossa. Annotaatio?",
+      "choices": [
+        {
+          "text": "/* @__PURE__ */ tai package sideEffects",
+          "correct": true
+        },
+        {
+          "text": "export default",
+          "correct": false
+        },
+        {
+          "text": "void 0",
+          "correct": false
+        },
+        {
+          "text": "use strict",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "/* @__PURE__ */ tai package sideEffects — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "webpack/tree-shaking",
+      "sourceUrl": "https://webpack.js.org/guides/tree-shaking/",
+      "featureId": "js:treeshake-pure",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-specifier-must-relative",
+      "chapter": "js-modules",
+      "difficulty": 2,
+      "prompt": "import from 'lodash' vs './lodash.js' — ero?",
+      "choices": [
+        {
+          "text": "Paketin nimi vs suhteellinen polku tiedostoon",
+          "correct": true
+        },
+        {
+          "text": "Sama asia",
+          "correct": false
+        },
+        {
+          "text": "Absoluuttinen aina",
+          "correct": false
+        },
+        {
+          "text": "Ilman ./ ei toimi koskaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Paketin nimi vs suhteellinen polku tiedostoon — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/import",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import",
+      "featureId": "js:import-specifier",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-mjs-cjs-ext",
+      "chapter": "js-modules",
+      "difficulty": 2,
+      "prompt": "Node ESM-tiedosto ilman type module?",
+      "choices": [
+        {
+          "text": "Käytä .mjs-päätettä",
+          "correct": true
+        },
+        {
+          "text": ".es6 extension",
+          "correct": false
+        },
+        {
+          "text": ".ts suoraan",
+          "correct": false
+        },
+        {
+          "text": "Ei eroa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Käytä .mjs-päätettä — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/esm",
+      "sourceUrl": "https://nodejs.org/api/esm.html",
+      "featureId": "js:mjs-extension",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-import-order",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "prompt": "ESM importit hoistataan — sivuvaikutus järjestyksessä?",
+      "choices": [
+        {
+          "text": "Staattiset importit ajetaan ennen moduulin koodia dependency-järjestyksessä",
+          "correct": true
+        },
+        {
+          "text": "Järjestys ei merkitse",
+          "correct": false
+        },
+        {
+          "text": "import on runtime",
+          "correct": false
+        },
+        {
+          "text": "require ensin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Staattiset importit ajetaan ennen moduulin koodia dependency-järjestyksessä — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/modules",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
+      "featureId": "js:import-order",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-wasm-import",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "WebAssembly moduuli ESM:ssä?",
+      "choices": [
+        {
+          "text": "await WebAssembly.instantiateStreaming(fetch('mod.wasm'))",
+          "correct": true
+        },
+        {
+          "text": "import wasm native",
+          "correct": false
+        },
+        {
+          "text": "eval wasm",
+          "correct": false
+        },
+        {
+          "text": "Worker only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "await WebAssembly.instantiateStreaming(fetch('mod.wasm')) — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "mdn/wasm",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/WebAssembly",
+      "featureId": "js:wasm-import",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-dual-package",
+      "chapter": "js-modules",
+      "difficulty": 5,
+      "prompt": "Kirjasto tarjoaa sekä CJS että ESM — hazard?",
+      "choices": [
+        {
+          "text": "Dual package hazard — eri instanssit singletonille",
+          "correct": true
+        },
+        {
+          "text": "Aina sama instanssi",
+          "correct": false
+        },
+        {
+          "text": "ESM only riittää",
+          "correct": false
+        },
+        {
+          "text": "CJS deprecated",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Dual package hazard — eri instanssit singletonille — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/packages",
+      "sourceUrl": "https://nodejs.org/api/packages.html#dual-package-hazard",
+      "featureId": "js:dual-package",
+      "featurePoints": 5
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-import-defer",
+      "chapter": "js-modules",
+      "difficulty": 5,
+      "prompt": "ES proposal: import ajetaan vasta kun binding käytetään?",
+      "choices": [
+        {
+          "text": "import defer — delayed evaluation",
+          "correct": true
+        },
+        {
+          "text": "import lazy keyword",
+          "correct": false
+        },
+        {
+          "text": "dynamic import sync",
+          "correct": false
+        },
+        {
+          "text": "ei ole mahdollista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import defer — delayed evaluation — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "tc39/import-defer",
+      "sourceUrl": "https://github.com/tc39/proposal-import-defer",
+      "featureId": "js:import-defer",
+      "featurePoints": 5
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-assert-type-css",
+      "chapter": "js-modules",
+      "difficulty": 3,
+      "prompt": "Vite/CSS import komponentissa?",
+      "choices": [
+        {
+          "text": "import './styles.css' — bundleri käsittelee",
+          "correct": true
+        },
+        {
+          "text": "fetch css runtime",
+          "correct": false
+        },
+        {
+          "text": "link tag only",
+          "correct": false
+        },
+        {
+          "text": "CSS ei import",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "import './styles.css' — bundleri käsittelee — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "vite/css",
+      "sourceUrl": "https://vitejs.dev/guide/features.html#css",
+      "featureId": "js:css-import",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-modules-create-require",
+      "chapter": "js-modules",
+      "difficulty": 4,
+      "prompt": "ESM-tiedostossa tarvitset require kertaluontoisesti?",
+      "choices": [
+        {
+          "text": "createRequire(import.meta.url)",
+          "correct": true
+        },
+        {
+          "text": "global require",
+          "correct": false
+        },
+        {
+          "text": "import require",
+          "correct": false
+        },
+        {
+          "text": "ei tuettu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "createRequire(import.meta.url) — MDN/Node docs.",
+      "wrongFeedback": "Moduulijärjestelmä vaatii oikean import/export-mallin.",
+      "sourceRef": "nodejs/module",
+      "sourceUrl": "https://nodejs.org/api/module.html#modulecreaterequirefilename",
+      "featureId": "js:create-require",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-set-map-iteration",
+      "chapter": "js-runtime",
+      "difficulty": 2,
+      "prompt": "Set säilyttää uniikit — lisäät duplikaatin. Mitä tapahtuu?",
+      "choices": [
+        {
+          "text": "Duplikaatti hylätään — size ei kasva",
+          "correct": true
+        },
+        {
+          "text": "Set kaatuu",
+          "correct": false
+        },
+        {
+          "text": "Viimeinen voittaa",
+          "correct": false
+        },
+        {
+          "text": "Muuttuu Mapiksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Duplikaatti hylätään — size ei kasva — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/set",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+      "featureId": "js:set-unique",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-weakset-gc",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "WeakSet vs Set objektiavainten jäljitykseen DOM-nodeille?",
+      "choices": [
+        {
+          "text": "WeakSet ei estä GC:tä — node voi vapautua",
+          "correct": true
+        },
+        {
+          "text": "WeakSet pitää elossa",
+          "correct": false
+        },
+        {
+          "text": "Sama kuin Set",
+          "correct": false
+        },
+        {
+          "text": "WeakSet vain primitive",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WeakSet ei estä GC:tä — node voi vapautua — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/weakset",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+      "featureId": "js:weakset",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-regex-exec",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "global regex lastIndex bug loopissa — syy?",
+      "choices": [
+        {
+          "text": "lastIndex muistaa viimeisen osuman — resetoi tai käytä matchAll",
+          "correct": true
+        },
+        {
+          "text": "regex on immutable",
+          "correct": false
+        },
+        {
+          "text": "exec ei muuta",
+          "correct": false
+        },
+        {
+          "text": "bug selaimessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "lastIndex muistaa viimeisen osuman — resetoi tai käytä matchAll — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/regexp",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec",
+      "featureId": "js:regex-lastindex",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-intl-collator",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Järjestät suomenkielisiä nimiä — localeCompare vs Intl.Collator?",
+      "choices": [
+        {
+          "text": "Intl.Collator('fi') tehokkaampi toistuvassa sortissa",
+          "correct": true
+        },
+        {
+          "text": "sort() ei tue localea",
+          "correct": false
+        },
+        {
+          "text": "binäärijärjestys aina oikein",
+          "correct": false
+        },
+        {
+          "text": "Collator on deprecated",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Intl.Collator('fi') tehokkaampi toistuvassa sortissa — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/collator",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Collator",
+      "featureId": "js:intl-collator",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-mutation-observer",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Kolmas osapuoli injektoi DOM-muutoksia — haluat reagoida. API?",
+      "choices": [
+        {
+          "text": "MutationObserver callback DOM-muutoksille",
+          "correct": true
+        },
+        {
+          "text": "setInterval DOM check",
+          "correct": false
+        },
+        {
+          "text": "Object.watch",
+          "correct": false
+        },
+        {
+          "text": "Proxy DOM",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "MutationObserver callback DOM-muutoksille — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/mutationobserver",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver",
+      "featureId": "js:mutation-observer",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-intersection-observer",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Lazy-load kuvat kun scrollaa näkyviin. API?",
+      "choices": [
+        {
+          "text": "IntersectionObserver + data-src",
+          "correct": true
+        },
+        {
+          "text": "scroll event jokaiselle px",
+          "correct": false
+        },
+        {
+          "text": "getBoundingClientRect loop",
+          "correct": false
+        },
+        {
+          "text": "onload window",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "IntersectionObserver + data-src — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/intersectionobserver",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API",
+      "featureId": "js:intersection-observer",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-custom-event",
+      "chapter": "js-runtime",
+      "difficulty": 2,
+      "prompt": "Komponentit kommunikoivat ilman props-ketjua. DOM-ratkaisu?",
+      "choices": [
+        {
+          "text": "new CustomEvent('name', { detail }) + dispatchEvent",
+          "correct": true
+        },
+        {
+          "text": "window.alert",
+          "correct": false
+        },
+        {
+          "text": "global var",
+          "correct": false
+        },
+        {
+          "text": "eval",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "new CustomEvent('name', { detail }) + dispatchEvent — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/customevent",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent",
+      "featureId": "js:custom-event",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-error-stack-limit",
+      "chapter": "js-runtime",
+      "difficulty": 4,
+      "prompt": "Recursive funktio RangeError Maximum call stack. Syy?",
+      "choices": [
+        {
+          "text": "Call stack overflow — liian syvä rekursio",
+          "correct": true
+        },
+        {
+          "text": "Heap overflow",
+          "correct": false
+        },
+        {
+          "text": "Syntax error",
+          "correct": false
+        },
+        {
+          "text": "async stack",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Call stack overflow — liian syvä rekursio — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/rangeerror",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+      "featureId": "js:stack-overflow",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-tail-call",
+      "chapter": "js-runtime",
+      "difficulty": 5,
+      "prompt": "ES6 tail call optimization — status JS-engingeissä?",
+      "choices": [
+        {
+          "text": "Ei laajaa tukea — älä luota TCO:hon rekursioon",
+          "correct": true
+        },
+        {
+          "text": "Kaikissa selaimissa",
+          "correct": false
+        },
+        {
+          "text": "Vain strict mode",
+          "correct": false
+        },
+        {
+          "text": "Korvaa loop",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ei laajaa tukea — älä luota TCO:hon rekursioon — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/tail_calls",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Tail_recursion",
+      "featureId": "js:tail-call",
+      "featurePoints": 5
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-arraybuffer-view",
+      "chapter": "js-runtime",
+      "difficulty": 4,
+      "prompt": "Binary data WebSocketista — tyyppi ennen käsittelyä?",
+      "choices": [
+        {
+          "text": "ArrayBuffer / Uint8Array view",
+          "correct": true
+        },
+        {
+          "text": "string aina",
+          "correct": false
+        },
+        {
+          "text": "JSON.parse buffer",
+          "correct": false
+        },
+        {
+          "text": "Blob.text only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ArrayBuffer / Uint8Array view — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/arraybuffer",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+      "featureId": "js:arraybuffer",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-performance-now",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Mittaat koodin keston tarkasti — Date.now() vs performance.now()?",
+      "choices": [
+        {
+          "text": "performance.now() korkeampi resoluutio monotonic",
+          "correct": true
+        },
+        {
+          "text": "Date.now() tarkempi",
+          "correct": false
+        },
+        {
+          "text": "Sama",
+          "correct": false
+        },
+        {
+          "text": "process.hrtime selaimessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "performance.now() korkeampi resoluutio monotonic — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/performance_now",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Performance/now",
+      "featureId": "js:performance-now",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-domparser",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Parse HTML string turvallisesti ilman innerHTML suoraa?",
+      "choices": [
+        {
+          "text": "DOMParser.parseFromString + sanitize policy",
+          "correct": true
+        },
+        {
+          "text": "eval HTML",
+          "correct": false
+        },
+        {
+          "text": "document.write",
+          "correct": false
+        },
+        {
+          "text": "innerHTML aina turvallinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DOMParser.parseFromString + sanitize policy — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/domparser",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/DOMParser",
+      "featureId": "js:domparser",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-resize-observer",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "CSS grid resize — haluat mitata elementin koon muutokset. API?",
+      "choices": [
+        {
+          "text": "ResizeObserver",
+          "correct": true
+        },
+        {
+          "text": "window.resize only",
+          "correct": false
+        },
+        {
+          "text": "getComputedStyle loop",
+          "correct": false
+        },
+        {
+          "text": "MutationObserver size",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ResizeObserver — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/resizeobserver",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver",
+      "featureId": "js:resize-observer",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-computed-property",
+      "chapter": "js-runtime",
+      "difficulty": 2,
+      "prompt": "Objekti { [key]: value } — mitä hakasulut tekevät?",
+      "choices": [
+        {
+          "text": "Computed property name — dynaaminen avain",
+          "correct": true
+        },
+        {
+          "text": "Array syntax",
+          "correct": false
+        },
+        {
+          "text": "Destructuring",
+          "correct": false
+        },
+        {
+          "text": "JSON",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Computed property name — dynaaminen avain — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/computed_properties",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#computed_property_names",
+      "featureId": "js:computed-property",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-js-runtime-label-break",
+      "chapter": "js-runtime",
+      "difficulty": 3,
+      "prompt": "Sisäkkäisestä silmukasta ulos kahdesta tasosta. Lähestymistapa?",
+      "choices": [
+        {
+          "text": "Labeled break / refaktoroi funktioksi",
+          "correct": true
+        },
+        {
+          "text": "goto on standardi",
+          "correct": false
+        },
+        {
+          "text": "return aina toimii",
+          "correct": false
+        },
+        {
+          "text": "throw flow control",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Labeled break / refaktoroi funktioksi — katso MDN.",
+      "wrongFeedback": "Runtime/DOM API vaatii oikean standardin.",
+      "sourceRef": "mdn/label",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label",
+      "featureId": "js:labeled-break",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-narrowing-typeof",
+      "chapter": "js-typescript",
+      "difficulty": 2,
+      "prompt": "function log(x: string | number) — x.toFixed()?",
+      "choices": [
+        {
+          "text": "typeof x === 'number' guard ennen toFixed",
+          "correct": true
+        },
+        {
+          "text": "toFixed suoraan",
+          "correct": false
+        },
+        {
+          "text": "as number aina",
+          "correct": false
+        },
+        {
+          "text": "x is never",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "typeof x === 'number' guard ennen toFixed — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:typeof-narrowing",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:typeof-narrowing",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-narrowing-in",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "if ('kind' in obj) — mitä tämä tekee?",
+      "choices": [
+        {
+          "text": "Property narrowing — tarkistaa kentän olemassaolon",
+          "correct": true
+        },
+        {
+          "text": "Runtime type check kaikille",
+          "correct": false
+        },
+        {
+          "text": "Sama kuin instanceof",
+          "correct": false
+        },
+        {
+          "text": "Ei vaikuta tyyppiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Property narrowing — tarkistaa kentän olemassaolon — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:in-narrowing",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:in-narrowing",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-interface-extends",
+      "chapter": "js-typescript",
+      "difficulty": 2,
+      "prompt": "BaseUser + adminRole — miten laajennat?",
+      "choices": [
+        {
+          "text": "interface Admin extends BaseUser { adminRole: string }",
+          "correct": true
+        },
+        {
+          "text": "interface Admin = BaseUser",
+          "correct": false
+        },
+        {
+          "text": "extends vain class",
+          "correct": false
+        },
+        {
+          "text": "merge automaattinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "interface Admin extends BaseUser { adminRole: string } — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:interface-extends",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:interface-extends",
+      "featurePoints": 2
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-type-vs-interface",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "Milloin type alias parempi kuin interface?",
+      "choices": [
+        {
+          "text": "Union/intersection/primitive alias — type sopii",
+          "correct": true
+        },
+        {
+          "text": "Aina interface",
+          "correct": false
+        },
+        {
+          "text": "type ei voi objektia",
+          "correct": false
+        },
+        {
+          "text": "interface union only",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Union/intersection/primitive alias — type sopii — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:type-vs-interface",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:type-vs-interface",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-generic-function",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "identity<T>(arg: T): T — miksi generic?",
+      "choices": [
+        {
+          "text": "Säilyttää tyypin parametrista paluuarvoon",
+          "correct": true
+        },
+        {
+          "text": "any nopeampi",
+          "correct": false
+        },
+        {
+          "text": "T on runtime",
+          "correct": false
+        },
+        {
+          "text": "vain class",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Säilyttää tyypin parametrista paluuarvoon — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:generic-function",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:generic-function",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-generic-constraint",
+      "chapter": "js-typescript",
+      "difficulty": 4,
+      "prompt": "T extends { id: string } — tarkoitus?",
+      "choices": [
+        {
+          "text": "Rajoittaa genericin minimimuotoon",
+          "correct": true
+        },
+        {
+          "text": "Perii luokan",
+          "correct": false
+        },
+        {
+          "text": "Estää genericin",
+          "correct": false
+        },
+        {
+          "text": "Runtime check",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rajoittaa genericin minimimuotoon — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:generic-constraint",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:generic-constraint",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-utility-partial",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "Update DTO sallii osan kentistä. Utility type?",
+      "choices": [
+        {
+          "text": "Partial<User>",
+          "correct": true
+        },
+        {
+          "text": "Pick only",
+          "correct": false
+        },
+        {
+          "text": "Omit only",
+          "correct": false
+        },
+        {
+          "text": "Required",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Partial<User> — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:partial",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:partial",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-utility-pick-omit",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa?",
+      "choices": [
+        {
+          "text": "Omit<User, 'password'> tai Pick julkisille",
+          "correct": true
+        },
+        {
+          "text": "delete password",
+          "correct": false
+        },
+        {
+          "text": "any export",
+          "correct": false
+        },
+        {
+          "text": "interface hide",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Omit<User, 'password'> tai Pick julkisille — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:pick-omit",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:pick-omit",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-readonly-array",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "readonly string[] vs string[] — ero?",
+      "choices": [
+        {
+          "text": "readonly estää mutoinnin push yms. compile-time",
+          "correct": true
+        },
+        {
+          "text": "Runtime immutable",
+          "correct": false
+        },
+        {
+          "text": "Sama",
+          "correct": false
+        },
+        {
+          "text": "readonly vain tuple",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "readonly estää mutoinnin push yms. compile-time — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:readonly-array",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:readonly-array",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-as-const",
+      "chapter": "js-typescript",
+      "difficulty": 3,
+      "prompt": "const config = { mode: 'dev' } as const — hyöty?",
+      "choices": [
+        {
+          "text": "Literal types + readonly deep",
+          "correct": true
+        },
+        {
+          "text": "Nopeampi compile",
+          "correct": false
+        },
+        {
+          "text": "Runtime freeze",
+          "correct": false
+        },
+        {
+          "text": "any",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Literal types + readonly deep — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:as-const",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:as-const",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-satisfies",
+      "chapter": "js-typescript",
+      "difficulty": 4,
+      "prompt": "const palette = { red: '#f00' } satisfies Record<string, string> — hyöty?",
+      "choices": [
+        {
+          "text": "Tarkistaa muodon säilyttäen tarkat literal-tyypit",
+          "correct": true
+        },
+        {
+          "text": "Sama kuin as",
+          "correct": false
+        },
+        {
+          "text": "any cast",
+          "correct": false
+        },
+        {
+          "text": "Runtime validate",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tarkistaa muodon säilyttäen tarkat literal-tyypit — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:satisfies",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:satisfies",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-strict-null",
+      "chapter": "js-typescript",
+      "difficulty": 4,
+      "prompt": "strictNullChecks päällä — mikä muuttuu?",
+      "choices": [
+        {
+          "text": "Discriminated union — TS narrowaa kindin perusteella",
+          "correct": true
+        },
+        {
+          "text": "any switch",
+          "correct": false
+        },
+        {
+          "text": "instanceof",
+          "correct": false
+        },
+        {
+          "text": "ei narrow",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Discriminated union — TS narrowaa kindin perusteella — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:discriminated-union",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:discriminated-union",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-never-exhaustive",
+      "chapter": "js-typescript",
+      "difficulty": 5,
+      "prompt": "switch union — default: const _x: never = x. Tarkoitus?",
+      "choices": [
+        {
+          "text": "null/undefined erotellaan — optional chaining tarpeen",
+          "correct": true
+        },
+        {
+          "text": "Ei muutosta",
+          "correct": false
+        },
+        {
+          "text": "any kaikille",
+          "correct": false
+        },
+        {
+          "text": "Poistaa unionit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "null/undefined erotellaan — optional chaining tarpeen — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:type-guard",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:type-guard",
+      "featurePoints": 4
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-conditional-type",
+      "chapter": "js-typescript",
+      "difficulty": 5,
+      "prompt": "type IsString<T> = T extends string ? true : false — laji?",
+      "choices": [
+        {
+          "text": "Exhaustiveness check — uusi variantti compile error",
+          "correct": true
+        },
+        {
+          "text": "Runtime throw only",
+          "correct": false
+        },
+        {
+          "text": "Dead code",
+          "correct": false
+        },
+        {
+          "text": "any default",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Exhaustiveness check — uusi variantti compile error — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:index-signature",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:index-signature",
+      "featurePoints": 3
+    },
+    {
+      "domain": "javascript",
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "id": "b12-ts-mapped-type",
+      "chapter": "js-typescript",
+      "difficulty": 5,
+      "prompt": "type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] }",
+      "choices": [
+        {
+          "text": "Conditional type — type-level logiikka",
+          "correct": true
+        },
+        {
+          "text": "Runtime ternary",
+          "correct": false
+        },
+        {
+          "text": "Interface only",
+          "correct": false
+        },
+        {
+          "text": "Ei TS:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Conditional type — type-level logiikka — TypeScript handbook.",
+      "wrongFeedback": "TS-tyypitys vaatii oikean narrowing/utility-työkalun.",
+      "sourceRef": "typescript/ts:strict-null",
+      "sourceUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "featureId": "ts:strict-null",
+      "featurePoints": 4
     }
   ]
 }
