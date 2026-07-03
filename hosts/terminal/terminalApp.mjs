@@ -47,6 +47,7 @@ import {
   getEncounterQuiz,
   needsEncounterQuiz,
   buildQuizReaction,
+  buildQuizReactionWithEmotion,
   buildAiStudyText,
   AI_STUDY_KARMA_COST,
   buildQuizSideMenu,
@@ -911,7 +912,7 @@ async function showQuizBanter(session, quiz, kind) {
 
 async function showQuizOutcome(session, quiz, correct) {
   const teaching = correct ? quiz.question.correctFeedback : quiz.question.wrongFeedback;
-  const reaction = buildQuizReaction(quiz.entity, correct, session);
+  const reaction = buildQuizReactionWithEmotion(quiz.entity, correct, session);
   const points = quiz.question.featurePoints || 0;
   const mark = correct
     ? styled("✓ OIKEIN", FG.brightGreen, BOLD)
@@ -1193,6 +1194,12 @@ export async function runTerminalApp(mapJson) {
   let mapOk = false;
   dispatch(session, () => {
     mapOk = session.loadMapFromText(mapJson);
+    session.loadQuizReactionsFromText(
+      readFileSync(
+        resolve(dirname(fileURLToPath(import.meta.url)), "../../content/quiz-reactions/pack.json"),
+        "utf8",
+      ),
+    );
   });
   if (!mapOk) {
     console.error(styled("Kartan lataus epäonnistui.", FG.red));

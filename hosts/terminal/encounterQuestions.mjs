@@ -689,6 +689,16 @@ export function buildQuizReaction(entity, correct, session = null) {
   return `${name}: "Umm... okei?" — vastaus ei ollut ihan kohdillaan.`;
 }
 
+/** Sosiaalinen reaktio + tunnetila suhteen mukaan. */
+export function buildQuizReactionWithEmotion(entity, correct, session = null) {
+  const social = buildQuizReaction(entity, correct, session);
+  if (!session?.pickQuizEmotionReaction || !entity?.id) return social;
+  const emotion = session.pickQuizEmotionReaction(entity.id, correct);
+  if (!emotion) return social;
+  const name = entity.name || entity.id || "Henkilö";
+  return `${social} ${name} ${emotion}`;
+}
+
 const OFFICE_JOKES = [
   "Miksi dev meni standuppiin? Unohdin missä sprintti päättyy.",
   "Montako Scrum Masteria tarvitaan lamppuun? Ei yhtään — se on tiimin vastuu.",

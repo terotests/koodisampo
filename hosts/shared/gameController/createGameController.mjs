@@ -21,6 +21,10 @@ const npcBehaviorPackJson = readFileSync(
   resolve(__dirname, "../../../content/npc-behaviors/pack.json"),
   "utf8",
 );
+const quizReactionPackJson = readFileSync(
+  resolve(__dirname, "../../../content/quiz-reactions/pack.json"),
+  "utf8",
+);
 
 function serializeMemorial(session) {
   const count = session.memorialCount?.() ?? 0;
@@ -62,6 +66,7 @@ export function createGameController(deps) {
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
     session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
+    session.loadQuizReactionsFromText(quizReactionPackJson);
     if (save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
     } else if (bootKarma > 0) {
@@ -273,6 +278,7 @@ export function createGameController(deps) {
       session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
     session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
+    session.loadQuizReactionsFromText(quizReactionPackJson);
       if (keepProgress && save?.features?.ids) {
         session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
       } else if (bootKarma > 0) {

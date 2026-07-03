@@ -216,9 +216,11 @@ export function runEncounterTests() {
     });
     assert(session3.screen === "map", "quiz returns to map");
     assert(session3.karma.total() > karmaBefore, "correct answer grants karma");
+    const status = sessionMap(session3).lastStatus;
+    assert(status.startsWith(`✓ ${reaction}`), `quiz status starts with social reaction: ${status}`);
     assert(
-      sessionMap(session3).lastStatus === `✓ ${reaction}`,
-      `quiz status uses reaction once: ${sessionMap(session3).lastStatus}`,
+      status.includes("näyttää") || status.includes("nyökkää") || status.includes("hymy"),
+      `quiz status includes emotion reaction: ${status}`,
     );
 
     const wrongReaction = buildQuizReaction(quiz.entity, false, session3);

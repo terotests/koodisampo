@@ -5460,6 +5460,238 @@ class DialogueCatalog  {
     };
   };
 }
+class QuizReactionEntry  {
+  constructor() {
+    this.id = "";
+    this.outcome = "correct";
+    this.mood = "neutral";
+    this.text = "";
+    this.minAnger = 0;
+    this.maxAnger = 100;
+    this.minLove = 0;
+    this.maxLove = 100;
+  }
+}
+class QuizReactionCatalog  {
+  constructor() {
+    this.entries = [];
+    this.json = new StoryJson();
+    let empty_7 = [];
+    this.entries = empty_7;
+  }
+  reset () {
+    let empty = [];
+    this.entries = empty;
+  };
+  loadDefaults () {
+    this.reset();
+    this.addDefault("correct_neutral_1", "correct", "neutral", "näyttää tyytyväiseltä.");
+    this.addDefault("correct_neutral_2", "correct", "neutral", "nyökkää hyväksyvästi.");
+    this.addDefault("correct_neutral_3", "correct", "neutral", "näyttää helpottuneelta.");
+    this.addDefault("wrong_neutral_1", "wrong", "neutral", "näyttää mietteliäältä.");
+    this.addDefault("wrong_neutral_2", "wrong", "neutral", "kohauttaa olkapäitä.");
+    this.addDefault("wrong_neutral_3", "wrong", "neutral", "näyttää hieman hämmentyneeltä.");
+    this.addDefault("correct_angry_1", "correct", "angry", "rauhoittuu hieman, mutta katse pysyy terävänä.");
+    this.addDefault("correct_angry_2", "correct", "angry", "murisee tunnustuksen.");
+    this.addDefault("correct_angry_3", "correct", "angry", "nyökkää vastahakoisesti.");
+    this.addDefault("wrong_angry_1", "wrong", "angry", "näyttää ärtyneeltä.");
+    this.addDefault("wrong_angry_2", "wrong", "angry", "purseuttaa huuliaan.");
+    this.addDefault("wrong_angry_3", "wrong", "angry", "näyttää raivostuneelta.");
+    this.addDefault("correct_romantic_1", "correct", "romantic", "näyttää ihastuneelta.");
+    this.addDefault("correct_romantic_2", "correct", "romantic", "punastuu ja hymyilee.");
+    this.addDefault("correct_romantic_3", "correct", "romantic", "näyttää iloiselta.");
+    this.addDefault("wrong_romantic_1", "wrong", "romantic", "näyttää pettyneeltä.");
+    this.addDefault("wrong_romantic_2", "wrong", "romantic", "näyttää surulliselta.");
+    this.addDefault("wrong_romantic_3", "wrong", "romantic", "katsoo alas pettyneenä.");
+    this.addDefault("correct_friendly_1", "correct", "friendly", "näyttää ystävälliseltä.");
+    this.addDefault("correct_friendly_2", "correct", "friendly", "hymyilee lämpimästi.");
+    this.addDefault("wrong_friendly_1", "wrong", "friendly", "näyttää hieman huolestuneelta.");
+    this.addDefault("wrong_friendly_2", "wrong", "friendly", "nyökkää ymmärtäväisesti.");
+    this.addDefault("correct_cold_1", "correct", "cold", "näyttää hieman yllättyneeltä.");
+    this.addDefault("correct_cold_2", "correct", "cold", "nyökkää niukasti.");
+    this.addDefault("wrong_cold_1", "wrong", "cold", "näyttää etäiseltä.");
+    this.addDefault("wrong_cold_2", "wrong", "cold", "kääntyy pois.");
+    this.addDefault("correct_respectful_1", "correct", "respectful", "näyttää vaikuttuneelta.");
+    this.addDefault("correct_respectful_2", "correct", "respectful", "näyttää kunnioittavalta.");
+    this.addDefault("wrong_respectful_1", "wrong", "respectful", "näyttää pettyneeltä.");
+    this.addDefault("wrong_respectful_2", "wrong", "respectful", "näyttää halveksivalta.");
+  };
+  addDefault (id, outcome, mood, text) {
+    const entry = new QuizReactionEntry();
+    entry.id = id;
+    entry.outcome = outcome;
+    entry.mood = mood;
+    entry.text = text;
+    this.entries.push(entry);
+  };
+  parseEntry (obj) {
+    const entry = new QuizReactionEntry();
+    entry.id = this.json.objFieldStr(obj, "id");
+    entry.outcome = this.json.objFieldStr(obj, "outcome");
+    entry.mood = this.json.objFieldStr(obj, "mood");
+    entry.text = this.json.objFieldStr(obj, "text");
+    entry.minAnger = this.json.objFieldInt(obj, "minAnger");
+    entry.maxAnger = this.json.objFieldInt(obj, "maxAnger");
+    entry.minLove = this.json.objFieldInt(obj, "minLove");
+    entry.maxLove = this.json.objFieldInt(obj, "maxLove");
+    if ( (entry.outcome.length) < 1 ) {
+      entry.outcome = "correct";
+    }
+    if ( (entry.mood.length) < 1 ) {
+      entry.mood = "neutral";
+    }
+    if ( (entry.text.length) < 1 ) {
+      return;
+    }
+    this.entries.push(entry);
+  };
+  loadFromText (raw) {
+    this.reset();
+    try {
+      const rootOpt = JSON.parse(raw);
+      if ( typeof(rootOpt) === "undefined" ) {
+        this.loadDefaults();
+        return false;
+      }
+      const root = rootOpt;
+      const arrOpt = (root["reactions"] instanceof Array ) ? root ["reactions"] : undefined ;
+      if ( typeof(arrOpt) === "undefined" ) {
+        this.loadDefaults();
+        return false;
+      }
+      const rootArr = arrOpt;
+      let i = 0;
+      const n = rootArr.length;
+      while (i < n) {
+        const entryObj = this.json.arrayObjectAt(rootArr, i);
+        this.parseEntry(entryObj);
+        i = i + 1;
+      };
+      if ( (this.entries.length) < 1 ) {
+        this.loadDefaults();
+        return false;
+      }
+      return true;
+    } catch(e) {
+      this.loadDefaults();
+    }
+    return false;
+  };
+  outcomeTag (correct) {
+    if ( correct ) {
+      return "correct";
+    }
+    return "wrong";
+  };
+  pickMood (relation) {
+    if ( relation.isAngryNoticeable() ) {
+      return "angry";
+    }
+    if ( relation.isLoveNoticeable() ) {
+      return "romantic";
+    }
+    if ( relation.isFriendlinessWarm() ) {
+      return "friendly";
+    }
+    if ( relation.isFriendlinessCold() ) {
+      return "cold";
+    }
+    if ( relation.isRespectHigh() ) {
+      return "respectful";
+    }
+    if ( relation.isRespectLow() ) {
+      return "cold";
+    }
+    if ( relation.suspicion >= 60 ) {
+      return "cold";
+    }
+    if ( relation.isJealousyHigh() ) {
+      return "angry";
+    }
+    if ( relation.isFearHigh() ) {
+      return "cold";
+    }
+    return "neutral";
+  };
+  matchesEntry (entry, outcome, mood, relation) {
+    if ( entry.outcome != outcome ) {
+      return false;
+    }
+    if ( entry.mood != mood ) {
+      return false;
+    }
+    if ( relation.matchesAngerBand(entry.minAnger, entry.maxAnger) == false ) {
+      return false;
+    }
+    if ( relation.matchesLoveBand(entry.minLove, entry.maxLove) == false ) {
+      return false;
+    }
+    return true;
+  };
+  pickIndex (outcome, mood, relation, entId) {
+    let matches = [];
+    let empty = [];
+    matches = empty;
+    let i = 0;
+    const n = this.entries.length;
+    while (i < n) {
+      const entry = this.entries[i];
+      if ( this.matchesEntry(entry, outcome, mood, relation) ) {
+        matches.push(i);
+      }
+      i = i + 1;
+    };
+    let m = matches.length;
+    if ( m < 1 ) {
+      let j = 0;
+      while (j < n) {
+        const fallback = this.entries[j];
+        if ( fallback.outcome == outcome ) {
+          if ( fallback.mood == mood ) {
+            matches.push(j);
+          }
+        }
+        j = j + 1;
+      };
+      m = matches.length;
+    }
+    if ( m < 1 ) {
+      let k = 0;
+      while (k < n) {
+        const fb2 = this.entries[k];
+        if ( fb2.outcome == outcome ) {
+          if ( fb2.mood == "neutral" ) {
+            matches.push(k);
+          }
+        }
+        k = k + 1;
+      };
+      m = matches.length;
+    }
+    if ( m < 1 ) {
+      return -1;
+    }
+    if ( m == 1 ) {
+      return matches[0];
+    }
+    let seed = ((entId.length) + ((outcome.length) * 7)) + ((mood.length) * 13);
+    if ( seed < 0 ) {
+      seed = 0 - seed;
+    }
+    const pick = seed % m;
+    return matches[pick];
+  };
+  pickStatusReaction (relation, correct, entId) {
+    const outcome = this.outcomeTag(correct);
+    const mood = this.pickMood(relation);
+    const idx = this.pickIndex(outcome, mood, relation, entId);
+    if ( idx < 0 ) {
+      return "";
+    }
+    const entry = this.entries[idx];
+    return entry.text;
+  };
+}
 class ProximityGreeting  {
   constructor() {
   }
@@ -6132,6 +6364,8 @@ class GameSession  extends RangerProcessBase {
     this.playerStats = new PlayerCoreStats();
     this.npcRelations = new NpcRelationStore();
     this.dialogueCatalog = new DialogueCatalog();
+    this.quizReactionCatalog = new QuizReactionCatalog();
+    this.quizReactionCatalog.loadDefaults();
     this.emotionMath = new EmotionMath();
     this.eventPerception = new EventPerception();
     this.escalation = new Escalation();
@@ -6270,6 +6504,11 @@ class GameSession  extends RangerProcessBase {
       }
       if ( (behaviorMsg.length) > 0 ) {
         this._map.lastStatus = (this._map.lastStatus + " ") + behaviorMsg;
+      }
+      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+      const emotionReaction = this.quizReactionCatalog.pickStatusReaction(rel, correct, this.pendingEntityId);
+      if ( (emotionReaction.length) > 0 ) {
+        this._map.lastStatus = (((this._map.lastStatus + " ") + this.pendingEntityName) + " ") + emotionReaction;
       }
     }
     this.clearEncounter();
@@ -6995,6 +7234,7 @@ class GameSession  extends RangerProcessBase {
     this.playerNeeds.resetDefaults();
     this.npcRelations.reset();
     this.dialogueCatalog.loadDefaults();
+    this.quizReactionCatalog.loadDefaults();
     this.relationTickAccum = 0;
     this.socialTickAccum = 0;
     this.escalatedAngry = false;
@@ -7008,6 +7248,15 @@ class GameSession  extends RangerProcessBase {
     const ok = this.dialogueCatalog.loadFromText(raw);
     this.markStateDirty();
     return ok;
+  };
+  loadQuizReactionsFromText (raw) {
+    const ok = this.quizReactionCatalog.loadFromText(raw);
+    this.markStateDirty();
+    return ok;
+  };
+  pickQuizEmotionReaction (npcId, correct) {
+    const rel = this.npcRelations.getOrCreate(npcId);
+    return this.quizReactionCatalog.pickStatusReaction(rel, correct, npcId);
   };
   setNpcRelationStat (npcId, stat, value) {
     const rel = this.npcRelations.getOrCreate(npcId);
@@ -9910,6 +10159,8 @@ module.exports.EmotionMath = EmotionMath;
 module.exports.EmotionalAnswer = EmotionalAnswer;
 module.exports.EmotionalDialogue = EmotionalDialogue;
 module.exports.DialogueCatalog = DialogueCatalog;
+module.exports.QuizReactionEntry = QuizReactionEntry;
+module.exports.QuizReactionCatalog = QuizReactionCatalog;
 module.exports.ProximityGreeting = ProximityGreeting;
 module.exports.WorldClock = WorldClock;
 module.exports.EventPerception = EventPerception;

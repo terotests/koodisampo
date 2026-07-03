@@ -31,12 +31,17 @@ export async function createBrowserGame(): Promise<WebGame> {
   const dialoguePath = `${base}content/dialogues/pack.json`;
   const dialogueUrl = import.meta.env.DEV ? `${dialoguePath}?v=${Date.now()}` : dialoguePath;
   let currentMapJson = await fetchWorldText(base, import.meta.env.DEV);
-  const [dialogueRes, npcBehaviorRes, questions] = await Promise.all([
+  const [dialogueRes, npcBehaviorRes, quizReactionRes, questions] = await Promise.all([
     fetch(dialogueUrl),
     fetch(
       import.meta.env.DEV
         ? `${base}content/npc-behaviors/pack.json?v=${Date.now()}`
         : `${base}content/npc-behaviors/pack.json`,
+    ),
+    fetch(
+      import.meta.env.DEV
+        ? `${base}content/quiz-reactions/pack.json?v=${Date.now()}`
+        : `${base}content/quiz-reactions/pack.json`,
     ),
     loadAllQuestionsFromPublic(base),
   ]);
@@ -47,8 +52,12 @@ export async function createBrowserGame(): Promise<WebGame> {
   if (!npcBehaviorRes.ok) {
     throw new Error("NPC-käyttäytymispaketin lataus epäonnistui");
   }
+  if (!quizReactionRes.ok) {
+    throw new Error("Koodivastausreaktioiden lataus epäonnistui");
+  }
   const dialoguePackJson = await dialogueRes.text();
   const npcBehaviorPackJson = await npcBehaviorRes.text();
+  const quizReactionPackJson = await quizReactionRes.text();
   let cachedSave = (await loadPlayerSave()) ?? {};
   const storyCatalog = new StoryCatalog();
 
@@ -67,6 +76,7 @@ export async function createBrowserGame(): Promise<WebGame> {
     getMapJson: import.meta.env.DEV ? () => currentMapJson : undefined,
     dialoguePackJson,
     npcBehaviorPackJson,
+    quizReactionPackJson,
     storyCatalog,
     gameHost,
     loadSave: () => cachedSave,
