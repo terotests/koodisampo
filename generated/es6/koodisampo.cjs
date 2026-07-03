@@ -4586,6 +4586,10 @@ class PlayerTools  {
     this.heldCoworkerCardOwner = "";
     this.recalcAccessTier();
   };
+  returnStolenCard () {
+    this.hasStolenCard = false;
+    this.recalcAccessTier();
+  };
   hasBuildingAccess () {
     if ( this.accessTier >= 1 ) {
       return true;
@@ -7114,11 +7118,25 @@ class GameSession  extends RangerProcessBase {
     }
     rel.applyStatDelta("love", 5);
   };
+  hasLostBadgeToGive () {
+    if ( this.tools.heldCoworkerCardOwner == this.pendingEntityId ) {
+      return true;
+    }
+    if ( this.tools.hasStolenCard ) {
+      return true;
+    }
+    return false;
+  };
   isEmotionalAnswerVisible (dialogueIndex, answerIndex) {
     const dlg = this.dialogueCatalog.dialogueAt(dialogueIndex);
     if ( dlg.id == "help_usb_search" ) {
       if ( answerIndex == 0 ) {
         return this.tools.hasUsbDrive;
+      }
+    }
+    if ( dlg.id == "help_lost_badge" ) {
+      if ( answerIndex == 0 ) {
+        return this.hasLostBadgeToGive();
       }
     }
     return true;
@@ -7149,12 +7167,30 @@ class GameSession  extends RangerProcessBase {
     if ( answerIndex != 0 ) {
       return;
     }
-    if ( this.tools.hasUsbDrive ) {
-      this.karma.add("help_usb", 5);
-      ent.mainTask = "working";
-      this._map.lastStatus = ent.name + " kiittää — USB pelasti päivän!";
-    } else {
-      this._map.lastStatus = "Sinulla ei ole USB-tikkua taskussa.";
+    if ( dlg.id == "help_usb_search" ) {
+      if ( this.tools.hasUsbDrive ) {
+        this.karma.add("help_usb", 5);
+        ent.mainTask = "working";
+        this._map.lastStatus = ent.name + " kiittää — USB pelasti päivän!";
+      } else {
+        this._map.lastStatus = "Sinulla ei ole USB-tikkua taskussa.";
+      }
+      return;
+    }
+    if ( dlg.id == "help_lost_badge" ) {
+      if ( this.tools.heldCoworkerCardOwner == this.pendingEntityId ) {
+        this.tools.returnCoworkerCard();
+        ent.mainTask = "working";
+        this._map.lastStatus = ent.name + " huokaisee helpotuksesta: \"Kiitos — tämä on minun korttini! Pelastit päiväni.\"";
+        return;
+      }
+      if ( this.tools.hasStolenCard ) {
+        this.tools.returnStolenCard();
+        ent.mainTask = "working";
+        this._map.lastStatus = ent.name + " tarttuu korttiin: \"Juuri tämä! Luulin että se oli vajassa — kiitos, pelastit päiväni!\"";
+        return;
+      }
+      this._map.lastStatus = "Sinulla ei ole kulkukorttia taskussa.";
     }
   };
   applyLoveFollowup (ent, rel) {

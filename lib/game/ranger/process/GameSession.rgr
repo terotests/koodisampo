@@ -1168,11 +1168,26 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     rel.applyStatDelta("love" 5)
   }
 
+  fn hasLostBadgeToGive:boolean () {
+    if (tools.heldCoworkerCardOwner == pendingEntityId) {
+      return true
+    }
+    if (tools.hasStolenCard) {
+      return true
+    }
+    return false
+  }
+
   fn isEmotionalAnswerVisible:boolean (dialogueIndex:int answerIndex:int) {
     def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(dialogueIndex))
     if (dlg.id == "help_usb_search") {
       if (answerIndex == 0) {
         return tools.hasUsbDrive
+      }
+    }
+    if (dlg.id == "help_lost_badge") {
+      if (answerIndex == 0) {
+        return (this.hasLostBadgeToGive())
       }
     }
     return true
@@ -1205,12 +1220,30 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (answerIndex != 0) {
       return
     }
-    if (tools.hasUsbDrive) {
-      karma.add("help_usb" 5)
-      ent.mainTask = "working"
-      map.lastStatus = (ent.name + " kiittää — USB pelasti päivän!")
-    } {
-      map.lastStatus = "Sinulla ei ole USB-tikkua taskussa."
+    if (dlg.id == "help_usb_search") {
+      if (tools.hasUsbDrive) {
+        karma.add("help_usb" 5)
+        ent.mainTask = "working"
+        map.lastStatus = (ent.name + " kiittää — USB pelasti päivän!")
+      } {
+        map.lastStatus = "Sinulla ei ole USB-tikkua taskussa."
+      }
+      return
+    }
+    if (dlg.id == "help_lost_badge") {
+      if (tools.heldCoworkerCardOwner == pendingEntityId) {
+        tools.returnCoworkerCard()
+        ent.mainTask = "working"
+        map.lastStatus = (ent.name + " huokaisee helpotuksesta: \"Kiitos — tämä on minun korttini! Pelastit päiväni.\"")
+        return
+      }
+      if (tools.hasStolenCard) {
+        tools.returnStolenCard()
+        ent.mainTask = "working"
+        map.lastStatus = (ent.name + " tarttuu korttiin: \"Juuri tämä! Luulin että se oli vajassa — kiitos, pelastit päiväni!\"")
+        return
+      }
+      map.lastStatus = "Sinulla ei ole kulkukorttia taskussa."
     }
   }
 

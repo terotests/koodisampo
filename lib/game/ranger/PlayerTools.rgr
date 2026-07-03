@@ -89,6 +89,11 @@ class PlayerTools {
     this.recalcAccessTier()
   }
 
+  fn returnStolenCard:void () {
+    hasStolenCard = false
+    this.recalcAccessTier()
+  }
+
   fn hasBuildingAccess:boolean () {
     if (accessTier >= 1) {
       return true
