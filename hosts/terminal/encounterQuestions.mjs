@@ -222,13 +222,17 @@ function audienceTags(entity, playerSpecialty = "") {
   }
   if (entity.kind === "coworker") {
     const topic = entity.topic || "";
-    const preferDomain = TOPIC_DOMAINS[topic] || "";
+    const topicDomain = TOPIC_DOMAINS[topic] || "";
+    const specialty = playerSpecialty || "";
+    const preferDomain = specialty || topicDomain || "";
+    const topicMatchesSpecialty =
+      !specialty || !topicDomain || specialty === topicDomain;
     return {
       tags: ["coworker"],
       voice: "colleague",
-      preferChapter: topic,
-      preferDomain: preferDomain || playerSpecialty || "",
-      playerSpecialty,
+      preferChapter: topicMatchesSpecialty ? topic : "",
+      preferDomain,
+      playerSpecialty: specialty,
       minDifficulty: 3,
     };
   }
@@ -361,7 +365,7 @@ function scoreQuestion(q, profile, targetDiff) {
   if (profile.tags.includes("project-lead") && q.domain === "scrum") score += 10;
   if (profile.tags.includes("ceo") && q.domain === "scrum") score += 8;
 
-  const focusDomain = profile.preferDomain || profile.playerSpecialty || "";
+  const focusDomain = profile.playerSpecialty || profile.preferDomain || "";
   if (
     profile.tags.includes("coworker") &&
     focusDomain &&

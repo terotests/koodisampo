@@ -32,4 +32,23 @@ assert(hostilePickedJs, "JS specialty should pick javascript for hostile encount
 const jsCoworker = pickFor(coworker, "javascript", 5);
 assert(jsCoworker.domain === "javascript", `JS coworker without topic should prefer javascript, got ${jsCoworker.domain}`);
 
+const cppTopicCoworker = { ...coworker, id: "staff-cpp", topic: "tools" };
+let cppTopicPickedJs = 0;
+for (let nonce = 0; nonce < 30; nonce += 1) {
+  if (pickFor(cppTopicCoworker, "javascript", nonce).domain === "javascript") {
+    cppTopicPickedJs += 1;
+  }
+}
+assert(
+  cppTopicPickedJs === 30,
+  `JS specialty should override C++ coworker topic, got ${cppTopicPickedJs}/30 javascript`,
+);
+
+const dockerTopicCoworker = { ...coworker, id: "staff-docker", topic: "docker-network" };
+const dockerTopicPick = pickFor(dockerTopicCoworker, "docker", 3);
+assert(
+  dockerTopicPick.domain === "docker",
+  `docker specialty should pick docker even when coworker topic differs, got ${dockerTopicPick.domain}`,
+);
+
 console.log("player_specialty_questions.test.mjs OK");
