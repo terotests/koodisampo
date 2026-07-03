@@ -92,7 +92,7 @@ type HudState = {
   ambient?: string;
   actionLine?: string;
   hint?: string;
-  floorRecommendation?: { total?: number; done?: number; complete?: boolean };
+  floorRecommendation?: { total?: number; done?: number; required?: number; complete?: boolean };
 };
 
 export function actionLineFromState(state: HudState): string {
@@ -127,7 +127,8 @@ export function renderMessageBar(el: HTMLElement | null, state: HudState, esc: (
   if (state.time) parts.push(state.time);
   const fr = state.floorRecommendation;
   if (fr && fr.total > 0 && !fr.complete) {
-    parts.push(`Suositukset: ${fr.done}/${fr.total}`);
+    const need = fr.required ?? Math.ceil((fr.total ?? 0) * 0.5);
+    parts.push(`Suositukset: ${fr.done}/${fr.total} (tarvitaan ${need})`);
   }
   const msg = parts.join(" · ");
   el.textContent = msg;

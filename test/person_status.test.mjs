@@ -13,6 +13,8 @@ import {
   getFloorRecommendationStatus,
   collectFloorRecommendationStaff,
   applyMapPersonDisplay,
+  floorRecommendationRequired,
+  tryGrantPromotionFromFloorApproval,
 } from "../hosts/terminal/personStatus.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -64,22 +66,39 @@ export function runPersonStatusTests() {
 
   const floor1 = getFloorRecommendationStatus(session, registry, 1);
   assert(floor1.total > 0, "floor 2 has recommendation NPCs");
+  assert(floor1.required === floorRecommendationRequired(floor1.total), "required is 50% ceiling");
   assert(floor1.complete === false, "empty registry has incomplete floor");
 
   const block = checkFloorRecommendationAccess(session, registry, 2);
   assert(block.ok === false, "cannot go up without floor recommendations");
 
-  for (const ent of collectFloorRecommendationStaff(session, 1)) {
-    recordPersonEncounter(registry, ent, { correct: true });
+  const staff = collectFloorRecommendationStaff(session, 1);
+  const need = floorRecommendationRequired(staff.length);
+  for (let i = 0; i < need - 1; i += 1) {
+    recordPersonEncounter(registry, staff[i], { correct: true });
   }
+  const floor1partial = getFloorRecommendationStatus(session, registry, 1);
+  assert(floor1partial.complete === false, "below 50% is incomplete");
+
+  recordPersonEncounter(registry, staff[need - 1], { correct: true });
   const floor1b = getFloorRecommendationStatus(session, registry, 1);
-  assert(floor1b.complete === true, "all floor 1 staff recommended");
+  assert(floor1b.complete === true, "50% floor staff recommended is enough");
 
   dispatch(session, () => {
     sessionMap(session).currentFloor = 1;
   });
   const allow = checkFloorRecommendationAccess(session, registry, 2);
   assert(allow.ok === true, "can go to floor 3 after floor 2 recommendations");
+
+  dispatch(session, () => {
+    session.guruIntroPassed = true;
+    sessionMap(session).currentFloor = 1;
+  });
+  let promo = null;
+  dispatch(session, () => {
+    promo = tryGrantPromotionFromFloorApproval(session, registry);
+  });
+  assert(promo !== null, "50% floor approval grants promotion after guru");
 
   dispatch(session, () => {
     const map = sessionMap(session);
