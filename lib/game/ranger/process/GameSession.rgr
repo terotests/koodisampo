@@ -1640,9 +1640,14 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.applyEmotionalPlayerEffects(pendingEmotionalDialogueIndex answerIndex)
     this.applyHelpAnswerEffects(ent answerIndex pendingEmotionalDialogueIndex)
     this.applyLoveFollowup(ent rel)
-    def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(pendingEmotionalDialogueIndex))
     if ((strlen map.lastStatus) < 1) {
-      map.lastStatus = (pendingEntityName + ": " + dlg.text)
+      def reaction:string (dialogueCatalog.answerStatusReaction(pendingEmotionalDialogueIndex answerIndex))
+      if ((strlen reaction) > 0) {
+        map.lastStatus = (pendingEntityName + " " + reaction)
+      } {
+        def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(pendingEmotionalDialogueIndex))
+        map.lastStatus = (pendingEntityName + ": " + dlg.text)
+      }
     }
     pendingEmotionalDialogueIndex = -1
     if (this.needsEncounterQuiz()) {
