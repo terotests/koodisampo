@@ -5780,16 +5780,31 @@ class GameSession  extends RangerProcessBase {
     }
     return "Pelaaja";
   };
+  qualifiesAsMourner (rel) {
+    if ( rel.love < 50 ) {
+      return false;
+    }
+    if ( rel.respect < 60 ) {
+      return false;
+    }
+    return true;
+  };
+  mournerRankScore (rel) {
+    return ((rel.love + rel.respect) + rel.friendliness) - rel.anger;
+  };
+  appendDefaultMemorialMourners () {
+    const janitorRel = this.npcRelations.getOrCreate("janitor");
+    const dogRel = this.npcRelations.getOrCreate("office-dog");
+    const policeRel = new NpcRelation();
+    this.memorialAppend("janitor", this.resolveMournerName("janitor", "Talkkari"), this.mournerEpitaphFor("janitor", janitorRel));
+    this.memorialAppend("office-dog", this.resolveMournerName("office-dog", "Toimistokoira"), this.mournerEpitaphFor("office-dog", dogRel));
+    this.memorialAppend("police-memorial", "Poliisi", this.mournerEpitaphFor("police-memorial", policeRel));
+  };
   buildMemorialMourners (deathLine) {
     this.clearMemorial();
     this.memorialDeathLine = deathLine;
     this.memorialPlayerName = this.resolveMemorialPlayerName();
-    const janitorRel = this.npcRelations.getOrCreate("janitor");
-    const dogRel = this.npcRelations.getOrCreate("office-dog");
-    this.memorialAppend("janitor", this.resolveMournerName("janitor", "Talkkari"), this.mournerEpitaphFor("janitor", janitorRel));
-    this.memorialAppend("office-dog", this.resolveMournerName("office-dog", "Toimistokoira"), this.mournerEpitaphFor("office-dog", dogRel));
-    const policeRel = new NpcRelation();
-    this.memorialAppend("police-memorial", "Poliisi", this.mournerEpitaphFor("police-memorial", policeRel));
+    let added = 0;
     let pick = 0;
     while (pick < 3) {
       let bestId = "";
@@ -5807,7 +5822,11 @@ class GameSession  extends RangerProcessBase {
           continue;
         }
         const rel = this.npcRelations.relations[i];
-        const score = rel.positiveImage();
+        if ( this.qualifiesAsMourner(rel) == false ) {
+          i = i + 1;
+          continue;
+        }
+        const score = this.mournerRankScore(rel);
         if ( score > bestScore ) {
           bestScore = score;
           bestId = npcId;
@@ -5815,16 +5834,17 @@ class GameSession  extends RangerProcessBase {
         i = i + 1;
       };
       if ( (bestId.length) < 1 ) {
-        return;
-      }
-      if ( bestScore < 1 ) {
-        return;
+        break;
       }
       const bestRel = this.npcRelations.getOrCreate(bestId);
       const bestName = this.resolveMournerName(bestId, "Työkaveri");
       this.memorialAppend(bestId, bestName, this.mournerEpitaphFor(bestId, bestRel));
+      added = added + 1;
       pick = pick + 1;
     };
+    if ( added < 1 ) {
+      this.appendDefaultMemorialMourners();
+    }
   };
   memorialCount () {
     return this.memorialMournerNames.length;
