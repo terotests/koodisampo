@@ -672,32 +672,26 @@ function printGameOver(session) {
   const lines = [
     BANNER,
     "",
-    "        ----------",
-    "       /          \\",
-    `      /   ${playerName.padEnd(10).slice(0, 10)}   \\`,
-    "     |              |",
-    `     |  ${deathLine.padEnd(12).slice(0, 12)}  |`,
-    "     |              |",
-    "     | Kaipaamaan   |",
-    "     | jäivät:      |",
+    `  ${styled("═══ Muistokirjoitus ═══", FG.red, BOLD)}`,
+    "",
+    `  ${styled(playerName, FG.yellow, BOLD)}`,
+    `  ${wrap(deathLine)}`,
+    "",
+    `  ${styled("Kaipaamaan jäivät:", FG.gray, BOLD)}`,
+    "",
   ];
   if (mourners.length < 1) {
-    lines.push("     |  Talkkari    |", "     |  Toimistokoir |", "     |  Poliisi     |");
+    lines.push("  Talkkari, Toimistokoira, Poliisi");
   } else {
     for (const mourner of mourners) {
-      lines.push(`     |  ${(mourner.name || "?").padEnd(12).slice(0, 12)} |`);
+      lines.push(`  ${styled(mourner.name || "?", FG.yellow)}`);
+      if (mourner.epitaph) {
+        lines.push(`    ${styled(`"${mourner.epitaph}"`, FG.gray)}`);
+      }
+      lines.push("");
     }
   }
   lines.push(
-    "      \\            /",
-    "       ----------",
-    "",
-  );
-  for (const mourner of mourners) {
-    lines.push(`  ${styled(mourner.name || "?", FG.yellow)} — ${mourner.epitaph || ""}`);
-  }
-  lines.push(
-    "",
     `  ${styled("Kuolemat:", FG.yellow)} ${session.exportDeaths()}`,
     `\n  ${styled("Paina Enter aloittaaksesi uudelleen...", FG.gray)}`,
     `  ${styled(QUIT_HINT, FG.gray)}`,
