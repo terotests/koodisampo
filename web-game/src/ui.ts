@@ -1091,22 +1091,28 @@ export function mountGameUI(game: WebGame) {
 
       if (state.screen === "gameover") {
         let html = screenHeader(state);
-        const reason = state.gameOverReason || "";
-        let title = "═══ Kuolit ═══";
-        if (reason === "PoliceCaught") {
-          title = "═══ Poliisit saivat kiinni ═══";
-        } else if (reason === "FallDeath") {
-          title = "═══ Putosit ulos ═══";
+        const memorial = state.memorial ?? { deathLine: "", mourners: [] };
+        const playerName = esc((memorial.playerName || "").trim() || (state.playerDisplayName || "").trim() || "Pelaaja");
+        const deathLine = esc(memorial.deathLine || state.status || "Kuolit.");
+        const mourners = memorial.mourners ?? [];
+        html += `<div class="overlay-title bad">═══ Muistokirjoitus ═══</div>`;
+        html += `<div class="greeting" style="margin-top:12px"><strong>${playerName}</strong><br>${deathLine}</div>`;
+        html += `<div style="margin-top:16px;font-style:italic;color:#8b949e">Kaipaamaan jäivät:</div>`;
+        if (mourners.length < 1) {
+          html += `<div class="hint" style="margin-top:8px">Talkkari, Toimistokoira, Poliisi</div>`;
+        } else {
+          html += `<div style="margin-top:8px">`;
+          for (const mourner of mourners) {
+            html += `<div style="margin-bottom:12px">`;
+            html += `<strong>${esc(mourner.name || "?")}</strong>`;
+            if (mourner.epitaph) {
+              html += `<div class="hint" style="margin-top:4px;font-style:italic">"${esc(mourner.epitaph)}"</div>`;
+            }
+            html += `</div>`;
+          }
+          html += `</div>`;
         }
-        html += `<div class="overlay-title bad">${title}</div>`;
-        const fallback =
-          reason === "PoliceCaught"
-            ? "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi."
-            : reason === "FallDeath"
-              ? "Putosit rakennuksesta ulos — kuolit."
-              : "Peli päättyi.";
-        html += `<div class="greeting">${esc(state.status || fallback)}</div>`;
-        html += `<div style="margin-top:8px;color:#f85149">Kuolemat: ${state.deaths ?? 0}</div>`;
+        html += `<div style="margin-top:12px;color:#f85149">Kuolemat: ${state.deaths ?? 0}</div>`;
         html += continueRow("enter", "Aloita uudelleen →");
         setMapContent(html);
         if (isMobileLayout()) {

@@ -1294,6 +1294,16 @@ class NpcRelation  {
     }
     return true;
   };
+  positiveImage () {
+    const score = ((this.friendliness + this.respect) + this.love) - this.anger;
+    if ( score < 0 ) {
+      return 0;
+    }
+    if ( score > 300 ) {
+      return 300;
+    }
+    return score;
+  };
 }
 class WorldEvent  {
   constructor() {
@@ -5462,6 +5472,11 @@ class GameSession  extends RangerProcessBase {
     this.escalatedJealous = false;
     this.pendingEmotionalDialogueIndex = -1;
     this.gameOverReason = "";
+    this.memorialDeathLine = "";
+    this.memorialPlayerName = "";
+    this.memorialMournerIds = [];
+    this.memorialMournerNames = [];
+    this.memorialMournerEpitaphs = [];
     this.encounterCooldown = 0;
     this.interviewPassed = false;
     this.interviewFailed = false;
@@ -5515,6 +5530,12 @@ class GameSession  extends RangerProcessBase {
     this.proximityGreeting = new ProximityGreeting();
     this.npcBehaviors = new NpcBehaviorRegistry();
     this.npcBehaviors.loadDefaults();
+    let emptyMemorialIds = [];
+    let emptyMemorialNames = [];
+    let emptyMemorialEpitaphs = [];
+    this.memorialMournerIds = emptyMemorialIds;
+    this.memorialMournerNames = emptyMemorialNames;
+    this.memorialMournerEpitaphs = emptyMemorialEpitaphs;
   }
   ensureEngine () {
     if ( this.engineReady ) {
@@ -5684,6 +5705,179 @@ class GameSession  extends RangerProcessBase {
   encounterAiStudyCost () {
     return 5;
   };
+  clearMemorial () {
+    this.memorialDeathLine = "";
+    this.memorialPlayerName = "";
+    let emptyIds = [];
+    let emptyNames = [];
+    let emptyEpitaphs = [];
+    this.memorialMournerIds = emptyIds;
+    this.memorialMournerNames = emptyNames;
+    this.memorialMournerEpitaphs = emptyEpitaphs;
+  };
+  memorialHasId (entityId) {
+    let i = 0;
+    const n = this.memorialMournerIds.length;
+    while (i < n) {
+      if ( (this.memorialMournerIds[i]) == entityId ) {
+        return true;
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  memorialAppend (entityId, name, epitaph) {
+    if ( (entityId.length) < 1 ) {
+      return;
+    }
+    if ( this.memorialHasId(entityId) ) {
+      return;
+    }
+    this.memorialMournerIds.push(entityId);
+    this.memorialMournerNames.push(name);
+    this.memorialMournerEpitaphs.push(epitaph);
+  };
+  resolveMournerName (entityId, fallback) {
+    const ent = this._map.findEntityById(entityId);
+    if ( (ent.name.length) > 0 ) {
+      return ent.name;
+    }
+    return fallback;
+  };
+  mournerEpitaphFor (entityId, rel) {
+    if ( entityId == "janitor" ) {
+      return "Pesi portaat hitaammin kuin koskaan.";
+    }
+    if ( entityId == "office-dog" ) {
+      return "Meni ulos etsimään — ei palannut.";
+    }
+    if ( entityId == "police-memorial" ) {
+      return "Kirjoitti raportin ja sulki tapauksen.";
+    }
+    if ( rel.love >= 70 ) {
+      return "Sanoi että paras työkaveri ikinä.";
+    }
+    if ( rel.love >= 50 ) {
+      return "Itki taukohuoneessa.";
+    }
+    if ( rel.friendliness >= 75 ) {
+      return "Toi kahvia muistoksesi.";
+    }
+    if ( rel.respect >= 75 ) {
+      return "Piti sinua esimerkkinä tiimille.";
+    }
+    if ( rel.friendliness >= 60 ) {
+      return "Muisti sinua lämpimästi.";
+    }
+    if ( rel.respect >= 60 ) {
+      return "Puhui sinusta kunnioittavasti.";
+    }
+    return "Muisti sinua.";
+  };
+  resolveMemorialPlayerName () {
+    if ( (this.playerDisplayName.length) > 0 ) {
+      return this.playerDisplayName;
+    }
+    return "Pelaaja";
+  };
+  qualifiesAsMourner (rel) {
+    if ( rel.love < 50 ) {
+      return false;
+    }
+    if ( rel.respect < 60 ) {
+      return false;
+    }
+    return true;
+  };
+  mournerRankScore (rel) {
+    return ((rel.love + rel.respect) + rel.friendliness) - rel.anger;
+  };
+  appendDefaultMemorialMourners () {
+    const janitorRel = this.npcRelations.getOrCreate("janitor");
+    const dogRel = this.npcRelations.getOrCreate("office-dog");
+    const policeRel = new NpcRelation();
+    this.memorialAppend("janitor", this.resolveMournerName("janitor", "Talkkari"), this.mournerEpitaphFor("janitor", janitorRel));
+    this.memorialAppend("office-dog", this.resolveMournerName("office-dog", "Toimistokoira"), this.mournerEpitaphFor("office-dog", dogRel));
+    this.memorialAppend("police-memorial", "Poliisi", this.mournerEpitaphFor("police-memorial", policeRel));
+  };
+  buildMemorialMourners (deathLine) {
+    this.clearMemorial();
+    this.memorialDeathLine = deathLine;
+    this.memorialPlayerName = this.resolveMemorialPlayerName();
+    let added = 0;
+    let pick = 0;
+    while (pick < 3) {
+      let bestId = "";
+      let bestScore = -1;
+      let i = 0;
+      const n = this.npcRelations.npcIds.length;
+      while (i < n) {
+        const npcId = this.npcRelations.npcIds[i];
+        if ( this.memorialHasId(npcId) ) {
+          i = i + 1;
+          continue;
+        }
+        if ( npcId == "police-memorial" ) {
+          i = i + 1;
+          continue;
+        }
+        const rel = this.npcRelations.relations[i];
+        if ( this.qualifiesAsMourner(rel) == false ) {
+          i = i + 1;
+          continue;
+        }
+        const score = this.mournerRankScore(rel);
+        if ( score > bestScore ) {
+          bestScore = score;
+          bestId = npcId;
+        }
+        i = i + 1;
+      };
+      if ( (bestId.length) < 1 ) {
+        break;
+      }
+      const bestRel = this.npcRelations.getOrCreate(bestId);
+      const bestName = this.resolveMournerName(bestId, "Työkaveri");
+      this.memorialAppend(bestId, bestName, this.mournerEpitaphFor(bestId, bestRel));
+      added = added + 1;
+      pick = pick + 1;
+    };
+    if ( added < 1 ) {
+      this.appendDefaultMemorialMourners();
+    }
+  };
+  memorialCount () {
+    return this.memorialMournerNames.length;
+  };
+  memorialNameAt (index) {
+    if ( index < 0 ) {
+      return "";
+    }
+    if ( index >= (this.memorialMournerNames.length) ) {
+      return "";
+    }
+    return this.memorialMournerNames[index];
+  };
+  memorialEpitaphAt (index) {
+    if ( index < 0 ) {
+      return "";
+    }
+    if ( index >= (this.memorialMournerEpitaphs.length) ) {
+      return "";
+    }
+    return this.memorialMournerEpitaphs[index];
+  };
+  tryPoliceCapture () {
+    if ( this._map.policeChaseActive == false ) {
+      return false;
+    }
+    const bump = this._map.bumpAtPlayer();
+    if ( bump.kind == "police" ) {
+      this.gameOverPolice();
+      return true;
+    }
+    return false;
+  };
   gameOverPolice () {
     this.ensureEngine();
     this.engine.deaths = this.engine.deaths + 1;
@@ -5695,7 +5889,8 @@ class GameSession  extends RangerProcessBase {
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi.";
+    this.buildMemorialMourners("Kiinni poliisien toimesta.");
+    this._map.lastStatus = this.memorialDeathLine;
     this.screen = "gameover";
     this.markStateDirty();
   };
@@ -5710,7 +5905,8 @@ class GameSession  extends RangerProcessBase {
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "Putosit rakennuksesta ulos — kuolit.";
+    this.buildMemorialMourners("Putosit rakennuksesta ulos.");
+    this._map.lastStatus = this.memorialDeathLine;
     this.screen = "gameover";
     this.markStateDirty();
   };
@@ -5847,6 +6043,12 @@ class GameSession  extends RangerProcessBase {
     this.encounterCooldown = 3;
   };
   startEncounter (bump) {
+    if ( bump.kind == "police" ) {
+      if ( this._map.policeChaseActive ) {
+        this.gameOverPolice();
+        return;
+      }
+    }
     this.clearPendingGreetWithAck(bump.id);
     this.pendingEntityId = bump.id;
     this.pendingEntityChar = bump.char;
@@ -7837,10 +8039,21 @@ class GameSession  extends RangerProcessBase {
       }
     } else {
       const blocker = this._map.entityAt(targetX, targetY);
+      if ( blocker.kind == "police" ) {
+        if ( this._map.policeChaseActive ) {
+          this.gameOverPolice();
+          this.markStateDirty();
+          return;
+        }
+      }
       if ( this.tryOpenBlockedMenu(blocker) ) {
         this.markStateDirty();
         return;
       }
+    }
+    if ( this.tryPoliceCapture() ) {
+      this.markStateDirty();
+      return;
     }
     const bump = this._map.bumpAtPlayer();
     if ( this._map.entityBlocksPlayer(bump) ) {
@@ -8101,6 +8314,7 @@ class GameSession  extends RangerProcessBase {
     }
     this._map.clearPoliceSquad();
     this._map.clearOuterWallBreaches();
+    this.clearMemorial();
     this.playerNeeds.resetDefaults();
     this.npcRelations.reset();
     this.dialogueCatalog.loadDefaults();
@@ -8127,6 +8341,7 @@ class GameSession  extends RangerProcessBase {
     }
     this._map.clearPoliceSquad();
     this._map.clearOuterWallBreaches();
+    this.clearMemorial();
     let respawnMsg = "Selvitit hengissä — mutta poliisit muistavat kasvosi.";
     if ( (this.gameOverReason.length) > 0 ) {
       respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda.";

@@ -587,6 +587,22 @@ function serializeActionPanel(view) {
   };
 }
 
+function serializeMemorial(session) {
+  const count = session.memorialCount?.() ?? 0;
+  const mourners = [];
+  for (let i = 0; i < count; i += 1) {
+    mourners.push({
+      name: session.memorialNameAt?.(i) ?? "",
+      epitaph: session.memorialEpitaphAt?.(i) ?? "",
+    });
+  }
+  return {
+    playerName: session.memorialPlayerName ?? "",
+    deathLine: session.memorialDeathLine ?? "",
+    mourners,
+  };
+}
+
 function snapshot() {
   const map = sessionMap(session);
   const cast = collectAllCastFromSession(session);
@@ -622,6 +638,7 @@ function snapshot() {
     playerDisplayName: session.playerDisplayName ?? "",
     playerSpecialty: session.playerSpecialty ?? "",
     gameOverReason: session.gameOverReason ?? "",
+    memorial: serializeMemorial(session),
   };
 
   if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {

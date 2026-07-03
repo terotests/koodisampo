@@ -266,4 +266,15 @@ class NpcRelation {
     }
     return true
   }
+
+  fn positiveImage:int () {
+    def score:int (friendliness + respect + love - anger)
+    if (score < 0) {
+      return 0
+    }
+    if (score > 300) {
+      return 300
+    }
+    return score
+  }
 }
