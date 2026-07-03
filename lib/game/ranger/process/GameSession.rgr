@@ -64,6 +64,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def pendingEmotionalDialogueIndex:int -1
   def gameOverReason:string ""
   def memorialDeathLine:string ""
+  def memorialPlayerName:string ""
   def memorialMournerIds:[string]
   def memorialMournerNames:[string]
   def memorialMournerEpitaphs:[string]
@@ -314,6 +315,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn clearMemorial:void () {
     memorialDeathLine = ""
+    memorialPlayerName = ""
     def emptyIds:[string]
     def emptyNames:[string]
     def emptyEpitaphs:[string]
@@ -385,9 +387,17 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     return "Muisti sinua."
   }
 
+  fn resolveMemorialPlayerName:string () {
+    if ((strlen playerDisplayName) > 0) {
+      return playerDisplayName
+    }
+    return "Pelaaja"
+  }
+
   fn buildMemorialMourners:void (deathLine:string) {
     this.clearMemorial()
     memorialDeathLine = deathLine
+    memorialPlayerName = (this.resolveMemorialPlayerName())
     def janitorRel:NpcRelation (npcRelations.getOrCreate("janitor"))
     def dogRel:NpcRelation (npcRelations.getOrCreate("office-dog"))
     this.memorialAppend("janitor" (this.resolveMournerName("janitor" "Talkkari")) (this.mournerEpitaphFor("janitor" janitorRel)))

@@ -597,6 +597,7 @@ function serializeMemorial(session) {
     });
   }
   return {
+    playerName: session.memorialPlayerName ?? "",
     deathLine: session.memorialDeathLine ?? "",
     mourners,
   };

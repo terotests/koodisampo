@@ -668,7 +668,7 @@ function printGameOver(session) {
     });
   }
   const deathLine = session.memorialDeathLine || "Kuolit.";
-  const playerName = session.playerDisplayName || "Larry";
+  const playerName = (session.memorialPlayerName || session.playerDisplayName || "").trim() || "Pelaaja";
   const lines = [
     BANNER,
     "",

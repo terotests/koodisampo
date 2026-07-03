@@ -108,12 +108,16 @@ export function runOuterWallExitTests() {
       floor.entities = [...(floor.entities ?? []), police];
     });
     dispatch(session, () => {
+      session.applyPlayerProfile("Pekka", "cpp");
+    });
+    dispatch(session, () => {
       assert(session.tryPoliceCapture() === true, "police capture on same tile");
     });
     assert(session.screen === "gameover", "police capture goes to game over");
     assert(session.screen !== "encounter", "police does not start encounter");
     assert(session.gameOverReason === "PoliceCaught", "police capture reason");
     assert(session.memorialCount() >= 3, "police death builds memorial");
+    assert(session.memorialPlayerName === "Pekka", `memorial uses player name, got ${session.memorialPlayerName}`);
   } finally {
     simPolice.stop();
   }

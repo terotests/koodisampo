@@ -1092,7 +1092,7 @@ export function mountGameUI(game: WebGame) {
       if (state.screen === "gameover") {
         let html = screenHeader(state);
         const memorial = state.memorial ?? { deathLine: "", mourners: [] };
-        const playerName = esc(state.playerDisplayName || "Larry");
+        const playerName = esc((memorial.playerName || "").trim() || (state.playerDisplayName || "").trim() || "Pelaaja");
         const deathLine = esc(memorial.deathLine || state.status || "Kuolit.");
         const mourners = memorial.mourners ?? [];
         html += `<div class="overlay-title bad">═══ Muistokirjoitus ═══</div>`;

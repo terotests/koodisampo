@@ -5473,6 +5473,7 @@ class GameSession  extends RangerProcessBase {
     this.pendingEmotionalDialogueIndex = -1;
     this.gameOverReason = "";
     this.memorialDeathLine = "";
+    this.memorialPlayerName = "";
     this.memorialMournerIds = [];
     this.memorialMournerNames = [];
     this.memorialMournerEpitaphs = [];
@@ -5706,6 +5707,7 @@ class GameSession  extends RangerProcessBase {
   };
   clearMemorial () {
     this.memorialDeathLine = "";
+    this.memorialPlayerName = "";
     let emptyIds = [];
     let emptyNames = [];
     let emptyEpitaphs = [];
@@ -5772,9 +5774,16 @@ class GameSession  extends RangerProcessBase {
     }
     return "Muisti sinua.";
   };
+  resolveMemorialPlayerName () {
+    if ( (this.playerDisplayName.length) > 0 ) {
+      return this.playerDisplayName;
+    }
+    return "Pelaaja";
+  };
   buildMemorialMourners (deathLine) {
     this.clearMemorial();
     this.memorialDeathLine = deathLine;
+    this.memorialPlayerName = this.resolveMemorialPlayerName();
     const janitorRel = this.npcRelations.getOrCreate("janitor");
     const dogRel = this.npcRelations.getOrCreate("office-dog");
     this.memorialAppend("janitor", this.resolveMournerName("janitor", "Talkkari"), this.mournerEpitaphFor("janitor", janitorRel));
