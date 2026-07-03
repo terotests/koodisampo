@@ -1909,6 +1909,7 @@ class WorldMap  {
     const startIdx = this.cellIndex(sx, sy);
     const goalIdx = this.cellIndex(tx, ty);
     if ( startIdx == goalIdx ) {
+      this.currentFloor = saved;
       return true;
     }
     let queue = [];
@@ -1962,8 +1963,10 @@ class WorldMap  {
       };
     };
     if ( found ) {
+      this.currentFloor = saved;
       return true;
     }
+    this.currentFloor = saved;
     return false;
   };
   hasWcDoorEntityNear (floor) {
