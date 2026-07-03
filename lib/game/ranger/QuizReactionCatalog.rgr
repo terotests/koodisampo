@@ -1,0 +1,253 @@
+
+Import "JSON.rgr"
+Import "StoryJson.rgr"
+Import "NpcRelation.rgr"
+
+class QuizReactionEntry {
+  def id:string ""
+  def outcome:string "correct"
+  def mood:string "neutral"
+  def text:string ""
+  def minAnger:int 0
+  def maxAnger:int 100
+  def minLove:int 0
+  def maxLove:int 100
+}
+
+class QuizReactionCatalog {
+  def entries:[QuizReactionEntry]
+  def json:StoryJson
+
+  Constructor () {
+    json = (new StoryJson)
+    def empty:[QuizReactionEntry]
+    entries = empty
+  }
+
+  fn reset:void () {
+    def empty:[QuizReactionEntry]
+    entries = empty
+  }
+
+  fn loadDefaults:void () {
+    this.reset()
+    this.addDefault("correct_neutral_1" "correct" "neutral" "näyttää tyytyväiseltä.")
+    this.addDefault("correct_neutral_2" "correct" "neutral" "nyökkää hyväksyvästi.")
+    this.addDefault("correct_neutral_3" "correct" "neutral" "näyttää helpottuneelta.")
+    this.addDefault("wrong_neutral_1" "wrong" "neutral" "näyttää mietteliäältä.")
+    this.addDefault("wrong_neutral_2" "wrong" "neutral" "kohauttaa olkapäitä.")
+    this.addDefault("wrong_neutral_3" "wrong" "neutral" "näyttää hieman hämmentyneeltä.")
+
+    this.addDefault("correct_angry_1" "correct" "angry" "rauhoittuu hieman, mutta katse pysyy terävänä.")
+    this.addDefault("correct_angry_2" "correct" "angry" "murisee tunnustuksen.")
+    this.addDefault("correct_angry_3" "correct" "angry" "nyökkää vastahakoisesti.")
+    this.addDefault("wrong_angry_1" "wrong" "angry" "näyttää ärtyneeltä.")
+    this.addDefault("wrong_angry_2" "wrong" "angry" "purseuttaa huuliaan.")
+    this.addDefault("wrong_angry_3" "wrong" "angry" "näyttää raivostuneelta.")
+
+    this.addDefault("correct_romantic_1" "correct" "romantic" "näyttää ihastuneelta.")
+    this.addDefault("correct_romantic_2" "correct" "romantic" "punastuu ja hymyilee.")
+    this.addDefault("correct_romantic_3" "correct" "romantic" "näyttää iloiselta.")
+    this.addDefault("wrong_romantic_1" "wrong" "romantic" "näyttää pettyneeltä.")
+    this.addDefault("wrong_romantic_2" "wrong" "romantic" "näyttää surulliselta.")
+    this.addDefault("wrong_romantic_3" "wrong" "romantic" "katsoo alas pettyneenä.")
+
+    this.addDefault("correct_friendly_1" "correct" "friendly" "näyttää ystävälliseltä.")
+    this.addDefault("correct_friendly_2" "correct" "friendly" "hymyilee lämpimästi.")
+    this.addDefault("wrong_friendly_1" "wrong" "friendly" "näyttää hieman huolestuneelta.")
+    this.addDefault("wrong_friendly_2" "wrong" "friendly" "nyökkää ymmärtäväisesti.")
+
+    this.addDefault("correct_cold_1" "correct" "cold" "näyttää hieman yllättyneeltä.")
+    this.addDefault("correct_cold_2" "correct" "cold" "nyökkää niukasti.")
+    this.addDefault("wrong_cold_1" "wrong" "cold" "näyttää etäiseltä.")
+    this.addDefault("wrong_cold_2" "wrong" "cold" "kääntyy pois.")
+
+    this.addDefault("correct_respectful_1" "correct" "respectful" "näyttää vaikuttuneelta.")
+    this.addDefault("correct_respectful_2" "correct" "respectful" "näyttää kunnioittavalta.")
+    this.addDefault("wrong_respectful_1" "wrong" "respectful" "näyttää pettyneeltä.")
+    this.addDefault("wrong_respectful_2" "wrong" "respectful" "näyttää halveksivalta.")
+  }
+
+  fn addDefault:void (id:string outcome:string mood:string text:string) {
+    def entry:QuizReactionEntry (new QuizReactionEntry)
+    entry.id = id
+    entry.outcome = outcome
+    entry.mood = mood
+    entry.text = text
+    push entries entry
+  }
+
+  fn parseEntry:void (obj:JSONDataObject) {
+    def entry:QuizReactionEntry (new QuizReactionEntry)
+    entry.id = (json.objFieldStr(obj "id"))
+    entry.outcome = (json.objFieldStr(obj "outcome"))
+    entry.mood = (json.objFieldStr(obj "mood"))
+    entry.text = (json.objFieldStr(obj "text"))
+    entry.minAnger = (json.objFieldInt(obj "minAnger"))
+    entry.maxAnger = (json.objFieldInt(obj "maxAnger"))
+    entry.minLove = (json.objFieldInt(obj "minLove"))
+    entry.maxLove = (json.objFieldInt(obj "maxLove"))
+    if ((strlen entry.outcome) < 1) {
+      entry.outcome = "correct"
+    }
+    if ((strlen entry.mood) < 1) {
+      entry.mood = "neutral"
+    }
+    if ((strlen entry.text) < 1) {
+      return
+    }
+    push entries entry
+  }
+
+  fn loadFromText:boolean (raw:string) {
+    this.reset()
+    try {
+      def rootOpt@(optional):JSONDataObject (from_string raw)
+      if (null? rootOpt) {
+        this.loadDefaults()
+        return false
+      }
+      def root:JSONDataObject (unwrap rootOpt)
+      def arrOpt@(optional):JSONArrayObject (getArray root "reactions")
+      if (null? arrOpt) {
+        this.loadDefaults()
+        return false
+      }
+      def rootArr:JSONArrayObject (unwrap arrOpt)
+      def i:int 0
+      def n:int (array_length rootArr)
+      while (i < n) {
+        def entryObj:JSONDataObject (json.arrayObjectAt(rootArr i))
+        this.parseEntry(entryObj)
+        i = i + 1
+      }
+      if ((array_length entries) < 1) {
+        this.loadDefaults()
+        return false
+      }
+      return true
+    } {
+      this.loadDefaults()
+    }
+    return false
+  }
+
+  fn outcomeTag:string (correct:boolean) {
+    if (correct) {
+      return "correct"
+    }
+    return "wrong"
+  }
+
+  fn pickMood:string (relation:NpcRelation) {
+    if (relation.isAngryNoticeable()) {
+      return "angry"
+    }
+    if (relation.isLoveNoticeable()) {
+      return "romantic"
+    }
+    if (relation.isFriendlinessWarm()) {
+      return "friendly"
+    }
+    if (relation.isFriendlinessCold()) {
+      return "cold"
+    }
+    if (relation.isRespectHigh()) {
+      return "respectful"
+    }
+    if (relation.isRespectLow()) {
+      return "cold"
+    }
+    if (relation.suspicion >= 60) {
+      return "cold"
+    }
+    if (relation.isJealousyHigh()) {
+      return "angry"
+    }
+    if (relation.isFearHigh()) {
+      return "cold"
+    }
+    return "neutral"
+  }
+
+  fn matchesEntry:boolean (entry:QuizReactionEntry outcome:string mood:string relation:NpcRelation) {
+    if (entry.outcome != outcome) {
+      return false
+    }
+    if (entry.mood != mood) {
+      return false
+    }
+    if (relation.matchesAngerBand(entry.minAnger entry.maxAnger) == false) {
+      return false
+    }
+    if (relation.matchesLoveBand(entry.minLove entry.maxLove) == false) {
+      return false
+    }
+    return true
+  }
+
+  fn pickIndex:int (outcome:string mood:string relation:NpcRelation entId:string) {
+    def matches:[int]
+    def empty:[int]
+    matches = empty
+    def i:int 0
+    def n:int (array_length entries)
+    while (i < n) {
+      def entry:QuizReactionEntry (at entries i)
+      if (this.matchesEntry(entry outcome mood relation)) {
+        push matches i
+      }
+      i = i + 1
+    }
+    def m:int (array_length matches)
+    if (m < 1) {
+      def j:int 0
+      while (j < n) {
+        def fallback:QuizReactionEntry (at entries j)
+        if (fallback.outcome == outcome) {
+          if (fallback.mood == mood) {
+            push matches j
+          }
+        }
+        j = j + 1
+      }
+      m = (array_length matches)
+    }
+    if (m < 1) {
+      def k:int 0
+      while (k < n) {
+        def fb2:QuizReactionEntry (at entries k)
+        if (fb2.outcome == outcome) {
+          if (fb2.mood == "neutral") {
+            push matches k
+          }
+        }
+        k = k + 1
+      }
+      m = (array_length matches)
+    }
+    if (m < 1) {
+      return -1
+    }
+    if (m == 1) {
+      return (at matches 0)
+    }
+    def seed:int ((strlen entId) + ((strlen outcome) * 7) + ((strlen mood) * 13))
+    if (seed < 0) {
+      seed = (0 - seed)
+    }
+    def pick:int (seed % m)
+    return (at matches pick)
+  }
+
+  fn pickStatusReaction:string (relation:NpcRelation correct:boolean entId:string) {
+    def outcome:string (this.outcomeTag(correct))
+    def mood:string (this.pickMood(relation))
+    def idx:int (this.pickIndex(outcome mood relation entId))
+    if (idx < 0) {
+      return ""
+    }
+    def entry:QuizReactionEntry (at entries idx)
+    return entry.text
+  }
+}

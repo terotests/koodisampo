@@ -18,6 +18,7 @@ Import "../NpcRelationStore.rgr"
 Import "../NpcRelation.rgr"
 Import "../EmotionMath.rgr"
 Import "../DialogueCatalog.rgr"
+Import "../QuizReactionCatalog.rgr"
 Import "../EmotionalDialogue.rgr"
 Import "../EmotionalAnswer.rgr"
 Import "../InventoryView.rgr"
@@ -53,6 +54,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def playerStats:PlayerCoreStats
   def npcRelations:NpcRelationStore
   def dialogueCatalog:DialogueCatalog
+  def quizReactionCatalog:QuizReactionCatalog
   def emotionMath:EmotionMath
   def eventPerception:EventPerception
   def escalation:Escalation
@@ -118,6 +120,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     playerStats = (new PlayerCoreStats)
     npcRelations = (new NpcRelationStore)
     dialogueCatalog = (new DialogueCatalog)
+    quizReactionCatalog = (new QuizReactionCatalog)
+    quizReactionCatalog.loadDefaults()
     emotionMath = (new EmotionMath)
     eventPerception = (new EventPerception)
     escalation = (new Escalation)
@@ -263,6 +267,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
       if ((strlen behaviorMsg) > 0) {
         map.lastStatus = (map.lastStatus + " " + behaviorMsg)
+      }
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      def emotionReaction:string (quizReactionCatalog.pickStatusReaction(rel correct pendingEntityId))
+      if ((strlen emotionReaction) > 0) {
+        map.lastStatus = (map.lastStatus + " " + pendingEntityName + " " + emotionReaction)
       }
     }
     this.clearEncounter()
@@ -1036,6 +1045,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     playerNeeds.resetDefaults()
     npcRelations.reset()
     dialogueCatalog.loadDefaults()
+    quizReactionCatalog.loadDefaults()
     relationTickAccum = 0
     socialTickAccum = 0
     escalatedAngry = false
@@ -1050,6 +1060,17 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     def ok:boolean (dialogueCatalog.loadFromText(raw))
     this.markStateDirty()
     return ok
+  }
+
+  fn loadQuizReactionsFromText:boolean (raw:string) {
+    def ok:boolean (quizReactionCatalog.loadFromText(raw))
+    this.markStateDirty()
+    return ok
+  }
+
+  fn pickQuizEmotionReaction:string (npcId:string correct:boolean) {
+    def rel:NpcRelation (npcRelations.getOrCreate(npcId))
+    return (quizReactionCatalog.pickStatusReaction(rel correct npcId))
   }
 
   fn setNpcRelationStat:void (npcId:string stat:string value:int) {

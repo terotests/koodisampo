@@ -9,6 +9,7 @@ import {
   needsEncounterQuiz,
   buildQuizSideMenu,
   buildQuizReaction,
+  buildQuizReactionWithEmotion,
   buildAskColleagueReply,
   buildAiStudyText,
   buildNpcMehReply,
@@ -68,6 +69,14 @@ function loadNpcBehaviorPackJson(deps) {
   if (deps.npcBehaviorPackJson) return deps.npcBehaviorPackJson;
   return readFileSync(
     resolve(__webDir, "../../content/npc-behaviors/pack.json"),
+    "utf8",
+  );
+}
+
+function loadQuizReactionPackJson(deps) {
+  if (deps.quizReactionPackJson) return deps.quizReactionPackJson;
+  return readFileSync(
+    resolve(__webDir, "../../content/quiz-reactions/pack.json"),
     "utf8",
   );
 }
@@ -145,6 +154,7 @@ export function createWebGameController(deps) {
   } = deps;
   const dialoguePackJson = loadDialoguePackJson(deps);
   const npcBehaviorPackJson = loadNpcBehaviorPackJson(deps);
+  const quizReactionPackJson = loadQuizReactionPackJson(deps);
   let mapJson = initialMapJson ?? (getMapJson ? getMapJson() : "");
   const {
     createGameSession,
@@ -186,6 +196,7 @@ export function createWebGameController(deps) {
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
     session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
+    session.loadQuizReactionsFromText(quizReactionPackJson);
     if (save?.progress?.profileComplete && save?.progress?.playerName) {
       applyPlayerProfileOnSession(
         session,
@@ -249,6 +260,7 @@ export function createWebGameController(deps) {
     session.loadMapFromText(mapJson);
     session.loadEmotionalDialoguesFromText(dialoguePackJson);
     session.loadNpcBehaviorsFromText(npcBehaviorPackJson);
+    session.loadQuizReactionsFromText(quizReactionPackJson);
     if (keepProgress && save?.progress?.profileComplete && save?.progress?.playerName) {
       applyPlayerProfileOnSession(
         session,
@@ -751,7 +763,7 @@ function dismissOverlay() {
         overlay.correct,
         overlay.featureId,
         overlay.points,
-        overlay.reaction,
+        overlay.socialReaction ?? overlay.reaction,
       );
       const promoMsg = tryGrantPromotionFromFloorApproval(session, personRegistryState);
       if (promoMsg) {
@@ -945,7 +957,8 @@ function handleQuizKey(key) {
   overlay = {
     type: "outcome",
     correct,
-    reaction: buildQuizReaction(quiz.entity, correct, session),
+    reaction: buildQuizReactionWithEmotion(quiz.entity, correct, session),
+    socialReaction: buildQuizReaction(quiz.entity, correct, session),
     teaching,
     featureId: quiz.question.featureId || "",
     points: quiz.question.featurePoints || 0,
