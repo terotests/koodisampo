@@ -305,15 +305,54 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn gameOverPolice:void () {
     this.ensureEngine()
     engine.deaths = engine.deaths + 1
+    gameOverReason = "PoliceCaught"
     map.clearPoliceSquad()
+    map.clearOuterWallBreaches()
     def floor:MapFloor (map.activeFloor())
     map.playerX = floor.spawnX
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    map.lastStatus = ""
+    map.lastStatus = "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi."
     screen = "gameover"
     this.markStateDirty()
+  }
+
+  fn gameOverFall:void () {
+    this.ensureEngine()
+    engine.deaths = engine.deaths + 1
+    gameOverReason = "FallDeath"
+    map.clearPoliceSquad()
+    map.clearOuterWallBreaches()
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    map.lastStatus = "Putosit rakennuksesta ulos — kuolit."
+    screen = "gameover"
+    this.markStateDirty()
+  }
+
+  fn handleBuildingExit:void () {
+    if (map.currentFloor == 1) {
+      def courtyard:MapFloor (at map.floors 0)
+      map.currentFloor = 0
+      map.recomputeSize()
+      map.playerX = courtyard.spawnX
+      map.playerY = courtyard.spawnY
+      map.playerHidden = false
+      map.ensurePlayerOnWalkable()
+      conduct.addMisconduct(30)
+      conduct.addDamage(20)
+      karma.loseKarma(20)
+      map.startPoliceChase()
+      map.lastStatus = "Putosit pihamaalle! HR soitti 112 — kolme poliisia (P) lähti takaa-ajoon!"
+      this.afterTimedAction("move")
+      this.markStateDirty()
+      return
+    }
+    this.gameOverFall()
   }
 
   fn triggerPoliceChaseAfterAttack:void (victimName:string) {
@@ -2505,6 +2544,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     def targetX:int (map.playerX + dx)
     def targetY:int (map.playerY + dy)
+    if (map.wouldExitBuilding(dx dy)) {
+      this.handleBuildingExit()
+      this.markStateDirty()
+      return
+    }
     def moved:boolean (this.tryPlayerMove(dx dy))
     if (moved) {
       if (encounterCooldown > 0) {
@@ -2786,6 +2830,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     map.clearPoliceSquad()
+    map.clearOuterWallBreaches()
     playerNeeds.resetDefaults()
     npcRelations.reset()
     dialogueCatalog.loadDefaults()
@@ -2812,6 +2857,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     map.clearPoliceSquad()
+    map.clearOuterWallBreaches()
     def respawnMsg:string "Selvitit hengissä — mutta poliisit muistavat kasvosi."
     if ((strlen gameOverReason) > 0) {
       respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda."
@@ -2982,6 +3028,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     view.ambientLine = map.overheardMsg
     if (screen == "epilogue") {
       view.statusLine = (this.epilogueSummaryLine())
+    }
+    if (screen == "gameover") {
+      if ((strlen map.lastStatus) < 1) {
+        view.statusLine = "Peli päättyi."
+      }
     }
     return view
   }

@@ -621,6 +621,7 @@ function snapshot() {
     needsProfileSetup: sessionNeedsProfileSetup(session),
     playerDisplayName: session.playerDisplayName ?? "",
     playerSpecialty: session.playerSpecialty ?? "",
+    gameOverReason: session.gameOverReason ?? "",
   };
 
   if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {
