@@ -1768,12 +1768,10 @@ class WorldMap  {
     };
     return false;
   };
-  stampWcRoomAt (floor, ox, oy, wx, wy) {
+  stampWcRoomAt (floor, ox, oy, wx, wy, doorX, doorY) {
     this.setTileOnMapFloor(floor, ox, oy, "#");
     this.setTileOnMapFloor(floor, ox + 3, oy, "#");
     this.setTileOnMapFloor(floor, ox, oy + 1, "#");
-    this.setTileOnMapFloor(floor, ox + 3, oy + 1, "#");
-    this.setTileOnMapFloor(floor, ox + 4, oy + 1, "+");
     this.setTileOnMapFloor(floor, ox, oy + 2, "#");
     this.setTileOnMapFloor(floor, ox + 3, oy + 2, "#");
     const wc = new MapEntity();
@@ -1788,55 +1786,322 @@ class WorldMap  {
     floor.entities.push(wc);
     floor.wcX = wx;
     floor.wcY = wy;
+    const door = new MapEntity();
+    door.id = "auto-wc-door-" + floor.floorId;
+    door.char = "🚪";
+    door.name = "Ovi";
+    door.kind = "item";
+    door.x = doorX;
+    door.y = doorY;
+    door.homeX = doorX;
+    door.homeY = doorY;
+    floor.entities.push(door);
   };
-  ensureWcRoom (floor) {
-    if ( this.resolveWcFromEntities(floor) ) {
-      return;
+  wcStampSiteValid (rows, ox, oy, wx, wy, doorX, doorY) {
+    const t00 = this.tileAtOnMapFloorRows(rows, ox, oy);
+    const t30 = this.tileAtOnMapFloorRows(rows, (ox + 3), oy);
+    const t01 = this.tileAtOnMapFloorRows(rows, ox, (oy + 1));
+    const t31 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 1));
+    const t02 = this.tileAtOnMapFloorRows(rows, ox, (oy + 2));
+    const t32 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 2));
+    const tw = this.tileAtOnMapFloorRows(rows, wx, wy);
+    const t40 = this.tileAtOnMapFloorRows(rows, doorX, doorY);
+    if ( this.isWalkableStampTile(t00) == false ) {
+      return false;
     }
+    if ( this.isWalkableStampTile(t30) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(t01) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(t31) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(t02) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(t32) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(tw) == false ) {
+      return false;
+    }
+    if ( this.isWalkableStampTile(t40) == false ) {
+      return false;
+    }
+    return true;
+  };
+  stampWcRoomSearch (floor) {
     const rows = floor.rows;
     const h = rows.length;
     if ( h < 4 ) {
       return;
     }
+    let bestDist = 99999;
+    let bestOx = -1;
+    let bestOy = -1;
     let oy = 1;
-    while (oy < 6) {
+    while (oy < 8) {
       if ( (oy + 2) >= h ) {
-        return;
+        break;
       }
       let ox = 1;
-      while (ox < 10) {
+      while (ox < 20) {
         const wx = ox + 1;
         const wy = oy + 1;
-        const t00 = this.tileAtOnMapFloorRows(rows, ox, oy);
-        const t30 = this.tileAtOnMapFloorRows(rows, (ox + 3), oy);
-        const t01 = this.tileAtOnMapFloorRows(rows, ox, (oy + 1));
-        const t31 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 1));
-        const t02 = this.tileAtOnMapFloorRows(rows, ox, (oy + 2));
-        const t32 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 2));
-        const tw = this.tileAtOnMapFloorRows(rows, wx, wy);
-        const t40 = this.tileAtOnMapFloorRows(rows, (ox + 4), (oy + 1));
-        if ( this.isWalkableStampTile(t00) ) {
-          if ( this.isWalkableStampTile(t30) ) {
-            if ( this.isWalkableStampTile(t01) ) {
-              if ( this.isWalkableStampTile(t31) ) {
-                if ( this.isWalkableStampTile(t02) ) {
-                  if ( this.isWalkableStampTile(t32) ) {
-                    if ( this.isWalkableStampTile(tw) ) {
-                      if ( this.isWalkableStampTile(t40) ) {
-                        this.stampWcRoomAt(floor, ox, oy, wx, wy);
-                        return;
-                      }
-                    }
-                  }
-                }
-              }
-            }
+        const doorX = ox + 4;
+        const doorY = oy + 1;
+        if ( this.wcStampSiteValid(rows, ox, oy, wx, wy, doorX, doorY) ) {
+          const dist = this.manhattanTo(floor.spawnX, floor.spawnY, wx, wy);
+          if ( dist < bestDist ) {
+            bestDist = dist;
+            bestOx = ox;
+            bestOy = oy;
           }
         }
         ox = ox + 1;
       };
       oy = oy + 1;
     };
+    if ( bestOx >= 0 ) {
+      const wx2 = bestOx + 1;
+      const wy2 = bestOy + 1;
+      const doorX2 = bestOx + 4;
+      const doorY2 = bestOy + 1;
+      this.stampWcRoomAt(floor, bestOx, bestOy, wx2, wy2, doorX2, doorY2);
+    }
+  };
+  ensureWcRoom (floor, floorIndex) {
+    if ( this.resolveWcFromEntities(floor) == false ) {
+      this.stampWcRoomSearch(floor);
+    }
+    this.ensureWcRoute(floorIndex, floor);
+  };
+  isClosedDoorTile (ch) {
+    if ( ch == "+" ) {
+      return true;
+    }
+    if ( ch == "L" ) {
+      return true;
+    }
+    return false;
+  };
+  openTileOnMapFloor (floor, x, y) {
+    const ch = this.tileAtOnMapFloorRows(floor.rows, x, y);
+    if ( this.isClosedDoorTile(ch) ) {
+      this.setTileOnMapFloor(floor, x, y, ".");
+      return;
+    }
+    if ( ch == "#" ) {
+      this.setTileOnMapFloor(floor, x, y, ".");
+    }
+  };
+  canReachTileOnFloor (floorIndex, sx, sy, tx, ty) {
+    const saved = this.currentFloor;
+    this.currentFloor = floorIndex;
+    this.recomputeSize();
+    const probe = new MapEntity();
+    probe.id = "wc-route-probe";
+    probe.kind = "coworker";
+    probe.x = sx;
+    probe.y = sy;
+    const startIdx = this.cellIndex(sx, sy);
+    const goalIdx = this.cellIndex(tx, ty);
+    if ( startIdx == goalIdx ) {
+      return true;
+    }
+    let queue = [];
+    let discCells = [];
+    let discParent = [];
+    queue.push(startIdx);
+    discCells.push(startIdx);
+    discParent.push(-1);
+    let head = 0;
+    let found = false;
+    while (head < (queue.length)) {
+      const cur = queue[head];
+      head = head + 1;
+      if ( cur == goalIdx ) {
+        found = true;
+        break;
+      }
+      const cx = this.indexX(cur);
+      const cy = this.indexY(cur);
+      let dir = 0;
+      while (dir < 4) {
+        let tdx = 0;
+        let tdy = 0;
+        if ( dir == 0 ) {
+          tdx = 0;
+          tdy = -1;
+        }
+        if ( dir == 1 ) {
+          tdx = 0;
+          tdy = 1;
+        }
+        if ( dir == 2 ) {
+          tdx = -1;
+          tdy = 0;
+        }
+        if ( dir == 3 ) {
+          tdx = 1;
+          tdy = 0;
+        }
+        const nx = cx + tdx;
+        const ny = cy + tdy;
+        if ( this.canEntityStepTo(probe, nx, ny, true) ) {
+          const ni = this.cellIndex(nx, ny);
+          if ( this.isDiscovered(discCells, ni) == false ) {
+            queue.push(ni);
+            discCells.push(ni);
+            discParent.push(cur);
+          }
+        }
+        dir = dir + 1;
+      };
+    };
+    if ( found ) {
+      return true;
+    }
+    return false;
+  };
+  hasWcDoorEntityNear (floor) {
+    if ( floor.wcX < 0 ) {
+      return false;
+    }
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( e.char == "🚪" ) {
+        const dist = this.manhattanTo(e.x, e.y, floor.wcX, floor.wcY);
+        if ( dist <= 3 ) {
+          return true;
+        }
+      }
+      if ( e.name == "Ovi" ) {
+        const dist2 = this.manhattanTo(e.x, e.y, floor.wcX, floor.wcY);
+        if ( dist2 <= 3 ) {
+          return true;
+        }
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  addWcDoorEntityAt (floor, x, y) {
+    const door = new MapEntity();
+    door.id = "auto-wc-door-" + floor.floorId;
+    door.char = "🚪";
+    door.name = "Ovi";
+    door.kind = "item";
+    door.x = x;
+    door.y = y;
+    door.homeX = x;
+    door.homeY = y;
+    floor.entities.push(door);
+  };
+  ensureWcDoorEntity (floor) {
+    if ( this.hasWcDoorEntityNear(floor) ) {
+      return;
+    }
+    if ( floor.wcX < 0 ) {
+      return;
+    }
+    let tryX = [];
+    let tryY = [];
+    tryX.push(floor.wcX + 1);
+    tryY.push(floor.wcY);
+    tryX.push(floor.wcX + 2);
+    tryY.push(floor.wcY);
+    tryX.push(floor.wcX);
+    tryY.push(floor.wcY + 1);
+    tryX.push(floor.wcX);
+    tryY.push(floor.wcY - 1);
+    let ti = 0;
+    while (ti < 4) {
+      const dx = tryX[ti];
+      const dy = tryY[ti];
+      const tile = this.tileAtOnMapFloorRows(floor.rows, dx, dy);
+      if ( this.isWalkableStampTile(tile) ) {
+        this.addWcDoorEntityAt(floor, dx, dy);
+        return;
+      }
+      ti = ti + 1;
+    };
+  };
+  openClosedDoorsNearWc (floor) {
+    if ( floor.wcX < 0 ) {
+      return;
+    }
+    let dy = -2;
+    while (dy <= 2) {
+      let dx = -2;
+      while (dx <= 2) {
+        const tx = floor.wcX + dx;
+        const ty = floor.wcY + dy;
+        const ch = this.tileAtOnMapFloorRows(floor.rows, tx, ty);
+        if ( this.isClosedDoorTile(ch) ) {
+          this.setTileOnMapFloor(floor, tx, ty, ".");
+        }
+        dx = dx + 1;
+      };
+      dy = dy + 1;
+    };
+  };
+  punchWcWallGap (floor) {
+    if ( floor.wcX < 0 ) {
+      return;
+    }
+    let dirsX = [];
+    let dirsY = [];
+    dirsX.push(1);
+    dirsY.push(0);
+    dirsX.push(-1);
+    dirsY.push(0);
+    dirsX.push(0);
+    dirsY.push(1);
+    dirsX.push(0);
+    dirsY.push(-1);
+    let di = 0;
+    while (di < 4) {
+      const dx = dirsX[di];
+      const dy = dirsY[di];
+      const wallX = floor.wcX + dx;
+      const wallY = floor.wcY + dy;
+      const beyondX = floor.wcX + (dx * 2);
+      const beyondY = floor.wcY + (dy * 2);
+      const wallTile = this.tileAtOnMapFloorRows(floor.rows, wallX, wallY);
+      const beyondTile = this.tileAtOnMapFloorRows(floor.rows, beyondX, beyondY);
+      if ( wallTile == "#" ) {
+        if ( this.isWalkableStampTile(beyondTile) ) {
+          this.setTileOnMapFloor(floor, wallX, wallY, ".");
+          return;
+        }
+      }
+      di = di + 1;
+    };
+  };
+  ensureWcRoute (floorIndex, floor) {
+    if ( floor.wcX < 0 ) {
+      return;
+    }
+    this.openClosedDoorsNearWc(floor);
+    if ( this.canReachTileOnFloor(floorIndex, floor.spawnX, floor.spawnY, floor.wcX, floor.wcY) ) {
+      this.ensureWcDoorEntity(floor);
+      return;
+    }
+    this.punchWcWallGap(floor);
+    this.openClosedDoorsNearWc(floor);
+    if ( this.canReachTileOnFloor(floorIndex, floor.spawnX, floor.spawnY, floor.wcX, floor.wcY) ) {
+      this.ensureWcDoorEntity(floor);
+      return;
+    }
+    this.punchWcWallGap(floor);
+    this.openClosedDoorsNearWc(floor);
+    this.ensureWcDoorEntity(floor);
   };
   tileAtOnMapFloorRows (rows, x, y) {
     const h = rows.length;
@@ -2201,7 +2466,6 @@ class WorldMap  {
       loaded.doorX = this.json.objFieldInt(door, "x");
       loaded.doorY = this.json.objFieldInt(door, "y");
     }
-    this.ensureWcRoom(loaded);
   };
   recomputeSize () {
     const floor = this.activeFloor();
@@ -2255,6 +2519,7 @@ class WorldMap  {
       const floorObj = this.json.arrayObjectAt(floorsArr, fi);
       const floor = new MapFloor();
       this.loadSingleFloor(floorObj, floor);
+      this.ensureWcRoom(floor, fi);
       loadedFloors.push(floor);
       fi = fi + 1;
     };

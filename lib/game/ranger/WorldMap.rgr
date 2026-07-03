@@ -304,12 +304,10 @@ class WorldMap {
     return false
   }
 
-  fn stampWcRoomAt:void (floor:MapFloor ox:int oy:int wx:int wy:int) {
+  fn stampWcRoomAt:void (floor:MapFloor ox:int oy:int wx:int wy:int doorX:int doorY:int) {
     this.setTileOnMapFloor(floor ox oy "#")
     this.setTileOnMapFloor(floor (ox + 3) oy "#")
     this.setTileOnMapFloor(floor ox (oy + 1) "#")
-    this.setTileOnMapFloor(floor (ox + 3) (oy + 1) "#")
-    this.setTileOnMapFloor(floor (ox + 4) (oy + 1) "+")
     this.setTileOnMapFloor(floor ox (oy + 2) "#")
     this.setTileOnMapFloor(floor (ox + 3) (oy + 2) "#")
     def wc:MapEntity (new MapEntity)
@@ -324,56 +322,334 @@ class WorldMap {
     push floor.entities wc
     floor.wcX = wx
     floor.wcY = wy
+    def door:MapEntity (new MapEntity)
+    door.id = ("auto-wc-door-" + floor.floorId)
+    door.char = "🚪"
+    door.name = "Ovi"
+    door.kind = "item"
+    door.x = doorX
+    door.y = doorY
+    door.homeX = doorX
+    door.homeY = doorY
+    push floor.entities door
   }
 
-  fn ensureWcRoom:void (floor:MapFloor) {
-    if (this.resolveWcFromEntities(floor)) {
-      return
+  fn wcStampSiteValid:boolean (rows:[string] ox:int oy:int wx:int wy:int doorX:int doorY:int) {
+    def t00:string (this.tileAtOnMapFloorRows(rows ox oy))
+    def t30:string (this.tileAtOnMapFloorRows(rows (ox + 3) oy))
+    def t01:string (this.tileAtOnMapFloorRows(rows ox (oy + 1)))
+    def t31:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 1)))
+    def t02:string (this.tileAtOnMapFloorRows(rows ox (oy + 2)))
+    def t32:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 2)))
+    def tw:string (this.tileAtOnMapFloorRows(rows wx wy))
+    def t40:string (this.tileAtOnMapFloorRows(rows doorX doorY))
+    if (this.isWalkableStampTile(t00) == false) {
+      return false
     }
+    if (this.isWalkableStampTile(t30) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(t01) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(t31) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(t02) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(t32) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(tw) == false) {
+      return false
+    }
+    if (this.isWalkableStampTile(t40) == false) {
+      return false
+    }
+    return true
+  }
+
+  fn stampWcRoomSearch:void (floor:MapFloor) {
     def rows:[string] (floor.rows)
     def h:int (array_length rows)
     if (h < 4) {
       return
     }
+    def bestDist:int 99999
+    def bestOx:int -1
+    def bestOy:int -1
     def oy:int 1
-    while (oy < 6) {
+    while (oy < 8) {
       if ((oy + 2) >= h) {
-        return
+        break
       }
       def ox:int 1
-      while (ox < 10) {
+      while (ox < 20) {
         def wx:int (ox + 1)
         def wy:int (oy + 1)
-        def t00:string (this.tileAtOnMapFloorRows(rows ox oy))
-        def t30:string (this.tileAtOnMapFloorRows(rows (ox + 3) oy))
-        def t01:string (this.tileAtOnMapFloorRows(rows ox (oy + 1)))
-        def t31:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 1)))
-        def t02:string (this.tileAtOnMapFloorRows(rows ox (oy + 2)))
-        def t32:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 2)))
-        def tw:string (this.tileAtOnMapFloorRows(rows wx wy))
-        def t40:string (this.tileAtOnMapFloorRows(rows (ox + 4) (oy + 1)))
-        if (this.isWalkableStampTile(t00)) {
-          if (this.isWalkableStampTile(t30)) {
-            if (this.isWalkableStampTile(t01)) {
-              if (this.isWalkableStampTile(t31)) {
-                if (this.isWalkableStampTile(t02)) {
-                  if (this.isWalkableStampTile(t32)) {
-                    if (this.isWalkableStampTile(tw)) {
-                      if (this.isWalkableStampTile(t40)) {
-                        this.stampWcRoomAt(floor ox oy wx wy)
-                        return
-                      }
-                    }
-                  }
-                }
-              }
-            }
+        def doorX:int (ox + 4)
+        def doorY:int (oy + 1)
+        if (this.wcStampSiteValid(rows ox oy wx wy doorX doorY)) {
+          def dist:int (this.manhattanTo(floor.spawnX floor.spawnY wx wy))
+          if (dist < bestDist) {
+            bestDist = dist
+            bestOx = ox
+            bestOy = oy
           }
         }
         ox = ox + 1
       }
       oy = oy + 1
     }
+    if (bestOx >= 0) {
+      def wx2:int (bestOx + 1)
+      def wy2:int (bestOy + 1)
+      def doorX2:int (bestOx + 4)
+      def doorY2:int (bestOy + 1)
+      this.stampWcRoomAt(floor bestOx bestOy wx2 wy2 doorX2 doorY2)
+    }
+  }
+
+  fn ensureWcRoom:void (floor:MapFloor floorIndex:int) {
+    if (this.resolveWcFromEntities(floor) == false) {
+      this.stampWcRoomSearch(floor)
+    }
+    this.ensureWcRoute(floorIndex floor)
+  }
+
+  fn isClosedDoorTile:boolean (ch:string) {
+    if (ch == "+") {
+      return true
+    }
+    if (ch == "L") {
+      return true
+    }
+    return false
+  }
+
+  fn openTileOnMapFloor:void (floor:MapFloor x:int y:int) {
+    def ch:string (this.tileAtOnMapFloorRows(floor.rows x y))
+    if (this.isClosedDoorTile(ch)) {
+      this.setTileOnMapFloor(floor x y ".")
+      return
+    }
+    if (ch == "#") {
+      this.setTileOnMapFloor(floor x y ".")
+    }
+  }
+
+  fn canReachTileOnFloor:boolean (floorIndex:int sx:int sy:int tx:int ty:int) {
+    def saved:int currentFloor
+    currentFloor = floorIndex
+    this.recomputeSize()
+    def probe:MapEntity (new MapEntity)
+    probe.id = "wc-route-probe"
+    probe.kind = "coworker"
+    probe.x = sx
+    probe.y = sy
+    def startIdx:int (this.cellIndex(sx sy))
+    def goalIdx:int (this.cellIndex(tx ty))
+    if (startIdx == goalIdx) {
+      return true
+    }
+    def queue:[int]
+    def discCells:[int]
+    def discParent:[int]
+    push queue startIdx
+    push discCells startIdx
+    push discParent (-1)
+    def head:int 0
+    def found:boolean false
+    while (head < (array_length queue)) {
+      def cur:int (at queue head)
+      head = head + 1
+      if (cur == goalIdx) {
+        found = true
+        break
+      }
+      def cx:int (this.indexX(cur))
+      def cy:int (this.indexY(cur))
+      def dir:int 0
+      while (dir < 4) {
+        def tdx:int 0
+        def tdy:int 0
+        if (dir == 0) {
+          tdx = 0
+          tdy = -1
+        }
+        if (dir == 1) {
+          tdx = 0
+          tdy = 1
+        }
+        if (dir == 2) {
+          tdx = -1
+          tdy = 0
+        }
+        if (dir == 3) {
+          tdx = 1
+          tdy = 0
+        }
+        def nx:int (cx + tdx)
+        def ny:int (cy + tdy)
+        if (this.canEntityStepTo(probe nx ny true)) {
+          def ni:int (this.cellIndex(nx ny))
+          if (this.isDiscovered(discCells ni) == false) {
+            push queue ni
+            push discCells ni
+            push discParent cur
+          }
+        }
+        dir = dir + 1
+      }
+    }
+    if (found) {
+      return true
+    }
+    return false
+  }
+
+  fn hasWcDoorEntityNear:boolean (floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return false
+    }
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.char == "🚪") {
+        def dist:int (this.manhattanTo(e.x e.y floor.wcX floor.wcY))
+        if (dist <= 3) {
+          return true
+        }
+      }
+      if (e.name == "Ovi") {
+        def dist2:int (this.manhattanTo(e.x e.y floor.wcX floor.wcY))
+        if (dist2 <= 3) {
+          return true
+        }
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn addWcDoorEntityAt:void (floor:MapFloor x:int y:int) {
+    def door:MapEntity (new MapEntity)
+    door.id = ("auto-wc-door-" + floor.floorId)
+    door.char = "🚪"
+    door.name = "Ovi"
+    door.kind = "item"
+    door.x = x
+    door.y = y
+    door.homeX = x
+    door.homeY = y
+    push floor.entities door
+  }
+
+  fn ensureWcDoorEntity:void (floor:MapFloor) {
+    if (this.hasWcDoorEntityNear(floor)) {
+      return
+    }
+    if (floor.wcX < 0) {
+      return
+    }
+    def tryX:[int]
+    def tryY:[int]
+    push tryX (floor.wcX + 1)
+    push tryY floor.wcY
+    push tryX (floor.wcX + 2)
+    push tryY floor.wcY
+    push tryX floor.wcX
+    push tryY (floor.wcY + 1)
+    push tryX floor.wcX
+    push tryY (floor.wcY - 1)
+    def ti:int 0
+    while (ti < 4) {
+      def dx:int (at tryX ti)
+      def dy:int (at tryY ti)
+      def tile:string (this.tileAtOnMapFloorRows(floor.rows dx dy))
+      if (this.isWalkableStampTile(tile)) {
+        this.addWcDoorEntityAt(floor dx dy)
+        return
+      }
+      ti = ti + 1
+    }
+  }
+
+  fn openClosedDoorsNearWc:void (floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return
+    }
+    def dy:int -2
+    while (dy <= 2) {
+      def dx:int -2
+      while (dx <= 2) {
+        def tx:int (floor.wcX + dx)
+        def ty:int (floor.wcY + dy)
+        def ch:string (this.tileAtOnMapFloorRows(floor.rows tx ty))
+        if (this.isClosedDoorTile(ch)) {
+          this.setTileOnMapFloor(floor tx ty ".")
+        }
+        dx = dx + 1
+      }
+      dy = dy + 1
+    }
+  }
+
+  fn punchWcWallGap:void (floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return
+    }
+    def dirsX:[int]
+    def dirsY:[int]
+    push dirsX 1
+    push dirsY 0
+    push dirsX -1
+    push dirsY 0
+    push dirsX 0
+    push dirsY 1
+    push dirsX 0
+    push dirsY -1
+    def di:int 0
+    while (di < 4) {
+      def dx:int (at dirsX di)
+      def dy:int (at dirsY di)
+      def wallX:int (floor.wcX + dx)
+      def wallY:int (floor.wcY + dy)
+      def beyondX:int (floor.wcX + (dx * 2))
+      def beyondY:int (floor.wcY + (dy * 2))
+      def wallTile:string (this.tileAtOnMapFloorRows(floor.rows wallX wallY))
+      def beyondTile:string (this.tileAtOnMapFloorRows(floor.rows beyondX beyondY))
+      if (wallTile == "#") {
+        if (this.isWalkableStampTile(beyondTile)) {
+          this.setTileOnMapFloor(floor wallX wallY ".")
+          return
+        }
+      }
+      di = di + 1
+    }
+  }
+
+  fn ensureWcRoute:void (floorIndex:int floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return
+    }
+    this.openClosedDoorsNearWc(floor)
+    if (this.canReachTileOnFloor(floorIndex floor.spawnX floor.spawnY floor.wcX floor.wcY)) {
+      this.ensureWcDoorEntity(floor)
+      return
+    }
+    this.punchWcWallGap(floor)
+    this.openClosedDoorsNearWc(floor)
+    if (this.canReachTileOnFloor(floorIndex floor.spawnX floor.spawnY floor.wcX floor.wcY)) {
+      this.ensureWcDoorEntity(floor)
+      return
+    }
+    this.punchWcWallGap(floor)
+    this.openClosedDoorsNearWc(floor)
+    this.ensureWcDoorEntity(floor)
   }
 
   fn tileAtOnMapFloorRows:string (rows:[string] x:int y:int) {
@@ -757,7 +1033,6 @@ class WorldMap {
       loaded.doorX = (json.objFieldInt(door "x"))
       loaded.doorY = (json.objFieldInt(door "y"))
     }
-    this.ensureWcRoom(loaded)
   }
 
   fn recomputeSize:void () {
@@ -815,6 +1090,7 @@ class WorldMap {
       def floorObj:JSONDataObject (json.arrayObjectAt(floorsArr fi))
       def floor:MapFloor (new MapFloor)
       this.loadSingleFloor(floorObj floor)
+      this.ensureWcRoom(floor fi)
       push loadedFloors floor
       fi = fi + 1
     }
