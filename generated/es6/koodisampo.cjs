@@ -1509,12 +1509,21 @@ class WorldMap  {
     this.navStepDy = 0;
     this.lastBrokenTile = "";
     this.playerWasWitnessed = false;
+    this.breachFloors = [];
+    this.breachXs = [];
+    this.breachYs = [];
     this.json = new StoryJson();
     this.eventLog = new WorldEventLog();
     let emptyFloors = [];
     this.floors = emptyFloors;
     let emptyOwners = [];
     this.droppedCardOwners = emptyOwners;
+    let emptyBreachFloors = [];
+    let emptyBreachXs = [];
+    let emptyBreachYs = [];
+    this.breachFloors = emptyBreachFloors;
+    this.breachXs = emptyBreachXs;
+    this.breachYs = emptyBreachYs;
   }
   activeFloor () {
     if ( (this.floors.length) < 1 ) {
@@ -2118,6 +2127,135 @@ class WorldMap  {
     this.lastStatus = "Hissi: " + floor.title;
     return true;
   };
+  floorMapWidth (floorIndex) {
+    const floor = this.floors[floorIndex];
+    const rows = floor.rows;
+    const h = rows.length;
+    if ( h < 1 ) {
+      return 0;
+    }
+    return (rows[0]).length;
+  };
+  floorMapHeight (floorIndex) {
+    const floor = this.floors[floorIndex];
+    const rows = floor.rows;
+    return rows.length;
+  };
+  isMapEdgeCell (floorIndex, x, y) {
+    const w = this.floorMapWidth(floorIndex);
+    const h = this.floorMapHeight(floorIndex);
+    if ( w < 1 ) {
+      return false;
+    }
+    if ( h < 1 ) {
+      return false;
+    }
+    if ( x == 0 ) {
+      return true;
+    }
+    if ( y == 0 ) {
+      return true;
+    }
+    if ( x == (w - 1) ) {
+      return true;
+    }
+    if ( y == (h - 1) ) {
+      return true;
+    }
+    return false;
+  };
+  isOuterWallCell (floorIndex, x, y) {
+    if ( floorIndex < 1 ) {
+      return false;
+    }
+    if ( this.isMapEdgeCell(floorIndex, x, y) == false ) {
+      return false;
+    }
+    const tile = this.tileAtOnFloor(floorIndex, x, y);
+    if ( tile == "#" ) {
+      return true;
+    }
+    return false;
+  };
+  recordOuterWallBreach (x, y) {
+    let i = 0;
+    const n = this.breachFloors.length;
+    while (i < n) {
+      if ( (this.breachFloors[i]) == this.currentFloor ) {
+        if ( (this.breachXs[i]) == x ) {
+          if ( (this.breachYs[i]) == y ) {
+            return;
+          }
+        }
+      }
+      i = i + 1;
+    };
+    this.breachFloors.push(this.currentFloor);
+    this.breachXs.push(x);
+    this.breachYs.push(y);
+  };
+  hasOuterWallBreach (x, y) {
+    let i = 0;
+    const n = this.breachFloors.length;
+    while (i < n) {
+      if ( (this.breachFloors[i]) == this.currentFloor ) {
+        if ( (this.breachXs[i]) == x ) {
+          if ( (this.breachYs[i]) == y ) {
+            return true;
+          }
+        }
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  clearOuterWallBreaches () {
+    let emptyFloors = [];
+    let emptyXs = [];
+    let emptyYs = [];
+    this.breachFloors = emptyFloors;
+    this.breachXs = emptyXs;
+    this.breachYs = emptyYs;
+  };
+  wouldExitBuilding (dx, dy) {
+    if ( this.currentFloor < 1 ) {
+      return false;
+    }
+    if ( this.hasOuterWallBreach(this.playerX, this.playerY) == false ) {
+      return false;
+    }
+    const nx = this.playerX + dx;
+    const ny = this.playerY + dy;
+    const w = this.floorMapWidth(this.currentFloor);
+    const h = this.floorMapHeight(this.currentFloor);
+    if ( w < 1 ) {
+      return false;
+    }
+    if ( h < 1 ) {
+      return false;
+    }
+    if ( nx < 0 ) {
+      if ( this.playerX == 0 ) {
+        return true;
+      }
+    }
+    if ( ny < 0 ) {
+      if ( this.playerY == 0 ) {
+        return true;
+      }
+    }
+    if ( nx >= w ) {
+      if ( this.playerX == (w - 1) ) {
+        return true;
+      }
+    }
+    if ( ny >= h ) {
+      if ( this.playerY == (h - 1) ) {
+        return true;
+      }
+    }
+    return false;
+  };
   tryMove (dx, dy) {
     if ( this.hasMap == false ) {
       return false;
@@ -2440,6 +2578,11 @@ class WorldMap  {
       return "";
     }
     this.lastBrokenTile = tile;
+    if ( tile == "#" ) {
+      if ( this.isOuterWallCell(this.currentFloor, x, y) ) {
+        this.recordOuterWallBreach(x, y);
+      }
+    }
     this.setTileAt(x, y, ".");
     let severity = "";
     if ( tool == "sledgehammer" ) {
@@ -5544,15 +5687,52 @@ class GameSession  extends RangerProcessBase {
   gameOverPolice () {
     this.ensureEngine();
     this.engine.deaths = this.engine.deaths + 1;
+    this.gameOverReason = "PoliceCaught";
     this._map.clearPoliceSquad();
+    this._map.clearOuterWallBreaches();
     const floor = this._map.activeFloor();
     this._map.playerX = floor.spawnX;
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "";
+    this._map.lastStatus = "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi.";
     this.screen = "gameover";
     this.markStateDirty();
+  };
+  gameOverFall () {
+    this.ensureEngine();
+    this.engine.deaths = this.engine.deaths + 1;
+    this.gameOverReason = "FallDeath";
+    this._map.clearPoliceSquad();
+    this._map.clearOuterWallBreaches();
+    const floor = this._map.activeFloor();
+    this._map.playerX = floor.spawnX;
+    this._map.playerY = floor.spawnY;
+    this._map.playerHidden = false;
+    this._map.ensurePlayerOnWalkable();
+    this._map.lastStatus = "Putosit rakennuksesta ulos — kuolit.";
+    this.screen = "gameover";
+    this.markStateDirty();
+  };
+  handleBuildingExit () {
+    if ( this._map.currentFloor == 1 ) {
+      const courtyard = this._map.floors[0];
+      this._map.currentFloor = 0;
+      this._map.recomputeSize();
+      this._map.playerX = courtyard.spawnX;
+      this._map.playerY = courtyard.spawnY;
+      this._map.playerHidden = false;
+      this._map.ensurePlayerOnWalkable();
+      this.conduct.addMisconduct(30);
+      this.conduct.addDamage(20);
+      this.karma.loseKarma(20);
+      this._map.startPoliceChase();
+      this._map.lastStatus = "Putosit pihamaalle! HR soitti 112 — kolme poliisia (P) lähti takaa-ajoon!";
+      this.afterTimedAction("move");
+      this.markStateDirty();
+      return;
+    }
+    this.gameOverFall();
   };
   triggerPoliceChaseAfterAttack (victimName) {
     this.karma.loseKarma(12);
@@ -7640,6 +7820,11 @@ class GameSession  extends RangerProcessBase {
     }
     const targetX = this._map.playerX + dx;
     const targetY = this._map.playerY + dy_1;
+    if ( this._map.wouldExitBuilding(dx, dy_1) ) {
+      this.handleBuildingExit();
+      this.markStateDirty();
+      return;
+    }
     const moved = this.tryPlayerMove(dx, dy_1);
     if ( moved ) {
       if ( this.encounterCooldown > 0 ) {
@@ -7915,6 +8100,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     this._map.clearPoliceSquad();
+    this._map.clearOuterWallBreaches();
     this.playerNeeds.resetDefaults();
     this.npcRelations.reset();
     this.dialogueCatalog.loadDefaults();
@@ -7940,6 +8126,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     this._map.clearPoliceSquad();
+    this._map.clearOuterWallBreaches();
     let respawnMsg = "Selvitit hengissä — mutta poliisit muistavat kasvosi.";
     if ( (this.gameOverReason.length) > 0 ) {
       respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda.";
@@ -8097,6 +8284,11 @@ class GameSession  extends RangerProcessBase {
     view.ambientLine = this._map.overheardMsg;
     if ( this.screen == "epilogue" ) {
       view.statusLine = this.epilogueSummaryLine();
+    }
+    if ( this.screen == "gameover" ) {
+      if ( (this._map.lastStatus.length) < 1 ) {
+        view.statusLine = "Peli päättyi.";
+      }
     }
     return view;
   };

@@ -81,6 +81,7 @@ export function createGameController(deps) {
         alertness: session.playerNeeds?.alertness ?? 0,
         gas: session.playerNeeds?.gas ?? 0,
       },
+      gameOverReason: session.gameOverReason ?? "",
     };
 
     if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {

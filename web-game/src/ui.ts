@@ -1089,6 +1089,35 @@ export function mountGameUI(game: WebGame) {
         return;
       }
 
+      if (state.screen === "gameover") {
+        let html = screenHeader(state);
+        const reason = state.gameOverReason || "";
+        let title = "═══ Kuolit ═══";
+        if (reason === "PoliceCaught") {
+          title = "═══ Poliisit saivat kiinni ═══";
+        } else if (reason === "FallDeath") {
+          title = "═══ Putosit ulos ═══";
+        }
+        html += `<div class="overlay-title bad">${title}</div>`;
+        const fallback =
+          reason === "PoliceCaught"
+            ? "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi."
+            : reason === "FallDeath"
+              ? "Putosit rakennuksesta ulos — kuolit."
+              : "Peli päättyi.";
+        html += `<div class="greeting">${esc(state.status || fallback)}</div>`;
+        html += `<div style="margin-top:8px;color:#f85149">Kuolemat: ${state.deaths ?? 0}</div>`;
+        html += continueRow("enter", "Aloita uudelleen →");
+        setMapContent(html);
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([{ key: "enter", label: "Enter — uudelleen" }]);
+        }
+        hintEl.textContent = "Enter = uudelleen | q = lopeta";
+        return;
+      }
+
       if (state.screen === "epilogue") {
         let html = screenHeader(state);
         html += `<div class="overlay-title bad">═══ Päivän loppu ═══</div>`;
