@@ -22,6 +22,21 @@ const npcBehaviorPackJson = readFileSync(
   "utf8",
 );
 
+function serializeMemorial(session) {
+  const count = session.memorialCount?.() ?? 0;
+  const mourners = [];
+  for (let i = 0; i < count; i += 1) {
+    mourners.push({
+      name: session.memorialNameAt?.(i) ?? "",
+      epitaph: session.memorialEpitaphAt?.(i) ?? "",
+    });
+  }
+  return {
+    deathLine: session.memorialDeathLine ?? "",
+    mourners,
+  };
+}
+
 /**
  * @param {{
  *   mapJson: string,
@@ -82,6 +97,7 @@ export function createGameController(deps) {
         gas: session.playerNeeds?.gas ?? 0,
       },
       gameOverReason: session.gameOverReason ?? "",
+      memorial: serializeMemorial(session),
     };
 
     if (session.screen === "map" || session.screen === "prison" || session.screen === "gameover" || session.screen === "epilogue") {

@@ -1092,21 +1092,43 @@ export function mountGameUI(game: WebGame) {
       if (state.screen === "gameover") {
         let html = screenHeader(state);
         const reason = state.gameOverReason || "";
-        let title = "═══ Kuolit ═══";
-        if (reason === "PoliceCaught") {
-          title = "═══ Poliisit saivat kiinni ═══";
-        } else if (reason === "FallDeath") {
-          title = "═══ Putosit ulos ═══";
+        const memorial = state.memorial ?? { deathLine: "", mourners: [] };
+        const playerName = esc(state.playerDisplayName || "Larry");
+        const deathLine = esc(memorial.deathLine || state.status || "Kuolit.");
+        let tomb = "        ----------\n";
+        tomb += "       /          \\\n";
+        tomb += `      /   ${playerName.padEnd(10).slice(0, 10)}   \\\n`;
+        tomb += "     |              |\n";
+        tomb += `     |  ${deathLine.padEnd(12).slice(0, 12)}  |\n`;
+        tomb += "     |              |\n";
+        tomb += "     | Kaipaamaan   |\n";
+        tomb += "     | jäivät:      |\n";
+        const mourners = memorial.mourners ?? [];
+        if (mourners.length < 1) {
+          tomb += "     |  Talkkari    |\n";
+          tomb += "     |  Toimistokoir |\n";
+          tomb += "     |  Poliisi     |\n";
+        } else {
+          for (const mourner of mourners) {
+            const label = esc(mourner.name || "?").slice(0, 12);
+            tomb += `     |  ${label.padEnd(12)} |\n`;
+          }
         }
-        html += `<div class="overlay-title bad">${title}</div>`;
-        const fallback =
-          reason === "PoliceCaught"
-            ? "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi."
-            : reason === "FallDeath"
-              ? "Putosit rakennuksesta ulos — kuolit."
-              : "Peli päättyi.";
-        html += `<div class="greeting">${esc(state.status || fallback)}</div>`;
-        html += `<div style="margin-top:8px;color:#f85149">Kuolemat: ${state.deaths ?? 0}</div>`;
+        tomb += "      \\            /\n";
+        tomb += "       ----------";
+        html += `<pre class="memorial-tomb" style="margin:16px auto;max-width:360px;padding:12px 16px;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;font-family:ui-monospace,monospace;font-size:13px;line-height:1.35;white-space:pre">${tomb}</pre>`;
+        if (mourners.length > 0) {
+          html += `<div style="margin-top:12px">`;
+          for (const mourner of mourners) {
+            html += `<div style="margin-bottom:8px"><strong>${esc(mourner.name || "?")}</strong>`;
+            if (mourner.epitaph) {
+              html += `<div class="hint" style="margin-top:2px">${esc(mourner.epitaph)}</div>`;
+            }
+            html += `</div>`;
+          }
+          html += `</div>`;
+        }
+        html += `<div style="margin-top:12px;color:#f85149">Kuolemat: ${state.deaths ?? 0}</div>`;
         html += continueRow("enter", "Aloita uudelleen →");
         setMapContent(html);
         if (isMobileLayout()) {

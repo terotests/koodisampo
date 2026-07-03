@@ -63,6 +63,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def escalatedJealous:boolean false
   def pendingEmotionalDialogueIndex:int -1
   def gameOverReason:string ""
+  def memorialDeathLine:string ""
+  def memorialMournerIds:[string]
+  def memorialMournerNames:[string]
+  def memorialMournerEpitaphs:[string]
   def encounterCooldown:int 0
   def interviewPassed:boolean false
   def interviewFailed:boolean false
@@ -122,6 +126,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     proximityGreeting = (new ProximityGreeting)
     npcBehaviors = (new NpcBehaviorRegistry)
     npcBehaviors.loadDefaults()
+    def emptyMemorialIds:[string]
+    def emptyMemorialNames:[string]
+    def emptyMemorialEpitaphs:[string]
+    memorialMournerIds = emptyMemorialIds
+    memorialMournerNames = emptyMemorialNames
+    memorialMournerEpitaphs = emptyMemorialEpitaphs
   }
 
   fn ensureEngine:void () {
@@ -302,6 +312,161 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     return 5
   }
 
+  fn clearMemorial:void () {
+    memorialDeathLine = ""
+    def emptyIds:[string]
+    def emptyNames:[string]
+    def emptyEpitaphs:[string]
+    memorialMournerIds = emptyIds
+    memorialMournerNames = emptyNames
+    memorialMournerEpitaphs = emptyEpitaphs
+  }
+
+  fn memorialHasId:boolean (entityId:string) {
+    def i:int 0
+    def n:int (array_length memorialMournerIds)
+    while (i < n) {
+      if ((at memorialMournerIds i) == entityId) {
+        return true
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn memorialAppend:void (entityId:string name:string epitaph:string) {
+    if ((strlen entityId) < 1) {
+      return
+    }
+    if (this.memorialHasId(entityId)) {
+      return
+    }
+    push memorialMournerIds entityId
+    push memorialMournerNames name
+    push memorialMournerEpitaphs epitaph
+  }
+
+  fn resolveMournerName:string (entityId:string fallback:string) {
+    def ent:MapEntity (map.findEntityById(entityId))
+    if ((strlen ent.name) > 0) {
+      return ent.name
+    }
+    return fallback
+  }
+
+  fn mournerEpitaphFor:string (entityId:string rel:NpcRelation) {
+    if (entityId == "janitor") {
+      return "Pesi portaat hitaammin kuin koskaan."
+    }
+    if (entityId == "office-dog") {
+      return "Meni ulos etsimään — ei palannut."
+    }
+    if (entityId == "police-memorial") {
+      return "Kirjoitti raportin ja sulki tapauksen."
+    }
+    if (rel.love >= 70) {
+      return "Sanoi että paras työkaveri ikinä."
+    }
+    if (rel.love >= 50) {
+      return "Itki taukohuoneessa."
+    }
+    if (rel.friendliness >= 75) {
+      return "Toi kahvia muistoksesi."
+    }
+    if (rel.respect >= 75) {
+      return "Piti sinua esimerkkinä tiimille."
+    }
+    if (rel.friendliness >= 60) {
+      return "Muisti sinua lämpimästi."
+    }
+    if (rel.respect >= 60) {
+      return "Puhui sinusta kunnioittavasti."
+    }
+    return "Muisti sinua."
+  }
+
+  fn buildMemorialMourners:void (deathLine:string) {
+    this.clearMemorial()
+    memorialDeathLine = deathLine
+    def janitorRel:NpcRelation (npcRelations.getOrCreate("janitor"))
+    def dogRel:NpcRelation (npcRelations.getOrCreate("office-dog"))
+    this.memorialAppend("janitor" (this.resolveMournerName("janitor" "Talkkari")) (this.mournerEpitaphFor("janitor" janitorRel)))
+    this.memorialAppend("office-dog" (this.resolveMournerName("office-dog" "Toimistokoira")) (this.mournerEpitaphFor("office-dog" dogRel)))
+    def policeRel:NpcRelation (new NpcRelation)
+    this.memorialAppend("police-memorial" "Poliisi" (this.mournerEpitaphFor("police-memorial" policeRel)))
+    def pick:int 0
+    while (pick < 3) {
+      def bestId:string ""
+      def bestScore:int -1
+      def i:int 0
+      def n:int (array_length npcRelations.npcIds)
+      while (i < n) {
+        def npcId:string (at npcRelations.npcIds i)
+        if (this.memorialHasId(npcId)) {
+          i = i + 1
+          continue
+        }
+        if (npcId == "police-memorial") {
+          i = i + 1
+          continue
+        }
+        def rel:NpcRelation (at npcRelations.relations i)
+        def score:int (rel.positiveImage())
+        if (score > bestScore) {
+          bestScore = score
+          bestId = npcId
+        }
+        i = i + 1
+      }
+      if ((strlen bestId) < 1) {
+        return
+      }
+      if (bestScore < 1) {
+        return
+      }
+      def bestRel:NpcRelation (npcRelations.getOrCreate(bestId))
+      def bestName:string (this.resolveMournerName(bestId "Työkaveri"))
+      this.memorialAppend(bestId bestName (this.mournerEpitaphFor(bestId bestRel)))
+      pick = pick + 1
+    }
+  }
+
+  fn memorialCount:int () {
+    return (array_length memorialMournerNames)
+  }
+
+  fn memorialNameAt:string (index:int) {
+    if (index < 0) {
+      return ""
+    }
+    if (index >= (array_length memorialMournerNames)) {
+      return ""
+    }
+    return (at memorialMournerNames index)
+  }
+
+  fn memorialEpitaphAt:string (index:int) {
+    if (index < 0) {
+      return ""
+    }
+    if (index >= (array_length memorialMournerEpitaphs)) {
+      return ""
+    }
+    return (at memorialMournerEpitaphs index)
+  }
+
+  fn tryPoliceCapture:boolean () {
+    if (map.policeChaseActive == false) {
+      return false
+    }
+    def bump:MapEntity (map.bumpAtPlayer())
+    if (bump.kind == "police") {
+      this.gameOverPolice()
+      return true
+    }
+    return false
+  }
+
   fn gameOverPolice:void () {
     this.ensureEngine()
     engine.deaths = engine.deaths + 1
@@ -313,7 +478,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    map.lastStatus = "Kolme mustapaitaista poliisia (P) saavutti sinut — toimistotakaa-ajo päättyi."
+    this.buildMemorialMourners("Kiinni poliisien toimesta.")
+    map.lastStatus = memorialDeathLine
     screen = "gameover"
     this.markStateDirty()
   }
@@ -329,7 +495,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    map.lastStatus = "Putosit rakennuksesta ulos — kuolit."
+    this.buildMemorialMourners("Putosit rakennuksesta ulos.")
+    map.lastStatus = memorialDeathLine
     screen = "gameover"
     this.markStateDirty()
   }
@@ -473,6 +640,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn startEncounter:void (bump:MapEntity) {
+    if (bump.kind == "police") {
+      if (map.policeChaseActive) {
+        this.gameOverPolice()
+        return
+      }
+    }
     this.clearPendingGreetWithAck(bump.id)
     pendingEntityId = bump.id
     pendingEntityChar = bump.char
@@ -2561,10 +2734,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     } {
       def blocker:MapEntity (map.entityAt(targetX targetY))
+      if (blocker.kind == "police") {
+        if (map.policeChaseActive) {
+          this.gameOverPolice()
+          this.markStateDirty()
+          return
+        }
+      }
       if (this.tryOpenBlockedMenu(blocker)) {
         this.markStateDirty()
         return
       }
+    }
+    if (this.tryPoliceCapture()) {
+      this.markStateDirty()
+      return
     }
     def bump:MapEntity (map.bumpAtPlayer())
     if (map.entityBlocksPlayer(bump)) {
@@ -2831,6 +3015,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     map.clearPoliceSquad()
     map.clearOuterWallBreaches()
+    this.clearMemorial()
     playerNeeds.resetDefaults()
     npcRelations.reset()
     dialogueCatalog.loadDefaults()
@@ -2858,6 +3043,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     map.clearPoliceSquad()
     map.clearOuterWallBreaches()
+    this.clearMemorial()
     def respawnMsg:string "Selvitit hengissä — mutta poliisit muistavat kasvosi."
     if ((strlen gameOverReason) > 0) {
       respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda."

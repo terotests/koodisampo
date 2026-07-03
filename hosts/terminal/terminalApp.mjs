@@ -659,17 +659,50 @@ async function runPrisonLoop(session) {
 }
 
 function printGameOver(session) {
-  drawLinesClear([
+  const count = session.memorialCount?.() ?? 0;
+  const mourners = [];
+  for (let i = 0; i < count; i += 1) {
+    mourners.push({
+      name: session.memorialNameAt?.(i) ?? "",
+      epitaph: session.memorialEpitaphAt?.(i) ?? "",
+    });
+  }
+  const deathLine = session.memorialDeathLine || "Kuolit.";
+  const playerName = session.playerDisplayName || "Larry";
+  const lines = [
     BANNER,
-    `\n  ${styled("═══ POLIISIT SAIVAT KIINNI ═══", FG.red, BOLD)}`,
     "",
-    "  Kolme mustapaitaista poliisia (P) saavutti sinut käytävässä.",
-    "  HR soitti 112 — toimistotakaa-ajo päättyi.",
+    "        ----------",
+    "       /          \\",
+    `      /   ${playerName.padEnd(10).slice(0, 10)}   \\`,
+    "     |              |",
+    `     |  ${deathLine.padEnd(12).slice(0, 12)}  |`,
+    "     |              |",
+    "     | Kaipaamaan   |",
+    "     | jäivät:      |",
+  ];
+  if (mourners.length < 1) {
+    lines.push("     |  Talkkari    |", "     |  Toimistokoir |", "     |  Poliisi     |");
+  } else {
+    for (const mourner of mourners) {
+      lines.push(`     |  ${(mourner.name || "?").padEnd(12).slice(0, 12)} |`);
+    }
+  }
+  lines.push(
+    "      \\            /",
+    "       ----------",
+    "",
+  );
+  for (const mourner of mourners) {
+    lines.push(`  ${styled(mourner.name || "?", FG.yellow)} — ${mourner.epitaph || ""}`);
+  }
+  lines.push(
     "",
     `  ${styled("Kuolemat:", FG.yellow)} ${session.exportDeaths()}`,
     `\n  ${styled("Paina Enter aloittaaksesi uudelleen...", FG.gray)}`,
     `  ${styled(QUIT_HINT, FG.gray)}`,
-  ]);
+  );
+  drawLinesClear(lines);
 }
 
 async function runInventoryLoop(session) {
