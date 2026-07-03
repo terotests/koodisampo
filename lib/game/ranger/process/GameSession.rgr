@@ -1095,9 +1095,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (ent.mainTask != "toilet") {
       return
     }
-    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
-    rel.applyStatDelta("anger" 15)
-    map.lastStatus = (pendingEntityName + " ärsyyntyi — häiritsit WC:llä!")
+    def floor:MapFloor (map.floorForEntity(pendingEntityId))
+    if (floor.wcX < 0) {
+      return
+    }
+    if (map.isNpcAtWc(ent floor)) {
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      rel.applyStatDelta("anger" 15)
+      map.lastStatus = (pendingEntityName + " ärsyyntyi — häiritsit WC:llä!")
+      return
+    }
+    if (map.isNpcNearWc(ent floor)) {
+      def relNear:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      relNear.applyStatDelta("anger" 8)
+      map.lastStatus = (pendingEntityName + " ärsyyntyi — olet tiellä WC:hen!")
+    }
   }
 
   fn tickNpcRelations:void () {
