@@ -1095,7 +1095,6 @@ export function mountGameUI(game: WebGame) {
         const playerName = esc((memorial.playerName || "").trim() || (state.playerDisplayName || "").trim() || "Pelaaja");
         const deathLine = esc(memorial.deathLine || state.status || "Kuolit.");
         const mourners = memorial.mourners ?? [];
-        html += `<div class="overlay-title bad">═══ Muistokirjoitus ═══</div>`;
         html += `<div class="greeting" style="margin-top:12px"><strong>${playerName}</strong><br>${deathLine}</div>`;
         html += `<div style="margin-top:16px;font-style:italic;color:#8b949e">Kaipaamaan jäivät:</div>`;
         if (mourners.length < 1) {

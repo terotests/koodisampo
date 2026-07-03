@@ -674,8 +674,6 @@ function printGameOver(session) {
   const lines = [
     BANNER,
     "",
-    `  ${styled("═══ Muistokirjoitus ═══", FG.red, BOLD)}`,
-    "",
     `  ${styled(playerName, FG.yellow, BOLD)}`,
     `  ${wrap(deathLine)}`,
     "",

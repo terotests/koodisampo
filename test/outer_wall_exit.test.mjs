@@ -77,6 +77,16 @@ export function runOuterWallExitTests() {
     assert(session.memorialHasId("janitor"), "memorial has janitor");
     assert(session.memorialHasId("office-dog"), "memorial has dog");
     assert(session.memorialHasId("police-memorial"), "memorial has police");
+
+    dispatch(session, () => {
+      session.onMapKey("enter");
+    });
+    assert(session.screen === "map", "gameover enter returns to map");
+    assert(session.gameOverReason === "", "gameover enter clears gameOverReason");
+    assert(session.playerNeeds.satiety > 0, "gameover enter resets satiety");
+    assert(session.conduct.misconduct === 0, "gameover enter resets misconduct");
+    assert(map.policeChaseActive === false, "gameover enter clears police chase");
+    assert(session.memorialCount() === 0, "gameover enter clears memorial");
   } finally {
     simHigh.stop();
   }

@@ -4501,6 +4501,12 @@ class PlayerConduct  {
     }
     return false;
   };
+  resetDefaults () {
+    this.misconduct = 0;
+    this.propertyDamage = 0;
+    this.arrested = false;
+    this.prisonTurns = 0;
+  };
 }
 class PlayerTools  {
   constructor() {
@@ -9203,32 +9209,37 @@ class GameSession  extends RangerProcessBase {
     this._map.lastStatus = "Takaisin toimistolla.";
     this.markStateDirty();
   };
-  onEpilogueKey (key) {
-    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
-      this.shouldQuit = true;
-      this.markStateDirty();
-      return;
-    }
+  reviveFromGameEnd (statusMsg) {
     this._map.clearPoliceSquad();
     this._map.clearOuterWallBreaches();
     this.clearMemorial();
     this.playerNeeds.resetDefaults();
     this.npcRelations.reset();
     this.dialogueCatalog.loadDefaults();
+    this.conduct.resetDefaults();
     this.relationTickAccum = 0;
     this.socialTickAccum = 0;
     this.escalatedAngry = false;
     this.escalatedPanic = false;
     this.escalatedJealous = false;
     this.gameOverReason = "";
+    this.worldClock.setGameMinutes(480);
     const floor = this._map.activeFloor();
     this._map.playerX = floor.spawnX;
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = "Uusi päivä alkaa — muista syödä ja juoda.";
+    this._map.lastStatus = statusMsg;
     this.screen = "map";
     this.markStateDirty();
+  };
+  onEpilogueKey (key) {
+    if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
+      this.shouldQuit = true;
+      this.markStateDirty();
+      return;
+    }
+    this.reviveFromGameEnd("Uusi päivä alkaa — muista syödä ja juoda.");
   };
   onGameOverKey (key) {
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
@@ -9236,26 +9247,7 @@ class GameSession  extends RangerProcessBase {
       this.markStateDirty();
       return;
     }
-    this._map.clearPoliceSquad();
-    this._map.clearOuterWallBreaches();
-    this.clearMemorial();
-    let respawnMsg = "Selvitit hengissä — mutta poliisit muistavat kasvosi.";
-    if ( (this.gameOverReason.length) > 0 ) {
-      respawnMsg = "Heräsit toimiston alkuun — muista syödä ja juoda.";
-      this.playerNeeds.resetDefaults();
-      this.npcRelations.reset();
-      this.dialogueCatalog.loadDefaults();
-      this.relationTickAccum = 0;
-      this.gameOverReason = "";
-    }
-    const floor = this._map.activeFloor();
-    this._map.playerX = floor.spawnX;
-    this._map.playerY = floor.spawnY;
-    this._map.playerHidden = false;
-    this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = respawnMsg;
-    this.screen = "map";
-    this.markStateDirty();
+    this.reviveFromGameEnd("Heräsit toimiston alkuun — muista syödä ja juoda.");
   };
   finishEncounterTalk () {
     this.clearEncounter();
