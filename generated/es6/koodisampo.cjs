@@ -1023,6 +1023,8 @@ class MapFloor  {
     this.cafeteriaY = -1;
     this.doorX = -1;
     this.doorY = -1;
+    this.wcX = -1;
+    this.wcY = -1;
     let empty_1 = [];
     this.rows = empty_1;
     let emptyEnt = [];
@@ -1711,6 +1713,200 @@ class WorldMap  {
     const right = row.substring((x + 1), rowLen );
     rows[y] = (left + ch) + right;
   };
+  setTileOnMapFloor (floor, x, y, ch) {
+    let rows = floor.rows;
+    if ( y < 0 ) {
+      return;
+    }
+    if ( y >= (rows.length) ) {
+      return;
+    }
+    const row = rows[y];
+    const rowLen = row.length;
+    if ( x < 0 ) {
+      return;
+    }
+    if ( x >= rowLen ) {
+      return;
+    }
+    const left = row.substring(0, x );
+    const right = row.substring((x + 1), rowLen );
+    rows[y] = (left + ch) + right;
+    floor.rows = rows;
+  };
+  isWalkableStampTile (ch) {
+    if ( ch == "." ) {
+      return true;
+    }
+    if ( ch == " " ) {
+      return true;
+    }
+    if ( ch == "," ) {
+      return true;
+    }
+    return false;
+  };
+  resolveWcFromEntities (floor) {
+    floor.wcX = -1;
+    floor.wcY = -1;
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( e.char == "🚽" ) {
+        floor.wcX = e.x;
+        floor.wcY = e.y;
+        return true;
+      }
+      if ( e.name == "WC" ) {
+        floor.wcX = e.x;
+        floor.wcY = e.y;
+        return true;
+      }
+      i = i + 1;
+    };
+    return false;
+  };
+  stampWcRoomAt (floor, ox, oy, wx, wy) {
+    this.setTileOnMapFloor(floor, ox, oy, "#");
+    this.setTileOnMapFloor(floor, ox + 3, oy, "#");
+    this.setTileOnMapFloor(floor, ox, oy + 1, "#");
+    this.setTileOnMapFloor(floor, ox + 3, oy + 1, "#");
+    this.setTileOnMapFloor(floor, ox + 4, oy + 1, "+");
+    this.setTileOnMapFloor(floor, ox, oy + 2, "#");
+    this.setTileOnMapFloor(floor, ox + 3, oy + 2, "#");
+    const wc = new MapEntity();
+    wc.id = "auto-wc-" + floor.floorId;
+    wc.char = "🚽";
+    wc.name = "WC";
+    wc.kind = "item";
+    wc.x = wx;
+    wc.y = wy;
+    wc.homeX = wx;
+    wc.homeY = wy;
+    floor.entities.push(wc);
+    floor.wcX = wx;
+    floor.wcY = wy;
+  };
+  ensureWcRoom (floor) {
+    if ( this.resolveWcFromEntities(floor) ) {
+      return;
+    }
+    const rows = floor.rows;
+    const h = rows.length;
+    if ( h < 4 ) {
+      return;
+    }
+    let oy = 1;
+    while (oy < 6) {
+      if ( (oy + 2) >= h ) {
+        return;
+      }
+      let ox = 1;
+      while (ox < 10) {
+        const wx = ox + 1;
+        const wy = oy + 1;
+        const t00 = this.tileAtOnMapFloorRows(rows, ox, oy);
+        const t30 = this.tileAtOnMapFloorRows(rows, (ox + 3), oy);
+        const t01 = this.tileAtOnMapFloorRows(rows, ox, (oy + 1));
+        const t31 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 1));
+        const t02 = this.tileAtOnMapFloorRows(rows, ox, (oy + 2));
+        const t32 = this.tileAtOnMapFloorRows(rows, (ox + 3), (oy + 2));
+        const tw = this.tileAtOnMapFloorRows(rows, wx, wy);
+        const t40 = this.tileAtOnMapFloorRows(rows, (ox + 4), (oy + 1));
+        if ( this.isWalkableStampTile(t00) ) {
+          if ( this.isWalkableStampTile(t30) ) {
+            if ( this.isWalkableStampTile(t01) ) {
+              if ( this.isWalkableStampTile(t31) ) {
+                if ( this.isWalkableStampTile(t02) ) {
+                  if ( this.isWalkableStampTile(t32) ) {
+                    if ( this.isWalkableStampTile(tw) ) {
+                      if ( this.isWalkableStampTile(t40) ) {
+                        this.stampWcRoomAt(floor, ox, oy, wx, wy);
+                        return;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        ox = ox + 1;
+      };
+      oy = oy + 1;
+    };
+  };
+  tileAtOnMapFloorRows (rows, x, y) {
+    const h = rows.length;
+    if ( y < 0 ) {
+      return "#";
+    }
+    if ( y >= h ) {
+      return "#";
+    }
+    if ( x < 0 ) {
+      return "#";
+    }
+    const row = rows[y];
+    const rowLen = row.length;
+    if ( x >= rowLen ) {
+      return "#";
+    }
+    return row.substring(x, (x + 1) );
+  };
+  findFloorIndexForEntity (entityId) {
+    if ( (entityId.length) < 1 ) {
+      return -1;
+    }
+    let fi = 0;
+    const fn = this.floors.length;
+    while (fi < fn) {
+      const floor = this.floors[fi];
+      const ents = floor.entities;
+      let ei = 0;
+      const en = ents.length;
+      while (ei < en) {
+        const e = ents[ei];
+        if ( e.id == entityId ) {
+          return fi;
+        }
+        ei = ei + 1;
+      };
+      fi = fi + 1;
+    };
+    return -1;
+  };
+  floorForEntity (entityId) {
+    const blank = new MapFloor();
+    const idx = this.findFloorIndexForEntity(entityId);
+    if ( idx < 0 ) {
+      return blank;
+    }
+    return this.floors[idx];
+  };
+  isNpcAtWc (ent, floor) {
+    if ( floor.wcX < 0 ) {
+      return false;
+    }
+    if ( ent.x == floor.wcX ) {
+      if ( ent.y == floor.wcY ) {
+        return true;
+      }
+    }
+    return false;
+  };
+  isNpcNearWc (ent, floor) {
+    if ( floor.wcX < 0 ) {
+      return false;
+    }
+    const dist = this.manhattanTo(ent.x, ent.y, floor.wcX, floor.wcY);
+    if ( dist <= 1 ) {
+      return true;
+    }
+    return false;
+  };
   floorCount () {
     return this.floors.length;
   };
@@ -2005,6 +2201,7 @@ class WorldMap  {
       loaded.doorX = this.json.objFieldInt(door, "x");
       loaded.doorY = this.json.objFieldInt(door, "y");
     }
+    this.ensureWcRoom(loaded);
   };
   recomputeSize () {
     const floor = this.activeFloor();
@@ -3440,6 +3637,20 @@ class WorldMap  {
         }
       }
     }
+    if ( e.mainTask == "toilet" ) {
+      if ( floor.wcX >= 0 ) {
+        e.npcState = "toilet";
+        tx = floor.wcX;
+        ty = floor.wcY;
+        if ( e.x == floor.wcX ) {
+          if ( e.y == floor.wcY ) {
+            return;
+          }
+        }
+      } else {
+        e.mainTask = "working";
+      }
+    }
     if ( this.scheduleMoveStride(e, gameMinutes) == false ) {
       return;
     }
@@ -3761,7 +3972,27 @@ class WorldMap  {
                 }
                 const roll = Math.floor(Math.random()*(99 - 0 + 1) + 0);
                 if ( roll < 3 ) {
-                  e.mainTask = "toilet";
+                  if ( floor.wcX >= 0 ) {
+                    e.mainTask = "toilet";
+                  } else {
+                    if ( roll < 5 ) {
+                      e.mainTask = "searching_item";
+                    } else {
+                      if ( roll > 96 ) {
+                        e.mainTask = "coffee";
+                      } else {
+                        if ( e.mainTask != "eating" ) {
+                          if ( e.mainTask != "toilet" ) {
+                            if ( e.mainTask != "coffee" ) {
+                              if ( e.mainTask != "searching_item" ) {
+                                e.mainTask = "working";
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 } else {
                   if ( roll < 5 ) {
                     e.mainTask = "searching_item";
@@ -6550,9 +6781,21 @@ class GameSession  extends RangerProcessBase {
     if ( ent.mainTask != "toilet" ) {
       return;
     }
-    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
-    rel.applyStatDelta("anger", 15);
-    this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — häiritsit WC:llä!";
+    const floor = this._map.floorForEntity(this.pendingEntityId);
+    if ( floor.wcX < 0 ) {
+      return;
+    }
+    if ( this._map.isNpcAtWc(ent, floor) ) {
+      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+      rel.applyStatDelta("anger", 15);
+      this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — häiritsit WC:llä!";
+      return;
+    }
+    if ( this._map.isNpcNearWc(ent, floor) ) {
+      const relNear = this.npcRelations.getOrCreate(this.pendingEntityId);
+      relNear.applyStatDelta("anger", 8);
+      this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — olet tiellä WC:hen!";
+    }
   };
   tickNpcRelations () {
     this._map.tickNpcMainTasks(this.worldClock.gameMinutes);

@@ -246,6 +246,210 @@ class WorldMap {
     set rows y (left + ch + right)
   }
 
+  fn setTileOnMapFloor:void (floor:MapFloor x:int y:int ch:string) {
+    def rows:[string] (floor.rows)
+    if (y < 0) {
+      return
+    }
+    if (y >= (array_length rows)) {
+      return
+    }
+    def row:string (at rows y)
+    def rowLen:int (strlen row)
+    if (x < 0) {
+      return
+    }
+    if (x >= rowLen) {
+      return
+    }
+    def left:string (substring row 0 x)
+    def right:string (substring row (x + 1) rowLen)
+    set rows y (left + ch + right)
+    floor.rows = rows
+  }
+
+  fn isWalkableStampTile:boolean (ch:string) {
+    if (ch == ".") {
+      return true
+    }
+    if (ch == " ") {
+      return true
+    }
+    if (ch == ",") {
+      return true
+    }
+    return false
+  }
+
+  fn resolveWcFromEntities:boolean (floor:MapFloor) {
+    floor.wcX = -1
+    floor.wcY = -1
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.char == "🚽") {
+        floor.wcX = e.x
+        floor.wcY = e.y
+        return true
+      }
+      if (e.name == "WC") {
+        floor.wcX = e.x
+        floor.wcY = e.y
+        return true
+      }
+      i = i + 1
+    }
+    return false
+  }
+
+  fn stampWcRoomAt:void (floor:MapFloor ox:int oy:int wx:int wy:int) {
+    this.setTileOnMapFloor(floor ox oy "#")
+    this.setTileOnMapFloor(floor (ox + 3) oy "#")
+    this.setTileOnMapFloor(floor ox (oy + 1) "#")
+    this.setTileOnMapFloor(floor (ox + 3) (oy + 1) "#")
+    this.setTileOnMapFloor(floor (ox + 4) (oy + 1) "+")
+    this.setTileOnMapFloor(floor ox (oy + 2) "#")
+    this.setTileOnMapFloor(floor (ox + 3) (oy + 2) "#")
+    def wc:MapEntity (new MapEntity)
+    wc.id = ("auto-wc-" + floor.floorId)
+    wc.char = "🚽"
+    wc.name = "WC"
+    wc.kind = "item"
+    wc.x = wx
+    wc.y = wy
+    wc.homeX = wx
+    wc.homeY = wy
+    push floor.entities wc
+    floor.wcX = wx
+    floor.wcY = wy
+  }
+
+  fn ensureWcRoom:void (floor:MapFloor) {
+    if (this.resolveWcFromEntities(floor)) {
+      return
+    }
+    def rows:[string] (floor.rows)
+    def h:int (array_length rows)
+    if (h < 4) {
+      return
+    }
+    def oy:int 1
+    while (oy < 6) {
+      if ((oy + 2) >= h) {
+        return
+      }
+      def ox:int 1
+      while (ox < 10) {
+        def wx:int (ox + 1)
+        def wy:int (oy + 1)
+        def t00:string (this.tileAtOnMapFloorRows(rows ox oy))
+        def t30:string (this.tileAtOnMapFloorRows(rows (ox + 3) oy))
+        def t01:string (this.tileAtOnMapFloorRows(rows ox (oy + 1)))
+        def t31:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 1)))
+        def t02:string (this.tileAtOnMapFloorRows(rows ox (oy + 2)))
+        def t32:string (this.tileAtOnMapFloorRows(rows (ox + 3) (oy + 2)))
+        def tw:string (this.tileAtOnMapFloorRows(rows wx wy))
+        def t40:string (this.tileAtOnMapFloorRows(rows (ox + 4) (oy + 1)))
+        if (this.isWalkableStampTile(t00)) {
+          if (this.isWalkableStampTile(t30)) {
+            if (this.isWalkableStampTile(t01)) {
+              if (this.isWalkableStampTile(t31)) {
+                if (this.isWalkableStampTile(t02)) {
+                  if (this.isWalkableStampTile(t32)) {
+                    if (this.isWalkableStampTile(tw)) {
+                      if (this.isWalkableStampTile(t40)) {
+                        this.stampWcRoomAt(floor ox oy wx wy)
+                        return
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        ox = ox + 1
+      }
+      oy = oy + 1
+    }
+  }
+
+  fn tileAtOnMapFloorRows:string (rows:[string] x:int y:int) {
+    def h:int (array_length rows)
+    if (y < 0) {
+      return "#"
+    }
+    if (y >= h) {
+      return "#"
+    }
+    if (x < 0) {
+      return "#"
+    }
+    def row:string (at rows y)
+    def rowLen:int (strlen row)
+    if (x >= rowLen) {
+      return "#"
+    }
+    return (substring row x (x + 1))
+  }
+
+  fn findFloorIndexForEntity:int (entityId:string) {
+    if ((strlen entityId) < 1) {
+      return -1
+    }
+    def fi:int 0
+    def fn:int (array_length floors)
+    while (fi < fn) {
+      def floor:MapFloor (at floors fi)
+      def ents:[MapEntity] (floor.entities)
+      def ei:int 0
+      def en:int (array_length ents)
+      while (ei < en) {
+        def e:MapEntity (at ents ei)
+        if (e.id == entityId) {
+          return fi
+        }
+        ei = ei + 1
+      }
+      fi = fi + 1
+    }
+    return -1
+  }
+
+  fn floorForEntity:MapFloor (entityId:string) {
+    def blank:MapFloor (new MapFloor)
+    def idx:int (this.findFloorIndexForEntity(entityId))
+    if (idx < 0) {
+      return blank
+    }
+    return (at floors idx)
+  }
+
+  fn isNpcAtWc:boolean (ent:MapEntity floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return false
+    }
+    if (ent.x == floor.wcX) {
+      if (ent.y == floor.wcY) {
+        return true
+      }
+    }
+    return false
+  }
+
+  fn isNpcNearWc:boolean (ent:MapEntity floor:MapFloor) {
+    if (floor.wcX < 0) {
+      return false
+    }
+    def dist:int (this.manhattanTo(ent.x ent.y floor.wcX floor.wcY))
+    if (dist <= 1) {
+      return true
+    }
+    return false
+  }
+
   fn floorCount:int () {
     return (array_length floors)
   }
@@ -553,6 +757,7 @@ class WorldMap {
       loaded.doorX = (json.objFieldInt(door "x"))
       loaded.doorY = (json.objFieldInt(door "y"))
     }
+    this.ensureWcRoom(loaded)
   }
 
   fn recomputeSize:void () {
@@ -2049,6 +2254,20 @@ class WorldMap {
         }
       }
     }
+    if (e.mainTask == "toilet") {
+      if (floor.wcX >= 0) {
+        e.npcState = "toilet"
+        tx = floor.wcX
+        ty = floor.wcY
+        if (e.x == floor.wcX) {
+          if (e.y == floor.wcY) {
+            return
+          }
+        }
+      } {
+        e.mainTask = "working"
+      }
+    }
     if (this.scheduleMoveStride(e gameMinutes) == false) {
       return
     }
@@ -2378,7 +2597,27 @@ class WorldMap {
                 }
                 def roll:int (random 0 99)
                 if (roll < 3) {
-                  e.mainTask = "toilet"
+                  if (floor.wcX >= 0) {
+                    e.mainTask = "toilet"
+                  } {
+                    if (roll < 5) {
+                      e.mainTask = "searching_item"
+                    } {
+                    if (roll > 96) {
+                      e.mainTask = "coffee"
+                    } {
+                      if (e.mainTask != "eating") {
+                        if (e.mainTask != "toilet") {
+                          if (e.mainTask != "coffee") {
+                            if (e.mainTask != "searching_item") {
+                              e.mainTask = "working"
+                            }
+                          }
+                        }
+                      }
+                    }
+                    }
+                  }
                 } {
                   if (roll < 5) {
                     e.mainTask = "searching_item"
