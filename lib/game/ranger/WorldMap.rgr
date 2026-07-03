@@ -451,6 +451,7 @@ class WorldMap {
     def startIdx:int (this.cellIndex(sx sy))
     def goalIdx:int (this.cellIndex(tx ty))
     if (startIdx == goalIdx) {
+      currentFloor = saved
       return true
     }
     def queue:[int]
@@ -504,8 +505,10 @@ class WorldMap {
       }
     }
     if (found) {
+      currentFloor = saved
       return true
     }
+    currentFloor = saved
     return false
   }
 
