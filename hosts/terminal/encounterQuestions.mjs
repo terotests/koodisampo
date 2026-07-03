@@ -138,12 +138,26 @@ const TOPIC_DOMAINS = {
   "rf-advanced": "robotframework",
 };
 
+/** Luvut domainin mukaan (haastattelu/guru-kierros). */
+function chaptersForDomain(domain) {
+  if (!domain) return [];
+  return Object.entries(TOPIC_DOMAINS)
+    .filter(([, d]) => d === domain)
+    .map(([chapter]) => chapter);
+}
+
+function specialtyDomain(playerSpecialty, fallback = "cpp") {
+  return playerSpecialty || fallback;
+}
+
 function audienceTags(entity, playerSpecialty = "") {
   if (entity.id === "receptionist") {
+    const domain = specialtyDomain(playerSpecialty);
     return {
       tags: ["interview", "secretary", "coworker", "guru"],
       voice: "interview",
-      preferDomain: "cpp",
+      preferDomain: domain,
+      playerSpecialty,
       minDifficulty: 1,
     };
   }
@@ -161,18 +175,26 @@ function audienceTags(entity, playerSpecialty = "") {
     };
   }
   if (entity.kind === "guru") {
+    const domain = specialtyDomain(playerSpecialty);
     return {
       tags: ["guru"],
       voice: "mentor",
-      preferDomain: "cpp",
+      preferDomain: domain,
+      playerSpecialty,
       minDifficulty: 3,
     };
   }
   if (entity.kind === "hostile") {
+    const preferDomains = ["cpp", "docker"];
+    if (playerSpecialty && !preferDomains.includes(playerSpecialty)) {
+      preferDomains.unshift(playerSpecialty);
+    }
     return {
       tags: ["hostile"],
       voice: "hostile",
-      preferDomains: ["cpp", "docker"],
+      preferDomain: playerSpecialty || "",
+      playerSpecialty,
+      preferDomains,
       minDifficulty: 4,
     };
   }
@@ -339,13 +361,19 @@ function scoreQuestion(q, profile, targetDiff) {
   if (profile.tags.includes("project-lead") && q.domain === "scrum") score += 10;
   if (profile.tags.includes("ceo") && q.domain === "scrum") score += 8;
 
-  if (profile.tags.includes("coworker") && q.domain === "cpp" && (!profile.preferDomain || profile.preferDomain === "cpp")) {
+  const focusDomain = profile.preferDomain || profile.playerSpecialty || "";
+  if (
+    profile.tags.includes("coworker") &&
+    focusDomain &&
+    q.domain === focusDomain &&
+    (!profile.preferChapter || q.chapter === profile.preferChapter)
+  ) {
     score += 30;
   }
-  if (profile.tags.includes("interview") && q.domain === "cpp") {
+  if (profile.tags.includes("interview") && focusDomain && q.domain === focusDomain) {
     score += 28;
   }
-  if (profile.tags.includes("guru") && q.domain === "cpp" && (!profile.preferDomain || profile.preferDomain === "cpp")) {
+  if (profile.tags.includes("guru") && focusDomain && q.domain === focusDomain) {
     score += 15;
   }
   if (profile.tags.includes("guru") && (q.domain === "qt" || q.chapter === "qt-shaders" || q.chapter === "qt-opengl")) {
@@ -391,31 +419,19 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   const entityAsked = getAskedQuestionIds(quizHistory, entityId);
   const recent = getRecentQuestionIds(quizHistory, 20);
 
-  if (profile.tags.includes("guru") && !entity.topic) {
-    const cppTopics = [
-      "tools",
-      "style",
-      "safety",
-      "maintainability",
-      "correctness",
-      "performance",
-    ];
+  const domainChapters = chaptersForDomain(profile.preferDomain || profile.playerSpecialty || "cpp");
+
+  if (profile.tags.includes("guru") && !entity.topic && domainChapters.length > 0) {
     const round = entity.guruRound ?? entityAsked.length;
-    profile.preferChapter = cppTopics[hashString(`${entityId}:guru:${round}:${pickNonce}`) % cppTopics.length];
+    profile.preferChapter =
+      domainChapters[hashString(`${entityId}:guru:${round}:${pickNonce}`) % domainChapters.length];
   }
 
-  if (entity.id === "receptionist") {
-    const cppTopics = [
-      "tools",
-      "style",
-      "safety",
-      "maintainability",
-      "correctness",
-    ];
+  if (entity.id === "receptionist" && domainChapters.length > 0) {
     profile.preferChapter =
-      cppTopics[
+      domainChapters[
         hashString(`interview:${entityId}:${entityAsked.length}:${pickNonce}:${deaths}`)
-          % cppTopics.length
+          % domainChapters.length
       ];
   }
 
@@ -435,8 +451,9 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   }
 
   if (scored.length === 0) {
+    const fallbackDomain = profile.preferDomain || profile.playerSpecialty || "cpp";
     const fallback = questions
-      .filter((q) => q.domain === "cpp" && q.difficulty >= 2)
+      .filter((q) => q.domain === fallbackDomain && q.difficulty >= 2)
       .sort((a, b) => b.difficulty - a.difficulty)[0];
     return { question: fallback ?? questions[0], profile, targetDiff };
   }
