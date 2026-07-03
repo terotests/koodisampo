@@ -21,6 +21,15 @@ const MALE_FIRST_NAMES = new Set([
   "Antti", "Jarmo", "Jussi", "Kari", "Markus", "Mikko", "Olli", "Pekka", "Petri", "Ville",
 ]);
 
+/** Vähimmäisosuus kerroksen suosituksista ennen hissillä ylöspäin menoa ja ylennystä. */
+export const FLOOR_RECOMMENDATION_QUOTA = 0.5;
+
+export function floorRecommendationRequired(total) {
+  const n = Math.max(0, Number(total) || 0);
+  if (n < 1) return 0;
+  return Math.ceil(n * FLOOR_RECOMMENDATION_QUOTA);
+}
+
 export function emptyPersonRegistry() {
   return { byId: {} };
 }
@@ -203,13 +212,28 @@ export function getFloorRecommendationStatus(session, registry, floorIndex) {
       });
     }
   }
+  const total = staff.length;
+  const required = floorRecommendationRequired(total);
   return {
     floor: floorIndex,
-    total: staff.length,
+    total,
+    required,
     done,
-    complete: missing.length === 0,
+    complete: total < 1 || done >= required,
     missing,
   };
+}
+
+export function tryGrantPromotionFromFloorApproval(session, registry) {
+  if (!session?.guruIntroPassed) return null;
+  const tier = session.tools?.accessTier ?? 0;
+  if (tier >= 3) return null;
+  const map = sessionMap(session);
+  if (!map) return null;
+  const status = getFloorRecommendationStatus(session, registry, map.currentFloor ?? 0);
+  if (!status.complete) return null;
+  session.tools.grant("promoted_card");
+  return "Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)! Palkka nousee.";
 }
 
 export function elevatorKeyToFloorIndex(key) {
@@ -240,7 +264,7 @@ export function checkFloorRecommendationAccess(session, registry, targetFloor) {
         floorTitle,
         missing: status.missing,
         message:
-          `Kerros ${f + 1} (${floorTitle}): tarvitset suosituksen kaikilta (${status.done}/${status.total}). `
+          `Kerros ${f + 1} (${floorTitle}): tarvitset suosituksen vähintään ${status.required}/${status.total} henkilöltä (${status.done}/${status.total}). `
           + `Puuttuu: ${names}${more}. Keskustele ja vastaa kysymyksiin positiivisesti.`,
       };
     }

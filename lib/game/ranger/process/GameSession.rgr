@@ -76,7 +76,6 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def guruStoryAttempted:boolean false
   def guruQuizCorrect:int 0
   def hrWelcomeDone:boolean false
-  def quizWinsForPromotion:int 0
   def worldClock:WorldClock
   def actionTargetX:int 0
   def actionTargetY:int 0
@@ -215,25 +214,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         karma.add(featureId points)
       }
       def status:string ("✓ " + msg)
-      if (this.isCoworkerEncounter()) {
-        quizWinsForPromotion = quizWinsForPromotion + 1
-        def promoRoll:int (random 0 2)
-        if (quizWinsForPromotion >= 2) {
-          promoRoll = 0
-        }
-        if (promoRoll == 0) {
-          if (tools.accessTier < 3) {
-            tools.grant("promoted_card")
-            quizWinsForPromotion = 0
-            status = (status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)! Palkka nousee.")
-          }
-        }
-      }
       if (pendingEntityKind == "guru") {
         guruQuizCorrect = guruQuizCorrect + 1
         if (guruQuizCorrect >= 2) {
           guruIntroPassed = true
-          status = (status + " Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta (2 oikeaa) — sitten 10. kerros virallisella luvalla.")
+          status = (status + " Guru hyväksyi perusteet. Hae ylennyskortti kun vähintään 50 % kerroksen väestä suosittelee — 10. kerros virallisella luvalla.")
         } {
           status = (status + " (" + (to_string guruQuizCorrect) + "/2 oikein Guru-tarkistukseen)")
         }
@@ -2485,7 +2470,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return "Ylemmät kerrokset lukittu — läpäise gurun tarkistus (kerros 2)."
       }
       if (tools.accessTier < 3) {
-        return "Kerrokset 3–9 vaativat ylennyksen — 2 oikeaa vastausta työkavereilta."
+        return "Kerrokset 3–9 vaativat ylennyksen — vähintään 50 % kerroksen väestä suositusta."
       }
     }
     if (tools.hasBuildingAccess() == false) {
@@ -2525,7 +2510,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (storyId == "modern-cpp-intro") {
       if (outcome == "victory") {
         guruIntroPassed = true
-        map.lastStatus = "Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta — 10. kerros vaatii virallisen luvan."
+        map.lastStatus = "Guru hyväksyi perusteet. Hae ylennyskortti kun vähintään 50 % kerroksen väestä suosittelee — 10. kerros virallisella luvalla."
       }
     }
   }

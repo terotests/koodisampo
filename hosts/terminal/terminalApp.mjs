@@ -66,6 +66,7 @@ import {
   checkFloorRecommendationAccess,
   elevatorKeyToFloorIndex,
   getFloorRecommendationStatus,
+  tryGrantPromotionFromFloorApproval,
 } from "./personStatus.mjs";
 import {
   buildMenuItems,
@@ -165,7 +166,7 @@ function buildMapFrame(session) {
   const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
   if (floorRec.total > 0 && !floorRec.complete) {
     lines.push(
-      `  ${styled(`Suositukset tältä kerrokselta: ${floorRec.done}/${floorRec.total} (tarvitaan kaikilta ennen ylemmäs)`, FG.magenta)}`,
+      `  ${styled(`Suositukset tältä kerrokselta: ${floorRec.done}/${floorRec.total} (tarvitaan ${floorRec.required}, 50 % ennen ylemmäs)`, FG.magenta)}`,
     );
   }
   lines.push("");
@@ -1092,6 +1093,13 @@ async function runQuizEncounterLoop(session) {
         quiz.question.featurePoints || 0,
         reaction,
       );
+      const promoMsg = tryGrantPromotionFromFloorApproval(session, personRegistryState);
+      if (promoMsg) {
+        const map = sessionMap(session);
+        if (map) {
+          map.lastStatus = `${map.lastStatus} ${promoMsg}`;
+        }
+      }
     });
     quizHistoryState = recordQuizAnswer(
       quizHistoryState,

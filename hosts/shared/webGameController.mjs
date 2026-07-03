@@ -45,6 +45,7 @@ import {
   checkFloorRecommendationAccess,
   elevatorKeyToFloorIndex,
   getFloorRecommendationStatus,
+  tryGrantPromotionFromFloorApproval,
 } from "../terminal/personStatus.mjs";
 import { buildMenuItems, menuItemByNumber } from "../terminal/storyMenu.mjs";
 import { findPendingEntity } from "../terminal/encounterQuestions.mjs";
@@ -752,6 +753,13 @@ function dismissOverlay() {
         overlay.points,
         overlay.reaction,
       );
+      const promoMsg = tryGrantPromotionFromFloorApproval(session, personRegistryState);
+      if (promoMsg) {
+        const map = sessionMap(session);
+        if (map) {
+          map.lastStatus = `${map.lastStatus} ${promoMsg}`;
+        }
+      }
     });
     quizHistoryState = recordQuizAnswer(
       quizHistoryState,

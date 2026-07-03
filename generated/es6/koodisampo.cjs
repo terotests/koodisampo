@@ -5485,7 +5485,6 @@ class GameSession  extends RangerProcessBase {
     this.guruStoryAttempted = false;
     this.guruQuizCorrect = 0;
     this.hrWelcomeDone = false;
-    this.quizWinsForPromotion = 0;
     this.actionTargetX = 0;
     this.actionTargetY = 0;
     this.actionTargetId = "";
@@ -5611,25 +5610,11 @@ class GameSession  extends RangerProcessBase {
         this.karma.add(featureId, points);
       }
       let status = "✓ " + msg;
-      if ( this.isCoworkerEncounter() ) {
-        this.quizWinsForPromotion = this.quizWinsForPromotion + 1;
-        let promoRoll = Math.floor(Math.random()*(2 - 0 + 1) + 0);
-        if ( this.quizWinsForPromotion >= 2 ) {
-          promoRoll = 0;
-        }
-        if ( promoRoll == 0 ) {
-          if ( this.tools.accessTier < 3 ) {
-            this.tools.grant("promoted_card");
-            this.quizWinsForPromotion = 0;
-            status = status + " Sait suosituksen ylemmäs — uusi kulkukortti (taso 3)! Palkka nousee.";
-          }
-        }
-      }
       if ( this.pendingEntityKind == "guru" ) {
         this.guruQuizCorrect = this.guruQuizCorrect + 1;
         if ( this.guruQuizCorrect >= 2 ) {
           this.guruIntroPassed = true;
-          status = status + " Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta (2 oikeaa) — sitten 10. kerros virallisella luvalla.";
+          status = status + " Guru hyväksyi perusteet. Hae ylennyskortti kun vähintään 50 % kerroksen väestä suosittelee — 10. kerros virallisella luvalla.";
         } else {
           status = ((status + " (") + ((this.guruQuizCorrect.toString()))) + "/2 oikein Guru-tarkistukseen)";
         }
@@ -7763,7 +7748,7 @@ class GameSession  extends RangerProcessBase {
         return "Ylemmät kerrokset lukittu — läpäise gurun tarkistus (kerros 2).";
       }
       if ( this.tools.accessTier < 3 ) {
-        return "Kerrokset 3–9 vaativat ylennyksen — 2 oikeaa vastausta työkavereilta.";
+        return "Kerrokset 3–9 vaativat ylennyksen — vähintään 50 % kerroksen väestä suositusta.";
       }
     }
     if ( this.tools.hasBuildingAccess() == false ) {
@@ -7802,7 +7787,7 @@ class GameSession  extends RangerProcessBase {
     if ( storyId == "modern-cpp-intro" ) {
       if ( outcome == "victory" ) {
         this.guruIntroPassed = true;
-        this._map.lastStatus = "Guru hyväksyi perusteet. Hae ylennyskortti työkavereilta — 10. kerros vaatii virallisen luvan.";
+        this._map.lastStatus = "Guru hyväksyi perusteet. Hae ylennyskortti kun vähintään 50 % kerroksen väestä suosittelee — 10. kerros virallisella luvalla.";
       }
     }
   };
