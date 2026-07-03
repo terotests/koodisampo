@@ -150,6 +150,23 @@ function specialtyDomain(playerSpecialty, fallback = "cpp") {
   return playerSpecialty || fallback;
 }
 
+/** Kielikohtaiset erikoisalueet — eivät ohita toisiaan työkaverin geneerisen topicin kanssa. */
+const LANGUAGE_SPECIALTY_DOMAINS = new Set(["cpp", "javascript", "qt"]);
+
+/**
+ * Työkaverin kysymädomain: pelaajan kielivalinta voittaa ristiriitaisen C++/Qt-topicin,
+ * mutta Scrum, Docker, Linux jne. säilyvät työkaverin omana aiheena.
+ */
+function coworkerQuestionDomain(playerSpecialty, topicDomain) {
+  if (!playerSpecialty) return topicDomain || "";
+  if (!topicDomain) return playerSpecialty;
+  if (topicDomain === playerSpecialty) return topicDomain;
+  const playerIsLanguage = LANGUAGE_SPECIALTY_DOMAINS.has(playerSpecialty);
+  const topicIsLanguage = LANGUAGE_SPECIALTY_DOMAINS.has(topicDomain);
+  if (playerIsLanguage && topicIsLanguage) return playerSpecialty;
+  return topicDomain;
+}
+
 function audienceTags(entity, playerSpecialty = "") {
   if (entity.id === "receptionist") {
     const domain = specialtyDomain(playerSpecialty);
@@ -224,13 +241,11 @@ function audienceTags(entity, playerSpecialty = "") {
     const topic = entity.topic || "";
     const topicDomain = TOPIC_DOMAINS[topic] || "";
     const specialty = playerSpecialty || "";
-    const preferDomain = specialty || topicDomain || "";
-    const topicMatchesSpecialty =
-      !specialty || !topicDomain || specialty === topicDomain;
+    const preferDomain = coworkerQuestionDomain(specialty, topicDomain);
     return {
       tags: ["coworker"],
       voice: "colleague",
-      preferChapter: topicMatchesSpecialty ? topic : "",
+      preferChapter: topic && preferDomain === topicDomain ? topic : "",
       preferDomain,
       playerSpecialty: specialty,
       minDifficulty: 3,
@@ -355,7 +370,11 @@ function scoreQuestion(q, profile, targetDiff) {
 
   if (profile.preferChapter && q.chapter === profile.preferChapter) score += 35;
   if (profile.preferDomain && q.domain === profile.preferDomain) score += 20;
-  if (profile.playerSpecialty && q.domain === profile.playerSpecialty) score += 22;
+  const specialtyMatchesPick =
+    profile.playerSpecialty &&
+    q.domain === profile.playerSpecialty &&
+    (!profile.preferDomain || profile.preferDomain === profile.playerSpecialty);
+  if (specialtyMatchesPick) score += 22;
   if (profile.preferDomains?.includes(q.domain)) score += 12;
   if (profile.preferChapters?.includes(q.chapter)) score += 15;
 
@@ -365,7 +384,7 @@ function scoreQuestion(q, profile, targetDiff) {
   if (profile.tags.includes("project-lead") && q.domain === "scrum") score += 10;
   if (profile.tags.includes("ceo") && q.domain === "scrum") score += 8;
 
-  const focusDomain = profile.playerSpecialty || profile.preferDomain || "";
+  const focusDomain = profile.preferDomain || profile.playerSpecialty || "";
   if (
     profile.tags.includes("coworker") &&
     focusDomain &&

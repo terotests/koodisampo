@@ -45,6 +45,19 @@ assert(
 );
 
 const dockerTopicCoworker = { ...coworker, id: "staff-docker", topic: "docker-network" };
+const jsDockerPick = pickFor(dockerTopicCoworker, "javascript", 3);
+assert(
+  jsDockerPick.domain === "docker",
+  `JS player should still get docker from docker-topic coworker, got ${jsDockerPick.domain}`,
+);
+
+const scrumTopicCoworker = { ...coworker, id: "staff-scrum", topic: "scrum-estimation" };
+const jsScrumPick = pickFor(scrumTopicCoworker, "javascript", 4);
+assert(
+  jsScrumPick.domain === "scrum",
+  `JS player should still get scrum from scrum-topic coworker, got ${jsScrumPick.domain}`,
+);
+
 const dockerTopicPick = pickFor(dockerTopicCoworker, "docker", 3);
 assert(
   dockerTopicPick.domain === "docker",
