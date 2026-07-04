@@ -1,6 +1,6 @@
 ═══ OPPITUNNIT ═══
 
-> **Uusi sivusto:** [Opiskelumateriaali GitHub Pagesissa](https://terotests.github.io/koodisampo/opiskelu/) — pelihahmottomat oppitunnit aiheittain.
+> **Uusi sivusto:** [Opiskelumateriaali GitHub Pagesissa](https://terotests.github.io/koodisampo/opiskelu/docs/intro/) — pelihahmottomat oppitunnit aiheittain.
 > Valmiit oppitunnit: `opiskelu/lessons/{kysymys-id}.md` → `npm run study:sync`.
 
 Lyhyt kertaus opiskelulistan aiheista. Jokainen kohta vastaa pelissä näkyvää kysymystä.
