@@ -1,3 +1,10 @@
+import {
+  readStoredRenderTheme,
+  renderThemeFilter,
+  shouldTintIsoAsset,
+  type RenderThemeId,
+} from "../renderTheme";
+
 const BASE = import.meta.env.BASE_URL;
 
 const TILE_FILES = [
@@ -47,7 +54,48 @@ const TILE_FILES = [
 type TileKey = (typeof TILE_FILES)[number];
 
 const cache = new Map<string, HTMLImageElement>();
+const tintedCache = new Map<string, HTMLCanvasElement>();
 let loadPromise: Promise<void> | null = null;
+
+export function clearIsoTintCache(): void {
+  tintedCache.clear();
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("koodisampo-render-theme-change", () => {
+    clearIsoTintCache();
+  });
+}
+
+function tintCacheKey(file: string, theme: RenderThemeId): string {
+  return `${file}\0${theme}`;
+}
+
+function buildTintedCanvas(img: HTMLImageElement, filter: string): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+  ctx.filter = filter;
+  ctx.drawImage(img, 0, 0);
+  return canvas;
+}
+
+function getTintedIsoCanvas(file: string): HTMLCanvasElement | null {
+  const img = cache.get(file);
+  if (!img) return null;
+  const theme = readStoredRenderTheme();
+  const filter = renderThemeFilter(theme);
+  if (theme === "orange" || filter === "none") return null;
+  const key = tintCacheKey(file, theme);
+  let tinted = tintedCache.get(key);
+  if (!tinted) {
+    tinted = buildTintedCanvas(img, filter);
+    tintedCache.set(key, tinted);
+  }
+  return tinted;
+}
 
 function urlFor(file: string): string {
   return `${BASE}tiles/iso/${file}`;
@@ -55,6 +103,14 @@ function urlFor(file: string): string {
 
 export function getIsoImage(key: string): HTMLImageElement | null {
   return cache.get(key) ?? null;
+}
+
+/** Isometric tile bitmap with optional render-theme tint (walls, floors, props — not characters). */
+export function getIsoDrawSource(key: string): CanvasImageSource | null {
+  const img = cache.get(key);
+  if (!img) return null;
+  if (!shouldTintIsoAsset(key)) return img;
+  return getTintedIsoCanvas(key) ?? img;
 }
 
 export function ensureIsoAssetsLoaded(): Promise<void> {

@@ -8,7 +8,7 @@ import {
 } from "./isometricProjection";
 import {
   ensureIsoAssetsLoaded,
-  getIsoImage,
+  getIsoDrawSource,
   isoTileKey,
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
@@ -110,19 +110,34 @@ function scheduleWalkRepaint(container: HTMLElement, lines: string[], state: Map
   });
 }
 
+function bitmapSize(img: CanvasImageSource): { w: number; h: number } {
+  if (img instanceof HTMLImageElement) {
+    return { w: img.naturalWidth, h: img.naturalHeight };
+  }
+  if (img instanceof HTMLCanvasElement) {
+    return { w: img.width, h: img.height };
+  }
+  if (typeof ImageBitmap !== "undefined" && img instanceof ImageBitmap) {
+    return { w: img.width, h: img.height };
+  }
+  return { w: 0, h: 0 };
+}
+
 function drawScaledImage(
   ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
+  img: CanvasImageSource,
   screenX: number,
   screenY: number,
   tileWidth: number,
   opts?: { scaleMul?: number; crisp?: boolean; yBias?: number },
 ) {
+  const { w: srcW, h: srcH } = bitmapSize(img);
+  if (!srcW || !srcH) return;
   const scaleMul = opts?.scaleMul ?? 1;
   const effectiveWidth = tileWidth * scaleMul;
-  const scale = effectiveWidth / img.naturalWidth;
+  const scale = effectiveWidth / srcW;
   const drawW = effectiveWidth;
-  const drawH = img.naturalHeight * scale;
+  const drawH = srcH * scale;
   const yOff = tileDrawYOffset(drawH, tileWidth);
   const xOff = (tileWidth - drawW) / 2;
   const yBias = opts?.yBias ?? 0;
@@ -238,7 +253,7 @@ function drawSprite(
 
   if (sprite.kind === "tile") {
     const file = isoTileKey(sprite.base, sprite.dir);
-    const img = getIsoImage(file);
+    const img = getIsoDrawSource(file);
     if (img) drawScaledImage(ctx, img, screenX, screenY, tileWidth);
     return;
   }
@@ -256,7 +271,7 @@ function drawSprite(
       return;
     }
     const file = isoTileKey(sprite.base, sprite.dir);
-    const img = getIsoImage(file);
+    const img = getIsoDrawSource(file);
     if (img) {
       drawScaledImage(ctx, img, screenX, screenY, tileWidth, { scaleMul: 0.92, crisp: true, yBias: -2 });
     } else {
@@ -365,7 +380,7 @@ function paintIsometricMap(
   const activeTool = state.player?.activeTool as string | undefined;
   const drawOpts = { walkFrame, facing, activeTool };
 
-  const floor = getIsoImage(isoTileKey("slab", "E"));
+  const floor = getIsoDrawSource(isoTileKey("slab", "E"));
   for (let y = 0; y < rows; y += 1) {
     const rowCols = splitMapGraphemes(lines[y] ?? "").length;
     for (let x = 0; x < rowCols; x += 1) {
