@@ -21,6 +21,14 @@ assert.doesNotMatch(progress, /\]\(topics\/security\)/, "progress must not use s
 const intro = fs.readFileSync(path.join(root, "study/docs/intro.md"), "utf8");
 assert.match(intro, /\]\(\/docs\/topics\/postgres\)/, "intro links use /docs/topics/");
 assert.match(intro, /\]\(\/docs\/progress\)/, "intro progress link uses /docs/progress");
+assert.match(intro, /\]\(\/docs\/lyhenteet\)/, "intro links to glossary");
+
+const lyhenteet = fs.readFileSync(path.join(root, "study/docs/lyhenteet.md"), "utf8");
+assert.match(lyhenteet, /### GUC \{#guc\}/, "glossary page synced from opiskelu/lyhenteet.md");
+
+const topicsDir = path.join(root, "study/docs/topics");
+const postgres = fs.readFileSync(path.join(topicsDir, "postgres.md"), "utf8");
+assert.match(postgres, /\[OOM\]\(\/docs\/lyhenteet#oom\)/, "manual lessons link OOM to glossary");
 
 for (const q of listAllQuestions()) {
   if (!q.sourceUrl) continue;
@@ -31,12 +39,11 @@ for (const q of listAllQuestions()) {
   );
 }
 
-const topicsDir = path.join(root, "study/docs/topics");
 for (const file of fs.readdirSync(topicsDir)) {
   const md = fs.readFileSync(path.join(topicsDir, file), "utf8");
   const badLinks = [...md.matchAll(/\[[^\]]+\]\(([^)#][^)]*)\)/g)]
     .map((m) => m[1])
-    .filter((url) => !/^https?:\/\//i.test(url));
+    .filter((url) => !/^https?:\/\//i.test(url) && !url.startsWith("/docs/"));
   assert.equal(badLinks.length, 0, `${file} has non-http markdown links: ${badLinks.join(", ")}`);
 }
 

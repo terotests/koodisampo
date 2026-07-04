@@ -30,6 +30,7 @@ Tiedosto `opiskelu/lessons/{question-id}.md`:
 2. Jokaisessa osiossa **2–4 kappaletta** (## Tilanne, ## Ratkaisu, ## Käyttöönotto / ## Taustaa tms.).
 3. **Ei** "Miksi muut eivät kelpaa?" -listaa — väärät vaihtoehdot kuuluvat peliin, ei oppitunnille.
 4. Linkitä virallinen lähde (`sourceUrl` kysymyspankissa) lopussa tai upota `[Lue lisää](url)`.
+5. Lyhenteet (GUC, OOM, RAII, …): älä toista pitkiä selityksiä joka kerta — ne linkitetään automaattisesti [lyhennehakemistoon](/docs/lyhenteet) `npm run study:sync`:ssä. Uusi lyhenne: lisää `opiskelu/lyhenteet.md` muodossa `### TERM {#anchor}`.
 
 Esimerkki valmiista laajasta oppitunnista: `b03-pg-config-statements-ext.md`.
 
