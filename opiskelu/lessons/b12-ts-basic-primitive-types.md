@@ -1,4 +1,4 @@
-# TypeScriptissä haluat merkitä että `age` on kokonaisluku. Tyyppi?
+# TypeScriptissä haluat merkitä että `age` on numero. Tyyppi?
 
 ## Tilanne
 
