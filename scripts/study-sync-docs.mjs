@@ -50,11 +50,8 @@ function stripLeadingTitle(md) {
 
 function buildStubSection(q) {
   const correct = (q.choices || []).find((c) => c.correct);
-  const wrong = (q.choices || []).filter((c) => !c.correct);
   const lines = [
     `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
-    "",
-    escapeMdProse(q.prompt),
     "",
     "**Oikea vastaus:**",
     "",
@@ -63,13 +60,6 @@ function buildStubSection(q) {
   ];
   if (q.correctFeedback) {
     lines.push(escapeMdProse(q.correctFeedback), "");
-  }
-  if (wrong.length) {
-    lines.push("**Miksi muut eivät kelpaa?**", "");
-    for (const w of wrong) {
-      lines.push(`- ${escapeMdProse(w.text)}`);
-    }
-    lines.push("");
   }
   if (q.sourceUrl) {
     lines.push(`[Lue lisää](${q.sourceUrl})`, "");
@@ -195,6 +185,7 @@ function buildProgressMarkdown(questions, readyIds) {
     "",
     "```bash",
     "npm run study:sync      # päivitä docs kysymyspankista",
+    "npm run study:todo      # päivitä opiskelu/lessons/TODO.md|.json",
     "npm run study:progress  # tiivistelmä terminaaliin",
     "npm run study:import    # tuo oppitunnit.md → opiskelu/lessons/",
     "```",
