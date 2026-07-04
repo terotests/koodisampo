@@ -77,7 +77,7 @@ export const CHAPTER_LABELS = {
   "rf-advanced": "RF-laajennukset",
 };
 
-/** Docusaurus-polku ilman baseUrl:ia. */
+/** Repo/dokumentaatioviite: domain/chapter/id */
 export function lessonRefForQuestion(question) {
   if (question?.lessonRef) return question.lessonRef.replace(/^\/+|\/+$/g, "");
   const domain = question?.domain || "general";
@@ -86,17 +86,27 @@ export function lessonRefForQuestion(question) {
   return `${domain}/${chapter}/${id}`;
 }
 
-export function lessonDocPath(ref) {
-  const clean = ref.replace(/^\/+|\/+$/g, "");
-  return `/docs/topics/${clean}/`;
+export function lessonDomainForQuestion(question) {
+  if (question?.lessonRef) {
+    const head = question.lessonRef.replace(/^\/+|\/+$/g, "").split("/")[0];
+    if (head) return head;
+  }
+  return question?.domain || "general";
+}
+
+/** Docusaurus-polku domain-sivulle + ankkuri kysymykseen. */
+export function lessonDocPathForQuestion(question) {
+  const domain = lessonDomainForQuestion(question);
+  const id = question?.id || "";
+  return `/docs/topics/${domain}/#${id}`;
 }
 
 export function lessonUrl(question, options = {}) {
   const basePath = options.basePath ?? STUDY_SITE_PATH;
   const origin = options.origin ?? "";
-  const ref = lessonRefForQuestion(question);
-  const path = `${basePath.replace(/\/$/, "")}${lessonDocPath(ref)}`;
-  return origin ? `${origin.replace(/\/$/, "")}${path}` : path;
+  const docPath = lessonDocPathForQuestion(question);
+  const full = `${basePath.replace(/\/$/, "")}${docPath}`;
+  return origin ? `${origin.replace(/\/$/, "")}${full}` : full;
 }
 
 export function lessonLinkLine(question, options = {}) {

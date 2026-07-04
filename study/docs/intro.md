@@ -12,13 +12,14 @@ Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **
 
 ## Rakenne
 
-- **Aihepiirit** vasemmalla — domain (esim. C++, Docker) ja luku (chapter)
-- Jokainen kysymys vastaa yhtä oppituntisivua (`domain/chapter/kysymys-id`)
-- Valmiit oppitunnit löytyvät reposta kansiosta [`opiskelu/lessons/`](https://github.com/terotests/koodisampo/tree/main/opiskelu/lessons)
+- **Yksi sivu per aihepiiri** — esim. [PostgreSQL](topics/postgres) on yksi pitkä scrollattava sivu
+- Luvut (chapter) ovat `##`-otsikoita, yksittäiset kysymykset `###`-otsikoita
+- Oikean reunan sisällysluettelo auttaa hyppäämään osioon
+- Valmiit oppitunnit: [`opiskelu/lessons/`](https://github.com/terotests/koodisampo/tree/main/opiskelu/lessons)
 
 ## Linkki kysymyksestä
 
-Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` osoittaa oppituntiin:
+Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` dokumentoi polun:
 
 ```json
 {
@@ -29,11 +30,6 @@ Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` 
 }
 ```
 
-Jos `lessonRef` puuttuu, polku johdetaan automaattisesti: `{domain}/{chapter}/{id}`.
+Pelin linkki vie domain-sivulle ankkuriin: `/docs/topics/cpp/#tools-auto`.
 
 Katso [edistyminen](progress) — kuinka monelle kysymykselle on kirjoitettu täysi oppitunti.
-
-## Laajempi tausta
-
-- [Opiskeluopas](../../opiskelu/opiskelu-opas.md) (repo) — PIMPL, planning poker, …
-- Ulkoiset lähteet: kunkin oppitunnin *Lue lisää* -osio

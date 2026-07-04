@@ -1,18 +1,13 @@
 #!/usr/bin/env node
 /**
- * Synkronoi kysymyspankki → Docusaurus-docs + edistymisraportti.
+ * Synkronoi kysymyspankki → Docusaurus-docs (yksi scrollattava sivu per domain).
  * Käyttö: node scripts/study-sync-docs.mjs
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
-import {
-  DOMAIN_LABELS,
-  CHAPTER_LABELS,
-  lessonRefForQuestion,
-  lessonDocPath,
-} from "../hosts/shared/studyLessonLinks.mjs";
+import { DOMAIN_LABELS, CHAPTER_LABELS } from "../hosts/shared/studyLessonLinks.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -20,15 +15,15 @@ const docsRoot = path.join(root, "study/docs/topics");
 const lessonsDir = path.join(root, "opiskelu/lessons");
 const progressPath = path.join(root, "study/docs/progress.md");
 
-function slugify(name) {
-  return String(name).replace(/[^a-zA-Z0-9._-]+/g, "-");
-}
+const DOMAIN_ORDER = [
+  "cpp", "javascript", "postgres", "docker", "linux", "qt", "scrum",
+  "git", "backend", "security", "robotframework",
+];
 
 function yamlEscape(s) {
   return String(s).replace(/"/g, '\\"');
 }
 
-/** Estää MDX/JSX-tulkinnan automaattisissa oppitunneissa. */
 function escapeMdProse(s) {
   return String(s || "")
     .replace(/</g, "&lt;")
@@ -49,102 +44,98 @@ function stripFrontmatter(md) {
   return md.slice(end + 3).trim();
 }
 
-function buildStubLesson(q, ref) {
+function stripLeadingTitle(md) {
+  return md.replace(/^#\s+.+\n+/, "").trim();
+}
+
+function buildStubSection(q) {
   const correct = (q.choices || []).find((c) => c.correct);
   const wrong = (q.choices || []).filter((c) => !c.correct);
   const lines = [
-    "---",
-    `id: ${q.id}`,
-    `title: "${yamlEscape(q.prompt)}"`,
-    `sidebar_label: "${yamlEscape(q.id)}"`,
-    `slug: /topics/${ref}`,
-    `domain: ${q.domain}`,
-    `chapter: ${q.chapter}`,
-    `difficulty: ${q.difficulty}`,
-    `questionId: ${q.id}`,
-    "status: stub",
-    "---",
-    "",
-    `# ${escapeMdProse(q.prompt)}`,
-    "",
-    `*Aihe: ${q.domain} / ${q.chapter} · vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
-    "",
-    "## Kysymys",
+    `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
     "",
     escapeMdProse(q.prompt),
     "",
-    "## Oikea vastaus",
+    "**Oikea vastaus:**",
     "",
-    correct?.text ? `**${escapeMdProse(correct.text)}**` : "(ei valintaa)",
-    "",
-    q.correctFeedback ? escapeMdProse(q.correctFeedback) : "",
+    correct?.text ? escapeMdProse(correct.text) : "(ei valintaa)",
     "",
   ];
+  if (q.correctFeedback) {
+    lines.push(escapeMdProse(q.correctFeedback), "");
+  }
   if (wrong.length) {
-    lines.push("## Miksi muut eivät kelpaa?", "");
+    lines.push("**Miksi muut eivät kelpaa?**", "");
     for (const w of wrong) {
       lines.push(`- ${escapeMdProse(w.text)}`);
     }
     lines.push("");
   }
   if (q.sourceUrl) {
-    lines.push("## Lue lisää", "", `- [${q.sourceUrl}](${q.sourceUrl})`, "");
-  }
-  if (q.sourceRef) {
-    lines.push(`Lähdeviite: \`${q.sourceRef}\``, "");
+    lines.push(`[Lue lisää](${q.sourceUrl})`, "");
   }
   lines.push(
-    "> **Luonnos** — automaattinen runko. Kirjoita täysi oppitunti tiedostoon",
+    "> **Luonnos** — kirjoita täysi oppitunti tiedostoon",
     `> \`opiskelu/lessons/${q.id}.md\` ja aja \`npm run study:sync\`.`,
   );
   return lines.join("\n");
 }
 
-function buildManualLessonDoc(q, ref, body) {
-  const content = stripFrontmatter(body);
-  const lines = [
-    "---",
-    `id: ${q.id}`,
-    `title: "${yamlEscape(q.prompt)}"`,
-    `sidebar_label: "${yamlEscape(q.id)}"`,
-    `slug: /topics/${ref}`,
-    `domain: ${q.domain}`,
-    `chapter: ${q.chapter}`,
-    `difficulty: ${q.difficulty}`,
-    `questionId: ${q.id}`,
-    "status: ready",
-    "---",
-    "",
-    `*Aihe: ${q.domain} / ${q.chapter} · vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
-    "",
-    content,
-  ];
+function buildManualSection(q, body) {
+  let content = stripFrontmatter(body);
+  content = stripLeadingTitle(content);
+  const lines = [`*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`, "", content];
   if (q.sourceUrl && !content.includes(q.sourceUrl)) {
-    lines.push("", "## Lue lisää", "", `- [${q.sourceUrl}](${q.sourceUrl})`);
+    lines.push("", `[Lue lisää](${q.sourceUrl})`);
   }
   return lines.join("\n");
 }
 
-function writeCategoryJson(dir, label, position) {
-  fs.mkdirSync(dir, { recursive: true });
-  const file = path.join(dir, "_category_.json");
-  const payload = {
-    label,
-    position,
-    link: { type: "generated-index", description: label },
-  };
-  fs.writeFileSync(file, `${JSON.stringify(payload, null, 2)}\n`);
-}
+function buildDomainPage(domain, domainQuestions, readyIds, sidebarPosition) {
+  const label = DOMAIN_LABELS[domain] || domain;
+  const chapters = [...new Set(domainQuestions.map((q) => q.chapter))].sort();
 
-function clearGeneratedDocs() {
-  if (fs.existsSync(docsRoot)) {
-    fs.rmSync(docsRoot, { recursive: true, force: true });
+  const lines = [
+    "---",
+    `title: ${label}`,
+    `sidebar_label: ${label}`,
+    `slug: /topics/${domain}`,
+    `sidebar_position: ${sidebarPosition}`,
+    "toc_min_heading_level: 2",
+    "toc_max_heading_level: 3",
+    "---",
+    "",
+    `# ${label}`,
+    "",
+    `${domainQuestions.length} kysymystä · ${chapters.length} aihealuetta. Scrollaa tai käytä oikean reunan sisällysluetteloa.`,
+    "",
+    "## Sisällys",
+    "",
+  ];
+
+  for (const chapter of chapters) {
+    const chapterLabel = CHAPTER_LABELS[chapter] || chapter;
+    lines.push(`- [${chapterLabel}](#${chapter})`);
   }
-  fs.mkdirSync(docsRoot, { recursive: true });
-}
+  lines.push("");
 
-function normalizePrompt(s) {
-  return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+  for (const chapter of chapters) {
+    const chapterLabel = CHAPTER_LABELS[chapter] || chapter;
+    const chapterQs = domainQuestions
+      .filter((q) => q.chapter === chapter)
+      .sort((a, b) => a.id.localeCompare(b.id));
+
+    lines.push(`## ${chapterLabel} {#${chapter}}`, "");
+
+    for (const q of chapterQs) {
+      const manual = readManualLesson(q.id);
+      if (manual) readyIds.add(q.id);
+      const section = manual ? buildManualSection(q, manual) : buildStubSection(q);
+      lines.push(`### ${escapeMdProse(q.prompt)} {#${q.id}}`, "", section, "", "---", "");
+    }
+  }
+
+  return lines.join("\n");
 }
 
 function buildProgressMarkdown(questions, readyIds) {
@@ -180,14 +171,14 @@ function buildProgressMarkdown(questions, readyIds) {
     "",
     "## Domain",
     "",
-    "| Domain | Valmiit | Yhteensä | % |",
-    "|--------|---------|----------|---|",
+    "| Domain | Sivu | Valmiit | Yhteensä | % |",
+    "|--------|------|---------|----------|---|",
   ];
 
   for (const [domain, stats] of Object.entries(byDomain).sort()) {
     const label = DOMAIN_LABELS[domain] || domain;
     const p = stats.total ? Math.round((stats.ready / stats.total) * 1000) / 10 : 0;
-    lines.push(`| ${label} (${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
+    lines.push(`| ${label} | [topics/${domain}](topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
   }
 
   lines.push("", "## Luku (chapter)", "", "| Luku | Domain | Valmiit | Yhteensä | % |", "|------|--------|---------|----------|---|");
@@ -212,56 +203,45 @@ function buildProgressMarkdown(questions, readyIds) {
   return lines.join("\n");
 }
 
+function sortDomains(domains) {
+  return [...domains].sort((a, b) => {
+    const ai = DOMAIN_ORDER.indexOf(a);
+    const bi = DOMAIN_ORDER.indexOf(b);
+    if (ai >= 0 && bi >= 0) return ai - bi;
+    if (ai >= 0) return -1;
+    if (bi >= 0) return 1;
+    return a.localeCompare(b);
+  });
+}
+
 function main() {
   const questions = listAllQuestions();
-  clearGeneratedDocs();
+  if (fs.existsSync(docsRoot)) {
+    fs.rmSync(docsRoot, { recursive: true, force: true });
+  }
+  fs.mkdirSync(docsRoot, { recursive: true });
 
-  const domains = [...new Set(questions.map((q) => q.domain))].sort();
+  const domains = sortDomains([...new Set(questions.map((q) => q.domain))]);
   const readyIds = new Set();
 
-  let domainPos = 1;
-  for (const domain of domains) {
-    const domainDir = path.join(docsRoot, domain);
-    writeCategoryJson(domainDir, DOMAIN_LABELS[domain] || domain, domainPos);
-    domainPos += 1;
-
-    const chapters = [...new Set(
-      questions.filter((q) => q.domain === domain).map((q) => q.chapter),
-    )].sort();
-
-    let chapterPos = 1;
-    for (const chapter of chapters) {
-      const chapterDir = path.join(domainDir, chapter);
-      writeCategoryJson(chapterDir, CHAPTER_LABELS[chapter] || chapter, chapterPos);
-      chapterPos += 1;
-
-      const chapterQs = questions
-        .filter((q) => q.domain === domain && q.chapter === chapter)
-        .sort((a, b) => a.id.localeCompare(b.id));
-
-      for (const q of chapterQs) {
-        const ref = lessonRefForQuestion(q);
-        const manual = readManualLesson(q.id);
-        const doc = manual
-          ? buildManualLessonDoc(q, ref, manual)
-          : buildStubLesson(q, ref);
-        if (manual) readyIds.add(q.id);
-        const outFile = path.join(chapterDir, `${slugify(q.id)}.md`);
-        fs.writeFileSync(outFile, doc);
-      }
-    }
-  }
+  domains.forEach((domain, index) => {
+    const domainQuestions = questions.filter((q) => q.domain === domain);
+    const doc = buildDomainPage(domain, domainQuestions, readyIds, index + 1);
+    fs.writeFileSync(path.join(docsRoot, `${domain}.md`), doc);
+  });
 
   fs.writeFileSync(progressPath, buildProgressMarkdown(questions, readyIds));
 
   const manifest = {
     generatedAt: new Date().toISOString(),
+    layout: "flat-domain-scroll",
     totalQuestions: questions.length,
     readyLessons: readyIds.size,
     domains: domains.map((d) => ({
       id: d,
       label: DOMAIN_LABELS[d] || d,
-      chapters: [...new Set(questions.filter((q) => q.domain === d).map((q) => q.chapter))].sort(),
+      slug: `/docs/topics/${d}/`,
+      questionCount: questions.filter((q) => q.domain === d).length,
     })),
   };
   fs.mkdirSync(path.join(root, "content"), { recursive: true });
@@ -270,9 +250,7 @@ function main() {
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
 
-  console.log(`study-sync: ${questions.length} questions → ${readyIds.size} ready lessons`);
-  console.log(`  docs: study/docs/topics/`);
-  console.log(`  progress: study/docs/progress.md`);
+  console.log(`study-sync: ${questions.length} questions → ${domains.length} domain pages, ${readyIds.size} ready lessons`);
 }
 
 main();
