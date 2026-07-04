@@ -20,8 +20,12 @@ const DOMAIN_ORDER = [
   "git", "backend", "security", "robotframework",
 ];
 
-function yamlEscape(s) {
-  return String(s).replace(/"/g, '\\"');
+function resolveSourceUrl(q) {
+  const url = String(q.sourceUrl || "").trim();
+  if (/^https?:\/\//i.test(url)) return url;
+  const feature = String(q.featureId || "").trim();
+  if (/^https?:\/\//i.test(feature)) return feature;
+  return null;
 }
 
 function escapeMdProse(s) {
@@ -62,7 +66,8 @@ function buildStubSection(q) {
     lines.push(escapeMdProse(q.correctFeedback), "");
   }
   if (q.sourceUrl) {
-    lines.push(`[Lue lisää](${q.sourceUrl})`, "");
+    const sourceUrl = resolveSourceUrl(q);
+    if (sourceUrl) lines.push(`[Lue lisää](${sourceUrl})`, "");
   }
   lines.push(
     "> **Luonnos** — kirjoita täysi oppitunti tiedostoon",
@@ -82,7 +87,10 @@ function buildManualSection(q, body) {
     content,
   ];
   if (q.sourceUrl && !content.includes(q.sourceUrl)) {
-    lines.push("", `[Lue lisää](${q.sourceUrl})`);
+    const sourceUrl = resolveSourceUrl(q);
+    if (sourceUrl && !content.includes(sourceUrl)) {
+      lines.push("", `[Lue lisää](${sourceUrl})`);
+    }
   }
   return lines.join("\n");
 }
@@ -174,7 +182,7 @@ function buildProgressMarkdown(questions, readyIds) {
   for (const [domain, stats] of Object.entries(byDomain).sort()) {
     const label = DOMAIN_LABELS[domain] || domain;
     const p = stats.total ? Math.round((stats.ready / stats.total) * 1000) / 10 : 0;
-    lines.push(`| ${label} | [topics/${domain}](topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
+    lines.push(`| ${label} | [topics/${domain}](/docs/topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
   }
 
   lines.push("", "## Luku (chapter)", "", "| Luku | Domain | Valmiit | Yhteensä | % |", "|------|--------|---------|----------|---|");
