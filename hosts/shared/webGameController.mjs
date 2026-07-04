@@ -676,6 +676,7 @@ function snapshot() {
       hint: view.hintLine,
       lines: mapDisplay.lines,
       recommendedCells: mapDisplay.recommendedCells,
+      entityCells: mapDisplay.entityCells,
       camera: { x: view.cameraX, y: view.cameraY },
       onElevator: elevator.onElevator,
       elevatorFloors: elevator.floors,

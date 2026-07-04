@@ -21,6 +21,12 @@ function isFloorChar(ch: string): boolean {
 
 type WallSprite = { base: string; dir: IsoDirection };
 
+/** Kenney wall dirs are mirrored vs our ASCII grid compass (E↔N, S↔W). */
+function fixIsoWallDir(dir: IsoDirection): IsoDirection {
+  const map: Record<IsoDirection, IsoDirection> = { N: "E", E: "N", S: "W", W: "S" };
+  return map[dir];
+}
+
 /** Pick wall/corner sprite facing open (floor) neighbors — Kenney iso convention. */
 function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const north = isWallChar(glyphAt(lines, x, y - 1));
@@ -32,25 +38,25 @@ function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const openE = !east;
   const openW = !west;
 
-  if (openN && openW) return { base: "wallCorner", dir: "N" };
-  if (openN && openE) return { base: "wallCorner", dir: "E" };
-  if (openS && openW) return { base: "wallCorner", dir: "W" };
-  if (openS && openE) return { base: "wallCorner", dir: "S" };
+  if (openN && openW) return { base: "wallCorner", dir: fixIsoWallDir("N") };
+  if (openN && openE) return { base: "wallCorner", dir: fixIsoWallDir("E") };
+  if (openS && openW) return { base: "wallCorner", dir: fixIsoWallDir("W") };
+  if (openS && openE) return { base: "wallCorner", dir: fixIsoWallDir("S") };
 
-  if (openN && !openS && !openE && !openW) return { base: "wall", dir: "N" };
-  if (openS && !openN && !openE && !openW) return { base: "wall", dir: "S" };
-  if (openE && !openW && !openN && !openS) return { base: "wall", dir: "E" };
-  if (openW && !openE && !openN && !openS) return { base: "wall", dir: "W" };
+  if (openN && !openS && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("N") };
+  if (openS && !openN && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("S") };
+  if (openE && !openW && !openN && !openS) return { base: "wall", dir: fixIsoWallDir("E") };
+  if (openW && !openE && !openN && !openS) return { base: "wall", dir: fixIsoWallDir("W") };
 
-  if (openN && openS) return { base: "wallHalf", dir: "E" };
-  if (openE && openW) return { base: "wallHalf", dir: "N" };
+  if (openN && openS) return { base: "wallHalf", dir: fixIsoWallDir("E") };
+  if (openE && openW) return { base: "wallHalf", dir: fixIsoWallDir("N") };
 
-  if (openN) return { base: "wall", dir: "N" };
-  if (openS) return { base: "wall", dir: "S" };
-  if (openE) return { base: "wall", dir: "E" };
-  if (openW) return { base: "wall", dir: "W" };
+  if (openN) return { base: "wall", dir: fixIsoWallDir("N") };
+  if (openS) return { base: "wall", dir: fixIsoWallDir("S") };
+  if (openE) return { base: "wall", dir: fixIsoWallDir("E") };
+  if (openW) return { base: "wall", dir: fixIsoWallDir("W") };
 
-  return { base: "wall", dir: "E" };
+  return { base: "wall", dir: fixIsoWallDir("E") };
 }
 
 export type TileSprite = {
@@ -67,30 +73,61 @@ export type EntitySprite = {
   police?: boolean;
 };
 
+export type EntityCellInfo = {
+  x: number;
+  y: number;
+  glyph: string;
+  kind?: string;
+  id?: string;
+};
+
 export type CellSprite = TileSprite | EntitySprite | { kind: "emoji"; glyph: string; highlight?: boolean };
+
+function entityAtCell(
+  entityCells: EntityCellInfo[] | undefined,
+  x: number,
+  y: number,
+): EntityCellInfo | undefined {
+  return entityCells?.find((cell) => cell.x === x && cell.y === y);
+}
+
+function entitySkin(glyph: string): number {
+  if (glyph === "@") return 0;
+  return 1 + (glyph.charCodeAt(0) % 7);
+}
 
 export function resolveCellSprite(
   glyph: string,
   lines: string[],
   x: number,
   y: number,
-  opts: { recommended?: boolean; policeChase?: boolean },
+  opts: {
+    recommended?: boolean;
+    policeChase?: boolean;
+    entityCells?: EntityCellInfo[];
+  },
 ): CellSprite {
+  const entity = entityAtCell(opts.entityCells, x, y);
+  if (entity) {
+    if (isEmojiGlyph(entity.glyph)) {
+      return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
+    }
+    if (entity.kind === "item" || entity.kind === "pet") {
+      return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
+    }
+    return {
+      kind: "entity",
+      skin: entitySkin(entity.glyph),
+      glyph: entity.glyph,
+      highlight: opts.recommended,
+      police: opts.policeChase && entity.glyph === "P" && entity.kind === "police",
+    };
+  }
   if (glyph === "@") {
     return { kind: "entity", skin: 0, glyph, highlight: opts.recommended };
   }
   if (isEmojiGlyph(glyph)) {
     return { kind: "emoji", glyph, highlight: opts.recommended };
-  }
-  if (/^[a-zA-Z]$/.test(glyph) || glyph === "!" || glyph === "?" || glyph === "P") {
-    const skin = 1 + (glyph.charCodeAt(0) % 7);
-    return {
-      kind: "entity",
-      skin,
-      glyph,
-      highlight: opts.recommended,
-      police: opts.policeChase && glyph === "P",
-    };
   }
 
   const wall = wallSprite(lines, x, y);
