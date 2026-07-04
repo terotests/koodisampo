@@ -9,16 +9,18 @@ import {
 import {
   ensureIsoAssetsLoaded,
   getIsoImage,
-  isoCharacterKey,
   isoTileKey,
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
 import {
   drawLegoCrowbarItem,
+  drawLegoMinifig,
   drawLegoPlayer,
   drawLegoShovelItem,
   facingFromDelta,
+  isHumanEntityKind,
+  resolveMinifigAppearance,
   type PlayerFacing,
 } from "./legoSprites";
 
@@ -150,9 +152,45 @@ function drawItemGlow(
   ctx.restore();
 }
 
-function entityDrawScale(glyph: string): number {
-  if (glyph === "@") return 1.55;
-  return 1.38;
+
+function drawHumanMinifig(
+  ctx: CanvasRenderingContext2D,
+  sprite: { glyph: string; entityKind?: string; gender?: string; entityId?: string },
+  screenX: number,
+  screenY: number,
+  tileWidth: number,
+  tileHeight: number,
+  opts: { walkFrame: number; facing: PlayerFacing; activeTool?: string },
+) {
+  if (sprite.glyph === "@") {
+    drawLegoPlayer(
+      ctx,
+      screenX,
+      screenY,
+      tileWidth,
+      tileHeight,
+      opts.facing,
+      opts.walkFrame,
+      opts.activeTool,
+    );
+    return;
+  }
+  const appearance = resolveMinifigAppearance(
+    sprite.entityKind,
+    sprite.gender,
+    sprite.glyph,
+    sprite.entityId,
+  );
+  drawLegoMinifig(
+    ctx,
+    screenX,
+    screenY,
+    tileWidth,
+    tileHeight,
+    "S",
+    0,
+    appearance,
+  );
 }
 
 function drawHighlight(
@@ -262,29 +300,11 @@ function drawSprite(
   }
 
   if (sprite.kind === "entity") {
-    if (sprite.glyph === "@") {
-      drawLegoPlayer(
-        ctx,
-        screenX,
-        screenY,
-        tileWidth,
-        tileHeight,
-        opts.facing,
-        opts.walkFrame,
-        opts.activeTool,
-      );
+    if (isHumanEntityKind(sprite.entityKind) || sprite.glyph === "@") {
+      drawHumanMinifig(ctx, sprite, screenX, screenY, tileWidth, tileHeight, opts);
       return;
     }
-    const img = getIsoImage(isoCharacterKey(sprite.skin));
-    if (img) {
-      drawScaledImage(ctx, img, screenX, screenY, tileWidth, {
-        scaleMul: entityDrawScale(sprite.glyph),
-        crisp: true,
-        yBias: -3,
-      });
-    } else {
-      drawEntityLabel(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight, sprite.police);
-    }
+    drawEntityLabel(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight, sprite.police);
     return;
   }
 

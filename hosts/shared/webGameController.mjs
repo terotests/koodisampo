@@ -672,6 +672,8 @@ function snapshot() {
     const mapDisplay = applyMapPersonDisplay(view.lines, map, personRegistryState, {
       x: view.cameraX,
       y: view.cameraY,
+    }, {
+      playerGender: session.playerStats?.gender ?? "M",
     });
     return {
       ...base,

@@ -278,7 +278,7 @@ function getFloorTitle(session, floorIndex) {
   return map.floors[floorIndex].title || `Kerros ${floorIndex + 1}`;
 }
 
-export function applyMapPersonDisplay(lines, map, registry, camera = null) {
+export function applyMapPersonDisplay(lines, map, registry, camera = null, options = {}) {
   if (!lines?.length || !map || !registry) {
     return { lines: lines ?? [], recommendedCells: [], entityCells: [] };
   }
@@ -296,7 +296,15 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     if (pdy >= 0 && pdy < out.length && pdx >= 0) {
       const playerLine = out[pdy];
       if (pdx < mapLineColumnCount(playerLine)) {
-        entityCells.push({ x: pdx, y: pdy, glyph: "@", kind: "player", id: "player" });
+        entityCells.push({
+          x: pdx,
+          y: pdy,
+          glyph: "@",
+          kind: "player",
+          id: "player",
+          gender: options.playerGender === "F" ? "F" : "M",
+        });
+        recommendedCells.push(`${pdy},${pdx}`);
       }
     }
   }
@@ -324,10 +332,15 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const ch = personMapChar(registry, ent);
     out[dy] = replaceMapCell(line, dx, ch);
     painted.add(cellKey);
-    entityCells.push({ x: dx, y: dy, glyph: ch, kind: ent.kind, id: ent.id });
-    if (hasPersonRecommendation(registry, ent.id)) {
-      recommendedCells.push(`${dy},${dx}`);
-    }
+    const rec = ensurePerson(registry, ent);
+    entityCells.push({
+      x: dx,
+      y: dy,
+      glyph: ch,
+      kind: ent.kind,
+      id: ent.id,
+      gender: rec?.gender ?? inferGender(parseDisplayFirstName(ent.name), ent),
+    });
   }
   return { lines: out, recommendedCells, entityCells };
 }
