@@ -56,4 +56,8 @@ const buildOut = `${build.stdout}\n${build.stderr}`;
 assert.equal(build.status, 0, buildOut);
 assert.doesNotMatch(buildOut, /Broken link on source page path/, "study build must not emit broken doc links");
 
+const indexHtml = fs.readFileSync(path.join(root, "study/build/index.html"), "utf8");
+assert.match(indexHtml, /location\.replace\("docs\/intro\/"\)/, "study index.html must static-redirect to docs/intro/");
+assert.doesNotMatch(indexHtml, /Page Not Found/, "study index.html must not be Docusaurus 404 shell");
+
 console.log("study_sync_docs tests OK");
