@@ -108,7 +108,9 @@ export function runPersonStatusTests() {
       x: view.cameraX,
       y: view.cameraY,
     });
-    assert(display.recommendedCells.length > 0, "recommended staff highlighted on map");
+    const playerCell = `${map.playerY - view.cameraY},${map.playerX - view.cameraX}`;
+    assert(display.recommendedCells.length === 1, "only player tile highlighted on map");
+    assert(display.recommendedCells[0] === playerCell, "player highlight follows player position");
   });
 
   stopGameSession(root, session);
