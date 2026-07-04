@@ -9,6 +9,7 @@
     "dev:stories": "npm run dev --workspace=web",
     "build": "npm run build:study && npm run build --workspace=web-game && node scripts/merge-study-dist.mjs",
     "build:study": "node scripts/study-sync-docs.mjs && npm run build --workspace=study && node scripts/study-postbuild.mjs",
+    "study:dev": "npm run study:sync && npm run start --workspace=study",
     "study:sync": "node scripts/study-sync-docs.mjs",
     "study:todo": "node scripts/study-lesson-todo.mjs",
     "study:progress": "node scripts/study-progress.mjs",

@@ -15,7 +15,21 @@ Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **
 - **Yksi sivu per aihepiiri** — esim. [PostgreSQL](topics/postgres) on yksi pitkä scrollattava sivu
 - Luvut (chapter) ovat `##`-otsikoita, yksittäiset kysymykset `###`-otsikoita
 - Oikean reunan sisällysluettelo auttaa hyppäämään osioon
-- Valmiit oppitunnit: [`opiskelu/lessons/`](https://github.com/terotests/koodisampo/tree/main/opiskelu/lessons)
+- **Valmis oppitunti** alkaa lainauslohkolla; **Luonnos** = vain oikea vastaus, täyttä tekstiä ei vielä
+- Valmiit tiedostot repossa: [`opiskelu/lessons/`](https://github.com/terotests/koodisampo/tree/main/opiskelu/lessons)
+
+## Paikallinen kehitys
+
+`study/docs/topics/` generoidaan kysymyspankista — sitä ei commitoida. Ennen Docusaurusta:
+
+```bash
+npm run study:dev    # synkronoi + dev-palvelin (http://localhost:3000)
+# tai erikseen:
+npm run study:sync   # generoi topics/ + progress.md
+npm run start --workspace=study
+```
+
+Uusi käsin kirjoitettu oppitunti: tallenna `opiskelu/lessons/{kysymys-id}.md`, aja `npm run study:sync`, ja se ilmestyy domain-sivun alle (esim. `#b03-pg-config-statements-ext`).
 
 ## Linkki kysymyksestä
 
