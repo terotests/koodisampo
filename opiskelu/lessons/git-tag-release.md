@@ -17,6 +17,6 @@ CI trigger: push tag `v*` → deploy staging/prod. GitHub Actions: `on: push: ta
 
 ## Käytännössä
 
-Semantic versioning (`v1.2.0`). Älä liiku tagia — uusi versio = uusi tag. `git describe --tags` build-numeroihin. Signed tags (`-s`) turvallisuuskriittisissä releaseissä.
+Semanttinen versionointi (`v1.2.0`). Älä siirrä julkaistua tagia — uusi versio = uusi tag. Käytä `git describe --tags` build-tunnisteisiin. Turvallisuuskriittisissä julkaisuissa allekirjoita tagit (`-s`).
 
 [Lue lisää](https://git-scm.com/docs/git-tag)
