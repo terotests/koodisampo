@@ -155,6 +155,42 @@ export function recordPersonEncounter(registry, entity, { correct = null, tone =
   return registry;
 }
 
+export function appearanceRoleKey(entity) {
+  if (!entity?.id) return "default";
+  if (entity.id === "receptionist") return "reception";
+  if (entity.id === "office-dog") return "dog";
+  if (entity.kind === "pet") return "dog";
+  if (entity.kind === "guru") return "guru";
+  if (entity.kind === "security") return "security";
+  if (entity.kind === "police") return "police";
+  if (entity.kind === "hostile") return "hostile";
+  if (entity.id === "janitor" || entity.scheduleRole === "janitor") return "janitor";
+  if (entity.char === "C" || entity.id.startsWith("ceo-")) return "ceo";
+  if (entity.kind === "role") return "staff";
+  if (entity.kind === "coworker" && entity.topic) return `topic:${entity.topic}`;
+  if (entity.kind === "coworker") return "coworker";
+  return "default";
+}
+
+export function entityAppearanceMeta(registry, entity) {
+  if (!entity?.id) {
+    return { gender: "M", roleKey: "default", topic: "" };
+  }
+  if (entity.kind === "item" || entity.kind === "pet") {
+    return {
+      gender: "M",
+      roleKey: appearanceRoleKey(entity),
+      topic: "",
+    };
+  }
+  const rec = ensurePerson(registry, entity);
+  return {
+    gender: rec?.gender === "F" ? "F" : "M",
+    roleKey: appearanceRoleKey(entity),
+    topic: String(entity.topic || ""),
+  };
+}
+
 export function personMapChar(registry, entity) {
   if (!entity?.id) return "?";
   if (isEmojiGlyph(entity.char)) return entity.char;
@@ -296,7 +332,16 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     if (pdy >= 0 && pdy < out.length && pdx >= 0) {
       const playerLine = out[pdy];
       if (pdx < mapLineColumnCount(playerLine)) {
-        entityCells.push({ x: pdx, y: pdy, glyph: "@", kind: "player", id: "player" });
+        entityCells.push({
+          x: pdx,
+          y: pdy,
+          glyph: "@",
+          kind: "player",
+          id: "player",
+          gender: "M",
+          roleKey: "player",
+          topic: "",
+        });
         recommendedCells.push(`${pdy},${pdx}`);
       }
     }
@@ -310,6 +355,7 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const line = out[dy];
     if (dx >= mapLineColumnCount(line)) continue;
     const cellKey = `${dx},${dy}`;
+    const appearance = entityAppearanceMeta(registry, ent);
     if (ent.kind === "item" || ent.kind === "pet") {
       entityCells.push({
         x: dx,
@@ -318,6 +364,9 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
         kind: ent.kind,
         id: ent.id,
         itemTool: ent.itemTool || "",
+        gender: appearance.gender,
+        roleKey: appearance.roleKey,
+        topic: appearance.topic,
       });
       continue;
     }
@@ -325,7 +374,16 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const ch = personMapChar(registry, ent);
     out[dy] = replaceMapCell(line, dx, ch);
     painted.add(cellKey);
-    entityCells.push({ x: dx, y: dy, glyph: ch, kind: ent.kind, id: ent.id });
+    entityCells.push({
+      x: dx,
+      y: dy,
+      glyph: ch,
+      kind: ent.kind,
+      id: ent.id,
+      gender: appearance.gender,
+      roleKey: appearance.roleKey,
+      topic: appearance.topic,
+    });
   }
   return { lines: out, recommendedCells, entityCells };
 }

@@ -1,5 +1,13 @@
 import { splitMapGraphemes, isEmojiGlyph } from "../../../hosts/shared/mapGlyphs.mjs";
 import type { IsoDirection } from "./isometricProjection";
+import {
+  DEFAULT_PLAYER_APPEARANCE,
+  resolveLegoAppearance,
+  resolveLegoEntityKind,
+  type EntityAppearanceInput,
+  type LegoAppearance,
+  type LegoEntityKind,
+} from "./legoAppearance";
 
 const WALL_CHARS = new Set(["#", "%", "|"]);
 const FLOOR_CHARS = new Set([".", " ", ",", "-", "x"]);
@@ -90,10 +98,11 @@ export type TileSprite = {
 
 export type EntitySprite = {
   kind: "entity";
-  skin: number;
   glyph: string;
   highlight?: boolean;
   police?: boolean;
+  legoKind: LegoEntityKind;
+  appearance: LegoAppearance;
 };
 
 export type EntityCellInfo = {
@@ -103,6 +112,9 @@ export type EntityCellInfo = {
   kind?: string;
   id?: string;
   itemTool?: string;
+  gender?: string;
+  roleKey?: string;
+  topic?: string;
 };
 
 export type ItemSprite = {
@@ -112,13 +124,15 @@ export type ItemSprite = {
   glyph: string;
   itemTool?: string;
   highlight?: boolean;
+  legoProp?: "tv";
 };
 
 export type CellSprite =
   | TileSprite
   | EntitySprite
   | ItemSprite
-  | { kind: "emoji"; glyph: string; highlight?: boolean };
+  | { kind: "emoji"; glyph: string; highlight?: boolean }
+  | { kind: "legoProp"; prop: "dog" | "tv"; glyph: string; highlight?: boolean };
 
 function entityAtCell(
   entityCells: EntityCellInfo[] | undefined,
@@ -128,9 +142,34 @@ function entityAtCell(
   return entityCells?.find((cell) => cell.x === x && cell.y === y);
 }
 
-function entitySkin(glyph: string): number {
-  if (glyph === "@") return 0;
-  return 1 + (glyph.charCodeAt(0) % 7);
+function entityAppearanceInput(entity: EntityCellInfo): EntityAppearanceInput {
+  return {
+    gender: entity.gender,
+    roleKey: entity.roleKey,
+    topic: entity.topic,
+    kind: entity.kind,
+    id: entity.id,
+    glyph: entity.glyph,
+  };
+}
+
+function resolveEntitySprite(entity: EntityCellInfo, opts: { recommended?: boolean; policeChase?: boolean }): EntitySprite | { kind: "legoProp"; prop: "dog" | "tv"; glyph: string; highlight?: boolean } {
+  const input = entityAppearanceInput(entity);
+  const legoKind = resolveLegoEntityKind(input);
+  if (legoKind === "dog") {
+    return { kind: "legoProp", prop: "dog", glyph: entity.glyph, highlight: opts.recommended };
+  }
+  if (legoKind === "tv") {
+    return { kind: "legoProp", prop: "tv", glyph: entity.glyph, highlight: opts.recommended };
+  }
+  return {
+    kind: "entity",
+    glyph: entity.glyph,
+    highlight: opts.recommended,
+    police: opts.policeChase && entity.glyph === "P" && entity.kind === "police",
+    legoKind,
+    appearance: resolveLegoAppearance(input),
+  };
 }
 
 function itemTileSprite(itemTool: string, glyph: string): ItemSprite {
@@ -165,30 +204,36 @@ export function resolveCellSprite(
 ): CellSprite {
   const entity = entityAtCell(opts.entityCells, x, y);
   if (entity) {
-    if (isEmojiGlyph(entity.glyph)) {
-      return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
-    }
     if (entity.kind === "item") {
+      const glyph = entity.glyph;
+      if (glyph === "🖥️" || glyph === "📺") {
+        return { kind: "legoProp", prop: "tv", glyph, highlight: opts.recommended };
+      }
       return {
-        ...itemTileSprite(entity.itemTool ?? "", entity.glyph),
+        ...itemTileSprite(entity.itemTool ?? "", glyph),
         highlight: opts.recommended,
       };
     }
     if (entity.kind === "pet") {
-      return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
+      return { kind: "legoProp", prop: "dog", glyph: entity.glyph, highlight: opts.recommended };
     }
-    return {
-      kind: "entity",
-      skin: entitySkin(entity.glyph),
-      glyph: entity.glyph,
-      highlight: opts.recommended,
-      police: opts.policeChase && entity.glyph === "P" && entity.kind === "police",
-    };
+    const resolved = resolveEntitySprite(entity, opts);
+    if (resolved.kind === "legoProp") return resolved;
+    return resolved;
   }
   if (glyph === "@") {
-    return { kind: "entity", skin: 0, glyph, highlight: opts.recommended };
+    return {
+      kind: "entity",
+      glyph,
+      highlight: opts.recommended,
+      legoKind: "minifig",
+      appearance: DEFAULT_PLAYER_APPEARANCE,
+    };
   }
   if (isEmojiGlyph(glyph)) {
+    if (glyph === "🖥️" || glyph === "📺") {
+      return { kind: "legoProp", prop: "tv", glyph, highlight: opts.recommended };
+    }
     return { kind: "emoji", glyph, highlight: opts.recommended };
   }
 
