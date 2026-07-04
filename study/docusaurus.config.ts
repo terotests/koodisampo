@@ -10,6 +10,7 @@ const config: Config = {
   favicon: "img/favicon.ico",
   url: "https://terotests.github.io",
   baseUrl,
+  trailingSlash: true,
   organizationName: "terotests",
   projectName: "koodisampo",
   onBrokenLinks: "warn",
@@ -82,6 +83,10 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
       additionalLanguages: ["bash", "cpp", "sql", "yaml", "docker"],
+    },
+    tableOfContents: {
+      minHeadingLevel: 2,
+      maxHeadingLevel: 3,
     },
   } satisfies Preset.ThemeConfig,
 };

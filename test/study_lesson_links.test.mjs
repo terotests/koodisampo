@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
-import { lessonRefForQuestion, lessonUrl, lessonLinkLine } from "../hosts/shared/studyLessonLinks.mjs";
+import {
+  lessonRefForQuestion,
+  lessonUrl,
+  lessonDocPathForQuestion,
+  lessonLinkLine,
+} from "../hosts/shared/studyLessonLinks.mjs";
 
 const q = {
   id: "tools-auto",
@@ -9,14 +14,19 @@ const q = {
 };
 
 assert.equal(lessonRefForQuestion(q), "cpp/tools/tools-auto");
+assert.equal(lessonDocPathForQuestion(q), "/docs/topics/cpp/#tools-auto");
 assert.equal(
   lessonUrl(q, { origin: "https://example.com" }),
-  "https://example.com/koodisampo/opiskelu/docs/topics/cpp/tools/tools-auto",
+  "https://example.com/koodisampo/opiskelu/docs/topics/cpp/#tools-auto",
 );
 assert.equal(
-  lessonRefForQuestion({ ...q, lessonRef: "custom/path" }),
-  "custom/path",
+  lessonRefForQuestion({ ...q, lessonRef: "custom/path/id" }),
+  "custom/path/id",
 );
-assert(lessonLinkLine(q).includes("tools-auto"), "lesson link mentions path");
+assert.equal(
+  lessonDocPathForQuestion({ ...q, lessonRef: "postgres/pg-indexes/foo" }),
+  "/docs/topics/postgres/#tools-auto",
+);
+assert(lessonLinkLine(q).includes("#tools-auto"), "lesson link mentions anchor");
 
 console.log("study_lesson_links tests OK");
