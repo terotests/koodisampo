@@ -13,6 +13,7 @@ import {
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
+import { themeBackgroundColor } from "../theme";
 import {
   drawLegoCrowbarItem,
   drawLegoDog,
@@ -356,7 +357,7 @@ function paintIsometricMap(
   const origin = playerCenteredOrigin(playerGridX, playerGridY, cssWidth, cssHeight, tileWidth, tileHeight);
 
   ctx.clearRect(0, 0, cssWidth, cssHeight);
-  ctx.fillStyle = "#0d1117";
+  ctx.fillStyle = themeBackgroundColor();
   ctx.fillRect(0, 0, cssWidth, cssHeight);
 
   const facing = playerFacing(state);
