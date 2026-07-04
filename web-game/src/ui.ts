@@ -2,6 +2,10 @@ import type { WebGame } from "./boot";
 import { mountElevatorToolbar } from "../../hosts/shared/elevatorToolbarDom.mjs";
 import { PLAYER_SPECIALTY_OPTIONS } from "../../hosts/shared/playerSpecialty.mjs";
 import {
+  lessonUrlForBacklogEntry,
+  STUDY_SITE_ORIGIN,
+} from "../../hosts/shared/studyLessonLinks.mjs";
+import {
   clearMobileElevator,
   initMobileLayoutOptions,
   isMobileLayout,
@@ -280,6 +284,67 @@ export function mountGameUI(game: WebGame) {
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
+    }
+
+    function formatStudyEntryDate(ts: number) {
+      try {
+        return new Date(ts).toISOString().slice(0, 10);
+      } catch {
+        return "?";
+      }
+    }
+
+    function renderStudyListEntry(entry: {
+      questionId?: string;
+      prompt?: string;
+      domain?: string;
+      chapter?: string;
+      entityName?: string;
+      at?: number;
+    }, index: number) {
+      const tag = [entry.domain, entry.chapter].filter(Boolean).join("/") || "yleinen";
+      const who = entry.entityName ? ` (${entry.entityName})` : "";
+      const lessonUrl = entry.questionId
+        ? lessonUrlForBacklogEntry(entry, { origin: STUDY_SITE_ORIGIN })
+        : "";
+      let html = `<div style="margin:10px 0 14px">`;
+      html += `<div><b>[${index + 1}]</b> ${esc(entry.prompt)}${esc(who)}</div>`;
+      html += `<div style="color:#8b949e;font-size:0.92em;margin-top:4px">${esc(tag)} — ${esc(formatStudyEntryDate(entry.at ?? 0))}</div>`;
+      if (entry.questionId) {
+        html += `<div style="color:#8b949e;font-size:0.92em;margin-top:2px">→ ${esc(entry.questionId)}</div>`;
+      }
+      if (lessonUrl) {
+        html += `<div style="margin-top:6px"><a href="${esc(lessonUrl)}" target="_blank" rel="noopener" style="color:#58a6ff">📖 Lue oppitunti</a></div>`;
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    function renderStudyListHtml(backlog: {
+      wantMore?: Array<Record<string, unknown>>;
+      wrongAnswers?: Array<Record<string, unknown>>;
+    } | null | undefined) {
+      const b = backlog || { wantMore: [], wrongAnswers: [] };
+      const wantMore = Array.isArray(b.wantMore) ? b.wantMore : [];
+      const wrongAnswers = Array.isArray(b.wrongAnswers) ? b.wrongAnswers : [];
+      let html = `<div class="overlay-title">═══ OPISKELULISTA ═══</div>`;
+      html += `<div style="margin-top:14px;color:#d2a8ff;font-weight:600">── Kysy AI:lta (${wantMore.length}) ──</div>`;
+      if (wantMore.length === 0) {
+        html += `<div style="color:#8b949e;margin-top:8px">(tyhjä — merkitse [m] kysymyksen palautteen jälkeen)</div>`;
+      } else {
+        wantMore.forEach((entry, i) => {
+          html += renderStudyListEntry(entry as Parameters<typeof renderStudyListEntry>[0], i);
+        });
+      }
+      html += `<div style="margin-top:18px;color:#d2a8ff;font-weight:600">── Väärin vastatut (${wrongAnswers.length}) ──</div>`;
+      if (wrongAnswers.length === 0) {
+        html += `<div style="color:#8b949e;margin-top:8px">(ei vielä väärää vastausta tallennettuna)</div>`;
+      } else {
+        wrongAnswers.forEach((entry, i) => {
+          html += renderStudyListEntry(entry as Parameters<typeof renderStudyListEntry>[0], i);
+        });
+      }
+      return html;
     }
 
     function statsLine(state) {
@@ -897,7 +962,7 @@ export function mountGameUI(game: WebGame) {
         currentStudyListText = text;
         let html = screenHeader(state);
         html += `<div style="margin:12px 0"><button type="button" id="study-copy-btn">Kopioi leikepöydälle</button></div>`;
-        html += `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(text)}</pre>`;
+        html += renderStudyListHtml(state.studyBacklog);
         if (!mapEl) return;
         clearMapView(mapEl);
         setMapContent(html);

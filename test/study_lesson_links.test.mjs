@@ -4,6 +4,8 @@ import {
   lessonUrl,
   lessonDocPathForQuestion,
   lessonLinkLine,
+  lessonUrlForBacklogEntry,
+  questionFromBacklogEntry,
 } from "../hosts/shared/studyLessonLinks.mjs";
 
 const q = {
@@ -28,5 +30,18 @@ assert.equal(
   "/docs/topics/postgres/#tools-auto",
 );
 assert(lessonLinkLine(q).includes("#tools-auto"), "lesson link mentions anchor");
+
+const entry = {
+  questionId: "tools-auto",
+  domain: "cpp",
+  chapter: "tools",
+  prompt: "Mitä auto tekee?",
+};
+assert.equal(questionFromBacklogEntry(entry).id, "tools-auto", "backlog entry to question");
+assert.equal(
+  lessonUrlForBacklogEntry(entry, { origin: "https://example.com" }),
+  "https://example.com/koodisampo/opiskelu/docs/topics/cpp/#tools-auto",
+  "backlog entry lesson url",
+);
 
 console.log("study_lesson_links tests OK");
