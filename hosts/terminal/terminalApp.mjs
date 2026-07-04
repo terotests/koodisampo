@@ -83,6 +83,7 @@ let castListOpen = false;
 let interviewPickNonce = 0;
 let guruPickNonce = 0;
 let encounterPickNonce = 0;
+let sessionPickSeed = randomEncounterPickNonce();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "../..");
@@ -250,6 +251,7 @@ function loadStoryJson(summary) {
 
 function makeQuizPickOptions(session) {
   return {
+    sessionPickSeed,
     nextPickNonce(entityId, kind) {
       if (entityId === "receptionist") {
         interviewPickNonce += 1;
@@ -1188,9 +1190,10 @@ export async function runTerminalApp(mapJson) {
   interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   guruPickNonce = save?.progress?.guruPickNonce ?? 0;
   encounterPickNonce = save?.progress?.encounterPickNonce ?? 0;
-  if (!encounterPickNonce && !save?.features?.ids?.length) {
+  if (!encounterPickNonce) {
     encounterPickNonce = randomEncounterPickNonce();
   }
+  sessionPickSeed = randomEncounterPickNonce();
   const { root, session } = createGameSession(save);
 
   let mapOk = false;
