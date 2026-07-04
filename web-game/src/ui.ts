@@ -2,7 +2,6 @@ import type { WebGame } from "./boot";
 import { mountElevatorToolbar } from "../../hosts/shared/elevatorToolbarDom.mjs";
 import { PLAYER_SPECIALTY_OPTIONS } from "../../hosts/shared/playerSpecialty.mjs";
 import {
-  cropMapLines,
   clearMobileElevator,
   initMobileLayoutOptions,
   isMobileLayout,
@@ -724,7 +723,7 @@ export function mountGameUI(game: WebGame) {
 
     function renderMobileMap(state: State) {
       updateMobileChrome(state);
-      renderMapLines(state, cropMapLines(state.lines));
+      renderMapLines(state, state.lines);
       renderMapToolbar(state);
     }
 
