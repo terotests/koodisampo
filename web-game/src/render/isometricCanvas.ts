@@ -180,20 +180,37 @@ function paintIsometricMap(
   }
 }
 
-function resizeCanvasToContainer(canvas: HTMLCanvasElement, container: HTMLElement) {
+function plannedCanvasSize(container: HTMLElement) {
   const rect = container.getBoundingClientRect();
   const width = Math.max(Math.floor(rect.width), 320);
   const height = Math.max(Math.floor(rect.height), 240);
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.floor(width * dpr);
-  canvas.height = Math.floor(height * dpr);
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
+  return {
+    width,
+    height,
+    pixelWidth: Math.floor(width * dpr),
+    pixelHeight: Math.floor(height * dpr),
+    dpr,
+  };
+}
+
+function resizeCanvasToContainer(
+  canvas: HTMLCanvasElement,
+  size: ReturnType<typeof plannedCanvasSize>,
+) {
+  canvas.style.width = `${size.width}px`;
+  canvas.style.height = `${size.height}px`;
+  // Assigning canvas.width clears the bitmap — skip when unchanged (mobile calls
+  // patchIsometricGrid several times per frame; a no-op resize was wiping paint).
+  if (canvas.width === size.pixelWidth && canvas.height === size.pixelHeight) {
+    return;
+  }
+  canvas.width = size.pixelWidth;
+  canvas.height = size.pixelHeight;
   const ctx = canvas.getContext("2d");
   if (ctx) {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.setTransform(size.dpr, 0, 0, size.dpr, 0, 0);
   }
-  return { width, height };
 }
 
 /** Render pseudo-isometric map with player centered on screen. */
@@ -216,12 +233,14 @@ export async function patchIsometricGrid(
   }
 
   const sig = renderSignature(lines, state);
-  resizeCanvasToContainer(canvas, container);
-  if (container.dataset.isoSig === sig && container.dataset.isoSized === `${canvas.width}x${canvas.height}`) {
+  const size = plannedCanvasSize(container);
+  const sizeKey = `${size.pixelWidth}x${size.pixelHeight}`;
+  if (container.dataset.isoSig === sig && container.dataset.isoSized === sizeKey) {
     return;
   }
+  resizeCanvasToContainer(canvas, size);
   container.dataset.isoSig = sig;
-  container.dataset.isoSized = `${canvas.width}x${canvas.height}`;
+  container.dataset.isoSized = sizeKey;
 
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
