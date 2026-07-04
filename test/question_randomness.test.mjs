@@ -125,6 +125,25 @@ assert(
   `randomEncounterPickNonce should vary first Partio question (${randomPartioStarts.size} unique / 20)`,
 );
 
+// 8) Ilman historiaa valintapoolin pitäisi tarjota selvästi enemmän kuin 6 uniikkia / 100 arvontaa
+const noHistoryTopics = [
+  { topic: "tools", minUnique: 15 },
+  { topic: "apt", minUnique: 6 },
+  { topic: "rf-basics", minUnique: 6 },
+];
+for (const { topic, minUnique } of noHistoryTopics) {
+  const entity = { id: `coworker-4-${topic}`, kind: "coworker", topic, char: "W", name: "Test" };
+  const seen = new Set();
+  for (let nonce = 1; nonce <= 100; nonce += 1) {
+    const { question } = pickQuestion(entity, 50, emptyQuizHistory(), { pickNonce: nonce, deaths: 0 });
+    seen.add(question.id);
+  }
+  assert(
+    seen.size >= minUnique,
+    `topic '${topic}' without history: ${seen.size} unique / 100 picks — expected at least ${minUnique}`,
+  );
+}
+
 console.log("question_randomness.test.mjs OK");
 console.log(`  Total questions: ${allQ.length}`);
 console.log(`  Robot Framework: ${rfCount}`);

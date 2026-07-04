@@ -5,20 +5,6 @@ type QuestionBank = {
   questions?: Array<Record<string, unknown>>;
 };
 
-const BANK_FILES = [
-  "backend-ops.json",
-  "cpp-best-practices.json",
-  "docker-ops.json",
-  "git-ci.json",
-  "javascript-web.json",
-  "linux-ops.json",
-  "postgresql-tuning.json",
-  "qt-dev.json",
-  "robot-framework.json",
-  "scrum-best-practices.json",
-  "web-security.json",
-];
-
 function flattenBanks(banks: QuestionBank[]) {
   const all: Array<Record<string, unknown>> = [];
   for (const bank of banks) {
@@ -35,10 +21,23 @@ function flattenBanks(banks: QuestionBank[]) {
   return all;
 }
 
+async function loadBankManifest(baseUrl: string): Promise<string[]> {
+  const res = await fetch(`${baseUrl}content/question-banks/manifest.json`);
+  if (!res.ok) {
+    throw new Error("Kysymyspankkien manifestin lataus epäonnistui");
+  }
+  const files = (await res.json()) as string[];
+  if (!Array.isArray(files) || files.length === 0) {
+    throw new Error("Kysymyspankkien manifest on tyhjä");
+  }
+  return files;
+}
+
 /** Load question banks from static assets (GitHub Pages / Vite public/). */
 export async function loadAllQuestionsFromPublic(baseUrl: string) {
+  const bankFiles = await loadBankManifest(baseUrl);
   const banks = await Promise.all(
-    BANK_FILES.map(async (file) => {
+    bankFiles.map(async (file) => {
       const res = await fetch(`${baseUrl}content/question-banks/${file}`);
       if (!res.ok) {
         throw new Error(`Kysymyspankin lataus epäonnistui: ${file}`);

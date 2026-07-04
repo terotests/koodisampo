@@ -30,6 +30,15 @@ fs.copyFileSync(rangerSrc, rangerDest);
 
 copyDir(path.join(root, "content/stories"), path.join(out, "stories"));
 copyDir(path.join(root, "content/question-banks"), path.join(out, "question-banks"));
+
+const bankManifestPath = path.join(root, "content/question-banks/manifest.json");
+const bankManifestOut = path.join(out, "question-banks/manifest.json");
+const bankFiles = fs
+  .readdirSync(path.join(root, "content/question-banks"))
+  .filter((name) => name.endsWith(".json") && name !== "manifest.json")
+  .sort();
+fs.writeFileSync(bankManifestPath, `${JSON.stringify(bankFiles, null, 2)}\n`);
+fs.copyFileSync(bankManifestPath, bankManifestOut);
 fs.mkdirSync(path.join(out, "dialogues"), { recursive: true });
 fs.copyFileSync(
   path.join(root, "content/dialogues/pack.json"),
