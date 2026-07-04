@@ -297,6 +297,7 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
       const playerLine = out[pdy];
       if (pdx < mapLineColumnCount(playerLine)) {
         entityCells.push({ x: pdx, y: pdy, glyph: "@", kind: "player", id: "player" });
+        recommendedCells.push(`${pdy},${pdx}`);
       }
     }
   }
@@ -325,9 +326,6 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     out[dy] = replaceMapCell(line, dx, ch);
     painted.add(cellKey);
     entityCells.push({ x: dx, y: dy, glyph: ch, kind: ent.kind, id: ent.id });
-    if (hasPersonRecommendation(registry, ent.id)) {
-      recommendedCells.push(`${dy},${dx}`);
-    }
   }
   return { lines: out, recommendedCells, entityCells };
 }
