@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T11:08:27.355Z",
+  "generatedAt": "2026-07-04T11:50:03.710Z",
   "summary": {
-    "totalQuestions": 1249,
-    "readyLessons": 75,
-    "pendingLessons": 1174,
-    "percent": 6
+    "totalQuestions": 1225,
+    "readyLessons": 66,
+    "pendingLessons": 1159,
+    "percent": 5.4
   },
   "domains": [
     {
@@ -3204,14 +3204,14 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 34,
-      "total": 204,
+      "ready": 25,
+      "total": 180,
       "chapters": [
         {
           "id": "pg-config",
           "label": "PostgreSQL-konfig",
-          "ready": 33,
-          "total": 33,
+          "ready": 24,
+          "total": 24,
           "questions": [
             {
               "id": "b02-pg-config-connections-15",
@@ -3226,13 +3226,6 @@
               "prompt": "PostgreSQL cache hit ratio matala — ensimmäinen muistiparametri tarkistaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-config-shared-14.md"
-            },
-            {
-              "id": "b02-pg-config-work-mem-13",
-              "difficulty": 4,
-              "prompt": "Iso sort/hash join spillaa diskiin — logissa 'temporary file'. Parametri?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-config-work-mem-13.md"
             },
             {
               "id": "b03-pg-config-effective-cache",
@@ -3298,13 +3291,6 @@
               "lessonFile": "opiskelu/lessons/b05-pg-config-shared-buffers.md"
             },
             {
-              "id": "b05-pg-config-work-mem-sort",
-              "difficulty": 4,
-              "prompt": "Monimutkainen sort overflowaa levylle — temp files kasvavat. Mikä parametri vaikuttaa sort-muistiin per operaatio?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-config-work-mem-sort.md"
-            },
-            {
               "id": "b06-pg-config-checkpoint-timeout",
               "difficulty": 3,
               "prompt": "Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät?",
@@ -3347,20 +3333,6 @@
               "lessonFile": "opiskelu/lessons/b07-pg-config-log-slow.md"
             },
             {
-              "id": "b07-pg-config-shared-buffers",
-              "difficulty": 3,
-              "prompt": "Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lähtöarvo?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-config-shared-buffers.md"
-            },
-            {
-              "id": "b07-pg-config-work-mem",
-              "difficulty": 4,
-              "prompt": "Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nostat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-config-work-mem.md"
-            },
-            {
               "id": "b08-pg-config-checkpoint",
               "difficulty": 4,
               "prompt": "IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeout. Tavoite?",
@@ -3375,46 +3347,11 @@
               "lessonFile": "opiskelu/lessons/b08-pg-config-max-connections.md"
             },
             {
-              "id": "b08-pg-config-shared-buffers",
-              "difficulty": 3,
-              "prompt": "Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Tyypillinen lähtöarvo?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-config-shared-buffers.md"
-            },
-            {
-              "id": "b08-pg-config-work-mem",
-              "difficulty": 4,
-              "prompt": "Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Parametri?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-config-work-mem.md"
-            },
-            {
               "id": "b09-pg-config-pgbouncer-pool",
               "difficulty": 3,
               "prompt": "500 microservice-instanssia avaa oman PG-yhteyden — `too many connections`. Ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-config-pgbouncer-pool.md"
-            },
-            {
-              "id": "b09-pg-config-shared-buffers",
-              "difficulty": 3,
-              "prompt": "Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen lähtöarvo?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-config-shared-buffers.md"
-            },
-            {
-              "id": "b09-pg-config-work-mem",
-              "difficulty": 4,
-              "prompt": "Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Parametri?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-config-work-mem.md"
-            },
-            {
-              "id": "b10-pg-config-shared-buffers-01",
-              "difficulty": 4,
-              "prompt": "PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäinen konfiguraatiomuutos?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b10-pg-config-shared-buffers-01.md"
             },
             {
               "id": "exp-pg-config-max-connections",
@@ -3556,7 +3493,7 @@
           "id": "pg-explain",
           "label": "EXPLAIN/suunnitelmat",
           "ready": 1,
-          "total": 37,
+          "total": 30,
           "questions": [
             {
               "id": "b02-pg-explain-analyze-05",
@@ -3643,13 +3580,6 @@
               "lessonFile": "opiskelu/lessons/b04-pg-explain-parallel.md"
             },
             {
-              "id": "b05-pg-explain-analyze-buffers",
-              "difficulty": 4,
-              "prompt": "Query hidas — epäilet levylukemista cache-missin vuoksi. Mitä EXPLAIN-lippua lisäät?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b05-pg-explain-analyze-buffers.md"
-            },
-            {
               "id": "b05-pg-explain-hash-join",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?",
@@ -3662,13 +3592,6 @@
               "prompt": "EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/b05-pg-explain-index-only-scan.md"
-            },
-            {
-              "id": "b05-pg-explain-stats-stale",
-              "difficulty": 3,
-              "prompt": "Planner valitsee seq scan vaikka indeksi on olemassa — ANALYZE ajettu kuukausi sitten. Korjaus?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b05-pg-explain-stats-stale.md"
             },
             {
               "id": "b06-pg-explain-generic-plan",
@@ -3692,13 +3615,6 @@
               "lessonFile": "opiskelu/lessons/b06-pg-explain-wal-fpi.md"
             },
             {
-              "id": "b07-pg-explain-analyze-buffers",
-              "difficulty": 4,
-              "prompt": "Query hidas — EXPLAIN näyttää Seq Scan mutta et tiedä onko cache-osuma. Parempi komento?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b07-pg-explain-analyze-buffers.md"
-            },
-            {
               "id": "b07-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?",
@@ -3718,13 +3634,6 @@
               "prompt": "Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-seq-vs-index.md"
-            },
-            {
-              "id": "b08-pg-explain-analyze-buffers",
-              "difficulty": 4,
-              "prompt": "EXPLAIN ANALYZE näyttää hitaan queryn — haluat nähdä cache vs disk I/O. Lisäparametri?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b08-pg-explain-analyze-buffers.md"
             },
             {
               "id": "b08-pg-explain-cost-settings",
@@ -3748,20 +3657,6 @@
               "lessonFile": "opiskelu/lessons/b08-pg-explain-seq-scan.md"
             },
             {
-              "id": "b09-pg-explain-analyze-buffers",
-              "difficulty": 4,
-              "prompt": "Kysely on hidas mutta EXPLAIN cost näyttää pieneltä. Seuraava diagnostiikka?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b09-pg-explain-analyze-buffers.md"
-            },
-            {
-              "id": "b09-pg-explain-missing-stats",
-              "difficulty": 3,
-              "prompt": "Bulk INSERT jälkeen kyselyt käyttävät väärää suunnitelmaa. Nopea korjaus?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b09-pg-explain-missing-stats.md"
-            },
-            {
               "id": "b09-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?",
@@ -3774,13 +3669,6 @@
               "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-seq-scan-large.md"
-            },
-            {
-              "id": "exp-pg-explain-analyze-buffers",
-              "difficulty": 4,
-              "prompt": "EXPLAIN näyttää Index Scan mutta query hidas — epäilet cache-missiä. Mitä lisäät?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/exp-pg-explain-analyze-buffers.md"
             },
             {
               "id": "exp-pg-explain-nested-loop",
@@ -3823,7 +3711,7 @@
           "id": "pg-indexes",
           "label": "PostgreSQL-indeksit",
           "ready": 0,
-          "total": 38,
+          "total": 30,
           "questions": [
             {
               "id": "b02-pg-indexes-btree-02",
@@ -3838,20 +3726,6 @@
               "prompt": "Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/b02-pg-indexes-covering-04.md"
-            },
-            {
-              "id": "b02-pg-indexes-gin-01",
-              "difficulty": 3,
-              "prompt": "JSONB-kenttä `metadata @> '{\"tag\": \"urgent\"}'` — seq scan hidas. Indeksityyppi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b02-pg-indexes-gin-01.md"
-            },
-            {
-              "id": "b02-pg-indexes-partial-03",
-              "difficulty": 3,
-              "prompt": "Indeksi vain active riveille — 90% archived. Optimointi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b02-pg-indexes-partial-03.md"
             },
             {
               "id": "b03-pg-indexes-concurrent-create",
@@ -3931,13 +3805,6 @@
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-expression.md"
             },
             {
-              "id": "b05-pg-indexes-gin-jsonb",
-              "difficulty": 4,
-              "prompt": "Query: `WHERE data @> '{\"status\": \"active\"}'` JSONB-sarakkeessa — seq scan hidas. Indeksityyppi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b05-pg-indexes-gin-jsonb.md"
-            },
-            {
               "id": "b06-pg-indexes-brin-timeseries",
               "difficulty": 4,
               "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
@@ -3973,13 +3840,6 @@
               "lessonFile": "opiskelu/lessons/b07-pg-index-btree-vs-gin.md"
             },
             {
-              "id": "b07-pg-index-covering",
-              "difficulty": 4,
-              "prompt": "EXPLAIN näyttää Index Scan + Heap Fetch — query tarvitsee kaksi saraketta. Optimointi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b07-pg-index-covering.md"
-            },
-            {
               "id": "b07-pg-index-partial",
               "difficulty": 4,
               "prompt": "Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?",
@@ -4001,13 +3861,6 @@
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-btree-gist.md"
             },
             {
-              "id": "b08-pg-indexes-covering",
-              "difficulty": 4,
-              "prompt": "EXPLAIN: Index Scan + Heap Fetch hidastaa — query tarvitsee vain indeksisarakkeet. Optimointi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b08-pg-indexes-covering.md"
-            },
-            {
               "id": "b08-pg-indexes-multicolumn-order",
               "difficulty": 3,
               "prompt": "Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi?",
@@ -4015,32 +3868,11 @@
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-multicolumn-order.md"
             },
             {
-              "id": "b08-pg-indexes-partial",
-              "difficulty": 4,
-              "prompt": "Query: `WHERE status = 'active'` — 95% rivistä archived. Indeksi koko tauluun turha. Ratkaisu?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b08-pg-indexes-partial.md"
-            },
-            {
               "id": "b09-pg-index-composite-order",
               "difficulty": 4,
               "prompt": "Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/b09-pg-index-composite-order.md"
-            },
-            {
-              "id": "b09-pg-index-gin-jsonb",
-              "difficulty": 3,
-              "prompt": "JSONB-kentässä haku `@>` containment-operaatiolla on hidas seq scan. Index-tyyppi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b09-pg-index-gin-jsonb.md"
-            },
-            {
-              "id": "b09-pg-index-partial-active",
-              "difficulty": 4,
-              "prompt": "Kysely hakee vain `status = 'active'` rivejä 10M taulusta — index on suuri ja hidas. Optimointi?",
-              "ready": false,
-              "lessonFile": "opiskelu/lessons/b09-pg-index-partial-active.md"
             },
             {
               "id": "b09-pg-index-unused-drop",

@@ -23,7 +23,7 @@ const pg = data.domains.find((d) => d.id === "postgres");
 assert.ok(pg, "postgres domain");
 const pgConfig = pg.chapters.find((c) => c.id === "pg-config");
 assert.ok(pgConfig, "pg-config chapter");
-assert.equal(pgConfig.questions.length, 33, "pg-config question count");
+assert.equal(pgConfig.questions.length, 24, "pg-config question count");
 
 const md = fs.readFileSync(mdPath, "utf8");
 assert.ok(md.includes("✅") && md.includes("⬜"), "markdown has status marks");
