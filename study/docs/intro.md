@@ -15,7 +15,7 @@ Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **
 - **Yksi sivu per aihepiiri** — esim. [PostgreSQL](/docs/topics/postgres) on yksi pitkä scrollattava sivu
 - Luvut (chapter) ovat `##`-otsikoita, yksittäiset kysymykset `###`-otsikoita
 - Oikean reunan sisällysluettelo auttaa hyppäämään osioon
-- **Valmis oppitunti** alkaa lainauslohkolla; **Luonnos** = vain oikea vastaus, täyttä tekstiä ei vielä
+- **Valmis oppitunti** alkaa viitteellä *Vaikeus N · kysymys `id`*; **Luonnos** = vain oikea vastaus, täyttä tekstiä ei vielä
 - Valmiit tiedostot repossa: [`opiskelu/lessons/`](https://github.com/terotests/koodisampo/tree/main/opiskelu/lessons)
 - Lyhenteet (GUC, OOM, RAII, …): [Lyhennehakemisto](/docs/lyhenteet) — oppitunneissa linkitetään automaattisesti synkronoinnissa
 

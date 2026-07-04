@@ -84,8 +84,6 @@ function buildManualSection(q, body) {
   const lines = [
     `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
     "",
-    "> **Valmis oppitunti** — käsin kirjoitettu `opiskelu/lessons/" + q.id + ".md`.",
-    "",
     content,
   ];
   if (q.sourceUrl && !content.includes(q.sourceUrl)) {
