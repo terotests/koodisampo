@@ -74,3 +74,14 @@ export function fitTileScale(
   const scaleY = (canvasHeight * padding) / bounds.height;
   return Math.min(scaleX, scaleY);
 }
+
+/** Zoom around the player instead of fitting the entire engine viewport. */
+export function playerFocusedScale(
+  canvasWidth: number,
+  canvasHeight: number,
+  focusCols = 14,
+  focusRows = 10,
+  padding = 0.88,
+): number {
+  return fitTileScale(focusCols, focusRows, canvasWidth, canvasHeight, padding);
+}

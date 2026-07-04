@@ -38,9 +38,14 @@ function playerCenteredOrigin(playerGridX, playerGridY, canvasWidth, canvasHeigh
   };
 }
 
+function playerFocusedScale(canvasWidth, canvasHeight, focusCols = 14, focusRows = 10, padding = 0.88) {
+  return fitTileScale(focusCols, focusRows, canvasWidth, canvasHeight, padding);
+}
+
 const desktopScale = fitTileScale(30, 18, 390, 300);
-assert(desktopScale < 1, "viewport map should scale down on small canvas");
-assert(desktopScale > 0.15, "scale should remain readable");
+const focusedScale = playerFocusedScale(390, 300);
+assert(focusedScale > desktopScale, "player-focused scale should zoom in vs full viewport");
+assert(focusedScale < 1.2, "focused scale should stay reasonable on small canvas");
 
 const bounds = mapScreenBounds(30, 18);
 assert(bounds.width === (30 + 18) * (TILE_WIDTH / 2), "map width");

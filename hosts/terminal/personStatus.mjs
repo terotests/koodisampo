@@ -280,7 +280,7 @@ function getFloorTitle(session, floorIndex) {
 
 export function applyMapPersonDisplay(lines, map, registry, camera = null) {
   if (!lines?.length || !map || !registry) {
-    return { lines: lines ?? [], recommendedCells: [] };
+    return { lines: lines ?? [], recommendedCells: [], entityCells: [] };
   }
   const camX = camera?.x ?? map.cameraX ?? 0;
   const camY = camera?.y ?? map.cameraY ?? 0;
@@ -288,24 +288,47 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
   const out = [...lines];
   const painted = new Set();
   const recommendedCells = [];
+  const entityCells = [];
+
+  if (!map.playerHidden) {
+    const pdx = map.playerX - camX;
+    const pdy = map.playerY - camY;
+    if (pdy >= 0 && pdy < out.length && pdx >= 0) {
+      const playerLine = out[pdy];
+      if (pdx < mapLineColumnCount(playerLine)) {
+        entityCells.push({ x: pdx, y: pdy, glyph: "@", kind: "player", id: "player" });
+      }
+    }
+  }
+
   for (const ent of ents) {
     if (!ent?.id || ent.offDuty) continue;
-    if (ent.kind === "item") continue;
     const dx = ent.x - camX;
     const dy = ent.y - camY;
     if (dy < 0 || dy >= out.length || dx < 0) continue;
     const line = out[dy];
     if (dx >= mapLineColumnCount(line)) continue;
     const cellKey = `${dx},${dy}`;
+    if (ent.kind === "item" || ent.kind === "pet") {
+      entityCells.push({
+        x: dx,
+        y: dy,
+        glyph: ent.char || "?",
+        kind: ent.kind,
+        id: ent.id,
+      });
+      continue;
+    }
     if (painted.has(cellKey)) continue;
     const ch = personMapChar(registry, ent);
     out[dy] = replaceMapCell(line, dx, ch);
     painted.add(cellKey);
+    entityCells.push({ x: dx, y: dy, glyph: ch, kind: ent.kind, id: ent.id });
     if (hasPersonRecommendation(registry, ent.id)) {
       recommendedCells.push(`${dy},${dx}`);
     }
   }
-  return { lines: out, recommendedCells };
+  return { lines: out, recommendedCells, entityCells };
 }
 
 export function formatPersonStatusLine(registry, entity) {

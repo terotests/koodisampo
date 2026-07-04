@@ -4,7 +4,7 @@ import {
   gridToScreen,
   playerCenteredOrigin,
   tileDrawYOffset,
-  fitTileScale,
+  playerFocusedScale,
 } from "./isometricProjection";
 import {
   ensureIsoAssetsLoaded,
@@ -33,10 +33,12 @@ function findPlayerInLines(lines: string[]): { x: number; y: number } | null {
 
 function renderSignature(lines: string[], state: MapState): string {
   const rec = state.recommendedCells ?? [];
+  const ents = state.entityCells ?? [];
   return [
     lines.length,
     lines.join("\n"),
     rec.join(","),
+    ents.map((c: { x: number; y: number; glyph: string }) => `${c.y},${c.x},${c.glyph}`).join(";"),
     state.policeChase ? "1" : "0",
     state.player?.x ?? "",
     state.player?.y ?? "",
@@ -173,12 +175,12 @@ function paintIsometricMap(
   state: MapState,
 ) {
   const recommended = recommendedSet(state);
+  const entityCells = state.entityCells ?? [];
   const rows = lines.length;
-  const cols = Math.max(0, ...lines.map((line) => splitMapGraphemes(line ?? "").length));
   const cssWidth = canvas.width / (window.devicePixelRatio || 1);
   const cssHeight = canvas.height / (window.devicePixelRatio || 1);
 
-  const scale = fitTileScale(cols, rows, cssWidth, cssHeight);
+  const scale = playerFocusedScale(cssWidth, cssHeight);
   const tileWidth = TILE_WIDTH * scale;
   const tileHeight = TILE_HEIGHT * scale;
 
@@ -213,6 +215,7 @@ function paintIsometricMap(
       const sprite = resolveCellSprite(glyph, lines, x, y, {
         recommended: recommended.has(`${y},${x}`),
         policeChase: !!state.policeChase,
+        entityCells,
       });
       if (sprite.kind === "tile" && sprite.base === "floor") continue;
       const layer = sprite.kind === "entity" || sprite.kind === "emoji" ? 0.5 : 0;
