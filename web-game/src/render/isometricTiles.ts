@@ -19,22 +19,38 @@ function isFloorChar(ch: string): boolean {
   return FLOOR_CHARS.has(ch);
 }
 
-function wallDirection(lines: string[], x: number, y: number): IsoDirection {
-  const rows = lines.length;
-  const cols = splitMapGraphemes(lines[0] ?? "").length;
+type WallSprite = { base: string; dir: IsoDirection };
+
+/** Pick wall/corner sprite facing open (floor) neighbors — Kenney iso convention. */
+function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const north = isWallChar(glyphAt(lines, x, y - 1));
   const south = isWallChar(glyphAt(lines, x, y + 1));
   const east = isWallChar(glyphAt(lines, x + 1, y));
   const west = isWallChar(glyphAt(lines, x - 1, y));
-  if (north && west) return "N";
-  if (north && east) return "E";
-  if (south && west) return "W";
-  if (south && east) return "S";
-  if (north) return "N";
-  if (south) return "S";
-  if (east) return "E";
-  if (west) return "W";
-  return "E";
+  const openN = !north;
+  const openS = !south;
+  const openE = !east;
+  const openW = !west;
+
+  if (openN && openW) return { base: "wallCorner", dir: "N" };
+  if (openN && openE) return { base: "wallCorner", dir: "E" };
+  if (openS && openW) return { base: "wallCorner", dir: "W" };
+  if (openS && openE) return { base: "wallCorner", dir: "S" };
+
+  if (openN && !openS && !openE && !openW) return { base: "wall", dir: "N" };
+  if (openS && !openN && !openE && !openW) return { base: "wall", dir: "S" };
+  if (openE && !openW && !openN && !openS) return { base: "wall", dir: "E" };
+  if (openW && !openE && !openN && !openS) return { base: "wall", dir: "W" };
+
+  if (openN && openS) return { base: "wallHalf", dir: "E" };
+  if (openE && openW) return { base: "wallHalf", dir: "N" };
+
+  if (openN) return { base: "wall", dir: "N" };
+  if (openS) return { base: "wall", dir: "S" };
+  if (openE) return { base: "wall", dir: "E" };
+  if (openW) return { base: "wall", dir: "W" };
+
+  return { base: "wall", dir: "E" };
 }
 
 export type TileSprite = {
@@ -77,36 +93,36 @@ export function resolveCellSprite(
     };
   }
 
-  const dir = wallDirection(lines, x, y);
+  const wall = wallSprite(lines, x, y);
   if (glyph === "#" || glyph === "|") {
-    return { kind: "tile", base: "wall", dir };
+    return { kind: "tile", base: wall.base, dir: wall.dir };
   }
   if (glyph === "%") {
-    return { kind: "tile", base: "window", dir };
+    return { kind: "tile", base: "window", dir: wall.dir };
   }
   if (glyph === "+") {
-    return { kind: "tile", base: "doorOpen", dir };
+    return { kind: "tile", base: "doorOpen", dir: wall.dir };
   }
   if (glyph === "L") {
-    return { kind: "tile", base: "doorClosed", dir };
+    return { kind: "tile", base: "doorClosed", dir: wall.dir };
   }
   if (glyph === "=") {
-    return { kind: "tile", base: "slab", dir };
+    return { kind: "tile", base: "slab", dir: wall.dir };
   }
   if (glyph === "E" || glyph === "G" || glyph === "O" || glyph === "o" || glyph === "M") {
     return { kind: "tile", base: "switchFloorOn", dir: "E" };
   }
   if (glyph === "K" || glyph === "S") {
-    return { kind: "tile", base: "crate", dir };
+    return { kind: "tile", base: "crate", dir: wall.dir };
   }
   if (glyph === ">" || glyph === "<" || glyph === "^" || glyph === "v") {
-    return { kind: "tile", base: "stairs", dir };
+    return { kind: "tile", base: "stairs", dir: wall.dir };
   }
   if (isFloorChar(glyph)) {
     return { kind: "tile", base: "floor", dir: "E" };
   }
   if (isWallChar(glyph)) {
-    return { kind: "tile", base: "wall", dir };
+    return { kind: "tile", base: wall.base, dir: wall.dir };
   }
   return { kind: "tile", base: "floor", dir: "E" };
 }
