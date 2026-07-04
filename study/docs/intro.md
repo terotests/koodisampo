@@ -26,7 +26,7 @@ Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **
 ```bash
 npm run study:dev    # synkronoi + dev-palvelin (http://localhost:3000)
 # tai erikseen:
-npm run study:sync   # generoi topics/ + progress.md
+npm run study:sync   # generoi topics/
 npm run start --workspace=study
 ```
 
@@ -46,8 +46,6 @@ Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` 
 ```
 
 Pelin linkki vie domain-sivulle ankkuriin: `/docs/topics/cpp/#tools-auto`.
-
-Katso [edistyminen](/docs/progress) — kuinka monelle kysymykselle on kirjoitettu täysi oppitunti.
 
 ## Laajempi tausta
 

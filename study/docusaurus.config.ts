@@ -73,7 +73,6 @@ const config: Config = {
           title: "Materiaali",
           items: [
             { label: "Aihepiirit", to: "/docs/intro" },
-            { label: "Edistyminen", to: "/docs/progress" },
             { label: "Lyhenteet", to: "/docs/lyhenteet" },
           ],
         },

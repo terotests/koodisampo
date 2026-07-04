@@ -10,7 +10,7 @@ npm run study:dev       # synkronoi + paikallinen dev-palvelin
 npm run build:study     # tuotantobuild
 ```
 
-Julkaistu osoitteessa: https://terotests.github.io/koodisampo/opiskelu/docs/intro/ (edistyminen: [/docs/progress/](https://terotests.github.io/koodisampo/opiskelu/docs/progress/))
+Julkaistu osoitteessa: https://terotests.github.io/koodisampo/opiskelu/docs/intro/
 
 Tuo vanha `oppitunnit.md` tähän (ilman pelihahmoja):
 
@@ -18,7 +18,7 @@ Tuo vanha `oppitunnit.md` tähän (ilman pelihahmoja):
 npm run study:import
 ```
 
-Edistyminen: [`TODO.md`](TODO.md) (generoitu kysymyspankista) · `npm run study:todo` · `npm run study:progress` · [GitHub Pages `/docs/progress/`](https://terotests.github.io/koodisampo/opiskelu/docs/progress/).
+Edistyminen: [`TODO.md`](TODO.md) (generoitu kysymyspankista) · `npm run study:todo` · `npm run study:progress`
 
 ## Kirjoitusohje (manuaalinen työ osissa)
 
