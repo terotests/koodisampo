@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-04T13:45:00.383Z",
+  "generatedAt": "2026-07-04T13:50:24.589Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 271,
-    "pendingLessons": 954,
-    "percent": 22.1
+    "readyLessons": 355,
+    "pendingLessons": 870,
+    "percent": 29
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 120,
+      "ready": 204,
       "total": 204,
       "chapters": [
         {
@@ -164,14 +164,14 @@
         {
           "id": "cpp-production",
           "label": "C++ tuotanto",
-          "ready": 5,
+          "ready": 8,
           "total": 8,
           "questions": [
             {
               "id": "prod-cpp-coroutine-lifetime",
               "difficulty": 5,
               "prompt": "Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen. Mikä riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-coroutine-lifetime.md"
             },
             {
@@ -199,7 +199,7 @@
               "id": "prod-cpp-raii-rollback",
               "difficulty": 4,
               "prompt": "Funktio kirjoittaa kaksi konfiguraatiotiedostoa ja toinen kirjoitus epäonnistuu kesken. Miten varmistat ettei järjestelmä jää puoliksi päivitettyyn tilaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-raii-rollback.md"
             },
             {
@@ -220,7 +220,7 @@
               "id": "prod-cpp-variant-visit",
               "difficulty": 4,
               "prompt": "Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unohtuu koodista. Miten saat kääntäjän auttamaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-variant-visit.md"
             }
           ]
@@ -228,7 +228,7 @@
         {
           "id": "maintainability",
           "label": "ylläpidettävyys",
-          "ready": 13,
+          "ready": 21,
           "total": 21,
           "questions": [
             {
@@ -249,7 +249,7 @@
               "id": "b03-cpp-maintain-copy-swap",
               "difficulty": 4,
               "prompt": "Tiimi kirjoittaa copy assignment -operaattorin käsin ja unohtaa self-assignmentin. Idiomivaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-maintain-copy-swap.md"
             },
             {
@@ -284,28 +284,28 @@
               "id": "b06-cpp-ranges-adaptors",
               "difficulty": 3,
               "prompt": "Silmukka filtteröi ja muuntaa konttia — lukija ei näe intentiota. Miten modernisoida?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-ranges-adaptors.md"
             },
             {
               "id": "b07-cpp-clang-tidy-ci",
               "difficulty": 3,
               "prompt": "Code reviewissa samat CppCoreGuidelines-rikkomukset toistuvat. Miten automatisoi tarkistus CI:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-clang-tidy-ci.md"
             },
             {
               "id": "b07-cpp-pimpl-abi",
               "difficulty": 4,
               "prompt": "Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mitä kuvio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-pimpl-abi.md"
             },
             {
               "id": "b08-cpp-format-safety",
               "difficulty": 3,
               "prompt": "Logitus käyttää sprintf-puskuria — satunnainen overflow tuotannossa. Korvaava C++20-ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-format-safety.md"
             },
             {
@@ -319,21 +319,21 @@
               "id": "b11-cpp-assert-side-effect",
               "difficulty": 3,
               "prompt": "Koodi: `assert(registerCallback(handler));` — release-buildissa callback ei rekisteröidy. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-assert-side-effect.md"
             },
             {
               "id": "b11-cpp-bool-parameter",
               "difficulty": 2,
               "prompt": "API: `void save(File& f, bool fast);` — kutsuissa `save(f, true)` ei kerro mitään. Parannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-bool-parameter.md"
             },
             {
               "id": "b11-cpp-macro-to-constexpr",
               "difficulty": 2,
               "prompt": "Konfiguraatiossa `#define MAX_CONNECTIONS 100`. Miksi cpp-best-practices suosii constexpria?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-macro-to-constexpr.md"
             },
             {
@@ -383,7 +383,7 @@
         {
           "id": "performance",
           "label": "suorituskyky",
-          "ready": 12,
+          "ready": 25,
           "total": 25,
           "questions": [
             {
@@ -418,14 +418,14 @@
               "id": "b04-cpp-move-noexcept-vector",
               "difficulty": 3,
               "prompt": "std::vector<MyType> kasvaa hitaasti vaikka move-operaattori on olemassa. Profileri näyttää kopioita. Todennäköisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-move-noexcept-vector.md"
             },
             {
               "id": "b05-cpp-move-review-temp",
               "difficulty": 3,
               "prompt": "Code review ehdottaa `std::move` jokaiselle parametrille funktiossa. Milloin move on järkevä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-move-review-temp.md"
             },
             {
@@ -439,7 +439,7 @@
               "id": "b06-cpp-alignas-cache",
               "difficulty": 5,
               "prompt": "Hot loop kärsii cache miss — kaksi counteria samassa cache line:ssä eri threadeilla. Mitä kokeilla?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-alignas-cache.md"
             },
             {
@@ -460,7 +460,7 @@
               "id": "b08-cpp-ranges-pipeline",
               "difficulty": 3,
               "prompt": "Suodatat ja muunnat vectorin — väliaikaisia vector-kopioita tulee liikaa. C++20 ranges tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-ranges-pipeline.md"
             },
             {
@@ -474,63 +474,63 @@
               "id": "b09-cpp-vector-reserve-incident",
               "difficulty": 3,
               "prompt": "Profilointi näyttää tuhansia vector-reallokaatioita request-käsittelyssä. Ensimmäinen optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-vector-reserve-incident.md"
             },
             {
               "id": "b11-cpp-bind-vs-lambda",
               "difficulty": 3,
               "prompt": "Callback rekisteröidään `std::bind(&Service::handle, this, std::placeholders::_1)`. Mitä cpp-best-practices suosittelee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-bind-vs-lambda.md"
             },
             {
               "id": "b11-cpp-default-move-ops",
               "difficulty": 4,
               "prompt": "Luokassa on custom destructor mutta ei move-operaatioita. Mitä cpp-best-practices ehdottaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-default-move-ops.md"
             },
             {
               "id": "b11-cpp-forward-declare-header",
               "difficulty": 3,
               "prompt": "Headeriin lisätään `#include \"HeavyWidget.hpp\"` vain koska funktio ottaa `const HeavyWidget&`. Käännös hidastuu. Mitä ehdotat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-forward-declare-header.md"
             },
             {
               "id": "b11-cpp-if-init-statement",
               "difficulty": 3,
               "prompt": "Funktio hakee arvon mapista ja tarkistaa sen: `auto it = m.find(k); if (it != m.end())`. C++17-parannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-if-init-statement.md"
             },
             {
               "id": "b11-cpp-in-place-optional",
               "difficulty": 3,
               "prompt": "Koodi tekee `std::optional<BigType> o; o = BigType(args);` — kaksi konstruktiota. Tehokkaampi tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-in-place-optional.md"
             },
             {
               "id": "b11-cpp-preincrement",
               "difficulty": 1,
               "prompt": "Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin silmukassa. Miksi cpp-best-practices suosii `++i`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-preincrement.md"
             },
             {
               "id": "b11-cpp-shared-ptr-copy-hot",
               "difficulty": 3,
               "prompt": "Funktio ottaa `std::shared_ptr<Foo>` arvona ja kutsutaan jokaisella frame:lla. Miksi tämä on ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-shared-ptr-copy-hot.md"
             },
             {
               "id": "b11-cpp-std-endl-flush",
               "difficulty": 2,
               "prompt": "Hot loopissa logataan tuhansia rivejä `std::cout << x << std::endl`. Miksi suorituskyky kärsii?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-std-endl-flush.md"
             },
             {
@@ -566,7 +566,7 @@
         {
           "id": "portability",
           "label": "siirrettävyys",
-          "ready": 5,
+          "ready": 11,
           "total": 11,
           "questions": [
             {
@@ -594,7 +594,7 @@
               "id": "b06-cpp-portability-alignof",
               "difficulty": 3,
               "prompt": "Serialisointi verkossa — struct padding rikkoo protokollaa eri arkkitehtuurilla. Miten tarkistat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-portability-alignof.md"
             },
             {
@@ -608,35 +608,35 @@
               "id": "b08-cpp-modules-headers",
               "difficulty": 4,
               "prompt": "Buildi hidastuu massiivisista include-ketjuista. C++20 ratkaisu uudelle moduulille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-modules-headers.md"
             },
             {
               "id": "b10-cpp-portability-abi-01",
               "difficulty": 3,
               "prompt": "Jaetaan kirjasto Windowsin ja Linuxin välillä. Mikä rajapintavalinta parantaa ABI-vakautta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b10-cpp-portability-abi-01.md"
             },
             {
               "id": "b11-cpp-std-filesystem",
               "difficulty": 2,
               "prompt": "Koodi käyttää `GetFileAttributesW` / `stat()` suoraan polkujen käsittelyyn. Portable korvaaja?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-std-filesystem.md"
             },
             {
               "id": "b11-cpp-std-thread-port",
               "difficulty": 2,
               "prompt": "Uusi moduuli käyttää suoraan `pthread_create` / `CreateThread`. Mitä cpp-best-practices suosittelee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-std-thread-port.md"
             },
             {
               "id": "exp-cpp-portability-byte-order",
               "difficulty": 4,
               "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaaliset shift-makrot?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-portability-byte-order.md"
             },
             {
@@ -651,7 +651,7 @@
         {
           "id": "safety",
           "label": "C++ turvallisuus",
-          "ready": 22,
+          "ready": 36,
           "total": 36,
           "questions": [
             {
@@ -665,7 +665,7 @@
               "id": "b02-cpp-safety-noexcept-05",
               "difficulty": 3,
               "prompt": "std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-safety-noexcept-05.md"
             },
             {
@@ -686,7 +686,7 @@
               "id": "b04-cpp-rule-of-five",
               "difficulty": 4,
               "prompt": "Luokka hallitsee dynaamista bufferia — destructor on määritelty, mutta copy-assignment puuttuu. Tuotantobugi double-free. Periaate?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-rule-of-five.md"
             },
             {
@@ -700,7 +700,7 @@
               "id": "b04-cpp-string-view-lifetime",
               "difficulty": 4,
               "prompt": "Funktio palauttaa `std::string_view` joka viittaa paikalliseen std::stringiin. Tuotannossa satunnainen data. Mikä on oikea korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-string-view-lifetime.md"
             },
             {
@@ -721,21 +721,21 @@
               "id": "b05-cpp-noexcept-move-review",
               "difficulty": 4,
               "prompt": "Code review: move-konstruktori ei ole noexcept. `std::vector` resize hidastuu. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-noexcept-move-review.md"
             },
             {
               "id": "b05-cpp-string-view-lifetime",
               "difficulty": 4,
               "prompt": "Funktio palauttaa `std::string_view` paikallisesta `std::string`:stä. Tuotannossa segfault. Mikä on juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-string-view-lifetime.md"
             },
             {
               "id": "b06-cpp-raii-scope-guard",
               "difficulty": 3,
               "prompt": "Funktio avaa tiedoston ja pitää sulkea poikkeuksessa. Miten toteutat ilman try-finally?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-raii-scope-guard.md"
             },
             {
@@ -749,14 +749,14 @@
               "id": "b06-cpp-vector-emplace-back",
               "difficulty": 3,
               "prompt": "Rakennat vektorin monimutkaisia olioita — push_back kopioi turhaan. Miten optimoit?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-vector-emplace-back.md"
             },
             {
               "id": "b06-cpp-weak-ptr-cycle",
               "difficulty": 4,
               "prompt": "Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-weak-ptr-cycle.md"
             },
             {
@@ -770,7 +770,7 @@
               "id": "b07-cpp-span-bounds-check",
               "difficulty": 3,
               "prompt": "Funktio ottaa (T* data, size_t len) — tuotannossa buffer overflow. Mikä moderni tyyppi auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-span-bounds-check.md"
             },
             {
@@ -784,7 +784,7 @@
               "id": "b08-cpp-unique-ptr-deleter",
               "difficulty": 4,
               "prompt": "FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallinnet oikein?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-unique-ptr-deleter.md"
             },
             {
@@ -798,14 +798,14 @@
               "id": "b09-cpp-optional-null-api",
               "difficulty": 3,
               "prompt": "API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypillisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-optional-null-api.md"
             },
             {
               "id": "b09-cpp-raw-pointer-refactor",
               "difficulty": 3,
               "prompt": "Legacy-moduuli palauttaa `new`-allokoituja olioita kutsujalle. Refaktoroinnin turvallisin ensiaskele?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-raw-pointer-refactor.md"
             },
             {
@@ -819,7 +819,7 @@
               "id": "exp-cpp-prod-asan-build",
               "difficulty": 3,
               "prompt": "Muistivuoto epäilty tuotannossa. Mitä CI-buildia pyydät ensin ennen tuotantokokeilua?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-prod-asan-build.md"
             },
             {
@@ -833,7 +833,7 @@
               "id": "exp-cpp-prod-weak-ptr-cache",
               "difficulty": 4,
               "prompt": "Jaettu image-cache käyttää `shared_ptr`. Objektit eivät vapaudu vaikka UI sulkeutuu. Mikä omistusmalli auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-prod-weak-ptr-cache.md"
             },
             {
@@ -911,14 +911,14 @@
         {
           "id": "style",
           "label": "C++ tyyli",
-          "ready": 17,
+          "ready": 30,
           "total": 30,
           "questions": [
             {
               "id": "b02-cpp-style-consteval-04",
               "difficulty": 4,
               "prompt": "Konfiguraatiovakio pitää laskea compile-time — runtime-laskenta hidastaa käynnistystä. C++20-vaihtoehto constexpr:lle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-style-consteval-04.md"
             },
             {
@@ -946,7 +946,7 @@
               "id": "b04-cpp-explicit-constructor",
               "difficulty": 3,
               "prompt": "Bugi: `void foo(Bytes b); foo(1024);` kääntyy — 1024 muuntuu Bytes:ksi implisiittisesti. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-explicit-constructor.md"
             },
             {
@@ -974,7 +974,7 @@
               "id": "b05-cpp-override-virtual-crash",
               "difficulty": 3,
               "prompt": "Aliluokan virtuaalinen metodi ei koskaan kutsuta — kirjoitusvirhe parametrilistassa. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-override-virtual-crash.md"
             },
             {
@@ -1009,7 +1009,7 @@
               "id": "b08-cpp-enum-class-scope",
               "difficulty": 2,
               "prompt": "Vanha `enum Color { Red, Green }` törmää toisen headerin `Red`-vakion kanssa. Miten estät nimiristiriidat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-enum-class-scope.md"
             },
             {
@@ -1023,63 +1023,63 @@
               "id": "b09-cpp-enum-class-type",
               "difficulty": 2,
               "prompt": "Code review: `enum Color { RED, GREEN }` sekoittuu toisen `enum Status { RED }` kanssa. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-enum-class-type.md"
             },
             {
               "id": "b09-cpp-rule-of-five-review",
               "difficulty": 4,
               "prompt": "Luokassa on custom destructor mutta ei copy/move -operaatioita. Code review -huomio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-rule-of-five-review.md"
             },
             {
               "id": "b11-cpp-braces-required",
               "difficulty": 2,
               "prompt": "PR lisää yksirivisen if:n ilman aaltosulkuja ennen toista riviä. Miksi cpp-best-practices vaatii `{}`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-braces-required.md"
             },
             {
               "id": "b11-cpp-clang-format-style",
               "difficulty": 1,
               "prompt": "Code review täyttyy väittelyistä sijoittelusta ja rivipituudesta. Miten cpp-best-practices ratkaisee tyyliriidat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-clang-format-style.md"
             },
             {
               "id": "b11-cpp-local-include-quotes",
               "difficulty": 2,
               "prompt": "Projektin oma header includataan `#include <MyWidget.hpp>`. Mitä cpp-best-practices suosittelee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-local-include-quotes.md"
             },
             {
               "id": "b11-cpp-out-of-source-build",
               "difficulty": 2,
               "prompt": "CMake generoi object-tiedostot samaan hakemistoon kuin lähdekoodi. Mitä cpp-best-practices suosittelee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-out-of-source-build.md"
             },
             {
               "id": "b11-cpp-underscore-identifier",
               "difficulty": 2,
               "prompt": "Uusi globaali funktio nimetään `_init_app()`. Miksi cpp-best-practices varoittaa alaviivasta alussa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-underscore-identifier.md"
             },
             {
               "id": "b11-cpp-using-namespace-header",
               "difficulty": 2,
               "prompt": "Uusi header alkaa `using namespace std;` ja includataan kymmenessä moduulissa. Mikä riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-using-namespace-header.md"
             },
             {
               "id": "exp-cpp-cr-default-delete",
               "difficulty": 3,
               "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-cr-default-delete.md"
             },
             {
@@ -1129,14 +1129,14 @@
         {
           "id": "threadability",
           "label": "säikeistys",
-          "ready": 12,
+          "ready": 18,
           "total": 18,
           "questions": [
             {
               "id": "b02-cpp-thread-atomic-order-13",
               "difficulty": 5,
               "prompt": "Laskuri kasvaa useasta säikeestä — `atomic<int>++` riittääkö ilman memory_order?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-thread-atomic-order-13.md"
             },
             {
@@ -1171,7 +1171,7 @@
               "id": "b04-cpp-static-local-thread",
               "difficulty": 3,
               "prompt": "Funktion sisällä `static Logger log;` — useat säikeet kirjoittavat lokille. C++11 jälkeen static local init?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-static-local-thread.md"
             },
             {
@@ -1192,14 +1192,14 @@
               "id": "b07-cpp-atomic-acquire-release",
               "difficulty": 5,
               "prompt": "Lock-free jonossa tuottaja kirjoittaa datan ja asettaa flagin — kuluttaja näkee vanhaa dataa. Mikä memory order?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-atomic-acquire-release.md"
             },
             {
               "id": "b08-cpp-atomic-memory-order",
               "difficulty": 5,
               "prompt": "Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei näy heti toisessa CPU:ssa. Mikä voi auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-atomic-memory-order.md"
             },
             {
@@ -1220,14 +1220,14 @@
               "id": "b11-cpp-avoid-global-state",
               "difficulty": 3,
               "prompt": "Moduulissa on `static std::map<int, User> g_cache` ja useat säikeet kutsuvat sitä. Ensimmäinen refaktorointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-avoid-global-state.md"
             },
             {
               "id": "b11-cpp-mutex-mutable-rule",
               "difficulty": 4,
               "prompt": "const-metodi päivittää cachea mutta tarvitsee mutexin. Mitä cpp-best-practices M&M-sääntö tarkoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-mutex-mutable-rule.md"
             },
             {
@@ -1263,7 +1263,7 @@
         {
           "id": "tools",
           "label": "C++ työkalut",
-          "ready": 14,
+          "ready": 35,
           "total": 35,
           "questions": [
             {
@@ -1284,35 +1284,35 @@
               "id": "b03-cpp-incident-sanitize-ubsan",
               "difficulty": 4,
               "prompt": "Tuotantoon pääsee signed overflow -bugi vain tietyllä ARM-buildilla. CI-parannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-incident-sanitize-ubsan.md"
             },
             {
               "id": "b03-cpp-tools-if-constexpr",
               "difficulty": 3,
               "prompt": "Template-funktio tarvitsee eri haaran integraalisille vs float-tyypeille compile-time. Mitä käytät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-tools-if-constexpr.md"
             },
             {
               "id": "b04-cpp-concept-constraints",
               "difficulty": 4,
               "prompt": "Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virheviesteihin kun T on custom-tyyppi. Miten rajaat template-parametrin luettavaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-concept-constraints.md"
             },
             {
               "id": "b04-cpp-consteval-compile-time",
               "difficulty": 4,
               "prompt": "Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-consteval-compile-time.md"
             },
             {
               "id": "b05-cpp-constexpr-config",
               "difficulty": 3,
               "prompt": "Konfiguraatiovakiot lasketaan build-ajassa. Mikä avainsana varmistaa että laskenta tapahtuu käännösaikana?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-constexpr-config.md"
             },
             {
@@ -1326,7 +1326,7 @@
               "id": "b06-cpp-deleted-function",
               "difficulty": 3,
               "prompt": "Luokka ei saa kopioida — kopio-konstruktori kutsuu vahingossa. Miten estät käännösaikana?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-deleted-function.md"
             },
             {
@@ -1340,28 +1340,28 @@
               "id": "b06-cpp-nodiscard-return",
               "difficulty": 3,
               "prompt": "Tuotantobugi: `allocateBuffer()` palautusarvo jätetään huomiotta ja resurssi vuotaa. Miten varoitat kutsijaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-nodiscard-return.md"
             },
             {
               "id": "b07-cpp-chrono-literals",
               "difficulty": 3,
               "prompt": "Timeout on koodissa sleep(500) — yksikkö epäselvä. Miten std::chrono ilmaisee 500 millisekuntia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-chrono-literals.md"
             },
             {
               "id": "b07-cpp-perfect-forwarding",
               "difficulty": 4,
               "prompt": "Tehdasfunktio make<T>(Args&&... args) välittää argumentit konstruktorille. Mikä idiomi säilyttää value categoryn?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-perfect-forwarding.md"
             },
             {
               "id": "b07-cpp-spaceship-operator",
               "difficulty": 3,
               "prompt": "Luokalle tarvitaan ==, !=, <, <=, >, >= — paljon boilerplatea. C++20 lyhennys?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-spaceship-operator.md"
             },
             {
@@ -1382,77 +1382,77 @@
               "id": "b08-cpp-initializer-list-trap",
               "difficulty": 4,
               "prompt": "Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-initializer-list-trap.md"
             },
             {
               "id": "b08-cpp-optional-monadic",
               "difficulty": 3,
               "prompt": "Ketju: optional palauttaa arvon, seuraava funktio ottaa arvon — if-linnoja tulee liikaa. C++23-tyylinen tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-optional-monadic.md"
             },
             {
               "id": "b08-cpp-sort-requirements",
               "difficulty": 3,
               "prompt": "std::sort kaatuu outoon virheeseen custom-iteratorilla. Mitä iteratorin pitää tarjota sortille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-sort-requirements.md"
             },
             {
               "id": "b08-cpp-variant-visit",
               "difficulty": 4,
               "prompt": "std::variant<int, string> — switch-tyylinen käsittely ilman visitor-luokkaa. Moderni tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-variant-visit.md"
             },
             {
               "id": "b09-cpp-clang-tidy-review",
               "difficulty": 2,
               "prompt": "Code reviewissa toistuu sama raw-pointer-anti-pattern. Miten automatisoidaan palaute ennen ihmisreviewia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-clang-tidy-review.md"
             },
             {
               "id": "b09-cpp-sanitizer-ci-failure",
               "difficulty": 3,
               "prompt": "CI-putki kaatuu yöllä AddressSanitizer-virheeseen, mutta paikallinen release-build menee läpi. Mitä ehdotat ensimmäiseksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-sanitizer-ci-failure.md"
             },
             {
               "id": "b11-cpp-ccache-ci",
               "difficulty": 2,
               "prompt": "CI-build kestää 40 min vaikka vain yksi .cpp muuttui. Mitä cpp-best-practices suosittelee käännösten välimuistiin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-ccache-ci.md"
             },
             {
               "id": "b11-cpp-compile-commands",
               "difficulty": 2,
               "prompt": "clang-tidy ei löydä oikeita include-polkuja CMake-projektissa. Mitä build-asetusta tarvitaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-compile-commands.md"
             },
             {
               "id": "b11-cpp-iwyu-cleanup",
               "difficulty": 3,
               "prompt": "PR:ssä jokainen header vetää mukaan `<iostream>` vaikka käytetään vain `std::vector`. Miten automatisoidaan siivous?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-iwyu-cleanup.md"
             },
             {
               "id": "b11-cpp-pch-tradeoff",
               "difficulty": 4,
               "prompt": "Iso C++-projekti harkitsee precompiled headereita (PCH). Mitä cpp-best-practices varoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-pch-tradeoff.md"
             },
             {
               "id": "b11-cpp-werror-policy",
               "difficulty": 3,
               "prompt": "Tiimi haluaa ettei uusia varoituksia päädy main-haaraan. Mikä käytäntö vastaa cpp-best-practices -suositusta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-werror-policy.md"
             },
             {
