@@ -66,23 +66,6 @@ export function randomEncounterPickNonce() {
   return ((Date.now() ^ ((Math.random() * 0x7fffffff) | 0)) >>> 0) % 2147483646 + 1;
 }
 
-function floorFromEntity(entity) {
-  const m = entity?.id?.match(/(?:coworker|ceo|security)-(\d+)-/);
-  if (m) return Number(m[1]);
-  return 0;
-}
-
-/** Vaikeus nousee kerroksen ja karman mukaan — pohja vähintään 3. */
-function targetDifficulty(entity, karmaTotal) {
-  const floor = floorFromEntity(entity);
-  let diff = 3;
-  if (floor >= 2) diff = 4;
-  if (floor >= 5) diff = 5;
-  if (karmaTotal >= 80) diff = Math.min(5, diff + 1);
-  if (karmaTotal < 20) diff = Math.max(2, diff - 1);
-  return diff;
-}
-
 const TOPIC_DOMAINS = {
   tools: "cpp",
   style: "cpp",
@@ -176,11 +159,10 @@ function audienceTags(entity, playerSpecialty = "") {
       voice: "interview",
       preferDomain: domain,
       playerSpecialty,
-      minDifficulty: 1,
     };
   }
   if (entity.id?.startsWith("ceo-")) {
-    return { tags: ["ceo"], voice: "executive", preferDomain: "scrum", minDifficulty: 4 };
+    return { tags: ["ceo"], voice: "executive", preferDomain: "scrum" };
   }
   if (entity.kind === "security") {
     return {
@@ -189,7 +171,6 @@ function audienceTags(entity, playerSpecialty = "") {
       preferDomain: "security",
       preferDomains: ["security", "linux", "docker", "backend"],
       preferChapters: ["web-security", "linux-network", "journald", "docker-network", "docker-production", "avahi"],
-      minDifficulty: 3,
     };
   }
   if (entity.kind === "guru") {
@@ -199,7 +180,6 @@ function audienceTags(entity, playerSpecialty = "") {
       voice: "mentor",
       preferDomain: domain,
       playerSpecialty,
-      minDifficulty: 3,
     };
   }
   if (entity.kind === "hostile") {
@@ -213,7 +193,6 @@ function audienceTags(entity, playerSpecialty = "") {
       preferDomain: playerSpecialty || "",
       playerSpecialty,
       preferDomains,
-      minDifficulty: 4,
     };
   }
   if (entity.kind === "role") {
@@ -223,7 +202,6 @@ function audienceTags(entity, playerSpecialty = "") {
         voice: "secretary",
         preferDomain: "scrum",
         preferChapters: ["scrum-dor", "scrum-dod"],
-        minDifficulty: 3,
       };
     }
     if (entity.char === "P") {
@@ -231,11 +209,10 @@ function audienceTags(entity, playerSpecialty = "") {
         tags: ["project-lead"],
         voice: "project-lead",
         preferDomain: "scrum",
-        minDifficulty: 4,
       };
     }
     if (entity.char === "C") {
-      return { tags: ["ceo"], voice: "executive", preferDomain: "scrum", minDifficulty: 4 };
+      return { tags: ["ceo"], voice: "executive", preferDomain: "scrum" };
     }
   }
   if (entity.kind === "coworker") {
@@ -249,11 +226,9 @@ function audienceTags(entity, playerSpecialty = "") {
       preferChapter: topic && preferDomain === topicDomain ? topic : "",
       preferDomain,
       playerSpecialty: specialty,
-      // min 2: opiskelusivu listaa myös helpommat kysymykset — min 3 jätti esim. style-kappaleesta 6/29 näkyviin.
-      minDifficulty: 2,
     };
   }
-  const base = { tags: ["coworker"], voice: "colleague", playerSpecialty, minDifficulty: 3 };
+  const base = { tags: ["coworker"], voice: "colleague", playerSpecialty };
   if (playerSpecialty && !base.preferDomain) {
     base.preferDomain = playerSpecialty;
   }
@@ -362,15 +337,13 @@ const TOPIC_LABELS = {
   "rf-advanced": "RF-laajennukset",
 };
 
-function scoreQuestion(q, profile, targetDiff, scoreOptions = null) {
+function scoreQuestion(q, profile, scoreOptions = null) {
   const audienceMatch = q.audiences.some((a) => profile.tags.includes(a));
   if (!audienceMatch) return -1;
-  if (q.difficulty < (profile.minDifficulty ?? 3)) return -1;
 
-  let score = 90 - Math.abs(q.difficulty - targetDiff) * 12;
+  let score = 50;
   const globalAsked = scoreOptions?.globalAsked;
   if (globalAsked && !globalAsked.has(q.id)) score += 16;
-  if (q.difficulty >= targetDiff) score += 8;
 
   if (profile.preferChapter && q.chapter === profile.preferChapter) score += 35;
   if (profile.preferDomain && q.domain === profile.preferDomain) score += 20;
@@ -410,10 +383,10 @@ function scoreQuestion(q, profile, targetDiff, scoreOptions = null) {
   return score;
 }
 
-function filterAndScoreQuestions(questions, profile, targetDiff, excludeIds, scoreOptions = null) {
+function filterAndScoreQuestions(questions, profile, excludeIds, scoreOptions = null) {
   const exclude = new Set(excludeIds);
   return questions
-    .map((q) => ({ q, score: scoreQuestion(q, profile, targetDiff, scoreOptions) }))
+    .map((q) => ({ q, score: scoreQuestion(q, profile, scoreOptions) }))
     .filter((x) => x.score >= 0 && !exclude.has(x.q.id))
     .sort((a, b) => b.score - a.score || a.q.id.localeCompare(b.q.id));
 }
@@ -478,7 +451,6 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   const questions = loadAllQuestions();
   const playerSpecialty = pickOptions?.playerSpecialty ?? "";
   const profile = audienceTags(entity, playerSpecialty);
-  const targetDiff = targetDifficulty(entity, karmaTotal);
   const entityId = entity.id || "";
   const pickNonce = pickOptions?.pickNonce ?? 0;
   const deaths = pickOptions?.deaths ?? 0;
@@ -508,25 +480,28 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
 
   // 1) Älä toista globaalisti kysyttyjä — myös eri NPC:iltä.
   let exclude = [...new Set([...globalAsked, ...recent])];
-  let scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude, scoreOptions);
+  let scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
 
   // 2) Jos profiilin pooli loppuu, salli vanhoja mutta ei ihan viimeisiä.
   if (scored.length === 0) {
     exclude = [...new Set(recent.slice(-8))];
-    scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude, scoreOptions);
+    scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
   }
 
   // 3) Viimeinen keino: mikä tahansa profiiliin sopiva.
   if (scored.length === 0) {
-    scored = filterAndScoreQuestions(questions, profile, targetDiff, [], scoreOptions);
+    scored = filterAndScoreQuestions(questions, profile, [], scoreOptions);
   }
 
   if (scored.length === 0) {
     const fallbackDomain = profile.preferDomain || profile.playerSpecialty || "cpp";
-    const fallback = questions
-      .filter((q) => q.domain === fallbackDomain && q.difficulty >= 2)
-      .sort((a, b) => b.difficulty - a.difficulty)[0];
-    return { question: fallback ?? questions[0], profile, targetDiff };
+    const fallback =
+      questions.find(
+        (q) =>
+          q.domain === fallbackDomain &&
+          q.audiences.some((a) => profile.tags.includes(a)),
+      ) ?? questions[0];
+    return { question: fallback, profile, targetDiff: fallback?.difficulty ?? 1 };
   }
 
   const pool = buildQuestionPool(scored, profile);
@@ -540,7 +515,8 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
     pool.map((x) => x.q.id).join(","),
   ].join(":");
   const idx = pickIndexFromPool(pool, salt);
-  return { question: pool[idx].q, profile, targetDiff };
+  const question = pool[idx].q;
+  return { question, profile, targetDiff: question.difficulty ?? 1 };
 }
 
 let activeQuizCache = null;
