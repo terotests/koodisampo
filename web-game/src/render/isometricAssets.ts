@@ -1,4 +1,8 @@
 import {
+  applyRenderThemePixels,
+  nativeCanvasFilterWorks,
+} from "../../../hosts/shared/canvasFilterPixels.mjs";
+import {
   readStoredRenderTheme,
   renderThemeFilter,
   shouldTintIsoAsset,
@@ -56,6 +60,13 @@ type TileKey = (typeof TILE_FILES)[number];
 const cache = new Map<string, HTMLImageElement>();
 const tintedCache = new Map<string, HTMLCanvasElement>();
 let loadPromise: Promise<void> | null = null;
+let useNativeCanvasFilter: boolean | null = null;
+
+function canvasFilterSupported(ctx: CanvasRenderingContext2D): boolean {
+  if (useNativeCanvasFilter !== null) return useNativeCanvasFilter;
+  useNativeCanvasFilter = nativeCanvasFilterWorks(ctx);
+  return useNativeCanvasFilter;
+}
 
 export function clearIsoTintCache(): void {
   tintedCache.clear();
@@ -71,14 +82,26 @@ function tintCacheKey(file: string, theme: RenderThemeId): string {
   return `${file}\0${theme}`;
 }
 
-function buildTintedCanvas(img: HTMLImageElement, filter: string): HTMLCanvasElement {
+function buildTintedCanvas(
+  img: HTMLImageElement,
+  filter: string,
+  theme: RenderThemeId,
+): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
-  ctx.filter = filter;
+  if (canvasFilterSupported(ctx)) {
+    ctx.filter = filter;
+    ctx.drawImage(img, 0, 0);
+    ctx.filter = "none";
+    return canvas;
+  }
   ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  applyRenderThemePixels(imageData.data, theme);
+  ctx.putImageData(imageData, 0, 0);
   return canvas;
 }
 
@@ -91,7 +114,7 @@ function getTintedIsoCanvas(file: string): HTMLCanvasElement | null {
   const key = tintCacheKey(file, theme);
   let tinted = tintedCache.get(key);
   if (!tinted) {
-    tinted = buildTintedCanvas(img, filter);
+    tinted = buildTintedCanvas(img, filter, theme);
     tintedCache.set(key, tinted);
   }
   return tinted;
