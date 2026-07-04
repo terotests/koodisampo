@@ -17,11 +17,11 @@ Tuo vanha `oppitunnit.md` tähän (ilman pelihahmoja):
 npm run study:import
 ```
 
-Edistyminen: `npm run study:progress` tai sivu `/docs/progress`.
+Edistyminen: [`TODO.md`](TODO.md) (generoitu kysymyspankista) · `npm run study:todo` · `npm run study:progress` · sivu `/docs/progress`.
 
 ## Kirjoitusohje (manuaalinen työ osissa)
 
-Oppitunnit laajennetaan **käsin** kysymys kerrallaan tai pieninä erinä (esim. yksi luku / domain kerrallaan). Älä generoi massana skriptillä.
+Oppitunnit laajennetaan **käsin** kysymys kerrallaan tai pieninä erinä (esim. yksi luku / domain kerrallaan). Sisältöä ei generoida automaattisesti — vain todo-lista päivittyy skriptillä.
 
 Tiedosto `opiskelu/lessons/{question-id}.md`:
 
@@ -32,11 +32,11 @@ Tiedosto `opiskelu/lessons/{question-id}.md`:
 
 Esimerkki valmiista laajasta oppitunnista: `b03-pg-config-statements-ext.md`.
 
-## Erät (edistyminen)
+## Todo ja edistyminen
 
-| Erä | Scope | Tila |
-|-----|-------|------|
-| 1 | `postgres` / `pg-config` — diff 3+ | osittain (`b03-pg-config-statements-ext` valmis) |
-| 2 | `postgres` / muut luvut | odottaa |
-| 3 | `cpp` — olemassa olevat lyhyet tiedostot | odottaa laajennusta |
-| … | muut domainit | odottaa |
+```bash
+npm run study:todo   # päivitä TODO.md + TODO.json (valmis = .md tiedosto olemassa)
+```
+
+- [`TODO.md`](TODO.md) — kaikki domainit ja luvut, ✅/⬜ per kysymys
+- [`TODO.json`](TODO.json) — sama koneellisesti (CI, agentit)

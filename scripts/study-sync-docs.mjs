@@ -185,6 +185,7 @@ function buildProgressMarkdown(questions, readyIds) {
     "",
     "```bash",
     "npm run study:sync      # päivitä docs kysymyspankista",
+    "npm run study:todo      # päivitä opiskelu/lessons/TODO.md|.json",
     "npm run study:progress  # tiivistelmä terminaaliin",
     "npm run study:import    # tuo oppitunnit.md → opiskelu/lessons/",
     "```",
