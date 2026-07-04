@@ -1016,6 +1016,7 @@ class MapFloor  {
     this.floorId = "";
     this.title = "";
     this.rows = [];
+    this.originalRows = [];
     this.entities = [];
     this.spawnX = 0;
     this.spawnY = 0;
@@ -1027,6 +1028,7 @@ class MapFloor  {
     this.wcY = -1;
     let empty_1 = [];
     this.rows = empty_1;
+    this.originalRows = empty_1;
     let emptyEnt = [];
     this.entities = emptyEnt;
   }
@@ -2523,6 +2525,7 @@ class WorldMap  {
       const floor = new MapFloor();
       this.loadSingleFloor(floorObj, floor);
       this.ensureWcRoom(floor, fi);
+      this.snapshotOriginalRows(floor);
       loadedFloors.push(floor);
       fi = fi + 1;
     };
@@ -2691,6 +2694,33 @@ class WorldMap  {
     this.breachFloors = emptyFloors;
     this.breachXs = emptyXs;
     this.breachYs = emptyYs;
+  };
+  copyRows (src) {
+    let out = [];
+    let i = 0;
+    const n = src.length;
+    while (i < n) {
+      out.push(src[i]);
+      i = i + 1;
+    };
+    return out;
+  };
+  snapshotOriginalRows (floor) {
+    floor.originalRows = this.copyRows(floor.rows);
+  };
+  restoreMapTiles () {
+    let i = 0;
+    const n = this.floors.length;
+    while (i < n) {
+      const floor = this.floors[i];
+      if ( (floor.originalRows.length) > 0 ) {
+        floor.rows = this.copyRows(floor.originalRows);
+      }
+      i = i + 1;
+    };
+    this.eventLog.reset();
+    this.clearOuterWallBreaches();
+    this.recomputeSize();
   };
   wouldExitBuilding (dx, dy) {
     if ( this.currentFloor < 1 ) {
@@ -4522,6 +4552,13 @@ class PlayerTools  {
     this.accessTier = 0;
     this.activeTool = "";
   }
+  resetEmployment () {
+    this.hasOfficialBadge = false;
+    this.hasPromotedCard = false;
+    this.hasStolenCard = false;
+    this.heldCoworkerCardOwner = "";
+    this.accessTier = 0;
+  };
   recalcAccessTier () {
     let t = 0;
     if ( this.hasStolenCard ) {
@@ -6867,6 +6904,7 @@ class GameSession  extends RangerProcessBase {
   encounterDeath (message) {
     this.ensureEngine();
     this.engine.deaths = this.engine.deaths + 1;
+    this.applyDeathReset();
     const floor = this._map.activeFloor();
     this._map.playerX = floor.spawnX;
     this._map.playerY = floor.spawnY;
@@ -9210,8 +9248,7 @@ class GameSession  extends RangerProcessBase {
     this.markStateDirty();
   };
   reviveFromGameEnd (statusMsg) {
-    this._map.clearPoliceSquad();
-    this._map.clearOuterWallBreaches();
+    this.applyDeathReset();
     this.clearMemorial();
     this.playerNeeds.resetDefaults();
     this.npcRelations.reset();
@@ -9232,6 +9269,21 @@ class GameSession  extends RangerProcessBase {
     this._map.lastStatus = statusMsg;
     this.screen = "map";
     this.markStateDirty();
+  };
+  resetEmploymentProgress () {
+    this.interviewPassed = false;
+    this.interviewFailed = false;
+    this.guruIntroPassed = false;
+    this.guruStoryAttempted = false;
+    this.guruQuizCorrect = 0;
+    this.hrWelcomeDone = false;
+    this.tools.resetEmployment();
+    this.syncHrGreeter();
+  };
+  applyDeathReset () {
+    this._map.restoreMapTiles();
+    this._map.clearPoliceSquad();
+    this.resetEmploymentProgress();
   };
   onEpilogueKey (key) {
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {

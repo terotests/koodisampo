@@ -645,6 +645,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn encounterDeath:void (message:string) {
     this.ensureEngine()
     engine.deaths = engine.deaths + 1
+    this.applyDeathReset()
     def floor:MapFloor (map.activeFloor())
     map.playerX = floor.spawnX
     map.playerY = floor.spawnY
@@ -3097,8 +3098,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn reviveFromGameEnd:void (statusMsg:string) {
-    map.clearPoliceSquad()
-    map.clearOuterWallBreaches()
+    this.applyDeathReset()
     this.clearMemorial()
     playerNeeds.resetDefaults()
     npcRelations.reset()
@@ -3119,6 +3119,23 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     map.lastStatus = statusMsg
     screen = "map"
     this.markStateDirty()
+  }
+
+  fn resetEmploymentProgress:void () {
+    interviewPassed = false
+    interviewFailed = false
+    guruIntroPassed = false
+    guruStoryAttempted = false
+    guruQuizCorrect = 0
+    hrWelcomeDone = false
+    tools.resetEmployment()
+    this.syncHrGreeter()
+  }
+
+  fn applyDeathReset:void () {
+    map.restoreMapTiles()
+    map.clearPoliceSquad()
+    this.resetEmploymentProgress()
   }
 
   fn onEpilogueKey:void (key:string) {

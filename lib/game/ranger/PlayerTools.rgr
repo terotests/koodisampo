@@ -12,6 +12,14 @@ class PlayerTools {
   def accessTier:int 0
   def activeTool:string ""
 
+  fn resetEmployment:void () {
+    hasOfficialBadge = false
+    hasPromotedCard = false
+    hasStolenCard = false
+    heldCoworkerCardOwner = ""
+    accessTier = 0
+  }
+
   fn recalcAccessTier:void () {
     def t:int 0
     if (hasStolenCard) {
