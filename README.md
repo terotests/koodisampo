@@ -101,7 +101,6 @@ Web-sovelluksessa vaihda lähde: **Vaihda** → Paikallinen palvelin. Vite proxy
 - [Story JSON -skeema](docs/story-schema.md) — nykyiset tarinat ja featuret
 - [Maailma, inventaario ja taistelu](docs/world-and-combat-plan.md) — tuleva kartta, gurut, taistelu
 - [Opiskelumateriaali (GitHub Pages)](https://terotests.github.io/koodisampo/opiskelu/docs/intro/) — johdanto, aihepiireittäin
-- [Dokumentaation edistyminen](https://terotests.github.io/koodisampo/opiskelu/docs/progress/) — valmiit oppitunnit
 - [Oppituntien kirjoitus](opiskelu/lessons/README.md) — `opiskelu/lessons/{id}.md`, `npm run study:sync`
 - [Opiskeluopas](opiskelu/opiskelu-opas.md) — laajempi taustamateriaali (PIMPL, planning poker, …)
 - [Vanha oppituntilista](opiskelu/oppitunnit.md) — siirretään `opiskelu/lessons/`

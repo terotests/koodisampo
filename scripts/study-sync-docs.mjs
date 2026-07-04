@@ -14,7 +14,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const docsRoot = path.join(root, "study/docs/topics");
 const lessonsDir = path.join(root, "opiskelu/lessons");
-const progressPath = path.join(root, "study/docs/progress.md");
 
 const DOMAIN_ORDER = [
   "cpp", "javascript", "postgres", "docker", "linux", "qt", "scrum",
@@ -142,72 +141,6 @@ function buildDomainPage(domain, domainQuestions, readyIds, sidebarPosition) {
   return lines.join("\n");
 }
 
-function buildProgressMarkdown(questions, readyIds) {
-  const byDomain = {};
-  const byChapter = {};
-  for (const q of questions) {
-    byDomain[q.domain] = byDomain[q.domain] || { total: 0, ready: 0 };
-    byDomain[q.domain].total += 1;
-    if (readyIds.has(q.id)) byDomain[q.domain].ready += 1;
-
-    const ch = q.chapter || "(none)";
-    byChapter[ch] = byChapter[ch] || { total: 0, ready: 0, domain: q.domain };
-    byChapter[ch].total += 1;
-    if (readyIds.has(q.id)) byChapter[ch].ready += 1;
-  }
-
-  const total = questions.length;
-  const ready = readyIds.size;
-  const pct = total ? Math.round((ready / total) * 1000) / 10 : 0;
-
-  const lines = [
-    "---",
-    "sidebar_position: 2",
-    "slug: /progress",
-    "title: Dokumentaation edistyminen",
-    "---",
-    "",
-    "# Dokumentaation edistyminen",
-    "",
-    `**${ready} / ${total}** oppituntia kirjoitettu (**${pct} %**).`,
-    "",
-    "Valmis = tiedosto `opiskelu/lessons/{kysymys-id}.md` olemassa.",
-    "",
-    "## Domain",
-    "",
-    "| Domain | Sivu | Valmiit | Yhteensä | % |",
-    "|--------|------|---------|----------|---|",
-  ];
-
-  for (const [domain, stats] of Object.entries(byDomain).sort()) {
-    const label = DOMAIN_LABELS[domain] || domain;
-    const p = stats.total ? Math.round((stats.ready / stats.total) * 1000) / 10 : 0;
-    lines.push(`| ${label} | [topics/${domain}](/docs/topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
-  }
-
-  lines.push("", "## Luku (chapter)", "", "| Luku | Domain | Valmiit | Yhteensä | % |", "|------|--------|---------|----------|---|");
-
-  for (const [chapter, stats] of Object.entries(byChapter).sort()) {
-    const label = CHAPTER_LABELS[chapter] || chapter;
-    const p = stats.total ? Math.round((stats.ready / stats.total) * 1000) / 10 : 0;
-    lines.push(`| ${label} | ${stats.domain} | ${stats.ready} | ${stats.total} | ${p} |`);
-  }
-
-  lines.push(
-    "",
-    "## Komennot",
-    "",
-    "```bash",
-    "npm run study:sync      # päivitä docs kysymyspankista",
-    "npm run study:todo      # päivitä opiskelu/lessons/TODO.md|.json",
-    "npm run study:progress  # tiivistelmä terminaaliin",
-    "npm run study:import    # tuo oppitunnit.md → opiskelu/lessons/",
-    "```",
-  );
-
-  return lines.join("\n");
-}
-
 function sortDomains(domains) {
   return [...domains].sort((a, b) => {
     const ai = DOMAIN_ORDER.indexOf(a);
@@ -235,7 +168,6 @@ function main() {
     fs.writeFileSync(path.join(docsRoot, `${domain}.md`), doc);
   });
 
-  fs.writeFileSync(progressPath, buildProgressMarkdown(questions, readyIds));
   syncGlossaryDoc();
 
   const manifest = {
