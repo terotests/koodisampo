@@ -13,6 +13,7 @@ import {
   getRecentQuestionIds,
 } from "./quizHistory.mjs";
 import { shuffleChoices } from "./shuffleChoices.mjs";
+import { lessonLinkLine } from "../shared/studyLessonLinks.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const banksDir = resolve(__dirname, "../../content/question-banks");
@@ -579,6 +580,7 @@ export function buildAiStudyText(question) {
   if (src) {
     parts.push(`\n── Lisätietoa ──\n${src}`);
   }
+  parts.push(`\n── Oppitunti ──\n${lessonLinkLine(question)}`);
   return parts.join("\n");
 }
 

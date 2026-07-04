@@ -33,6 +33,7 @@ import {
   formatStudyList,
   emptyStudyBacklog,
 } from "../terminal/studyBacklog.mjs";
+import { lessonUrl } from "./studyLessonLinks.mjs";
 import {
   collectAllCastFromSession,
   collectStaffFromSession,
@@ -553,6 +554,7 @@ function serializeOverlay(ov) {
       teaching: ov.teaching,
       karmaHint: ov.correct ? "" : "",
       marked: ov.marked === true,
+      lessonUrl: ov.lessonUrl || "",
     };
   }
   if (ov.type === "aiStudy") {
@@ -561,6 +563,7 @@ function serializeOverlay(ov) {
       cost: AI_STUDY_KARMA_COST,
       entityName: ov.entityName,
       text: ov.text,
+      lessonUrl: ov.lessonUrl || "",
     };
   }
   if (ov.type === "banter") {
@@ -933,6 +936,7 @@ function handleQuizKey(key) {
       type: "aiStudy",
       entityName: quiz.entity?.name || session.pendingEntityName,
       text: buildAiStudyText(quiz.question),
+      lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
     };
     return;
   }
@@ -966,6 +970,7 @@ function handleQuizKey(key) {
     questionId: quiz.question.id,
     quizMeta: questionMetaFromQuiz(quiz, correct, teaching),
     marked: false,
+    lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
   };
 }
 

@@ -9,6 +9,7 @@ Ensimmäinen aihealue: **moderni C++** vanhoille C++-konkareille, pohjautuen [C+
 **Corporate NetHack** (ASCII-kartta, NPC-kohtaamiset) julkaistaan GitHub Pagesiin automaattisesti kun `main` päivittyy.
 
 - **Osoite:** https://terotests.github.io/koodisampo/
+- **Opiskelumateriaali:** https://terotests.github.io/koodisampo/opiskelu/ (Docusaurus, aihepiireittäin)
 - Staattinen build (`web-game/`) — ei Node-backendia; tallennus IndexedDB:hen
 - Erillinen tarinakokeilu: `web/` (React-tarinavalitsin), `npm run dev:stories`
 
@@ -99,7 +100,8 @@ Web-sovelluksessa vaihda lähde: **Vaihda** → Paikallinen palvelin. Vite proxy
 
 - [Story JSON -skeema](docs/story-schema.md) — nykyiset tarinat ja featuret
 - [Maailma, inventaario ja taistelu](docs/world-and-combat-plan.md) — tuleva kartta, gurut, taistelu
-- [Oppitunnit](opiskelu/oppitunnit.md) — kertaus opiskelulistan aiheista (b / ? pelissä)
+- [Oppitunnit (GitHub Pages)](https://terotests.github.io/koodisampo/opiskelu/) — aihepiireittäin, erillään pelistä
+- [Oppitunnit (repo)](opiskelu/oppitunnit.md) — vanha kertauslista (siirretään `opiskelu/lessons/`)
 - [Opiskeluopas](opiskelu/opiskelu-opas.md) — laajempi taustamateriaali (PIMPL, planning poker, …)
 
 ## Rakenne

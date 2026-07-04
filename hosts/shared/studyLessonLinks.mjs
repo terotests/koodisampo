@@ -1,0 +1,105 @@
+/**
+ * Jaettu oppituntilinkitys — peli viittaa materiaaliin, ei toisin päin.
+ */
+
+export const STUDY_SITE_PATH = "/koodisampo/opiskelu";
+
+/** Oletuspolku GitHub Pages -julkaisuun. */
+export const STUDY_SITE_ORIGIN = "https://terotests.github.io";
+
+export const DOMAIN_LABELS = {
+  cpp: "C++",
+  docker: "Docker",
+  linux: "Linux",
+  scrum: "Scrum",
+  qt: "Qt",
+  javascript: "JavaScript",
+  postgres: "PostgreSQL",
+  git: "Git",
+  backend: "Backend",
+  security: "Turvallisuus",
+  robotframework: "Robot Framework",
+};
+
+export const CHAPTER_LABELS = {
+  tools: "C++ työkalut",
+  style: "C++ tyyli",
+  safety: "C++ turvallisuus",
+  maintainability: "ylläpidettävyys",
+  performance: "suorituskyky",
+  portability: "siirrettävyys",
+  threadability: "säikeistys",
+  correctness: "oikeellisuus",
+  "scrum-dod": "Definition of Done",
+  "scrum-dor": "Definition of Ready",
+  "scrum-estimation": "estimointi",
+  "scrum-sprint": "sprintti",
+  "scrum-team": "tiimi",
+  systemd: "systemd",
+  journald: "journald",
+  "linux-network": "verkko",
+  avahi: "Avahi/mDNS",
+  apt: "apt/dpkg",
+  docker: "Docker",
+  "docker-network": "Docker-verkot",
+  "docker-volumes": "Docker-volumet",
+  "qt-widgets": "Qt-widgetit",
+  "qt-signals": "signaalit/slotit",
+  "qt-threading": "Qt-säikeet",
+  "qt-models": "Qt-mallit",
+  "qt-opengl": "Qt OpenGL",
+  "qt-shaders": "Qt-shaders",
+  "js-async": "JavaScript async",
+  "js-types": "JavaScript-tyypit",
+  "js-modules": "JS-moduulit",
+  "js-runtime": "JS-runtime",
+  "pg-indexes": "PostgreSQL-indeksit",
+  "pg-explain": "EXPLAIN/suunnitelmat",
+  "pg-vacuum": "VACUUM/autovacuum",
+  "pg-config": "PostgreSQL-konfig",
+  "pg-query-design": "SQL-kyselysuunnittelu",
+  "pg-cte-window": "CTE ja ikkunafunktiot",
+  "pg-joins": "JOIN-kuviot",
+  "pg-json": "JSON/JSONB-kyselyt",
+  "pg-sql-security": "SQL-turvallisuus",
+  "cpp-production": "C++ tuotanto",
+  "docker-production": "Docker tuotanto",
+  "js-typescript": "TypeScript",
+  "git-workflow": "Git-työnkulku",
+  "git-ci": "CI/CD",
+  "backend-data": "backend-data",
+  "backend-api": "backend-API",
+  "ops-incident": "incident-hallinta",
+  "web-security": "web-turvallisuus",
+  "rf-basics": "Robot Framework",
+  "rf-web": "RF web-testaus",
+  "rf-execution": "RF suoritus/CI",
+  "rf-advanced": "RF-laajennukset",
+};
+
+/** Docusaurus-polku ilman baseUrl:ia. */
+export function lessonRefForQuestion(question) {
+  if (question?.lessonRef) return question.lessonRef.replace(/^\/+|\/+$/g, "");
+  const domain = question?.domain || "general";
+  const chapter = question?.chapter || "general";
+  const id = question?.id || "";
+  return `${domain}/${chapter}/${id}`;
+}
+
+export function lessonDocPath(ref) {
+  const clean = ref.replace(/^\/+|\/+$/g, "");
+  return `/docs/topics/${clean}`;
+}
+
+export function lessonUrl(question, options = {}) {
+  const basePath = options.basePath ?? STUDY_SITE_PATH;
+  const origin = options.origin ?? "";
+  const ref = lessonRefForQuestion(question);
+  const path = `${basePath.replace(/\/$/, "")}${lessonDocPath(ref)}`;
+  return origin ? `${origin.replace(/\/$/, "")}${path}` : path;
+}
+
+export function lessonLinkLine(question, options = {}) {
+  const url = lessonUrl(question, options);
+  return `Lue oppitunti: ${url}`;
+}
