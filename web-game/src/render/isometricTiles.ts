@@ -94,6 +94,9 @@ export type EntitySprite = {
   glyph: string;
   highlight?: boolean;
   police?: boolean;
+  entityKind?: string;
+  gender?: string;
+  entityId?: string;
 };
 
 export type EntityCellInfo = {
@@ -103,6 +106,7 @@ export type EntityCellInfo = {
   kind?: string;
   id?: string;
   itemTool?: string;
+  gender?: string;
 };
 
 export type ItemSprite = {
@@ -183,10 +187,19 @@ export function resolveCellSprite(
       glyph: entity.glyph,
       highlight: opts.recommended,
       police: opts.policeChase && entity.glyph === "P" && entity.kind === "police",
+      entityKind: entity.kind,
+      gender: entity.gender,
+      entityId: entity.id,
     };
   }
   if (glyph === "@") {
-    return { kind: "entity", skin: 0, glyph, highlight: opts.recommended };
+    return {
+      kind: "entity",
+      skin: 0,
+      glyph,
+      highlight: opts.recommended,
+      entityKind: "player",
+    };
   }
   if (isEmojiGlyph(glyph)) {
     return { kind: "emoji", glyph, highlight: opts.recommended };
