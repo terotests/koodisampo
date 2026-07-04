@@ -12,7 +12,7 @@ Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **
 
 ## Rakenne
 
-- **Yksi sivu per aihepiiri** — esim. [PostgreSQL](topics/postgres) on yksi pitkä scrollattava sivu
+- **Yksi sivu per aihepiiri** — esim. [PostgreSQL](/docs/topics/postgres) on yksi pitkä scrollattava sivu
 - Luvut (chapter) ovat `##`-otsikoita, yksittäiset kysymykset `###`-otsikoita
 - Oikean reunan sisällysluettelo auttaa hyppäämään osioon
 - **Valmis oppitunti** alkaa lainauslohkolla; **Luonnos** = vain oikea vastaus, täyttä tekstiä ei vielä
@@ -46,7 +46,7 @@ Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` 
 
 Pelin linkki vie domain-sivulle ankkuriin: `/docs/topics/cpp/#tools-auto`.
 
-Katso [edistyminen](progress) — kuinka monelle kysymykselle on kirjoitettu täysi oppitunti.
+Katso [edistyminen](/docs/progress) — kuinka monelle kysymykselle on kirjoitettu täysi oppitunti.
 
 ## Laajempi tausta
 

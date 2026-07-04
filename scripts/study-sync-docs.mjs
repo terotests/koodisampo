@@ -174,7 +174,7 @@ function buildProgressMarkdown(questions, readyIds) {
   for (const [domain, stats] of Object.entries(byDomain).sort()) {
     const label = DOMAIN_LABELS[domain] || domain;
     const p = stats.total ? Math.round((stats.ready / stats.total) * 1000) / 10 : 0;
-    lines.push(`| ${label} | [topics/${domain}](topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
+    lines.push(`| ${label} | [topics/${domain}](/docs/topics/${domain}) | ${stats.ready} | ${stats.total} | ${p} |`);
   }
 
   lines.push("", "## Luku (chapter)", "", "| Luku | Domain | Valmiit | Yhteensä | % |", "|------|--------|---------|----------|---|");
