@@ -52,6 +52,20 @@ function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const cornerDir = cornerIsoDir(openN, openE, openS, openW);
   if (cornerDir) return { base: "wallCorner", dir: cornerDir };
 
+  // Straight run dead-ends (e.g. outer border) use half-wall like mid segments, not end caps.
+  if (openN && !openS && !openE && !openW && east && west) {
+    return { base: "wallHalf", dir: fixIsoWallDir("E") };
+  }
+  if (openS && !openN && !openE && !openW && east && west) {
+    return { base: "wallHalf", dir: fixIsoWallDir("E") };
+  }
+  if (openE && !openW && !openN && !openS && north && south) {
+    return { base: "wallHalf", dir: fixIsoWallDir("N") };
+  }
+  if (openW && !openE && !openN && !openS && north && south) {
+    return { base: "wallHalf", dir: fixIsoWallDir("N") };
+  }
+
   if (openN && !openS && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("N") };
   if (openS && !openN && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("S") };
   if (openE && !openW && !openN && !openS) return { base: "wall", dir: fixIsoWallDir("E") };
@@ -96,6 +110,7 @@ export type ItemSprite = {
   base: string;
   dir: IsoDirection;
   glyph: string;
+  itemTool?: string;
   highlight?: boolean;
 };
 
@@ -126,7 +141,7 @@ function itemTileSprite(itemTool: string, glyph: string): ItemSprite {
     return { kind: "item", base: "switchFloorOn", dir: "N", glyph };
   }
   if (itemTool === "crowbar" || itemTool === "shovel") {
-    return { kind: "item", base: "block", dir: "E", glyph };
+    return { kind: "item", base: "prop", dir: "E", glyph, itemTool };
   }
   if (itemTool === "sledgehammer") {
     return { kind: "item", base: "crate", dir: "E", glyph };
@@ -203,10 +218,10 @@ export function resolveCellSprite(
     return { kind: "tile", base: "stairs", dir: wall.dir };
   }
   if (isFloorChar(glyph)) {
-    return { kind: "tile", base: "floor", dir: "E" };
+    return { kind: "tile", base: "slab", dir: "E" };
   }
   if (isWallChar(glyph)) {
     return { kind: "tile", base: wall.base, dir: wall.dir };
   }
-  return { kind: "tile", base: "floor", dir: "E" };
+  return { kind: "tile", base: "slab", dir: "E" };
 }
