@@ -6,6 +6,7 @@ async function start() {
   if (!mapEl) throw new Error("UI root missing");
   try {
     const game = await createBrowserGame();
+    mapEl.textContent = "";
     mountGameUI(game);
   } catch (err) {
     mapEl.textContent = err instanceof Error ? err.message : "Pelin lataus epäonnistui";

@@ -27,6 +27,10 @@ export function ensureMapShell(mapEl: HTMLElement): {
   hint: HTMLElement;
 } {
   mapEl.classList.remove("encounter-view");
+  if (!mapEl.querySelector(MAP_SHELL_SEL)) {
+    // Drop the static HTML placeholder ("ladataan…") before first map mount.
+    mapEl.textContent = "";
+  }
   const shell = ensureChild(mapEl, MAP_SHELL_SEL, () => {
     const wrap = document.createElement("div");
     wrap.dataset.mapShell = "1";
