@@ -74,10 +74,14 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | `npm run play:web` | Alias → `npm run dev` (sama web-game UI) |
 | `npm run dev` | Vite dev server (`web-game/`) |
 | `npm run build` | Production static build (uses committed `.cjs`, syncs to `web-game/public/`) |
+| `npm run build:study` | Synkronoi opiskeludocs + Docusaurus → `study/build/` |
+| `npm run study:sync` | Generoi `study/docs/topics/` kysymyspankista |
+| `npm run study:progress` | Oppituntidokumentaation kattavuus |
+| `npm run study:import` | Tuo `opiskelu/oppitunnit.md` → `opiskelu/lessons/` |
 
 ## CI / GitHub Pages
 
-Workflow `.github/workflows/pages.yml` runs `npm ci && npm run build` only. It does **not** compile Ranger — it relies on the committed `generated/es6/koodisampo.cjs`. If you change `.rgr` files in a PR, you **must** run `npm run build:ranger` and commit the updated `.cjs`.
+Workflow `.github/workflows/pages.yml` runs `npm ci && npm run build` only. It does **not** compile Ranger — it relies on the committed `generated/es6/koodisampo.cjs`. Build includes Docusaurus opiskelusivusto osoitteessa `/koodisampo/opiskelu/`. If you change `.rgr` files in a PR, you **must** run `npm run build:ranger` and commit the updated `.cjs`.
 
 ## Architecture rules
 

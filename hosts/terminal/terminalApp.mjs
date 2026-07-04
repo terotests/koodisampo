@@ -57,6 +57,7 @@ import {
   clearEncounterQuizCache,
   randomEncounterPickNonce,
 } from "./encounterQuestions.mjs";
+import { lessonLinkLine } from "../shared/studyLessonLinks.mjs";
 import { castListEnabledForTerminal } from "./debugFlags.mjs";
 import { collectAllCastFromSession, formatCastRosterText } from "./staffRoster.mjs";
 import {
@@ -928,6 +929,9 @@ async function showQuizOutcome(session, quiz, correct) {
       "",
       `  ${styled("── Selitys ──", FG.gray)}`,
       `  ${styled(wrap(teaching), FG.gray)}`,
+      "",
+      `  ${styled("── Oppitunti ──", FG.gray)}`,
+      `  ${styled(wrap(lessonLinkLine(quiz.question)), FG.cyan)}`,
       "",
       ...extra,
       `  ${styled("Paina Enter jatkaaksesi...", FG.gray)}`,

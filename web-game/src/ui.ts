@@ -400,6 +400,9 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="overlay-title ${cls}">${mark}</div>`;
         html += `<div class="greeting">${esc(ov.reaction)}</div>`;
         html += `<div class="teaching"><h4>── Selitys ──</h4>${esc(ov.teaching)}</div>`;
+        if (ov.lessonUrl) {
+          html += `<div style="margin-top:12px"><a href="${esc(ov.lessonUrl)}" target="_blank" rel="noopener" style="color:#58a6ff">📖 Lue oppitunti (GitHub Pages)</a></div>`;
+        }
         if (ov.marked) {
           html += `<div style="color:#3fb950;margin-top:12px">✓ Merkitty opiskelulistalle — Kysy AI:lta.</div>`;
         }
@@ -423,6 +426,9 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="stats" style="margin-bottom:8px">Palkka: ${esc(formatSalary(state.salary))}</div>`;
         html += `<div><span class="entity-name">${esc(ov.entityName)}</span> <span style="color:#8b949e">katselee sivuun kun kaivat puhelimen.</span></div>`;
         html += `<div class="greeting" style="white-space:pre-wrap">${esc(ov.text)}</div>`;
+        if (ov.lessonUrl) {
+          html += `<div style="margin-top:12px"><a href="${esc(ov.lessonUrl)}" target="_blank" rel="noopener" style="color:#58a6ff">📖 Lue oppitunti (GitHub Pages)</a></div>`;
+        }
         html += continueRow("enter", "Takaisin kysymykseen →");
         if (isMobileLayout()) {
           hideMobileChoiceToolbar();

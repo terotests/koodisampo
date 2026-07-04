@@ -29,6 +29,7 @@ jobs:
         run: npm ci && npm run build
         env:
           PAGES_BASE: /koodisampo/
+          STUDY_BASE: /koodisampo/opiskelu/
 
       - name: SPA fallback for client-side routes
         run: cp web-game/dist/index.html web-game/dist/404.html
