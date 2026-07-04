@@ -1094,6 +1094,7 @@ class WorldMap {
       def floor:MapFloor (new MapFloor)
       this.loadSingleFloor(floorObj floor)
       this.ensureWcRoom(floor fi)
+      this.snapshotOriginalRows(floor)
       push loadedFloors floor
       fi = fi + 1
     }
@@ -1273,6 +1274,36 @@ class WorldMap {
     breachFloors = emptyFloors
     breachXs = emptyXs
     breachYs = emptyYs
+  }
+
+  fn copyRows:[string] (src:[string]) {
+    def out:[string]
+    def i:int 0
+    def n:int (array_length src)
+    while (i < n) {
+      push out (at src i)
+      i = i + 1
+    }
+    return out
+  }
+
+  fn snapshotOriginalRows:void (floor:MapFloor) {
+    floor.originalRows = (this.copyRows(floor.rows))
+  }
+
+  fn restoreMapTiles:void () {
+    def i:int 0
+    def n:int (array_length floors)
+    while (i < n) {
+      def floor:MapFloor (at floors i)
+      if ((array_length floor.originalRows) > 0) {
+        floor.rows = (this.copyRows(floor.originalRows))
+      }
+      i = i + 1
+    }
+    eventLog.reset()
+    this.clearOuterWallBreaches()
+    this.recomputeSize()
   }
 
   fn wouldExitBuilding:boolean (dx:int dy:int) {
