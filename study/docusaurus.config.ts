@@ -49,6 +49,12 @@ const config: Config = {
           label: "Aihepiirit",
         },
         {
+          type: "doc",
+          docId: "lyhenteet",
+          position: "left",
+          label: "Lyhenteet",
+        },
+        {
           href: "https://terotests.github.io/koodisampo/",
           label: "Peli",
           position: "right",
@@ -68,6 +74,7 @@ const config: Config = {
           items: [
             { label: "Aihepiirit", to: "/docs/intro" },
             { label: "Edistyminen", to: "/docs/progress" },
+            { label: "Lyhenteet", to: "/docs/lyhenteet" },
           ],
         },
         {

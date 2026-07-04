@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
 import { DOMAIN_LABELS, CHAPTER_LABELS } from "../hosts/shared/studyLessonLinks.mjs";
+import { linkGlossaryTerms, syncGlossaryDoc } from "./study-glossary.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -79,6 +80,7 @@ function buildStubSection(q) {
 function buildManualSection(q, body) {
   let content = stripFrontmatter(body);
   content = stripLeadingTitle(content);
+  content = linkGlossaryTerms(content);
   const lines = [
     `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
     "",
@@ -236,6 +238,7 @@ function main() {
   });
 
   fs.writeFileSync(progressPath, buildProgressMarkdown(questions, readyIds));
+  syncGlossaryDoc();
 
   const manifest = {
     generatedAt: new Date().toISOString(),
