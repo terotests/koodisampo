@@ -11,7 +11,7 @@ const q = {
 assert.equal(lessonRefForQuestion(q), "cpp/tools/tools-auto");
 assert.equal(
   lessonUrl(q, { origin: "https://example.com" }),
-  "https://example.com/koodisampo/opiskelu/docs/topics/cpp/tools/tools-auto",
+  "https://example.com/koodisampo/opiskelu/docs/topics/cpp/tools/tools-auto/",
 );
 assert.equal(
   lessonRefForQuestion({ ...q, lessonRef: "custom/path" }),

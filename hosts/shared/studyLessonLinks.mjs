@@ -88,7 +88,7 @@ export function lessonRefForQuestion(question) {
 
 export function lessonDocPath(ref) {
   const clean = ref.replace(/^\/+|\/+$/g, "");
-  return `/docs/topics/${clean}`;
+  return `/docs/topics/${clean}/`;
 }
 
 export function lessonUrl(question, options = {}) {

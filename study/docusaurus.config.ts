@@ -10,6 +10,7 @@ const config: Config = {
   favicon: "img/favicon.ico",
   url: "https://terotests.github.io",
   baseUrl,
+  trailingSlash: true,
   organizationName: "terotests",
   projectName: "koodisampo",
   onBrokenLinks: "warn",
