@@ -13,6 +13,7 @@ import {
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
+import { readStoredRenderTheme } from "../renderTheme";
 import { themeBackgroundColor } from "../theme";
 import {
   drawLegoCrowbarItem,
@@ -68,6 +69,7 @@ function renderSignature(lines: string[], state: MapState): string {
     state.camera?.x ?? "",
     state.camera?.y ?? "",
     walkFrame,
+    readStoredRenderTheme(),
   ].join("\0");
 }
 
