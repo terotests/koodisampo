@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**125 / 1225** valmis (**10.2 %**).
+**173 / 1225** valmis (**14.1 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 84 | 180 | 46.7 |
+| PostgreSQL | 132 | 180 | 73.3 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,7 +534,7 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (84/180)
+### PostgreSQL (132/180)
 
 #### PostgreSQL-konfig `pg-config` (24/24)
 
@@ -565,24 +565,24 @@
 | ✅ | 4 | `exp-pg-config-work-mem-sort` | EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC… |
 | ✅ | 4 | `pg-config-work-mem` | Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetu… |
 
-#### CTE ja ikkunafunktiot `pg-cte-window` (0/14)
+#### CTE ja ikkunafunktiot `pg-cte-window` (14/14)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `sqd-cte-materialized-hint` | PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkys… |
-| ⬜ | 3 | `sqd-cte-readability` | Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit? |
-| ⬜ | 4 | `sqd-first-value-partition` | Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä… |
-| ⬜ | 4 | `sqd-lag-mom-comparison` | Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä… |
-| ⬜ | 3 | `sqd-lead-future-row` | Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio? |
-| ⬜ | 3 | `sqd-ntile-buckets` | Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio? |
-| ⬜ | 3 | `sqd-percent-rank-report` | Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio? |
-| ⬜ | 4 | `sqd-pivot-conditional-agg` | Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta? |
-| ⬜ | 3 | `sqd-rank-vs-dense` | Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio? |
-| ⬜ | 4 | `sqd-recursive-cte-hierarchy` | Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten … |
-| ⬜ | 4 | `sqd-row-number-dedup` | Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio? |
-| ⬜ | 3 | `sqd-running-total` | Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu? |
-| ⬜ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
-| ⬜ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
+| ✅ | 4 | `sqd-cte-materialized-hint` | PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkys… |
+| ✅ | 3 | `sqd-cte-readability` | Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit? |
+| ✅ | 4 | `sqd-first-value-partition` | Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä… |
+| ✅ | 4 | `sqd-lag-mom-comparison` | Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä… |
+| ✅ | 3 | `sqd-lead-future-row` | Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio? |
+| ✅ | 3 | `sqd-ntile-buckets` | Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio? |
+| ✅ | 3 | `sqd-percent-rank-report` | Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio? |
+| ✅ | 4 | `sqd-pivot-conditional-agg` | Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta? |
+| ✅ | 3 | `sqd-rank-vs-dense` | Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio? |
+| ✅ | 4 | `sqd-recursive-cte-hierarchy` | Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten … |
+| ✅ | 4 | `sqd-row-number-dedup` | Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio? |
+| ✅ | 3 | `sqd-running-total` | Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu? |
+| ✅ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
+| ✅ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
 
 #### EXPLAIN/suunnitelmat `pg-explain` (30/30)
 
@@ -722,44 +722,44 @@
 | ⬜ | 4 | `sqd-search-path-injection` | Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski? |
 | ⬜ | 3 | `sqd-view-column-mask` | Analyytikot eivät saa nähdä henkilötunnuksia. Ensimmäinen kerros? |
 
-#### VACUUM/autovacuum `pg-vacuum` (0/34)
+#### VACUUM/autovacuum `pg-vacuum` (34/34)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `b02-pg-vacuum-bloat-09` | UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpi… |
-| ⬜ | 3 | `b02-pg-vacuum-full-12` | Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski? |
-| ⬜ | 4 | `b02-pg-vacuum-long-xact-11` | Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h.… |
-| ⬜ | 5 | `b02-pg-vacuum-wrap-10` | Varoitus: database approaching transaction ID wraparound. Kiireellinen … |
-| ⬜ | 2 | `b03-pg-vacuum-analyze-stats` | Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentu… |
-| ⬜ | 4 | `b03-pg-vacuum-freeze-settings` | Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze t… |
-| ⬜ | 4 | `b03-pg-vacuum-wraparound-warning` | Logissa 'database must be vacuumed within 10 million transactions' — mi… |
-| ⬜ | 3 | `b04-pg-vacuum-analyze-stats` | Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhen… |
-| ⬜ | 3 | `b04-pg-vacuum-dead-tuples` | pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy t… |
-| ⬜ | 5 | `b04-pg-vacuum-freeze-age` | Varoitus: 'database must be vacuumed within 200 million transactions' —… |
-| ⬜ | 4 | `b04-pg-vacuum-long-xact` | Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in t… |
-| ⬜ | 2 | `b05-pg-vacuum-analyze-after-bulk` | Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk… |
-| ⬜ | 4 | `b05-pg-vacuum-bloat-long-xact` | Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle t… |
-| ⬜ | 4 | `b05-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat? |
-| ⬜ | 5 | `b05-pg-vacuum-wraparound` | PostgreSQL varoittaa: 'database is not accepting commands to avoid wrap… |
-| ⬜ | 3 | `b06-pg-vacuum-autovacuum-scale` | Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät? |
-| ⬜ | 4 | `b06-pg-vacuum-index-cleanup` | VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria? |
-| ⬜ | 4 | `b06-pg-vacuum-skip-locked` | DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete? |
-| ⬜ | 2 | `b07-pg-vacuum-analyze` | Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokome… |
-| ⬜ | 3 | `b07-pg-vacuum-autovacuum` | autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen to… |
-| ⬜ | 4 | `b07-pg-vacuum-bloat` | Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu? |
-| ⬜ | 5 | `b07-pg-vacuum-freeze` | Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä? |
-| ⬜ | 3 | `b08-pg-vacuum-autovacuum-threshold` | Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria sääd… |
-| ⬜ | 4 | `b08-pg-vacuum-bloat` | Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toim… |
-| ⬜ | 5 | `b08-pg-vacuum-freeze` | Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa? |
-| ⬜ | 4 | `b09-pg-vacuum-autovacuum-tuning` | Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö? |
-| ⬜ | 4 | `b09-pg-vacuum-bloat-table` | Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables… |
-| ⬜ | 5 | `b09-pg-vacuum-freeze-age` | Varoitus: `database must be vacuumed within 200 million transactions`. … |
-| ⬜ | 3 | `b09-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tä… |
-| ⬜ | 3 | `exp-pg-vacuum-autovacuum-tune` | Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeks… |
-| ⬜ | 5 | `exp-pg-vacuum-bloat-wraparound` | Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi.… |
-| ⬜ | 3 | `exp-pg-vacuum-full-lock` | Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi… |
-| ⬜ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
-| ⬜ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
+| ✅ | 4 | `b02-pg-vacuum-bloat-09` | UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpi… |
+| ✅ | 3 | `b02-pg-vacuum-full-12` | Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski? |
+| ✅ | 4 | `b02-pg-vacuum-long-xact-11` | Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h.… |
+| ✅ | 5 | `b02-pg-vacuum-wrap-10` | Varoitus: database approaching transaction ID wraparound. Kiireellinen … |
+| ✅ | 2 | `b03-pg-vacuum-analyze-stats` | Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentu… |
+| ✅ | 4 | `b03-pg-vacuum-freeze-settings` | Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze t… |
+| ✅ | 4 | `b03-pg-vacuum-wraparound-warning` | Logissa 'database must be vacuumed within 10 million transactions' — mi… |
+| ✅ | 3 | `b04-pg-vacuum-analyze-stats` | Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhen… |
+| ✅ | 3 | `b04-pg-vacuum-dead-tuples` | pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy t… |
+| ✅ | 5 | `b04-pg-vacuum-freeze-age` | Varoitus: 'database must be vacuumed within 200 million transactions' —… |
+| ✅ | 4 | `b04-pg-vacuum-long-xact` | Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in t… |
+| ✅ | 2 | `b05-pg-vacuum-analyze-after-bulk` | Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk… |
+| ✅ | 4 | `b05-pg-vacuum-bloat-long-xact` | Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle t… |
+| ✅ | 4 | `b05-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat? |
+| ✅ | 5 | `b05-pg-vacuum-wraparound` | PostgreSQL varoittaa: 'database is not accepting commands to avoid wrap… |
+| ✅ | 3 | `b06-pg-vacuum-autovacuum-scale` | Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät? |
+| ✅ | 4 | `b06-pg-vacuum-index-cleanup` | VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria? |
+| ✅ | 4 | `b06-pg-vacuum-skip-locked` | DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete? |
+| ✅ | 2 | `b07-pg-vacuum-analyze` | Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokome… |
+| ✅ | 3 | `b07-pg-vacuum-autovacuum` | autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen to… |
+| ✅ | 4 | `b07-pg-vacuum-bloat` | Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu? |
+| ✅ | 5 | `b07-pg-vacuum-freeze` | Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä? |
+| ✅ | 3 | `b08-pg-vacuum-autovacuum-threshold` | Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria sääd… |
+| ✅ | 4 | `b08-pg-vacuum-bloat` | Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toim… |
+| ✅ | 5 | `b08-pg-vacuum-freeze` | Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa? |
+| ✅ | 4 | `b09-pg-vacuum-autovacuum-tuning` | Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö? |
+| ✅ | 4 | `b09-pg-vacuum-bloat-table` | Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables… |
+| ✅ | 5 | `b09-pg-vacuum-freeze-age` | Varoitus: `database must be vacuumed within 200 million transactions`. … |
+| ✅ | 3 | `b09-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tä… |
+| ✅ | 3 | `exp-pg-vacuum-autovacuum-tune` | Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeks… |
+| ✅ | 5 | `exp-pg-vacuum-bloat-wraparound` | Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi.… |
+| ✅ | 3 | `exp-pg-vacuum-full-lock` | Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi… |
+| ✅ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
+| ✅ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
 
 ### Docker (5/142)
 

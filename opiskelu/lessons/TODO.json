@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T11:57:53.343Z",
+  "generatedAt": "2026-07-04T12:00:27.435Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 125,
-    "pendingLessons": 1100,
-    "percent": 10.2
+    "readyLessons": 173,
+    "pendingLessons": 1052,
+    "percent": 14.1
   },
   "domains": [
     {
@@ -3204,7 +3204,7 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 84,
+      "ready": 132,
       "total": 180,
       "chapters": [
         {
@@ -3386,105 +3386,105 @@
         {
           "id": "pg-cte-window",
           "label": "CTE ja ikkunafunktiot",
-          "ready": 0,
+          "ready": 14,
           "total": 14,
           "questions": [
             {
               "id": "sqd-cte-materialized-hint",
               "difficulty": 4,
               "prompt": "PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkyselyyn hitaasti. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-cte-materialized-hint.md"
             },
             {
               "id": "sqd-cte-readability",
               "difficulty": 3,
               "prompt": "Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-cte-readability.md"
             },
             {
               "id": "sqd-first-value-partition",
               "difficulty": 4,
               "prompt": "Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä toimii?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-first-value-partition.md"
             },
             {
               "id": "sqd-lag-mom-comparison",
               "difficulty": 4,
               "prompt": "Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä. Mikä auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-lag-mom-comparison.md"
             },
             {
               "id": "sqd-lead-future-row",
               "difficulty": 3,
               "prompt": "Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-lead-future-row.md"
             },
             {
               "id": "sqd-ntile-buckets",
               "difficulty": 3,
               "prompt": "Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-ntile-buckets.md"
             },
             {
               "id": "sqd-percent-rank-report",
               "difficulty": 3,
               "prompt": "Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-percent-rank-report.md"
             },
             {
               "id": "sqd-pivot-conditional-agg",
               "difficulty": 4,
               "prompt": "Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-pivot-conditional-agg.md"
             },
             {
               "id": "sqd-rank-vs-dense",
               "difficulty": 3,
               "prompt": "Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-rank-vs-dense.md"
             },
             {
               "id": "sqd-recursive-cte-hierarchy",
               "difficulty": 4,
               "prompt": "Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten haet koko alipuun?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-recursive-cte-hierarchy.md"
             },
             {
               "id": "sqd-row-number-dedup",
               "difficulty": 4,
               "prompt": "Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-row-number-dedup.md"
             },
             {
               "id": "sqd-running-total",
               "difficulty": 3,
               "prompt": "Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-running-total.md"
             },
             {
               "id": "sqd-window-frame-rows",
               "difficulty": 4,
               "prompt": "7 päivän liukuva keskiarvo. Frame-määrittely?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-window-frame-rows.md"
             },
             {
               "id": "sqd-window-vs-group-by",
               "difficulty": 3,
               "prompt": "Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman self-joinia.",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-window-vs-group-by.md"
             }
           ]
@@ -4296,245 +4296,245 @@
         {
           "id": "pg-vacuum",
           "label": "VACUUM/autovacuum",
-          "ready": 0,
+          "ready": 34,
           "total": 34,
           "questions": [
             {
               "id": "b02-pg-vacuum-bloat-09",
               "difficulty": 4,
               "prompt": "UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-bloat-09.md"
             },
             {
               "id": "b02-pg-vacuum-full-12",
               "difficulty": 3,
               "prompt": "Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-full-12.md"
             },
             {
               "id": "b02-pg-vacuum-long-xact-11",
               "difficulty": 4,
               "prompt": "Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h. Mitä teet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-long-xact-11.md"
             },
             {
               "id": "b02-pg-vacuum-wrap-10",
               "difficulty": 5,
               "prompt": "Varoitus: database approaching transaction ID wraparound. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-wrap-10.md"
             },
             {
               "id": "b03-pg-vacuum-analyze-stats",
               "difficulty": 2,
               "prompt": "Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentuneet. Komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-analyze-stats.md"
             },
             {
               "id": "b03-pg-vacuum-freeze-settings",
               "difficulty": 4,
               "prompt": "Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze tuning?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-freeze-settings.md"
             },
             {
               "id": "b03-pg-vacuum-wraparound-warning",
               "difficulty": 4,
               "prompt": "Logissa 'database must be vacuumed within 10 million transactions' — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-wraparound-warning.md"
             },
             {
               "id": "b04-pg-vacuum-analyze-stats",
               "difficulty": 3,
               "prompt": "Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhentuneet arviot bulk-insertin jälkeen. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-analyze-stats.md"
             },
             {
               "id": "b04-pg-vacuum-dead-tuples",
               "difficulty": 3,
               "prompt": "pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy taulussa. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-dead-tuples.md"
             },
             {
               "id": "b04-pg-vacuum-freeze-age",
               "difficulty": 5,
               "prompt": "Varoitus: 'database must be vacuumed within 200 million transactions' — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-freeze-age.md"
             },
             {
               "id": "b04-pg-vacuum-long-xact",
               "difficulty": 4,
               "prompt": "Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in transaction' 12h. Syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-long-xact.md"
             },
             {
               "id": "b05-pg-vacuum-analyze-after-bulk",
               "difficulty": 2,
               "prompt": "Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk-operaation jälkeen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-analyze-after-bulk.md"
             },
             {
               "id": "b05-pg-vacuum-bloat-long-xact",
               "difficulty": 4,
               "prompt": "Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle transactionin. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-bloat-long-xact.md"
             },
             {
               "id": "b05-pg-vacuum-full-lock",
               "difficulty": 4,
               "prompt": "DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-full-lock.md"
             },
             {
               "id": "b05-pg-vacuum-wraparound",
               "difficulty": 5,
               "prompt": "PostgreSQL varoittaa: 'database is not accepting commands to avoid wraparound'. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-wraparound.md"
             },
             {
               "id": "b06-pg-vacuum-autovacuum-scale",
               "difficulty": 3,
               "prompt": "Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-autovacuum-scale.md"
             },
             {
               "id": "b06-pg-vacuum-index-cleanup",
               "difficulty": 4,
               "prompt": "VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-index-cleanup.md"
             },
             {
               "id": "b06-pg-vacuum-skip-locked",
               "difficulty": 4,
               "prompt": "DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-skip-locked.md"
             },
             {
               "id": "b07-pg-vacuum-analyze",
               "difficulty": 2,
               "prompt": "Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokomento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-analyze.md"
             },
             {
               "id": "b07-pg-vacuum-autovacuum",
               "difficulty": 3,
               "prompt": "autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-autovacuum.md"
             },
             {
               "id": "b07-pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-bloat.md"
             },
             {
               "id": "b07-pg-vacuum-freeze",
               "difficulty": 5,
               "prompt": "Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-freeze.md"
             },
             {
               "id": "b08-pg-vacuum-autovacuum-threshold",
               "difficulty": 3,
               "prompt": "Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria säädät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-autovacuum-threshold.md"
             },
             {
               "id": "b08-pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-bloat.md"
             },
             {
               "id": "b08-pg-vacuum-freeze",
               "difficulty": 5,
               "prompt": "Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-freeze.md"
             },
             {
               "id": "b09-pg-vacuum-autovacuum-tuning",
               "difficulty": 4,
               "prompt": "Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-autovacuum-tuning.md"
             },
             {
               "id": "b09-pg-vacuum-bloat-table",
               "difficulty": 4,
               "prompt": "Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables näyttää korkean n_dead_tup. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-bloat-table.md"
             },
             {
               "id": "b09-pg-vacuum-freeze-age",
               "difficulty": 5,
               "prompt": "Varoitus: `database must be vacuumed within 200 million transactions`. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-freeze-age.md"
             },
             {
               "id": "b09-pg-vacuum-full-lock",
               "difficulty": 3,
               "prompt": "DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tämä on riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-full-lock.md"
             },
             {
               "id": "exp-pg-vacuum-autovacuum-tune",
               "difficulty": 3,
               "prompt": "Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeksi usein. Mitä säädät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-autovacuum-tune.md"
             },
             {
               "id": "exp-pg-vacuum-bloat-wraparound",
               "difficulty": 5,
               "prompt": "Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-bloat-wraparound.md"
             },
             {
               "id": "exp-pg-vacuum-full-lock",
               "difficulty": 3,
               "prompt": "Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi vastustat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-full-lock.md"
             },
             {
               "id": "exp-pg-vacuum-long-xact",
               "difficulty": 4,
               "prompt": "pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples kasaantuvat. Mitä teet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-long-xact.md"
             },
             {
               "id": "pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-vacuum-bloat.md"
             }
           ]
