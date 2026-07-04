@@ -33,6 +33,20 @@
       }
     })();
   </script>
+  <script>
+    (function () {
+      try {
+        var rt = localStorage.getItem("koodisampo-render-theme");
+        if (rt === "orange" || rt === "emerald" || rt === "ocean" || rt === "violet" || rt === "rose" || rt === "slate") {
+          document.documentElement.dataset.renderTheme = rt;
+        } else {
+          document.documentElement.dataset.renderTheme = "orange";
+        }
+      } catch (e) {
+        document.documentElement.dataset.renderTheme = "orange";
+      }
+    })();
+  </script>
   <style>
     :root,
     [data-theme="slate"] {
@@ -323,7 +337,7 @@
       h1 { font-size: 0.7rem; margin: 0; padding: 6px 10px 0; }
       #top-bar-inner { justify-content: space-between; padding: 0 10px; gap: 8px; margin-bottom: 0; }
       .theme-picker { font-size: 10px; }
-      .theme-picker select { font-size: 10px; padding: 3px 6px; max-width: 9.5rem; }
+      .theme-picker select { font-size: 10px; padding: 3px 6px; max-width: 7.5rem; }
       .theme-picker-label { display: none; }
       #top-bar { padding: 0; margin: 0; border-bottom: 1px solid var(--border); }
       #hud-stats { display: flex; padding: 4px 10px 6px; }
@@ -817,9 +831,13 @@
     <header id="top-bar">
       <div id="top-bar-inner">
         <h1>Koodisampo</h1>
-        <label id="theme-picker" class="theme-picker" title="Valitse taustateema">
-          <span class="theme-picker-label">Teema</span>
-          <select id="theme-select" aria-label="Taustateema"></select>
+        <label id="theme-picker" class="theme-picker" title="Valitse taustaväri">
+          <span class="theme-picker-label">Tausta</span>
+          <select id="theme-select" aria-label="Taustaväri"></select>
+        </label>
+        <label id="render-theme-picker" class="theme-picker" title="Valitse 3D-kartan väriteema">
+          <span class="theme-picker-label">Kartta</span>
+          <select id="render-theme-select" aria-label="Karttaväri"></select>
         </label>
       </div>
       <div id="hud-stats"></div>

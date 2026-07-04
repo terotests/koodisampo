@@ -1289,6 +1289,11 @@ export function mountGameUI(game: WebGame) {
       render(game.snapshot());
     });
 
+    document.addEventListener("koodisampo-render-theme-change", () => {
+      lastRenderKey = "";
+      render(game.snapshot());
+    });
+
     if (profileSpecialtyEl) {
       profileSpecialtyEl.innerHTML = PLAYER_SPECIALTY_OPTIONS.map(
         (o) => `<option value="${esc(o.id)}">${esc(o.label)}</option>`,
