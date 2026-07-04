@@ -53,12 +53,47 @@ function drawScaledImage(
   screenX: number,
   screenY: number,
   tileWidth: number,
+  opts?: { scaleMul?: number; crisp?: boolean; yBias?: number },
 ) {
-  const scale = tileWidth / img.naturalWidth;
-  const drawW = tileWidth;
+  const scaleMul = opts?.scaleMul ?? 1;
+  const effectiveWidth = tileWidth * scaleMul;
+  const scale = effectiveWidth / img.naturalWidth;
+  const drawW = effectiveWidth;
   const drawH = img.naturalHeight * scale;
   const yOff = tileDrawYOffset(drawH, tileWidth);
-  ctx.drawImage(img, screenX, screenY - yOff, drawW, drawH);
+  const xOff = (tileWidth - drawW) / 2;
+  const yBias = opts?.yBias ?? 0;
+  ctx.save();
+  if (opts?.crisp) ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, screenX + xOff, screenY - yOff + yBias, drawW, drawH);
+  ctx.restore();
+}
+
+function drawItemGlow(
+  ctx: CanvasRenderingContext2D,
+  screenX: number,
+  screenY: number,
+  tileWidth: number,
+  tileHeight: number,
+) {
+  ctx.save();
+  ctx.fillStyle = "rgba(255, 210, 80, 0.45)";
+  ctx.strokeStyle = "rgba(255, 230, 120, 0.95)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(screenX + tileWidth / 2, screenY + tileHeight * 0.05);
+  ctx.lineTo(screenX + tileWidth * 0.92, screenY + tileHeight * 0.45);
+  ctx.lineTo(screenX + tileWidth / 2, screenY + tileHeight * 0.85);
+  ctx.lineTo(screenX + tileWidth * 0.08, screenY + tileHeight * 0.45);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function entityDrawScale(glyph: string): number {
+  if (glyph === "@") return 1.55;
+  return 1.38;
 }
 
 function drawHighlight(
@@ -146,10 +181,26 @@ function drawSprite(
 
   if (highlight) drawHighlight(ctx, screenX, screenY, tileWidth, tileHeight);
 
+  if (sprite.kind === "item") {
+    drawItemGlow(ctx, screenX, screenY, tileWidth, tileHeight);
+    const file = isoTileKey(sprite.base, sprite.dir);
+    const img = getIsoImage(file);
+    if (img) {
+      drawScaledImage(ctx, img, screenX, screenY, tileWidth, { scaleMul: 0.92, crisp: true, yBias: -2 });
+    } else {
+      drawEmoji(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight);
+    }
+    return;
+  }
+
   if (sprite.kind === "entity") {
     const img = getIsoImage(isoCharacterKey(sprite.skin));
     if (img) {
-      drawScaledImage(ctx, img, screenX, screenY, tileWidth);
+      drawScaledImage(ctx, img, screenX, screenY, tileWidth, {
+        scaleMul: entityDrawScale(sprite.glyph),
+        crisp: true,
+        yBias: -3,
+      });
     } else {
       drawEntityLabel(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight, sprite.police);
     }
@@ -165,7 +216,7 @@ type OverlayCell = {
   x: number;
   y: number;
   depth: number;
-  glyph: string;
+  sprite: CellSprite;
 };
 
 function paintIsometricMap(
@@ -207,30 +258,41 @@ function paintIsometricMap(
   }
 
   const overlays: OverlayCell[] = [];
+  const overlayKeys = new Set<string>();
   for (let y = 0; y < rows; y += 1) {
     const rowCols = splitMapGraphemes(lines[y] ?? "").length;
     for (let x = 0; x < rowCols; x += 1) {
       const glyph = splitMapGraphemes(lines[y] ?? "")[x] ?? " ";
-      if (!glyph || glyph === " ") continue;
+      const cellKey = `${y},${x}`;
       const sprite = resolveCellSprite(glyph, lines, x, y, {
-        recommended: recommended.has(`${y},${x}`),
+        recommended: recommended.has(cellKey),
         policeChase: !!state.policeChase,
         entityCells,
       });
       if (sprite.kind === "tile" && sprite.base === "floor") continue;
-      const layer = sprite.kind === "entity" || sprite.kind === "emoji" ? 0.5 : 0;
-      overlays.push({ x, y, depth: x + y + layer, glyph });
+      const layer =
+        sprite.kind === "entity" || sprite.kind === "emoji" || sprite.kind === "item" ? 0.5 : 0;
+      overlays.push({ x, y, depth: x + y + layer, sprite });
+      overlayKeys.add(cellKey);
     }
+  }
+  for (const ent of entityCells) {
+    const key = `${ent.y},${ent.x}`;
+    if (overlayKeys.has(key)) continue;
+    const glyph = splitMapGraphemes(lines[ent.y] ?? "")[ent.x] ?? " ";
+    const sprite = resolveCellSprite(glyph, lines, ent.x, ent.y, {
+      recommended: recommended.has(key),
+      policeChase: !!state.policeChase,
+      entityCells,
+    });
+    if (sprite.kind === "tile" && sprite.base === "floor") continue;
+    overlays.push({ x: ent.x, y: ent.y, depth: ent.x + ent.y + 0.5, sprite });
   }
   overlays.sort((a, b) => a.depth - b.depth || a.y - b.y || a.x - b.x);
 
   for (const cell of overlays) {
-    const { x, y, glyph } = cell;
+    const { x, y, sprite } = cell;
     const { x: sx, y: sy } = gridToScreen(x, y, origin.x, origin.y, tileWidth, tileHeight);
-    const sprite = resolveCellSprite(glyph, lines, x, y, {
-      recommended: recommended.has(`${y},${x}`),
-      policeChase: !!state.policeChase,
-    });
     drawSprite(ctx, sprite, sx, sy, tileWidth, tileHeight, recommended, x, y);
   }
 }

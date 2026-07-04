@@ -316,6 +316,7 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
         glyph: ent.char || "?",
         kind: ent.kind,
         id: ent.id,
+        itemTool: ent.itemTool || "",
       });
       continue;
     }

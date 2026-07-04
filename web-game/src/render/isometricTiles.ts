@@ -5,9 +5,11 @@ const WALL_CHARS = new Set(["#", "%", "|"]);
 const FLOOR_CHARS = new Set([".", " ", ",", "-", "x"]);
 
 function glyphAt(lines: string[], x: number, y: number): string {
+  if (y < 0 || y >= lines.length) return " ";
   const line = lines[y];
   if (!line) return " ";
   const cells = splitMapGraphemes(line);
+  if (x < 0 || x >= cells.length) return " ";
   return cells[x] ?? " ";
 }
 
@@ -27,6 +29,15 @@ function fixIsoWallDir(dir: IsoDirection): IsoDirection {
   return map[dir];
 }
 
+/** Corner dirs use the open quadrant; Kenney corners are rotated vs straight walls. */
+function cornerIsoDir(openN: boolean, openE: boolean, openS: boolean, openW: boolean): IsoDirection | null {
+  if (openN && openW) return fixIsoWallDir("W");
+  if (openN && openE) return fixIsoWallDir("N");
+  if (openS && openW) return fixIsoWallDir("S");
+  if (openS && openE) return fixIsoWallDir("E");
+  return null;
+}
+
 /** Pick wall/corner sprite facing open (floor) neighbors — Kenney iso convention. */
 function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const north = isWallChar(glyphAt(lines, x, y - 1));
@@ -38,10 +49,8 @@ function wallSprite(lines: string[], x: number, y: number): WallSprite {
   const openE = !east;
   const openW = !west;
 
-  if (openN && openW) return { base: "wallCorner", dir: fixIsoWallDir("N") };
-  if (openN && openE) return { base: "wallCorner", dir: fixIsoWallDir("E") };
-  if (openS && openW) return { base: "wallCorner", dir: fixIsoWallDir("W") };
-  if (openS && openE) return { base: "wallCorner", dir: fixIsoWallDir("S") };
+  const cornerDir = cornerIsoDir(openN, openE, openS, openW);
+  if (cornerDir) return { base: "wallCorner", dir: cornerDir };
 
   if (openN && !openS && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("N") };
   if (openS && !openN && !openE && !openW) return { base: "wall", dir: fixIsoWallDir("S") };
@@ -79,9 +88,22 @@ export type EntityCellInfo = {
   glyph: string;
   kind?: string;
   id?: string;
+  itemTool?: string;
 };
 
-export type CellSprite = TileSprite | EntitySprite | { kind: "emoji"; glyph: string; highlight?: boolean };
+export type ItemSprite = {
+  kind: "item";
+  base: string;
+  dir: IsoDirection;
+  glyph: string;
+  highlight?: boolean;
+};
+
+export type CellSprite =
+  | TileSprite
+  | EntitySprite
+  | ItemSprite
+  | { kind: "emoji"; glyph: string; highlight?: boolean };
 
 function entityAtCell(
   entityCells: EntityCellInfo[] | undefined,
@@ -94,6 +116,25 @@ function entityAtCell(
 function entitySkin(glyph: string): number {
   if (glyph === "@") return 0;
   return 1 + (glyph.charCodeAt(0) % 7);
+}
+
+function itemTileSprite(itemTool: string, glyph: string): ItemSprite {
+  if (itemTool === "access_card" || itemTool === "coworker_card" || glyph === "k") {
+    return { kind: "item", base: "switchFloorOn", dir: "E", glyph };
+  }
+  if (itemTool === "shed_key") {
+    return { kind: "item", base: "switchFloorOn", dir: "N", glyph };
+  }
+  if (itemTool === "crowbar" || itemTool === "shovel") {
+    return { kind: "item", base: "block", dir: "E", glyph };
+  }
+  if (itemTool === "sledgehammer") {
+    return { kind: "item", base: "crate", dir: "E", glyph };
+  }
+  if (itemTool === "usb_drive") {
+    return { kind: "item", base: "block", dir: "N", glyph };
+  }
+  return { kind: "item", base: "crate", dir: "E", glyph };
 }
 
 export function resolveCellSprite(
@@ -112,7 +153,13 @@ export function resolveCellSprite(
     if (isEmojiGlyph(entity.glyph)) {
       return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
     }
-    if (entity.kind === "item" || entity.kind === "pet") {
+    if (entity.kind === "item") {
+      return {
+        ...itemTileSprite(entity.itemTool ?? "", entity.glyph),
+        highlight: opts.recommended,
+      };
+    }
+    if (entity.kind === "pet") {
       return { kind: "emoji", glyph: entity.glyph, highlight: opts.recommended };
     }
     return {

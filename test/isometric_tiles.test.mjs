@@ -4,14 +4,29 @@ import assert from "node:assert/strict";
 
 function wallSprite(lines, x, y) {
   const WALL = new Set(["#", "%", "|"]);
-  const glyphAt = (gx, gy) => (lines[gy] ?? "")[gx] ?? " ";
+  const glyphAt = (gx, gy) => {
+    if (gy < 0 || gy >= lines.length) return " ";
+    const row = lines[gy] ?? "";
+    if (gx < 0 || gx >= row.length) return " ";
+    return row[gx] ?? " ";
+  };
   const isWall = (ch) => WALL.has(ch);
   const fix = (dir) => ({ N: "E", E: "N", S: "W", W: "S" }[dir]);
+  const cornerDir = (openN, openE, openS, openW) => {
+    if (openN && openW) return fix("W");
+    if (openN && openE) return fix("N");
+    if (openS && openW) return fix("S");
+    if (openS && openE) return fix("E");
+    return null;
+  };
 
   const openN = !isWall(glyphAt(x, y - 1));
   const openS = !isWall(glyphAt(x, y + 1));
   const openE = !isWall(glyphAt(x + 1, y));
   const openW = !isWall(glyphAt(x - 1, y));
+
+  const corner = cornerDir(openN, openE, openS, openW);
+  if (corner) return { base: "wallCorner", dir: corner };
 
   if (openN && openS) return { base: "wallHalf", dir: fix("E") };
   if (openE && openW) return { base: "wallHalf", dir: fix("N") };
@@ -44,5 +59,14 @@ assert(vMid.dir === "E", "N-S grid wall maps to E iso dir (not N)");
 const entityCells = [{ x: 4, y: 2, glyph: "T", kind: "coworker" }];
 assert(isEntityGlyph("T", entityCells, 4, 2), "entity cell detected");
 assert(!isEntityGlyph("T", entityCells, 1, 1), "map label T is not an entity");
+
+const yardCorner = [
+  ",,,",
+  ",##",
+  ",##",
+];
+const cornerCell = wallSprite(yardCorner, 1, 1);
+assert(cornerCell.base === "wallCorner", "yard-facing wall uses corner tile");
+assert(cornerCell.dir === "S", "open north+west maps to south iso corner");
 
 console.log("isometric_tiles.test.mjs OK");

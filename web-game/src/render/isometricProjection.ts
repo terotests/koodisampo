@@ -79,9 +79,9 @@ export function fitTileScale(
 export function playerFocusedScale(
   canvasWidth: number,
   canvasHeight: number,
-  focusCols = 14,
-  focusRows = 10,
-  padding = 0.88,
+  focusCols = 10,
+  focusRows = 7,
+  padding = 0.92,
 ): number {
   return fitTileScale(focusCols, focusRows, canvasWidth, canvasHeight, padding);
 }
