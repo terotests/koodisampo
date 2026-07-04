@@ -177,7 +177,8 @@ export function createWebGameController(deps) {
   let interviewPickNonce = save?.progress?.interviewPickNonce ?? 0;
   let guruPickNonce = save?.progress?.guruPickNonce ?? 0;
   let encounterPickNonce = save?.progress?.encounterPickNonce ?? 0;
-  if (!encounterPickNonce && !save?.features?.ids?.length) {
+  let sessionPickSeed = randomEncounterPickNonce();
+  if (!encounterPickNonce) {
     encounterPickNonce = randomEncounterPickNonce();
   }
   /** @type {null | { type: string, [key: string]: unknown }} */
@@ -234,6 +235,7 @@ export function createWebGameController(deps) {
     interviewPickNonce = 0;
     guruPickNonce = 0;
     encounterPickNonce = randomEncounterPickNonce();
+    sessionPickSeed = randomEncounterPickNonce();
   }
 
   function resetWebSession(keepProgress = false) {
@@ -242,6 +244,7 @@ export function createWebGameController(deps) {
   castListOpen = false;
   elevatorUi.reset();
   resetQuizSession();
+  sessionPickSeed = randomEncounterPickNonce();
     if (keepProgress) {
       const disk = loadSave();
     if (disk) {
@@ -343,6 +346,7 @@ function pendingEncounterEntity() {
 
 function makeQuizPickOptions() {
   return {
+    sessionPickSeed,
     nextPickNonce(entityId, kind) {
       if (entityId === "receptionist") {
         interviewPickNonce += 1;

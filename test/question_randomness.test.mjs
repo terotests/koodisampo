@@ -127,7 +127,8 @@ assert(
 
 // 8) Ilman historiaa valintapoolin pitäisi tarjota selvästi enemmän kuin 6 uniikkia / 100 arvontaa
 const noHistoryTopics = [
-  { topic: "tools", minUnique: 15 },
+  { topic: "tools", minUnique: 20 },
+  { topic: "style", minUnique: 15 },
   { topic: "apt", minUnique: 6 },
   { topic: "rf-basics", minUnique: 6 },
 ];
@@ -135,7 +136,12 @@ for (const { topic, minUnique } of noHistoryTopics) {
   const entity = { id: `coworker-4-${topic}`, kind: "coworker", topic, char: "W", name: "Test" };
   const seen = new Set();
   for (let nonce = 1; nonce <= 100; nonce += 1) {
-    const { question } = pickQuestion(entity, 50, emptyQuizHistory(), { pickNonce: nonce, deaths: 0 });
+    const { question } = pickQuestion(entity, 50, emptyQuizHistory(), {
+      pickNonce: nonce,
+      deaths: 0,
+      sessionPickSeed: 4242,
+      playerSpecialty: "cpp",
+    });
     seen.add(question.id);
   }
   assert(
@@ -143,6 +149,26 @@ for (const { topic, minUnique } of noHistoryTopics) {
     `topic '${topic}' without history: ${seen.size} unique / 100 picks — expected at least ${minUnique}`,
   );
 }
+
+// 9) Sama pickNonce + sama suola = sama kysymys; eri sessionPickSeed vaihtaa
+const stableCoworker = { id: "coworker-5-tools", kind: "coworker", topic: "tools", char: "W", name: "Test" };
+const stablePick = pickQuestion(stableCoworker, 50, emptyQuizHistory(), {
+  pickNonce: 7,
+  sessionPickSeed: 100,
+  playerSpecialty: "cpp",
+}).question.id;
+const stableRepeat = pickQuestion(stableCoworker, 50, emptyQuizHistory(), {
+  pickNonce: 7,
+  sessionPickSeed: 100,
+  playerSpecialty: "cpp",
+}).question.id;
+const differentSession = pickQuestion(stableCoworker, 50, emptyQuizHistory(), {
+  pickNonce: 7,
+  sessionPickSeed: 101,
+  playerSpecialty: "cpp",
+}).question.id;
+assert(stablePick === stableRepeat, "same nonce + session seed is deterministic");
+assert(stablePick !== differentSession, "sessionPickSeed changes the pick");
 
 console.log("question_randomness.test.mjs OK");
 console.log(`  Total questions: ${allQ.length}`);

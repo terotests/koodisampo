@@ -249,7 +249,8 @@ function audienceTags(entity, playerSpecialty = "") {
       preferChapter: topic && preferDomain === topicDomain ? topic : "",
       preferDomain,
       playerSpecialty: specialty,
-      minDifficulty: 3,
+      // min 2: opiskelusivu listaa myös helpommat kysymykset — min 3 jätti esim. style-kappaleesta 6/29 näkyviin.
+      minDifficulty: 2,
     };
   }
   const base = { tags: ["coworker"], voice: "colleague", playerSpecialty, minDifficulty: 3 };
@@ -430,14 +431,21 @@ function buildQuestionPool(scored, profile, minPool = QUESTION_POOL_MIN, maxPool
 
   if (focusChapter) {
     const chapterHits = scored.filter((x) => x.q.chapter === focusChapter);
-    if (chapterHits.length > 0) pool = chapterHits;
+    if (chapterHits.length >= minPool) {
+      pool = chapterHits;
+    } else if (focusDomain) {
+      const domainHits = scored.filter((x) => x.q.domain === focusDomain);
+      if (domainHits.length > 0) pool = domainHits;
+      else if (chapterHits.length > 0) pool = chapterHits;
+    } else if (chapterHits.length > 0) {
+      pool = chapterHits;
+    }
   } else if (focusDomain) {
     const domainHits = scored.filter((x) => x.q.domain === focusDomain);
     if (domainHits.length > 0) pool = domainHits;
   }
 
-  const minFocus = focusChapter ? 3 : minPool;
-  if (pool.length < minFocus && profile?.preferDomains?.length) {
+  if (pool.length < minPool && profile?.preferDomains?.length) {
     const allowed = new Set(profile.preferDomains);
     const wider = scored.filter((x) => allowed.has(x.q.domain));
     if (wider.length > pool.length) pool = wider;
@@ -460,6 +468,12 @@ function buildQuestionPool(scored, profile, minPool = QUESTION_POOL_MIN, maxPool
   return bandPool.slice(0, maxPool);
 }
 
+function pickIndexFromPool(pool, salt) {
+  if (pool.length === 0) return 0;
+  if (pool.length === 1) return 0;
+  return hashString(salt) % pool.length;
+}
+
 export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOptions = null) {
   const questions = loadAllQuestions();
   const playerSpecialty = pickOptions?.playerSpecialty ?? "";
@@ -468,6 +482,7 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   const entityId = entity.id || "";
   const pickNonce = pickOptions?.pickNonce ?? 0;
   const deaths = pickOptions?.deaths ?? 0;
+  const sessionPickSeed = pickOptions?.sessionPickSeed ?? 0;
 
   const globalAsked = getGlobalAskedQuestionIds(quizHistory);
   const entityAsked = getAskedQuestionIds(quizHistory, entityId);
@@ -514,11 +529,17 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
     return { question: fallback ?? questions[0], profile, targetDiff };
   }
 
-  const topScore = scored[0].score;
   const pool = buildQuestionPool(scored, profile);
-  const salt = `${pickNonce}:${entityAsked.length}:${deaths}:${globalAsked.length}:${recent.length}:${topScore}:${pool.length}`;
-  const idx =
-    hashString(`${entityId}:${salt}:${pool.map((x) => x.q.id).join("|")}`) % pool.length;
+  const salt = [
+    sessionPickSeed,
+    pickNonce,
+    entityAsked.length,
+    deaths,
+    globalAsked.length,
+    recent.length,
+    pool.map((x) => x.q.id).join(","),
+  ].join(":");
+  const idx = pickIndexFromPool(pool, salt);
   return { question: pool[idx].q, profile, targetDiff };
 }
 
@@ -559,6 +580,7 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
     pickNonce,
     deaths: session.exportDeaths?.() ?? 0,
     playerSpecialty: session.playerSpecialty ?? "",
+    sessionPickSeed: pickOptions?.sessionPickSeed ?? 0,
   });
   if (!picked?.question?.id) {
     clearEncounterQuizCache();
