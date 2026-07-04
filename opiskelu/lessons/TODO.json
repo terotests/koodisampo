@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T11:55:27.206Z",
+  "generatedAt": "2026-07-04T11:57:53.343Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 95,
-    "pendingLessons": 1130,
-    "percent": 7.8
+    "readyLessons": 125,
+    "pendingLessons": 1100,
+    "percent": 10.2
   },
   "domains": [
     {
@@ -3204,7 +3204,7 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 54,
+      "ready": 84,
       "total": 180,
       "chapters": [
         {
@@ -3710,217 +3710,217 @@
         {
           "id": "pg-indexes",
           "label": "PostgreSQL-indeksit",
-          "ready": 0,
+          "ready": 30,
           "total": 30,
           "questions": [
             {
               "id": "b02-pg-indexes-btree-02",
               "difficulty": 2,
               "prompt": "WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-indexes-btree-02.md"
             },
             {
               "id": "b02-pg-indexes-covering-04",
               "difficulty": 4,
               "prompt": "Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-indexes-covering-04.md"
             },
             {
               "id": "b03-pg-indexes-concurrent-create",
               "difficulty": 3,
               "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Online-vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b03-pg-indexes-fillfactor-update",
               "difficulty": 4,
               "prompt": "Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-fillfactor-update.md"
             },
             {
               "id": "b03-pg-indexes-gin-jsonb",
               "difficulty": 4,
               "prompt": "JSONB metadata-kenttä `@> '{\"status\":\"active\"}'` query hidas seq scan. Indeksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md"
             },
             {
               "id": "b03-pg-locks-blocking-query",
               "difficulty": 4,
               "prompt": "UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensimmäinen diagnostiikka?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-locks-blocking-query.md"
             },
             {
               "id": "b04-pg-indexes-concurrent-create",
               "difficulty": 4,
               "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunteiksi. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b04-pg-indexes-expression",
               "difficulty": 4,
               "prompt": "Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei käytössä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-expression.md"
             },
             {
               "id": "b04-pg-indexes-gin-jsonb",
               "difficulty": 4,
               "prompt": "Kysely `WHERE data @> '{\"status\":\"active\"}'` JSONB-sarakkeessa on hidas 5M rivillä. Indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-gin-jsonb.md"
             },
             {
               "id": "b04-pg-indexes-partial-active",
               "difficulty": 3,
               "prompt": "90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-partial-active.md"
             },
             {
               "id": "b05-pg-indexes-concurrent-create",
               "difficulty": 3,
               "prompt": "Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot indeksin ilman pitkää lukkoa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b05-pg-indexes-duplicate-drop",
               "difficulty": 2,
               "prompt": "Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-duplicate-drop.md"
             },
             {
               "id": "b05-pg-indexes-expression",
               "difficulty": 4,
               "prompt": "Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree emailille ei käytössä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-expression.md"
             },
             {
               "id": "b06-pg-indexes-brin-timeseries",
               "difficulty": 4,
               "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-brin-timeseries.md"
             },
             {
               "id": "b06-pg-indexes-hash-index",
               "difficulty": 3,
               "prompt": "Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-hash-index.md"
             },
             {
               "id": "b06-pg-indexes-include-columns",
               "difficulty": 3,
               "prompt": "Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexissä. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-include-columns.md"
             },
             {
               "id": "b06-pg-indexes-reindex-concurrently",
               "difficulty": 4,
               "prompt": "Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtime?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-reindex-concurrently.md"
             },
             {
               "id": "b07-pg-index-btree-vs-gin",
               "difficulty": 3,
               "prompt": "JSONB @> query on hidas seq scanilla. Mikä indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-btree-vs-gin.md"
             },
             {
               "id": "b07-pg-index-partial",
               "difficulty": 4,
               "prompt": "Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-partial.md"
             },
             {
               "id": "b07-pg-index-unused",
               "difficulty": 3,
               "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle indeksille. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-unused.md"
             },
             {
               "id": "b08-pg-indexes-btree-gist",
               "difficulty": 4,
               "prompt": "Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-btree-gist.md"
             },
             {
               "id": "b08-pg-indexes-multicolumn-order",
               "difficulty": 3,
               "prompt": "Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-multicolumn-order.md"
             },
             {
               "id": "b09-pg-index-composite-order",
               "difficulty": 4,
               "prompt": "Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-index-composite-order.md"
             },
             {
               "id": "b09-pg-index-unused-drop",
               "difficulty": 3,
               "prompt": "pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT hidastuu. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-index-unused-drop.md"
             },
             {
               "id": "exp-pg-indexes-btree-composite",
               "difficulty": 3,
               "prompt": "Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi indeksi — mikä järjestys?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-btree-composite.md"
             },
             {
               "id": "exp-pg-indexes-covering",
               "difficulty": 4,
               "prompt": "EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SELECT listassa. Miten vältät extra I/O:n?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-covering.md"
             },
             {
               "id": "exp-pg-indexes-partial-active",
               "difficulty": 3,
               "prompt": "Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active riveille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-partial-active.md"
             },
             {
               "id": "exp-pg-indexes-unused-drop",
               "difficulty": 3,
               "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausien jälkeen. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-unused-drop.md"
             },
             {
               "id": "pg-indexes-btree-selective",
               "difficulty": 3,
               "prompt": "Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % riveistä. Ensimmäinen optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-indexes-btree-selective.md"
             },
             {
               "id": "pg-indexes-partial",
               "difficulty": 5,
               "prompt": "Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja hidas. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-indexes-partial.md"
             }
           ]

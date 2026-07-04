@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**95 / 1225** valmis (**7.8 %**).
+**125 / 1225** valmis (**10.2 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 54 | 180 | 30 |
+| PostgreSQL | 84 | 180 | 46.7 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,7 +534,7 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (54/180)
+### PostgreSQL (84/180)
 
 #### PostgreSQL-konfig `pg-config` (24/24)
 
@@ -619,40 +619,40 @@
 | ✅ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
 | ✅ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
 
-#### PostgreSQL-indeksit `pg-indexes` (0/30)
+#### PostgreSQL-indeksit `pg-indexes` (30/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 2 | `b02-pg-indexes-btree-02` | WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksi… |
-| ⬜ | 4 | `b02-pg-indexes-covering-04` | Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+? |
-| ⬜ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
-| ⬜ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
-| ⬜ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
-| ⬜ | 4 | `b03-pg-locks-blocking-query` | UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensim… |
-| ⬜ | 4 | `b04-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunte… |
-| ⬜ | 4 | `b04-pg-indexes-expression` | Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella… |
-| ⬜ | 4 | `b04-pg-indexes-gin-jsonb` | Kysely `WHERE data @> '{"status":"active"}'` JSONB-sarakkeessa on hidas… |
-| ⬜ | 3 | `b04-pg-indexes-partial-active` | 90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimoi… |
-| ⬜ | 3 | `b05-pg-indexes-concurrent-create` | Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot inde… |
-| ⬜ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
-| ⬜ | 4 | `b05-pg-indexes-expression` | Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree email… |
-| ⬜ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
-| ⬜ | 3 | `b06-pg-indexes-hash-index` | Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Mil… |
-| ⬜ | 3 | `b06-pg-indexes-include-columns` | Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexis… |
-| ⬜ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
-| ⬜ | 3 | `b07-pg-index-btree-vs-gin` | JSONB @> query on hidas seq scanilla. Mikä indeksityyppi? |
-| ⬜ | 4 | `b07-pg-index-partial` | Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaam… |
-| ⬜ | 3 | `b07-pg-index-unused` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle ind… |
-| ⬜ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
-| ⬜ | 3 | `b08-pg-indexes-multicolumn-order` | Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi? |
-| ⬜ | 4 | `b09-pg-index-composite-order` | Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, te… |
-| ⬜ | 3 | `b09-pg-index-unused-drop` | pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT… |
-| ⬜ | 3 | `exp-pg-indexes-btree-composite` | Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi… |
-| ⬜ | 4 | `exp-pg-indexes-covering` | EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SE… |
-| ⬜ | 3 | `exp-pg-indexes-partial-active` | Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active rive… |
-| ⬜ | 3 | `exp-pg-indexes-unused-drop` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausie… |
-| ⬜ | 3 | `pg-indexes-btree-selective` | Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % rive… |
-| ⬜ | 5 | `pg-indexes-partial` | Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja h… |
+| ✅ | 2 | `b02-pg-indexes-btree-02` | WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksi… |
+| ✅ | 4 | `b02-pg-indexes-covering-04` | Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+? |
+| ✅ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
+| ✅ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
+| ✅ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
+| ✅ | 4 | `b03-pg-locks-blocking-query` | UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensim… |
+| ✅ | 4 | `b04-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunte… |
+| ✅ | 4 | `b04-pg-indexes-expression` | Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella… |
+| ✅ | 4 | `b04-pg-indexes-gin-jsonb` | Kysely `WHERE data @> '{"status":"active"}'` JSONB-sarakkeessa on hidas… |
+| ✅ | 3 | `b04-pg-indexes-partial-active` | 90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimoi… |
+| ✅ | 3 | `b05-pg-indexes-concurrent-create` | Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot inde… |
+| ✅ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
+| ✅ | 4 | `b05-pg-indexes-expression` | Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree email… |
+| ✅ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
+| ✅ | 3 | `b06-pg-indexes-hash-index` | Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Mil… |
+| ✅ | 3 | `b06-pg-indexes-include-columns` | Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexis… |
+| ✅ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
+| ✅ | 3 | `b07-pg-index-btree-vs-gin` | JSONB @> query on hidas seq scanilla. Mikä indeksityyppi? |
+| ✅ | 4 | `b07-pg-index-partial` | Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaam… |
+| ✅ | 3 | `b07-pg-index-unused` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle ind… |
+| ✅ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
+| ✅ | 3 | `b08-pg-indexes-multicolumn-order` | Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi? |
+| ✅ | 4 | `b09-pg-index-composite-order` | Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, te… |
+| ✅ | 3 | `b09-pg-index-unused-drop` | pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT… |
+| ✅ | 3 | `exp-pg-indexes-btree-composite` | Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi… |
+| ✅ | 4 | `exp-pg-indexes-covering` | EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SE… |
+| ✅ | 3 | `exp-pg-indexes-partial-active` | Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active rive… |
+| ✅ | 3 | `exp-pg-indexes-unused-drop` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausie… |
+| ✅ | 3 | `pg-indexes-btree-selective` | Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % rive… |
+| ✅ | 5 | `pg-indexes-partial` | Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja h… |
 
 #### JOIN-kuviot `pg-joins` (0/11)
 
