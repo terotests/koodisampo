@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-07-04T12:58:17.812Z",
+  "generatedAt": "2026-07-04T13:45:00.383Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 191,
-    "pendingLessons": 1034,
-    "percent": 15.6
+    "readyLessons": 271,
+    "pendingLessons": 954,
+    "percent": 22.1
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 40,
+      "ready": 120,
       "total": 204,
       "chapters": [
         {
@@ -164,7 +164,7 @@
         {
           "id": "cpp-production",
           "label": "C++ tuotanto",
-          "ready": 2,
+          "ready": 5,
           "total": 8,
           "questions": [
             {
@@ -192,7 +192,7 @@
               "id": "prod-cpp-optional-deref",
               "difficulty": 3,
               "prompt": "Koodi tekee `return *findUser(id);` missä `findUser` palauttaa `std::optional<User>`. Mikä ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-optional-deref.md"
             },
             {
@@ -206,14 +206,14 @@
               "id": "prod-cpp-span-member",
               "difficulty": 4,
               "prompt": "Luokan API ottaa `std::span<int>` konstruktorissa ja tallentaa sen jäsenmuuttujaan myöhempää käyttöä varten. Mikä riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-span-member.md"
             },
             {
               "id": "prod-cpp-string-view-member",
               "difficulty": 4,
               "prompt": "Luokka ottaa konstruktorissa `std::string_view name` ja tallentaa sen suoraan jäseneksi. Mikä pitää varmistaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-string-view-member.md"
             },
             {
@@ -228,7 +228,7 @@
         {
           "id": "maintainability",
           "label": "ylläpidettävyys",
-          "ready": 2,
+          "ready": 13,
           "total": 21,
           "questions": [
             {
@@ -242,7 +242,7 @@
               "id": "b02-cpp-maintain-structured-08",
               "difficulty": 2,
               "prompt": "Koodi purkaa `std::pair<int,std::string>` käsin `.first` ja `.second`. Moderni tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-maintain-structured-08.md"
             },
             {
@@ -256,28 +256,28 @@
               "id": "b03-cpp-sprint-const-correctness",
               "difficulty": 2,
               "prompt": "Code review: getter palauttaa `std::string` kopiona vaikka dataa ei muuteta. Parannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-sprint-const-correctness.md"
             },
             {
               "id": "b04-cpp-ranges-filter-view",
               "difficulty": 3,
               "prompt": "Koodi luo väliaikaisen vectorin vain suodattaakseen ja laskeakseen count:in. C++20 ranges tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-ranges-filter-view.md"
             },
             {
               "id": "b04-cpp-structured-bindings-map",
               "difficulty": 2,
               "prompt": "Silmukka käy std::map:in läpi: `for (auto& p : map) { auto k = p.first; auto v = p.second; }`. Modernisointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-structured-bindings-map.md"
             },
             {
               "id": "b05-cpp-avoid-raw-loop",
               "difficulty": 2,
               "prompt": "Sprint review: sama for-silmukka toistuu viidessä tiedostossa. Mitä ehdotat refaktorointiin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-avoid-raw-loop.md"
             },
             {
@@ -312,7 +312,7 @@
               "id": "b09-cpp-extract-function-refactor",
               "difficulty": 2,
               "prompt": "200-rivinen funktio vaikeuttaa unit testausta. Mitä refaktorointia ehdotat ensin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-extract-function-refactor.md"
             },
             {
@@ -340,35 +340,35 @@
               "id": "exp-cpp-cr-raii-file",
               "difficulty": 2,
               "prompt": "Funktio avaa FILE*:n mutta early return ennen fclose:a. Mitä ehdotat code reviewissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-cr-raii-file.md"
             },
             {
               "id": "exp-cpp-sprint-algorithm-review",
               "difficulty": 2,
               "prompt": "Sprintin lopussa löytyy käsin kirjoitettu for-silmukka joka etsii max-arvon vektorista. Mitä ehdotat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-sprint-algorithm-review.md"
             },
             {
               "id": "maintain-const-method",
               "difficulty": 2,
               "prompt": "Miten merkitset metodin joka ei muuta olion tilaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/maintain-const-method.md"
             },
             {
               "id": "maintain-init-list",
               "difficulty": 2,
               "prompt": "Miksi `std::vector<int> v{1, 2, 3}` on turvallisempi kuin `vector<int>(3)` kun tarkoitus on kolme arvoa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/maintain-init-list.md"
             },
             {
               "id": "maintain-range-for",
               "difficulty": 1,
               "prompt": "Mikä on selkein tapa käydä kokoelma läpi ilman indeksivirheitä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/maintain-range-for.md"
             },
             {
@@ -383,35 +383,35 @@
         {
           "id": "performance",
           "label": "suorituskyky",
-          "ready": 1,
+          "ready": 12,
           "total": 25,
           "questions": [
             {
               "id": "b02-cpp-perf-move-09",
               "difficulty": 3,
               "prompt": "Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std::move(returnVec)`. Onko se oikein?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-perf-move-09.md"
             },
             {
               "id": "b02-cpp-perf-shrink-10",
               "difficulty": 3,
               "prompt": "Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapaudu. Mitä kutsut?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-perf-shrink-10.md"
             },
             {
               "id": "b03-cpp-cr-move-semantics",
               "difficulty": 3,
               "prompt": "Code reviewissa funktio palauttaa suuren `std::vector` arvona ja reviewer ehdottaa `std::move`-paluuta. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-cr-move-semantics.md"
             },
             {
               "id": "b03-cpp-perf-string-reserve",
               "difficulty": 2,
               "prompt": "Silmukka liittää tuhansia rivejä `std::string`iin — profiloija näyttää toistuvia realokointeja. Ensimmäinen korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-perf-string-reserve.md"
             },
             {
@@ -432,7 +432,7 @@
               "id": "b05-cpp-rvo-return-local",
               "difficulty": 3,
               "prompt": "Funktio palauttaa `std::string` paikallisesta muuttujasta. Onko turha kopiointi väistämätön?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-rvo-return-local.md"
             },
             {
@@ -446,14 +446,14 @@
               "id": "b07-cpp-reserve-vector",
               "difficulty": 2,
               "prompt": "Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia allokaatioita. Ensimmäinen optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-reserve-vector.md"
             },
             {
               "id": "b08-cpp-emplace-back",
               "difficulty": 2,
               "prompt": "vectoriin lisätään monimutkaisia olioita — push_back(T(...)) luo turhan kopion. Miten vältät väliaikaisen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-emplace-back.md"
             },
             {
@@ -537,28 +537,28 @@
               "id": "exp-cpp-perf-reserve-vector",
               "difficulty": 3,
               "prompt": "Profileri näyttää tuhansia vector-uudelleenallokaatioita CSV-parserissa. Ensimmäinen optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-perf-reserve-vector.md"
             },
             {
               "id": "perf-move",
               "difficulty": 3,
               "prompt": "Milloin `std::move` on perusteltu suurille objekteille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/perf-move.md"
             },
             {
               "id": "perf-noexcept",
               "difficulty": 3,
               "prompt": "Miksi `noexcept` voi auttaa move-operaatioissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/perf-noexcept.md"
             },
             {
               "id": "perf-rvo",
               "difficulty": 4,
               "prompt": "Funktio palauttaa suuren `std::vector` arvona. Mikä usein välttää kopion C++17:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/perf-rvo.md"
             }
           ]
@@ -566,21 +566,21 @@
         {
           "id": "portability",
           "label": "siirrettävyys",
-          "ready": 2,
+          "ready": 5,
           "total": 11,
           "questions": [
             {
               "id": "b02-cpp-portability-stdint-11",
               "difficulty": 2,
               "prompt": "Verkkoprotokolla vaatii tarkalleen 32-bittisen unsigned-arvon. Mikä tyyppi on portable?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-portability-stdint-11.md"
             },
             {
               "id": "b03-cpp-portability-fixed-width",
               "difficulty": 2,
               "prompt": "Verkkoprotokolla tallentaa `uint32_t` binäärimuodossa eri alustoille. Mitä tyyppiä käytät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-portability-fixed-width.md"
             },
             {
@@ -643,7 +643,7 @@
               "id": "portability-explicit",
               "difficulty": 2,
               "prompt": "Miksi yksiparametrisessä konstruktorissa kannattaa usein `explicit`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/portability-explicit.md"
             }
           ]
@@ -651,14 +651,14 @@
         {
           "id": "safety",
           "label": "C++ turvallisuus",
-          "ready": 6,
+          "ready": 22,
           "total": 36,
           "questions": [
             {
               "id": "b02-cpp-safety-make-unique-06",
               "difficulty": 2,
               "prompt": "Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-safety-make-unique-06.md"
             },
             {
@@ -672,14 +672,14 @@
               "id": "b03-cpp-prod-virtual-dtor",
               "difficulty": 3,
               "prompt": "Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. Mikä korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-prod-virtual-dtor.md"
             },
             {
               "id": "b03-cpp-safety-array-span",
               "difficulty": 3,
               "prompt": "Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-safety-array-span.md"
             },
             {
@@ -693,7 +693,7 @@
               "id": "b04-cpp-smart-ptr-make-shared",
               "difficulty": 2,
               "prompt": "Code review: `shared_ptr<Foo>(new Foo(), customDeleter)`. Milloin make_shared EI ole oikea vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-smart-ptr-make-shared.md"
             },
             {
@@ -714,7 +714,7 @@
               "id": "b05-cpp-make-unique-factory",
               "difficulty": 2,
               "prompt": "Tehdasfunktio luo dynaamisen olion. Miksi `std::make_unique<T>()` on parempi kuin `new T()`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-make-unique-factory.md"
             },
             {
@@ -763,7 +763,7 @@
               "id": "b07-cpp-optional-null-api",
               "difficulty": 2,
               "prompt": "Hakufunktio palauttaa -1 kun avainta ei löydy — kutsujat sekoittavat virheen ja validin arvon. Parempi API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-optional-null-api.md"
             },
             {
@@ -826,7 +826,7 @@
               "id": "exp-cpp-prod-span-buffer",
               "difficulty": 4,
               "prompt": "Tuotantobugi: funktio ottaa `(uint8_t* data, size_t len)` ja lukee yli puskurin. Miten rajapinta turvataan C++20-tyylillä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-prod-span-buffer.md"
             },
             {
@@ -840,21 +840,21 @@
               "id": "safety-avoid-c-array",
               "difficulty": 2,
               "prompt": "Miksi cpp-best-practices suosittelee välttämään `T[N]`-taulukoita rajapinnoissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-avoid-c-array.md"
             },
             {
               "id": "safety-const-member",
               "difficulty": 2,
               "prompt": "Miten `const` jäsenmuuttujat auttavat turvallisuudessa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-const-member.md"
             },
             {
               "id": "safety-exceptions",
               "difficulty": 2,
               "prompt": "Miksi poikkeus voi olla parempi kuin virhekoodi joka voidaan ignoroida?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-exceptions.md"
             },
             {
@@ -868,42 +868,42 @@
               "id": "safety-rule-of-zero",
               "difficulty": 3,
               "prompt": "Mitä Rule of Zero tarkoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-rule-of-zero.md"
             },
             {
               "id": "safety-shared-ptr",
               "difficulty": 3,
               "prompt": "Milloin `std::shared_ptr` on perusteltu `unique_ptr`:n sijaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-shared-ptr.md"
             },
             {
               "id": "safety-static-cast",
               "difficulty": 2,
               "prompt": "Miksi `(int)x` on huonompi kuin `static_cast<int>(x)`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-static-cast.md"
             },
             {
               "id": "safety-unique-ptr",
               "difficulty": 2,
               "prompt": "Mikä korvaa turvallisesti `new`/`delete`-parin yksittäiselle omistajalle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-unique-ptr.md"
             },
             {
               "id": "safety-variadic",
               "difficulty": 3,
               "prompt": "Mikä on turvallinen vaihtoehto omalle C-tyyliselle variadiselle funktiolle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-variadic.md"
             },
             {
               "id": "safety-vector",
               "difficulty": 2,
               "prompt": "Mikä on moderni korvike dynaamiselle `int[]`-taulukolle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/safety-vector.md"
             }
           ]
@@ -911,7 +911,7 @@
         {
           "id": "style",
           "label": "C++ tyyli",
-          "ready": 1,
+          "ready": 17,
           "total": 30,
           "questions": [
             {
@@ -925,21 +925,21 @@
               "id": "b02-cpp-style-override-03",
               "difficulty": 2,
               "prompt": "Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-style-override-03.md"
             },
             {
               "id": "b03-cpp-cr-override-keyword",
               "difficulty": 2,
               "prompt": "Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `void draw()` ilman overridea. Riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-cr-override-keyword.md"
             },
             {
               "id": "b03-cpp-style-explicit-ctor",
               "difficulty": 2,
               "prompt": "Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m = d;`. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-style-explicit-ctor.md"
             },
             {
@@ -953,21 +953,21 @@
               "id": "b04-cpp-init-list-initializer",
               "difficulty": 2,
               "prompt": "Code review: `int x = 3.9;` kääntyy hiljaa — reviewer ehdottaa `int x{3.9};`. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-init-list-initializer.md"
             },
             {
               "id": "b05-cpp-const-method-api",
               "difficulty": 2,
               "prompt": "Getter-metodi ei muuta olion tilaa. Miten ilmaiset sen API:ssa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-const-method-api.md"
             },
             {
               "id": "b05-cpp-init-list-brace",
               "difficulty": 2,
               "prompt": "Code review: `std::vector<int> v(10, 1)` vs `std::vector<int> v{10, 1}`. Mitä jälkimmäinen tekee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-init-list-brace.md"
             },
             {
@@ -981,28 +981,28 @@
               "id": "b06-cpp-attributes-fallthrough",
               "difficulty": 2,
               "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä. Miten dokumentoit tarkoituksellinen putoaminen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-attributes-fallthrough.md"
             },
             {
               "id": "b06-cpp-default-member-init",
               "difficulty": 2,
               "prompt": "Konstruktorit unohtavat alustaa member-kentät — satunnaiset arvot. Miten vähennät virheitä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-default-member-init.md"
             },
             {
               "id": "b07-cpp-enum-class-scoped",
               "difficulty": 2,
               "prompt": "Vanha enum Color { Red, Green } törmää toisen headerin Red-vakioiden kanssa. Moderni korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-enum-class-scoped.md"
             },
             {
               "id": "b07-cpp-nodiscard-error",
               "difficulty": 2,
               "prompt": "Kutsuja ignooraa bool validate() paluuarvon — bugi tuotannossa. Miten pakota tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-nodiscard-error.md"
             },
             {
@@ -1086,42 +1086,42 @@
               "id": "exp-cpp-cr-enum-class-switch",
               "difficulty": 2,
               "prompt": "Code review: switch-case käyttää `enum Status { OK, FAIL }` ilman scopea. Miksi reviewer pyytää muutosta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-cr-enum-class-switch.md"
             },
             {
               "id": "style-const-ref",
               "difficulty": 1,
               "prompt": "Miten vältät turhan `std::string`-kopioinnin funktioparametrissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/style-const-ref.md"
             },
             {
               "id": "style-final-override",
               "difficulty": 3,
               "prompt": "Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja. Mitä käytät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/style-final-override.md"
             },
             {
               "id": "style-override",
               "difficulty": 2,
               "prompt": "Miksi käyttää `override` periytyvässä metodissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/style-override.md"
             },
             {
               "id": "style-pass-int",
               "difficulty": 2,
               "prompt": "Miten yksinkertainen `int` kannattaa välittää konstruktorille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/style-pass-int.md"
             },
             {
               "id": "tools-enum-class",
               "difficulty": 2,
               "prompt": "Miksi `enum class` on parempi kuin vanha C-tyylinen `enum`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-enum-class.md"
             }
           ]
@@ -1129,7 +1129,7 @@
         {
           "id": "threadability",
           "label": "säikeistys",
-          "ready": 5,
+          "ready": 12,
           "total": 18,
           "questions": [
             {
@@ -1150,7 +1150,7 @@
               "id": "b03-cpp-thread-atomic-flag",
               "difficulty": 3,
               "prompt": "Yksinkertainen shutdown-flag jaettiin bool:lla ilman synkronointia — satunnainen jumi. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-thread-atomic-flag.md"
             },
             {
@@ -1164,7 +1164,7 @@
               "id": "b04-cpp-lock-guard-deadlock",
               "difficulty": 4,
               "prompt": "Kaksi mutexia lukitaan eri järjestyksessä kahdessa säikeessä — satunnainen deadlock. Mikä standardiratkaisu auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-lock-guard-deadlock.md"
             },
             {
@@ -1178,7 +1178,7 @@
               "id": "b05-cpp-atomic-counter",
               "difficulty": 3,
               "prompt": "Usea säie päivittää jaettua laskuria. Mikä primitiivi on oikea ilman mutexia yksinkertaiseen incrementiin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-atomic-counter.md"
             },
             {
@@ -1234,28 +1234,28 @@
               "id": "exp-cpp-thread-once-flag",
               "difficulty": 4,
               "prompt": "Singleton alustetaan lazy-initillä useasta säikeestä. Mikä standardikomponentti takaa kertaluonteisen alustuksen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-thread-once-flag.md"
             },
             {
               "id": "thread-atomic",
               "difficulty": 3,
               "prompt": "Miten jaat yksinkertaisen laskurin säikeiden välillä turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/thread-atomic.md"
             },
             {
               "id": "thread-data-race",
               "difficulty": 4,
               "prompt": "Kaksi säiettä kirjoittaa samaan `int`-muuttujaan ilman synkronointia. Mitä C++ standardi sanoo?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/thread-data-race.md"
             },
             {
               "id": "thread-lock-guard",
               "difficulty": 3,
               "prompt": "Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alueeksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/thread-lock-guard.md"
             }
           ]
@@ -1263,7 +1263,7 @@
         {
           "id": "tools",
           "label": "C++ työkalut",
-          "ready": 1,
+          "ready": 14,
           "total": 35,
           "questions": [
             {
@@ -1277,7 +1277,7 @@
               "id": "b02-cpp-tools-raii-01",
               "difficulty": 2,
               "prompt": "Code reviewissa funktio luo `new Database()` ja palauttaa raakaa osoitinta. Mikä moderni omistusmalli estää vuodon poikkeuspolulla?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-tools-raii-01.md"
             },
             {
@@ -1319,7 +1319,7 @@
               "id": "b05-cpp-lambda-capture-review",
               "difficulty": 2,
               "prompt": "Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x muuttuu silmukan jälkeen. Mikä on turvallisin korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-lambda-capture-review.md"
             },
             {
@@ -1333,7 +1333,7 @@
               "id": "b06-cpp-enum-class-scope",
               "difficulty": 2,
               "prompt": "Code reviewissa `enum Color { Red, Green };` aiheuttaa nimikonfliktit headerissa. Miten korjaat modernisti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-enum-class-scope.md"
             },
             {
@@ -1368,14 +1368,14 @@
               "id": "b07-cpp-unique-ptr-deleter",
               "difficulty": 2,
               "prompt": "RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr custom deleter on parempi kuin raw delete?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-unique-ptr-deleter.md"
             },
             {
               "id": "b08-cpp-chrono-literals",
               "difficulty": 2,
               "prompt": "Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 millisekuntia C++14:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-chrono-literals.md"
             },
             {
@@ -1459,56 +1459,56 @@
               "id": "exp-cpp-cr-optional-review",
               "difficulty": 3,
               "prompt": "Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni tyyppi tekee tyhjän arvon eksplisiittiseksi ilman raw-osoitinta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-cr-optional-review.md"
             },
             {
               "id": "exp-cpp-prod-chrono-timeout",
               "difficulty": 3,
               "prompt": "API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti ilman magic-numeroita?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-prod-chrono-timeout.md"
             },
             {
               "id": "exp-cpp-tools-format-logging",
               "difficulty": 2,
               "prompt": "Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa turvalliseen merkkijonoon?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-tools-format-logging.md"
             },
             {
               "id": "tools-auto",
               "difficulty": 1,
               "prompt": "Mitä `auto` tekee modernissa C++:ssa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-auto.md"
             },
             {
               "id": "tools-constexpr",
               "difficulty": 3,
               "prompt": "Mitä `constexpr` funktio mahdollistaa C++11:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-constexpr.md"
             },
             {
               "id": "tools-nullptr",
               "difficulty": 1,
               "prompt": "Mikä on turvallisin tapa nollata osoitin C++11:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-nullptr.md"
             },
             {
               "id": "tools-structured-bindings",
               "difficulty": 3,
               "prompt": "C++17: miten purat `std::map`-iteratorin avain/arvo-pairin siististi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-structured-bindings.md"
             },
             {
               "id": "tools-using-alias",
               "difficulty": 2,
               "prompt": "Miksi `using StringMap = std::map<std::string, int>` on usein parempi kuin typedef?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/tools-using-alias.md"
             }
           ]

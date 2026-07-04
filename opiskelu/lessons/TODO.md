@@ -2,13 +2,13 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**191 / 1225** valmis (**15.6 %**).
+**271 / 1225** valmis (**22.1 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 40 | 204 | 19.6 |
+| C++ | 120 | 204 | 58.8 |
 | JavaScript | 0 | 234 | 0 |
 | PostgreSQL | 132 | 180 | 73.3 |
 | Docker | 5 | 142 | 3.5 |
@@ -22,7 +22,7 @@
 
 ## Kaikki aiheet
 
-### C++ (40/204)
+### C++ (120/204)
 
 #### oikeellisuus `correctness` (20/20)
 
@@ -49,59 +49,59 @@
 | ✅ | 4 | `exp-cpp-correct-compare-three-way` | Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — … |
 | ✅ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
 
-#### C++ tuotanto `cpp-production` (2/8)
+#### C++ tuotanto `cpp-production` (5/8)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ⬜ | 5 | `prod-cpp-coroutine-lifetime` | Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen… |
 | ✅ | 4 | `prod-cpp-false-sharing-struct` | Kaksi std::atomic-laskuria on vierekkäin structissa ja eri säikeet päiv… |
 | ✅ | 4 | `prod-cpp-jthread-stop` | Worker-säie pitää pysäyttää siististi olion tuhoutuessa. Mikä C++20-työ… |
-| ⬜ | 3 | `prod-cpp-optional-deref` | Koodi tekee `return *findUser(id);` missä `findUser` palauttaa `std::op… |
+| ✅ | 3 | `prod-cpp-optional-deref` | Koodi tekee `return *findUser(id);` missä `findUser` palauttaa `std::op… |
 | ⬜ | 4 | `prod-cpp-raii-rollback` | Funktio kirjoittaa kaksi konfiguraatiotiedostoa ja toinen kirjoitus epä… |
-| ⬜ | 4 | `prod-cpp-span-member` | Luokan API ottaa `std::span<int>` konstruktorissa ja tallentaa sen jäse… |
-| ⬜ | 4 | `prod-cpp-string-view-member` | Luokka ottaa konstruktorissa `std::string_view name` ja tallentaa sen s… |
+| ✅ | 4 | `prod-cpp-span-member` | Luokan API ottaa `std::span<int>` konstruktorissa ja tallentaa sen jäse… |
+| ✅ | 4 | `prod-cpp-string-view-member` | Luokka ottaa konstruktorissa `std::string_view name` ja tallentaa sen s… |
 | ⬜ | 4 | `prod-cpp-variant-visit` | Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unoht… |
 
-#### ylläpidettävyys `maintainability` (2/21)
+#### ylläpidettävyys `maintainability` (13/21)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `b02-cpp-maintain-string-view-07` | Funktio ottaa `const std::string&` mutta kutsutaan literaaleilla — turh… |
-| ⬜ | 2 | `b02-cpp-maintain-structured-08` | Koodi purkaa `std::pair<int,std::string>` käsin `.first` ja `.second`. … |
+| ✅ | 2 | `b02-cpp-maintain-structured-08` | Koodi purkaa `std::pair<int,std::string>` käsin `.first` ja `.second`. … |
 | ⬜ | 4 | `b03-cpp-maintain-copy-swap` | Tiimi kirjoittaa copy assignment -operaattorin käsin ja unohtaa self-as… |
-| ⬜ | 2 | `b03-cpp-sprint-const-correctness` | Code review: getter palauttaa `std::string` kopiona vaikka dataa ei muu… |
-| ⬜ | 3 | `b04-cpp-ranges-filter-view` | Koodi luo väliaikaisen vectorin vain suodattaakseen ja laskeakseen coun… |
-| ⬜ | 2 | `b04-cpp-structured-bindings-map` | Silmukka käy std::map:in läpi: `for (auto& p : map) { auto k = p.first;… |
-| ⬜ | 2 | `b05-cpp-avoid-raw-loop` | Sprint review: sama for-silmukka toistuu viidessä tiedostossa. Mitä ehd… |
+| ✅ | 2 | `b03-cpp-sprint-const-correctness` | Code review: getter palauttaa `std::string` kopiona vaikka dataa ei muu… |
+| ✅ | 3 | `b04-cpp-ranges-filter-view` | Koodi luo väliaikaisen vectorin vain suodattaakseen ja laskeakseen coun… |
+| ✅ | 2 | `b04-cpp-structured-bindings-map` | Silmukka käy std::map:in läpi: `for (auto& p : map) { auto k = p.first;… |
+| ✅ | 2 | `b05-cpp-avoid-raw-loop` | Sprint review: sama for-silmukka toistuu viidessä tiedostossa. Mitä ehd… |
 | ⬜ | 3 | `b06-cpp-ranges-adaptors` | Silmukka filtteröi ja muuntaa konttia — lukija ei näe intentiota. Miten… |
 | ⬜ | 3 | `b07-cpp-clang-tidy-ci` | Code reviewissa samat CppCoreGuidelines-rikkomukset toistuvat. Miten au… |
 | ⬜ | 4 | `b07-cpp-pimpl-abi` | Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin… |
 | ⬜ | 3 | `b08-cpp-format-safety` | Logitus käyttää sprintf-puskuria — satunnainen overflow tuotannossa. Ko… |
-| ⬜ | 2 | `b09-cpp-extract-function-refactor` | 200-rivinen funktio vaikeuttaa unit testausta. Mitä refaktorointia ehdo… |
+| ✅ | 2 | `b09-cpp-extract-function-refactor` | 200-rivinen funktio vaikeuttaa unit testausta. Mitä refaktorointia ehdo… |
 | ⬜ | 3 | `b11-cpp-assert-side-effect` | Koodi: `assert(registerCallback(handler));` — release-buildissa callbac… |
 | ⬜ | 2 | `b11-cpp-bool-parameter` | API: `void save(File& f, bool fast);` — kutsuissa `save(f, true)` ei ke… |
 | ⬜ | 2 | `b11-cpp-macro-to-constexpr` | Konfiguraatiossa `#define MAX_CONNECTIONS 100`. Miksi cpp-best-practice… |
-| ⬜ | 2 | `exp-cpp-cr-raii-file` | Funktio avaa FILE*:n mutta early return ennen fclose:a. Mitä ehdotat co… |
-| ⬜ | 2 | `exp-cpp-sprint-algorithm-review` | Sprintin lopussa löytyy käsin kirjoitettu for-silmukka joka etsii max-a… |
-| ⬜ | 2 | `maintain-const-method` | Miten merkitset metodin joka ei muuta olion tilaa? |
-| ⬜ | 2 | `maintain-init-list` | Miksi `std::vector<int> v{1, 2, 3}` on turvallisempi kuin `vector<int>(… |
-| ⬜ | 1 | `maintain-range-for` | Mikä on selkein tapa käydä kokoelma läpi ilman indeksivirheitä? |
+| ✅ | 2 | `exp-cpp-cr-raii-file` | Funktio avaa FILE*:n mutta early return ennen fclose:a. Mitä ehdotat co… |
+| ✅ | 2 | `exp-cpp-sprint-algorithm-review` | Sprintin lopussa löytyy käsin kirjoitettu for-silmukka joka etsii max-a… |
+| ✅ | 2 | `maintain-const-method` | Miten merkitset metodin joka ei muuta olion tilaa? |
+| ✅ | 2 | `maintain-init-list` | Miksi `std::vector<int> v{1, 2, 3}` on turvallisempi kuin `vector<int>(… |
+| ✅ | 1 | `maintain-range-for` | Mikä on selkein tapa käydä kokoelma läpi ilman indeksivirheitä? |
 | ✅ | 3 | `maintain-string-view` | Milloin `std::string_view` on hyödyllinen? |
 
-#### suorituskyky `performance` (1/25)
+#### suorituskyky `performance` (12/25)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 3 | `b02-cpp-perf-move-09` | Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std:… |
-| ⬜ | 3 | `b02-cpp-perf-shrink-10` | Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapau… |
-| ⬜ | 3 | `b03-cpp-cr-move-semantics` | Code reviewissa funktio palauttaa suuren `std::vector` arvona ja review… |
-| ⬜ | 2 | `b03-cpp-perf-string-reserve` | Silmukka liittää tuhansia rivejä `std::string`iin — profiloija näyttää … |
+| ✅ | 3 | `b02-cpp-perf-move-09` | Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std:… |
+| ✅ | 3 | `b02-cpp-perf-shrink-10` | Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapau… |
+| ✅ | 3 | `b03-cpp-cr-move-semantics` | Code reviewissa funktio palauttaa suuren `std::vector` arvona ja review… |
+| ✅ | 2 | `b03-cpp-perf-string-reserve` | Silmukka liittää tuhansia rivejä `std::string`iin — profiloija näyttää … |
 | ⬜ | 3 | `b04-cpp-move-noexcept-vector` | std::vector<MyType> kasvaa hitaasti vaikka move-operaattori on olemassa… |
 | ⬜ | 3 | `b05-cpp-move-review-temp` | Code review ehdottaa `std::move` jokaiselle parametrille funktiossa. Mi… |
-| ⬜ | 3 | `b05-cpp-rvo-return-local` | Funktio palauttaa `std::string` paikallisesta muuttujasta. Onko turha k… |
+| ✅ | 3 | `b05-cpp-rvo-return-local` | Funktio palauttaa `std::string` paikallisesta muuttujasta. Onko turha k… |
 | ⬜ | 5 | `b06-cpp-alignas-cache` | Hot loop kärsii cache miss — kaksi counteria samassa cache line:ssä eri… |
-| ⬜ | 2 | `b07-cpp-reserve-vector` | Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia … |
-| ⬜ | 2 | `b08-cpp-emplace-back` | vectoriin lisätään monimutkaisia olioita — push_back(T(...)) luo turhan… |
+| ✅ | 2 | `b07-cpp-reserve-vector` | Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia … |
+| ✅ | 2 | `b08-cpp-emplace-back` | vectoriin lisätään monimutkaisia olioita — push_back(T(...)) luo turhan… |
 | ⬜ | 3 | `b08-cpp-ranges-pipeline` | Suodatat ja muunnat vectorin — väliaikaisia vector-kopioita tulee liika… |
 | ✅ | 3 | `b09-cpp-emplace-back-move` | Rakennat isoja olioita suoraan vectoriin väliaikaisten kopioiden sijaan… |
 | ⬜ | 3 | `b09-cpp-vector-reserve-incident` | Profilointi näyttää tuhansia vector-reallokaatioita request-käsittelyss… |
@@ -113,17 +113,17 @@
 | ⬜ | 1 | `b11-cpp-preincrement` | Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin sil… |
 | ⬜ | 3 | `b11-cpp-shared-ptr-copy-hot` | Funktio ottaa `std::shared_ptr<Foo>` arvona ja kutsutaan jokaisella fra… |
 | ⬜ | 2 | `b11-cpp-std-endl-flush` | Hot loopissa logataan tuhansia rivejä `std::cout << x << std::endl`. Mi… |
-| ⬜ | 3 | `exp-cpp-perf-reserve-vector` | Profileri näyttää tuhansia vector-uudelleenallokaatioita CSV-parserissa… |
-| ⬜ | 3 | `perf-move` | Milloin `std::move` on perusteltu suurille objekteille? |
-| ⬜ | 3 | `perf-noexcept` | Miksi `noexcept` voi auttaa move-operaatioissa? |
-| ⬜ | 4 | `perf-rvo` | Funktio palauttaa suuren `std::vector` arvona. Mikä usein välttää kopio… |
+| ✅ | 3 | `exp-cpp-perf-reserve-vector` | Profileri näyttää tuhansia vector-uudelleenallokaatioita CSV-parserissa… |
+| ✅ | 3 | `perf-move` | Milloin `std::move` on perusteltu suurille objekteille? |
+| ✅ | 3 | `perf-noexcept` | Miksi `noexcept` voi auttaa move-operaatioissa? |
+| ✅ | 4 | `perf-rvo` | Funktio palauttaa suuren `std::vector` arvona. Mikä usein välttää kopio… |
 
-#### siirrettävyys `portability` (2/11)
+#### siirrettävyys `portability` (5/11)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 2 | `b02-cpp-portability-stdint-11` | Verkkoprotokolla vaatii tarkalleen 32-bittisen unsigned-arvon. Mikä tyy… |
-| ⬜ | 2 | `b03-cpp-portability-fixed-width` | Verkkoprotokolla tallentaa `uint32_t` binäärimuodossa eri alustoille. M… |
+| ✅ | 2 | `b02-cpp-portability-stdint-11` | Verkkoprotokolla vaatii tarkalleen 32-bittisen unsigned-arvon. Mikä tyy… |
+| ✅ | 2 | `b03-cpp-portability-fixed-width` | Verkkoprotokolla tallentaa `uint32_t` binäärimuodossa eri alustoille. M… |
 | ✅ | 3 | `b04-cpp-portability-fixed-width` | Wire-protokolla käyttää `int` ja `long` — eri alustoilla eri koko. Port… |
 | ⬜ | 3 | `b06-cpp-portability-alignof` | Serialisointi verkossa — struct padding rikkoo protokollaa eri arkkiteh… |
 | ✅ | 4 | `b07-cpp-endian-portable` | Binääriprotokolla lukee uint32:n verkosta — arvo väärä ARM:llä. Miten C… |
@@ -132,28 +132,28 @@
 | ⬜ | 2 | `b11-cpp-std-filesystem` | Koodi käyttää `GetFileAttributesW` / `stat()` suoraan polkujen käsittel… |
 | ⬜ | 2 | `b11-cpp-std-thread-port` | Uusi moduuli käyttää suoraan `pthread_create` / `CreateThread`. Mitä cp… |
 | ⬜ | 4 | `exp-cpp-portability-byte-order` | Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaa… |
-| ⬜ | 2 | `portability-explicit` | Miksi yksiparametrisessä konstruktorissa kannattaa usein `explicit`? |
+| ✅ | 2 | `portability-explicit` | Miksi yksiparametrisessä konstruktorissa kannattaa usein `explicit`? |
 
-#### C++ turvallisuus `safety` (6/36)
+#### C++ turvallisuus `safety` (22/36)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 2 | `b02-cpp-safety-make-unique-06` | Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusp… |
+| ✅ | 2 | `b02-cpp-safety-make-unique-06` | Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusp… |
 | ⬜ | 3 | `b02-cpp-safety-noexcept-05` | std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — t… |
-| ⬜ | 3 | `b03-cpp-prod-virtual-dtor` | Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. … |
-| ⬜ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. M… |
+| ✅ | 3 | `b03-cpp-prod-virtual-dtor` | Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. … |
+| ✅ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. M… |
 | ⬜ | 4 | `b04-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia — destructor on määritelty, mutta … |
-| ⬜ | 2 | `b04-cpp-smart-ptr-make-shared` | Code review: `shared_ptr<Foo>(new Foo(), customDeleter)`. Milloin make_… |
+| ✅ | 2 | `b04-cpp-smart-ptr-make-shared` | Code review: `shared_ptr<Foo>(new Foo(), customDeleter)`. Milloin make_… |
 | ⬜ | 4 | `b04-cpp-string-view-lifetime` | Funktio palauttaa `std::string_view` joka viittaa paikalliseen std::str… |
 | ✅ | 3 | `b05-cpp-lock-guard-incident` | Tuotantobugi: mutex jää lukittuna poikkeuksen jälkeen. Miten estät tämä… |
-| ⬜ | 2 | `b05-cpp-make-unique-factory` | Tehdasfunktio luo dynaamisen olion. Miksi `std::make_unique<T>()` on pa… |
+| ✅ | 2 | `b05-cpp-make-unique-factory` | Tehdasfunktio luo dynaamisen olion. Miksi `std::make_unique<T>()` on pa… |
 | ⬜ | 4 | `b05-cpp-noexcept-move-review` | Code review: move-konstruktori ei ole noexcept. `std::vector` resize hi… |
 | ⬜ | 4 | `b05-cpp-string-view-lifetime` | Funktio palauttaa `std::string_view` paikallisesta `std::string`:stä. T… |
 | ⬜ | 3 | `b06-cpp-raii-scope-guard` | Funktio avaa tiedoston ja pitää sulkea poikkeuksessa. Miten toteutat il… |
 | ✅ | 4 | `b06-cpp-span-heap-buffer` | API ottaa raw pointer ja pituus — buffer overrun tuotannossa. Miten mod… |
 | ⬜ | 3 | `b06-cpp-vector-emplace-back` | Rakennat vektorin monimutkaisia olioita — push_back kopioi turhaan. Mit… |
 | ⬜ | 4 | `b06-cpp-weak-ptr-cycle` | Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratk… |
-| ⬜ | 2 | `b07-cpp-optional-null-api` | Hakufunktio palauttaa -1 kun avainta ei löydy — kutsujat sekoittavat vi… |
+| ✅ | 2 | `b07-cpp-optional-null-api` | Hakufunktio palauttaa -1 kun avainta ei löydy — kutsujat sekoittavat vi… |
 | ⬜ | 3 | `b07-cpp-span-bounds-check` | Funktio ottaa (T* data, size_t len) — tuotannossa buffer overflow. Mikä… |
 | ✅ | 3 | `b08-cpp-span-bounds` | Code review: funktio ottaa `std::span<int>` ja indeksoi ilman tarkistus… |
 | ⬜ | 4 | `b08-cpp-unique-ptr-deleter` | FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallin… |
@@ -162,36 +162,36 @@
 | ⬜ | 3 | `b09-cpp-raw-pointer-refactor` | Legacy-moduuli palauttaa `new`-allokoituja olioita kutsujalle. Refaktor… |
 | ✅ | 4 | `b09-cpp-span-bounds-check` | Tuotantobugi: buffer overflow C-tyylisessä `char*` API:ssa. Moderni kor… |
 | ⬜ | 3 | `exp-cpp-prod-asan-build` | Muistivuoto epäilty tuotannossa. Mitä CI-buildia pyydät ensin ennen tuo… |
-| ⬜ | 4 | `exp-cpp-prod-span-buffer` | Tuotantobugi: funktio ottaa `(uint8_t* data, size_t len)` ja lukee yli … |
+| ✅ | 4 | `exp-cpp-prod-span-buffer` | Tuotantobugi: funktio ottaa `(uint8_t* data, size_t len)` ja lukee yli … |
 | ⬜ | 4 | `exp-cpp-prod-weak-ptr-cache` | Jaettu image-cache käyttää `shared_ptr`. Objektit eivät vapaudu vaikka … |
-| ⬜ | 2 | `safety-avoid-c-array` | Miksi cpp-best-practices suosittelee välttämään `T[N]`-taulukoita rajap… |
-| ⬜ | 2 | `safety-const-member` | Miten `const` jäsenmuuttujat auttavat turvallisuudessa? |
-| ⬜ | 2 | `safety-exceptions` | Miksi poikkeus voi olla parempi kuin virhekoodi joka voidaan ignoroida? |
+| ✅ | 2 | `safety-avoid-c-array` | Miksi cpp-best-practices suosittelee välttämään `T[N]`-taulukoita rajap… |
+| ✅ | 2 | `safety-const-member` | Miten `const` jäsenmuuttujat auttavat turvallisuudessa? |
+| ✅ | 2 | `safety-exceptions` | Miksi poikkeus voi olla parempi kuin virhekoodi joka voidaan ignoroida? |
 | ✅ | 3 | `safety-make-shared` | Miksi `std::make_shared<T>(args)` on parempi kuin `shared_ptr<T>(new T(… |
-| ⬜ | 3 | `safety-rule-of-zero` | Mitä Rule of Zero tarkoittaa? |
-| ⬜ | 3 | `safety-shared-ptr` | Milloin `std::shared_ptr` on perusteltu `unique_ptr`:n sijaan? |
-| ⬜ | 2 | `safety-static-cast` | Miksi `(int)x` on huonompi kuin `static_cast<int>(x)`? |
-| ⬜ | 2 | `safety-unique-ptr` | Mikä korvaa turvallisesti `new`/`delete`-parin yksittäiselle omistajall… |
-| ⬜ | 3 | `safety-variadic` | Mikä on turvallinen vaihtoehto omalle C-tyyliselle variadiselle funktio… |
-| ⬜ | 2 | `safety-vector` | Mikä on moderni korvike dynaamiselle `int[]`-taulukolle? |
+| ✅ | 3 | `safety-rule-of-zero` | Mitä Rule of Zero tarkoittaa? |
+| ✅ | 3 | `safety-shared-ptr` | Milloin `std::shared_ptr` on perusteltu `unique_ptr`:n sijaan? |
+| ✅ | 2 | `safety-static-cast` | Miksi `(int)x` on huonompi kuin `static_cast<int>(x)`? |
+| ✅ | 2 | `safety-unique-ptr` | Mikä korvaa turvallisesti `new`/`delete`-parin yksittäiselle omistajall… |
+| ✅ | 3 | `safety-variadic` | Mikä on turvallinen vaihtoehto omalle C-tyyliselle variadiselle funktio… |
+| ✅ | 2 | `safety-vector` | Mikä on moderni korvike dynaamiselle `int[]`-taulukolle? |
 
-#### C++ tyyli `style` (1/30)
+#### C++ tyyli `style` (17/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ⬜ | 4 | `b02-cpp-style-consteval-04` | Konfiguraatiovakio pitää laskea compile-time — runtime-laskenta hidasta… |
-| ⬜ | 2 | `b02-cpp-style-override-03` | Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei var… |
-| ⬜ | 2 | `b03-cpp-cr-override-keyword` | Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `v… |
-| ⬜ | 2 | `b03-cpp-style-explicit-ctor` | Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m =… |
+| ✅ | 2 | `b02-cpp-style-override-03` | Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei var… |
+| ✅ | 2 | `b03-cpp-cr-override-keyword` | Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `v… |
+| ✅ | 2 | `b03-cpp-style-explicit-ctor` | Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m =… |
 | ⬜ | 3 | `b04-cpp-explicit-constructor` | Bugi: `void foo(Bytes b); foo(1024);` kääntyy — 1024 muuntuu Bytes:ksi … |
-| ⬜ | 2 | `b04-cpp-init-list-initializer` | Code review: `int x = 3.9;` kääntyy hiljaa — reviewer ehdottaa `int x{3… |
-| ⬜ | 2 | `b05-cpp-const-method-api` | Getter-metodi ei muuta olion tilaa. Miten ilmaiset sen API:ssa? |
-| ⬜ | 2 | `b05-cpp-init-list-brace` | Code review: `std::vector<int> v(10, 1)` vs `std::vector<int> v{10, 1}`… |
+| ✅ | 2 | `b04-cpp-init-list-initializer` | Code review: `int x = 3.9;` kääntyy hiljaa — reviewer ehdottaa `int x{3… |
+| ✅ | 2 | `b05-cpp-const-method-api` | Getter-metodi ei muuta olion tilaa. Miten ilmaiset sen API:ssa? |
+| ✅ | 2 | `b05-cpp-init-list-brace` | Code review: `std::vector<int> v(10, 1)` vs `std::vector<int> v{10, 1}`… |
 | ⬜ | 3 | `b05-cpp-override-virtual-crash` | Aliluokan virtuaalinen metodi ei koskaan kutsuta — kirjoitusvirhe param… |
-| ⬜ | 2 | `b06-cpp-attributes-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä… |
-| ⬜ | 2 | `b06-cpp-default-member-init` | Konstruktorit unohtavat alustaa member-kentät — satunnaiset arvot. Mite… |
-| ⬜ | 2 | `b07-cpp-enum-class-scoped` | Vanha enum Color { Red, Green } törmää toisen headerin Red-vakioiden ka… |
-| ⬜ | 2 | `b07-cpp-nodiscard-error` | Kutsuja ignooraa bool validate() paluuarvon — bugi tuotannossa. Miten p… |
+| ✅ | 2 | `b06-cpp-attributes-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä… |
+| ✅ | 2 | `b06-cpp-default-member-init` | Konstruktorit unohtavat alustaa member-kentät — satunnaiset arvot. Mite… |
+| ✅ | 2 | `b07-cpp-enum-class-scoped` | Vanha enum Color { Red, Green } törmää toisen headerin Red-vakioiden ka… |
+| ✅ | 2 | `b07-cpp-nodiscard-error` | Kutsuja ignooraa bool validate() paluuarvon — bugi tuotannossa. Miten p… |
 | ⬜ | 2 | `b08-cpp-enum-class-scope` | Vanha `enum Color { Red, Green }` törmää toisen headerin `Red`-vakion k… |
 | ✅ | 3 | `b09-cpp-delete-copy-semantics` | Luokka hallitsee yksilöllistä resurssia — kopio ei saa olla mahdollinen… |
 | ⬜ | 2 | `b09-cpp-enum-class-type` | Code review: `enum Color { RED, GREEN }` sekoittuu toisen `enum Status … |
@@ -203,24 +203,24 @@
 | ⬜ | 2 | `b11-cpp-underscore-identifier` | Uusi globaali funktio nimetään `_init_app()`. Miksi cpp-best-practices … |
 | ⬜ | 2 | `b11-cpp-using-namespace-header` | Uusi header alkaa `using namespace std;` ja includataan kymmenessä modu… |
 | ⬜ | 3 | `exp-cpp-cr-default-delete` | Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdot… |
-| ⬜ | 2 | `exp-cpp-cr-enum-class-switch` | Code review: switch-case käyttää `enum Status { OK, FAIL }` ilman scope… |
-| ⬜ | 1 | `style-const-ref` | Miten vältät turhan `std::string`-kopioinnin funktioparametrissa? |
-| ⬜ | 3 | `style-final-override` | Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja.… |
-| ⬜ | 2 | `style-override` | Miksi käyttää `override` periytyvässä metodissa? |
-| ⬜ | 2 | `style-pass-int` | Miten yksinkertainen `int` kannattaa välittää konstruktorille? |
-| ⬜ | 2 | `tools-enum-class` | Miksi `enum class` on parempi kuin vanha C-tyylinen `enum`? |
+| ✅ | 2 | `exp-cpp-cr-enum-class-switch` | Code review: switch-case käyttää `enum Status { OK, FAIL }` ilman scope… |
+| ✅ | 1 | `style-const-ref` | Miten vältät turhan `std::string`-kopioinnin funktioparametrissa? |
+| ✅ | 3 | `style-final-override` | Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja.… |
+| ✅ | 2 | `style-override` | Miksi käyttää `override` periytyvässä metodissa? |
+| ✅ | 2 | `style-pass-int` | Miten yksinkertainen `int` kannattaa välittää konstruktorille? |
+| ✅ | 2 | `tools-enum-class` | Miksi `enum class` on parempi kuin vanha C-tyylinen `enum`? |
 
-#### säikeistys `threadability` (5/18)
+#### säikeistys `threadability` (12/18)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ⬜ | 5 | `b02-cpp-thread-atomic-order-13` | Laskuri kasvaa useasta säikeestä — `atomic<int>++` riittääkö ilman memo… |
 | ✅ | 4 | `b02-cpp-thread-scoped-lock-12` | Funktio lukitsee kaksi mutexia — riski deadlockille. C++17-ratkaisu? |
-| ⬜ | 3 | `b03-cpp-thread-atomic-flag` | Yksinkertainen shutdown-flag jaettiin bool:lla ilman synkronointia — sa… |
+| ✅ | 3 | `b03-cpp-thread-atomic-flag` | Yksinkertainen shutdown-flag jaettiin bool:lla ilman synkronointia — sa… |
 | ✅ | 4 | `b03-cpp-thread-mutex-order` | Deadlock kahdessa mutexissa: thread A lukitsee m1→m2, thread B m2→m1. M… |
-| ⬜ | 4 | `b04-cpp-lock-guard-deadlock` | Kaksi mutexia lukitaan eri järjestyksessä kahdessa säikeessä — satunnai… |
+| ✅ | 4 | `b04-cpp-lock-guard-deadlock` | Kaksi mutexia lukitaan eri järjestyksessä kahdessa säikeessä — satunnai… |
 | ⬜ | 3 | `b04-cpp-static-local-thread` | Funktion sisällä `static Logger log;` — useat säikeet kirjoittavat loki… |
-| ⬜ | 3 | `b05-cpp-atomic-counter` | Usea säie päivittää jaettua laskuria. Mikä primitiivi on oikea ilman mu… |
+| ✅ | 3 | `b05-cpp-atomic-counter` | Usea säie päivittää jaettua laskuria. Mikä primitiivi on oikea ilman mu… |
 | ✅ | 4 | `b06-cpp-packaged-task` | Worker-thread ajaa funktion ja palauttaa tuloksen kutsijalle. Mitä käyt… |
 | ⬜ | 5 | `b07-cpp-atomic-acquire-release` | Lock-free jonossa tuottaja kirjoittaa datan ja asettaa flagin — kulutta… |
 | ⬜ | 5 | `b08-cpp-atomic-memory-order` | Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei n… |
@@ -228,31 +228,31 @@
 | ✅ | 4 | `b09-cpp-condition-variable-wait` | Worker-säie odottaa queuea — spurious wakeup aiheuttaa tyhjän pop:in. O… |
 | ⬜ | 3 | `b11-cpp-avoid-global-state` | Moduulissa on `static std::map<int, User> g_cache` ja useat säikeet kut… |
 | ⬜ | 4 | `b11-cpp-mutex-mutable-rule` | const-metodi päivittää cachea mutta tarvitsee mutexin. Mitä cpp-best-pr… |
-| ⬜ | 4 | `exp-cpp-thread-once-flag` | Singleton alustetaan lazy-initillä useasta säikeestä. Mikä standardikom… |
-| ⬜ | 3 | `thread-atomic` | Miten jaat yksinkertaisen laskurin säikeiden välillä turvallisesti? |
-| ⬜ | 4 | `thread-data-race` | Kaksi säiettä kirjoittaa samaan `int`-muuttujaan ilman synkronointia. M… |
-| ⬜ | 3 | `thread-lock-guard` | Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alue… |
+| ✅ | 4 | `exp-cpp-thread-once-flag` | Singleton alustetaan lazy-initillä useasta säikeestä. Mikä standardikom… |
+| ✅ | 3 | `thread-atomic` | Miten jaat yksinkertaisen laskurin säikeiden välillä turvallisesti? |
+| ✅ | 4 | `thread-data-race` | Kaksi säiettä kirjoittaa samaan `int`-muuttujaan ilman synkronointia. M… |
+| ✅ | 3 | `thread-lock-guard` | Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alue… |
 
-#### C++ työkalut `tools` (1/35)
+#### C++ työkalut `tools` (14/35)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 4 | `b02-cpp-tools-concepts-02` | Template-funktio `sortLike(T& a, T& b)` kaatuu outoihin virheisiin väär… |
-| ⬜ | 2 | `b02-cpp-tools-raii-01` | Code reviewissa funktio luo `new Database()` ja palauttaa raakaa osoiti… |
+| ✅ | 2 | `b02-cpp-tools-raii-01` | Code reviewissa funktio luo `new Database()` ja palauttaa raakaa osoiti… |
 | ⬜ | 4 | `b03-cpp-incident-sanitize-ubsan` | Tuotantoon pääsee signed overflow -bugi vain tietyllä ARM-buildilla. CI… |
 | ⬜ | 3 | `b03-cpp-tools-if-constexpr` | Template-funktio tarvitsee eri haaran integraalisille vs float-tyypeill… |
 | ⬜ | 4 | `b04-cpp-concept-constraints` | Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihi… |
 | ⬜ | 4 | `b04-cpp-consteval-compile-time` | Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa … |
 | ⬜ | 3 | `b05-cpp-constexpr-config` | Konfiguraatiovakiot lasketaan build-ajassa. Mikä avainsana varmistaa et… |
-| ⬜ | 2 | `b05-cpp-lambda-capture-review` | Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x… |
+| ✅ | 2 | `b05-cpp-lambda-capture-review` | Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x… |
 | ⬜ | 3 | `b06-cpp-deleted-function` | Luokka ei saa kopioida — kopio-konstruktori kutsuu vahingossa. Miten es… |
-| ⬜ | 2 | `b06-cpp-enum-class-scope` | Code reviewissa `enum Color { Red, Green };` aiheuttaa nimikonfliktit h… |
+| ✅ | 2 | `b06-cpp-enum-class-scope` | Code reviewissa `enum Color { Red, Green };` aiheuttaa nimikonfliktit h… |
 | ⬜ | 3 | `b06-cpp-nodiscard-return` | Tuotantobugi: `allocateBuffer()` palautusarvo jätetään huomiotta ja res… |
 | ⬜ | 3 | `b07-cpp-chrono-literals` | Timeout on koodissa sleep(500) — yksikkö epäselvä. Miten std::chrono il… |
 | ⬜ | 4 | `b07-cpp-perfect-forwarding` | Tehdasfunktio make<T>(Args&&... args) välittää argumentit konstruktoril… |
 | ⬜ | 3 | `b07-cpp-spaceship-operator` | Luokalle tarvitaan ==, !=, <, <=, >, >= — paljon boilerplatea. C++20 ly… |
-| ⬜ | 2 | `b07-cpp-unique-ptr-deleter` | RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr … |
-| ⬜ | 2 | `b08-cpp-chrono-literals` | Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 mill… |
+| ✅ | 2 | `b07-cpp-unique-ptr-deleter` | RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr … |
+| ✅ | 2 | `b08-cpp-chrono-literals` | Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 mill… |
 | ⬜ | 4 | `b08-cpp-initializer-list-trap` | Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutt… |
 | ⬜ | 3 | `b08-cpp-optional-monadic` | Ketju: optional palauttaa arvon, seuraava funktio ottaa arvon — if-linn… |
 | ⬜ | 3 | `b08-cpp-sort-requirements` | std::sort kaatuu outoon virheeseen custom-iteratorilla. Mitä iteratorin… |
@@ -264,14 +264,14 @@
 | ⬜ | 3 | `b11-cpp-iwyu-cleanup` | PR:ssä jokainen header vetää mukaan `<iostream>` vaikka käytetään vain … |
 | ⬜ | 4 | `b11-cpp-pch-tradeoff` | Iso C++-projekti harkitsee precompiled headereita (PCH). Mitä cpp-best-… |
 | ⬜ | 3 | `b11-cpp-werror-policy` | Tiimi haluaa ettei uusia varoituksia päädy main-haaraan. Mikä käytäntö … |
-| ⬜ | 3 | `exp-cpp-cr-optional-review` | Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni… |
-| ⬜ | 3 | `exp-cpp-prod-chrono-timeout` | API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti il… |
-| ⬜ | 2 | `exp-cpp-tools-format-logging` | Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa … |
-| ⬜ | 1 | `tools-auto` | Mitä `auto` tekee modernissa C++:ssa? |
-| ⬜ | 3 | `tools-constexpr` | Mitä `constexpr` funktio mahdollistaa C++11:ssä? |
-| ⬜ | 1 | `tools-nullptr` | Mikä on turvallisin tapa nollata osoitin C++11:ssä? |
-| ⬜ | 3 | `tools-structured-bindings` | C++17: miten purat `std::map`-iteratorin avain/arvo-pairin siististi? |
-| ⬜ | 2 | `tools-using-alias` | Miksi `using StringMap = std::map<std::string, int>` on usein parempi k… |
+| ✅ | 3 | `exp-cpp-cr-optional-review` | Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni… |
+| ✅ | 3 | `exp-cpp-prod-chrono-timeout` | API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti il… |
+| ✅ | 2 | `exp-cpp-tools-format-logging` | Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa … |
+| ✅ | 1 | `tools-auto` | Mitä `auto` tekee modernissa C++:ssa? |
+| ✅ | 3 | `tools-constexpr` | Mitä `constexpr` funktio mahdollistaa C++11:ssä? |
+| ✅ | 1 | `tools-nullptr` | Mikä on turvallisin tapa nollata osoitin C++11:ssä? |
+| ✅ | 3 | `tools-structured-bindings` | C++17: miten purat `std::map`-iteratorin avain/arvo-pairin siististi? |
+| ✅ | 2 | `tools-using-alias` | Miksi `using StringMap = std::map<std::string, int>` on usein parempi k… |
 
 ### JavaScript (0/234)
 
