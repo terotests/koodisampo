@@ -9,15 +9,18 @@ import {
 import {
   ensureIsoAssetsLoaded,
   getIsoImage,
-  isoCharacterKey,
   isoTileKey,
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
 import {
   drawLegoCrowbarItem,
+  drawLegoDog,
+  drawLegoMinifig,
   drawLegoPlayer,
+  drawLegoReception,
   drawLegoShovelItem,
+  drawLegoTv,
   facingFromDelta,
   type PlayerFacing,
 } from "./legoSprites";
@@ -152,7 +155,7 @@ function drawItemGlow(
 
 function entityDrawScale(glyph: string): number {
   if (glyph === "@") return 1.55;
-  return 1.38;
+  return 1.32;
 }
 
 function drawHighlight(
@@ -261,6 +264,17 @@ function drawSprite(
     return;
   }
 
+  if (sprite.kind === "legoProp") {
+    if (sprite.prop === "dog") {
+      drawLegoDog(ctx, screenX, screenY, tileWidth, tileHeight);
+      return;
+    }
+    if (sprite.prop === "tv") {
+      drawLegoTv(ctx, screenX, screenY, tileWidth, tileHeight);
+      return;
+    }
+  }
+
   if (sprite.kind === "entity") {
     if (sprite.glyph === "@") {
       drawLegoPlayer(
@@ -275,16 +289,32 @@ function drawSprite(
       );
       return;
     }
-    const img = getIsoImage(isoCharacterKey(sprite.skin));
-    if (img) {
-      drawScaledImage(ctx, img, screenX, screenY, tileWidth, {
-        scaleMul: entityDrawScale(sprite.glyph),
-        crisp: true,
-        yBias: -3,
-      });
-    } else {
-      drawEntityLabel(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight, sprite.police);
+    const scale = entityDrawScale(sprite.glyph);
+    const drawW = tileWidth * scale;
+    const drawH = tileHeight * scale;
+    const offsetX = (tileWidth - drawW) / 2;
+    const offsetY = (tileHeight - drawH) / 2;
+    if (sprite.legoKind === "reception") {
+      drawLegoReception(
+        ctx,
+        screenX + offsetX,
+        screenY + offsetY,
+        drawW,
+        drawH,
+        sprite.appearance,
+      );
+      return;
     }
+    drawLegoMinifig(
+      ctx,
+      screenX + offsetX,
+      screenY + offsetY - tileHeight * 0.04,
+      drawW,
+      drawH,
+      "S",
+      0,
+      sprite.appearance,
+    );
     return;
   }
 
@@ -357,7 +387,7 @@ function paintIsometricMap(
       });
       if (sprite.kind === "tile" && (sprite.base === "floor" || sprite.base === "slab")) continue;
       const layer =
-        sprite.kind === "entity" || sprite.kind === "emoji" || sprite.kind === "item" ? 0.5 : 0;
+        sprite.kind === "entity" || sprite.kind === "emoji" || sprite.kind === "item" || sprite.kind === "legoProp" ? 0.5 : 0;
       overlays.push({ x, y, depth: x + y + layer, sprite });
       overlayKeys.add(cellKey);
     }
