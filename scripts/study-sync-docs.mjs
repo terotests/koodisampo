@@ -52,6 +52,11 @@ function stripLeadingTitle(md) {
   return md.replace(/^#\s+.+\n+/, "").trim();
 }
 
+/** Oppitunnin ##-osiot → pieni aliotsikko (ei TOC:ssa, alle kysymyksen ###). */
+function demoteLessonSectionHeadings(md) {
+  return md.replace(/^## (.+)$/gm, '<p class="lesson-section-heading">$1</p>');
+}
+
 function buildStubSection(q) {
   const correct = (q.choices || []).find((c) => c.correct);
   const lines = [
@@ -79,6 +84,7 @@ function buildStubSection(q) {
 function buildManualSection(q, body) {
   let content = stripFrontmatter(body);
   content = stripLeadingTitle(content);
+  content = demoteLessonSectionHeadings(content);
   content = linkGlossaryTerms(content);
   const lines = [
     `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
