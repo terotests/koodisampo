@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**62 / 1249** valmis (**5 %**).
+**75 / 1249** valmis (**6 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 21 | 204 | 10.3 |
+| PostgreSQL | 34 | 204 | 16.7 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,9 +534,9 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (21/204)
+### PostgreSQL (34/204)
 
-#### PostgreSQL-konfig `pg-config` (20/33)
+#### PostgreSQL-konfig `pg-config` (33/33)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -558,19 +558,19 @@
 | ✅ | 3 | `b06-pg-config-parallel-workers` | Raporttikysely ei parallelize — seq scan yksin. Mitä parametria nostat? |
 | ✅ | 4 | `b06-pg-config-track-io-timing` | pg_stat_statements näyttää query time mutta ei I/O breakdown. Mitä enab… |
 | ✅ | 4 | `b06-pg-locks-advisory` | App-tason mutex kahden workerin välillä — ei taululock. Mitä PostgreSQL… |
-| ⬜ | 2 | `b07-pg-config-log-slow` | Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf? |
-| ⬜ | 3 | `b07-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lä… |
-| ⬜ | 4 | `b07-pg-config-work-mem` | Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nosta… |
-| ⬜ | 4 | `b08-pg-config-checkpoint` | IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeou… |
-| ⬜ | 3 | `b08-pg-config-max-connections` | Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Ark… |
-| ⬜ | 3 | `b08-pg-config-shared-buffers` | Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Ty… |
-| ⬜ | 4 | `b08-pg-config-work-mem` | Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Pa… |
-| ⬜ | 3 | `b09-pg-config-pgbouncer-pool` | 500 microservice-instanssia avaa oman PG-yhteyden — `too many connectio… |
-| ⬜ | 3 | `b09-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen läh… |
-| ⬜ | 4 | `b09-pg-config-work-mem` | Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Par… |
-| ⬜ | 4 | `b10-pg-config-shared-buffers-01` | PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäin… |
-| ⬜ | 3 | `exp-pg-config-max-connections` | App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context … |
-| ⬜ | 3 | `exp-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — junior asettaa shared_buffers = 32GB. Miks… |
+| ✅ | 2 | `b07-pg-config-log-slow` | Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf? |
+| ✅ | 3 | `b07-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lä… |
+| ✅ | 4 | `b07-pg-config-work-mem` | Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nosta… |
+| ✅ | 4 | `b08-pg-config-checkpoint` | IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeou… |
+| ✅ | 3 | `b08-pg-config-max-connections` | Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Ark… |
+| ✅ | 3 | `b08-pg-config-shared-buffers` | Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Ty… |
+| ✅ | 4 | `b08-pg-config-work-mem` | Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Pa… |
+| ✅ | 3 | `b09-pg-config-pgbouncer-pool` | 500 microservice-instanssia avaa oman PG-yhteyden — `too many connectio… |
+| ✅ | 3 | `b09-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen läh… |
+| ✅ | 4 | `b09-pg-config-work-mem` | Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Par… |
+| ✅ | 4 | `b10-pg-config-shared-buffers-01` | PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäin… |
+| ✅ | 3 | `exp-pg-config-max-connections` | App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context … |
+| ✅ | 3 | `exp-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — junior asettaa shared_buffers = 32GB. Miks… |
 | ✅ | 4 | `exp-pg-config-work-mem-sort` | EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC… |
 | ✅ | 4 | `pg-config-work-mem` | Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetu… |
 
