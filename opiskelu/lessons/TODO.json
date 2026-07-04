@@ -1,113 +1,113 @@
 {
-  "generatedAt": "2026-07-04T12:00:27.435Z",
+  "generatedAt": "2026-07-04T12:58:17.812Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 173,
-    "pendingLessons": 1052,
-    "percent": 14.1
+    "readyLessons": 191,
+    "pendingLessons": 1034,
+    "percent": 15.6
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 22,
+      "ready": 40,
       "total": 204,
       "chapters": [
         {
           "id": "correctness",
           "label": "oikeellisuus",
-          "ready": 2,
+          "ready": 20,
           "total": 20,
           "questions": [
             {
               "id": "b02-cpp-correct-dangling-15",
               "difficulty": 4,
               "prompt": "Funktio palauttaa `const std::string&` paikallisesta muuttujasta — crash tuotannossa. Mikä on oikea paluutyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-correct-dangling-15.md"
             },
             {
               "id": "b02-cpp-correct-signed-14",
               "difficulty": 3,
               "prompt": "Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. Miksi tarkistus on hyödytön?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-correct-signed-14.md"
             },
             {
               "id": "b03-cpp-correct-three-way-default",
               "difficulty": 3,
               "prompt": "Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-correct-three-way-default.md"
             },
             {
               "id": "b03-cpp-prod-exception-noexcept",
               "difficulty": 4,
               "prompt": "Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja tila epävarma. Mitä merkitset?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-prod-exception-noexcept.md"
             },
             {
               "id": "b04-cpp-auto-deduction-trap",
               "difficulty": 3,
               "prompt": "`auto x = {1, 2, 3};` aiheuttaa yllätyksen — x ei ole std::vector. Mikä tyyppi deduktoidaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-auto-deduction-trap.md"
             },
             {
               "id": "b04-cpp-final-override-virtual",
               "difficulty": 3,
               "prompt": "Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu — override ei kaadu. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-final-override-virtual.md"
             },
             {
               "id": "b05-cpp-explicit-constructor",
               "difficulty": 3,
               "prompt": "Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-explicit-constructor.md"
             },
             {
               "id": "b05-cpp-signed-compare-bug",
               "difficulty": 4,
               "prompt": "Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. Mikä on riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-signed-compare-bug.md"
             },
             {
               "id": "b06-cpp-signed-compare-bug",
               "difficulty": 4,
               "prompt": "Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väärä haara. Mikä on riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-signed-compare-bug.md"
             },
             {
               "id": "b06-cpp-static-cast-review",
               "difficulty": 2,
               "prompt": "Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-static-cast-review.md"
             },
             {
               "id": "b07-cpp-assert-vs-expect",
               "difficulty": 3,
               "prompt": "assert() katoaa release-buildissa mutta invariantti on kriittinen tuotannossa. Mitä käytät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-assert-vs-expect.md"
             },
             {
               "id": "b07-cpp-rule-of-five",
               "difficulty": 4,
               "prompt": "Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructorin. Mikä puuttuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-rule-of-five.md"
             },
             {
               "id": "b08-cpp-assert-ndebug",
               "difficulty": 3,
               "prompt": "Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. Mitä teet tuotantovalvontaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-assert-ndebug.md"
             },
             {
@@ -121,28 +121,28 @@
               "id": "b09-cpp-switch-fallthrough",
               "difficulty": 3,
               "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuotannosta. Moderni dokumentointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-switch-fallthrough.md"
             },
             {
               "id": "correct-overflow",
               "difficulty": 4,
               "prompt": "Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/correct-overflow.md"
             },
             {
               "id": "correct-signed-unsigned",
               "difficulty": 3,
               "prompt": "Miksi `for (int i = 0; i < v.size(); i++)` voi olla vaarallinen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/correct-signed-unsigned.md"
             },
             {
               "id": "correct-ub",
               "difficulty": 3,
               "prompt": "Mitä tarkoittaa undefined behavior (UB) C++:ssa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/correct-ub.md"
             },
             {
@@ -156,7 +156,7 @@
               "id": "exp-cpp-incident-nodiscard",
               "difficulty": 3,
               "prompt": "Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin — virheellinen config jäi käyttöön. Miten estät toistumisen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-incident-nodiscard.md"
             }
           ]
