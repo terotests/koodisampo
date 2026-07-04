@@ -45,6 +45,9 @@ for (const q of qs) {
   if ((q.choices || []).length < 2) errors.push(`${q.id}: need >= 2 choices`);
 
   if (!q.sourceUrl) warnings.push(`${q.id}: missing sourceUrl`);
+  else if (!/^https?:\/\//i.test(q.sourceUrl)) {
+    errors.push(`${q.id}: sourceUrl must be absolute http(s) URL (got ${q.sourceUrl})`);
+  }
   if (q.difficulty < 1 || q.difficulty > 5) errors.push(`${q.id}: difficulty out of range`);
 
   const expDomain = TOPIC_DOMAINS[q.chapter];
