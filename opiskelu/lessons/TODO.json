@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T13:50:24.589Z",
+  "generatedAt": "2026-07-04T14:00:31.381Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 355,
-    "pendingLessons": 870,
-    "percent": 29
+    "readyLessons": 607,
+    "pendingLessons": 618,
+    "percent": 49.6
   },
   "domains": [
     {
@@ -1518,426 +1518,426 @@
     {
       "id": "javascript",
       "label": "JavaScript",
-      "ready": 0,
+      "ready": 234,
       "total": 234,
       "chapters": [
         {
           "id": "js-async",
           "label": "JavaScript async",
-          "ready": 0,
+          "ready": 59,
           "total": 59,
           "questions": [
             {
               "id": "b02-js-async-await-04",
               "difficulty": 3,
               "prompt": "async funktio heittää virheen — caller ei saa stack tracea. Miten käsittelet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-async-await-04.md"
             },
             {
               "id": "b02-js-async-fetch-01",
               "difficulty": 2,
               "prompt": "REST-kutsu timeout 30s — käyttäjä navigoi pois. Miten peruutat fetchin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-async-fetch-01.md"
             },
             {
               "id": "b02-js-async-microtask-03",
               "difficulty": 4,
               "prompt": "console.log järjestys: sync, Promise.resolve().then, setTimeout(0). Mikä ensin microtask jonossa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-async-microtask-03.md"
             },
             {
               "id": "b02-js-async-promise-02",
               "difficulty": 3,
               "prompt": "Kolme riippumatonta API-kutsua — haluat odottaa kaikkia mutta yksi fail saa jatkua. Metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-async-promise-02.md"
             },
             {
               "id": "b03-js-async-debounce-fetch",
               "difficulty": 3,
               "prompt": "Hakukenttä laukaisee fetch-jokaisella näppäimellä — API rate limit. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-async-debounce-fetch.md"
             },
             {
               "id": "b03-js-async-event-loop-order",
               "difficulty": 4,
               "prompt": "Debug: console.log(1); Promise.resolve().then(()=>log(2)); queueMicrotask(()=>log(3)); log(4). Tulostus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-async-event-loop-order.md"
             },
             {
               "id": "b03-js-async-fetch-credentials",
               "difficulty": 3,
               "prompt": "SPA ei lähetä session-cookiea cross-origin API:lle. fetch-korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-async-fetch-credentials.md"
             },
             {
               "id": "b03-js-async-promise-race-timeout",
               "difficulty": 4,
               "prompt": "fetch ei timeouttaa natiivisti — käyttäjä jää odottamaan ikuisesti. Moderni pattern?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-async-promise-race-timeout.md"
             },
             {
               "id": "b04-js-async-debounce",
               "difficulty": 3,
               "prompt": "Hakukenttä laukaisee API-kutsun joka näppäimellä — palvelin ylikuormittuu. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-async-debounce.md"
             },
             {
               "id": "b04-js-async-event-loop-blocking",
               "difficulty": 3,
               "prompt": "UI jäätyy kun käsittelet 100k rivin CSV:tä for-silmukalla fetchin jälkeen. Ensimmäinen korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-async-event-loop-blocking.md"
             },
             {
               "id": "b04-js-async-generator",
               "difficulty": 4,
               "prompt": "Paginoitu API — haluat for-await silmukan joka hakee sivut automaattisesti. Pattern?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-async-generator.md"
             },
             {
               "id": "b04-js-async-race-fetch",
               "difficulty": 3,
               "prompt": "Hidas API — haluat timeoutin 5s jälkeen AbortError. Oikea yhdistelmä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-async-race-fetch.md"
             },
             {
               "id": "b05-js-async-debounce",
               "difficulty": 3,
               "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäimellä — palvelin ylikuormittuu. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-async-debounce.md"
             },
             {
               "id": "b05-js-event-loop-order",
               "difficulty": 3,
               "prompt": "console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(() => console.log('C')); Tulostusjärjestys?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-event-loop-order.md"
             },
             {
               "id": "b05-js-fetch-abort-controller",
               "difficulty": 4,
               "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-fetch-abort-controller.md"
             },
             {
               "id": "b05-js-promise-chain-catch",
               "difficulty": 3,
               "prompt": "fetch-ketju kaatuu — virhe jää käsittelemättä ja UI jää spinneriin. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-promise-chain-catch.md"
             },
             {
               "id": "b06-js-async-iterator-forawait",
               "difficulty": 4,
               "prompt": "Stream API palauttaa async iterable — haluat loopata awaitilla. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-async-iterator-forawait.md"
             },
             {
               "id": "b06-js-async-promise-finally",
               "difficulty": 3,
               "prompt": "Fetch-ketju — haluat cleanup riippumatta success/failure. Mitä käytät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-async-promise-finally.md"
             },
             {
               "id": "b06-js-async-queue-microtask",
               "difficulty": 3,
               "prompt": "console.log järjestys: sync, setTimeout(0), promise.then. Mitä tulostuu ensin promise:n jälkeen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-async-queue-microtask.md"
             },
             {
               "id": "b06-js-async-settimeout-zero",
               "difficulty": 2,
               "prompt": "setTimeout(fn, 0) ei suorita fn heti — miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-async-settimeout-zero.md"
             },
             {
               "id": "b07-js-async-abort",
               "difficulty": 4,
               "prompt": "Käyttäjä vaihtaa sivua ennen fetchin valmistumista — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-async-abort.md"
             },
             {
               "id": "b07-js-async-await-error",
               "difficulty": 3,
               "prompt": "async funktio heittää — unhandled rejection tuotannossa. Miten käsittelet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-async-await-error.md"
             },
             {
               "id": "b07-js-async-debounce",
               "difficulty": 4,
               "prompt": "Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset saapuvat myöhemmin ja ylikirjoittavat uudemman tuloksen. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-async-debounce.md"
             },
             {
               "id": "b07-js-async-microtask",
               "difficulty": 4,
               "prompt": "console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-async-microtask.md"
             },
             {
               "id": "b08-js-async-generator",
               "difficulty": 4,
               "prompt": "Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-generator.md"
             },
             {
               "id": "b08-js-async-microtask-starvation",
               "difficulty": 5,
               "prompt": "while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-microtask-starvation.md"
             },
             {
               "id": "b08-js-async-parallel",
               "difficulty": 3,
               "prompt": "Lataat kolme riippumatonta API:a — await peräkkäin kestää 3×. Nopeampi tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-parallel.md"
             },
             {
               "id": "b08-js-async-race-timeout",
               "difficulty": 3,
               "prompt": "fetch ei saa roikkua yli 5 sekuntia — timeout ilman manuaalista flagia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-race-timeout.md"
             },
             {
               "id": "b09-js-async-event-loop-block",
               "difficulty": 4,
               "prompt": "Express-endpoint jäädyttää koko palvelimen 30 sekunniksi raskaalla JSON-parsinnalla. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-async-event-loop-block.md"
             },
             {
               "id": "b09-js-async-fetch-abort",
               "difficulty": 3,
               "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — haluat peruuttaa pyynnön. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-async-fetch-abort.md"
             },
             {
               "id": "b09-js-async-promise-chain",
               "difficulty": 3,
               "prompt": "Callback hell API-ketjussa — kolme peräkkäistä fetch-kutsua. Moderni refaktorointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-async-promise-chain.md"
             },
             {
               "id": "b09-js-async-unhandled-rejection",
               "difficulty": 4,
               "prompt": "Tuotannossa `UnhandledPromiseRejection` kaataa Node-prosessin. Miten käsittelet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-async-unhandled-rejection.md"
             },
             {
               "id": "b12-js-async-async-returns-promise",
               "difficulty": 2,
               "prompt": "Mikä `async function foo() { return 42; }` palauttaa kutsujalle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-async-returns-promise.md"
             },
             {
               "id": "b12-js-async-async-stack",
               "difficulty": 5,
               "prompt": "async stack trace katkeaa await-kohdassa debugissa. Node/DevTools apu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-async-stack.md"
             },
             {
               "id": "b12-js-async-await-top-level",
               "difficulty": 3,
               "prompt": "config.mjs lataa env-tiedoston ennen muita importteja. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-await-top-level.md"
             },
             {
               "id": "b12-js-async-callback-to-promise",
               "difficulty": 2,
               "prompt": "Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käärit sen await-yhteensopivaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-callback-to-promise.md"
             },
             {
               "id": "b12-js-async-eventemitter-memory",
               "difficulty": 4,
               "prompt": "Node EventEmitter 'data' listenerit kasaantuvat — MaxListenersExceededWarning. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-eventemitter-memory.md"
             },
             {
               "id": "b12-js-async-fetch-keepalive",
               "difficulty": 3,
               "prompt": "Analytics beacon sivun unloadissa — fetch katkeaa. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-fetch-keepalive.md"
             },
             {
               "id": "b12-js-async-generator-async",
               "difficulty": 4,
               "prompt": "Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-generator-async.md"
             },
             {
               "id": "b12-js-async-iterator-for-await",
               "difficulty": 4,
               "prompt": "ReadableStream data async iterable. Silmukka?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-iterator-for-await.md"
             },
             {
               "id": "b12-js-async-microtask-starvation",
               "difficulty": 5,
               "prompt": "while(true) { queueMicrotask(() => {}) } — UI jäätyy vaikka ei ole synkronista silmukkaa. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-microtask-starvation.md"
             },
             {
               "id": "b12-js-async-promise-all-error",
               "difficulty": 3,
               "prompt": "Promise.all — yksi reject. Mitä tapahtuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-all-error.md"
             },
             {
               "id": "b12-js-async-promise-finally",
               "difficulty": 3,
               "prompt": "Latausnäkymä pitää piilottaa sekä onnistumisessa että virheessä. Mikä Promise-metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-finally.md"
             },
             {
               "id": "b12-js-async-promise-race-cancel",
               "difficulty": 3,
               "prompt": "Käyttäjä peruuttaa — haluat että hitain fetch häviää kilpajuoksussa. Metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-race-cancel.md"
             },
             {
               "id": "b12-js-async-promise-then-chain",
               "difficulty": 2,
               "prompt": "fetch palauttaa promisen — haluat JSON-objektin. Ensimmäinen then-ketju?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-then-chain.md"
             },
             {
               "id": "b12-js-async-promise-with-resolvers",
               "difficulty": 4,
               "prompt": "Rakennat deferred-patternin: ulkopuolinen koodi resolveaa promisen myöhemmin. ES2024+ tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-with-resolvers.md"
             },
             {
               "id": "b12-js-async-queue-microtask",
               "difficulty": 3,
               "prompt": "Haluat ajaa funktion heti synkronisen koodin jälkeen mutta ennen setTimeout(0). API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-queue-microtask.md"
             },
             {
               "id": "b12-js-async-retry-backoff",
               "difficulty": 4,
               "prompt": "API palauttaa 503 — haluat uudelleenyrityksen eksponentiaalisella viiveellä. Rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-retry-backoff.md"
             },
             {
               "id": "b12-js-async-settled-vs-resolve",
               "difficulty": 3,
               "prompt": "finally-blokissa tarvitset tietää onnistuiko promise. Miten saat tuloksen ilman then-ketjua?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-settled-vs-resolve.md"
             },
             {
               "id": "b12-js-async-signal-combine",
               "difficulty": 4,
               "prompt": "Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-signal-combine.md"
             },
             {
               "id": "b12-js-async-sleep-pattern",
               "difficulty": 2,
               "prompt": "Testissä haluat odottaa 100ms ilman busy-waitiä. Pattern?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-sleep-pattern.md"
             },
             {
               "id": "b12-js-async-stream-backpressure",
               "difficulty": 5,
               "prompt": "Node transform stream tulvii muistia — kirjoittaja nopeampi kuin lukija. Mekanismi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-stream-backpressure.md"
             },
             {
               "id": "exp-js-async-await-parallel",
               "difficulty": 3,
               "prompt": "Code review: kaksi await fetchiä peräkkäin — sivu latautuu hitaasti. Miten nopeutat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-async-await-parallel.md"
             },
             {
               "id": "exp-js-async-fetch-abort",
               "difficulty": 3,
               "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — state päivittyy unmountatulle komponentille. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-async-fetch-abort.md"
             },
             {
               "id": "exp-js-async-microtask-order",
               "difficulty": 4,
               "prompt": "Bugiraportti: `console.log` järjestys on 1, 4, 2, 3 — setTimeout(0), Promise.resolve, sync. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-async-microtask-order.md"
             },
             {
               "id": "exp-js-async-promise-all-settled",
               "difficulty": 3,
               "prompt": "Dashboard hakee viisi API:a — yksi failaa ja koko näkymä jää tyhjäksi Promise.all:in takia. Parempi malli?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-async-promise-all-settled.md"
             },
             {
               "id": "js-async-await-error",
               "difficulty": 3,
               "prompt": "async-funktio heittää virheen. Miten käsittelet sen kutsujassa turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-async-await-error.md"
             },
             {
               "id": "js-async-microtasks",
               "difficulty": 4,
               "prompt": "console.log(1); Promise.resolve().then(() => console.log(2)); console.log(3); — missä järjestyksessä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-async-microtasks.md"
             },
             {
               "id": "prod-js-unhandled-rejection-caller",
               "difficulty": 4,
               "prompt": "Event handler kutsuu `saveData()` async-funktiota ilman awaitia eikä lisää `.catch()`. Promise hylätään. Mikä riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-js-unhandled-rejection-caller.md"
             }
           ]
@@ -1945,350 +1945,350 @@
         {
           "id": "js-modules",
           "label": "JS-moduulit",
-          "ready": 0,
+          "ready": 49,
           "total": 49,
           "questions": [
             {
               "id": "b02-js-modules-cycle-09",
               "difficulty": 4,
               "prompt": "Kaksi moduulia importtaa toisensa — toinen export undefined init aikana. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-modules-cycle-09.md"
             },
             {
               "id": "b02-js-modules-dynamic-08",
               "difficulty": 3,
               "prompt": "Feature flag lataa analytics-moduulin vain tarvittaessa. ES module tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-modules-dynamic-08.md"
             },
             {
               "id": "b02-js-modules-export-11",
               "difficulty": 2,
               "prompt": "Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista. Syntax?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-modules-export-11.md"
             },
             {
               "id": "b02-js-modules-tla-10",
               "difficulty": 4,
               "prompt": "Moduulin top-level await hidastaa koko appin latausta — milloin käyttää?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-modules-tla-10.md"
             },
             {
               "id": "b03-js-modules-export-default-named",
               "difficulty": 2,
               "prompt": "Code review: tiedosto export default User ja export const helper — import sekoittuu. Suositus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-modules-export-default-named.md"
             },
             {
               "id": "b03-js-modules-import-meta",
               "difficulty": 3,
               "prompt": "Bundleri tarvitsee nykyisen moduulin URL:n runtime asset-polkuun. ES-moduuli-API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-modules-import-meta.md"
             },
             {
               "id": "b03-js-modules-worker-postmessage",
               "difficulty": 4,
               "prompt": "Raskas JSON-parse jäädyttää UI-threadin. Web Worker -integraatio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-modules-worker-postmessage.md"
             },
             {
               "id": "b04-js-modules-dynamic-import",
               "difficulty": 3,
               "prompt": "Admin-paneeli pitää ladata vain admin-käyttäjille — bundle koko kasvaa. Strategia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-modules-dynamic-import.md"
             },
             {
               "id": "b04-js-modules-export-default",
               "difficulty": 2,
               "prompt": "Code review: tiedosto exporttaa sekä default että 5 named exportia — reviewer ihmettelee. Miksi ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-modules-export-default.md"
             },
             {
               "id": "b04-js-modules-import-meta",
               "difficulty": 3,
               "prompt": "ES-moduulissa tarvitset nykyisen moduulin URL:n asset-polkuun. Standardi API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-modules-import-meta.md"
             },
             {
               "id": "b05-js-modules-dynamic-import",
               "difficulty": 3,
               "prompt": "Raskas chart-kirjasto ladataan vain kun käyttäjä avaa analytics-sivun. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-modules-dynamic-import.md"
             },
             {
               "id": "b05-js-modules-esm-import",
               "difficulty": 2,
               "prompt": "HTML:ssä `<script src='app.js'>` — import/export ei toimi. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-modules-esm-import.md"
             },
             {
               "id": "b05-js-modules-top-level-await",
               "difficulty": 4,
               "prompt": "Moduulin init tarvitsee config-fetch ennen exportteja. Moderni tapa ilman callback-helvettiä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-modules-top-level-await.md"
             },
             {
               "id": "b06-js-modules-import-assertions",
               "difficulty": 4,
               "prompt": "JSON config moduuli — haluat importtaa JSON ESM:ssä turvallisesti. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-modules-import-assertions.md"
             },
             {
               "id": "b06-js-modules-reexport",
               "difficulty": 3,
               "prompt": "Barrel file exporttaa utils-moduulien API yhdessä paikassa. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-modules-reexport.md"
             },
             {
               "id": "b06-js-modules-top-level-await",
               "difficulty": 3,
               "prompt": "ESM moduuli tarvitsee async init ennen exporttia. Miten ilman wrapper-funktiota?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-modules-top-level-await.md"
             },
             {
               "id": "b07-js-modules-cycle",
               "difficulty": 4,
               "prompt": "a.js importtaa b.js ja b.js importtaa a.js — undefined export. Miten korjaat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-modules-cycle.md"
             },
             {
               "id": "b07-js-modules-dynamic",
               "difficulty": 3,
               "prompt": "Admin-paneeli on harvoin käytössä — haluat ladata sen koodin vain tarvittaessa. ES module?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-modules-dynamic.md"
             },
             {
               "id": "b07-js-modules-tree-shake",
               "difficulty": 3,
               "prompt": "Bundle on iso vaikka käytät yhtä lodash-funktiota. Import-korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-modules-tree-shake.md"
             },
             {
               "id": "b08-js-modules-circular",
               "difficulty": 4,
               "prompt": "a.js importtaa b.js ja b.js importtaa a.js — export undefined initissä. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-modules-circular.md"
             },
             {
               "id": "b08-js-modules-dynamic-import",
               "difficulty": 3,
               "prompt": "Raskas chart-kirjasto vain admin-sivulla — bundle liian iso. Latausstrategia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-modules-dynamic-import.md"
             },
             {
               "id": "b08-js-modules-top-level-await",
               "difficulty": 4,
               "prompt": "ES module init lataa config.json ennen exportteja — miten ilman async IIFE?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-modules-top-level-await.md"
             },
             {
               "id": "b09-js-modules-circular-dep",
               "difficulty": 4,
               "prompt": "Moduuli A importtaa B:n ja B importtaa A:n — undefined exportit bootissa. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-modules-circular-dep.md"
             },
             {
               "id": "b09-js-modules-dynamic-import",
               "difficulty": 3,
               "prompt": "Raskas chart-kirjasto tarvitaan vain admin-sivulla — haluat pienentää initial bundlea. Lataus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-modules-dynamic-import.md"
             },
             {
               "id": "b09-js-modules-esm-cjs-interop",
               "difficulty": 4,
               "prompt": "Node-projektissa `require('esm-only-pkg')` kaatuu. Oikea lähestymistapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-modules-esm-cjs-interop.md"
             },
             {
               "id": "b12-js-modules-assert-type-css",
               "difficulty": 3,
               "prompt": "Vite/CSS import komponentissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-assert-type-css.md"
             },
             {
               "id": "b12-js-modules-cjs-esm-interop",
               "difficulty": 4,
               "prompt": "Node ESM importtaa CommonJS-moduulin — default export?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-cjs-esm-interop.md"
             },
             {
               "id": "b12-js-modules-create-require",
               "difficulty": 4,
               "prompt": "ESM-tiedostossa tarvitset require kertaluontoisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-create-require.md"
             },
             {
               "id": "b12-js-modules-default-export",
               "difficulty": 2,
               "prompt": "export default function App() — import?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-default-export.md"
             },
             {
               "id": "b12-js-modules-dual-package",
               "difficulty": 5,
               "prompt": "Kirjasto tarjoaa sekä CJS että ESM — hazard?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-dual-package.md"
             },
             {
               "id": "b12-js-modules-dynamic-conditional",
               "difficulty": 3,
               "prompt": "Lataa moduuli vain adminille. Pattern?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-dynamic-conditional.md"
             },
             {
               "id": "b12-js-modules-import-attributes",
               "difficulty": 4,
               "prompt": "Haluat importata JSON-moduulin ESM:llä selaimessa. Moderni syntaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-import-attributes.md"
             },
             {
               "id": "b12-js-modules-import-defer",
               "difficulty": 5,
               "prompt": "ES proposal: import ajetaan vasta kun binding käytetään?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-import-defer.md"
             },
             {
               "id": "b12-js-modules-import-meta-resolve",
               "difficulty": 4,
               "prompt": "Node 20+ resolvaa specifierin suhteessa moduuliin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-import-meta-resolve.md"
             },
             {
               "id": "b12-js-modules-import-order",
               "difficulty": 3,
               "prompt": "ESM importit hoistataan — sivuvaikutus järjestyksessä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-import-order.md"
             },
             {
               "id": "b12-js-modules-mjs-cjs-ext",
               "difficulty": 2,
               "prompt": "Node ESM-tiedosto ilman type module?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-mjs-cjs-ext.md"
             },
             {
               "id": "b12-js-modules-namespace-import",
               "difficulty": 3,
               "prompt": "import * as utils from './utils.js' — utils on?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-namespace-import.md"
             },
             {
               "id": "b12-js-modules-package-exports",
               "difficulty": 4,
               "prompt": "package.json exports kenttä — miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-package-exports.md"
             },
             {
               "id": "b12-js-modules-reexport",
               "difficulty": 3,
               "prompt": "index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-reexport.md"
             },
             {
               "id": "b12-js-modules-resolve-alias",
               "difficulty": 3,
               "prompt": "Monorepossa `@app/utils` pitää resolvautua `packages/utils/src`. Missä konfiguroit bundlerissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-resolve-alias.md"
             },
             {
               "id": "b12-js-modules-side-effects",
               "difficulty": 3,
               "prompt": "Bundleri poistaa `import './polyfill.js'` tree-shakingissa ja polyfill puuttuu prodissa. Syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-side-effects.md"
             },
             {
               "id": "b12-js-modules-specifier-must-relative",
               "difficulty": 2,
               "prompt": "import from 'lodash' vs './lodash.js' — ero?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-specifier-must-relative.md"
             },
             {
               "id": "b12-js-modules-treeshake-pure",
               "difficulty": 4,
               "prompt": "Bundleri säilyttää kuolleen koodin side-effect funktiossa. Annotaatio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-treeshake-pure.md"
             },
             {
               "id": "b12-js-modules-type-module",
               "difficulty": 2,
               "prompt": "Node-projekti käyttää `import` ilman Babelia. package.json-asetus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-type-module.md"
             },
             {
               "id": "b12-js-modules-wasm-import",
               "difficulty": 4,
               "prompt": "WebAssembly moduuli ESM:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-wasm-import.md"
             },
             {
               "id": "exp-js-modules-cycle",
               "difficulty": 4,
               "prompt": "Circular import: a.js importtaa b.js ja toisin päin — export undefined runtime. Ensimmäinen korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-modules-cycle.md"
             },
             {
               "id": "exp-js-modules-dynamic-import",
               "difficulty": 3,
               "prompt": "Admin-näkymän bundle on liian iso — haluat ladata sen vain admin-reitillä. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-modules-dynamic-import.md"
             },
             {
               "id": "exp-js-modules-top-level-await",
               "difficulty": 3,
               "prompt": "config.mjs pitää ladata ennen appin init — callback pyramid. Moderni moduulitason ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-modules-top-level-await.md"
             },
             {
               "id": "js-modules-static-import",
               "difficulty": 3,
               "prompt": "Miten tuot moduulin `utils.js` funktion `format` ESM-tyylillä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-modules-static-import.md"
             }
           ]
@@ -2296,392 +2296,392 @@
         {
           "id": "js-runtime",
           "label": "JS-runtime",
-          "ready": 0,
+          "ready": 55,
           "total": 55,
           "questions": [
             {
               "id": "b02-js-runtime-closure-12",
               "difficulty": 3,
               "prompt": "for-loopissa 10 timeoutia tulostaa kaikki 10 — klassinen bugi. Fix?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-runtime-closure-12.md"
             },
             {
               "id": "b02-js-runtime-pollution-14",
               "difficulty": 4,
               "prompt": "Käyttäjän JSON merge objektiin — `__proto__` payload. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-runtime-pollution-14.md"
             },
             {
               "id": "b02-js-runtime-weakmap-13",
               "difficulty": 4,
               "prompt": "Metadata cache objekteille — Map pitää objektit elossa muistivuotona. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-runtime-weakmap-13.md"
             },
             {
               "id": "b03-js-runtime-array-flatmap",
               "difficulty": 2,
               "prompt": "Lista kategorioista joissa items-array — tarvitset yhden tason listan kaikista itemeistä. Metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-runtime-array-flatmap.md"
             },
             {
               "id": "b03-js-runtime-error-cause",
               "difficulty": 3,
               "prompt": "API wrapper haluaa säilyttää alkuperäisen virheen ketjun loggauksessa. ES2022?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-runtime-error-cause.md"
             },
             {
               "id": "b03-js-runtime-map-vs-object",
               "difficulty": 2,
               "prompt": "Cache avaimena objekti-instanssi — Object keys eivät toimi odotetusti. Rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-runtime-map-vs-object.md"
             },
             {
               "id": "b03-js-runtime-structured-clone",
               "difficulty": 3,
               "prompt": "Deep copy state Redux-storeen JSON.parse(JSON.stringify(obj)) — Date muuttuu stringiksi. Parempi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-runtime-structured-clone.md"
             },
             {
               "id": "b04-js-runtime-error-cause",
               "difficulty": 3,
               "prompt": "fetch wrapper heittää uuden Error('API failed') — alkuperäinen stack katoaa. ES2022 parannus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-runtime-error-cause.md"
             },
             {
               "id": "b04-js-runtime-gc-closure",
               "difficulty": 4,
               "prompt": "SPA muistin käyttö kasvaa navigoidessa — vanhat DOM-viittaukset closureissa. Miten estät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-runtime-gc-closure.md"
             },
             {
               "id": "b04-js-runtime-structured-clone",
               "difficulty": 4,
               "prompt": "JSON.parse(JSON.stringify(obj)) rikkoo Date-objektit ja undefined-kentät. Parempi deep clone?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-runtime-structured-clone.md"
             },
             {
               "id": "b05-js-fetch-cors-preflight",
               "difficulty": 4,
               "prompt": "POST JSON toiselle domainille — selain lähettää OPTIONS ensin. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-fetch-cors-preflight.md"
             },
             {
               "id": "b05-js-runtime-closure-stale",
               "difficulty": 3,
               "prompt": "for-silmukassa 5 nappia — kaikki tulostavat 5. Klassinen bugi. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-runtime-closure-stale.md"
             },
             {
               "id": "b05-js-runtime-dom-reflow",
               "difficulty": 3,
               "prompt": "Silmukka lukee offsetHeight ja muuttaa stylea jokaisella kierroksella — UI jäätyy. Ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-runtime-dom-reflow.md"
             },
             {
               "id": "b05-js-runtime-prototype-pollution",
               "difficulty": 4,
               "prompt": "Deep merge user JSON:sta — attacker lähettää `{\"__proto__\": {\"isAdmin\": true}}`. Riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-runtime-prototype-pollution.md"
             },
             {
               "id": "b06-js-runtime-console-trace",
               "difficulty": 2,
               "prompt": "Debug — tarvitset call stack ilman breakpointia. Mitä console-metodia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-runtime-console-trace.md"
             },
             {
               "id": "b06-js-runtime-finalization-registry",
               "difficulty": 5,
               "prompt": "WeakRef ei takaa cleanup — tarvitset callback kun objekti GC:ttä. Mitä API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-runtime-finalization-registry.md"
             },
             {
               "id": "b06-js-runtime-json-parse-reviver",
               "difficulty": 4,
               "prompt": "JSON.parse palauttaa date stringit — haluat Date-objekteja automaattisesti. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-runtime-json-parse-reviver.md"
             },
             {
               "id": "b06-js-runtime-proxy-freeze",
               "difficulty": 4,
               "prompt": "Object.freeze ei estä nested muutoksia — config objekti mutatoitu. Miten syvä immutability?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-runtime-proxy-freeze.md"
             },
             {
               "id": "b07-js-runtime-closure-loop",
               "difficulty": 3,
               "prompt": "for-loopissa 5 click-handleria — kaikki tulostavat 5. Klassinen bugi ja fix?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-runtime-closure-loop.md"
             },
             {
               "id": "b07-js-runtime-json-parse",
               "difficulty": 2,
               "prompt": "API palauttaa JSON-stringin — eval(data) parseen. Turvallinen tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-runtime-json-parse.md"
             },
             {
               "id": "b07-js-runtime-prototype",
               "difficulty": 3,
               "prompt": "Kaikki array-instanssit saivat uuden metodin forEachin jälkeen — mitä teit?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-runtime-prototype.md"
             },
             {
               "id": "b07-js-runtime-weakmap",
               "difficulty": 4,
               "prompt": "Cache Map DOM-elementeistä aiheuttaa memory leakin sivun vaihtuessa. Parempi rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-runtime-weakmap.md"
             },
             {
               "id": "b08-js-runtime-closure-loop",
               "difficulty": 3,
               "prompt": "for (var i=0; i<3; i++) { setTimeout(() => console.log(i), 0); } tulostaa 3,3,3. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-runtime-closure-loop.md"
             },
             {
               "id": "b08-js-runtime-dom-ready",
               "difficulty": 2,
               "prompt": "Script headissä — document.getElementById palauttaa null. Milloin DOM on valmis?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-runtime-dom-ready.md"
             },
             {
               "id": "b08-js-runtime-prototype-chain",
               "difficulty": 3,
               "prompt": "`obj.toString()` toimii vaikka obj:ssa ei ole toString — miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-runtime-prototype-chain.md"
             },
             {
               "id": "b08-js-runtime-weakmap",
               "difficulty": 4,
               "prompt": "DOM-elementtiin liitetty metadata — Map aiheuttaa memory leakin kun element poistuu. Rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-runtime-weakmap.md"
             },
             {
               "id": "b09-js-runtime-closure-leak",
               "difficulty": 4,
               "prompt": "SPA:n muisti kasvaa navigoidessa — DevTools näyttää detached DOM -nodeja. Syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-runtime-closure-leak.md"
             },
             {
               "id": "b09-js-runtime-debounce-search",
               "difficulty": 2,
               "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäinpainalluksella. Optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-runtime-debounce-search.md"
             },
             {
               "id": "b09-js-runtime-raf-animation",
               "difficulty": 3,
               "prompt": "Custom animaatio pätkii — setInterval 16 ms ei synkronoidu näytön refreshiin. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-runtime-raf-animation.md"
             },
             {
               "id": "b09-js-runtime-weakmap-cache",
               "difficulty": 3,
               "prompt": "Cacheta metadata DOM-elementeille ilman että estät GC:n poistamasta elementtejä. Rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-runtime-weakmap-cache.md"
             },
             {
               "id": "b12-js-runtime-arraybuffer-view",
               "difficulty": 4,
               "prompt": "Binary data WebSocketista — tyyppi ennen käsittelyä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-arraybuffer-view.md"
             },
             {
               "id": "b12-js-runtime-computed-property",
               "difficulty": 2,
               "prompt": "Objekti { [key]: value } — mitä hakasulut tekevät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-computed-property.md"
             },
             {
               "id": "b12-js-runtime-custom-event",
               "difficulty": 2,
               "prompt": "Komponentit kommunikoivat ilman props-ketjua. DOM-ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-custom-event.md"
             },
             {
               "id": "b12-js-runtime-domparser",
               "difficulty": 3,
               "prompt": "Parse HTML string turvallisesti ilman innerHTML suoraa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-domparser.md"
             },
             {
               "id": "b12-js-runtime-error-stack-limit",
               "difficulty": 4,
               "prompt": "Recursive funktio RangeError Maximum call stack. Syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-error-stack-limit.md"
             },
             {
               "id": "b12-js-runtime-event-delegation",
               "difficulty": 2,
               "prompt": "Lista renderöi 500 riviä — jokaiselle riville oma click-listener. Suorituskykyongelma. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-event-delegation.md"
             },
             {
               "id": "b12-js-runtime-intersection-observer",
               "difficulty": 3,
               "prompt": "Lazy-load kuvat kun scrollaa näkyviin. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-intersection-observer.md"
             },
             {
               "id": "b12-js-runtime-intl-collator",
               "difficulty": 3,
               "prompt": "Järjestät suomenkielisiä nimiä — localeCompare vs Intl.Collator?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-intl-collator.md"
             },
             {
               "id": "b12-js-runtime-label-break",
               "difficulty": 3,
               "prompt": "Sisäkkäisestä silmukasta ulos kahdesta tasosta. Lähestymistapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-label-break.md"
             },
             {
               "id": "b12-js-runtime-mutation-observer",
               "difficulty": 3,
               "prompt": "Kolmas osapuoli injektoi DOM-muutoksia — haluat reagoida. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-mutation-observer.md"
             },
             {
               "id": "b12-js-runtime-object-freeze",
               "difficulty": 3,
               "prompt": "Redux-tyylinen store haluaa estää suoran state-mutaation. Shallow-immutability?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-object-freeze.md"
             },
             {
               "id": "b12-js-runtime-performance-now",
               "difficulty": 3,
               "prompt": "Mittaat koodin keston tarkasti — Date.now() vs performance.now()?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-performance-now.md"
             },
             {
               "id": "b12-js-runtime-proxy-trap",
               "difficulty": 4,
               "prompt": "Haluat logata kaikki objektin property-luvut debugissa. Metaprogramming-ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-proxy-trap.md"
             },
             {
               "id": "b12-js-runtime-raf-vs-timeout",
               "difficulty": 2,
               "prompt": "Animaatio päivittää DOM-elementin sijaintia 60 fps. Parempi kuin setInterval(16)?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-raf-vs-timeout.md"
             },
             {
               "id": "b12-js-runtime-regex-exec",
               "difficulty": 3,
               "prompt": "global regex lastIndex bug loopissa — syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-regex-exec.md"
             },
             {
               "id": "b12-js-runtime-resize-observer",
               "difficulty": 3,
               "prompt": "CSS grid resize — haluat mitata elementin koon muutokset. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-resize-observer.md"
             },
             {
               "id": "b12-js-runtime-set-map-iteration",
               "difficulty": 2,
               "prompt": "Set säilyttää uniikit — lisäät duplikaatin. Mitä tapahtuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-set-map-iteration.md"
             },
             {
               "id": "b12-js-runtime-tail-call",
               "difficulty": 5,
               "prompt": "ES6 tail call optimization — status JS-engingeissä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-tail-call.md"
             },
             {
               "id": "b12-js-runtime-weakref-cache",
               "difficulty": 5,
               "prompt": "Cache viittaa isoihin objekteihin ja estää GC:n vaikka UI on vapauttanut ne. Etenevä ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-weakref-cache.md"
             },
             {
               "id": "b12-js-runtime-weakset-gc",
               "difficulty": 3,
               "prompt": "WeakSet vs Set objektiavainten jäljitykseen DOM-nodeille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-runtime-weakset-gc.md"
             },
             {
               "id": "exp-js-runtime-closure-stale",
               "difficulty": 4,
               "prompt": "React bugi: useEffect closure näkee vanhan `count`-arvon — interval loggaa 0 ikuisesti. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-runtime-closure-stale.md"
             },
             {
               "id": "exp-js-runtime-memory-detached",
               "difficulty": 4,
               "prompt": "Web Worker postMessage hidastuu — suuri ArrayBuffer kopioidaan joka viestissä. Optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-runtime-memory-detached.md"
             },
             {
               "id": "exp-js-runtime-prototype-pollution",
               "difficulty": 5,
               "prompt": "Code review: `merge(userInput, defaults)` kopioi avaimet rekursiivisesti ilman __proto__ suojaa. Riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-runtime-prototype-pollution.md"
             },
             {
               "id": "exp-js-runtime-weakmap-cache",
               "difficulty": 3,
               "prompt": "DOM-elementtiin liitetty metadata aiheuttaa memory leakin Mapissa. Parempi rakenne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-runtime-weakmap-cache.md"
             },
             {
               "id": "js-runtime-closure-loop",
               "difficulty": 4,
               "prompt": "for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 0); } — mitä tulostuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-runtime-closure-loop.md"
             }
           ]
@@ -2689,357 +2689,357 @@
         {
           "id": "js-types",
           "label": "JavaScript-tyypit",
-          "ready": 0,
+          "ready": 50,
           "total": 50,
           "questions": [
             {
               "id": "b02-js-types-coalesce-06",
               "difficulty": 2,
               "prompt": "Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaattori?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-coalesce-06.md"
             },
             {
               "id": "b02-js-types-optional-05",
               "difficulty": 2,
               "prompt": "API palauttaa `{ name?: string }` — miten luet turvallisesti ilman undefined crash?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-optional-05.md"
             },
             {
               "id": "b02-js-types-strict-07",
               "difficulty": 2,
               "prompt": "Bugi: `if (count == '0')` menee läpi kun count on 0. Fix?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-strict-07.md"
             },
             {
               "id": "b03-js-types-number-precision",
               "difficulty": 3,
               "prompt": "Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteistä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-types-number-precision.md"
             },
             {
               "id": "b03-js-types-optional-chaining",
               "difficulty": 2,
               "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-types-optional-chaining.md"
             },
             {
               "id": "b03-js-types-symbol-key",
               "difficulty": 4,
               "prompt": "Kirjasto haluaa piilottaa metadatan objektista ilman name collision -riskiä. Tyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-types-symbol-key.md"
             },
             {
               "id": "b04-js-types-array-flat",
               "difficulty": 2,
               "prompt": "Nested array [[1,[2]],3] pitää litistää yhdeksi tasoksi. Moderni metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-array-flat.md"
             },
             {
               "id": "b04-js-types-number-precision",
               "difficulty": 3,
               "prompt": "Laskin: 0.1 + 0.2 === 0.3 palauttaa false tuotannossa. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-number-precision.md"
             },
             {
               "id": "b04-js-types-optional-chaining",
               "difficulty": 2,
               "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-optional-chaining.md"
             },
             {
               "id": "b04-js-types-symbol-iterator",
               "difficulty": 4,
               "prompt": "Custom collection-luokka pitää saada toimimaan for...of ja spread-operaattorilla. Mitä implementoit?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-symbol-iterator.md"
             },
             {
               "id": "b05-js-types-bigint-json",
               "difficulty": 4,
               "prompt": "JSON.stringify(BigInt(42)) heittää TypeError. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-types-bigint-json.md"
             },
             {
               "id": "b05-js-types-nullish-coalescing",
               "difficulty": 2,
               "prompt": "API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vain null/undefined?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-types-nullish-coalescing.md"
             },
             {
               "id": "b05-js-types-strict-equality",
               "difficulty": 2,
               "prompt": "Code review: `if (status == '200')` — miksi pyydetään muutosta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-types-strict-equality.md"
             },
             {
               "id": "b06-js-types-in-operator",
               "difficulty": 2,
               "prompt": "Code review: 'key' in obj vs obj.hasOwnProperty(key). Milloin in on oikea?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-types-in-operator.md"
             },
             {
               "id": "b06-js-types-map-key-object",
               "difficulty": 3,
               "prompt": "Objekti avaimena Mapissa — sama key instance löytyy. Miksi ei Object avaimella?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-types-map-key-object.md"
             },
             {
               "id": "b06-js-types-temporal-date",
               "difficulty": 3,
               "prompt": "Date.parse('01/02/2023') tulos vaihtelee locale:sta. Miten vältät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-types-temporal-date.md"
             },
             {
               "id": "b07-js-types-nan",
               "difficulty": 3,
               "prompt": "parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-nan.md"
             },
             {
               "id": "b07-js-types-optional-chain",
               "difficulty": 2,
               "prompt": "Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-optional-chain.md"
             },
             {
               "id": "b07-js-types-strict-equality",
               "difficulty": 2,
               "prompt": "Bug: `if (!userId)` hylkää validin arvon `0`. Mikä tarkistus on turvallisempi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-strict-equality.md"
             },
             {
               "id": "b08-js-types-bigint",
               "difficulty": 3,
               "prompt": "64-bit ID ylittää Number.MAX_SAFE_INTEGER — JSON API palauttaa ison numeron. Tyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-types-bigint.md"
             },
             {
               "id": "b08-js-types-strict-equals",
               "difficulty": 2,
               "prompt": "API hylkää vain `if (token == null) return unauthorized()`. Mikä arvo pääsee läpi virheellisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-types-strict-equals.md"
             },
             {
               "id": "b08-js-types-symbol-key",
               "difficulty": 3,
               "prompt": "Haluat piilottaa objektin sisäisen avaimen for-in loopilta mutta käyttää sitä metodissa. Avaintyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-types-symbol-key.md"
             },
             {
               "id": "b09-js-types-bigint-json",
               "difficulty": 4,
               "prompt": "API palauttaa 64-bit ID:n — JSON.stringify heittää BigInt:illä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-types-bigint-json.md"
             },
             {
               "id": "b09-js-types-null-object",
               "difficulty": 3,
               "prompt": "Bugi: `typeof null === 'object'`. Turvallinen null-tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-types-null-object.md"
             },
             {
               "id": "b09-js-types-strict-equality",
               "difficulty": 2,
               "prompt": "Code review: `if (userId == 0)` hyväksyy myös tyhjän stringin. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-types-strict-equality.md"
             },
             {
               "id": "b12-js-types-array-push",
               "difficulty": 1,
               "prompt": "Lista `items = []` — haluat lisätä uuden rivin loppuun. Metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-array-push.md"
             },
             {
               "id": "b12-js-types-const-reassign",
               "difficulty": 1,
               "prompt": "Junior yrittää `const x = 1; x = 2;` — linter valittaa. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-const-reassign.md"
             },
             {
               "id": "b12-js-types-destructure-default",
               "difficulty": 2,
               "prompt": "Destructuroit { name, role = 'user' } — role puuttuu. Arvo?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-destructure-default.md"
             },
             {
               "id": "b12-js-types-instanceof-array",
               "difficulty": 3,
               "prompt": "Miksi `[] instanceof Object` on true mutta Array.isArray suositeltu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-instanceof-array.md"
             },
             {
               "id": "b12-js-types-intl-numberformat",
               "difficulty": 3,
               "prompt": "Näytät hinnan suomalaiselle käyttäjälle: 1234.5 → '1 234,50 €'. API?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-intl-numberformat.md"
             },
             {
               "id": "b12-js-types-isarray",
               "difficulty": 2,
               "prompt": "Funktio saa `data` joka voi olla array tai array-like. Luotettava tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-isarray.md"
             },
             {
               "id": "b12-js-types-json-stringify",
               "difficulty": 2,
               "prompt": "API lähettää objektin HTTP-bodyna. Miten muunnat JS-objektin JSON-merkkijonoksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-json-stringify.md"
             },
             {
               "id": "b12-js-types-let-block",
               "difficulty": 1,
               "prompt": "for-silmukassa `var i` vuotaa loopin ulkopuolelle. Turvallisempi vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-let-block.md"
             },
             {
               "id": "b12-js-types-nan-check",
               "difficulty": 2,
               "prompt": "Laskenta palauttaa NaN — `value === NaN` on aina false. Miten tarkistat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-nan-check.md"
             },
             {
               "id": "b12-js-types-object-keys-values",
               "difficulty": 3,
               "prompt": "Haluat iteroida objektin arvot ilman for...in prototyypin perintää. Metodi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-object-keys-values.md"
             },
             {
               "id": "b12-js-types-object-shorthand",
               "difficulty": 2,
               "prompt": "Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-object-shorthand.md"
             },
             {
               "id": "b12-js-types-parseint-radix",
               "difficulty": 3,
               "prompt": "parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-parseint-radix.md"
             },
             {
               "id": "b12-js-types-rest-params",
               "difficulty": 2,
               "prompt": "Funktio `sum(...nums)` — mitä ...nums tarkoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-rest-params.md"
             },
             {
               "id": "b12-js-types-spread-copy",
               "difficulty": 2,
               "prompt": "Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-spread-copy.md"
             },
             {
               "id": "b12-js-types-structured-equality",
               "difficulty": 3,
               "prompt": "Kaksi eri objektia {a:1} ja {a:1} — {} === {} on false. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-structured-equality.md"
             },
             {
               "id": "b12-js-types-symbol-tostring",
               "difficulty": 4,
               "prompt": "Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-symbol-tostring.md"
             },
             {
               "id": "b12-js-types-template-literal",
               "difficulty": 1,
               "prompt": "Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-template-literal.md"
             },
             {
               "id": "b12-js-types-temporal-api",
               "difficulty": 4,
               "prompt": "Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-temporal-api.md"
             },
             {
               "id": "b12-js-types-truthy-falsy",
               "difficulty": 2,
               "prompt": "Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus tyhjälle kentälle?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-truthy-falsy.md"
             },
             {
               "id": "b12-js-types-typeof-string",
               "difficulty": 1,
               "prompt": "Mikä `typeof 'hello'` palauttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-typeof-string.md"
             },
             {
               "id": "exp-js-types-bigint-json",
               "difficulty": 4,
               "prompt": "API palauttaa 64-bit ID:n — JSON.parse menettää tarkkuuden. Miten käsittelet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-types-bigint-json.md"
             },
             {
               "id": "exp-js-types-nullish-coalescing",
               "difficulty": 2,
               "prompt": "Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-types-nullish-coalescing.md"
             },
             {
               "id": "exp-js-types-strict-equality",
               "difficulty": 2,
               "prompt": "Auth-bugi: `if (!token)` hylkää validin tyhjän merkkijonon `''` ja sallii `0`. Turvallisempi tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-types-strict-equality.md"
             },
             {
               "id": "js-types-null-object",
               "difficulty": 3,
               "prompt": "Miksi `typeof null === 'object'` on historiallinen ansa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-types-null-object.md"
             },
             {
               "id": "js-types-strict-eq",
               "difficulty": 2,
               "prompt": "Miksi `===` on turvallisempi kuin `==` vertailussa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/js-types-strict-eq.md"
             }
           ]
@@ -3047,154 +3047,154 @@
         {
           "id": "js-typescript",
           "label": "TypeScript",
-          "ready": 0,
+          "ready": 21,
           "total": 21,
           "questions": [
             {
               "id": "b12-ts-as-const",
               "difficulty": 3,
               "prompt": "const config = { mode: 'dev' } as const — hyöty?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-as-const.md"
             },
             {
               "id": "b12-ts-basic-enum-string",
               "difficulty": 2,
               "prompt": "Tila voi olla 'draft' | 'published' | 'archived'. Tyypitetty vakiomuoto ilman runtime enumia?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-basic-enum-string.md"
             },
             {
               "id": "b12-ts-basic-interface-shape",
               "difficulty": 1,
               "prompt": "API-vastauksella on kentät `id` ja `title`. Miten kuvailet muodon TS:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-basic-interface-shape.md"
             },
             {
               "id": "b12-ts-basic-primitive-types",
               "difficulty": 1,
               "prompt": "TypeScriptissä haluat merkitä että `age` on kokonaisluku. Tyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-basic-primitive-types.md"
             },
             {
               "id": "b12-ts-basic-type-annotation-fn",
               "difficulty": 2,
               "prompt": "Funktio `add(a, b)` palauttaa summan. Parametrien ja paluuarvon tyypitys?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-basic-type-annotation-fn.md"
             },
             {
               "id": "b12-ts-basic-union-null",
               "difficulty": 2,
               "prompt": "Funktio voi palauttaa käyttäjän tai null jos ei löydy. Paluutyyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-basic-union-null.md"
             },
             {
               "id": "b12-ts-conditional-type",
               "difficulty": 5,
               "prompt": "type IsString<T> = T extends string ? true : false — laji?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-conditional-type.md"
             },
             {
               "id": "b12-ts-generic-constraint",
               "difficulty": 4,
               "prompt": "T extends { id: string } — tarkoitus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-generic-constraint.md"
             },
             {
               "id": "b12-ts-generic-function",
               "difficulty": 3,
               "prompt": "identity<T>(arg: T): T — miksi generic?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-generic-function.md"
             },
             {
               "id": "b12-ts-interface-extends",
               "difficulty": 2,
               "prompt": "BaseUser + adminRole — miten laajennat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-interface-extends.md"
             },
             {
               "id": "b12-ts-mapped-type",
               "difficulty": 5,
               "prompt": "type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] }",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-mapped-type.md"
             },
             {
               "id": "b12-ts-narrowing-in",
               "difficulty": 3,
               "prompt": "if ('kind' in obj) — mitä tämä tekee?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-narrowing-in.md"
             },
             {
               "id": "b12-ts-narrowing-typeof",
               "difficulty": 2,
               "prompt": "function log(x: string | number) — x.toFixed()?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-narrowing-typeof.md"
             },
             {
               "id": "b12-ts-never-exhaustive",
               "difficulty": 5,
               "prompt": "switch union — default: const _x: never = x. Tarkoitus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-never-exhaustive.md"
             },
             {
               "id": "b12-ts-readonly-array",
               "difficulty": 3,
               "prompt": "readonly string[] vs string[] — ero?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-readonly-array.md"
             },
             {
               "id": "b12-ts-satisfies",
               "difficulty": 4,
               "prompt": "const palette = { red: '#f00' } satisfies Record<string, string> — hyöty?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-satisfies.md"
             },
             {
               "id": "b12-ts-strict-null",
               "difficulty": 4,
               "prompt": "strictNullChecks päällä — mikä muuttuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-strict-null.md"
             },
             {
               "id": "b12-ts-type-vs-interface",
               "difficulty": 3,
               "prompt": "Milloin type alias parempi kuin interface?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-type-vs-interface.md"
             },
             {
               "id": "b12-ts-utility-partial",
               "difficulty": 3,
               "prompt": "Update DTO sallii osan kentistä. Utility type?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-utility-partial.md"
             },
             {
               "id": "b12-ts-utility-pick-omit",
               "difficulty": 3,
               "prompt": "Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-utility-pick-omit.md"
             },
             {
               "id": "prod-js-unknown-vs-any",
               "difficulty": 4,
               "prompt": "API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` on turvallisempi kuin `any`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-js-unknown-vs-any.md"
             }
           ]
@@ -8698,76 +8698,76 @@
     {
       "id": "git",
       "label": "Git",
-      "ready": 2,
+      "ready": 20,
       "total": 20,
       "chapters": [
         {
           "id": "git-ci",
           "label": "CI/CD",
-          "ready": 0,
+          "ready": 9,
           "total": 9,
           "questions": [
             {
               "id": "ci-artifact-retention",
               "difficulty": 3,
               "prompt": "CI-build tuottaa binäärin joka pitää olla ladattavissa myöhemmin QA-testaajille. Miten tallennat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/ci-artifact-retention.md"
             },
             {
               "id": "ci-github-actions-matrix",
               "difficulty": 4,
               "prompt": "Projekti pitää testata kolmella Node-versiolla ja kahdella käyttöjärjestelmällä. Miten GitHub Actionsissa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/ci-github-actions-matrix.md"
             },
             {
               "id": "ci-parallel-stages",
               "difficulty": 4,
               "prompt": "CI-pipelinessa unit-testit ja lintterit voitaisiin ajaa rinnakkain nopeuttamaan buildia. Miten toteutat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/ci-parallel-stages.md"
             },
             {
               "id": "ci-secret-management",
               "difficulty": 4,
               "prompt": "Pipeline tarvitsee API-avaimen deployta varten. Missä avain säilytetään turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/ci-secret-management.md"
             },
             {
               "id": "jenkins-agent-label",
               "difficulty": 3,
               "prompt": "Jenkins-pipeline pitää ajaa tietyllä agentilla jossa on Docker asennettuna. Miten määrität sen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/jenkins-agent-label.md"
             },
             {
               "id": "jenkins-pipeline-stages",
               "difficulty": 4,
               "prompt": "Jenkins Declarative Pipelinessa build, test ja deploy tulisi ajaa peräkkäin. Mikä rakenne Jenkinsfilessä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/jenkins-pipeline-stages.md"
             },
             {
               "id": "jenkins-shared-library",
               "difficulty": 5,
               "prompt": "Useassa Jenkins-projektissa toistetaan samaa pipeline-logiikkaa. Miten vältetään kopiointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/jenkins-shared-library.md"
             },
             {
               "id": "prod-ci-cache-lockfile",
               "difficulty": 4,
               "prompt": "CI käyttää dependency-cachea mutta buildit saavat satunnaisesti väärät paketit. Mikä cache-avaimessa pitää huomioida?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-ci-cache-lockfile.md"
             },
             {
               "id": "prod-ci-flaky-test",
               "difficulty": 4,
               "prompt": "Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-ci-flaky-test.md"
             }
           ]
@@ -8775,70 +8775,70 @@
         {
           "id": "git-workflow",
           "label": "Git-työnkulku",
-          "ready": 2,
+          "ready": 11,
           "total": 11,
           "questions": [
             {
               "id": "git-cherry-pick-conflict",
               "difficulty": 3,
               "prompt": "Haluat tuoda yksittäisen commitin toisesta branchista ilman koko haaran mergeä. Mikä komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-cherry-pick-conflict.md"
             },
             {
               "id": "git-log-filtering",
               "difficulty": 3,
               "prompt": "Haluat nähdä vain yhden tiedoston muutoshistorian viimeisen kuukauden ajalta. Mikä komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-log-filtering.md"
             },
             {
               "id": "git-merge-conflict-resolve",
               "difficulty": 3,
               "prompt": "git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnkulku konfliktin ratkaisemiseksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-merge-conflict-resolve.md"
             },
             {
               "id": "git-rebase-interactive",
               "difficulty": 4,
               "prompt": "Feature-branchissa on 5 pientä committia jotka pitäisi yhdistää siistiksi ennen PR:n luontia. Mikä toimii?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-rebase-interactive.md"
             },
             {
               "id": "git-reflog-recovery",
               "difficulty": 4,
               "prompt": "Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat ne?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-reflog-recovery.md"
             },
             {
               "id": "git-reset-vs-revert",
               "difficulty": 3,
               "prompt": "Viimeisin commit mainiin on buginen ja kollegat ovat jo pullanneet sen. Miten korjaat turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-reset-vs-revert.md"
             },
             {
               "id": "git-stash-workflow",
               "difficulty": 3,
               "prompt": "Keskeneräinen työ pitää siirtää sivuun nopeasti ilman committia esim. branchin vaihdon ajaksi. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-stash-workflow.md"
             },
             {
               "id": "git-tag-release",
               "difficulty": 3,
               "prompt": "Release pitää merkitä niin että CI voi triggata deployment tietystä versiosta. Mikä on paras tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-tag-release.md"
             },
             {
               "id": "git-worktree",
               "difficulty": 4,
               "prompt": "Haluat työstää kahta branchia samanaikaisesti ilman stashia tai committia keskeneräisistä muutoksista. Mikä auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/git-worktree.md"
             },
             {
