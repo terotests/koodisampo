@@ -2,13 +2,13 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**173 / 1225** valmis (**14.1 %**).
+**191 / 1225** valmis (**15.6 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 22 | 204 | 10.8 |
+| C++ | 40 | 204 | 19.6 |
 | JavaScript | 0 | 234 | 0 |
 | PostgreSQL | 132 | 180 | 73.3 |
 | Docker | 5 | 142 | 3.5 |
@@ -22,32 +22,32 @@
 
 ## Kaikki aiheet
 
-### C++ (22/204)
+### C++ (40/204)
 
-#### oikeellisuus `correctness` (2/20)
+#### oikeellisuus `correctness` (20/20)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `b02-cpp-correct-dangling-15` | Funktio palauttaa `const std::string&` paikallisesta muuttujasta — cras… |
-| ⬜ | 3 | `b02-cpp-correct-signed-14` | Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. M… |
-| ⬜ | 3 | `b03-cpp-correct-three-way-default` | Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy ou… |
-| ⬜ | 4 | `b03-cpp-prod-exception-noexcept` | Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja … |
-| ⬜ | 3 | `b04-cpp-auto-deduction-trap` | `auto x = {1, 2, 3};` aiheuttaa yllätyksen — x ei ole std::vector. Mikä… |
-| ⬜ | 3 | `b04-cpp-final-override-virtual` | Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatu… |
-| ⬜ | 3 | `b05-cpp-explicit-constructor` | Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. … |
-| ⬜ | 4 | `b05-cpp-signed-compare-bug` | Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. … |
-| ⬜ | 4 | `b06-cpp-signed-compare-bug` | Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väär… |
-| ⬜ | 2 | `b06-cpp-static-cast-review` | Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi? |
-| ⬜ | 3 | `b07-cpp-assert-vs-expect` | assert() katoaa release-buildissa mutta invariantti on kriittinen tuota… |
-| ⬜ | 4 | `b07-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructori… |
-| ⬜ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. M… |
+| ✅ | 4 | `b02-cpp-correct-dangling-15` | Funktio palauttaa `const std::string&` paikallisesta muuttujasta — cras… |
+| ✅ | 3 | `b02-cpp-correct-signed-14` | Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. M… |
+| ✅ | 3 | `b03-cpp-correct-three-way-default` | Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy ou… |
+| ✅ | 4 | `b03-cpp-prod-exception-noexcept` | Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja … |
+| ✅ | 3 | `b04-cpp-auto-deduction-trap` | `auto x = {1, 2, 3};` aiheuttaa yllätyksen — x ei ole std::vector. Mikä… |
+| ✅ | 3 | `b04-cpp-final-override-virtual` | Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatu… |
+| ✅ | 3 | `b05-cpp-explicit-constructor` | Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. … |
+| ✅ | 4 | `b05-cpp-signed-compare-bug` | Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. … |
+| ✅ | 4 | `b06-cpp-signed-compare-bug` | Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väär… |
+| ✅ | 2 | `b06-cpp-static-cast-review` | Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi? |
+| ✅ | 3 | `b07-cpp-assert-vs-expect` | assert() katoaa release-buildissa mutta invariantti on kriittinen tuota… |
+| ✅ | 4 | `b07-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructori… |
+| ✅ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. M… |
 | ✅ | 4 | `b09-cpp-narrowing-conversion` | Laskenta `int64_t` → `int32_t` hiljaa truncaa arvon. Miten estät käännö… |
-| ⬜ | 3 | `b09-cpp-switch-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuo… |
-| ⬜ | 4 | `correct-overflow` | Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo? |
-| ⬜ | 3 | `correct-signed-unsigned` | Miksi `for (int i = 0; i < v.size(); i++)` voi olla vaarallinen? |
-| ⬜ | 3 | `correct-ub` | Mitä tarkoittaa undefined behavior (UB) C++:ssa? |
+| ✅ | 3 | `b09-cpp-switch-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuo… |
+| ✅ | 4 | `correct-overflow` | Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo? |
+| ✅ | 3 | `correct-signed-unsigned` | Miksi `for (int i = 0; i < v.size(); i++)` voi olla vaarallinen? |
+| ✅ | 3 | `correct-ub` | Mitä tarkoittaa undefined behavior (UB) C++:ssa? |
 | ✅ | 4 | `exp-cpp-correct-compare-three-way` | Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — … |
-| ⬜ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
+| ✅ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
 
 #### C++ tuotanto `cpp-production` (2/8)
 
