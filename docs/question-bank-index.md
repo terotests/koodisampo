@@ -1,6 +1,6 @@
 # Koodisampo — kysymyspankin kooste
 
-Yhteensä **1225** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
+Yhteensä **1173** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
 
 Oikea vastaus merkitty **lihavoituna**.
 
@@ -5346,7 +5346,7 @@ API-vastauksella on kentät `id` ja `title`. Miten kuvailet muodon TS:ssä?
 
 #### `b12-ts-basic-primitive-types` · diff 1
 
-TypeScriptissä haluat merkitä että `age` on kokonaisluku. Tyyppi?
+TypeScriptissä haluat merkitä että `age` on numero. Tyyppi?
 
 - **let age: number** ✓
 - let age: int
@@ -9828,18 +9828,9 @@ Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lataudutt
 - Set Selenium Speed 2s hidastaa kaikkia toimintoja riittävästi
 - Poista implicit wait kokonaan ja käytä try/except logiikkaa testissä
 
-## scrum (142)
+## scrum (90)
 
-### scrum-dod (25)
-
-#### `b02-scrum-dod-demo-01` · diff 2
-
-Tiimi väittää tarina valmiiksi koska koodi on mergattu. DoD vaatii demottavuuden. Mitä puuttuu?
-
-- **Increment testattu ja esiteltävissä stakeholderille — pelkkä merge ei riitä** ✓
-- Vain code review riittää DoD-demottavuusvaatimukseen kun koodi on mergattu
-- Dokumentaatio on vapaaehtoista eikä vaikuta tarinan valmiuteen
-- Deploy tuotantoon pakollinen aina ennen kuin tarina voi olla Done
+### scrum-dod (11)
 
 #### `b02-scrum-dod-perf-02` · diff 3
 
@@ -9859,114 +9850,6 @@ Tuotantoon mennyt feature ei täytä DoD:ia — miten tiimi reagoi sprintin jäl
 - Piilotetaan bugi ja jatketaan seuraavaan sprinttiin ilman korjausta
 - Peru sprintti aina kun feature ei täytä DoD:ia tuotannossa
 
-#### `b03-scrum-dod-automation-gate` · diff 3
-
-Tuotantoon pääsee regressio koska DoD ei vaadi CI:tä. Mitä lisätte DoD:hen?
-
-- **Automaattiset testit vihreänä CI:ssä ennen mergeä / releaseä** ✓
-- Manuaalinen 'works on my machine' -check
-- DoD on vain dokumentaatiolle
-- Testit ajetaan kerran vuodessa
-
-#### `b03-scrum-increment-done-criteria` · diff 3
-
-Sprintin lopussa 'melkein valmis' feature demoissaan mutta ei tuotantokelpoista. Mikä artefakti puuttuu?
-
-- **Selkeä Definition of Done jota koko tiimi noudattaa incrementissä** ✓
-- Erillinen QA-tiimi sprintin jälkeen
-- Pidemmät sprintit
-- Vain PO:n suullinen hyväksyntä
-
-#### `b04-scrum-dod-regression-gate` · diff 3
-
-Tuotantoon meni regressio koska DoD ei sisällä automaattista testiporttia. Mitä tiimi lisää DoD:hen?
-
-- **CI:ssä vihreä regressiotestisarja ennen mergeä/incrementtiä** ✓
-- Vain manuaalinen smoke test kerran kuussa
-- DoD on vain PO:n henkilökohtainen lista
-- Regressio kuuluu seuraavaan sprinttiin
-
-#### `b05-scrum-dod-automated` · diff 3
-
-Tiimi merkitsee tarinan Done vaikka CI-testit eivät ole vihreitä. Mikä DoD-kriteeri puuttuu?
-
-- **Automaattiset testit läpi — releasable quality DoD:ssä** ✓
-- Vain manuaalinen smoke test stagingissa riittää DoD:lle
-- Koodin rivimäärä raportoitu ennen Done-merkintää sprintissä
-- DoD on vain suositus kehittäjille, ei tiimin sitova sopimus
-
-#### `b05-scrum-dod-deploy` · diff 4
-
-Feature on testattu stagingissa mutta deploy-skripti puuttuu. Voiko tarina olla Done?
-
-- **Ei — DoD määrittää releasable-tilan, usein deploy-valmius** ✓
-- Kyllä — dev-valmis feature riittää Done-tilaan stagingissa
-- Kyllä — deploy kuuluu erilliseen epic-tarinaan seuraavassa
-- Done riippuu vain PO:n hyväksynnästä demossa ilman deployta
-
-#### `b06-scrum-dod-docs-deploy` · diff 4
-
-Tiimi julkaisee API-muutoksen ilman runbook-päivitystä. Onko tämä shippable increment?
-
-- **Ei jos DoD sisältää dokumentaation ja deploy-valmiuden** ✓
-- Kyllä — koodi tuotannossa riittää shippable incrementiksi
-- Dokumentaatio on PO:n vastuu erillisessä sprintissä aina
-- DoD kattaa vain unit-testit, ei ops- tai docs-vaatimuksia
-
-#### `b06-scrum-dod-regression-gate` · diff 3
-
-Feature on 'valmis' mutta regressiotestit punaisena. Täyttää increment DoD:ä?
-
-- **Ei — DoD vaatii että increment on valmis ja toimiva** ✓
-- Kyllä jos feature manuaalisesti testattu
-- DoD on vain PO:n subjektiivinen arvio
-- Regressiot korjataan seuraavassa sprintissä — OK
-
-#### `b07-scrum-dod-documentation` · diff 3
-
-Feature on tuotannossa mutta API-dokumentaatio puuttuu. Onko increment Done?
-
-- **Ei — DoD määrittää valmiin, usein dokumentaatio mukana tiimillä** ✓
-- Kyllä — koodi tuotannossa riittää Done-tilaan ilman docsia
-- Dokumentaatio on erillinen epic aina — ei kuulu DoD:hen
-- Done riippuu vain testeistä, ei dokumentaatiosta tai deploysta
-
-#### `b07-scrum-dod-tech-debt` · diff 4
-
-Kiireessä jätettiin refaktorointi ja TODO-kommentit — PO haluaa merkitä Done. Miten DoD auttaa?
-
-- **DoD on sitova — tekninen velka ei läpäise jos kriteerit puuttuu** ✓
-- PO voi ohittaa DoD:n kiireessä ja merkitä Done ilman refaktorointia
-- Done tarkoittaa deployed — TODO-kommentit ovat sallittuja tuotannossa
-- TODO-kommentit kuuluvat aina tuotantokoodiin teknisen velan merkkinä
-
-#### `b08-scrum-dod-automated-tests` · diff 3
-
-Increment merkitään valmiiksi, mutta regressiotestit ajetaan manuaalisesti viikon päästä. Rikkooko DoD?
-
-- **Kyllä — DoD määrittää valmiin; automaatio kuuluu yleensä DoD:hen** ✓
-- DoD on vain PO:n mielipide eikä sitova tiimin sopimus
-- Manuaalinen testaus sprintin jälkeen riittää regressiolle aina
-- DoD koskee vain dokumentaatiota, ei testausta tai deployta
-
-#### `b08-scrum-dod-security-gate` · diff 4
-
-Turvallisuusaudit vaatii SAST-skannauksen ennen releasetta. Minne se kuuluu Scrumissa?
-
-- **Definition of Done — kaikki incrementit sama laatuportti** ✓
-- Erillinen waterfall-vaihe releasen jälkeen ennen tuotantoa
-- Vain security-tiimin checklist sprintin ulkopuolella joka kvartaali
-- DoD koskee vain tuotantobugeja, ei ennaltaehkäisevää turvallisuutta
-
-#### `b08-scrum-transparency-artifacts` · diff 3
-
-Stakeholder ei näe mitä on todella valmista — vain PowerPoint. Mikä Scrum-arvo puuttuu?
-
-- **Transparency — artifactit ja increment näkyvissä ja ymmärrettävissä** ✓
-- Velocity riittää läpinäkyvyyteen ilman todellista increment-demoa
-- Transparency tarkoittaa avointa toimistoa ja läpinäkyviä lasiseiniä
-- Vain PO tarvitsee nähdä incrementin — stakeholderit saavat slidet
-
 #### `b09-scrum-dod-documentation` · diff 3
 
 Feature on testattu mutta API-dokumentaatio puuttuu — tiimi haluaa merkitä Done. DoD?
@@ -9975,15 +9858,6 @@ Feature on testattu mutta API-dokumentaatio puuttuu — tiimi haluaa merkitä Do
 - Done jos PO hyväksyy ilman docs — DoD on joustava kiireessä
 - Dokumentaatio on erillinen epic — ei kuulu DoD:hen koskaan
 - Vain koodi riittää Doneen aina riippumatta tiimin DoD-sopimuksesta
-
-#### `b09-scrum-dod-security-scan` · diff 4
-
-Tuotantoon menevä increment — DoD:ssa vaaditaan turvallisuustarkistus. Mikä kuuluu?
-
-- **SAST/dependency scan CI:ssä — kriittiset löydökset korjattu ennen Done** ✓
-- Turvallisuus on erillinen audit vuoden välein ennen isoa releasetta
-- Pen test jokaiselle user storylle ennen Done-merkintää sprintissä
-- DoD ei koske turvallisuutta — se on security-tiimin erillinen prosessi
 
 #### `exp-scrum-dod-docs-minimum` · diff 3
 
@@ -10057,7 +9931,7 @@ Tekninen velka kasvaa. Miten DoD auttaa hallitsemaan sitä sprinttitasolla?
 - Velka kirjataan erilliseen Done-lite -tilaan joka laskee velocityyn
 - DoD koskee vain uutta koodia, ei refaktorointia tai teknistä velkaa
 
-### scrum-dor (29)
+### scrum-dor (20)
 
 #### `b02-scrum-dor-deps-05` · diff 3
 
@@ -10076,15 +9950,6 @@ Backlog-item on 21 story pointia — tiimi ei saa valmiiksi yhdessä sprintissä
 - Kasvata sprintin pituutta jotta 21 pisteen tarina mahtuu yhteen sprinttiin
 - Jätä isoksi — velocity korjaa automaattisesti kun tarina jää kesken
 - Poista acceptance criteria jotta iso tarina mahtuu refinement-kriteereihin
-
-#### `b02-scrum-dor-spike-04` · diff 3
-
-Tarina: 'Tutki miksi integraatio kaatuu' — ei acceptance criteriaa. Refinementissa mitä tehdään?
-
-- **Spike/timebox tutkimus — DoR vaatii ymmärryksen ennen sprinttiin ottoa** ✓
-- Otetaan suoraan sprinttiin ilman rajoja koska tutkimustyö on arvokasta
-- Hylätään kaikki tutkimustyö backlogista DoR-best practicen mukaan
-- PO kirjoittaa koodin spike-tarinassa kun acceptance criteria puuttuu
 
 #### `b03-scrum-backlog-refine-spike` · diff 3
 
@@ -10158,15 +10023,6 @@ Tarinalla on riippuvuus ulkoiseen API:hin jota ei ole vielä saatavilla. Otetaan
 - Kyllä — ulkoiset riippuvuudet eivät kuulu DoR-checklistiin
 - Siirretään automaattisesti seuraavaan vuoteen odottamaan API:a
 
-#### `b05-scrum-dor-refinement` · diff 2
-
-Product Backlog refinement venyy koko sprintin mittaiseksi projektiksi. Mikä on tavoite?
-
-- **Valmistella tarinoita niin että ne täyttävät DoR:n tarvittaessa** ✓
-- Suunnitella koko vuoden työt yhdessä refinement-projektissa
-- Korvata sprint planning kokonaan refinement-istunnoilla
-- Vain PO työskentelee yksin refinement-vaiheessa backlogilla
-
 #### `b05-scrum-dor-unclear-story` · diff 3
 
 Tarinan acceptance criteria on 'toimii hyvin'. Sprint planningissa kehittäjät arvailevat. Mitä DoR vaatii?
@@ -10175,24 +10031,6 @@ Tarinan acceptance criteria on 'toimii hyvin'. Sprint planningissa kehittäjät 
 - Story point -arvo riittää kun tarina on backlogissa arvioitu
 - DoR on valinnainen jos PO on kiireinen ja sprint alkaa pian
 - Kriteerit kirjoitetaan sprintin lopussa retroissa yhdessä
-
-#### `b06-scrum-backlog-refine-ready` · diff 3
-
-Sprint Planning venyy koska user storyt ovat epämääräisiä. Mitä refinement tuottaa?
-
-- **Selkeät arvioitavat itemit — ready for sprint ennen planningia** ✓
-- Täydellinen tekninen design valmiina ennen sprint planningia
-- Vain PO:n hyväksyntä ilman tiimin osallistumista refinementiin
-- Refinement korvaa sprint planning kokonaan jatkuvasti
-
-#### `b06-scrum-dor-unclear-ac` · diff 3
-
-Story alkaa sprintissä — acceptance criteria puuttuu. Mitä Definition of Ready vaatii?
-
-- **Selkeät acceptance criteria ennen sprintin aloitusta** ✓
-- AC voidaan kirjoittaa sprintin lopussa kun toteutus valmis
-- Vain story point riittää DoR:ssa kun tarina on arvioitu
-- DoR on vain Scrum Masterin henkilökohtainen checklist
 
 #### `b07-scrum-dor-design` · diff 4
 
@@ -10212,33 +10050,6 @@ Epic otetaan suoraan sprinttiin ilman pilkkomista. Mitä DoR vaatii ennen sprint
 - DoR ei koske kokoa — vain hyväksymiskriteerit merkitsee
 - Vain PO arvioi koon sprintin jälkeen velocity-trendin perusteella
 
-#### `b07-scrum-dor-testable` · diff 3
-
-Tarinassa lukee käyttäjä on tyytyväinen. QA kieltäytyy hyväksymästä. Mikä DoR-elementti puuttui?
-
-- **Testattavat acceptance criteria — objektiivinen valmis-määritelmä** ✓
-- Story pointit riittävät kun tarina on arvioitu refinementissa
-- DoR ei koske testattavuutta — vain prioriteetti ja koko
-- QA testaa vasta seuraavassa sprintissä ilman ennakko-AC:ta
-
-#### `b08-scrum-backlog-refinement` · diff 3
-
-Sprint Planning venyy koska itemit eivät ole valmiita. Milloin backlog-refinement pitäisi tehdä?
-
-- **Jatkuvasti sprintin aikana — ei pakollinen event, vaan jatkuva työ** ✓
-- Vain kerran vuodessa ennen budjetin hyväksyntää koko backlogille
-- Refinement korvaa Sprint Planningin kun itemit ovat valmiita
-- Vain Scrum Master refineaa backlogia ilman tiimin osallistumista
-
-#### `b08-scrum-dor-testable` · diff 2
-
-Backlog-item: 'Paranna suorituskykyä' — tiimi ei voi aloittaa. Mikä DoR-elementti puuttuu?
-
-- **Testattavat acceptance criteria — selkeä valmis-määritelmä itemille** ✓
-- Story pointit riittävät DoR:lle kun item on backlogissa arvioitu
-- DoR koskee vain bugfixejä — ei uusia feature-tarinoita
-- PO ei tarvitse selittää itemiä — kehittäjät arvaavat tarkoituksen
-
 #### `b09-scrum-dor-size-limit` · diff 3
 
 Tarinan arvio on 21 story pointia — tiimi epäilee liian suurta sprinttiin. DoR-ratkaisu?
@@ -10248,15 +10059,6 @@ Tarinan arvio on 21 story pointia — tiimi epäilee liian suurta sprinttiin. Do
 - Story pointit eivät vaikuta DoR:ään — vain AC ja prioriteetti
 - Kasvata sprintin pituus neljään viikkoon isoille tarinoille
 
-#### `b09-scrum-dor-spike-needed` · diff 4
-
-Tarinassa tekninen riski on korkea — arkkitehtuuria ei tunneta. Mitä ennen varsinaista feature-tarinoita?
-
-- **Spike-tutkimustarina — aikarajattu oppiminen, tulos dokumentoidaan** ✓
-- Arvaa story pointit ja aloita toteutus — spike on turhaa wastea
-- Spike on waste — koodaa suoraan ja korjaa arkkitehtuuri myöhemmin
-- PO ratkaisee teknisen riskin yksin ilman tiimin tutkimusta
-
 #### `b09-scrum-dor-ux-mockup` · diff 2
 
 UI-tarinassa kehittäjät arvailevat layoutia. Mikä DoR-elementti puuttuu?
@@ -10265,15 +10067,6 @@ UI-tarinassa kehittäjät arvailevat layoutia. Mikä DoR-elementti puuttuu?
 - Vain backend API-dokumentaatio riittää UI-tarinoissa DoR:lle
 - Story point riittää UI-tarinoissa kun tarina on backlogissa
 - Kehittäjä suunnittelee UX:n sprintin aikana ilman ennakko-viitettä
-
-#### `b10-scrum-dor-spike-01` · diff 4
-
-Tarinassa on suuri tekninen epävarmuus ennen estimointia. Mitä Scrum-best-practices suosittelee?
-
-- **Aikarajattu spike / tutkimustarina ennen varsinaista toteutusta** ✓
-- Arvioi aina 13 pistettä ja toivo parasta kun epävarmuus on suuri
-- Ohita DoR kun kiire — spike hidastaa sprinttiä turhaan
-- Spike korvaa acceptance criteria kokonaan feature-tarinoissa
 
 #### `exp-scrum-dor-acceptance-tests` · diff 3
 
@@ -10320,7 +10113,7 @@ Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa **liiketoiminta-kerr
 - Kaikki edge caset samaan tarinaan nopeuttaa epic-pilkkomista ja estimointia
 - Spike korvaa acceptance criteria kun epic pilkotaan pystysuunnassa valmiiksi
 
-### scrum-estimation (21)
+### scrum-estimation (12)
 
 #### `b02-scrum-estimation-anchor-08` · diff 3
 
@@ -10330,33 +10123,6 @@ Planning pokerissa kaikki kortit eri — keskustelu pysähtyy. Facilitointi-jatk
 - Ota keskiarvo automaattisesti kun planning poker -kortit eroavat
 - PO päättää yksin lopullisen numeron kun keskustelu pysähtyy
 - Ohita tarina estimoinnista jos konsensusta ei synny heti
-
-#### `b02-scrum-estimation-relative-07` · diff 2
-
-Manageri vaatii tuntiarvioita sprintille. Scrum-muotoilu suhteellisesta arviosta?
-
-- **Story pointit kuvaavat suhteellista vaivaa — tunnit eivät ole sprintin mittari** ✓
-- Muunna pisteet tunteihin julkisesti jotta manageri saa raportin
-- Velocity = henkilöpäivät ja se on Scrum-muotoilu suhteellisesta arviosta
-- Estimointi kielletty Scrumissa koska se hidastaa sprint planningia
-
-#### `b02-scrum-estimation-velocity-09` · diff 3
-
-Stakeholder vertaa kahden tiimin velocitya suunnittelussa. Miksi se on harhaanjohtavaa?
-
-- **Pisteet ovat tiimikohtaisia — vertailu eri skaaloilla ei kerro tuottavuutta** ✓
-- Velocity on absoluuttinen mittari jolla vertaillaan tiimien tehokkuutta
-- Suurempi velocity tarkoittaa aina parempaa tiimiä suunnittelussa
-- Velocity korvaa laadun kun stakeholder vertaa kahta tiimiä
-
-#### `b03-scrum-estimation-relative` · diff 2
-
-Stakeholder vaatii tuntiarvioita sprint-suunnitteluun. Miksi tiimi käyttää story pointeja?
-
-- **Suhteellinen estimointi — vertaa tarinoita toisiinsa, ei lupaa tunteja** ✓
-- Story point = tunti × 1.5
-- Tuntiarvio on Scrumissa pakollinen
-- Pointit korvaavat velocityn
 
 #### `b03-scrum-velocity-forecast` · diff 4
 
@@ -10385,24 +10151,6 @@ Johto vaatii kiinteän story point -lupauksen seuraavalle kvartaalille velocityn
 - Tuplaa velocity tavoitteeksi
 - Lopeta story pointit — käytä tunteja
 
-#### `b05-scrum-estimation-planning-poker` · diff 3
-
-Yksi senior-kehittäjä dominoi estimointikeskustelua. Mikä tekniikka tasoittaa näkemyksiä?
-
-- **Planning poker — piilotetut arviot ennen keskustelua** ✓
-- Seniorin arvio ohittaa tiimin konsensuksen estimoinnissa
-- PO arvioi yksin nopeuden vuoksi ilman tiimin osallistumista
-- Estimointi skipataan kun tarina on pieni tai tuttu tiimille
-
-#### `b05-scrum-estimation-relative` · diff 2
-
-Johdon raportti vaatii story pointit muunnettuna tunteiksi. Mitä Scrum suosittelee?
-
-- **Story pointit ovat suhteellisia — eivät tunteja tai päiviä** ✓
-- 1 story point = 8 tuntia kaikissa tiimeissä ja projekteissa
-- Velocity on kiinteä sopimus johdon kanssa joka sprint
-- Estimointi on vain PO:n tehtävä ennen sprint planningia
-
 #### `b06-scrum-estimation-relative` · diff 3
 
 Manageri vaatii story pointien muunnosta tunteihin raportointia. Miksi tämä on riski?
@@ -10412,15 +10160,6 @@ Manageri vaatii story pointien muunnosta tunteihin raportointia. Miksi tämä on
 - Velocity on lupaus stakeholderille joka release-syklin alussa
 - Suhteellinen arvio ei skaalaa isossa enterprise-projektissa
 
-#### `b06-scrum-velocity-forecast` · diff 3
-
-Stakeholder kysyy release-päivämäärää. Miten velocity auttaa?
-
-- **Ennuste historiasta — ei lupaus, vaan empirinen forecast** ✓
-- Velocity × sprintit = tarkka release-päivämäärä aina
-- Velocity korvaa product roadmapin ja PO:n priorisoinnin
-- Ensimmäisen sprintin velocity riittää vuoden deadline-laskentaan
-
 #### `b07-scrum-estimation-spikes` · diff 4
 
 Tuntematon integraatio — tiimi arvioi 13 story pointia arvalla. Miten vähennät epävarmuutta ennen sprinttiä?
@@ -10429,24 +10168,6 @@ Tuntematon integraatio — tiimi arvioi 13 story pointia arvalla. Miten vähenn�
 - Arvioi aina 21 pointtia kun integraatio on tuntematon tiimille
 - Skip estimointi ja ota suoraan sprinttiin — katsotaan tulos
 - Ota suoraan sprinttiin ja spike tehdään vasta retroissa
-
-#### `b07-scrum-estimation-velocity` · diff 3
-
-Johto käyttää velocitya kiinteänä deadline-laskelmana seuraavalle vuodelle. Mikä on ongelma?
-
-- **Velocity on empirinen mitta — ei sitoumus tai kapasiteettilupaus** ✓
-- Velocity on sopimus johdon kanssa joka vuoden alussa
-- Velocity mitataan tunteina jotta johto voi vertailla tiimejä
-- Velocity ei muutu koskaan kun story point -asteikko on vakio
-
-#### `b08-scrum-estimation-relative` · diff 2
-
-Stakeholder vaatii story pointien muuttamista tunneiksi raportointia varten. Miksi se on huono idea?
-
-- **Story pointit suhteellisia — tunnit vääristävät vertailua ja velocityä** ✓
-- Story pointit ovat virallisesti tunteja Scrum Guidessa raportointiin
-- Velocity lasketaan aina tunneissa jotta johto voi vertailla tiimejä
-- Estimaatio on PO:n yksinomainen tehtävä ennen sprint planningia
 
 #### `b08-scrum-velocity-trend` · diff 3
 
@@ -10484,15 +10205,6 @@ Projektipäällikkö vaatii story pointien muuntamista tunteihin raporttia varte
 - Estimointi tapahtuu vain tunneissa koska se on Scrum-best practice
 - Velocity on sama kuin capacity tunneissa tiimin sprint-suunnittelussa
 
-#### `exp-scrum-estimation-planning-poker` · diff 3
-
-Estimaatiossa yksi senior dominoi keskustelua. Miten fasilitoit tasapuolisemman session?
-
-- **Planning poker — yksilöarvio ensin, sitten keskustelu ennen konsensusta** ✓
-- Senior päättää lopullisen numeron kun arviot eroavat paljon
-- Ohitetaan estimointi kokonaan jos senior dominoi keskustelua
-- Kaikki sanovat saman numeron nopeasti jotta sessio pysyy lyhyenä
-
 #### `scrum-planning-poker` · diff 4
 
 Miksi planning poker toimii paremmin kuin yhden henkilön arvio?
@@ -10511,7 +10223,7 @@ Kun vain 2 sprinttiä on mitattu, mikä velocity-varianssi on realistinen (low/h
 - 0.3 – 3.0 on normaalia
 - Velocity mitataan vain ensimmäisestä sprintistä lopullisena
 
-### scrum-sprint (45)
+### scrum-sprint (30)
 
 #### `b02-scrum-sprint-daily-11` · diff 2
 
@@ -10558,42 +10270,6 @@ Sprint Review venyy kolmeen tuntiin — sidosryhmät väsyvät. Timebox?
 - 15 min kuten daily
 - Review poistetaan — demo Slackissa
 
-#### `b03-scrum-retro-action-item` · diff 2
-
-Retrospektiivin jälkeen parannusideoita ei seurata — sama ongelma toistuu. Mitä Scrum suosittelee?
-
-- **Valitse 1–2 konkreettista toimenpidettä seuraavaan sprinttiin ja seuraa niitä** ✓
-- Retrospektiivi korvataan kuukausittaisella raportilla
-- SM toteuttaa kaikki ideat yksin
-- Retro on vain kehittäjille — PO ei osallistu
-
-#### `b03-scrum-sprint-goal-one` · diff 2
-
-Sprintillä on viisi erillistä 'tavoitetta' eri tiimiosille. Mikä on Sprint Goal -ohje?
-
-- **Yksi yhteinen sprint goal — yhdistää tiimin ja ohjaa dailya** ✓
-- Jokaisella kehittäjällä oma goal
-- Goal valitaan sprintin jälkeen
-- Goal on valinnainen Scrumissa
-
-#### `b04-scrum-daily-timebox` · diff 2
-
-Daily Scrum venyy 45 minuuttiin tekniseksi debug-sessioksi. Mitä Scrum Guide sanoo?
-
-- **Enintään 15 minuuttia — impedimentit käsitellään dailyn jälkeen** ✓
-- Daily voi kestää tunnin jos paljon blokkeria
-- Scrum Master päättää keston joka päivä
-- Daily korvataan Slack-viesteillä
-
-#### `b04-scrum-events-timebox` · diff 2
-
-Uusi tiimi kysyy: 'Voimmeko skipata Sprint Review jos ei mitään uutta?' Vastaus Scrum Guiden mukaan?
-
-- **Ei — kaikki viisi Scrum eventiä pidetään sprintin aikana timeboxattuna** ✓
-- Kyllä jos velocity on korkea
-- Vain joka toinen sprintti
-- Review korvataan sähköpostilla
-
 #### `b04-scrum-retro-action-items` · diff 3
 
 Retrospektiivin jälkeen samat ongelmat toistuvat sprint toisensa jälkeen. Mikä puuttuu?
@@ -10602,15 +10278,6 @@ Retrospektiivin jälkeen samat ongelmat toistuvat sprint toisensa jälkeen. Mik�
 - Enemmän post-it-lappuja
 - Retrospektiivin peruminen
 - Vain Scrum Master puhuu
-
-#### `b04-scrum-review-feedback` · diff 3
-
-Sprint Review päättyy ilman stakeholder-palautetta — vain demot. Mitä Scrum Guide odottaa?
-
-- **Collaboration: backlog päivittyy palautteen perusteella** ✓
-- Review on vain show-and-tell ilman keskustelua
-- Palaute kerätään seuraavassa retro:ssa
-- Vain PO saa kommentoida
 
 #### `b04-scrum-sprint-goal-one` · diff 2
 
@@ -10675,15 +10342,6 @@ Tiimi pitää sprintin aikana retrospektiivin ja muuttaa työtapaa. Mikä Scrum-
 - Command and control — johto määrää parannukset tiimille
 - Retrospektiivi on valinnainen jos velocity kasvaa sprintissä
 
-#### `b06-scrum-focus-one-goal` · diff 3
-
-Sprintissä on viisi erillistä tavoitetta — tiimi hajaantuu. Mitä Scrum Guide suosittelee?
-
-- **Yksi Sprint Goal — fokus ja yhteinen suunta sprintin aikana** ✓
-- Mahdollisimman monta goalia — enemmän arvoa yhdessä sprintissä
-- Goal määritellään vasta Sprint Reviewissa ilman planningia
-- PO valitsee goalit ilman tiimin inputia sprint planningissa
-
 #### `b06-scrum-openness-blockers` · diff 2
 
 Kehittäjä piilottaa impedimentin viikon — sprint goal vaarantuu. Mikä Scrum-value auttaa?
@@ -10692,24 +10350,6 @@ Kehittäjä piilottaa impedimentin viikon — sprint goal vaarantuu. Mikä Scrum
 - Focus — työskentele hiljaa blokkerin kanssa
 - Courage — yksin ratkaise ilman tiimiä
 - Commitment — blokkeri ei kuulu Scrumiin
-
-#### `b06-scrum-sprint-cancellation` · diff 4
-
-Markkinamuutos tekee sprintin tavoitteen merkityksettömäksi kesken sprintin. Mitä Scrum Guide sanoo?
-
-- **Vain PO voi peruuttaa sprintin — tiimi ja SM konsultoidaan** ✓
-- Tiimi äänestää sprintin keskeytyksen dailyssa enemmistöllä
-- Sprint ei koskaan peruuntuu — odota review ja retro loppuun
-- Scrum Master peruuttaa sprintin yksin markkinamuutoksen jälkeen
-
-#### `b06-scrum-stakeholder-review` · diff 2
-
-Stakeholder haluaa nähdä edistymisen ilman teknistä deep-diveä. Mikä tapahtuma on oikea?
-
-- **Sprint Review — increment ja palaute, ei statusraportti** ✓
-- Daily Scrum stakeholderille — tekninen deep-dive joka aamu
-- Sprint Retrospective avoin kaikille stakeholderille julkisesti
-- Refinement meeting korvaa reviewin kun backlog on iso
 
 #### `b07-scrum-daily-devs-only` · diff 2
 
@@ -10720,15 +10360,6 @@ PO ja Scrum Master osallistuvat Daily Scrumiin. Kuka on tapahtuman omistaja?
 - PO raportoi johdolle dailyssa sprintin edistymisestä
 - Stakeholderit omistavat dailyn ja seuraavat teknistä työtä
 
-#### `b07-scrum-review-stakeholder` · diff 2
-
-Sprint Review — kuka osallistuu ja miksi?
-
-- **Scrum Team + stakeholderit — inspect increment, adaptoi backlog** ✓
-- Vain kehittäjät esittelevät incrementin PO:lle suljetusti
-- Review korvaa retrospektiivin kun aikataulu on tiukka
-- Stakeholderit eivät saa osallistua — vain sisäinen demo
-
 #### `b07-scrum-sprint-cancel` · diff 4
 
 Markkinatilanne muuttui — PO haluaa keskeyttää sprintin kesken. Mitä Scrum Guide sanoo?
@@ -10737,15 +10368,6 @@ Markkinatilanne muuttui — PO haluaa keskeyttää sprintin kesken. Mitä Scrum 
 - Scrum Master peruuttaa yksin kun markkinatilanne muuttuu
 - Sprinttiä ei voi keskeyttää koskaan kun se on kerran alkanut
 - Tiimi äänestää sprintin peruutuksesta dailyssa enemmistöllä
-
-#### `b07-scrum-sprint-goal-one` · diff 3
-
-Sprint Planning tuottaa viisi erillistä tavoitetta eri tiimeille. Onko tämä Scrumia?
-
-- **Ei — yksi Sprint Goal ohjaa koko Scrum Teamin fokusta** ✓
-- Kyllä — useampi tavoite tuottaa enemmän arvoa sprintissä
-- Kyllä — jokaisella kehittäjällä on oma henkilökohtainen goal
-- Sprint Goal on valinnainen kun backlog on hyvin priorisoitu
 
 #### `b07-scrum-sprint-length` · diff 2
 
@@ -10765,24 +10387,6 @@ PO on lomalla kaksi viikkoa — backlog jää päivittämättä. Miten Scrum suh
 - Backlog jäädyttetään PO:n loman ajaksi — ei päivityksiä sallita
 - Tiimi priorisoi itse ilman PO:ta kun edustajaa ei ole nimetty
 
-#### `b08-scrum-review-stakeholders` · diff 2
-
-Sprint Review — kuka osallistuu ja mikä on tapahtuman tarkoitus?
-
-- **Stakeholderit + tiimi — inspect increment ja adaptoi backlogia** ✓
-- Vain kehittäjät raportoivat SM:lle incrementin valmiudesta
-- Review korvaa retrospektiivin kun stakeholderit ovat paikalla
-- PO demoaa yksin ilman incrementtiä — slidet riittävät reviewiin
-
-#### `b08-scrum-sprint-cancel` · diff 4
-
-Markkinatilanne muuttuu radikaalisti — sprintin tavoite on merkityksetön. Kuka voi peruuttaa sprintin?
-
-- **Vain Product Owner voi peruuttaa sprintin tiimin kanssa neuvotellen** ✓
-- Kuka tahansa kehittäjä voi peruuttaa sprintin dailyssa tarvittaessa
-- Sprinttiä ei voi koskaan peruuttaa kun sprint planning on tehty
-- Scrum Master peruuttaa ilman PO:ta kun markkinat muuttuvat
-
 #### `b08-scrum-sprint-goal-change` · diff 3
 
 Kesken sprintin PO haluaa vaihtaa sprint goalin kokonaan uuteen featureen. Miten Scrum Guide suhtautuu?
@@ -10791,15 +10395,6 @@ Kesken sprintin PO haluaa vaihtaa sprint goalin kokonaan uuteen featureen. Miten
 - PO voi vaihtaa goalin milloin tahansa ilman tiimin syytä sprintissä
 - Sprint goal on vain dokumentaatio — ei sitova sprintin aikana
 - Scrum Master päättää uuden goalin yksin kun PO on lomalla
-
-#### `b08-scrum-sprint-length` · diff 2
-
-Tiimi haluaa vaihtaa sprint-pituuden 2 viikosta 1 viikkoon kesken kvartaalin. Mitä huomioida?
-
-- **Sprint enintään kuukausi — tiimi päättää, muutos vaatii event-sopeutusta** ✓
-- Sprint pitää olla aina kaksi viikkoa Scrum Guiden mukaan
-- Vain organisaatio voi muuttaa sprint-pituutta, ei Scrum Team
-- Sprint length ei vaikuta planning-, review- tai retro-rytmiin
 
 #### `b09-scrum-daily-blocker` · diff 2
 
@@ -10827,24 +10422,6 @@ Kesken sprintin lisätään 'pieni' muutos joka kasvattaa työmäärää 30 %. M
 - Hyväksy hiljaa — tiimi tekee ylitöitä ilman scope-keskustelua
 - Lisää automaattisesti seuraavaan sprinttiin ilman PO:n arviointia
 - Scope creep on normaalia — ei toimenpiteitä tarvita sprintissä
-
-#### `b09-scrum-sprint-cancel` · diff 4
-
-Markkinatilanne muuttui — sprintin tavoite on merkityksetön. Kuka voi peruuttaa sprintin?
-
-- **Vain Product Owner — tiimi palauttaa Done-työn, aloittaa uuden suunnittelun** ✓
-- Scrum Master yksin voi peruuttaa sprintin markkinamuutoksessa
-- Kuka tahansa kehittäjä voi peruuttaa sprintin dailyssa tarvittaessa
-- Sprinttiä ei voi peruuttaa kesken — odota review ja retro loppuun
-
-#### `b09-scrum-sprint-goal-change` · diff 4
-
-Kesken sprintin PO haluaa vaihtaa sprint goalin kokonaan uuteen markkinatarpeeseen. Miten Scrum Guide ohjaa?
-
-- **Goal ei vaihdu kepeästi — neuvottele tiimi tai peruuta sprint** ✓
-- PO voi muuttaa goalia milloin tahansa ilman tiimin keskustelua
-- Vaihda goal ja jatka — velocity korjaa scope-ongelman automaattisesti
-- Sprint goal on vain dokumentaatio — ei sitova kesken sprintin
 
 #### `exp-scrum-sprint-cancel` · diff 4
 
@@ -10918,7 +10495,7 @@ Mikä on Sprint Goalin rooli sprintin aikana?
 - On sama kuin yksittäisen tarinan acceptance criteria
 - Määritellään vasta sprint reviewssa
 
-### scrum-team (22)
+### scrum-team (17)
 
 #### `b02-scrum-team-cross-14` · diff 3
 
@@ -10992,24 +10569,6 @@ Projektipäällikkö jakaa tehtävät yksittäisille kehittäjille dailyssa. Onk
 - Kyllä — Scrum Master jakaa tehtävät ja seuraa progressia
 - Kyllä — PO määrittää kuka tekee minkä tehtävän sprintissä
 
-#### `b05-scrum-sm-impediment` · diff 3
-
-Tiimin build-palvelin on ollut alhaalla kolme päivää. Kuka Scrum-roolissa poistaa esteen?
-
-- **Scrum Master coachaa ja auttaa poistamaan impedimenttejä** ✓
-- Product Owner korjaa build-infran ja CI-putken itse dailyssa
-- Ei kukaan — tiimi ratkaisee tekniset estot yksin aina
-- Stakeholder dailyssa käsittelee build-palvelimen alhaallaolon
-
-#### `b06-scrum-cross-functional` · diff 2
-
-Tiimi tarvitsee ulkopuolisen testaajan jokaisen sprintin lopussa. Onko tiimi cross-functional?
-
-- **Ei — tiimissä pitää olla taidot incrementin valmistamiseen** ✓
-- Kyllä jos ulkopuolinen testaaja on samassa toimistossa
-- Cross-functional tarkoittaa vain koodausta ja code reviewta
-- Scrum Master korvaa puuttuvat testaus- ja deploy-taidot
-
 #### `b06-scrum-po-stakeholder` · diff 2
 
 Stakeholder pyytää featurea suoraan kehittäjältä ohittamalla backlog. Kenen kanssa käsitellä?
@@ -11028,24 +10587,6 @@ Tiimi pyytää Scrum Masteria ratkaista tekninen arkkitehtuurikiista. Mitä SM t
 - Eskaloi aina johtoon ilman tiimin keskustelua ensin
 - Kirjoittaa teknisen ratkaisun backlog-itemin acceptance criteriaan
 
-#### `b07-scrum-team-cross-functional` · diff 2
-
-Tiimissä on vain backend-kehittäjiä — frontend odottaa erillistä tiimiä. Täyttääkö Scrum Team -vaatimuksen?
-
-- **Ei — Scrum Team on cross-functional ja tuottaa incrementin** ✓
-- Kyllä — erikoistuminen backendiin on tehokkaampaa kuin full-stack
-- Cross-functional tarkoittaa vain soft skillsejä ja kommunikaatiota
-- PO korvaa frontend-taidot määrittelemällä UX:n acceptance criteriaan
-
-#### `b07-scrum-team-size` · diff 2
-
-Organisaatio haluaa yhteen Scrum Teamiin 15 kehittäjää. Mitä Scrum Guide suosittelee?
-
-- **Tyypillisesti 10 tai vähemmän — pienempi tiimi on ketterämpi** ✓
-- 15 kehittäjää on Scrum Guiden minimi cross-functional-tiimille
-- Tiimin koolla ei ole väliä kun daily pidetään säännöllisesti
-- Yli 20 kehittäjää on suositeltavaa suurissa enterprise-tuotteissa
-
 #### `b08-scrum-sm-impediment` · diff 2
 
 Build-palvelin on ollut alhaalla kolme päivää — tiimi odottaa passiivisesti. Mikä on SM:n rooli?
@@ -11063,15 +10604,6 @@ Projektipäällikkö jakaa tehtävät kehittäjille yksitellen joka aamu. Mikä 
 - Scrum Master jakaa tehtävät kehittäjille joka aamu dailyssa
 - PO delegoi tekniset tehtävät ja seuraa jokaisen devin progressia
 - Ulkoisen PM:n ohjaus on pakollinen Scrum-tiimissä enterprise:ssä
-
-#### `b09-scrum-cross-functional-gap` · diff 3
-
-Tiimi tarvitsee aina ulkopuolisen testaajan ennen releasen merkitsemistä Done. Scrum-ongelma?
-
-- **Tiimi ei ole cross-functional — DoD-kyvykkyys puuttuu tiimistä** ✓
-- Ulkopuolinen QA on Scrumissa pakollinen kaikissa tuotetiimeissä
-- Scrum Master testaa sprintin lopussa ja korvaa puuttuvan QA:n
-- Ongelma on vain PO:n — tiimin ei tarvitse testausosaamista
 
 #### `b09-scrum-scrum-of-scrums` · diff 3
 
