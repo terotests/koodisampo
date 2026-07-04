@@ -14,9 +14,24 @@ import {
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
+import {
+  drawLegoCrowbarItem,
+  drawLegoPlayer,
+  drawLegoShovelItem,
+  facingFromDelta,
+  type PlayerFacing,
+} from "./legoSprites";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MapState = any;
+
+const WALK_ANIM_MS = 320;
+const WALK_STRIDE_MS = 140;
+
+let animRaf = 0;
+let lastPlayerGrid: { x: number; y: number } | null = null;
+let lastMoveAt = 0;
+let lastFacing: PlayerFacing = "S";
 
 function recommendedSet(state: MapState): Set<string> {
   return new Set(state.recommendedCells ?? []);
@@ -34,6 +49,7 @@ function findPlayerInLines(lines: string[]): { x: number; y: number } | null {
 function renderSignature(lines: string[], state: MapState): string {
   const rec = state.recommendedCells ?? [];
   const ents = state.entityCells ?? [];
+  const walkFrame = walkFrameForNow();
   return [
     lines.length,
     lines.join("\n"),
@@ -42,9 +58,52 @@ function renderSignature(lines: string[], state: MapState): string {
     state.policeChase ? "1" : "0",
     state.player?.x ?? "",
     state.player?.y ?? "",
+    state.player?.facingX ?? "",
+    state.player?.facingY ?? "",
+    state.player?.activeTool ?? "",
     state.camera?.x ?? "",
     state.camera?.y ?? "",
+    walkFrame,
   ].join("\0");
+}
+
+function playerFacing(state: MapState): PlayerFacing {
+  const fx = state.player?.facingX ?? 0;
+  const fy = state.player?.facingY ?? 1;
+  if (fx === 0 && fy === 0) return lastFacing;
+  return facingFromDelta(fx, fy);
+}
+
+function walkFrameForNow(): number {
+  if (Date.now() - lastMoveAt > WALK_ANIM_MS) return 0;
+  return Math.floor((Date.now() - lastMoveAt) / WALK_STRIDE_MS) % 2;
+}
+
+function notePlayerMotion(state: MapState, lines: string[]) {
+  const pos = findPlayerInLines(lines);
+  const gridX = pos?.x ?? (state.player?.x ?? 0) - (state.camera?.x ?? 0);
+  const gridY = pos?.y ?? (state.player?.y ?? 0) - (state.camera?.y ?? 0);
+  const facing = playerFacing(state);
+  if (lastPlayerGrid && (lastPlayerGrid.x !== gridX || lastPlayerGrid.y !== gridY)) {
+    lastMoveAt = Date.now();
+  }
+  lastPlayerGrid = { x: gridX, y: gridY };
+  lastFacing = facing;
+}
+
+function scheduleWalkRepaint(container: HTMLElement, lines: string[], state: MapState) {
+  if (Date.now() - lastMoveAt > WALK_ANIM_MS) return;
+  if (animRaf) cancelAnimationFrame(animRaf);
+  animRaf = requestAnimationFrame(() => {
+    animRaf = 0;
+    const canvas = container.querySelector<HTMLCanvasElement>("[data-iso-canvas]");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    paintIsometricMap(ctx, canvas, lines, state);
+    container.dataset.isoSig = renderSignature(lines, state);
+    scheduleWalkRepaint(container, lines, state);
+  });
 }
 
 function drawScaledImage(
@@ -168,6 +227,7 @@ function drawSprite(
   recommended: Set<string>,
   x: number,
   y: number,
+  opts: { walkFrame: number; facing: PlayerFacing; activeTool?: string },
 ) {
   const key = `${y},${x}`;
   const highlight = recommended.has(key);
@@ -183,6 +243,14 @@ function drawSprite(
 
   if (sprite.kind === "item") {
     drawItemGlow(ctx, screenX, screenY, tileWidth, tileHeight);
+    if (sprite.base === "prop" && sprite.itemTool === "shovel") {
+      drawLegoShovelItem(ctx, screenX, screenY, tileWidth, tileHeight);
+      return;
+    }
+    if (sprite.base === "prop" && sprite.itemTool === "crowbar") {
+      drawLegoCrowbarItem(ctx, screenX, screenY, tileWidth, tileHeight);
+      return;
+    }
     const file = isoTileKey(sprite.base, sprite.dir);
     const img = getIsoImage(file);
     if (img) {
@@ -194,6 +262,19 @@ function drawSprite(
   }
 
   if (sprite.kind === "entity") {
+    if (sprite.glyph === "@") {
+      drawLegoPlayer(
+        ctx,
+        screenX,
+        screenY,
+        tileWidth,
+        tileHeight,
+        opts.facing,
+        opts.walkFrame,
+        opts.activeTool,
+      );
+      return;
+    }
     const img = getIsoImage(isoCharacterKey(sprite.skin));
     if (img) {
       drawScaledImage(ctx, img, screenX, screenY, tileWidth, {
@@ -248,7 +329,12 @@ function paintIsometricMap(
   ctx.fillStyle = "#0d1117";
   ctx.fillRect(0, 0, cssWidth, cssHeight);
 
-  const floor = getIsoImage(isoTileKey("floor", "E"));
+  const facing = playerFacing(state);
+  const walkFrame = walkFrameForNow();
+  const activeTool = state.player?.activeTool as string | undefined;
+  const drawOpts = { walkFrame, facing, activeTool };
+
+  const floor = getIsoImage(isoTileKey("slab", "E"));
   for (let y = 0; y < rows; y += 1) {
     const rowCols = splitMapGraphemes(lines[y] ?? "").length;
     for (let x = 0; x < rowCols; x += 1) {
@@ -269,7 +355,7 @@ function paintIsometricMap(
         policeChase: !!state.policeChase,
         entityCells,
       });
-      if (sprite.kind === "tile" && sprite.base === "floor") continue;
+      if (sprite.kind === "tile" && (sprite.base === "floor" || sprite.base === "slab")) continue;
       const layer =
         sprite.kind === "entity" || sprite.kind === "emoji" || sprite.kind === "item" ? 0.5 : 0;
       overlays.push({ x, y, depth: x + y + layer, sprite });
@@ -293,7 +379,7 @@ function paintIsometricMap(
   for (const cell of overlays) {
     const { x, y, sprite } = cell;
     const { x: sx, y: sy } = gridToScreen(x, y, origin.x, origin.y, tileWidth, tileHeight);
-    drawSprite(ctx, sprite, sx, sy, tileWidth, tileHeight, recommended, x, y);
+    drawSprite(ctx, sprite, sx, sy, tileWidth, tileHeight, recommended, x, y, drawOpts);
   }
 }
 
@@ -349,10 +435,13 @@ export async function patchIsometricGrid(
     container.appendChild(canvas);
   }
 
+  notePlayerMotion(state, lines);
+
   const sig = renderSignature(lines, state);
   const size = plannedCanvasSize(container);
   const sizeKey = `${size.pixelWidth}x${size.pixelHeight}`;
   if (container.dataset.isoSig === sig && container.dataset.isoSized === sizeKey) {
+    scheduleWalkRepaint(container, lines, state);
     return;
   }
   resizeCanvasToContainer(canvas, size);
@@ -362,6 +451,7 @@ export async function patchIsometricGrid(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   paintIsometricMap(ctx, canvas, lines, state);
+  scheduleWalkRepaint(container, lines, state);
 }
 
 export function clearIsoMapHost(container: HTMLElement) {

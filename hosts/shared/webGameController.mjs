@@ -634,7 +634,14 @@ function snapshot() {
     agentCount: map?.activeFloor()?.entities?.filter((e) => e.isAgent)?.length ?? 0,
     entityCount: map?.activeFloor()?.entities?.length ?? 0,
     floor: map?.currentFloor ?? 0,
-    player: { x: map?.playerX, y: map?.playerY, hidden: map?.playerHidden },
+    player: {
+      x: map?.playerX,
+      y: map?.playerY,
+      hidden: map?.playerHidden,
+      facingX: map?.facingX ?? 0,
+      facingY: map?.facingY ?? 1,
+      activeTool: session.tools?.activeTool ?? "",
+    },
     status: map?.lastStatus ?? "",
     studyCounts: studyBacklogCounts(studyBacklogState),
     staffRoster: collectStaffFromSession(session).map((s) => ({

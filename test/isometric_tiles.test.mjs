@@ -28,6 +28,24 @@ function wallSprite(lines, x, y) {
   const corner = cornerDir(openN, openE, openS, openW);
   if (corner) return { base: "wallCorner", dir: corner };
 
+  const north = isWall(glyphAt(x, y - 1));
+  const south = isWall(glyphAt(x, y + 1));
+  const east = isWall(glyphAt(x + 1, y));
+  const west = isWall(glyphAt(x - 1, y));
+
+  if (openN && !openS && !openE && !openW && east && west) {
+    return { base: "wallHalf", dir: fix("E") };
+  }
+  if (openS && !openN && !openE && !openW && east && west) {
+    return { base: "wallHalf", dir: fix("E") };
+  }
+  if (openE && !openW && !openN && !openS && north && south) {
+    return { base: "wallHalf", dir: fix("N") };
+  }
+  if (openW && !openE && !openN && !openS && north && south) {
+    return { base: "wallHalf", dir: fix("N") };
+  }
+
   if (openN && openS) return { base: "wallHalf", dir: fix("E") };
   if (openE && openW) return { base: "wallHalf", dir: fix("N") };
   if (openN) return { base: "wall", dir: fix("N") };
@@ -68,5 +86,15 @@ const yardCorner = [
 const cornerCell = wallSprite(yardCorner, 1, 1);
 assert(cornerCell.base === "wallCorner", "yard-facing wall uses corner tile");
 assert(cornerCell.dir === "S", "open north+west maps to south iso corner");
+
+const borderTop = [
+  "#####",
+  "#...#",
+  "#...#",
+  "#####",
+];
+const topMid = wallSprite(borderTop, 2, 0);
+assert(topMid.base === "wallHalf", "straight outer border uses half wall, not end cap");
+assert(topMid.dir === "N", "horizontal border maps to N iso half wall");
 
 console.log("isometric_tiles.test.mjs OK");
