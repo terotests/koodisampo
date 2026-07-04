@@ -33,3 +33,8 @@ Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` 
 Pelin linkki vie domain-sivulle ankkuriin: `/docs/topics/cpp/#tools-auto`.
 
 Katso [edistyminen](progress) — kuinka monelle kysymykselle on kirjoitettu täysi oppitunti.
+
+## Laajempi tausta
+
+- [Opiskeluopas](https://github.com/terotests/koodisampo/blob/main/opiskelu/opiskelu-opas.md) — PIMPL, planning poker, …
+- Ulkoiset lähteet: kunkin oppitunnin *Lue lisää* -osio
