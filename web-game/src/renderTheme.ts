@@ -24,7 +24,7 @@ export function readStoredRenderTheme(): RenderThemeId {
   } catch {
     /* ignore */
   }
-  return "orange";
+  return "slate";
 }
 
 export function renderThemeFilter(id: RenderThemeId = readStoredRenderTheme()): string {

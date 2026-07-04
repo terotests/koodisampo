@@ -180,6 +180,14 @@ function getMobileElevatorEl(): HTMLElement | null {
   return mobileElevatorEl;
 }
 
+const DPAD_HOLD_DELAY_MS = 1000;
+const DPAD_REPEAT_INTERVAL_MS = 120;
+
+function fireControlKey(key: string, onKey: (key: string) => void, onReset: () => void) {
+  if (key === "reset") onReset();
+  else onKey(key);
+}
+
 function bindDelegatedClickOnce(root: HTMLElement, onKey: (key: string) => void, onReset: () => void) {
   if (root.dataset.keyDelegation === "1") return;
   root.dataset.keyDelegation = "1";
@@ -191,8 +199,74 @@ function bindDelegatedClickOnce(root: HTMLElement, onKey: (key: string) => void,
     const key = btn.dataset.key;
     if (!key) return;
     e.preventDefault();
-    if (key === "reset") onReset();
-    else onKey(key);
+    fireControlKey(key, onKey, onReset);
+  });
+}
+
+function bindDpadHoldRepeat(
+  dpadEl: HTMLElement,
+  onKey: (key: string) => void,
+  onReset: () => void,
+) {
+  if (dpadEl.dataset.dpadRepeat === "1") return;
+  dpadEl.dataset.dpadRepeat = "1";
+
+  let holdTimer: ReturnType<typeof setTimeout> | null = null;
+  let repeatTimer: ReturnType<typeof setInterval> | null = null;
+  let activeKey: string | null = null;
+  let activePointerId: number | null = null;
+
+  const clearRepeat = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+    if (repeatTimer) {
+      clearInterval(repeatTimer);
+      repeatTimer = null;
+    }
+    activeKey = null;
+    activePointerId = null;
+  };
+
+  const startRepeat = (key: string) => {
+    if (repeatTimer) return;
+    repeatTimer = setInterval(() => {
+      fireControlKey(key, onKey, onReset);
+    }, DPAD_REPEAT_INTERVAL_MS);
+  };
+
+  dpadEl.addEventListener("pointerdown", (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const btn = target.closest<HTMLElement>(".dpad-btn[data-key]");
+    if (!btn || !dpadEl.contains(btn)) return;
+    const key = btn.dataset.key;
+    if (!key) return;
+
+    e.preventDefault();
+    clearRepeat();
+    activeKey = key;
+    activePointerId = e.pointerId;
+    btn.setPointerCapture(e.pointerId);
+    fireControlKey(key, onKey, onReset);
+    holdTimer = setTimeout(() => {
+      holdTimer = null;
+      if (activeKey === key) startRepeat(key);
+    }, DPAD_HOLD_DELAY_MS);
+  });
+
+  const stopRepeat = (e: PointerEvent) => {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    clearRepeat();
+  };
+
+  dpadEl.addEventListener("pointerup", stopRepeat);
+  dpadEl.addEventListener("pointercancel", stopRepeat);
+  dpadEl.addEventListener("lostpointercapture", stopRepeat);
+  dpadEl.addEventListener("contextmenu", (e) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest(".dpad-btn")) e.preventDefault();
   });
 }
 
@@ -255,7 +329,7 @@ export function mountMobileControls(
   lastElevatorUiKey = "";
 
   buildDpad(dpadEl);
-  bindDelegatedClickOnce(dpadEl, onKey, onReset);
+  bindDpadHoldRepeat(dpadEl, onKey, onReset);
 
   toolbarEl.className = "toolbar toolbar-mobile";
   toolbarEl.innerHTML = "";
