@@ -361,12 +361,14 @@ const TOPIC_LABELS = {
   "rf-advanced": "RF-laajennukset",
 };
 
-function scoreQuestion(q, profile, targetDiff) {
+function scoreQuestion(q, profile, targetDiff, scoreOptions = null) {
   const audienceMatch = q.audiences.some((a) => profile.tags.includes(a));
   if (!audienceMatch) return -1;
   if (q.difficulty < (profile.minDifficulty ?? 3)) return -1;
 
   let score = 90 - Math.abs(q.difficulty - targetDiff) * 12;
+  const globalAsked = scoreOptions?.globalAsked;
+  if (globalAsked && !globalAsked.has(q.id)) score += 16;
   if (q.difficulty >= targetDiff) score += 8;
 
   if (profile.preferChapter && q.chapter === profile.preferChapter) score += 35;
@@ -407,27 +409,55 @@ function scoreQuestion(q, profile, targetDiff) {
   return score;
 }
 
-function filterAndScoreQuestions(questions, profile, targetDiff, excludeIds) {
+function filterAndScoreQuestions(questions, profile, targetDiff, excludeIds, scoreOptions = null) {
   const exclude = new Set(excludeIds);
   return questions
-    .map((q) => ({ q, score: scoreQuestion(q, profile, targetDiff) }))
+    .map((q) => ({ q, score: scoreQuestion(q, profile, targetDiff, scoreOptions) }))
     .filter((x) => x.score >= 0 && !exclude.has(x.q.id))
     .sort((a, b) => b.score - a.score || a.q.id.localeCompare(b.q.id));
 }
 
-function buildQuestionTier(scored, minSize = 6) {
+/** Laaja valintapooli — kapea top-6 -taso toisti samoja kysymyksiä ilman historiaa. */
+const QUESTION_POOL_MIN = 20;
+const QUESTION_POOL_MAX = 48;
+
+function buildQuestionPool(scored, profile, minPool = QUESTION_POOL_MIN, maxPool = QUESTION_POOL_MAX) {
   if (scored.length === 0) return scored;
-  const topScore = scored[0].score;
+
+  let pool = scored;
+  const focusChapter = profile?.preferChapter || "";
+  const focusDomain = profile?.preferDomain || "";
+
+  if (focusChapter) {
+    const chapterHits = scored.filter((x) => x.q.chapter === focusChapter);
+    if (chapterHits.length > 0) pool = chapterHits;
+  } else if (focusDomain) {
+    const domainHits = scored.filter((x) => x.q.domain === focusDomain);
+    if (domainHits.length > 0) pool = domainHits;
+  }
+
+  const minFocus = focusChapter ? 3 : minPool;
+  if (pool.length < minFocus && profile?.preferDomains?.length) {
+    const allowed = new Set(profile.preferDomains);
+    const wider = scored.filter((x) => allowed.has(x.q.domain));
+    if (wider.length > pool.length) pool = wider;
+  }
+
+  if (pool.length <= minPool) {
+    return pool.slice(0, maxPool);
+  }
+
+  const topScore = pool[0].score;
   let band = 8;
-  let tier = scored.filter((x) => x.score >= topScore - band);
-  while (tier.length < minSize && band < 64) {
+  let bandPool = pool.filter((x) => x.score >= topScore - band);
+  while (bandPool.length < minPool && band < 160) {
     band += 8;
-    tier = scored.filter((x) => x.score >= topScore - band);
+    bandPool = pool.filter((x) => x.score >= topScore - band);
   }
-  if (tier.length < minSize) {
-    return scored.slice(0, Math.min(scored.length, Math.max(minSize, 12)));
+  if (bandPool.length < minPool) {
+    bandPool = pool.slice(0, Math.min(pool.length, minPool));
   }
-  return tier;
+  return bandPool.slice(0, maxPool);
 }
 
 export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOptions = null) {
@@ -441,7 +471,9 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
 
   const globalAsked = getGlobalAskedQuestionIds(quizHistory);
   const entityAsked = getAskedQuestionIds(quizHistory, entityId);
-  const recent = getRecentQuestionIds(quizHistory, 20);
+  const recent = getRecentQuestionIds(quizHistory, 32);
+  const globalAskedSet = new Set(globalAsked);
+  const scoreOptions = { globalAsked: globalAskedSet };
 
   const domainChapters = chaptersForDomain(profile.preferDomain || profile.playerSpecialty || "cpp");
 
@@ -461,17 +493,17 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
 
   // 1) Älä toista globaalisti kysyttyjä — myös eri NPC:iltä.
   let exclude = [...new Set([...globalAsked, ...recent])];
-  let scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude);
+  let scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude, scoreOptions);
 
   // 2) Jos profiilin pooli loppuu, salli vanhoja mutta ei ihan viimeisiä.
   if (scored.length === 0) {
-    exclude = [...new Set(recent.slice(-5))];
-    scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude);
+    exclude = [...new Set(recent.slice(-8))];
+    scored = filterAndScoreQuestions(questions, profile, targetDiff, exclude, scoreOptions);
   }
 
   // 3) Viimeinen keino: mikä tahansa profiiliin sopiva.
   if (scored.length === 0) {
-    scored = filterAndScoreQuestions(questions, profile, targetDiff, []);
+    scored = filterAndScoreQuestions(questions, profile, targetDiff, [], scoreOptions);
   }
 
   if (scored.length === 0) {
@@ -483,11 +515,11 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   }
 
   const topScore = scored[0].score;
-  const tier = buildQuestionTier(scored);
-  const salt = `${pickNonce}:${entityAsked.length}:${deaths}:${globalAsked.length}:${recent.length}:${topScore}:${tier.length}`;
+  const pool = buildQuestionPool(scored, profile);
+  const salt = `${pickNonce}:${entityAsked.length}:${deaths}:${globalAsked.length}:${recent.length}:${topScore}:${pool.length}`;
   const idx =
-    hashString(`${entityId}:${salt}:${tier.map((x) => x.q.id).join("|")}`) % tier.length;
-  return { question: tier[idx].q, profile, targetDiff };
+    hashString(`${entityId}:${salt}:${pool.map((x) => x.q.id).join("|")}`) % pool.length;
+  return { question: pool[idx].q, profile, targetDiff };
 }
 
 let activeQuizCache = null;
