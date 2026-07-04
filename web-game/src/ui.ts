@@ -1284,6 +1284,11 @@ export function mountGameUI(game: WebGame) {
 
     watchViewportLayout(onViewportChange);
 
+    document.addEventListener("koodisampo-theme-change", () => {
+      lastRenderKey = "";
+      render(game.snapshot());
+    });
+
     if (profileSpecialtyEl) {
       profileSpecialtyEl.innerHTML = PLAYER_SPECIALTY_OPTIONS.map(
         (o) => `<option value="${esc(o.id)}">${esc(o.label)}</option>`,

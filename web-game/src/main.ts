@@ -1,5 +1,9 @@
 import { createBrowserGame } from "./boot";
+import { initTheme, mountThemePicker } from "./theme";
 import { mountGameUI } from "./ui";
+
+initTheme();
+mountThemePicker();
 
 async function start() {
   const mapEl = document.getElementById("map");
