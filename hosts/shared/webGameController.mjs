@@ -700,7 +700,9 @@ function snapshot() {
   if (session.screen === "studylist") {
     return {
       ...base,
-      studyListText: formatStudyList(studyBacklogState),
+      studyListText: formatStudyList(studyBacklogState, {
+        origin: "https://terotests.github.io",
+      }),
       studyBacklog: studyBacklogState,
     };
   }

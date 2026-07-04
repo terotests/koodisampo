@@ -44,9 +44,11 @@ export function runStudyBacklogTests() {
   assert(backlog.wrongAnswers.length === 1, "wrong answer saved");
   assert(studyBacklogCounts(backlog).total === 2, "counts total");
 
-  const list = formatStudyList(backlog);
+  const list = formatStudyList(backlog, { origin: "https://example.com" });
   assert(list.includes("Kysy AI:lta"), "list section wantMore");
   assert(list.includes("Väärin vastatut"), "list section wrong");
+  assert(list.includes("Lue oppitunti: https://example.com"), "lesson link in list");
+  assert(list.includes("#safety-rule-of-zero"), "lesson anchor in list");
 
   const norm = normalizeStudyBacklog({ wantMore: [{ questionId: "x", prompt: "p" }] });
   assert(norm.wantMore[0].questionId === "x", "normalize");

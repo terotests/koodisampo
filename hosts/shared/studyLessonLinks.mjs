@@ -113,3 +113,17 @@ export function lessonLinkLine(question, options = {}) {
   const url = lessonUrl(question, options);
   return `Lue oppitunti: ${url}`;
 }
+
+/** Opiskelulistan merkintä → kysymys-objekti oppituntilinkkiä varten. */
+export function questionFromBacklogEntry(entry) {
+  return {
+    id: entry?.questionId || "",
+    domain: entry?.domain || "",
+    chapter: entry?.chapter || "",
+  };
+}
+
+export function lessonUrlForBacklogEntry(entry, options = {}) {
+  if (!entry?.questionId) return "";
+  return lessonUrl(questionFromBacklogEntry(entry), options);
+}

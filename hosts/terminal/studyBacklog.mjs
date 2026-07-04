@@ -1,5 +1,11 @@
 /** Opiskelujono — väärät vastaukset + käyttäjän merkinnät "Kysy AI:lta". */
 
+import {
+  STUDY_SITE_ORIGIN,
+  lessonLinkLine,
+  questionFromBacklogEntry,
+} from "../shared/studyLessonLinks.mjs";
+
 export function emptyStudyBacklog() {
   return { wantMore: [], wrongAnswers: [] };
 }
@@ -102,14 +108,22 @@ function formatWhen(ts) {
   }
 }
 
-function formatEntryLine(entry, i) {
+function formatEntryLine(entry, i, options = {}) {
   const tag = [entry.domain, entry.chapter].filter(Boolean).join("/") || "yleinen";
   const who = entry.entityName ? ` (${entry.entityName})` : "";
-  return `  [${i + 1}] ${entry.prompt}${who}\n      ${tag} — ${formatWhen(entry.at)}`;
+  const lines = [
+    `  [${i + 1}] ${entry.prompt}${who}`,
+    `      ${tag} — ${formatWhen(entry.at)}`,
+  ];
+  if (entry.questionId) {
+    lines.push(`      → ${entry.questionId}`);
+    lines.push(`      ${lessonLinkLine(questionFromBacklogEntry(entry), options)}`);
+  }
+  return lines.join("\n");
 }
 
 /** Terminaali/web-teksti opiskelulistasta. */
-export function formatStudyList(backlog) {
+export function formatStudyList(backlog, options = {}) {
   const b = normalizeStudyBacklog(backlog);
   const lines = [
     "═══ OPISKELULISTA ═══",
@@ -120,7 +134,7 @@ export function formatStudyList(backlog) {
   if (b.wantMore.length === 0) {
     lines.push("  (tyhjä — merkitse [m] kysymyksen palautteen jälkeen)");
   } else {
-    b.wantMore.forEach((e, i) => lines.push(formatEntryLine(e, i)));
+    b.wantMore.forEach((e, i) => lines.push(formatEntryLine(e, i, options)));
   }
 
   lines.push("");
@@ -128,7 +142,7 @@ export function formatStudyList(backlog) {
   if (b.wrongAnswers.length === 0) {
     lines.push("  (ei vielä väärää vastausta tallennettuna)");
   } else {
-    b.wrongAnswers.forEach((e, i) => lines.push(formatEntryLine(e, i)));
+    b.wrongAnswers.forEach((e, i) => lines.push(formatEntryLine(e, i, options)));
   }
 
   lines.push("");
