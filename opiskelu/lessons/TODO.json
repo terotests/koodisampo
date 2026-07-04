@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T11:50:03.710Z",
+  "generatedAt": "2026-07-04T11:55:27.206Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 66,
-    "pendingLessons": 1159,
-    "percent": 5.4
+    "readyLessons": 95,
+    "pendingLessons": 1130,
+    "percent": 7.8
   },
   "domains": [
     {
@@ -3204,7 +3204,7 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 25,
+      "ready": 54,
       "total": 180,
       "chapters": [
         {
@@ -3492,35 +3492,35 @@
         {
           "id": "pg-explain",
           "label": "EXPLAIN/suunnitelmat",
-          "ready": 1,
+          "ready": 30,
           "total": 30,
           "questions": [
             {
               "id": "b02-pg-explain-analyze-05",
               "difficulty": 3,
               "prompt": "Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-analyze-05.md"
             },
             {
               "id": "b02-pg-explain-nested-07",
               "difficulty": 4,
               "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-nested-07.md"
             },
             {
               "id": "b02-pg-explain-seq-06",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-seq-06.md"
             },
             {
               "id": "b02-pg-explain-stats-08",
               "difficulty": 3,
               "prompt": "Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-stats-08.md"
             },
             {
@@ -3534,175 +3534,175 @@
               "id": "b03-pg-explain-hash-join-memory",
               "difficulty": 4,
               "prompt": "Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian pieni. Mitä näet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-hash-join-memory.md"
             },
             {
               "id": "b03-pg-explain-index-only-scan",
               "difficulty": 3,
               "prompt": "Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto Index Only Scan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-index-only-scan.md"
             },
             {
               "id": "b03-pg-explain-isolation-level",
               "difficulty": 4,
               "prompt": "Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen transaction commitoi välissä. Taso?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-isolation-level.md"
             },
             {
               "id": "b04-pg-explain-buffers-io",
               "difficulty": 4,
               "prompt": "EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hitto disk I/O. Lisälippu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-buffers-io.md"
             },
             {
               "id": "b04-pg-explain-cost-settings",
               "difficulty": 4,
               "prompt": "SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus 4.0. Tyypillinen SSD-säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-cost-settings.md"
             },
             {
               "id": "b04-pg-explain-index-only",
               "difficulty": 4,
               "prompt": "EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usein?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-index-only.md"
             },
             {
               "id": "b04-pg-explain-parallel",
               "difficulty": 4,
               "prompt": "Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-parallel.md"
             },
             {
               "id": "b05-pg-explain-hash-join",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-explain-hash-join.md"
             },
             {
               "id": "b05-pg-explain-index-only-scan",
               "difficulty": 4,
               "prompt": "EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-explain-index-only-scan.md"
             },
             {
               "id": "b06-pg-explain-generic-plan",
               "difficulty": 4,
               "prompt": "Prepared statement plan on hidas eri parametreilla. Miten näet generic plan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-generic-plan.md"
             },
             {
               "id": "b06-pg-explain-misestimate-rows",
               "difficulty": 4,
               "prompt": "Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-misestimate-rows.md"
             },
             {
               "id": "b06-pg-explain-wal-fpi",
               "difficulty": 5,
               "prompt": "EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/FPI tarkoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-wal-fpi.md"
             },
             {
               "id": "b07-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-nested-loop.md"
             },
             {
               "id": "b07-pg-explain-prepare",
               "difficulty": 3,
               "prompt": "Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-prepare.md"
             },
             {
               "id": "b07-pg-explain-seq-vs-index",
               "difficulty": 3,
               "prompt": "Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-seq-vs-index.md"
             },
             {
               "id": "b08-pg-explain-cost-settings",
               "difficulty": 3,
               "prompt": "Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halvemmalta manuaalisesti. Säädettävä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-cost-settings.md"
             },
             {
               "id": "b08-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloin NL on OK?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-nested-loop.md"
             },
             {
               "id": "b08-pg-explain-seq-scan",
               "difficulty": 3,
               "prompt": "Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-seq-scan.md"
             },
             {
               "id": "b09-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-nested-loop.md"
             },
             {
               "id": "b09-pg-explain-seq-scan-large",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-seq-scan-large.md"
             },
             {
               "id": "exp-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan isolla taululla. Ensimmäinen epäily?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-nested-loop.md"
             },
             {
               "id": "exp-pg-explain-seq-scan-ok",
               "difficulty": 3,
               "prompt": "Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). Neuvo?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-seq-scan-ok.md"
             },
             {
               "id": "exp-pg-explain-stats-stale",
               "difficulty": 4,
               "prompt": "Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väärä. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-stats-stale.md"
             },
             {
               "id": "pg-explain-analyze",
               "difficulty": 4,
               "prompt": "Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet todelliset ajat ja rivimäärät turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-explain-analyze.md"
             },
             {
               "id": "pg-explain-seq-scan",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-explain-seq-scan.md"
             }
           ]

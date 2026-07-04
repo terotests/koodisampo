@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**66 / 1225** valmis (**5.4 %**).
+**95 / 1225** valmis (**7.8 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 25 | 180 | 13.9 |
+| PostgreSQL | 54 | 180 | 30 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,7 +534,7 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (25/180)
+### PostgreSQL (54/180)
 
 #### PostgreSQL-konfig `pg-config` (24/24)
 
@@ -584,40 +584,40 @@
 | ⬜ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
 | ⬜ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
 
-#### EXPLAIN/suunnitelmat `pg-explain` (1/30)
+#### EXPLAIN/suunnitelmat `pg-explain` (30/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 3 | `b02-pg-explain-analyze-05` | Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento? |
-| ⬜ | 4 | `b02-pg-explain-nested-07` | Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix? |
-| ⬜ | 3 | `b02-pg-explain-seq-06` | EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono? |
-| ⬜ | 3 | `b02-pg-explain-stats-08` | Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpi… |
+| ✅ | 3 | `b02-pg-explain-analyze-05` | Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento? |
+| ✅ | 4 | `b02-pg-explain-nested-07` | Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix? |
+| ✅ | 3 | `b02-pg-explain-seq-06` | EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono? |
+| ✅ | 3 | `b02-pg-explain-stats-08` | Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpi… |
 | ✅ | 4 | `b03-pg-explain-buffers-hit` | EXPLAIN ANALYZE näyttää hitaudesta — haluat tietää cache hit vs disk re… |
-| ⬜ | 4 | `b03-pg-explain-hash-join-memory` | Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian … |
-| ⬜ | 3 | `b03-pg-explain-index-only-scan` | Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto I… |
-| ⬜ | 4 | `b03-pg-explain-isolation-level` | Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen… |
-| ⬜ | 4 | `b04-pg-explain-buffers-io` | EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hit… |
-| ⬜ | 4 | `b04-pg-explain-cost-settings` | SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus… |
-| ⬜ | 4 | `b04-pg-explain-index-only` | EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usei… |
-| ⬜ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
-| ⬜ | 3 | `b05-pg-explain-hash-join` | EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. V… |
-| ⬜ | 4 | `b05-pg-explain-index-only-scan` | EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index… |
-| ⬜ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
-| ⬜ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
-| ⬜ | 5 | `b06-pg-explain-wal-fpi` | EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F… |
-| ⬜ | 4 | `b07-pg-explain-nested-loop` | Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korja… |
-| ⬜ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
-| ⬜ | 3 | `b07-pg-explain-seq-vs-index` | Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy piene… |
-| ⬜ | 3 | `b08-pg-explain-cost-settings` | Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halve… |
-| ⬜ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
-| ⬜ | 3 | `b08-pg-explain-seq-scan` | Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisi… |
-| ⬜ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
-| ⬜ | 3 | `b09-pg-explain-seq-scan-large` | EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. En… |
-| ⬜ | 4 | `exp-pg-explain-nested-loop` | JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan is… |
-| ⬜ | 3 | `exp-pg-explain-seq-scan-ok` | Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). … |
-| ⬜ | 4 | `exp-pg-explain-stats-stale` | Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väär… |
-| ⬜ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
-| ⬜ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
+| ✅ | 4 | `b03-pg-explain-hash-join-memory` | Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian … |
+| ✅ | 3 | `b03-pg-explain-index-only-scan` | Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto I… |
+| ✅ | 4 | `b03-pg-explain-isolation-level` | Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen… |
+| ✅ | 4 | `b04-pg-explain-buffers-io` | EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hit… |
+| ✅ | 4 | `b04-pg-explain-cost-settings` | SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus… |
+| ✅ | 4 | `b04-pg-explain-index-only` | EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usei… |
+| ✅ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
+| ✅ | 3 | `b05-pg-explain-hash-join` | EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. V… |
+| ✅ | 4 | `b05-pg-explain-index-only-scan` | EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index… |
+| ✅ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
+| ✅ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
+| ✅ | 5 | `b06-pg-explain-wal-fpi` | EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F… |
+| ✅ | 4 | `b07-pg-explain-nested-loop` | Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korja… |
+| ✅ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
+| ✅ | 3 | `b07-pg-explain-seq-vs-index` | Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy piene… |
+| ✅ | 3 | `b08-pg-explain-cost-settings` | Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halve… |
+| ✅ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
+| ✅ | 3 | `b08-pg-explain-seq-scan` | Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisi… |
+| ✅ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
+| ✅ | 3 | `b09-pg-explain-seq-scan-large` | EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. En… |
+| ✅ | 4 | `exp-pg-explain-nested-loop` | JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan is… |
+| ✅ | 3 | `exp-pg-explain-seq-scan-ok` | Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). … |
+| ✅ | 4 | `exp-pg-explain-stats-stale` | Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väär… |
+| ✅ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
+| ✅ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
 
 #### PostgreSQL-indeksit `pg-indexes` (0/30)
 
