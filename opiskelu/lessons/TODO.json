@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-04T11:50:03.710Z",
+  "generatedAt": "2026-07-04T12:00:27.435Z",
   "summary": {
     "totalQuestions": 1225,
-    "readyLessons": 66,
-    "pendingLessons": 1159,
-    "percent": 5.4
+    "readyLessons": 173,
+    "pendingLessons": 1052,
+    "percent": 14.1
   },
   "domains": [
     {
@@ -3204,7 +3204,7 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 25,
+      "ready": 132,
       "total": 180,
       "chapters": [
         {
@@ -3386,105 +3386,105 @@
         {
           "id": "pg-cte-window",
           "label": "CTE ja ikkunafunktiot",
-          "ready": 0,
+          "ready": 14,
           "total": 14,
           "questions": [
             {
               "id": "sqd-cte-materialized-hint",
               "difficulty": 4,
               "prompt": "PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkyselyyn hitaasti. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-cte-materialized-hint.md"
             },
             {
               "id": "sqd-cte-readability",
               "difficulty": 3,
               "prompt": "Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-cte-readability.md"
             },
             {
               "id": "sqd-first-value-partition",
               "difficulty": 4,
               "prompt": "Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä toimii?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-first-value-partition.md"
             },
             {
               "id": "sqd-lag-mom-comparison",
               "difficulty": 4,
               "prompt": "Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä. Mikä auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-lag-mom-comparison.md"
             },
             {
               "id": "sqd-lead-future-row",
               "difficulty": 3,
               "prompt": "Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-lead-future-row.md"
             },
             {
               "id": "sqd-ntile-buckets",
               "difficulty": 3,
               "prompt": "Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-ntile-buckets.md"
             },
             {
               "id": "sqd-percent-rank-report",
               "difficulty": 3,
               "prompt": "Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-percent-rank-report.md"
             },
             {
               "id": "sqd-pivot-conditional-agg",
               "difficulty": 4,
               "prompt": "Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-pivot-conditional-agg.md"
             },
             {
               "id": "sqd-rank-vs-dense",
               "difficulty": 3,
               "prompt": "Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-rank-vs-dense.md"
             },
             {
               "id": "sqd-recursive-cte-hierarchy",
               "difficulty": 4,
               "prompt": "Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten haet koko alipuun?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-recursive-cte-hierarchy.md"
             },
             {
               "id": "sqd-row-number-dedup",
               "difficulty": 4,
               "prompt": "Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-row-number-dedup.md"
             },
             {
               "id": "sqd-running-total",
               "difficulty": 3,
               "prompt": "Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-running-total.md"
             },
             {
               "id": "sqd-window-frame-rows",
               "difficulty": 4,
               "prompt": "7 päivän liukuva keskiarvo. Frame-määrittely?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-window-frame-rows.md"
             },
             {
               "id": "sqd-window-vs-group-by",
               "difficulty": 3,
               "prompt": "Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman self-joinia.",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-window-vs-group-by.md"
             }
           ]
@@ -3492,35 +3492,35 @@
         {
           "id": "pg-explain",
           "label": "EXPLAIN/suunnitelmat",
-          "ready": 1,
+          "ready": 30,
           "total": 30,
           "questions": [
             {
               "id": "b02-pg-explain-analyze-05",
               "difficulty": 3,
               "prompt": "Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-analyze-05.md"
             },
             {
               "id": "b02-pg-explain-nested-07",
               "difficulty": 4,
               "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-nested-07.md"
             },
             {
               "id": "b02-pg-explain-seq-06",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-seq-06.md"
             },
             {
               "id": "b02-pg-explain-stats-08",
               "difficulty": 3,
               "prompt": "Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-explain-stats-08.md"
             },
             {
@@ -3534,175 +3534,175 @@
               "id": "b03-pg-explain-hash-join-memory",
               "difficulty": 4,
               "prompt": "Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian pieni. Mitä näet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-hash-join-memory.md"
             },
             {
               "id": "b03-pg-explain-index-only-scan",
               "difficulty": 3,
               "prompt": "Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto Index Only Scan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-index-only-scan.md"
             },
             {
               "id": "b03-pg-explain-isolation-level",
               "difficulty": 4,
               "prompt": "Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen transaction commitoi välissä. Taso?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-explain-isolation-level.md"
             },
             {
               "id": "b04-pg-explain-buffers-io",
               "difficulty": 4,
               "prompt": "EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hitto disk I/O. Lisälippu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-buffers-io.md"
             },
             {
               "id": "b04-pg-explain-cost-settings",
               "difficulty": 4,
               "prompt": "SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus 4.0. Tyypillinen SSD-säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-cost-settings.md"
             },
             {
               "id": "b04-pg-explain-index-only",
               "difficulty": 4,
               "prompt": "EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usein?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-index-only.md"
             },
             {
               "id": "b04-pg-explain-parallel",
               "difficulty": 4,
               "prompt": "Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-parallel.md"
             },
             {
               "id": "b05-pg-explain-hash-join",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-explain-hash-join.md"
             },
             {
               "id": "b05-pg-explain-index-only-scan",
               "difficulty": 4,
               "prompt": "EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-explain-index-only-scan.md"
             },
             {
               "id": "b06-pg-explain-generic-plan",
               "difficulty": 4,
               "prompt": "Prepared statement plan on hidas eri parametreilla. Miten näet generic plan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-generic-plan.md"
             },
             {
               "id": "b06-pg-explain-misestimate-rows",
               "difficulty": 4,
               "prompt": "Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-misestimate-rows.md"
             },
             {
               "id": "b06-pg-explain-wal-fpi",
               "difficulty": 5,
               "prompt": "EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/FPI tarkoittaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-wal-fpi.md"
             },
             {
               "id": "b07-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-nested-loop.md"
             },
             {
               "id": "b07-pg-explain-prepare",
               "difficulty": 3,
               "prompt": "Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-prepare.md"
             },
             {
               "id": "b07-pg-explain-seq-vs-index",
               "difficulty": 3,
               "prompt": "Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-seq-vs-index.md"
             },
             {
               "id": "b08-pg-explain-cost-settings",
               "difficulty": 3,
               "prompt": "Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halvemmalta manuaalisesti. Säädettävä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-cost-settings.md"
             },
             {
               "id": "b08-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloin NL on OK?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-nested-loop.md"
             },
             {
               "id": "b08-pg-explain-seq-scan",
               "difficulty": 3,
               "prompt": "Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-explain-seq-scan.md"
             },
             {
               "id": "b09-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-nested-loop.md"
             },
             {
               "id": "b09-pg-explain-seq-scan-large",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-seq-scan-large.md"
             },
             {
               "id": "exp-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan isolla taululla. Ensimmäinen epäily?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-nested-loop.md"
             },
             {
               "id": "exp-pg-explain-seq-scan-ok",
               "difficulty": 3,
               "prompt": "Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). Neuvo?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-seq-scan-ok.md"
             },
             {
               "id": "exp-pg-explain-stats-stale",
               "difficulty": 4,
               "prompt": "Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väärä. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-explain-stats-stale.md"
             },
             {
               "id": "pg-explain-analyze",
               "difficulty": 4,
               "prompt": "Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet todelliset ajat ja rivimäärät turvallisesti?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-explain-analyze.md"
             },
             {
               "id": "pg-explain-seq-scan",
               "difficulty": 3,
               "prompt": "EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-explain-seq-scan.md"
             }
           ]
@@ -3710,217 +3710,217 @@
         {
           "id": "pg-indexes",
           "label": "PostgreSQL-indeksit",
-          "ready": 0,
+          "ready": 30,
           "total": 30,
           "questions": [
             {
               "id": "b02-pg-indexes-btree-02",
               "difficulty": 2,
               "prompt": "WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-indexes-btree-02.md"
             },
             {
               "id": "b02-pg-indexes-covering-04",
               "difficulty": 4,
               "prompt": "Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-indexes-covering-04.md"
             },
             {
               "id": "b03-pg-indexes-concurrent-create",
               "difficulty": 3,
               "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Online-vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b03-pg-indexes-fillfactor-update",
               "difficulty": 4,
               "prompt": "Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-fillfactor-update.md"
             },
             {
               "id": "b03-pg-indexes-gin-jsonb",
               "difficulty": 4,
               "prompt": "JSONB metadata-kenttä `@> '{\"status\":\"active\"}'` query hidas seq scan. Indeksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md"
             },
             {
               "id": "b03-pg-locks-blocking-query",
               "difficulty": 4,
               "prompt": "UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensimmäinen diagnostiikka?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-locks-blocking-query.md"
             },
             {
               "id": "b04-pg-indexes-concurrent-create",
               "difficulty": 4,
               "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunteiksi. Vaihtoehto?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b04-pg-indexes-expression",
               "difficulty": 4,
               "prompt": "Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei käytössä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-expression.md"
             },
             {
               "id": "b04-pg-indexes-gin-jsonb",
               "difficulty": 4,
               "prompt": "Kysely `WHERE data @> '{\"status\":\"active\"}'` JSONB-sarakkeessa on hidas 5M rivillä. Indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-gin-jsonb.md"
             },
             {
               "id": "b04-pg-indexes-partial-active",
               "difficulty": 3,
               "prompt": "90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-partial-active.md"
             },
             {
               "id": "b05-pg-indexes-concurrent-create",
               "difficulty": 3,
               "prompt": "Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot indeksin ilman pitkää lukkoa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-concurrent-create.md"
             },
             {
               "id": "b05-pg-indexes-duplicate-drop",
               "difficulty": 2,
               "prompt": "Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-duplicate-drop.md"
             },
             {
               "id": "b05-pg-indexes-expression",
               "difficulty": 4,
               "prompt": "Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree emailille ei käytössä. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-expression.md"
             },
             {
               "id": "b06-pg-indexes-brin-timeseries",
               "difficulty": 4,
               "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-brin-timeseries.md"
             },
             {
               "id": "b06-pg-indexes-hash-index",
               "difficulty": 3,
               "prompt": "Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-hash-index.md"
             },
             {
               "id": "b06-pg-indexes-include-columns",
               "difficulty": 3,
               "prompt": "Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexissä. Miten?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-include-columns.md"
             },
             {
               "id": "b06-pg-indexes-reindex-concurrently",
               "difficulty": 4,
               "prompt": "Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtime?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-reindex-concurrently.md"
             },
             {
               "id": "b07-pg-index-btree-vs-gin",
               "difficulty": 3,
               "prompt": "JSONB @> query on hidas seq scanilla. Mikä indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-btree-vs-gin.md"
             },
             {
               "id": "b07-pg-index-partial",
               "difficulty": 4,
               "prompt": "Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-partial.md"
             },
             {
               "id": "b07-pg-index-unused",
               "difficulty": 3,
               "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle indeksille. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-index-unused.md"
             },
             {
               "id": "b08-pg-indexes-btree-gist",
               "difficulty": 4,
               "prompt": "Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-btree-gist.md"
             },
             {
               "id": "b08-pg-indexes-multicolumn-order",
               "difficulty": 3,
               "prompt": "Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-multicolumn-order.md"
             },
             {
               "id": "b09-pg-index-composite-order",
               "difficulty": 4,
               "prompt": "Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-index-composite-order.md"
             },
             {
               "id": "b09-pg-index-unused-drop",
               "difficulty": 3,
               "prompt": "pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT hidastuu. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-index-unused-drop.md"
             },
             {
               "id": "exp-pg-indexes-btree-composite",
               "difficulty": 3,
               "prompt": "Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi indeksi — mikä järjestys?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-btree-composite.md"
             },
             {
               "id": "exp-pg-indexes-covering",
               "difficulty": 4,
               "prompt": "EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SELECT listassa. Miten vältät extra I/O:n?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-covering.md"
             },
             {
               "id": "exp-pg-indexes-partial-active",
               "difficulty": 3,
               "prompt": "Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active riveille?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-partial-active.md"
             },
             {
               "id": "exp-pg-indexes-unused-drop",
               "difficulty": 3,
               "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausien jälkeen. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-unused-drop.md"
             },
             {
               "id": "pg-indexes-btree-selective",
               "difficulty": 3,
               "prompt": "Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % riveistä. Ensimmäinen optimointi?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-indexes-btree-selective.md"
             },
             {
               "id": "pg-indexes-partial",
               "difficulty": 5,
               "prompt": "Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja hidas. Ratkaisu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-indexes-partial.md"
             }
           ]
@@ -4296,245 +4296,245 @@
         {
           "id": "pg-vacuum",
           "label": "VACUUM/autovacuum",
-          "ready": 0,
+          "ready": 34,
           "total": 34,
           "questions": [
             {
               "id": "b02-pg-vacuum-bloat-09",
               "difficulty": 4,
               "prompt": "UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-bloat-09.md"
             },
             {
               "id": "b02-pg-vacuum-full-12",
               "difficulty": 3,
               "prompt": "Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-full-12.md"
             },
             {
               "id": "b02-pg-vacuum-long-xact-11",
               "difficulty": 4,
               "prompt": "Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h. Mitä teet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-long-xact-11.md"
             },
             {
               "id": "b02-pg-vacuum-wrap-10",
               "difficulty": 5,
               "prompt": "Varoitus: database approaching transaction ID wraparound. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b02-pg-vacuum-wrap-10.md"
             },
             {
               "id": "b03-pg-vacuum-analyze-stats",
               "difficulty": 2,
               "prompt": "Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentuneet. Komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-analyze-stats.md"
             },
             {
               "id": "b03-pg-vacuum-freeze-settings",
               "difficulty": 4,
               "prompt": "Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze tuning?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-freeze-settings.md"
             },
             {
               "id": "b03-pg-vacuum-wraparound-warning",
               "difficulty": 4,
               "prompt": "Logissa 'database must be vacuumed within 10 million transactions' — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-wraparound-warning.md"
             },
             {
               "id": "b04-pg-vacuum-analyze-stats",
               "difficulty": 3,
               "prompt": "Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhentuneet arviot bulk-insertin jälkeen. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-analyze-stats.md"
             },
             {
               "id": "b04-pg-vacuum-dead-tuples",
               "difficulty": 3,
               "prompt": "pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy taulussa. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-dead-tuples.md"
             },
             {
               "id": "b04-pg-vacuum-freeze-age",
               "difficulty": 5,
               "prompt": "Varoitus: 'database must be vacuumed within 200 million transactions' — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-freeze-age.md"
             },
             {
               "id": "b04-pg-vacuum-long-xact",
               "difficulty": 4,
               "prompt": "Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in transaction' 12h. Syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-vacuum-long-xact.md"
             },
             {
               "id": "b05-pg-vacuum-analyze-after-bulk",
               "difficulty": 2,
               "prompt": "Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk-operaation jälkeen?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-analyze-after-bulk.md"
             },
             {
               "id": "b05-pg-vacuum-bloat-long-xact",
               "difficulty": 4,
               "prompt": "Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle transactionin. Juurisyy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-bloat-long-xact.md"
             },
             {
               "id": "b05-pg-vacuum-full-lock",
               "difficulty": 4,
               "prompt": "DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-full-lock.md"
             },
             {
               "id": "b05-pg-vacuum-wraparound",
               "difficulty": 5,
               "prompt": "PostgreSQL varoittaa: 'database is not accepting commands to avoid wraparound'. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-vacuum-wraparound.md"
             },
             {
               "id": "b06-pg-vacuum-autovacuum-scale",
               "difficulty": 3,
               "prompt": "Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-autovacuum-scale.md"
             },
             {
               "id": "b06-pg-vacuum-index-cleanup",
               "difficulty": 4,
               "prompt": "VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-index-cleanup.md"
             },
             {
               "id": "b06-pg-vacuum-skip-locked",
               "difficulty": 4,
               "prompt": "DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-skip-locked.md"
             },
             {
               "id": "b07-pg-vacuum-analyze",
               "difficulty": 2,
               "prompt": "Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokomento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-analyze.md"
             },
             {
               "id": "b07-pg-vacuum-autovacuum",
               "difficulty": 3,
               "prompt": "autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-autovacuum.md"
             },
             {
               "id": "b07-pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-bloat.md"
             },
             {
               "id": "b07-pg-vacuum-freeze",
               "difficulty": 5,
               "prompt": "Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-freeze.md"
             },
             {
               "id": "b08-pg-vacuum-autovacuum-threshold",
               "difficulty": 3,
               "prompt": "Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria säädät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-autovacuum-threshold.md"
             },
             {
               "id": "b08-pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-bloat.md"
             },
             {
               "id": "b08-pg-vacuum-freeze",
               "difficulty": 5,
               "prompt": "Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b08-pg-vacuum-freeze.md"
             },
             {
               "id": "b09-pg-vacuum-autovacuum-tuning",
               "difficulty": 4,
               "prompt": "Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-autovacuum-tuning.md"
             },
             {
               "id": "b09-pg-vacuum-bloat-table",
               "difficulty": 4,
               "prompt": "Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables näyttää korkean n_dead_tup. Toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-bloat-table.md"
             },
             {
               "id": "b09-pg-vacuum-freeze-age",
               "difficulty": 5,
               "prompt": "Varoitus: `database must be vacuumed within 200 million transactions`. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-freeze-age.md"
             },
             {
               "id": "b09-pg-vacuum-full-lock",
               "difficulty": 3,
               "prompt": "DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tämä on riski?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-vacuum-full-lock.md"
             },
             {
               "id": "exp-pg-vacuum-autovacuum-tune",
               "difficulty": 3,
               "prompt": "Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeksi usein. Mitä säädät?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-autovacuum-tune.md"
             },
             {
               "id": "exp-pg-vacuum-bloat-wraparound",
               "difficulty": 5,
               "prompt": "Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi. Kiireellinen toimenpide?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-bloat-wraparound.md"
             },
             {
               "id": "exp-pg-vacuum-full-lock",
               "difficulty": 3,
               "prompt": "Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi vastustat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-full-lock.md"
             },
             {
               "id": "exp-pg-vacuum-long-xact",
               "difficulty": 4,
               "prompt": "pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples kasaantuvat. Mitä teet?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-long-xact.md"
             },
             {
               "id": "pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/pg-vacuum-bloat.md"
             }
           ]

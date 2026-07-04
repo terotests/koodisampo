@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**66 / 1225** valmis (**5.4 %**).
+**173 / 1225** valmis (**14.1 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 25 | 180 | 13.9 |
+| PostgreSQL | 132 | 180 | 73.3 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,7 +534,7 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (25/180)
+### PostgreSQL (132/180)
 
 #### PostgreSQL-konfig `pg-config` (24/24)
 
@@ -565,94 +565,94 @@
 | ✅ | 4 | `exp-pg-config-work-mem-sort` | EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC… |
 | ✅ | 4 | `pg-config-work-mem` | Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetu… |
 
-#### CTE ja ikkunafunktiot `pg-cte-window` (0/14)
+#### CTE ja ikkunafunktiot `pg-cte-window` (14/14)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `sqd-cte-materialized-hint` | PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkys… |
-| ⬜ | 3 | `sqd-cte-readability` | Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit? |
-| ⬜ | 4 | `sqd-first-value-partition` | Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä… |
-| ⬜ | 4 | `sqd-lag-mom-comparison` | Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä… |
-| ⬜ | 3 | `sqd-lead-future-row` | Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio? |
-| ⬜ | 3 | `sqd-ntile-buckets` | Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio? |
-| ⬜ | 3 | `sqd-percent-rank-report` | Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio? |
-| ⬜ | 4 | `sqd-pivot-conditional-agg` | Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta? |
-| ⬜ | 3 | `sqd-rank-vs-dense` | Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio? |
-| ⬜ | 4 | `sqd-recursive-cte-hierarchy` | Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten … |
-| ⬜ | 4 | `sqd-row-number-dedup` | Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio? |
-| ⬜ | 3 | `sqd-running-total` | Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu? |
-| ⬜ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
-| ⬜ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
+| ✅ | 4 | `sqd-cte-materialized-hint` | PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkys… |
+| ✅ | 3 | `sqd-cte-readability` | Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit? |
+| ✅ | 4 | `sqd-first-value-partition` | Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä… |
+| ✅ | 4 | `sqd-lag-mom-comparison` | Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä… |
+| ✅ | 3 | `sqd-lead-future-row` | Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio? |
+| ✅ | 3 | `sqd-ntile-buckets` | Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio? |
+| ✅ | 3 | `sqd-percent-rank-report` | Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio? |
+| ✅ | 4 | `sqd-pivot-conditional-agg` | Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta? |
+| ✅ | 3 | `sqd-rank-vs-dense` | Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio? |
+| ✅ | 4 | `sqd-recursive-cte-hierarchy` | Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten … |
+| ✅ | 4 | `sqd-row-number-dedup` | Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio? |
+| ✅ | 3 | `sqd-running-total` | Kumulatiivinen summa päivittäin ilman correlated subquerya. Ratkaisu? |
+| ✅ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
+| ✅ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
 
-#### EXPLAIN/suunnitelmat `pg-explain` (1/30)
+#### EXPLAIN/suunnitelmat `pg-explain` (30/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 3 | `b02-pg-explain-analyze-05` | Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento? |
-| ⬜ | 4 | `b02-pg-explain-nested-07` | Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix? |
-| ⬜ | 3 | `b02-pg-explain-seq-06` | EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono? |
-| ⬜ | 3 | `b02-pg-explain-stats-08` | Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpi… |
+| ✅ | 3 | `b02-pg-explain-analyze-05` | Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento? |
+| ✅ | 4 | `b02-pg-explain-nested-07` | Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix? |
+| ✅ | 3 | `b02-pg-explain-seq-06` | EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono? |
+| ✅ | 3 | `b02-pg-explain-stats-08` | Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpi… |
 | ✅ | 4 | `b03-pg-explain-buffers-hit` | EXPLAIN ANALYZE näyttää hitaudesta — haluat tietää cache hit vs disk re… |
-| ⬜ | 4 | `b03-pg-explain-hash-join-memory` | Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian … |
-| ⬜ | 3 | `b03-pg-explain-index-only-scan` | Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto I… |
-| ⬜ | 4 | `b03-pg-explain-isolation-level` | Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen… |
-| ⬜ | 4 | `b04-pg-explain-buffers-io` | EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hit… |
-| ⬜ | 4 | `b04-pg-explain-cost-settings` | SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus… |
-| ⬜ | 4 | `b04-pg-explain-index-only` | EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usei… |
-| ⬜ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
-| ⬜ | 3 | `b05-pg-explain-hash-join` | EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. V… |
-| ⬜ | 4 | `b05-pg-explain-index-only-scan` | EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index… |
-| ⬜ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
-| ⬜ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
-| ⬜ | 5 | `b06-pg-explain-wal-fpi` | EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F… |
-| ⬜ | 4 | `b07-pg-explain-nested-loop` | Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korja… |
-| ⬜ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
-| ⬜ | 3 | `b07-pg-explain-seq-vs-index` | Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy piene… |
-| ⬜ | 3 | `b08-pg-explain-cost-settings` | Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halve… |
-| ⬜ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
-| ⬜ | 3 | `b08-pg-explain-seq-scan` | Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisi… |
-| ⬜ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
-| ⬜ | 3 | `b09-pg-explain-seq-scan-large` | EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. En… |
-| ⬜ | 4 | `exp-pg-explain-nested-loop` | JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan is… |
-| ⬜ | 3 | `exp-pg-explain-seq-scan-ok` | Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). … |
-| ⬜ | 4 | `exp-pg-explain-stats-stale` | Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väär… |
-| ⬜ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
-| ⬜ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
+| ✅ | 4 | `b03-pg-explain-hash-join-memory` | Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian … |
+| ✅ | 3 | `b03-pg-explain-index-only-scan` | Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto I… |
+| ✅ | 4 | `b03-pg-explain-isolation-level` | Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen… |
+| ✅ | 4 | `b04-pg-explain-buffers-io` | EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hit… |
+| ✅ | 4 | `b04-pg-explain-cost-settings` | SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus… |
+| ✅ | 4 | `b04-pg-explain-index-only` | EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usei… |
+| ✅ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
+| ✅ | 3 | `b05-pg-explain-hash-join` | EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. V… |
+| ✅ | 4 | `b05-pg-explain-index-only-scan` | EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index… |
+| ✅ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
+| ✅ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
+| ✅ | 5 | `b06-pg-explain-wal-fpi` | EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F… |
+| ✅ | 4 | `b07-pg-explain-nested-loop` | Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korja… |
+| ✅ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
+| ✅ | 3 | `b07-pg-explain-seq-vs-index` | Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy piene… |
+| ✅ | 3 | `b08-pg-explain-cost-settings` | Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halve… |
+| ✅ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
+| ✅ | 3 | `b08-pg-explain-seq-scan` | Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisi… |
+| ✅ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
+| ✅ | 3 | `b09-pg-explain-seq-scan-large` | EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. En… |
+| ✅ | 4 | `exp-pg-explain-nested-loop` | JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan is… |
+| ✅ | 3 | `exp-pg-explain-seq-scan-ok` | Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). … |
+| ✅ | 4 | `exp-pg-explain-stats-stale` | Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väär… |
+| ✅ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
+| ✅ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
 
-#### PostgreSQL-indeksit `pg-indexes` (0/30)
+#### PostgreSQL-indeksit `pg-indexes` (30/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 2 | `b02-pg-indexes-btree-02` | WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksi… |
-| ⬜ | 4 | `b02-pg-indexes-covering-04` | Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+? |
-| ⬜ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
-| ⬜ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
-| ⬜ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
-| ⬜ | 4 | `b03-pg-locks-blocking-query` | UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensim… |
-| ⬜ | 4 | `b04-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunte… |
-| ⬜ | 4 | `b04-pg-indexes-expression` | Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella… |
-| ⬜ | 4 | `b04-pg-indexes-gin-jsonb` | Kysely `WHERE data @> '{"status":"active"}'` JSONB-sarakkeessa on hidas… |
-| ⬜ | 3 | `b04-pg-indexes-partial-active` | 90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimoi… |
-| ⬜ | 3 | `b05-pg-indexes-concurrent-create` | Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot inde… |
-| ⬜ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
-| ⬜ | 4 | `b05-pg-indexes-expression` | Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree email… |
-| ⬜ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
-| ⬜ | 3 | `b06-pg-indexes-hash-index` | Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Mil… |
-| ⬜ | 3 | `b06-pg-indexes-include-columns` | Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexis… |
-| ⬜ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
-| ⬜ | 3 | `b07-pg-index-btree-vs-gin` | JSONB @> query on hidas seq scanilla. Mikä indeksityyppi? |
-| ⬜ | 4 | `b07-pg-index-partial` | Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaam… |
-| ⬜ | 3 | `b07-pg-index-unused` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle ind… |
-| ⬜ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
-| ⬜ | 3 | `b08-pg-indexes-multicolumn-order` | Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi? |
-| ⬜ | 4 | `b09-pg-index-composite-order` | Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, te… |
-| ⬜ | 3 | `b09-pg-index-unused-drop` | pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT… |
-| ⬜ | 3 | `exp-pg-indexes-btree-composite` | Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi… |
-| ⬜ | 4 | `exp-pg-indexes-covering` | EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SE… |
-| ⬜ | 3 | `exp-pg-indexes-partial-active` | Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active rive… |
-| ⬜ | 3 | `exp-pg-indexes-unused-drop` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausie… |
-| ⬜ | 3 | `pg-indexes-btree-selective` | Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % rive… |
-| ⬜ | 5 | `pg-indexes-partial` | Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja h… |
+| ✅ | 2 | `b02-pg-indexes-btree-02` | WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksi… |
+| ✅ | 4 | `b02-pg-indexes-covering-04` | Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+? |
+| ✅ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
+| ✅ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
+| ✅ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
+| ✅ | 4 | `b03-pg-locks-blocking-query` | UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensim… |
+| ✅ | 4 | `b04-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunte… |
+| ✅ | 4 | `b04-pg-indexes-expression` | Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella… |
+| ✅ | 4 | `b04-pg-indexes-gin-jsonb` | Kysely `WHERE data @> '{"status":"active"}'` JSONB-sarakkeessa on hidas… |
+| ✅ | 3 | `b04-pg-indexes-partial-active` | 90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimoi… |
+| ✅ | 3 | `b05-pg-indexes-concurrent-create` | Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot inde… |
+| ✅ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
+| ✅ | 4 | `b05-pg-indexes-expression` | Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree email… |
+| ✅ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
+| ✅ | 3 | `b06-pg-indexes-hash-index` | Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Mil… |
+| ✅ | 3 | `b06-pg-indexes-include-columns` | Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexis… |
+| ✅ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
+| ✅ | 3 | `b07-pg-index-btree-vs-gin` | JSONB @> query on hidas seq scanilla. Mikä indeksityyppi? |
+| ✅ | 4 | `b07-pg-index-partial` | Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaam… |
+| ✅ | 3 | `b07-pg-index-unused` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle ind… |
+| ✅ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
+| ✅ | 3 | `b08-pg-indexes-multicolumn-order` | Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi? |
+| ✅ | 4 | `b09-pg-index-composite-order` | Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, te… |
+| ✅ | 3 | `b09-pg-index-unused-drop` | pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT… |
+| ✅ | 3 | `exp-pg-indexes-btree-composite` | Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi… |
+| ✅ | 4 | `exp-pg-indexes-covering` | EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SE… |
+| ✅ | 3 | `exp-pg-indexes-partial-active` | Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active rive… |
+| ✅ | 3 | `exp-pg-indexes-unused-drop` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan = 0 kuukausie… |
+| ✅ | 3 | `pg-indexes-btree-selective` | Taulussa 10M riviä, kysely `WHERE status = 'active'` palauttaa 2 % rive… |
+| ✅ | 5 | `pg-indexes-partial` | Kyselyt kohdistuvat usein `WHERE archived = false`. Indeksi on iso ja h… |
 
 #### JOIN-kuviot `pg-joins` (0/11)
 
@@ -722,44 +722,44 @@
 | ⬜ | 4 | `sqd-search-path-injection` | Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski? |
 | ⬜ | 3 | `sqd-view-column-mask` | Analyytikot eivät saa nähdä henkilötunnuksia. Ensimmäinen kerros? |
 
-#### VACUUM/autovacuum `pg-vacuum` (0/34)
+#### VACUUM/autovacuum `pg-vacuum` (34/34)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `b02-pg-vacuum-bloat-09` | UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpi… |
-| ⬜ | 3 | `b02-pg-vacuum-full-12` | Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski? |
-| ⬜ | 4 | `b02-pg-vacuum-long-xact-11` | Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h.… |
-| ⬜ | 5 | `b02-pg-vacuum-wrap-10` | Varoitus: database approaching transaction ID wraparound. Kiireellinen … |
-| ⬜ | 2 | `b03-pg-vacuum-analyze-stats` | Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentu… |
-| ⬜ | 4 | `b03-pg-vacuum-freeze-settings` | Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze t… |
-| ⬜ | 4 | `b03-pg-vacuum-wraparound-warning` | Logissa 'database must be vacuumed within 10 million transactions' — mi… |
-| ⬜ | 3 | `b04-pg-vacuum-analyze-stats` | Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhen… |
-| ⬜ | 3 | `b04-pg-vacuum-dead-tuples` | pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy t… |
-| ⬜ | 5 | `b04-pg-vacuum-freeze-age` | Varoitus: 'database must be vacuumed within 200 million transactions' —… |
-| ⬜ | 4 | `b04-pg-vacuum-long-xact` | Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in t… |
-| ⬜ | 2 | `b05-pg-vacuum-analyze-after-bulk` | Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk… |
-| ⬜ | 4 | `b05-pg-vacuum-bloat-long-xact` | Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle t… |
-| ⬜ | 4 | `b05-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat? |
-| ⬜ | 5 | `b05-pg-vacuum-wraparound` | PostgreSQL varoittaa: 'database is not accepting commands to avoid wrap… |
-| ⬜ | 3 | `b06-pg-vacuum-autovacuum-scale` | Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät? |
-| ⬜ | 4 | `b06-pg-vacuum-index-cleanup` | VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria? |
-| ⬜ | 4 | `b06-pg-vacuum-skip-locked` | DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete? |
-| ⬜ | 2 | `b07-pg-vacuum-analyze` | Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokome… |
-| ⬜ | 3 | `b07-pg-vacuum-autovacuum` | autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen to… |
-| ⬜ | 4 | `b07-pg-vacuum-bloat` | Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu? |
-| ⬜ | 5 | `b07-pg-vacuum-freeze` | Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä? |
-| ⬜ | 3 | `b08-pg-vacuum-autovacuum-threshold` | Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria sääd… |
-| ⬜ | 4 | `b08-pg-vacuum-bloat` | Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toim… |
-| ⬜ | 5 | `b08-pg-vacuum-freeze` | Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa? |
-| ⬜ | 4 | `b09-pg-vacuum-autovacuum-tuning` | Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö? |
-| ⬜ | 4 | `b09-pg-vacuum-bloat-table` | Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables… |
-| ⬜ | 5 | `b09-pg-vacuum-freeze-age` | Varoitus: `database must be vacuumed within 200 million transactions`. … |
-| ⬜ | 3 | `b09-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tä… |
-| ⬜ | 3 | `exp-pg-vacuum-autovacuum-tune` | Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeks… |
-| ⬜ | 5 | `exp-pg-vacuum-bloat-wraparound` | Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi.… |
-| ⬜ | 3 | `exp-pg-vacuum-full-lock` | Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi… |
-| ⬜ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
-| ⬜ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
+| ✅ | 4 | `b02-pg-vacuum-bloat-09` | UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpi… |
+| ✅ | 3 | `b02-pg-vacuum-full-12` | Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski? |
+| ✅ | 4 | `b02-pg-vacuum-long-xact-11` | Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h.… |
+| ✅ | 5 | `b02-pg-vacuum-wrap-10` | Varoitus: database approaching transaction ID wraparound. Kiireellinen … |
+| ✅ | 2 | `b03-pg-vacuum-analyze-stats` | Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentu… |
+| ✅ | 4 | `b03-pg-vacuum-freeze-settings` | Heavy insert -taulu lähestyy wraparoundia nopeasti. Autovacuum freeze t… |
+| ✅ | 4 | `b03-pg-vacuum-wraparound-warning` | Logissa 'database must be vacuumed within 10 million transactions' — mi… |
+| ✅ | 3 | `b04-pg-vacuum-analyze-stats` | Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhen… |
+| ✅ | 3 | `b04-pg-vacuum-dead-tuples` | pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy t… |
+| ✅ | 5 | `b04-pg-vacuum-freeze-age` | Varoitus: 'database must be vacuumed within 200 million transactions' —… |
+| ✅ | 4 | `b04-pg-vacuum-long-xact` | Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in t… |
+| ✅ | 2 | `b05-pg-vacuum-analyze-after-bulk` | Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk… |
+| ✅ | 4 | `b05-pg-vacuum-bloat-long-xact` | Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle t… |
+| ✅ | 4 | `b05-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat? |
+| ✅ | 5 | `b05-pg-vacuum-wraparound` | PostgreSQL varoittaa: 'database is not accepting commands to avoid wrap… |
+| ✅ | 3 | `b06-pg-vacuum-autovacuum-scale` | Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät? |
+| ✅ | 4 | `b06-pg-vacuum-index-cleanup` | VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria? |
+| ✅ | 4 | `b06-pg-vacuum-skip-locked` | DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete? |
+| ✅ | 2 | `b07-pg-vacuum-analyze` | Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokome… |
+| ✅ | 3 | `b07-pg-vacuum-autovacuum` | autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen to… |
+| ✅ | 4 | `b07-pg-vacuum-bloat` | Taulu on 10 GB mutta data 2 GB — UPDATE-heavy workload. Mitä tapahtuu? |
+| ✅ | 5 | `b07-pg-vacuum-freeze` | Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä? |
+| ✅ | 3 | `b08-pg-vacuum-autovacuum-threshold` | Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria sääd… |
+| ✅ | 4 | `b08-pg-vacuum-bloat` | Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toim… |
+| ✅ | 5 | `b08-pg-vacuum-freeze` | Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa? |
+| ✅ | 4 | `b09-pg-vacuum-autovacuum-tuning` | Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö? |
+| ✅ | 4 | `b09-pg-vacuum-bloat-table` | Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables… |
+| ✅ | 5 | `b09-pg-vacuum-freeze-age` | Varoitus: `database must be vacuumed within 200 million transactions`. … |
+| ✅ | 3 | `b09-pg-vacuum-full-lock` | DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tä… |
+| ✅ | 3 | `exp-pg-vacuum-autovacuum-tune` | Heavy UPDATE -taulu bloataa nopeasti — autovacuum ei käynnisty tarpeeks… |
+| ✅ | 5 | `exp-pg-vacuum-bloat-wraparound` | Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi.… |
+| ✅ | 3 | `exp-pg-vacuum-full-lock` | Ops ehdottaa VACUUM FULL tuotantotaululle päivällä bloatin takia. Miksi… |
+| ✅ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
+| ✅ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
 
 ### Docker (5/142)
 
