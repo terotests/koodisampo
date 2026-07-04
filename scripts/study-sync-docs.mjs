@@ -74,7 +74,13 @@ function buildStubSection(q) {
 function buildManualSection(q, body) {
   let content = stripFrontmatter(body);
   content = stripLeadingTitle(content);
-  const lines = [`*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`, "", content];
+  const lines = [
+    `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
+    "",
+    "> **Valmis oppitunti** — käsin kirjoitettu `opiskelu/lessons/" + q.id + ".md`.",
+    "",
+    content,
+  ];
   if (q.sourceUrl && !content.includes(q.sourceUrl)) {
     lines.push("", `[Lue lisää](${q.sourceUrl})`);
   }

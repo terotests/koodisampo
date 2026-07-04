@@ -5,8 +5,9 @@ Yksi tiedosto per kysymys-id (`content/question-banks`). Nimet: `{question-id}.m
 Nämä synkronoidaan Docusaurus-sivustolle:
 
 ```bash
-npm run study:sync
-npm run build:study
+npm run study:sync      # generoi study/docs/topics/
+npm run study:dev       # synkronoi + paikallinen dev-palvelin
+npm run build:study     # tuotantobuild
 ```
 
 Julkaistu osoitteessa: https://terotests.github.io/koodisampo/opiskelu/
