@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**75 / 1249** valmis (**6 %**).
+**66 / 1225** valmis (**5.4 %**).
 
 ## Domain-yhteenveto
 
@@ -10,7 +10,7 @@
 |--------|---------|----------|---|
 | C++ | 22 | 204 | 10.8 |
 | JavaScript | 0 | 234 | 0 |
-| PostgreSQL | 34 | 204 | 16.7 |
+| PostgreSQL | 25 | 180 | 13.9 |
 | Docker | 5 | 142 | 3.5 |
 | Linux | 4 | 148 | 2.7 |
 | Qt | 1 | 134 | 0.7 |
@@ -534,15 +534,14 @@
 | ⬜ | 3 | `b12-ts-utility-pick-omit` | Julkinen API-tyyppi ilman salaisia kenttiä. Kaksi vaihtoehtoa? |
 | ⬜ | 4 | `prod-js-unknown-vs-any` | API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` o… |
 
-### PostgreSQL (34/204)
+### PostgreSQL (25/180)
 
-#### PostgreSQL-konfig `pg-config` (33/33)
+#### PostgreSQL-konfig `pg-config` (24/24)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `b02-pg-config-connections-15` | 500 microservice instanssia × 10 connection = pool explosion. Ratkaisu? |
 | ✅ | 3 | `b02-pg-config-shared-14` | PostgreSQL cache hit ratio matala — ensimmäinen muistiparametri tarkist… |
-| ✅ | 4 | `b02-pg-config-work-mem-13` | Iso sort/hash join spillaa diskiin — logissa 'temporary file'. Parametr… |
 | ✅ | 3 | `b03-pg-config-effective-cache` | Planner valitsee seq scanin vaikka data mahtuu muistiin — SSD-palvelin … |
 | ✅ | 3 | `b03-pg-config-random-page-cost` | Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä? |
 | ✅ | 3 | `b03-pg-config-ssl-mode` | App yhdistää Postgresiin internetin yli — compliance vaatii salatun yht… |
@@ -552,23 +551,15 @@
 | ✅ | 4 | `b04-pg-config-maintenance-work-mem` | CREATE INDEX kestää tunteja isolla taululla — logissa 'external sort'. … |
 | ✅ | 3 | `b05-pg-config-log-min-duration` | Haluat lokittaa vain > 500ms kestävät queryt tuotannossa. Mikä GUC? |
 | ✅ | 3 | `b05-pg-config-shared-buffers` | 16 GB RAM palvelin — shared_buffers on 128MB oletus. Tyypillinen lähtös… |
-| ✅ | 4 | `b05-pg-config-work-mem-sort` | Monimutkainen sort overflowaa levylle — temp files kasvavat. Mikä param… |
 | ✅ | 3 | `b06-pg-config-checkpoint-timeout` | Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät? |
 | ✅ | 5 | `b06-pg-config-huge-pages` | Suuri shared_buffers — TLB miss hidastaa. Mitä Linux + PostgreSQL optim… |
 | ✅ | 3 | `b06-pg-config-parallel-workers` | Raporttikysely ei parallelize — seq scan yksin. Mitä parametria nostat? |
 | ✅ | 4 | `b06-pg-config-track-io-timing` | pg_stat_statements näyttää query time mutta ei I/O breakdown. Mitä enab… |
 | ✅ | 4 | `b06-pg-locks-advisory` | App-tason mutex kahden workerin välillä — ei taululock. Mitä PostgreSQL… |
 | ✅ | 2 | `b07-pg-config-log-slow` | Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf? |
-| ✅ | 3 | `b07-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lä… |
-| ✅ | 4 | `b07-pg-config-work-mem` | Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nosta… |
 | ✅ | 4 | `b08-pg-config-checkpoint` | IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeou… |
 | ✅ | 3 | `b08-pg-config-max-connections` | Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Ark… |
-| ✅ | 3 | `b08-pg-config-shared-buffers` | Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Ty… |
-| ✅ | 4 | `b08-pg-config-work-mem` | Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Pa… |
 | ✅ | 3 | `b09-pg-config-pgbouncer-pool` | 500 microservice-instanssia avaa oman PG-yhteyden — `too many connectio… |
-| ✅ | 3 | `b09-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen läh… |
-| ✅ | 4 | `b09-pg-config-work-mem` | Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Par… |
-| ✅ | 4 | `b10-pg-config-shared-buffers-01` | PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäin… |
 | ✅ | 3 | `exp-pg-config-max-connections` | App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context … |
 | ✅ | 3 | `exp-pg-config-shared-buffers` | Uusi DB-palvelin 32 GB RAM — junior asettaa shared_buffers = 32GB. Miks… |
 | ✅ | 4 | `exp-pg-config-work-mem-sort` | EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC… |
@@ -593,7 +584,7 @@
 | ⬜ | 4 | `sqd-window-frame-rows` | 7 päivän liukuva keskiarvo. Frame-määrittely? |
 | ⬜ | 3 | `sqd-window-vs-group-by` | Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s… |
 
-#### EXPLAIN/suunnitelmat `pg-explain` (1/37)
+#### EXPLAIN/suunnitelmat `pg-explain` (1/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -609,40 +600,31 @@
 | ⬜ | 4 | `b04-pg-explain-cost-settings` | SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus… |
 | ⬜ | 4 | `b04-pg-explain-index-only` | EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usei… |
 | ⬜ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
-| ⬜ | 4 | `b05-pg-explain-analyze-buffers` | Query hidas — epäilet levylukemista cache-missin vuoksi. Mitä EXPLAIN-l… |
 | ⬜ | 3 | `b05-pg-explain-hash-join` | EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. V… |
 | ⬜ | 4 | `b05-pg-explain-index-only-scan` | EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index… |
-| ⬜ | 3 | `b05-pg-explain-stats-stale` | Planner valitsee seq scan vaikka indeksi on olemassa — ANALYZE ajettu k… |
 | ⬜ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
 | ⬜ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
 | ⬜ | 5 | `b06-pg-explain-wal-fpi` | EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F… |
-| ⬜ | 4 | `b07-pg-explain-analyze-buffers` | Query hidas — EXPLAIN näyttää Seq Scan mutta et tiedä onko cache-osuma.… |
 | ⬜ | 4 | `b07-pg-explain-nested-loop` | Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korja… |
 | ⬜ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
 | ⬜ | 3 | `b07-pg-explain-seq-vs-index` | Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy piene… |
-| ⬜ | 4 | `b08-pg-explain-analyze-buffers` | EXPLAIN ANALYZE näyttää hitaan queryn — haluat nähdä cache vs disk I/O.… |
 | ⬜ | 3 | `b08-pg-explain-cost-settings` | Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halve… |
 | ⬜ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
 | ⬜ | 3 | `b08-pg-explain-seq-scan` | Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisi… |
-| ⬜ | 4 | `b09-pg-explain-analyze-buffers` | Kysely on hidas mutta EXPLAIN cost näyttää pieneltä. Seuraava diagnosti… |
-| ⬜ | 3 | `b09-pg-explain-missing-stats` | Bulk INSERT jälkeen kyselyt käyttävät väärää suunnitelmaa. Nopea korjau… |
 | ⬜ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
 | ⬜ | 3 | `b09-pg-explain-seq-scan-large` | EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. En… |
-| ⬜ | 4 | `exp-pg-explain-analyze-buffers` | EXPLAIN näyttää Index Scan mutta query hidas — epäilet cache-missiä. Mi… |
 | ⬜ | 4 | `exp-pg-explain-nested-loop` | JOIN palauttaa miljoona riviä — plan näyttää Nested Loop ja seq scan is… |
 | ⬜ | 3 | `exp-pg-explain-seq-scan-ok` | Junior haluaa poistaa seq scanin pienestä lookup-taulusta (200 riviä). … |
 | ⬜ | 4 | `exp-pg-explain-stats-stale` | Plan muuttui yllättäen huonoksi bulk loadin jälkeen — row estimate väär… |
 | ⬜ | 4 | `pg-explain-analyze` | Kysely hidastui tuotannossa. Ennen konfiguraation säätöä: miten näet to… |
 | ⬜ | 3 | `pg-explain-seq-scan` | EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin… |
 
-#### PostgreSQL-indeksit `pg-indexes` (0/38)
+#### PostgreSQL-indeksit `pg-indexes` (0/30)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ⬜ | 2 | `b02-pg-indexes-btree-02` | WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksi… |
 | ⬜ | 4 | `b02-pg-indexes-covering-04` | Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+? |
-| ⬜ | 3 | `b02-pg-indexes-gin-01` | JSONB-kenttä `metadata @> '{"tag": "urgent"}'` — seq scan hidas. Indeks… |
-| ⬜ | 3 | `b02-pg-indexes-partial-03` | Indeksi vain active riveille — 90% archived. Optimointi? |
 | ⬜ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
 | ⬜ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
 | ⬜ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
@@ -654,22 +636,16 @@
 | ⬜ | 3 | `b05-pg-indexes-concurrent-create` | Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot inde… |
 | ⬜ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
 | ⬜ | 4 | `b05-pg-indexes-expression` | Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree email… |
-| ⬜ | 4 | `b05-pg-indexes-gin-jsonb` | Query: `WHERE data @> '{"status": "active"}'` JSONB-sarakkeessa — seq s… |
 | ⬜ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
 | ⬜ | 3 | `b06-pg-indexes-hash-index` | Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Mil… |
 | ⬜ | 3 | `b06-pg-indexes-include-columns` | Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexis… |
 | ⬜ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
 | ⬜ | 3 | `b07-pg-index-btree-vs-gin` | JSONB @> query on hidas seq scanilla. Mikä indeksityyppi? |
-| ⬜ | 4 | `b07-pg-index-covering` | EXPLAIN näyttää Index Scan + Heap Fetch — query tarvitsee kaksi saraket… |
 | ⬜ | 4 | `b07-pg-index-partial` | Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaam… |
 | ⬜ | 3 | `b07-pg-index-unused` | Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle ind… |
 | ⬜ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
-| ⬜ | 4 | `b08-pg-indexes-covering` | EXPLAIN: Index Scan + Heap Fetch hidastaa — query tarvitsee vain indeks… |
 | ⬜ | 3 | `b08-pg-indexes-multicolumn-order` | Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi? |
-| ⬜ | 4 | `b08-pg-indexes-partial` | Query: `WHERE status = 'active'` — 95% rivistä archived. Indeksi koko t… |
 | ⬜ | 4 | `b09-pg-index-composite-order` | Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, te… |
-| ⬜ | 3 | `b09-pg-index-gin-jsonb` | JSONB-kentässä haku `@>` containment-operaatiolla on hidas seq scan. In… |
-| ⬜ | 4 | `b09-pg-index-partial-active` | Kysely hakee vain `status = 'active'` rivejä 10M taulusta — index on su… |
 | ⬜ | 3 | `b09-pg-index-unused-drop` | pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT… |
 | ⬜ | 3 | `exp-pg-indexes-btree-composite` | Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi… |
 | ⬜ | 4 | `exp-pg-indexes-covering` | EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SE… |

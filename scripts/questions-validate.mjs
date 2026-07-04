@@ -68,6 +68,19 @@ for (const [prompt, dupIds] of prompts.entries()) {
   if (dupIds.length > 1) errors.push(`Duplicate prompt (${dupIds.length}): ${dupIds.join(", ")}`);
 }
 
+const postgresByFeature = new Map();
+for (const q of qs.filter((item) => item.domain === "postgres")) {
+  const feature = String(q.featureId || "").trim();
+  if (!feature) continue;
+  if (!postgresByFeature.has(feature)) postgresByFeature.set(feature, []);
+  postgresByFeature.get(feature).push(q.id);
+}
+for (const [feature, dupIds] of postgresByFeature.entries()) {
+  if (dupIds.length >= 4) {
+    warnings.push(`postgres featureId ${feature} repeated ${dupIds.length}x: ${dupIds.join(", ")}`);
+  }
+}
+
 if (qs.length < 1000) warnings.push(`Only ${qs.length} questions (expected >= 1000)`);
 
 console.log(`Validated ${qs.length} questions`);

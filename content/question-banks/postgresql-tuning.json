@@ -358,41 +358,6 @@
       "featurePoints": 3
     },
     {
-      "id": "exp-pg-explain-analyze-buffers",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "EXPLAIN näyttää Index Scan mutta query hidas — epäilet cache-missiä. Mitä lisäät?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja I/O-mittaukset",
-          "correct": true
-        },
-        {
-          "text": "Vain EXPLAIN ilman ANALYZE näyttää cache-missit ja todelliset ajat",
-          "correct": false
-        },
-        {
-          "text": "SELECT * korjaa plannerin arviot ja paljastaa buffer cache -käytön",
-          "correct": false
-        },
-        {
-          "text": "SET enable_seqscan = off aina kun epäilet cache-missiä Index Scanissa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "ANALYZE mittaa suorituksen, BUFFERS I/O — using explain docs.",
-      "wrongFeedback": "Pelkkä EXPLAIN arvioi kustannuksia — ei mittaa todellista aikaa.",
-      "sourceRef": "postgresql/docs/using-explain",
-      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
-      "featureId": "postgres:explain-analyze",
-      "featurePoints": 4
-    },
-    {
       "id": "exp-pg-explain-nested-loop",
       "chapter": "pg-explain",
       "domain": "postgres",
@@ -743,41 +708,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b02-pg-indexes-gin-01",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "JSONB-kenttä `metadata @> '{\"tag\": \"urgent\"}'` — seq scan hidas. Indeksityyppi?",
-      "choices": [
-        {
-          "text": "GIN index JSONB:lle",
-          "correct": true
-        },
-        {
-          "text": "B-tree primary key riittää",
-          "correct": false
-        },
-        {
-          "text": "Hash index kaikkeen",
-          "correct": false
-        },
-        {
-          "text": "Ei indeksiä koskaan JSONB",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "GIN tukee containment @> — PostgreSQL JSON indexes docs.",
-      "wrongFeedback": "B-tree ei optimoi @> operaatiota. GIN on JSONB-hakuun.",
-      "sourceRef": "postgresql/json-indexing",
-      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
-      "featureId": "postgres:gin-jsonb",
-      "featurePoints": 4
-    },
-    {
       "id": "b02-pg-indexes-btree-02",
       "chapter": "pg-indexes",
       "domain": "postgres",
@@ -809,40 +739,6 @@
       "sourceRef": "postgresql/indexes-types",
       "sourceUrl": "https://www.postgresql.org/docs/current/indexes-types.html",
       "featureId": "postgres:btree-composite",
-      "featurePoints": 3
-    },
-    {
-      "id": "b02-pg-indexes-partial-03",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker"
-      ],
-      "prompt": "Indeksi vain active riveille — 90% archived. Optimointi?",
-      "choices": [
-        {
-          "text": "Partial index CREATE INDEX ... WHERE status = 'active'",
-          "correct": true
-        },
-        {
-          "text": "Full index kaikille riveille on pienempi kun 90 % on archived",
-          "correct": false
-        },
-        {
-          "text": "Duplicate table active-riveille korvaa partial indexin ylläpidossa",
-          "correct": false
-        },
-        {
-          "text": "VACUUM only riittää optimoimaan haun active-riveille archived-taulussa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Partial index pienentää kokoa — PostgreSQL partial indexes.",
-      "wrongFeedback": "Full index turha archived riveille. WHERE clause partial index.",
-      "sourceRef": "postgresql/indexes-partial",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
-      "featureId": "postgres:partial-index",
       "featurePoints": 3
     },
     {
@@ -1151,40 +1047,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/sql-vacuum.html",
       "featureId": "postgres:vacuum-full",
       "featurePoints": 3
-    },
-    {
-      "id": "b02-pg-config-work-mem-13",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru"
-      ],
-      "prompt": "Iso sort/hash join spillaa diskiin — logissa 'temporary file'. Parametri?",
-      "choices": [
-        {
-          "text": "Kasvata work_mem session/query tasolla harkiten sort/hash spilliin",
-          "correct": true
-        },
-        {
-          "text": "shared_buffers=0 antaa sort/hash-operaatioille enemmän muistia per query",
-          "correct": false
-        },
-        {
-          "text": "max_connections=10000 pienentää temp file -käyttöä isoissa sorteissa",
-          "correct": false
-        },
-        {
-          "text": "Poista sort kyselystä koska temp file tarkoittaa riittävää work_memiä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "work_mem rajoittaa sort/hash muistia — PostgreSQL runtime config.",
-      "wrongFeedback": "Liian pieni work_mem → temp files. Nosta kohtuullisesti.",
-      "sourceRef": "postgresql/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
-      "featureId": "postgres:work-mem",
-      "featurePoints": 4
     },
     {
       "id": "b02-pg-config-shared-14",
@@ -2301,41 +2163,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b05-pg-indexes-gin-jsonb",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Query: `WHERE data @> '{\"status\": \"active\"}'` JSONB-sarakkeessa — seq scan hidas. Indeksityyppi?",
-      "choices": [
-        {
-          "text": "GIN index JSONB:lle — tukee @>, ?, ?& operaattoreita",
-          "correct": true
-        },
-        {
-          "text": "B-tree data-sarakkeelle riittää",
-          "correct": false
-        },
-        {
-          "text": "Hash index JSONB:lle",
-          "correct": false
-        },
-        {
-          "text": "Ei indeksiä — JSONB ei indeksoitu",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "GIN for jsonb containment — PostgreSQL jsonb indexes.",
-      "wrongFeedback": "B-tree ei tue @> operaattoria tehokkaasti. GIN on JSONB-hakuun.",
-      "sourceRef": "postgresql/docs/jsonb-indexing",
-      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
-      "featureId": "postgres:gin-jsonb",
-      "featurePoints": 4
-    },
-    {
       "id": "b05-pg-indexes-concurrent-create",
       "chapter": "pg-indexes",
       "domain": "postgres",
@@ -2473,76 +2300,6 @@
       "sourceRef": "postgresql/docs/explicit-joins",
       "sourceUrl": "https://www.postgresql.org/docs/current/explicit-joins.html",
       "featureId": "postgres:hash-join",
-      "featurePoints": 3
-    },
-    {
-      "id": "b05-pg-explain-analyze-buffers",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Query hidas — epäilet levylukemista cache-missin vuoksi. Mitä EXPLAIN-lippua lisäät?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local block hits",
-          "correct": true
-        },
-        {
-          "text": "EXPLAIN ilman ANALYZE riittää I/O-analyysiin",
-          "correct": false
-        },
-        {
-          "text": "SELECT pg_sleep(1)",
-          "correct": false
-        },
-        {
-          "text": "VACUUM FULL ennen EXPLAIN",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "BUFFERS shows read/hit counts — using explain docs.",
-      "wrongFeedback": "Pelkkä cost estimate ei näytä cache-hittejä. ANALYZE + BUFFERS.",
-      "sourceRef": "postgresql/docs/using-explain-buffers",
-      "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
-      "featureId": "postgres:explain-buffers",
-      "featurePoints": 4
-    },
-    {
-      "id": "b05-pg-explain-stats-stale",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Planner valitsee seq scan vaikka indeksi on olemassa — ANALYZE ajettu kuukausi sitten. Korjaus?",
-      "choices": [
-        {
-          "text": "ANALYZE taulu — päivitä planner-statistiikka",
-          "correct": true
-        },
-        {
-          "text": "DROP INDEX ja luo uudelleen aina",
-          "correct": false
-        },
-        {
-          "text": "REINDEX korvaa ANALYZEn",
-          "correct": false
-        },
-        {
-          "text": "Planner ei käytä statistiikkaa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Stale stats mislead planner — routine maintenance ANALYZE.",
-      "wrongFeedback": "Vanhentuneet stats → huono plan. Aja ANALYZE.",
-      "sourceRef": "postgresql/docs/routine-vacuuming",
-      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
-      "featureId": "postgres:analyze-stats",
       "featurePoints": 3
     },
     {
@@ -2754,41 +2511,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
       "featureId": "postgres:shared-buffers",
       "featurePoints": 3
-    },
-    {
-      "id": "b05-pg-config-work-mem-sort",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Monimutkainen sort overflowaa levylle — temp files kasvavat. Mikä parametri vaikuttaa sort-muistiin per operaatio?",
-      "choices": [
-        {
-          "text": "work_mem — sort/hash-muisti per operaatio, kerro max_connections huomioiden",
-          "correct": true
-        },
-        {
-          "text": "shared_buffers korjaa sort overflow -ongelman koska sort käyttää page cachea",
-          "correct": false
-        },
-        {
-          "text": "maintenance_work_mem vaikuttaa tavallisten SELECT-kyselyiden sort-operaatioihin",
-          "correct": false
-        },
-        {
-          "text": "wal_buffers määrittää sort/hash-operaatioiden muistikatto per yhteys",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "work_mem limits sort/hash memory — can spill to disk if too low.",
-      "wrongFeedback": "Sort käyttää work_mem per operation. Liian pieni → disk spill.",
-      "sourceRef": "postgresql/docs/runtime-config-resource-work-mem",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
-      "featureId": "postgres:work-mem",
-      "featurePoints": 4
     },
     {
       "id": "b05-pg-config-log-min-duration",
@@ -3384,41 +3106,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b07-pg-index-covering",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "EXPLAIN näyttää Index Scan + Heap Fetch — query tarvitsee kaksi saraketta. Optimointi?",
-      "choices": [
-        {
-          "text": "INCLUDE-sarakkeet indeksiin — covering index mahdollistaa index-only scanin",
-          "correct": true
-        },
-        {
-          "text": "Seq scan on aina nopein kun query tarvitsee kaksi saraketta indeksistä",
-          "correct": false
-        },
-        {
-          "text": "Lisää JOIN toiseen tauluun jotta heap fetch ohitetaan automaattisesti",
-          "correct": false
-        },
-        {
-          "text": "Poista WHERE-ehto jotta planner valitsee Index Scan + Heap Fetch -polun",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Covering indexes with INCLUDE — PostgreSQL docs.",
-      "wrongFeedback": "Heap fetch hidastaa. INCLUDE tuo data indeksiin.",
-      "sourceRef": "postgresql/indexes-index-only-scans",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
-      "featureId": "postgres:covering-index",
-      "featurePoints": 4
-    },
-    {
       "id": "b07-pg-index-btree-vs-gin",
       "chapter": "pg-indexes",
       "domain": "postgres",
@@ -3487,41 +3174,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ALL-INDEXES-VIEW",
       "featureId": "postgres:unused-index",
       "featurePoints": 3
-    },
-    {
-      "id": "b07-pg-explain-analyze-buffers",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Query hidas — EXPLAIN näyttää Seq Scan mutta et tiedä onko cache-osuma. Parempi komento?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja buffer hit/read -luvut",
-          "correct": true
-        },
-        {
-          "text": "EXPLAIN ilman ANALYZE riittää näyttämään cache-osumat ja todelliset ajat",
-          "correct": false
-        },
-        {
-          "text": "SELECT pg_sleep(1) ennen kyselyä paljastaa onko data cachessa vai levyltä",
-          "correct": false
-        },
-        {
-          "text": "VACUUM FULL ennen EXPLAIN:ia kertoo cache vs disk I/O -erittelyn",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "BUFFERS shows read vs cache — PostgreSQL EXPLAIN.",
-      "wrongFeedback": "ANALYZE ajaa queryn. BUFFERS kertoo I/O vs cache.",
-      "sourceRef": "postgresql/sql-explain",
-      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
-      "featureId": "postgres:explain-buffers",
-      "featurePoints": 4
     },
     {
       "id": "b07-pg-explain-nested-loop",
@@ -3769,76 +3421,6 @@
       "featurePoints": 5
     },
     {
-      "id": "b07-pg-config-shared-buffers",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Uusi DB-palvelin 32 GB RAM — shared_buffers oletuksessa. Tyypillinen lähtöarvo?",
-      "choices": [
-        {
-          "text": "Noin 25 % RAM — esim. 8 GB, testaa ja mittaa workloadin mukaan",
-          "correct": true
-        },
-        {
-          "text": "100 % RAM shared_buffers-arvoksi maksimoi PostgreSQLin cache-kerroksen",
-          "correct": false
-        },
-        {
-          "text": "128 MB oletusarvo riittää 32 GB palvelimella ilman säätöä",
-          "correct": false
-        },
-        {
-          "text": "shared_buffers ei vaikuta suorituskykyyn koska OS page cache hoitaa kaiken",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "shared_buffers is primary cache — PostgreSQL runtime config.",
-      "wrongFeedback": "Liian suuri voi kilpailla OS cache:n kanssa. ~25% on lähtökohta.",
-      "sourceRef": "postgresql/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
-      "featureId": "postgres:shared-buffers",
-      "featurePoints": 3
-    },
-    {
-      "id": "b07-pg-config-work-mem",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Monimutkainen sort spillaa diskiin — logissa temporary file. Mitä nostat?",
-      "choices": [
-        {
-          "text": "work_mem — sort/hash-muisti per operaatio, nosta varovasti yhteyksien kanssa",
-          "correct": true
-        },
-        {
-          "text": "max_connections = 10000 antaa sortille enemmän muistia per yhteys",
-          "correct": false
-        },
-        {
-          "text": "random_page_cost = 0 estää sortin spillaamisen levylle",
-          "correct": false
-        },
-        {
-          "text": "Poista sort ORDER BY:stä jotta temp file -ongelma poistuu",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "work_mem limits sort/hash memory — PostgreSQL GUC.",
-      "wrongFeedback": "Liian korkea work_mem × connections = OOM. Nosta harkiten.",
-      "sourceRef": "postgresql/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
-      "featureId": "postgres:work-mem",
-      "featurePoints": 4
-    },
-    {
       "id": "b07-pg-config-log-slow",
       "chapter": "pg-config",
       "domain": "postgres",
@@ -3872,111 +3454,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT",
       "featureId": "postgres:slow-log",
       "featurePoints": 2
-    },
-    {
-      "id": "b08-pg-indexes-partial",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Query: `WHERE status = 'active'` — 95% rivistä archived. Indeksi koko tauluun turha. Ratkaisu?",
-      "choices": [
-        {
-          "text": "CREATE INDEX ... WHERE status = 'active' — partial index aktiivisille riveille",
-          "correct": true
-        },
-        {
-          "text": "Seq scan on aina nopein kun 95 % riveistä on archived-tilassa",
-          "correct": false
-        },
-        {
-          "text": "Partial index ei ole tuettu PostgreSQLissä — vain full index toimii",
-          "correct": false
-        },
-        {
-          "text": "Hash index status-sarakkeelle korvaa partial indexin archived-tilanteessa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Partial indexes index subset — PostgreSQL partial indexes.",
-      "wrongFeedback": "Partial index pienempi ja nopeampi kun query matchaa WHERE-lauseen.",
-      "sourceRef": "postgresql/docs/indexes-partial",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
-      "featureId": "postgres:partial-index",
-      "featurePoints": 4
-    },
-    {
-      "id": "b08-pg-indexes-covering",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "EXPLAIN: Index Scan + Heap Fetch hidastaa — query tarvitsee vain indeksisarakkeet. Optimointi?",
-      "choices": [
-        {
-          "text": "INCLUDE columns — covering index mahdollistaa index-only scanin",
-          "correct": true
-        },
-        {
-          "text": "random_page_cost = 0 poistaa heap fetch -vaiheen Index Scan -polusta",
-          "correct": false
-        },
-        {
-          "text": "Covering index on saatavilla vain MySQL:ssä, PostgreSQL tarvitsee CLUSTER:in",
-          "correct": false
-        },
-        {
-          "text": "Indeksin poisto nopeuttaa kyselyä kun kaikki sarakkeet ovat indeksissä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "INCLUDE adds non-key columns to index — PostgreSQL indexes.",
-      "wrongFeedback": "Index-only scan välttää heap fetch jos visibility map OK.",
-      "sourceRef": "postgresql/docs/indexes-index-only-scans",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
-      "featureId": "postgres:covering-index",
-      "featurePoints": 4
-    },
-    {
-      "id": "b08-pg-explain-analyze-buffers",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "EXPLAIN ANALYZE näyttää hitaan queryn — haluat nähdä cache vs disk I/O. Lisäparametri?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local hit ja read -luvut",
-          "correct": true
-        },
-        {
-          "text": "EXPLAIN VERBOSE riittää näyttämään cache vs disk I/O -erittelyn",
-          "correct": false
-        },
-        {
-          "text": "BUFFERS vaatii superuser-oikeudet aina, myös read-only diagnostiikassa",
-          "correct": false
-        },
-        {
-          "text": "strace postgres-prosessilla korvaa BUFFERS-tiedon cache-misseistä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "BUFFERS shows buffer usage — EXPLAIN docs.",
-      "wrongFeedback": "BUFFERS erottaa cache hit vs read. Käytä tuotantodiagnostiikassa varovasti ANALYZEn kanssa.",
-      "sourceRef": "postgresql/docs/sql-explain",
-      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
-      "featureId": "postgres:explain-buffers",
-      "featurePoints": 4
     },
     {
       "id": "b08-pg-explain-seq-scan",
@@ -4081,76 +3558,6 @@
       "sourceRef": "postgresql/docs/vacuum-bloat",
       "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
       "featureId": "postgres:vacuum-bloat",
-      "featurePoints": 4
-    },
-    {
-      "id": "b08-pg-config-shared-buffers",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "guru",
-        "project-lead"
-      ],
-      "prompt": "Uusi dedicated DB-palvelin 32 GB RAM — shared_buffers alussa oletus. Tyypillinen lähtöarvo?",
-      "choices": [
-        {
-          "text": "Noin 25 % RAM — esim. 8 GB, testaa ja mittaa pg_stat_bgwriterilla",
-          "correct": true
-        },
-        {
-          "text": "100 % RAM shared_buffers-arvoksi estää OS page cache -käytön kokonaan",
-          "correct": false
-        },
-        {
-          "text": "shared_buffers ei vaikuta suorituskykyyn dedicated DB-palvelimella",
-          "correct": false
-        },
-        {
-          "text": "128 MB oletusarvo riittää 32 GB palvelimella ilman lisäsäätöä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "shared_buffers PostgreSQL cache — tuning wiki / docs.",
-      "wrongFeedback": "Liian suuri shared_buffers voi hidastaa. 25% lähtö, sitten pg_stat_bgwriter.",
-      "sourceRef": "postgresql/docs/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
-      "featureId": "postgres:shared-buffers",
-      "featurePoints": 3
-    },
-    {
-      "id": "b08-pg-config-work-mem",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Monimutkainen sort/hash query spillaa diskiin — temp files kasvavat. Parametri?",
-      "choices": [
-        {
-          "text": "work_mem — sort/hash-muisti per operaatio, kerro concurrent ops huomioiden",
-          "correct": true
-        },
-        {
-          "text": "maintenance_work_mem vaikuttaa tavallisten SELECT-kyselyiden sort/hash-operaatioihin",
-          "correct": false
-        },
-        {
-          "text": "work_mem = total RAM antaa jokaiselle sortille maksimimuistin",
-          "correct": false
-        },
-        {
-          "text": "temp_file_limit = 0 nopeuttaa sort/hash-operaatioita estämällä spillin",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "work_mem per sort/hash node — can multiply — config docs.",
-      "wrongFeedback": "work_mem per operation — monta sorttia = monta × work_mem. Nosta varovasti.",
-      "sourceRef": "postgresql/docs/work-mem",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
-      "featureId": "postgres:work-mem",
       "featurePoints": 4
     },
     {
@@ -4400,41 +3807,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b09-pg-index-partial-active",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Kysely hakee vain `status = 'active'` rivejä 10M taulusta — index on suuri ja hidas. Optimointi?",
-      "choices": [
-        {
-          "text": "Partial index WHERE status = 'active' — pienempi ja nopeampi aktiivisille",
-          "correct": true
-        },
-        {
-          "text": "Full index kaikille riveille on aina pienempi kuin partial index 10M taulussa",
-          "correct": false
-        },
-        {
-          "text": "Seq scan on aina nopein kun haetaan vain active-rivejä suuresta taulusta",
-          "correct": false
-        },
-        {
-          "text": "CLUSTER korvaa partial indexin status = 'active' -kyselyissä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Partial indexes — PostgreSQL docs CREATE INDEX.",
-      "wrongFeedback": "Partial index kattaa vain relevantit rivit — pienempi ja tehokkaampi.",
-      "sourceRef": "postgresql/indexes-partial",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-partial.html",
-      "featureId": "postgres:partial-index",
-      "featurePoints": 4
-    },
-    {
       "id": "b09-pg-index-composite-order",
       "chapter": "pg-indexes",
       "domain": "postgres",
@@ -4468,41 +3840,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
       "featureId": "postgres:composite-index",
       "featurePoints": 4
-    },
-    {
-      "id": "b09-pg-index-gin-jsonb",
-      "chapter": "pg-indexes",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "JSONB-kentässä haku `@>` containment-operaatiolla on hidas seq scan. Index-tyyppi?",
-      "choices": [
-        {
-          "text": "GIN index jsonb_path_ops tai jsonb_ops — @> containment-hakuun",
-          "correct": true
-        },
-        {
-          "text": "B-tree index JSONB:lle on paras valinta @>-operaattorille",
-          "correct": false
-        },
-        {
-          "text": "Hash index JSON containment-hakuun tukee @>-operaattoria tehokkaasti",
-          "correct": false
-        },
-        {
-          "text": "JSONB ei tue indeksejä PostgreSQLissä — vain seq scan toimii",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "GIN for JSONB — PostgreSQL jsonb indexing.",
-      "wrongFeedback": "GIN tukee JSONB containment- ja key-operaatioita.",
-      "sourceRef": "postgresql/jsonb-indexing",
-      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING",
-      "featureId": "postgres:gin-jsonb",
-      "featurePoints": 3
     },
     {
       "id": "b09-pg-index-unused-drop",
@@ -4608,76 +3945,6 @@
       "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",
       "featureId": "postgres:join-algorithm",
       "featurePoints": 4
-    },
-    {
-      "id": "b09-pg-explain-analyze-buffers",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Kysely on hidas mutta EXPLAIN cost näyttää pieneltä. Seuraava diagnostiikka?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — todelliset ajat ja I/O-mittaukset",
-          "correct": true
-        },
-        {
-          "text": "EXPLAIN ilman ANALYZE riittää kun cost näyttää pieneltä mutta kysely hidas",
-          "correct": false
-        },
-        {
-          "text": "Kysely on nopea — cost-arvio on aina totuus plannerin arvioissa",
-          "correct": false
-        },
-        {
-          "text": "BUFFERS toimii vain replika-instansseissa, ei primary-palvelimella",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "EXPLAIN ANALYZE BUFFERS — PostgreSQL performance tips.",
-      "wrongFeedback": "Cost on arvio. ANALYZE ajaa kyselyn, BUFFERS näyttää cache-missit.",
-      "sourceRef": "postgresql/explain-analyze",
-      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
-      "featureId": "postgres:explain-analyze",
-      "featurePoints": 4
-    },
-    {
-      "id": "b09-pg-explain-missing-stats",
-      "chapter": "pg-explain",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Bulk INSERT jälkeen kyselyt käyttävät väärää suunnitelmaa. Nopea korjaus?",
-      "choices": [
-        {
-          "text": "ANALYZE taulu — päivitä planner-statistiikka bulk loadin jälkeen",
-          "correct": true
-        },
-        {
-          "text": "VACUUM FULL heti bulk INSERTin jälkeen ennen muita ylläpitotoimia",
-          "correct": false
-        },
-        {
-          "text": "REINDEX DATABASE korjaa planner-suunnitelman bulk loadin jälkeen",
-          "correct": false
-        },
-        {
-          "text": "Planner korjautuu automaattisesti minuutissa ilman ANALYZE-komentoa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "ANALYZE updates statistics — PostgreSQL routine maintenance.",
-      "wrongFeedback": "Bulk load muuttaa datajakaumaa. ANALYZE päivittää statsit.",
-      "sourceRef": "postgresql/routine-vacuuming",
-      "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-STATISTICS",
-      "featureId": "postgres:analyze-stats",
-      "featurePoints": 3
     },
     {
       "id": "b09-pg-vacuum-bloat-table",
@@ -4820,76 +4087,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b09-pg-config-shared-buffers",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Uusi DB-palvelin 32 GB RAM — DBA säätää shared_buffers. Tyypillinen lähtöarvo?",
-      "choices": [
-        {
-          "text": "Noin 25 % RAM — PostgreSQL wiki tuning, mutta mitataan workloadilla",
-          "correct": true
-        },
-        {
-          "text": "90 % RAM shared_buffers — maksimoi cache ja korvaa OS page cache",
-          "correct": false
-        },
-        {
-          "text": "128 MB riittää aina 32 GB palvelimella ilman lisäsäätöä",
-          "correct": false
-        },
-        {
-          "text": "shared_buffers korvaa OS pagecachen kokonaan dedicated DB-palvelimella",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "shared_buffers tuning — PostgreSQL wiki runtime config.",
-      "wrongFeedback": "Liian suuri shared_buffers voi hidastaa. ~25 % on lähtökohta, säädä mitaten.",
-      "sourceRef": "postgresql/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-SHARED-BUFFERS",
-      "featureId": "postgres:shared-buffers",
-      "featurePoints": 3
-    },
-    {
-      "id": "b09-pg-config-work-mem",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Monimutkaiset sort/hash JOINit spillaa diskiin — temp files kasvaa. Parametri?",
-      "choices": [
-        {
-          "text": "work_mem — muistia sort/hash-operaatioille per operaatio",
-          "correct": true
-        },
-        {
-          "text": "maintenance_work_mem korjaa query sort/hash spill -ongelman SELECT-kyselyissä",
-          "correct": false
-        },
-        {
-          "text": "max_connections pienemmäksi antaa sortille enemmän muistia per yhteys",
-          "correct": false
-        },
-        {
-          "text": "temp_file_limit = 0 estää spillin ja nopeuttaa sort/hash-operaatioita",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "work_mem — PostgreSQL runtime config.",
-      "wrongFeedback": "Sort/hash käyttää work_mem per node. Liian suuri × connections = OOM risk.",
-      "sourceRef": "postgresql/runtime-config-resource-work-mem",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM",
-      "featureId": "postgres:work-mem",
-      "featurePoints": 4
-    },
-    {
       "id": "b09-pg-config-pgbouncer-pool",
       "chapter": "pg-config",
       "domain": "postgres",
@@ -4923,41 +4120,6 @@
       "sourceUrl": "https://www.pgbouncer.org/usage.html",
       "featureId": "postgres:pgbouncer",
       "featurePoints": 3
-    },
-    {
-      "id": "b10-pg-config-shared-buffers-01",
-      "chapter": "pg-config",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "project-lead"
-      ],
-      "prompt": "PostgreSQL cache hit ratio on matala 32 GB RAM -palvelimella. Ensimmäinen konfiguraatiomuutos?",
-      "choices": [
-        {
-          "text": "Kasvata shared_buffers maltillisesti — esim. 25 % RAM, katso docs",
-          "correct": true
-        },
-        {
-          "text": "Aseta shared_buffers = 100 % RAM maksimoidaksesi cache hit ration",
-          "correct": false
-        },
-        {
-          "text": "Poista checkpointit parantaaksesi cache hit ratioa matalalla shared_buffersilla",
-          "correct": false
-        },
-        {
-          "text": "REINDEX kaikille tauluille on ensimmäinen askel matalassa cache hit ratiossa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "shared_buffers vaikuttaa page cache -käyttäytymiseen — säädä mitattuna.",
-      "wrongFeedback": "Liian suuri shared_buffers voi haitata — noudata PostgreSQL-ohjetta.",
-      "sourceRef": "postgresql/runtime-config-resource",
-      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html",
-      "featureId": "postgres:shared-buffers",
-      "featurePoints": 4
     }
   ]
 }
