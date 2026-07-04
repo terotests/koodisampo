@@ -170,6 +170,22 @@ const differentSession = pickQuestion(stableCoworker, 50, emptyQuizHistory(), {
 assert(stablePick === stableRepeat, "same nonce + session seed is deterministic");
 assert(stablePick !== differentSession, "sessionPickSeed changes the pick");
 
+// 10) Ei taso-/kokemusrajaa: matalalla karmalla voi tulla vaikea kysymys
+const lowKarmaCoworker = { id: "coworker-1-tools", kind: "coworker", topic: "tools", char: "W", name: "Junior" };
+let sawHard = false;
+for (let nonce = 1; nonce <= 80; nonce += 1) {
+  const { question } = pickQuestion(lowKarmaCoworker, 5, emptyQuizHistory(), {
+    pickNonce: nonce,
+    sessionPickSeed: 9001,
+    playerSpecialty: "cpp",
+  });
+  if (question.difficulty >= 4) {
+    sawHard = true;
+    break;
+  }
+}
+assert(sawHard, "low karma coworker should still receive difficulty 4+ questions");
+
 console.log("question_randomness.test.mjs OK");
 console.log(`  Total questions: ${allQ.length}`);
 console.log(`  Robot Framework: ${rfCount}`);
