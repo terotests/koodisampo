@@ -1,5 +1,4 @@
 import type { WebGame } from "./boot";
-import { colorizeMapLineHtml } from "../../hosts/shared/mapGlyphs.mjs";
 import { mountElevatorToolbar } from "../../hosts/shared/elevatorToolbarDom.mjs";
 import { PLAYER_SPECIALTY_OPTIONS } from "../../hosts/shared/playerSpecialty.mjs";
 import {
@@ -19,13 +18,12 @@ import {
   setMobileToolbar,
   setMobileToolbarVisible,
   syncMobileClass,
-  syncMobileMapScale,
   updateMobileMapToolbar,
   viewportWidth,
   watchViewportLayout,
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
-import { patchMapGrid } from "./render/mapGrid";
+import { patchIsometricGrid } from "./render/isometricCanvas";
 import { clearMapView, ensureMapShell, setScrollContent } from "./render/viewRoot";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -291,10 +289,6 @@ export function mountGameUI(game: WebGame) {
       return `<div class="stats">Kuolemat: <b>${state.deaths}</b> &nbsp;|&nbsp; Palkka: <span class="salary">${esc(formatSalary(state.salary))}</span>${time}${needs}</div>`;
     }
 
-    function colorizeLine(line, state, row = 0) {
-      return colorizeMapLineHtml(line, state, row, esc);
-    }
-
     function screenHeader(state: State) {
       if (isMobileLayout()) return "";
       return `<div class="banner">${esc(BANNER)}</div>${statsLine(state)}`;
@@ -375,10 +369,12 @@ export function mountGameUI(game: WebGame) {
         header.innerHTML = studyLine +
           (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px;text-align:center">${esc(state.floorTitle)}</div>` : "");
       }
-      patchMapGrid(grid, lines, state, colorizeLine);
+      void patchIsometricGrid(grid, lines, state);
       if (isMobileLayout()) {
         lastMobileMapLines = lines;
-        const syncScale = () => syncMobileMapScale(lines, grid);
+        const syncScale = () => {
+          void patchIsometricGrid(grid, lines, state);
+        };
         syncScale();
         requestAnimationFrame(syncScale);
         showMobilePlayToolbar();
@@ -651,8 +647,8 @@ export function mountGameUI(game: WebGame) {
             });
             if (lastMobileMapLines.length > 0 && mapEl) {
               requestAnimationFrame(() => {
-                const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
-                if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+                lastRenderKey = "";
+                render(game.snapshot());
               });
             }
           }
@@ -1280,9 +1276,8 @@ export function mountGameUI(game: WebGame) {
         }
       }
       syncMobileClass();
-      if (mobile && lastMobileMapLines.length > 0 && mapEl) {
-        const grid = mapEl.querySelector<HTMLElement>("[data-map-grid]");
-        if (grid) syncMobileMapScale(lastMobileMapLines, grid);
+      if (mobile && lastMobileMapLines.length > 0) {
+        lastRenderKey = "";
       }
       lastRenderKey = "";
       render(game.snapshot());

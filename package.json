@@ -16,6 +16,7 @@
     "study:import": "node scripts/study-import-oppitunnit.mjs",
     "build:stories": "npm run build --workspace=web",
     "build:ranger": "node scripts/build-ranger.mjs",
+    "fetch:iso-tiles": "node scripts/fetch-isometric-tiles.mjs",
     "play": "npm run build:ranger && node hosts/terminal/run.mjs",
     "play:web": "npm run build:ranger && npm run dev --workspace=web-game",
     "questions:list": "node scripts/questions-list.mjs",

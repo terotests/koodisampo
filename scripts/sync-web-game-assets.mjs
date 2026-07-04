@@ -36,6 +36,9 @@ fs.copyFileSync(
   path.join(out, "dialogues/pack.json"),
 );
 copyDir(path.join(root, "content/npc-behaviors"), path.join(out, "npc-behaviors"));
+if (fs.existsSync(path.join(root, "content/tiles/iso"))) {
+  copyDir(path.join(root, "content/tiles/iso"), path.join(root, "web-game/public/tiles/iso"));
+}
 fs.mkdirSync(path.join(out, "quiz-reactions"), { recursive: true });
 fs.copyFileSync(
   path.join(root, "content/quiz-reactions/pack.json"),

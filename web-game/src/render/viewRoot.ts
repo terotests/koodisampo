@@ -23,7 +23,7 @@ export function setScrollContent(mapEl: HTMLElement, html: string) {
 
 export function ensureMapShell(mapEl: HTMLElement): {
   header: HTMLElement;
-  grid: HTMLPreElement;
+  grid: HTMLElement;
   hint: HTMLElement;
 } {
   mapEl.classList.remove("encounter-view");
@@ -35,8 +35,8 @@ export function ensureMapShell(mapEl: HTMLElement): {
     header.dataset.mapHeader = "1";
     wrap.appendChild(header);
 
-    const grid = document.createElement("pre");
-    grid.className = "map-grid";
+    const grid = document.createElement("div");
+    grid.className = "map-grid iso-map-host";
     grid.dataset.mapGrid = "1";
     wrap.appendChild(grid);
 
@@ -56,11 +56,11 @@ export function ensureMapShell(mapEl: HTMLElement): {
       return el;
     }),
     grid: ensureChild(shell, MAP_GRID_SEL, () => {
-      const el = document.createElement("pre");
-      el.className = "map-grid";
+      const el = document.createElement("div");
+      el.className = "map-grid iso-map-host";
       el.dataset.mapGrid = "1";
       return el;
-    }) as HTMLPreElement,
+    }),
     hint: ensureChild(shell, MAP_HINT_SEL, () => {
       const el = document.createElement("div");
       el.className = "hint";
