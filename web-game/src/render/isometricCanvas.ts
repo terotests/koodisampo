@@ -13,6 +13,7 @@ import {
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
+import { getMapZoomMultiplier } from "../mapZoom";
 import { readStoredRenderTheme } from "../renderTheme";
 import { themeBackgroundColor } from "../theme";
 import {
@@ -70,6 +71,7 @@ function renderSignature(lines: string[], state: MapState): string {
     state.camera?.y ?? "",
     walkFrame,
     readStoredRenderTheme(),
+    getMapZoomMultiplier(),
   ].join("\0");
 }
 
@@ -360,7 +362,7 @@ function paintIsometricMap(
   const cssWidth = canvas.width / (window.devicePixelRatio || 1);
   const cssHeight = canvas.height / (window.devicePixelRatio || 1);
 
-  const scale = playerFocusedScale(cssWidth, cssHeight);
+  const scale = playerFocusedScale(cssWidth, cssHeight, 10, 7, 0.92, getMapZoomMultiplier());
   const tileWidth = TILE_WIDTH * scale;
   const tileHeight = TILE_HEIGHT * scale;
 
