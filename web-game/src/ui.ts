@@ -683,13 +683,19 @@ export function mountGameUI(game: WebGame) {
     let lastToolbarKey = "";
     let lastElevatorToolbarKey = "";
 
+    /** Map grid is shown for both free roam and prison; mobile dpad must stay available in prison. */
+    function isMobileMapPlayScreen(state?: State): boolean {
+      const screen = state?.screen;
+      return (screen === "map" || screen === "prison") && Boolean(state?.lines);
+    }
+
     function renderMapToolbar(state?: State) {
       const onElevator = Boolean(state?.onElevator);
       const elevatorPickerCollapsed = Boolean(state?.elevatorPickerCollapsed);
 
       if (isMobileLayout()) {
         const toolbarKey = `${state?.screen ?? "map"}-${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}`;
-        const onMapScreen = state?.screen === "map" && Boolean(state?.lines);
+        const onMapScreen = isMobileMapPlayScreen(state);
         setMobilePlayView(onMapScreen);
         setMobileDpadVisible(mobileDpadEl, onMapScreen);
         if (onMapScreen && toolbarEl && mobileDpadEl) {
@@ -828,7 +834,7 @@ export function mountGameUI(game: WebGame) {
         return;
       }
       const key = renderKey(state);
-      const onMobileMap = isMobileLayout() && state.screen === "map" && Boolean(state.lines);
+      const onMobileMap = isMobileLayout() && isMobileMapPlayScreen(state);
       setMobilePlayView(onMobileMap);
       setMobileDpadVisible(mobileDpadEl, onMobileMap);
       if (!onMobileMap) {
