@@ -22,12 +22,14 @@ Vanha `if` template-funktiossa: **molemmat haarat** täytyy kääntää kaikille
 **`if constexpr`** (C++17):
 
 ```cpp
+#include <cmath>
+
 template<typename T>
 T square(T x) {
     if constexpr (std::is_integral_v<T>) {
         return x * x;
     } else {
-        return x * x;  // eri logiikka floatille
+        return std::pow(x, 2);  // liukuluvuille
     }
 }
 ```
