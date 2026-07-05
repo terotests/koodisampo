@@ -82,6 +82,7 @@ export function playerFocusedScale(
   focusCols = 10,
   focusRows = 7,
   padding = 0.92,
+  zoomMultiplier = 1,
 ): number {
-  return fitTileScale(focusCols, focusRows, canvasWidth, canvasHeight, padding);
+  return fitTileScale(focusCols, focusRows, canvasWidth, canvasHeight, padding) * zoomMultiplier;
 }

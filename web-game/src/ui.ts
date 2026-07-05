@@ -27,6 +27,7 @@ import {
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
 import { patchIsometricGrid } from "./render/isometricCanvas";
+import { mountMapZoomControls, syncMapZoomControls } from "./render/mapZoomControls";
 import { clearMapView, ensureMapShell, setScrollContent } from "./render/viewRoot";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -434,6 +435,7 @@ export function mountGameUI(game: WebGame) {
           (state.floorTitle ? `<div style="color:#39c5cf;margin-bottom:8px;text-align:center">${esc(state.floorTitle)}</div>` : "");
       }
       void patchIsometricGrid(grid, lines, state);
+      mountMapZoomControls(grid);
       if (isMobileLayout()) {
         lastMobileMapLines = lines;
         const syncScale = () => {
@@ -1362,6 +1364,13 @@ export function mountGameUI(game: WebGame) {
 
     document.addEventListener("koodisampo-render-theme-change", () => {
       lastRenderKey = "";
+      render(game.snapshot());
+    });
+
+    document.addEventListener("koodisampo-map-zoom-change", () => {
+      lastRenderKey = "";
+      const grid = mapEl?.querySelector<HTMLElement>("[data-map-grid]");
+      if (grid) syncMapZoomControls(grid);
       render(game.snapshot());
     });
 
