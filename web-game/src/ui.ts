@@ -531,6 +531,26 @@ export function mountGameUI(game: WebGame) {
         return html;
       }
 
+      if (ov.type === "arrest") {
+        html += `<div class="overlay-title">═══ Kiinniotto ═══</div>`;
+        html += `<div class="entity"><span class="entity-char">[ ${esc(ov.catcherChar || "?")} ]</span> <span class="entity-name">${esc(ov.catcherName || "Poliisi")}</span></div>`;
+        html += `<div class="greeting">${esc(ov.reasonLine || "")}</div>`;
+        html += `<div class="hint" style="margin:8px 0">${esc(ov.evidenceHint || "")}</div>`;
+        html += choiceRow("1", '<span class="choice-num">[1]</span> Selitä tilanne');
+        html += choiceRow("2", '<span class="choice-num">[2]</span> Kiistä syytteet');
+        html += choiceRow("3", '<span class="choice-num">[3]</span> Luovuta');
+        if (isMobileLayout()) {
+          hideMobileChoiceToolbar();
+        } else {
+          setToolbar([
+            { key: "1", label: "1 selitä" },
+            { key: "2", label: "2 kiistä" },
+            { key: "3", label: "3 luovuta", cls: "muted" },
+          ]);
+        }
+        return html;
+      }
+
       if (ov.type === "action") {
         html += `<div class="overlay-title">═══ Käytä esinettä ═══</div>`;
         html += `<div class="greeting">Kohde: <b>${esc(ov.targetName)}</b></div>`;
@@ -916,7 +936,7 @@ export function mountGameUI(game: WebGame) {
           `<pre style="white-space:pre-wrap;background:transparent;border:none;padding:0;margin:0">${esc(invText)}</pre>`,
         );
         setToolbar([{ key: "enter", label: "Enter — takaisin" }, { key: "i", label: "i takaisin" }]);
-        hintEl.textContent = "Enter / mikä tahansa näppäin = takaisin kartalle | q = lopeta";
+        hintEl.textContent = "1–9 = pudota esine | Enter = takaisin kartalle | q = lopeta";
         return;
       }
 

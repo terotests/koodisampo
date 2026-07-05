@@ -191,6 +191,9 @@ class PlayerTools {
     if (itemId == "official_badge") {
       return "virallinen kulkulupa"
     }
+    if (itemId == "promoted_card") {
+      return "ylennyskortti"
+    }
     if (itemId == "shed_key") {
       return "vajan avain"
     }
@@ -198,6 +201,147 @@ class PlayerTools {
       return "USB-tikku"
     }
     return (this.activeLabel())
+  }
+
+  fn droppableIdAt:string (index:int) {
+    def idx:int 0
+    if (hasCrowbar) {
+      if (idx == index) {
+        return "crowbar"
+      }
+      idx = idx + 1
+    }
+    if (hasShovel) {
+      if (idx == index) {
+        return "shovel"
+      }
+      idx = idx + 1
+    }
+    if (hasSledgehammer) {
+      if (idx == index) {
+        return "sledgehammer"
+      }
+      idx = idx + 1
+    }
+    if (hasStolenCard) {
+      if (idx == index) {
+        return "access_card"
+      }
+      idx = idx + 1
+    }
+    if ((strlen heldCoworkerCardOwner) > 0) {
+      if (idx == index) {
+        return "coworker_card"
+      }
+      idx = idx + 1
+    }
+    if (hasPromotedCard) {
+      if (idx == index) {
+        return "promoted_card"
+      }
+      idx = idx + 1
+    }
+    if (hasOfficialBadge) {
+      if (idx == index) {
+        return "official_badge"
+      }
+      idx = idx + 1
+    }
+    if (hasShedKey) {
+      if (idx == index) {
+        return "shed_key"
+      }
+      idx = idx + 1
+    }
+    if (hasUsbDrive) {
+      if (idx == index) {
+        return "usb_drive"
+      }
+    }
+    return ""
+  }
+
+  fn drop:boolean (toolId:string) {
+    if (toolId == "crowbar") {
+      if (hasCrowbar == false) {
+        return false
+      }
+      hasCrowbar = false
+      if (activeTool == "crowbar") {
+        activeTool = ""
+        this.cycleActive()
+      }
+      return true
+    }
+    if (toolId == "shovel") {
+      if (hasShovel == false) {
+        return false
+      }
+      hasShovel = false
+      if (activeTool == "shovel") {
+        activeTool = ""
+        this.cycleActive()
+      }
+      return true
+    }
+    if (toolId == "sledgehammer") {
+      if (hasSledgehammer == false) {
+        return false
+      }
+      hasSledgehammer = false
+      if (activeTool == "sledgehammer") {
+        activeTool = ""
+        this.cycleActive()
+      }
+      return true
+    }
+    if (toolId == "access_card") {
+      if (hasStolenCard == false) {
+        return false
+      }
+      hasStolenCard = false
+      this.recalcAccessTier()
+      return true
+    }
+    if (toolId == "coworker_card") {
+      if ((strlen heldCoworkerCardOwner) < 1) {
+        return false
+      }
+      heldCoworkerCardOwner = ""
+      this.recalcAccessTier()
+      return true
+    }
+    if (toolId == "promoted_card") {
+      if (hasPromotedCard == false) {
+        return false
+      }
+      hasPromotedCard = false
+      this.recalcAccessTier()
+      return true
+    }
+    if (toolId == "official_badge") {
+      if (hasOfficialBadge == false) {
+        return false
+      }
+      hasOfficialBadge = false
+      this.recalcAccessTier()
+      return true
+    }
+    if (toolId == "shed_key") {
+      if (hasShedKey == false) {
+        return false
+      }
+      hasShedKey = false
+      return true
+    }
+    if (toolId == "usb_drive") {
+      if (hasUsbDrive == false) {
+        return false
+      }
+      hasUsbDrive = false
+      return true
+    }
+    return false
   }
 
   fn fillInventory:void (view:InventoryView) {
@@ -247,6 +391,29 @@ class PlayerTools {
         }
       }
     }
+    def dropLabels:[string]
+    def dropIdx:int 0
+    while (dropIdx < 9) {
+      def dropId:string (this.droppableIdAt(dropIdx))
+      if ((strlen dropId) < 1) {
+        dropIdx = 9
+        continue
+      }
+      def dropLabel:string (this.pickupLabel(dropId))
+      push dropLabels ((to_string (dropIdx + 1)) + " = pudota " + dropLabel)
+      dropIdx = dropIdx + 1
+    }
+    if ((array_length dropLabels) > 0) {
+      push lines ""
+      push lines "── Pudota ──"
+      def li:int 0
+      def ln:int (array_length dropLabels)
+      while (li < ln) {
+        push lines ("  " + (at dropLabels li))
+        li = li + 1
+      }
+    }
     view.lines = lines
+    view.droppableLabels = dropLabels
   }
 }

@@ -435,6 +435,13 @@ function handleMenuKey(key) {
 
 function processEncounterAfterChoice() {
   const result = session.encounterResult;
+  if (result === "arrest") {
+    overlay = {
+      type: "arrest",
+      ...serializeArrestView(session.getArrestView()),
+    };
+    return;
+  }
   if (result === "card_return") {
     overlay = {
       type: "cardReturn",
@@ -470,6 +477,22 @@ function ensureQuizRecorded(quiz) {
 }
 
 function buildEncounterSnapshot(base) {
+  if (session.encounterResult === "arrest") {
+    overlay = {
+      type: "arrest",
+      ...serializeArrestView(session.getArrestView()),
+    };
+    return {
+      ...base,
+      encounter: {
+        mode: "arrest",
+        char: session.pendingEntityChar,
+        name: session.pendingEntityName,
+      },
+      overlay: serializeOverlay(overlay),
+    };
+  }
+
   // For coworker encounters, let the engine decide between emotional dialogue
   // and quiz before building the snapshot. The engine's onEncounterChoice("talk")
   // checks shouldUseEmotionalDialogue (45% random + emotion-based triggers).
@@ -549,6 +572,16 @@ function buildEncounterSnapshot(base) {
   return payload;
 }
 
+function serializeArrestView(view) {
+  return {
+    catcherName: view.catcherName || "",
+    catcherChar: view.catcherChar || "",
+    reasonLine: view.reasonLine || "",
+    evidenceHint: view.evidenceHint || "",
+    evidenceLocked: view.evidenceLocked === true,
+  };
+}
+
 function serializeOverlay(ov) {
   if (ov.type === "outcome") {
     return {
@@ -584,6 +617,12 @@ function serializeOverlay(ov) {
     return {
       type: "cardReturn",
       entityName: ov.entityName,
+    };
+  }
+  if (ov.type === "arrest") {
+    return {
+      type: "arrest",
+      ...serializeArrestView(ov),
     };
   }
   return { type: ov.type };
@@ -821,6 +860,30 @@ function dismissOverlay() {
 }
 
 function handleOverlayKey(key) {
+  if (overlay?.type === "arrest") {
+    if (key === "1") {
+      dispatch(session, () => session.onArrestChoice("explain"));
+      overlay = null;
+      resetQuizSession();
+      persistWeb();
+      return true;
+    }
+    if (key === "2") {
+      dispatch(session, () => session.onArrestChoice("deny"));
+      overlay = null;
+      resetQuizSession();
+      persistWeb();
+      return true;
+    }
+    if (key === "3") {
+      dispatch(session, () => session.onArrestChoice("cooperate"));
+      overlay = null;
+      resetQuizSession();
+      persistWeb();
+      return true;
+    }
+    return true;
+  }
   if (overlay?.type === "cardReturn") {
     if (key === "1") {
       dispatch(session, () => session.returnCoworkerCard());
@@ -1060,6 +1123,16 @@ function handleKey(key) {
   }
 
   if (session.screen === "encounter") {
+    if (session.encounterResult === "arrest") {
+      if (!overlay || overlay.type !== "arrest") {
+        overlay = {
+          type: "arrest",
+          ...serializeArrestView(session.getArrestView()),
+        };
+      }
+      handleOverlayKey(key);
+      return;
+    }
     if (session.encounterResult === "emotional") {
       const emotionalKey = key === "p" ? "leave" : key;
       dispatch(session, () => session.onEncounterChoice(emotionalKey));

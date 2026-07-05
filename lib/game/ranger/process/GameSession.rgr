@@ -22,6 +22,7 @@ Import "../QuizReactionCatalog.rgr"
 Import "../EmotionalDialogue.rgr"
 Import "../EmotionalAnswer.rgr"
 Import "../InventoryView.rgr"
+Import "../ArrestView.rgr"
 Import "../ActionView.rgr"
 Import "../ProximityGreeting.rgr"
 Import "../WorldClock.rgr"
@@ -109,6 +110,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def pendingGreetNpcId:string ""
   def npcBehaviors:NpcBehaviorRegistry
   def behaviorSeed:int 0
+  def arrestReason:string ""
 
   Constructor () {
     karma = (new FeatureKarma)
@@ -488,10 +490,161 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     def bump:MapEntity (map.bumpAtPlayer())
     if (bump.kind == "police") {
-      this.gameOverPolice()
+      this.startArrestEncounter("police_chase" bump)
       return true
     }
     return false
+  }
+
+  fn startArrestEncounter:void (reason:string catcher:MapEntity) {
+    pendingEntityId = catcher.id
+    pendingEntityChar = catcher.char
+    pendingEntityName = catcher.name
+    pendingEntityKind = catcher.kind
+    pendingStoryId = ""
+    arrestReason = reason
+    encounterResult = "arrest"
+    screen = "encounter"
+    this.markStateDirty()
+  }
+
+  fn startSecurityArrest:void (reason:string) {
+    def catcher:MapEntity (new MapEntity)
+    catcher.id = pendingEntityId
+    catcher.char = pendingEntityChar
+    catcher.name = pendingEntityName
+    catcher.kind = "security"
+    if ((strlen catcher.id) < 1) {
+      catcher.id = "security-arrest"
+    }
+    if ((strlen catcher.char) < 1) {
+      catcher.char = "!"
+    }
+    if ((strlen catcher.name) < 1) {
+      catcher.name = "Turvallisuus"
+    }
+    this.startArrestEncounter(reason catcher)
+  }
+
+  fn arrestReasonLine:string () {
+    if (arrestReason == "police_chase") {
+      return "Syy: takaa-ajo — putoaminen tai väkivalta."
+    }
+    if (arrestReason == "stolen_card") {
+      return "Syy: varastettu kulkukortti vastaanotossa."
+    }
+    if (arrestReason == "attacked_security") {
+      return "Syy: hyökkäys turvallisuushenkilöön."
+    }
+    if (conduct.isWanted()) {
+      def proprietyScore:int (conduct.propriety())
+      def damageScore:int conduct.propertyDamage
+      return ("Syy: etsintäkuulutus — asiallisuus " + (to_string proprietyScore) + ", vahingot " + (to_string damageScore) + ".")
+    }
+    return "Syy: epäilyttävä käytös toimistolla."
+  }
+
+  fn hasArrestEvidence:boolean () {
+    if (map.policeChaseActive) {
+      return true
+    }
+    if (tools.hasCrowbar) {
+      return true
+    }
+    if (tools.hasShovel) {
+      return true
+    }
+    if (tools.hasSledgehammer) {
+      return true
+    }
+    if (tools.hasStolenCard) {
+      return true
+    }
+    if ((strlen tools.heldCoworkerCardOwner) > 0) {
+      return true
+    }
+    if (tools.hasUsbDrive) {
+      return true
+    }
+    if (conduct.propertyDamage >= 6) {
+      return true
+    }
+    if (map.hasAnyOuterWallBreach()) {
+      return true
+    }
+    if (arrestReason == "attacked_security") {
+      return true
+    }
+    if (arrestReason == "stolen_card") {
+      return true
+    }
+    return false
+  }
+
+  fn getArrestView:ArrestView () {
+    def view:ArrestView (new ArrestView)
+    view.catcherName = pendingEntityName
+    view.catcherChar = pendingEntityChar
+    view.reasonLine = (this.arrestReasonLine())
+    view.evidenceLocked = (this.hasArrestEvidence())
+    if (view.evidenceLocked) {
+      view.evidenceHint = "Poliisi tai turvallisuus näkee sinut — tai taskussasi on todisteita (työkalut, kortti…). Selitys ei auta."
+    } {
+      view.evidenceHint = "Selviä todisteita ei näy. Voit yrittää selittää tai kiistää."
+    }
+    return view
+  }
+
+  fn onArrestChoice:void (choice:string) {
+    if (screen != "encounter") {
+      return
+    }
+    if (encounterResult != "arrest") {
+      return
+    }
+    if (choice == "cooperate") {
+      if (pendingEntityKind == "police") {
+        this.gameOverPolice()
+      } {
+        this.gameOverArrested()
+      }
+      return
+    }
+    if (this.hasArrestEvidence()) {
+      map.lastStatus = "Todisteet ovat liian vahvat — selityksesi ei auta."
+      if (pendingEntityKind == "police") {
+        this.gameOverPolice()
+      } {
+        this.gameOverArrested()
+      }
+      return
+    }
+    conduct.addMisconduct(8)
+    map.lastStatus = "He päästivät sinut tingillä — mutta valvonta tiukkenee."
+    arrestReason = ""
+    this.clearEncounter()
+    screen = "map"
+    this.markStateDirty()
+  }
+
+  fn gameOverArrested:void () {
+    this.ensureEngine()
+    engine.deaths = engine.deaths + 1
+    gameOverReason = "Arrested"
+    map.clearPoliceSquad()
+    map.clearOuterWallBreaches()
+    def floor:MapFloor (map.activeFloor())
+    map.playerX = floor.spawnX
+    map.playerY = floor.spawnY
+    map.playerHidden = false
+    map.ensurePlayerOnWalkable()
+    def deathMsg:string ("Kiinni — " + (this.arrestReasonLine()))
+    this.buildMemorialMourners(deathMsg)
+    map.lastStatus = memorialDeathLine
+    arrestReason = ""
+    this.clearEncounter()
+    screen = "gameover"
+    this.markStateDirty()
   }
 
   fn gameOverPolice:void () {
@@ -670,7 +823,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn startEncounter:void (bump:MapEntity) {
     if (bump.kind == "police") {
       if (map.policeChaseActive) {
-        this.gameOverPolice()
+        this.startArrestEncounter("police_chase" bump)
         return
       }
     }
@@ -1809,13 +1962,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     def agentResult:MapEntity (map.tickAgents())
     if ((strlen agentResult.id) > 0) {
       if (agentResult.kind == "police") {
-        this.gameOverPolice()
+        this.startArrestEncounter("police_chase" agentResult)
         return
       }
       if (agentResult.kind == "security") {
-        conduct.arrest()
-        map.teleportToPrison()
-        screen = "prison"
+        this.startArrestEncounter("wanted" agentResult)
         return
       }
       if (encounterCooldown > 0) {
@@ -2574,9 +2725,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (storyId == "stolen-card-caught") {
-      conduct.arrest()
-      map.teleportToPrison()
-      screen = "prison"
+      def recep:MapEntity (map.findEntityById("receptionist"))
+      def catcher:MapEntity (new MapEntity)
+      catcher.id = "receptionist"
+      catcher.char = recep.char
+      catcher.name = recep.name
+      catcher.kind = "security"
+      if ((strlen catcher.char) < 1) {
+        catcher.char = "V"
+      }
+      if ((strlen catcher.name) < 1) {
+        catcher.name = "Vastaanottovirkailija"
+      }
+      this.startArrestEncounter("stolen_card" catcher)
       return
     }
     if (storyId == "modern-cpp-intro") {
@@ -2669,11 +2830,6 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (screen != "map") {
-      return
-    }
-    if (conduct.arrested) {
-      screen = "prison"
-      this.markStateDirty()
       return
     }
     if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
@@ -2826,7 +2982,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       def blocker:MapEntity (map.entityAt(targetX targetY))
       if (blocker.kind == "police") {
         if (map.policeChaseActive) {
-          this.gameOverPolice()
+          this.startArrestEncounter("police_chase" blocker)
           this.markStateDirty()
           return
         }
@@ -2992,12 +3148,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (pendingEntityKind == "security") {
         karma.loseKarma(20)
         conduct.addMisconduct(20)
-        conduct.arrest()
-        map.teleportToPrison()
         map.lastStatus = "Turvallisuus neutraloi hyökkäyksen."
         encounterResult = "attack"
-        this.clearEncounter()
-        screen = "prison"
+        this.startSecurityArrest("attacked_security")
         this.markStateDirty()
         return
       }
@@ -3075,9 +3228,77 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       this.markStateDirty()
       return
     }
+    def dropIdx:int -1
+    if (key == "1") {
+      dropIdx = 0
+    }
+    if (key == "2") {
+      dropIdx = 1
+    }
+    if (key == "3") {
+      dropIdx = 2
+    }
+    if (key == "4") {
+      dropIdx = 3
+    }
+    if (key == "5") {
+      dropIdx = 4
+    }
+    if (key == "6") {
+      dropIdx = 5
+    }
+    if (key == "7") {
+      dropIdx = 6
+    }
+    if (key == "8") {
+      dropIdx = 7
+    }
+    if (key == "9") {
+      dropIdx = 8
+    }
+    if (dropIdx >= 0) {
+      if (this.dropItemAtIndex(dropIdx)) {
+        this.markStateDirty()
+        return
+      }
+      map.lastStatus = "Ei pudotettavaa kohdassa."
+      this.markStateDirty()
+      return
+    }
     screen = "map"
     map.lastStatus = "Takaisin kartalla."
     this.markStateDirty()
+  }
+
+  fn dropItemAtIndex:boolean (index:int) {
+    def toolId:string (tools.droppableIdAt(index))
+    if ((strlen toolId) < 1) {
+      return false
+    }
+    def ownerId:string ""
+    if (toolId == "coworker_card") {
+      ownerId = tools.heldCoworkerCardOwner
+    }
+    def dropX:int map.playerX
+    def dropY:int map.playerY
+    def adjX:int (map.playerX + map.facingX)
+    def adjY:int (map.playerY + map.facingY)
+    if (map.canPlaceDroppedItem(adjX adjY)) {
+      dropX = adjX
+      dropY = adjY
+    } {
+      if (map.canPlaceDroppedItem(map.playerX map.playerY) == false) {
+        map.lastStatus = "Ei tilaa pudottaa esinettä."
+        return false
+      }
+    }
+    if (tools.drop(toolId) == false) {
+      return false
+    }
+    map.dropItemAt(dropX dropY toolId ownerId)
+    def label:string (tools.pickupLabel(toolId))
+    map.lastStatus = ("Pudotit: " + label + "  (kävele päälle poimiaksesi)")
+    return true
   }
 
   fn getInventoryView:InventoryView () {
@@ -3211,7 +3432,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       def sid:string engine.storyId
       this.applyStoryRewards(sid view.outcome)
       engine.returnToMenu()
-      if (screen != "prison") {
+      if (screen != "encounter") {
         screen = "map"
       }
       this.clearEncounter()
