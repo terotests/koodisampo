@@ -3244,7 +3244,11 @@ class WorldMap {
     view.statusLine = lastStatus
     view.ambientLine = overheardMsg
     if (policeChaseActive) {
-      view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!"
+      if (currentFloor == 0) {
+        view.hintLine = "⚠ POLIISIT! Juokse hissille (E) — kulkukortilla pääset turvaan sisälle!"
+      } {
+        view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!"
+      }
     } {
       view.hintLine = "wasd | e=työkalu | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta"
     }

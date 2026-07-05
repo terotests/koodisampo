@@ -1,0 +1,68 @@
+
+class GameOverTextCatalog {
+  def policeLines:[string]
+
+  Constructor () {
+    def empty:[string]
+    policeLines = empty
+  }
+
+  fn reset:void () {
+    def empty:[string]
+    policeLines = empty
+  }
+
+  fn loadDefaults:void () {
+    this.reset()
+    this.addPolice("Poliisi sai sinut kiinni pihalla. Hissi olisi vienyt turvaan — ilman kulkukorttia ulkopuolinen ei pääse perään.")
+    this.addPolice("Käsiraudat lukittuivat ranteesi. Ovi rakennukseen oli metrin päässä, mutta et ehtinyt.")
+    this.addPolice("\"Seis!\" — viimeinen komento ennen lattiaa. Sisällä olisit ollut turvassa, jos korttisi olisi ollut taskussa.")
+    this.addPolice("Kolme mustapaitaista poliisia ympäröi sinut. He eivät voi seurata sinua sisälle ilman kulkukorttia — valitettavasti et päässyt sinne.")
+    this.addPolice("Pihamaa on viimeinen näkymäsi. Rakennuksen kiviseinät suojasivat niitä, joilla oli avain.")
+    this.addPolice("Poliisi pysäytti takaa-ajon. Hissi huokui tyhjyyttä kollegan luokse — sinä et ehtinyt sinne.")
+    this.addPolice("\"Meillä ei ole kulkulupaa tähän rakennukseen\", poliisi mutisee harmistuneena — sinut on kuitenkin saatu kiinni ulkona.")
+    this.addPolice("Juoksit loppuun asti, mutta partio ehti ensin. Sisään olisit päässyt, jos olisit ollut sekunnin nopeampi.")
+    this.addPolice("HR:n soittama 112 toimii. Poliisi ei pääse sisälle, mutta sinä et päässyt pois pihalta.")
+    this.addPolice("Takaa-ajo päättyi ulkoseinää vasten — et sisäseinään. Turva olisi ollut sisällä.")
+    this.addPolice("Poliisi tarkistaa taskusi. Rakennukseen johtava ovi pysyy lukittuna heille — kuten sinullekin, nyt.")
+    this.addPolice("Viimeinen yritys juosta pääovea kohti epäonnistui. Sisällä kollegat jatkavat kahvittelua.")
+    this.addPolice("\"Anteeksi, tarvitsen kulkukortin\", lukee ovikyltti. Poliisi nyökkää: \"Juuri niin.\" Sinä et ole enää vapaa.")
+    this.addPolice("Pihalla on kylmää, käsiraudoissa vielä kylmemmin. Hissiin olisi mahtunut juuri sinä — jos olisit ehtinyt.")
+    this.addPolice("Poliisin radiopuhelu vahvistaa: \"Epäilty saatu.\" Sisäinen turva jäi saavuttamatta.")
+    this.addPolice("Kollega ikkunasta katsoo alas — näkee sinut pihalla poliisin kanssa. Hänellä on kortti, sinulla ei enää vapautta.")
+    this.addPolice("Takaa-ajo kesti kolmekymmentä sekuntia liian kauan. Kulkukortti taskussa, mutta jalat eivät enää kantaneet.")
+    this.addPolice("Poliisi ei astu kynnyksen yli — lupa puuttuu. Sinut saatiin kuitenkin ennen kynnystä.")
+    this.addPolice("Hissi välähti sinisenä pihalla — se odottaa seuraavaa kulkukorttia. Et ollut se seuraava.")
+    this.addPolice("\"Rakennukseen ei pääse ilman lupaa\", huutaa vartija sisältä. Poliisi ulkoa: \"Juuri tämä kaveri yritti!\"")
+    this.addPolice("Viimeinen nurkan takaa juoksu — suoraan partion syliin. Turvallinen kerros jäi yhden hissimatkan päähän.")
+    this.addPolice("Poliisi tarkistaa ovilukon: \"Ei pääsyä.\" Hän tarkistaa sinut: \"Pääsy evätty.\"")
+    this.addPolice("Pihakivet kertovat juoksusta, joka päättyi liian aikaisin. Sisällä olisi ollut hiljaista.")
+    this.addPolice("Et ehtinyt E-ruudulle. Poliisi ehti P-ruudulle.")
+    this.addPolice("Kulkukorttimagneetti piippaa hississä jollekin toiselle. Sinulle piippaa käsiraudat.")
+    this.addPolice("Rakennus seisoo vakaana; sinä et enää. Poliisi jää odottamaan ovelle — turhaan.")
+    this.addPolice("Takaa-ajon loppu kirjoitetaan pöytäkirjaan. Turvallinen sisäpuoli jää lukion taakse.")
+    this.addPolice("Poliisi kokeilee ovea: lukossa. Sinut pidetään: kiinni. Kaksi eri kohtaloa, metrin väli.")
+    this.addPolice("Viimeinen ajatuksesi: \"Jos ehdin vielä hissille…\" — et ehtinyt.")
+    this.addPolice("Game Over. Poliisi pihalla, turva sisällä — et ole enää kumpaankaan.")
+  }
+
+  fn addPolice:void (line:string) {
+    push policeLines line
+  }
+
+  fn policeCount:int () {
+    return (array_length policeLines)
+  }
+
+  fn pickPoliceLine:string (seed:int) {
+    def count:int (this.policeCount())
+    if (count < 1) {
+      return "Kiinni poliisien toimesta."
+    }
+    def idx:int (seed % count)
+    if (idx < 0) {
+      idx = 0 - idx
+    }
+    return (at policeLines idx)
+  }
+}

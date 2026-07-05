@@ -164,7 +164,11 @@ function buildMapFrame(session) {
     lines.push(`  ${styled(view.ambientLine, FG.cyan)}`);
   }
   if (map?.policeChaseActive) {
-    lines.push(`  ${styled("⚠ POLIISIT TAKAA-AJAVAT — P mustalla pohjalla!", FG.red, BOLD)}`);
+    if ((map?.currentFloor ?? 0) === 0) {
+      lines.push(`  ${styled("⚠ POLIISIT! Juokse hissille (E) — kulkukortilla pääset turvaan sisälle!", FG.red, BOLD)}`);
+    } else {
+      lines.push(`  ${styled("⚠ POLIISIT TAKAA-AJAVAT — P mustalla pohjalla!", FG.red, BOLD)}`);
+    }
   }
   const floorRec = getFloorRecommendationStatus(session, personRegistryState, map?.currentFloor ?? 0);
   if (floorRec.total > 0 && !floorRec.complete) {
@@ -676,6 +680,8 @@ function printGameOver(session) {
   const playerName = (session.memorialPlayerName || session.playerDisplayName || "").trim() || "Pelaaja";
   const lines = [
     BANNER,
+    "",
+    `  ${styled("═══ GAME OVER ═══", FG.red, BOLD)}`,
     "",
     `  ${styled(playerName, FG.yellow, BOLD)}`,
     `  ${wrap(deathLine)}`,

@@ -19,6 +19,7 @@ Import "../NpcRelation.rgr"
 Import "../EmotionMath.rgr"
 Import "../DialogueCatalog.rgr"
 Import "../QuizReactionCatalog.rgr"
+Import "../GameOverTextCatalog.rgr"
 Import "../EmotionalDialogue.rgr"
 Import "../EmotionalAnswer.rgr"
 Import "../InventoryView.rgr"
@@ -56,6 +57,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def npcRelations:NpcRelationStore
   def dialogueCatalog:DialogueCatalog
   def quizReactionCatalog:QuizReactionCatalog
+  def gameOverTexts:GameOverTextCatalog
   def emotionMath:EmotionMath
   def eventPerception:EventPerception
   def escalation:Escalation
@@ -124,6 +126,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     dialogueCatalog = (new DialogueCatalog)
     quizReactionCatalog = (new QuizReactionCatalog)
     quizReactionCatalog.loadDefaults()
+    gameOverTexts = (new GameOverTextCatalog)
+    gameOverTexts.loadDefaults()
     emotionMath = (new EmotionMath)
     eventPerception = (new EventPerception)
     escalation = (new Escalation)
@@ -627,10 +631,20 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.markStateDirty()
   }
 
-  fn gameOverArrested:void () {
+  fn policeDeathSeed:int () {
+    def deaths:int (this.exportDeaths())
+    return ((deaths * 73856093) + (map.playerX * 19349663) + (map.playerY * 83492791) + (map.currentFloor * 97))
+  }
+
+  fn pickPoliceDeathLine:string () {
+    def seed:int (this.policeDeathSeed())
+    return (gameOverTexts.pickPoliceLine(seed))
+  }
+
+  fn enterGameOverDeath:void (reason:string deathLine:string) {
     this.ensureEngine()
     engine.deaths = engine.deaths + 1
-    gameOverReason = "Arrested"
+    gameOverReason = reason
     map.clearPoliceSquad()
     map.clearOuterWallBreaches()
     def floor:MapFloor (map.activeFloor())
@@ -638,8 +652,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     map.playerY = floor.spawnY
     map.playerHidden = false
     map.ensurePlayerOnWalkable()
-    def deathMsg:string ("Kiinni — " + (this.arrestReasonLine()))
-    this.buildMemorialMourners(deathMsg)
+    this.buildMemorialMourners(deathLine)
     map.lastStatus = memorialDeathLine
     arrestReason = ""
     this.clearEncounter()
@@ -647,38 +660,32 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.markStateDirty()
   }
 
+  fn gameOverArrested:void () {
+    def deathMsg:string ("Kiinni — " + (this.arrestReasonLine()))
+    this.enterGameOverDeath("Arrested" deathMsg)
+  }
+
   fn gameOverPolice:void () {
-    this.ensureEngine()
-    engine.deaths = engine.deaths + 1
-    gameOverReason = "PoliceCaught"
-    map.clearPoliceSquad()
-    map.clearOuterWallBreaches()
-    def floor:MapFloor (map.activeFloor())
-    map.playerX = floor.spawnX
-    map.playerY = floor.spawnY
-    map.playerHidden = false
-    map.ensurePlayerOnWalkable()
-    this.buildMemorialMourners("Kiinni poliisien toimesta.")
-    map.lastStatus = memorialDeathLine
-    screen = "gameover"
-    this.markStateDirty()
+    def deathLine:string (this.pickPoliceDeathLine())
+    this.enterGameOverDeath("PoliceCaught" deathLine)
   }
 
   fn gameOverFall:void () {
-    this.ensureEngine()
-    engine.deaths = engine.deaths + 1
-    gameOverReason = "FallDeath"
+    this.enterGameOverDeath("FallDeath" "Putosit rakennuksesta ulos.")
+  }
+
+  fn tryEscapePoliceFromCourtyard:void (targetFloor:int) {
+    if (map.policeChaseActive == false) {
+      return
+    }
+    if (targetFloor < 1) {
+      return
+    }
+    if (tools.hasBuildingAccess() == false) {
+      return
+    }
     map.clearPoliceSquad()
-    map.clearOuterWallBreaches()
-    def floor:MapFloor (map.activeFloor())
-    map.playerX = floor.spawnX
-    map.playerY = floor.spawnY
-    map.playerHidden = false
-    map.ensurePlayerOnWalkable()
-    this.buildMemorialMourners("Putosit rakennuksesta ulos.")
-    map.lastStatus = memorialDeathLine
-    screen = "gameover"
-    this.markStateDirty()
+    map.lastStatus = "Pääsit sisälle turvaan — poliisi jää pihalle ilman kulkukorttia."
   }
 
   fn handleBuildingExit:void () {
@@ -796,18 +803,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn encounterDeath:void (message:string) {
-    this.ensureEngine()
-    engine.deaths = engine.deaths + 1
-    this.applyDeathReset()
-    def floor:MapFloor (map.activeFloor())
-    map.playerX = floor.spawnX
-    map.playerY = floor.spawnY
-    map.playerHidden = false
-    map.ensurePlayerOnWalkable()
-    map.lastStatus = (message + " Heräsit toimiston spawn-pisteellä.")
-    this.clearEncounter()
-    screen = "map"
-    encounterResult = "death"
+    this.enterGameOverDeath("EncounterDeath" message)
   }
 
   fn clearEncounter:void () {
@@ -1164,7 +1160,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         this.markStateDirty()
         return
       }
+      def wasCourtyard:boolean (map.currentFloor == 0)
       if (map.tryElevatorTo(idx)) {
+        if (wasCourtyard) {
+          this.tryEscapePoliceFromCourtyard(idx)
+        }
         this.markStateDirty()
       }
     }
@@ -3132,7 +3132,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (this.isCeoEncounter()) {
         def totalKarma:int (karma.total())
         if (totalKarma < 100) {
-          this.encounterDeath("YOU ARE FIRED!!!!")
+          this.encounterDeath("Potkut — toimitusjohtajaan hyökkäys on urasi loppu.")
           this.markStateDirty()
           return
         }

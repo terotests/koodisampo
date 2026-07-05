@@ -107,9 +107,16 @@ export function runDeathResetTests() {
     dispatch(session, () => {
       session.encounterDeath("Testikuolema.");
     });
-    assert(session.screen === "map", "encounter death stays on map");
-    assert(session.playerSalary() === 0, `salary reset after encounter death (${session.playerSalary()})`);
-    assert(map.tileAt(target.x, target.y) === target.tile, "wall restored after encounter death");
+    assert(session.screen === "gameover", "encounter death goes to gameover");
+    assert(session.playerSalary() === 3000, `salary not reset until revive (${session.playerSalary()})`);
+    assert(map.tileAt(target.x, target.y) === ".", "wall still broken before revive");
+
+    dispatch(session, () => {
+      session.onMapKey("enter");
+    });
+    assert(session.screen === "map", "gameover enter returns to map");
+    assert(session.playerSalary() === 0, `salary reset after revive (${session.playerSalary()})`);
+    assert(map.tileAt(target.x, target.y) === target.tile, "wall restored after revive");
   } finally {
     simEncounter.stop();
   }
