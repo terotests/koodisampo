@@ -2695,6 +2695,132 @@ class WorldMap  {
     this.breachXs = emptyXs;
     this.breachYs = emptyYs;
   };
+  hasAnyOuterWallBreach () {
+    if ( (this.breachFloors.length) > 0 ) {
+      return true;
+    }
+    return false;
+  };
+  canPlaceDroppedItem (x, y) {
+    const tile = this.tileAt(x, y);
+    if ( this.isBlockedTile(tile) ) {
+      return false;
+    }
+    const e = this.entityAt(x, y);
+    if ( (e.id.length) > 0 ) {
+      return false;
+    }
+    return true;
+  };
+  itemCharForTool (toolId) {
+    if ( toolId == "crowbar" ) {
+      return "(";
+    }
+    if ( toolId == "sledgehammer" ) {
+      return "T";
+    }
+    if ( toolId == "shovel" ) {
+      return "/";
+    }
+    if ( toolId == "access_card" ) {
+      return "k";
+    }
+    if ( toolId == "coworker_card" ) {
+      return "k";
+    }
+    if ( toolId == "promoted_card" ) {
+      return "k";
+    }
+    if ( toolId == "official_badge" ) {
+      return "k";
+    }
+    if ( toolId == "shed_key" ) {
+      return "a";
+    }
+    if ( toolId == "usb_drive" ) {
+      return "u";
+    }
+    return "*";
+  };
+  itemNameForTool (toolId) {
+    if ( toolId == "access_card" ) {
+      return "kadonnut kulkukortti";
+    }
+    if ( toolId == "coworker_card" ) {
+      return "löydetty kulkukortti";
+    }
+    if ( toolId == "official_badge" ) {
+      return "virallinen kulkulupa";
+    }
+    if ( toolId == "promoted_card" ) {
+      return "ylennyskortti";
+    }
+    if ( toolId == "shed_key" ) {
+      return "vajan avain";
+    }
+    if ( toolId == "usb_drive" ) {
+      return "USB-tikku";
+    }
+    if ( toolId == "crowbar" ) {
+      return "vasara";
+    }
+    if ( toolId == "shovel" ) {
+      return "lapio";
+    }
+    if ( toolId == "sledgehammer" ) {
+      return "kivivasara";
+    }
+    return "esine";
+  };
+  dropItemAt (x, y, toolId, ownerId) {
+    if ( this.canPlaceDroppedItem(x, y) == false ) {
+      return false;
+    }
+    const floor = this.activeFloor();
+    const item = new MapEntity();
+    item.id = (((("dropped-" + toolId) + "-") + ((x.toString()))) + "-") + ((y.toString()));
+    item.char = this.itemCharForTool(toolId);
+    item.name = this.itemNameForTool(toolId);
+    item.kind = "item";
+    item.itemTool = toolId;
+    item.itemOwner = ownerId;
+    item.x = x;
+    item.y = y;
+    let ents = floor.entities;
+    ents.push(item);
+    floor.entities = ents;
+    return true;
+  };
+  findNearestAgent (kind) {
+    let best = new MapEntity();
+    let bestDist = 999;
+    const floor = this.activeFloor();
+    const ents = floor.entities;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( e.kind != kind ) {
+        i = i + 1;
+        continue;
+      }
+      let dx = e.x - this.playerX;
+      if ( dx < 0 ) {
+        dx = 0 - dx;
+      }
+      let dy = e.y - this.playerY;
+      if ( dy < 0 ) {
+        dy = 0 - dy;
+      }
+      const dist = dx + dy;
+      if ( dist < bestDist ) {
+        bestDist = dist;
+        best = e;
+      }
+      i = i + 1;
+    };
+    return best;
+  };
   copyRows (src) {
     let out = [];
     let i = 0;
@@ -4720,6 +4846,9 @@ class PlayerTools  {
     if ( itemId == "official_badge" ) {
       return "virallinen kulkulupa";
     }
+    if ( itemId == "promoted_card" ) {
+      return "ylennyskortti";
+    }
     if ( itemId == "shed_key" ) {
       return "vajan avain";
     }
@@ -4727,6 +4856,145 @@ class PlayerTools  {
       return "USB-tikku";
     }
     return this.activeLabel();
+  };
+  droppableIdAt (index) {
+    let idx = 0;
+    if ( this.hasCrowbar ) {
+      if ( idx == index ) {
+        return "crowbar";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasShovel ) {
+      if ( idx == index ) {
+        return "shovel";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasSledgehammer ) {
+      if ( idx == index ) {
+        return "sledgehammer";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasStolenCard ) {
+      if ( idx == index ) {
+        return "access_card";
+      }
+      idx = idx + 1;
+    }
+    if ( (this.heldCoworkerCardOwner.length) > 0 ) {
+      if ( idx == index ) {
+        return "coworker_card";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasPromotedCard ) {
+      if ( idx == index ) {
+        return "promoted_card";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasOfficialBadge ) {
+      if ( idx == index ) {
+        return "official_badge";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasShedKey ) {
+      if ( idx == index ) {
+        return "shed_key";
+      }
+      idx = idx + 1;
+    }
+    if ( this.hasUsbDrive ) {
+      if ( idx == index ) {
+        return "usb_drive";
+      }
+    }
+    return "";
+  };
+  drop (toolId) {
+    if ( toolId == "crowbar" ) {
+      if ( this.hasCrowbar == false ) {
+        return false;
+      }
+      this.hasCrowbar = false;
+      if ( this.activeTool == "crowbar" ) {
+        this.activeTool = "";
+        this.cycleActive();
+      }
+      return true;
+    }
+    if ( toolId == "shovel" ) {
+      if ( this.hasShovel == false ) {
+        return false;
+      }
+      this.hasShovel = false;
+      if ( this.activeTool == "shovel" ) {
+        this.activeTool = "";
+        this.cycleActive();
+      }
+      return true;
+    }
+    if ( toolId == "sledgehammer" ) {
+      if ( this.hasSledgehammer == false ) {
+        return false;
+      }
+      this.hasSledgehammer = false;
+      if ( this.activeTool == "sledgehammer" ) {
+        this.activeTool = "";
+        this.cycleActive();
+      }
+      return true;
+    }
+    if ( toolId == "access_card" ) {
+      if ( this.hasStolenCard == false ) {
+        return false;
+      }
+      this.hasStolenCard = false;
+      this.recalcAccessTier();
+      return true;
+    }
+    if ( toolId == "coworker_card" ) {
+      if ( (this.heldCoworkerCardOwner.length) < 1 ) {
+        return false;
+      }
+      this.heldCoworkerCardOwner = "";
+      this.recalcAccessTier();
+      return true;
+    }
+    if ( toolId == "promoted_card" ) {
+      if ( this.hasPromotedCard == false ) {
+        return false;
+      }
+      this.hasPromotedCard = false;
+      this.recalcAccessTier();
+      return true;
+    }
+    if ( toolId == "official_badge" ) {
+      if ( this.hasOfficialBadge == false ) {
+        return false;
+      }
+      this.hasOfficialBadge = false;
+      this.recalcAccessTier();
+      return true;
+    }
+    if ( toolId == "shed_key" ) {
+      if ( this.hasShedKey == false ) {
+        return false;
+      }
+      this.hasShedKey = false;
+      return true;
+    }
+    if ( toolId == "usb_drive" ) {
+      if ( this.hasUsbDrive == false ) {
+        return false;
+      }
+      this.hasUsbDrive = false;
+      return true;
+    }
+    return false;
   };
   fillInventory (view) {
     let lines = [];
@@ -4775,12 +5043,36 @@ class PlayerTools  {
         }
       }
     }
+    let dropLabels = [];
+    let dropIdx = 0;
+    while (dropIdx < 9) {
+      const dropId = this.droppableIdAt(dropIdx);
+      if ( (dropId.length) < 1 ) {
+        dropIdx = 9;
+        continue;
+      }
+      const dropLabel = this.pickupLabel(dropId);
+      dropLabels.push(((((dropIdx + 1).toString())) + " = pudota ") + dropLabel);
+      dropIdx = dropIdx + 1;
+    };
+    if ( (dropLabels.length) > 0 ) {
+      lines.push("");
+      lines.push("── Pudota ──");
+      let li = 0;
+      const ln = dropLabels.length;
+      while (li < ln) {
+        lines.push("  " + (dropLabels[li]));
+        li = li + 1;
+      };
+    }
     view.lines = lines;
+    view.droppableLabels = dropLabels;
   };
 }
 class InventoryView  {
   constructor() {
     this.lines = [];
+    this.droppableLabels = [];
   }
 }
 class ActionView  {
@@ -5738,6 +6030,15 @@ class QuizReactionCatalog  {
     return entry.text;
   };
 }
+class ArrestView  {
+  constructor() {
+    this.catcherName = "";
+    this.catcherChar = "";
+    this.reasonLine = "";
+    this.evidenceLocked = false;
+    this.evidenceHint = "";
+  }
+}
 class ProximityGreeting  {
   constructor() {
   }
@@ -6401,6 +6702,7 @@ class GameSession  extends RangerProcessBase {
     this.profileComplete = false;
     this.pendingGreetNpcId = "";
     this.behaviorSeed = 0;
+    this.arrestReason = "";
     this.karma = new FeatureKarma();
     this._map = new WorldMap();
     this.catalog = new StoryCatalog();
@@ -6754,10 +7056,154 @@ class GameSession  extends RangerProcessBase {
     }
     const bump = this._map.bumpAtPlayer();
     if ( bump.kind == "police" ) {
-      this.gameOverPolice();
+      this.startArrestEncounter("police_chase", bump);
       return true;
     }
     return false;
+  };
+  startArrestEncounter (reason, catcher) {
+    this.pendingEntityId = catcher.id;
+    this.pendingEntityChar = catcher.char;
+    this.pendingEntityName = catcher.name;
+    this.pendingEntityKind = catcher.kind;
+    this.pendingStoryId = "";
+    this.arrestReason = reason;
+    this.encounterResult = "arrest";
+    this.screen = "encounter";
+    this.markStateDirty();
+  };
+  startSecurityArrest (reason) {
+    const catcher = new MapEntity();
+    catcher.id = this.pendingEntityId;
+    catcher.char = this.pendingEntityChar;
+    catcher.name = this.pendingEntityName;
+    catcher.kind = "security";
+    if ( (catcher.id.length) < 1 ) {
+      catcher.id = "security-arrest";
+    }
+    if ( (catcher.char.length) < 1 ) {
+      catcher.char = "!";
+    }
+    if ( (catcher.name.length) < 1 ) {
+      catcher.name = "Turvallisuus";
+    }
+    this.startArrestEncounter(reason, catcher);
+  };
+  arrestReasonLine () {
+    if ( this.arrestReason == "police_chase" ) {
+      return "Syy: takaa-ajo — putoaminen tai väkivalta.";
+    }
+    if ( this.arrestReason == "stolen_card" ) {
+      return "Syy: varastettu kulkukortti vastaanotossa.";
+    }
+    if ( this.arrestReason == "attacked_security" ) {
+      return "Syy: hyökkäys turvallisuushenkilöön.";
+    }
+    if ( this.conduct.isWanted() ) {
+      const proprietyScore = this.conduct.propriety();
+      const damageScore = this.conduct.propertyDamage;
+      return ((("Syy: etsintäkuulutus — asiallisuus " + ((proprietyScore.toString()))) + ", vahingot ") + ((damageScore.toString()))) + ".";
+    }
+    return "Syy: epäilyttävä käytös toimistolla.";
+  };
+  hasArrestEvidence () {
+    if ( this._map.policeChaseActive ) {
+      return true;
+    }
+    if ( this.tools.hasCrowbar ) {
+      return true;
+    }
+    if ( this.tools.hasShovel ) {
+      return true;
+    }
+    if ( this.tools.hasSledgehammer ) {
+      return true;
+    }
+    if ( this.tools.hasStolenCard ) {
+      return true;
+    }
+    if ( (this.tools.heldCoworkerCardOwner.length) > 0 ) {
+      return true;
+    }
+    if ( this.tools.hasUsbDrive ) {
+      return true;
+    }
+    if ( this.conduct.propertyDamage >= 6 ) {
+      return true;
+    }
+    if ( this._map.hasAnyOuterWallBreach() ) {
+      return true;
+    }
+    if ( this.arrestReason == "attacked_security" ) {
+      return true;
+    }
+    if ( this.arrestReason == "stolen_card" ) {
+      return true;
+    }
+    return false;
+  };
+  getArrestView () {
+    const view = new ArrestView();
+    view.catcherName = this.pendingEntityName;
+    view.catcherChar = this.pendingEntityChar;
+    view.reasonLine = this.arrestReasonLine();
+    view.evidenceLocked = this.hasArrestEvidence();
+    if ( view.evidenceLocked ) {
+      view.evidenceHint = "Poliisi tai turvallisuus näkee sinut — tai taskussasi on todisteita (työkalut, kortti…). Selitys ei auta.";
+    } else {
+      view.evidenceHint = "Selviä todisteita ei näy. Voit yrittää selittää tai kiistää.";
+    }
+    return view;
+  };
+  onArrestChoice (choice) {
+    if ( this.screen != "encounter" ) {
+      return;
+    }
+    if ( this.encounterResult != "arrest" ) {
+      return;
+    }
+    if ( choice == "cooperate" ) {
+      if ( this.pendingEntityKind == "police" ) {
+        this.gameOverPolice();
+      } else {
+        this.gameOverArrested();
+      }
+      return;
+    }
+    if ( this.hasArrestEvidence() ) {
+      this._map.lastStatus = "Todisteet ovat liian vahvat — selityksesi ei auta.";
+      if ( this.pendingEntityKind == "police" ) {
+        this.gameOverPolice();
+      } else {
+        this.gameOverArrested();
+      }
+      return;
+    }
+    this.conduct.addMisconduct(8);
+    this._map.lastStatus = "He päästivät sinut tingillä — mutta valvonta tiukkenee.";
+    this.arrestReason = "";
+    this.clearEncounter();
+    this.screen = "map";
+    this.markStateDirty();
+  };
+  gameOverArrested () {
+    this.ensureEngine();
+    this.engine.deaths = this.engine.deaths + 1;
+    this.gameOverReason = "Arrested";
+    this._map.clearPoliceSquad();
+    this._map.clearOuterWallBreaches();
+    const floor = this._map.activeFloor();
+    this._map.playerX = floor.spawnX;
+    this._map.playerY = floor.spawnY;
+    this._map.playerHidden = false;
+    this._map.ensurePlayerOnWalkable();
+    const deathMsg = "Kiinni — " + this.arrestReasonLine();
+    this.buildMemorialMourners(deathMsg);
+    this._map.lastStatus = this.memorialDeathLine;
+    this.arrestReason = "";
+    this.clearEncounter();
+    this.screen = "gameover";
+    this.markStateDirty();
   };
   gameOverPolice () {
     this.ensureEngine();
@@ -6927,7 +7373,7 @@ class GameSession  extends RangerProcessBase {
   startEncounter (bump) {
     if ( bump.kind == "police" ) {
       if ( this._map.policeChaseActive ) {
-        this.gameOverPolice();
+        this.startArrestEncounter("police_chase", bump);
         return;
       }
     }
@@ -8001,13 +8447,11 @@ class GameSession  extends RangerProcessBase {
     const agentResult = this._map.tickAgents();
     if ( (agentResult.id.length) > 0 ) {
       if ( agentResult.kind == "police" ) {
-        this.gameOverPolice();
+        this.startArrestEncounter("police_chase", agentResult);
         return;
       }
       if ( agentResult.kind == "security" ) {
-        this.conduct.arrest();
-        this._map.teleportToPrison();
-        this.screen = "prison";
+        this.startArrestEncounter("wanted", agentResult);
         return;
       }
       if ( this.encounterCooldown > 0 ) {
@@ -8735,9 +9179,19 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( storyId == "stolen-card-caught" ) {
-      this.conduct.arrest();
-      this._map.teleportToPrison();
-      this.screen = "prison";
+      const recep = this._map.findEntityById("receptionist");
+      const catcher = new MapEntity();
+      catcher.id = "receptionist";
+      catcher.char = recep.char;
+      catcher.name = recep.name;
+      catcher.kind = "security";
+      if ( (catcher.char.length) < 1 ) {
+        catcher.char = "V";
+      }
+      if ( (catcher.name.length) < 1 ) {
+        catcher.name = "Vastaanottovirkailija";
+      }
+      this.startArrestEncounter("stolen_card", catcher);
       return;
     }
     if ( storyId == "modern-cpp-intro" ) {
@@ -8825,11 +9279,6 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( this.screen != "map" ) {
-      return;
-    }
-    if ( this.conduct.arrested ) {
-      this.screen = "prison";
-      this.markStateDirty();
       return;
     }
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
@@ -8982,7 +9431,7 @@ class GameSession  extends RangerProcessBase {
       const blocker = this._map.entityAt(targetX, targetY);
       if ( blocker.kind == "police" ) {
         if ( this._map.policeChaseActive ) {
-          this.gameOverPolice();
+          this.startArrestEncounter("police_chase", blocker);
           this.markStateDirty();
           return;
         }
@@ -9146,12 +9595,9 @@ class GameSession  extends RangerProcessBase {
       if ( this.pendingEntityKind == "security" ) {
         this.karma.loseKarma(20);
         this.conduct.addMisconduct(20);
-        this.conduct.arrest();
-        this._map.teleportToPrison();
         this._map.lastStatus = "Turvallisuus neutraloi hyökkäyksen.";
         this.encounterResult = "attack";
-        this.clearEncounter();
-        this.screen = "prison";
+        this.startSecurityArrest("attacked_security");
         this.markStateDirty();
         return;
       }
@@ -9228,9 +9674,76 @@ class GameSession  extends RangerProcessBase {
       this.markStateDirty();
       return;
     }
+    let dropIdx = -1;
+    if ( key == "1" ) {
+      dropIdx = 0;
+    }
+    if ( key == "2" ) {
+      dropIdx = 1;
+    }
+    if ( key == "3" ) {
+      dropIdx = 2;
+    }
+    if ( key == "4" ) {
+      dropIdx = 3;
+    }
+    if ( key == "5" ) {
+      dropIdx = 4;
+    }
+    if ( key == "6" ) {
+      dropIdx = 5;
+    }
+    if ( key == "7" ) {
+      dropIdx = 6;
+    }
+    if ( key == "8" ) {
+      dropIdx = 7;
+    }
+    if ( key == "9" ) {
+      dropIdx = 8;
+    }
+    if ( dropIdx >= 0 ) {
+      if ( this.dropItemAtIndex(dropIdx) ) {
+        this.markStateDirty();
+        return;
+      }
+      this._map.lastStatus = "Ei pudotettavaa kohdassa.";
+      this.markStateDirty();
+      return;
+    }
     this.screen = "map";
     this._map.lastStatus = "Takaisin kartalla.";
     this.markStateDirty();
+  };
+  dropItemAtIndex (index) {
+    const toolId = this.tools.droppableIdAt(index);
+    if ( (toolId.length) < 1 ) {
+      return false;
+    }
+    let ownerId = "";
+    if ( toolId == "coworker_card" ) {
+      ownerId = this.tools.heldCoworkerCardOwner;
+    }
+    let dropX = this._map.playerX;
+    let dropY = this._map.playerY;
+    const adjX = this._map.playerX + this._map.facingX;
+    const adjY = this._map.playerY + this._map.facingY;
+    if ( this._map.canPlaceDroppedItem(adjX, adjY) ) {
+      dropX = adjX;
+      dropY = adjY;
+    } else {
+      if ( this._map.canPlaceDroppedItem(this._map.playerX, this._map.playerY) == false ) {
+        this._map.lastStatus = "Ei tilaa pudottaa esinettä.";
+        return false;
+      }
+    }
+    if ( this.tools.drop(toolId) == false ) {
+      return false;
+    }
+    this._map.dropItemAt(dropX, dropY, toolId, ownerId);
+    const label = this.tools.pickupLabel(toolId);
+    this._map.lastStatus = ("Pudotit: " + label) + "  (kävele päälle poimiaksesi)";
+    return true;
   };
   getInventoryView () {
     const view = new InventoryView();
@@ -9349,7 +9862,7 @@ class GameSession  extends RangerProcessBase {
       const sid = this.engine.storyId;
       this.applyStoryRewards(sid, view.outcome);
       this.engine.returnToMenu();
-      if ( this.screen != "prison" ) {
+      if ( this.screen != "encounter" ) {
         this.screen = "map";
       }
       this.clearEncounter();
@@ -10208,6 +10721,7 @@ module.exports.EmotionalDialogue = EmotionalDialogue;
 module.exports.DialogueCatalog = DialogueCatalog;
 module.exports.QuizReactionEntry = QuizReactionEntry;
 module.exports.QuizReactionCatalog = QuizReactionCatalog;
+module.exports.ArrestView = ArrestView;
 module.exports.ProximityGreeting = ProximityGreeting;
 module.exports.WorldClock = WorldClock;
 module.exports.EventPerception = EventPerception;

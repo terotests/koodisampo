@@ -155,8 +155,12 @@ export function runOuterWallExitTests() {
     dispatch(session, () => {
       assert(session.tryPoliceCapture() === true, "police capture on same tile");
     });
-    assert(session.screen === "gameover", "police capture goes to game over");
-    assert(session.screen !== "encounter", "police does not start encounter");
+    assert(session.screen === "encounter", "police capture opens arrest dialogue");
+    assert(session.encounterResult === "arrest", "police arrest encounter");
+    dispatch(session, () => {
+      session.onArrestChoice("cooperate");
+    });
+    assert(session.screen === "gameover", "police arrest ends in game over");
     assert(session.gameOverReason === "PoliceCaught", "police capture reason");
     assert(session.memorialCount() >= 1, "police death builds memorial");
     assert(session.memorialPlayerName === "Pekka", `memorial uses player name, got ${session.memorialPlayerName}`);
@@ -186,7 +190,8 @@ export function runOuterWallExitTests() {
       };
       session.startEncounter(bump);
     });
-    assert(session.screen === "gameover", "startEncounter with police during chase is game over");
+    assert(session.screen === "encounter", "startEncounter with police during chase opens arrest");
+    assert(session.encounterResult === "arrest", "police bump is arrest not talk");
   } finally {
     simEncounter.stop();
   }

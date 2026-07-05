@@ -702,6 +702,46 @@ function printGameOver(session) {
   drawLinesClear(lines);
 }
 
+async function runArrestLoop(session) {
+  while (session.screen === "encounter" && session.encounterResult === "arrest" && !session.shouldQuit) {
+    const view = session.getArrestView();
+    const lines = [
+      BANNER,
+      `  ${styled("═══ KIIINNIOTTO ═══", FG.red, BOLD)}`,
+      "",
+      `  ${styled(`[ ${view.catcherChar} ]`, FG.yellow)} ${view.catcherName}`,
+      `  ${wrap(view.reasonLine || "")}`,
+      "",
+      `  ${styled(view.evidenceHint || "", FG.gray)}`,
+      "",
+      `  ${styled("[1]", FG.white)} Selitä tilanne`,
+      `  ${styled("[2]", FG.white)} Kiistä syytteet`,
+      `  ${styled("[3]", FG.red)} Luovuta`,
+      "",
+      `  ${styled(QUIT_HINT, FG.gray)}`,
+    ];
+    drawLinesClear(lines);
+    const result = await readLine(styled("\n  Valinta: ", FG.cyan));
+    if (handleQuitInput(session, result)) return;
+    const pick = result.value;
+    dispatch(session, () => {
+      if (pick === "1") {
+        session.onArrestChoice("explain");
+      } else if (pick === "2") {
+        session.onArrestChoice("deny");
+      } else if (pick === "3") {
+        session.onArrestChoice("cooperate");
+      } else {
+        sessionMap(session).lastStatus = "Valitse 1–3.";
+      }
+    });
+    persist(session);
+    if (session.screen !== "encounter" || session.encounterResult !== "arrest") {
+      return;
+    }
+  }
+}
+
 async function runInventoryLoop(session) {
   while (session.screen === "inventory" && !session.shouldQuit) {
     const view = session.getInventoryView();
@@ -714,7 +754,7 @@ async function runInventoryLoop(session) {
       lines.push(`  ${styled(view.lines[i], FG.white)}`);
     }
     lines.push("");
-    lines.push(`  ${styled("Paina Enter palataksesi kartalle...", FG.gray)}`);
+    lines.push(`  ${styled("Numero = pudota esine. Enter = takaisin kartalle.", FG.gray)}`);
     lines.push(`  ${styled(QUIT_HINT, FG.gray)}`);
     drawLinesClear(lines);
     const result = await readKey(styled("\n  ", FG.gray));
@@ -1122,6 +1162,12 @@ async function runEncounterLoop(session) {
   const catalog = new StoryCatalog();
 
   while (session.screen === "encounter" && !session.shouldQuit) {
+    if (session.encounterResult === "arrest") {
+      await runArrestLoop(session);
+      persist(session);
+      return;
+    }
+
     if (needsEncounterQuiz(session)) {
       await runQuizEncounterLoop(session);
       return;

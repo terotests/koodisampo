@@ -1276,6 +1276,138 @@ class WorldMap {
     breachYs = emptyYs
   }
 
+  fn hasAnyOuterWallBreach:boolean () {
+    if ((array_length breachFloors) > 0) {
+      return true
+    }
+    return false
+  }
+
+  fn canPlaceDroppedItem:boolean (x:int y:int) {
+    def tile:string (this.tileAt(x y))
+    if (this.isBlockedTile(tile)) {
+      return false
+    }
+    def e:MapEntity (this.entityAt(x y))
+    if ((strlen e.id) > 0) {
+      return false
+    }
+    return true
+  }
+
+  fn itemCharForTool:string (toolId:string) {
+    if (toolId == "crowbar") {
+      return "("
+    }
+    if (toolId == "sledgehammer") {
+      return "T"
+    }
+    if (toolId == "shovel") {
+      return "/"
+    }
+    if (toolId == "access_card") {
+      return "k"
+    }
+    if (toolId == "coworker_card") {
+      return "k"
+    }
+    if (toolId == "promoted_card") {
+      return "k"
+    }
+    if (toolId == "official_badge") {
+      return "k"
+    }
+    if (toolId == "shed_key") {
+      return "a"
+    }
+    if (toolId == "usb_drive") {
+      return "u"
+    }
+    return "*"
+  }
+
+  fn itemNameForTool:string (toolId:string) {
+    if (toolId == "access_card") {
+      return "kadonnut kulkukortti"
+    }
+    if (toolId == "coworker_card") {
+      return "löydetty kulkukortti"
+    }
+    if (toolId == "official_badge") {
+      return "virallinen kulkulupa"
+    }
+    if (toolId == "promoted_card") {
+      return "ylennyskortti"
+    }
+    if (toolId == "shed_key") {
+      return "vajan avain"
+    }
+    if (toolId == "usb_drive") {
+      return "USB-tikku"
+    }
+    if (toolId == "crowbar") {
+      return "vasara"
+    }
+    if (toolId == "shovel") {
+      return "lapio"
+    }
+    if (toolId == "sledgehammer") {
+      return "kivivasara"
+    }
+    return "esine"
+  }
+
+  fn dropItemAt:boolean (x:int y:int toolId:string ownerId:string) {
+    if (this.canPlaceDroppedItem(x y) == false) {
+      return false
+    }
+    def floor:MapFloor (this.activeFloor())
+    def item:MapEntity (new MapEntity)
+    item.id = ("dropped-" + toolId + "-" + (to_string x) + "-" + (to_string y))
+    item.char = (this.itemCharForTool(toolId))
+    item.name = (this.itemNameForTool(toolId))
+    item.kind = "item"
+    item.itemTool = toolId
+    item.itemOwner = ownerId
+    item.x = x
+    item.y = y
+    def ents:[MapEntity] (floor.entities)
+    push ents item
+    floor.entities = ents
+    return true
+  }
+
+  fn findNearestAgent:MapEntity (kind:string) {
+    def best:MapEntity (new MapEntity)
+    def bestDist:int 999
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (e.kind != kind) {
+        i = i + 1
+        continue
+      }
+      def dx:int (e.x - playerX)
+      if (dx < 0) {
+        dx = (0 - dx)
+      }
+      def dy:int (e.y - playerY)
+      if (dy < 0) {
+        dy = (0 - dy)
+      }
+      def dist:int (dx + dy)
+      if (dist < bestDist) {
+        bestDist = dist
+        best = e
+      }
+      i = i + 1
+    }
+    return best
+  }
+
   fn copyRows:[string] (src:[string]) {
     def out:[string]
     def i:int 0
