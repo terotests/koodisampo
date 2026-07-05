@@ -847,10 +847,10 @@ Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparann
 
 #### `b02-cpp-safety-noexcept-05` · diff 3
 
-`std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin?
+Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `data_`-pointerin `std::exchange`:llä. Silti `std::vector<Blob>` kopioi elementit reallokoinnissa. Mitä move-operaattorin määrittelyyn lisätään?
 
 - try/catch jokaisen push_back-kutsun ympärillä
-- **noexcept move — vector siirtää reallokoinnissa turvallisesti** ✓
+- **noexcept — vector voi siirtää reallokoinnissa** ✓
 - Poista move-operaattorit kokonaan — kopiointi turvallisempaa
 - volatile move estää optimoinnin move-operaatiossa
 

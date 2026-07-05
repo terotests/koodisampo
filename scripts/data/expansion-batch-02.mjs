@@ -149,10 +149,10 @@ export const EXPANSION = {
           "coworker",
           "guru"
         ],
-        prompt: "`std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin?",
+        prompt: "Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `data_`-pointerin `std::exchange`:llä. Silti `std::vector<Blob>` kopioi elementit reallokoinnissa. Mitä move-operaattorin määrittelyyn lisätään?",
         choices: [
           {
-            text: "noexcept move — vector siirtää reallokoinnissa turvallisesti",
+            text: "noexcept — vector voi siirtää reallokoinnissa",
             correct: true
           },
           {
@@ -168,8 +168,8 @@ export const EXPANSION = {
             correct: false
           }
         ],
-        correctFeedback: "noexcept lupaa, ettei move heitä — vector voi siirtää ilman copy-fallbackia.",
-        wrongFeedback: "Vector valitsee move vs copy `noexcept`-tiedon perusteella. try/catch push_back:n ympärillä ei vaikuta siihen.",
+        correctFeedback: "Vector päättää move vs copy compile-time-ominaisuuden perusteella — ilman `noexcept`-merkintää se olettaa, että move voi heittää.",
+        wrongFeedback: "Vector ei analysoi move-toteutusta. Se katsoo move-operaattorin poikkeusspesifikaatiota (`noexcept`).",
         sourceRef: "CppCoreGuidelines#noexcept",
         sourceUrl: "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#noexcept",
         featureId: "cpp:noexcept-move",
