@@ -2,12 +2,6 @@ export type ThemeId = "slate-light" | "slate" | "slate-dark";
 
 const STORAGE_KEY = "koodisampo-theme";
 
-export const THEMES: { id: ThemeId; label: string }[] = [
-  { id: "slate-light", label: "Vaalea siniharmaa" },
-  { id: "slate", label: "Keskisiniharmaa" },
-  { id: "slate-dark", label: "Tumma siniharmaa" },
-];
-
 export function readStoredTheme(): ThemeId {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -39,19 +33,4 @@ export function themeBackgroundColor(): string {
 
 export function initTheme(): void {
   applyTheme(readStoredTheme());
-}
-
-export function mountThemePicker(root: ParentNode = document): void {
-  const select = root.querySelector<HTMLSelectElement>("#theme-select");
-  if (!select) return;
-
-  select.innerHTML = THEMES.map(
-    (t) => `<option value="${t.id}">${t.label}</option>`,
-  ).join("");
-  select.value = readStoredTheme();
-
-  select.addEventListener("change", () => {
-    const next = select.value as ThemeId;
-    if (THEMES.some((t) => t.id === next)) applyTheme(next);
-  });
 }
