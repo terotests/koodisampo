@@ -41,6 +41,33 @@ sudo systemctl start worker.service
 
 Start limit on viimeinen puolustuslinja — monitoroi restart-määrää (`systemctl show worker -p NRestarts`) ja hälytä jo ennen burst-rajaa. Yhdistä `RestartSec`-viiveeseen eksponentiaalinen backoff jos sovellus tukee sitä.
 
-Incidentin jälkeen: `journalctl -u worker -n 100` ennen reset-failed — muuten todistusaineisto katoaa.
+### Incidentin jälkeen: tallenna loki ennen reset-failed
+
+`systemctl reset-failed` **ei poista** journal-lokia, mutta se nollaa yksikön failed-tilan ja käynnistyslaskurit. Sen jälkeen palvelu yleensä **käynnistetään uudelleen** — ja jos bugi on yhä tuotannossa, crash loop jatkuu heti.
+
+Kun palvelu on yrittänyt käynnistyä satoja kertoja minuutissa, todistusaineisto katoaa käytännössä näin:
+
+1. **Loki täyttyy identtisistä virheistä** — alkuperäinen stack trace hukkuu tuhansien samanlaisten rivien alle.
+2. **journald voi tiputtaa viestejä** rate limitin (`RateLimitBurst`) tai levytilan (`SystemMaxUse`) takia — vanhemmat merkinnät poistuvat ensin.
+3. **`reset-failed` + uusi start** käynnistää syklin alusta — uusi lokivirta peittää incidentin ajankohdan.
+
+Ota snapshot **heti**, kun unit on failed-tilassa ja ennen kuin kosket palveluun:
+
+```bash
+journalctl -u worker.service -n 100 --no-pager \
+  > /tmp/worker-incident-$(date +%Y%m%d-%H%M).log
+```
+
+`-n 100` näyttää viimeiset 100 riviä — usein riittää näkemään viimeisin todellinen virhe ja syy, miksi systemd lopetti yritykset. Tarkempaan ikkunaan: `--since '10 min ago' -p err`. JSON-vienti SIEM-analyysiin: `-o json-pretty`.
+
+Vasta sen jälkeen:
+
+```bash
+sudo systemctl reset-failed worker.service
+# korjaa bugi tai rollback, sitten:
+sudo systemctl start worker.service
+```
+
+Ilman ennakkolokitallennusta post mortem jää arvailuksi: lokissa näkyy vain uusi crash loop, ei selkeää juurisyytä.
 
 [Lue lisää](https://www.freedesktop.org/software/systemd/man/systemd.unit.html)
