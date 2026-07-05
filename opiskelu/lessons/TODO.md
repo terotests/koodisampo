@@ -139,7 +139,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `b02-cpp-safety-make-unique-06` | Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusp… |
-| ✅ | 3 | `b02-cpp-safety-noexcept-05` | std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — t… |
+| ✅ | 3 | `b02-cpp-safety-noexcept-05` | `std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `no… |
 | ✅ | 3 | `b03-cpp-prod-virtual-dtor` | Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. … |
 | ✅ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. M… |
 | ✅ | 4 | `b04-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia — destructor on määritelty, mutta … |

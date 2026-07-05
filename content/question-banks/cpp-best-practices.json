@@ -1867,14 +1867,14 @@
         "coworker",
         "guru"
       ],
-      "prompt": "std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?",
+      "prompt": "`std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin?",
       "choices": [
         {
           "text": "try/catch jokaisen push_back-kutsun ympärillä",
           "correct": false
         },
         {
-          "text": "noexcept move — vector voi käyttää movea turvallisesti",
+          "text": "noexcept move — vector siirtää reallokoinnissa turvallisesti",
           "correct": true
         },
         {
@@ -1886,8 +1886,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "noexcept move mahdollistaa strong exception guarantee — safety-parannus.",
-      "wrongFeedback": "Heittävä move estää optimoinnin. noexcept on osa turvallista API:a.",
+      "correctFeedback": "noexcept lupaa, ettei move heitä — vector voi siirtää ilman copy-fallbackia.",
+      "wrongFeedback": "Vector valitsee move vs copy `noexcept`-tiedon perusteella. try/catch push_back:n ympärillä ei vaikuta siihen.",
       "sourceRef": "CppCoreGuidelines#noexcept",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#noexcept",
       "featureId": "cpp:noexcept-move",

@@ -21,7 +21,7 @@
       → b07-cpp-clang-tidy-ci
   [10] Luokalle tarvitaan ==, !=, <, <=, >, >= — paljon boilerplatea. C++20 lyhennys? (Antti Järvinen)
       → b07-cpp-spaceship-operator
-  [11] std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin? (Tiina Rantanen)
+  [11] `std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin? (Tiina Rantanen)
       → b02-cpp-safety-noexcept-05
   [12] Ketju: optional palauttaa arvon, seuraava funktio ottaa arvon — if-linnoja tulee liikaa. C++23-tyylinen tapa? (Emilia Koskinen)
       → b08-cpp-optional-monadic
@@ -103,7 +103,7 @@
       → b07-cpp-chrono-literals
   [7] std::sort kaatuu outoon virheeseen custom-iteratorilla. Mitä iteratorin pitää tarjota sortille? (Maija)
       → b08-cpp-sort-requirements
-  [8] std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin? (Tiina Rantanen)
+  [8] `std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin? (Tiina Rantanen)
       → b02-cpp-safety-noexcept-05
   [9] Kaksi std::atomic-laskuria on vierekkäin structissa ja eri säikeet päivittävät niitä. Miksi suorituskyky romahtaa? (Tiina Rantanen)
       → prod-cpp-false-sharing-struct

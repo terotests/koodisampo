@@ -847,10 +847,10 @@ Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparann
 
 #### `b02-cpp-safety-noexcept-05` · diff 3
 
-std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?
+`std::vector` siirtää elementtejä reallokoinnissa vain, jos move on `noexcept`; muuten se kopioi. Move ei voi heittää (esim. pointer-swap). Miten merkitset move-operaattorin?
 
 - try/catch jokaisen push_back-kutsun ympärillä
-- **noexcept move — vector voi käyttää movea turvallisesti** ✓
+- **noexcept move — vector siirtää reallokoinnissa turvallisesti** ✓
 - Poista move-operaattorit kokonaan — kopiointi turvallisempaa
 - volatile move estää optimoinnin move-operaatiossa
 
