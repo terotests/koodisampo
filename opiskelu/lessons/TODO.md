@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1173 / 1173** valmis (**100 %**).
+**1193 / 1193** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -12,7 +12,7 @@
 | JavaScript | 234 | 234 | 100 |
 | PostgreSQL | 180 | 180 | 100 |
 | Docker | 142 | 142 | 100 |
-| Linux | 148 | 148 | 100 |
+| Linux | 168 | 168 | 100 |
 | Qt | 134 | 134 | 100 |
 | Scrum | 90 | 90 | 100 |
 | Git | 20 | 20 | 100 |
@@ -925,7 +925,7 @@
 | ✅ | 3 | `exp-docker-vol-db-persist` | Postgres-kontti poistettiin `docker rm` — data katosi. Miten olisi pitä… |
 | ✅ | 3 | `exp-docker-vol-readonly` | Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio? |
 
-### Linux (148/148)
+### Linux (168/168)
 
 #### apt/dpkg `apt` (8/8)
 
@@ -1006,7 +1006,26 @@
 | ✅ | 4 | `journald-persistent` | Rebootin jälkeen vanhat lokit katoavat. Mikä journald-asetus säilyttää … |
 | ✅ | 4 | `journald-priority` | Lokitulva tuotannossa. Miten näytät vain virheet ja kriittiset nginx-un… |
 
-#### verkko `linux-network` (41/41)
+#### ARP `linux-arp` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `b12-linux-arp-failed-state` | `ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene… |
+| ✅ | 3 | `b12-linux-arp-flush-migration` | VM siirrettiin toiseen hypervisorille — vanhat MAC-osoitteet jäävät ARP… |
+| ✅ | 4 | `b12-linux-arp-gratuitous-duplicate` | Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. … |
+| ✅ | 3 | `b12-linux-arp-static-neigh` | Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP… |
+
+#### D-Bus `linux-dbus` (5/5)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `b12-linux-dbus-bluez-pair` | Bluetooth-kuulokkeet eivät yhdisty — BlueZ pyörii mutta laite on untrus… |
+| ✅ | 2 | `b12-linux-dbus-busctl-introspect` | Haluat listata NetworkManagerin D-Bus-metodit terminaalista ennen autom… |
+| ✅ | 3 | `b12-linux-dbus-modemmanager-signal` | LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-C… |
+| ✅ | 3 | `b12-linux-dbus-nm-wifi-scan` | NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on p… |
+| ✅ | 4 | `b12-linux-dbus-polkit-deny` | Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. T… |
+
+#### verkko `linux-network` (46/46)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1043,6 +1062,11 @@
 | ✅ | 4 | `b09-linux-net-nat-troubleshoot` | Kontti saavuttaa hostin mutta ei internetiä — epäilet NAT:ia. Tarkistus? |
 | ✅ | 2 | `b09-linux-net-ss-listen` | Portti 8080 on varattu mutta et tiedä mikä prosessi kuuntelee. Moderni … |
 | ✅ | 4 | `b09-linux-net-tcpdump-incident` | API-kutsu timeoutaa tuotannossa — epäilet pakettihäviötä. Nopea kaappau… |
+| ✅ | 2 | `b12-linux-network-ip-addr-secondary` | Palvelimelle tarvitaan toinen IPv4 samaan rajapintaan (VIP). Linux-kome… |
+| ✅ | 2 | `b12-linux-network-ip-link-admin` | Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein pa… |
+| ✅ | 3 | `b12-linux-network-ip-route-replace` | Oletusreitti pitää vaihtaa uuteen gatewayhin ilman että vanha jää roikk… |
+| ✅ | 4 | `b12-linux-network-ip-rule-policy` | Liikenne lähteestä 10.10.0.0/24 pitää reitittää VPN-tauluun 100, ei mai… |
+| ✅ | 3 | `b12-linux-network-route-get-from` | Split-horizon: paketti kohteeseen 172.16.5.10 lähteestä 10.0.1.5 menee … |
 | ✅ | 3 | `exp-linux-network-nmcli-down` | Wi-Fi profiili jää roikkuun VPN-konfigin jälkeen. Miten NetworkManageri… |
 | ✅ | 4 | `exp-linux-network-resolv-search` | Sisäinen palvelu `db.local` ei resolvdu mutta `db.local.corp` toimii. M… |
 | ✅ | 4 | `exp-linux-network-route-missing` | Kontti-host ei reachaa 10.20.0.0/16 VPN-verkkoa. ip route näyttää oletu… |
@@ -1051,6 +1075,17 @@
 | ✅ | 5 | `linux-nmcli` | NetworkManager hallitsee interfacea. Miten aktivoit profiilin `corp-wif… |
 | ✅ | 4 | `linux-resolv-search` | Kontti/resolvoi `db` mutta ei `db.corp.local`. Mitä tiedostoa tarkistat… |
 | ✅ | 3 | `linux-ss-listen` | Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento? |
+
+#### TCP/UDP `linux-tcp-udp` (6/6)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `b12-linux-tcp-close-wait-leak` | Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellu… |
+| ✅ | 3 | `b12-linux-tcp-established-filter` | Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443.… |
+| ✅ | 4 | `b12-linux-tcp-retransmit-info` | Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu… |
+| ✅ | 3 | `b12-linux-tcp-syn-backlog` | API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja S… |
+| ✅ | 2 | `b12-linux-tcp-udp-handshake` | Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa? |
+| ✅ | 3 | `b12-linux-udp-stateless-firewall` | DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomu… |
 
 #### systemd `systemd` (43/43)
 

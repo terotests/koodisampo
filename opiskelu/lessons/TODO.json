@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-04T14:57:24.126Z",
+  "generatedAt": "2026-07-05T06:53:54.306Z",
   "summary": {
-    "totalQuestions": 1173,
-    "readyLessons": 1173,
+    "totalQuestions": 1193,
+    "readyLessons": 1193,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -5578,8 +5578,8 @@
     {
       "id": "linux",
       "label": "Linux",
-      "ready": 148,
-      "total": 148,
+      "ready": 168,
+      "total": 168,
       "chapters": [
         {
           "id": "apt",
@@ -6054,10 +6054,89 @@
           ]
         },
         {
+          "id": "linux-arp",
+          "label": "ARP",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "b12-linux-arp-failed-state",
+              "difficulty": 3,
+              "prompt": "`ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene. Ensimmäinen toimenpide?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-arp-failed-state.md"
+            },
+            {
+              "id": "b12-linux-arp-flush-migration",
+              "difficulty": 3,
+              "prompt": "VM siirrettiin toiseen hypervisorille — vanhat MAC-osoitteet jäävät ARP-cacheen. Turvallisin tyhjennys?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-arp-flush-migration.md"
+            },
+            {
+              "id": "b12-linux-arp-gratuitous-duplicate",
+              "difficulty": 4,
+              "prompt": "Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. Nopein varmistus lähiverkossa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-arp-gratuitous-duplicate.md"
+            },
+            {
+              "id": "b12-linux-arp-static-neigh",
+              "difficulty": 3,
+              "prompt": "Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merkinnän. Komento?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-arp-static-neigh.md"
+            }
+          ]
+        },
+        {
+          "id": "linux-dbus",
+          "label": "D-Bus",
+          "ready": 5,
+          "total": 5,
+          "questions": [
+            {
+              "id": "b12-linux-dbus-bluez-pair",
+              "difficulty": 3,
+              "prompt": "Bluetooth-kuulokkeet eivät yhdisty — BlueZ pyörii mutta laite on untrusted. CLI-korjaus ennen D-Bus-skriptiä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-dbus-bluez-pair.md"
+            },
+            {
+              "id": "b12-linux-dbus-busctl-introspect",
+              "difficulty": 2,
+              "prompt": "Haluat listata NetworkManagerin D-Bus-metodit terminaalista ennen automaatiota. Ensimmäinen komento?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-dbus-busctl-introspect.md"
+            },
+            {
+              "id": "b12-linux-dbus-modemmanager-signal",
+              "difficulty": 3,
+              "prompt": "LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-CLI tarkistukseen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-dbus-modemmanager-signal.md"
+            },
+            {
+              "id": "b12-linux-dbus-nm-wifi-scan",
+              "difficulty": 3,
+              "prompt": "NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-dbus-nm-wifi-scan.md"
+            },
+            {
+              "id": "b12-linux-dbus-polkit-deny",
+              "difficulty": 4,
+              "prompt": "Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäköisin syy?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-dbus-polkit-deny.md"
+            }
+          ]
+        },
+        {
           "id": "linux-network",
           "label": "verkko",
-          "ready": 41,
-          "total": 41,
+          "ready": 46,
+          "total": 46,
           "questions": [
             {
               "id": "b02-linux-network-nmcli-11",
@@ -6291,6 +6370,41 @@
               "lessonFile": "opiskelu/lessons/b09-linux-net-tcpdump-incident.md"
             },
             {
+              "id": "b12-linux-network-ip-addr-secondary",
+              "difficulty": 2,
+              "prompt": "Palvelimelle tarvitaan toinen IPv4 samaan rajapintaan (VIP). Linux-komento — ei Windows ipconfig?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-network-ip-addr-secondary.md"
+            },
+            {
+              "id": "b12-linux-network-ip-link-admin",
+              "difficulty": 2,
+              "prompt": "Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein palautus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-network-ip-link-admin.md"
+            },
+            {
+              "id": "b12-linux-network-ip-route-replace",
+              "difficulty": 3,
+              "prompt": "Oletusreitti pitää vaihtaa uuteen gatewayhin ilman että vanha jää roikkuun. iproute2-komento?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-network-ip-route-replace.md"
+            },
+            {
+              "id": "b12-linux-network-ip-rule-policy",
+              "difficulty": 4,
+              "prompt": "Liikenne lähteestä 10.10.0.0/24 pitää reitittää VPN-tauluun 100, ei main-tauluun. Mitä konfiguroit?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-network-ip-rule-policy.md"
+            },
+            {
+              "id": "b12-linux-network-route-get-from",
+              "difficulty": 3,
+              "prompt": "Split-horizon: paketti kohteeseen 172.16.5.10 lähteestä 10.0.1.5 menee väärään tunneliin. Diagnostiikka?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-network-route-get-from.md"
+            },
+            {
               "id": "exp-linux-network-nmcli-down",
               "difficulty": 3,
               "prompt": "Wi-Fi profiili jää roikkuun VPN-konfigin jälkeen. Miten NetworkManagerilla palautat yhteyden?",
@@ -6345,6 +6459,56 @@
               "prompt": "Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/linux-ss-listen.md"
+            }
+          ]
+        },
+        {
+          "id": "linux-tcp-udp",
+          "label": "TCP/UDP",
+          "ready": 6,
+          "total": 6,
+          "questions": [
+            {
+              "id": "b12-linux-tcp-close-wait-leak",
+              "difficulty": 4,
+              "prompt": "Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellus ei sulje. ss-suodatin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-tcp-close-wait-leak.md"
+            },
+            {
+              "id": "b12-linux-tcp-established-filter",
+              "difficulty": 3,
+              "prompt": "Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443. ss-komento?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-tcp-established-filter.md"
+            },
+            {
+              "id": "b12-linux-tcp-retransmit-info",
+              "difficulty": 4,
+              "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-tcp-retransmit-info.md"
+            },
+            {
+              "id": "b12-linux-tcp-syn-backlog",
+              "difficulty": 3,
+              "prompt": "API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja SYN-jono: mitä tarkistat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-tcp-syn-backlog.md"
+            },
+            {
+              "id": "b12-linux-tcp-udp-handshake",
+              "difficulty": 2,
+              "prompt": "Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-tcp-udp-handshake.md"
+            },
+            {
+              "id": "b12-linux-udp-stateless-firewall",
+              "difficulty": 3,
+              "prompt": "DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomuuri. Tyypillinen UDP-ero TCP:hen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b12-linux-udp-stateless-firewall.md"
             }
           ]
         },
