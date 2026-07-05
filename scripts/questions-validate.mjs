@@ -16,6 +16,7 @@ const TOPIC_DOMAINS = {
   "scrum-dod": "scrum", "scrum-dor": "scrum", "scrum-estimation": "scrum",
   "scrum-sprint": "scrum", "scrum-team": "scrum",
   systemd: "linux", journald: "linux", "linux-network": "linux", avahi: "linux",
+  "linux-dbus": "linux", "linux-arp": "linux", "linux-tcp-udp": "linux",
   docker: "docker", "docker-network": "docker", "docker-volumes": "docker",
   "qt-widgets": "qt", "qt-signals": "qt", "qt-threading": "qt", "qt-models": "qt",
   "qt-opengl": "qt", "qt-shaders": "qt",

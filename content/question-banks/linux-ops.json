@@ -4900,13 +4900,29 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 2,
-      "audiences": ["coworker", "guru", "security"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
       "prompt": "Uusi palvelin — haluat asentaa tuoreimmat tietoturvapäivitykset. Mikä on oikea järjestys?",
       "choices": [
-        { "text": "apt update päivittää pakettilistauksen, sitten apt upgrade asentaa päivitykset", "correct": true },
-        { "text": "apt upgrade riittää yksinään — se hakee automaattisesti uusimmat listat", "correct": false },
-        { "text": "apt install --update asentaa ja päivittää kaikki paketit yhdellä komennolla", "correct": false },
-        { "text": "apt refresh && apt patch on oikea pari turvallisuuspäivityksille", "correct": false }
+        {
+          "text": "apt update päivittää pakettilistauksen, sitten apt upgrade asentaa päivitykset",
+          "correct": true
+        },
+        {
+          "text": "apt upgrade riittää yksinään — se hakee automaattisesti uusimmat listat",
+          "correct": false
+        },
+        {
+          "text": "apt install --update asentaa ja päivittää kaikki paketit yhdellä komennolla",
+          "correct": false
+        },
+        {
+          "text": "apt refresh && apt patch on oikea pari turvallisuuspäivityksille",
+          "correct": false
+        }
       ],
       "correctFeedback": "apt update hakee metatiedot, apt upgrade asentaa. Molemmat tarvitaan.",
       "wrongFeedback": "upgrade ilman updatea käyttää vanhoja listoja eikä löydä uusia versioita.",
@@ -4920,13 +4936,29 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 4,
-      "audiences": ["coworker", "guru", "security"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
       "prompt": "Tuotantopalvelimella tietty paketti pitää lukita versioon 2.4.1 estäen automaattiset päivitykset. Miten?",
       "choices": [
-        { "text": "apt-mark hold <paketti> estää paketin päivittymisen apt upgrade -komennolla", "correct": true },
-        { "text": "apt install <paketti>=2.4.1 --lock lukitsee version pysyvästi apt-tietokantaan", "correct": false },
-        { "text": "Poista paketti sources.list:stä niin päivitykset eivät koske sitä", "correct": false },
-        { "text": "chmod 444 /var/lib/dpkg/info/<paketti>.list estää tiedoston muuttumisen", "correct": false }
+        {
+          "text": "apt-mark hold <paketti> estää paketin päivittymisen apt upgrade -komennolla",
+          "correct": true
+        },
+        {
+          "text": "apt install <paketti>=2.4.1 --lock lukitsee version pysyvästi apt-tietokantaan",
+          "correct": false
+        },
+        {
+          "text": "Poista paketti sources.list:stä niin päivitykset eivät koske sitä",
+          "correct": false
+        },
+        {
+          "text": "chmod 444 /var/lib/dpkg/info/<paketti>.list estää tiedoston muuttumisen",
+          "correct": false
+        }
       ],
       "correctFeedback": "apt-mark hold lukitsee paketin nykyiseen versioon kunnes kumoat holdilla unhold.",
       "wrongFeedback": "sources.list vaikuttaa kaikkiin paketteihin. apt-mark hold on pakettikohtainen.",
@@ -4940,13 +4972,28 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Palvelimelle on kertynyt turhia riippuvuuspaketteja poistettujen ohjelmien jäljiltä. Miten siivoot?",
       "choices": [
-        { "text": "apt autoremove poistaa orvot riippuvuudet joita mikään asennettu paketti ei enää tarvitse", "correct": true },
-        { "text": "apt clean poistaa turhat paketit ja vapauttaa levytilan automaattisesti", "correct": false },
-        { "text": "dpkg --purge * poistaa kaikki manuaalisesti asennetut paketit turvallisesti", "correct": false },
-        { "text": "apt remove --unused poistaa kaikki paketit joita ei ole käytetty 30 päivään", "correct": false }
+        {
+          "text": "apt autoremove poistaa orvot riippuvuudet joita mikään asennettu paketti ei enää tarvitse",
+          "correct": true
+        },
+        {
+          "text": "apt clean poistaa turhat paketit ja vapauttaa levytilan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "dpkg --purge * poistaa kaikki manuaalisesti asennetut paketit turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "apt remove --unused poistaa kaikki paketit joita ei ole käytetty 30 päivään",
+          "correct": false
+        }
       ],
       "correctFeedback": "autoremove tunnistaa ja poistaa orvot riippuvuudet turvallisesti.",
       "wrongFeedback": "apt clean tyhjentää vain ladatut .deb-tiedostot cachesta, ei asennettuja paketteja.",
@@ -4960,13 +5007,29 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 4,
-      "audiences": ["coworker", "guru", "security"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
       "prompt": "Tarvitset kolmannen osapuolen PPA:n tai repon lisäämistä Ubuntuun. Mikä on turvallinen tapa?",
       "choices": [
-        { "text": "Lisää GPG-avain ja repo /etc/apt/sources.list.d/-hakemistoon erilliseksi .list-tiedostoksi", "correct": true },
-        { "text": "Muokkaa suoraan /etc/apt/sources.list pääkonfiguraatiota lisäämällä repo loppuun", "correct": false },
-        { "text": "curl | bash asennusskripti lisää repon ja avaimen automaattisesti turvallisesti", "correct": false },
-        { "text": "Lataa .deb manuaalisesti ja asenna dpkg -i — välttää repon tarpeen kokonaan", "correct": false }
+        {
+          "text": "Lisää GPG-avain ja repo /etc/apt/sources.list.d/-hakemistoon erilliseksi .list-tiedostoksi",
+          "correct": true
+        },
+        {
+          "text": "Muokkaa suoraan /etc/apt/sources.list pääkonfiguraatiota lisäämällä repo loppuun",
+          "correct": false
+        },
+        {
+          "text": "curl | bash asennusskripti lisää repon ja avaimen automaattisesti turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "Lataa .deb manuaalisesti ja asenna dpkg -i — välttää repon tarpeen kokonaan",
+          "correct": false
+        }
       ],
       "correctFeedback": "Erillinen .list + GPG-avain mahdollistaa helpon hallinnan ja turvallisen verifioinnin.",
       "wrongFeedback": "Pääkonfiguraation muokkaus vaikeuttaa hallintaa. curl|bash on tietoturvariski.",
@@ -4980,13 +5043,28 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 2,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Et muista paketin tarkkaa nimeä mutta tiedät sen liittyvän JSON-käsittelyyn. Miten etsit?",
       "choices": [
-        { "text": "apt search json tai apt-cache search json etsii pakettinimistä ja kuvauksista", "correct": true },
-        { "text": "dpkg -l | grep json näyttää vain asennetut paketit, ei saatavilla olevia", "correct": false },
-        { "text": "apt list json listaa kaikki paketit joiden nimi on tasan 'json'", "correct": false },
-        { "text": "find /var/cache/apt json etsii ladattuja paketteja nimellä paikallisesti", "correct": false }
+        {
+          "text": "apt search json tai apt-cache search json etsii pakettinimistä ja kuvauksista",
+          "correct": true
+        },
+        {
+          "text": "dpkg -l | grep json näyttää vain asennetut paketit, ei saatavilla olevia",
+          "correct": false
+        },
+        {
+          "text": "apt list json listaa kaikki paketit joiden nimi on tasan 'json'",
+          "correct": false
+        },
+        {
+          "text": "find /var/cache/apt json etsii ladattuja paketteja nimellä paikallisesti",
+          "correct": false
+        }
       ],
       "correctFeedback": "apt search etsii nimen ja kuvauksen perusteella kaikista saatavilla olevista paketeista.",
       "wrongFeedback": "dpkg -l näyttää vain jo asennetut. apt search löytää myös asentamattomat.",
@@ -5000,13 +5078,28 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Ladattu .deb-paketti ei asennu koska riippuvuudet puuttuvat. Miten korjaat?",
       "choices": [
-        { "text": "dpkg -i paketti.deb && apt install -f korjaa puuttuvat riippuvuudet jälkikäteen", "correct": true },
-        { "text": "apt install paketti.deb asentaa suoraan ja ratkaisee riippuvuudet — ei tarvita dpkg:ta", "correct": false },
-        { "text": "dpkg --force-depends -i paketti.deb ohittaa riippuvuudet turvallisesti", "correct": false },
-        { "text": "apt update korjaa riippuvuusongelmat automaattisesti seuraavassa päivityksessä", "correct": false }
+        {
+          "text": "dpkg -i paketti.deb && apt install -f korjaa puuttuvat riippuvuudet jälkikäteen",
+          "correct": true
+        },
+        {
+          "text": "apt install paketti.deb asentaa suoraan ja ratkaisee riippuvuudet — ei tarvita dpkg:ta",
+          "correct": false
+        },
+        {
+          "text": "dpkg --force-depends -i paketti.deb ohittaa riippuvuudet turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "apt update korjaa riippuvuusongelmat automaattisesti seuraavassa päivityksessä",
+          "correct": false
+        }
       ],
       "correctFeedback": "dpkg asentaa paketin ja apt install -f täyttää puuttuvat riippuvuudet reposta.",
       "wrongFeedback": "--force-depends jättää systeemin rikkinäiseen tilaan. apt -f korjaa oikein.",
@@ -5020,13 +5113,29 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 4,
-      "audiences": ["coworker", "guru", "security"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
       "prompt": "Palvelimelle halutaan automaattiset tietoturvapäivitykset ilman manuaalista ylläpitoa. Mikä ratkaisu?",
       "choices": [
-        { "text": "unattended-upgrades-paketti + /etc/apt/apt.conf.d/50unattended-upgrades konfiguraatio", "correct": true },
-        { "text": "Crontab-rivi 'apt upgrade -y' joka yö ajaa kaikki päivitykset turvallisesti", "correct": false },
-        { "text": "apt autoinstall --security aktivoi automaattiset päivitykset pysyvästi", "correct": false },
-        { "text": "systemd-timer apt-daily riittää yksinään — se myös asentaa päivitykset", "correct": false }
+        {
+          "text": "unattended-upgrades-paketti + /etc/apt/apt.conf.d/50unattended-upgrades konfiguraatio",
+          "correct": true
+        },
+        {
+          "text": "Crontab-rivi 'apt upgrade -y' joka yö ajaa kaikki päivitykset turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "apt autoinstall --security aktivoi automaattiset päivitykset pysyvästi",
+          "correct": false
+        },
+        {
+          "text": "systemd-timer apt-daily riittää yksinään — se myös asentaa päivitykset",
+          "correct": false
+        }
       ],
       "correctFeedback": "unattended-upgrades on Debianin/Ubuntun virallinen ratkaisu turvapäivitysten automatisointiin.",
       "wrongFeedback": "Pelkkä cron + apt upgrade voi rikkoa palvelun. unattended-upgrades on kontrolloitu.",
@@ -5040,19 +5149,737 @@
       "chapter": "apt",
       "domain": "linux",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "apt upgrade ilmoittaa 'held back packages'. Mikä komento asentaa myös nämä?",
       "choices": [
-        { "text": "apt full-upgrade (tai apt-get dist-upgrade) sallii pakettien poistamisen/lisäämisen tarvittaessa", "correct": true },
-        { "text": "apt upgrade --force asentaa kaikki paketit ohittaen rajoitukset", "correct": false },
-        { "text": "apt install --reinstall asentaa pidetyt paketit uudelleen uusina", "correct": false },
-        { "text": "dpkg --configure -a pakottaa held back -pakettien konfiguroinnin", "correct": false }
+        {
+          "text": "apt full-upgrade (tai apt-get dist-upgrade) sallii pakettien poistamisen/lisäämisen tarvittaessa",
+          "correct": true
+        },
+        {
+          "text": "apt upgrade --force asentaa kaikki paketit ohittaen rajoitukset",
+          "correct": false
+        },
+        {
+          "text": "apt install --reinstall asentaa pidetyt paketit uudelleen uusina",
+          "correct": false
+        },
+        {
+          "text": "dpkg --configure -a pakottaa held back -pakettien konfiguroinnin",
+          "correct": false
+        }
       ],
       "correctFeedback": "full-upgrade/dist-upgrade ratkaisee monimutkaiset riippuvuusmuutokset joita upgrade ei tee.",
       "wrongFeedback": "apt upgrade ei poista paketteja koskaan. full-upgrade sallii muutokset.",
       "sourceRef": "man/apt(8)",
       "sourceUrl": "https://manpages.debian.org/bookworm/apt/apt.8.en.html",
       "featureId": "linux:apt-full-upgrade",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-dbus-nm-wifi-scan",
+      "chapter": "linux-dbus",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?",
+      "choices": [
+        {
+          "text": "busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager RequestScan as",
+          "correct": true
+        },
+        {
+          "text": "systemctl restart NetworkManager poistaa välimuistin automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "echo scan > /proc/net/wireless",
+          "correct": false
+        },
+        {
+          "text": "dbus-send --session org.freedesktop.NetworkManager /Scan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RequestScan on NetworkManagerin D-Bus-API — system bus, ei session.",
+      "wrongFeedback": "Wi-Fi-skannaus menee NM:n system-bus-rajapinnan kautta. Session-bus ja /proc eivät korvaa sitä.",
+      "sourceRef": "NetworkManager/dbus",
+      "sourceUrl": "https://networkmanager.dev/docs/api/latest/spec.html",
+      "featureId": "linux:dbus-nm-wifi",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-dbus-busctl-introspect",
+      "chapter": "linux-dbus",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat listata NetworkManagerin D-Bus-metodit terminaalista ennen automaatiota. Ensimmäinen komento?",
+      "choices": [
+        {
+          "text": "busctl introspect org.freedesktop.NetworkManager /org/freedesktop/NetworkManager",
+          "correct": true
+        },
+        {
+          "text": "dbus-launch --list-services | grep Network",
+          "correct": false
+        },
+        {
+          "text": "systemctl cat NetworkManager.service",
+          "correct": false
+        },
+        {
+          "text": "nmcli general permissions",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "busctl introspect näyttää interfacen, metodit ja propertyt — freedesktop D-Bus tooling.",
+      "wrongFeedback": "Unit-tiedosto ja nmcli eivät listaa D-Bus-skeemaa. introspect on oikea aloituspiste.",
+      "sourceRef": "freedesktop/busctl",
+      "sourceUrl": "https://www.freedesktop.org/software/systemd/man/busctl.html",
+      "featureId": "linux:dbus-introspect",
+      "featurePoints": 2
+    },
+    {
+      "id": "b12-linux-dbus-bluez-pair",
+      "chapter": "linux-dbus",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Bluetooth-kuulokkeet eivät yhdisty — BlueZ pyörii mutta laite on untrusted. CLI-korjaus ennen D-Bus-skriptiä?",
+      "choices": [
+        {
+          "text": "bluetoothctl → pair MAC, trust MAC, connect MAC",
+          "correct": true
+        },
+        {
+          "text": "modprobe btusb reset",
+          "correct": false
+        },
+        {
+          "text": "rfkill block bluetooth",
+          "correct": false
+        },
+        {
+          "text": "systemctl stop org.bluez",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BlueZ hallitsee paritusta org.bluez D-Bus-palvelun kautta — bluetoothctl on interaktiivinen wrapper.",
+      "wrongFeedback": "Ajurin reset tai palvelun pysäytys ei korvaa pair/trust -vaihetta.",
+      "sourceRef": "bluez/bluetoothctl",
+      "sourceUrl": "https://www.bluez.org/",
+      "featureId": "linux:dbus-bluez",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-dbus-modemmanager-signal",
+      "chapter": "linux-dbus",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-CLI tarkistukseen?",
+      "choices": [
+        {
+          "text": "mmcli -L && mmcli -m 0 --signal-get",
+          "correct": true
+        },
+        {
+          "text": "ip link show wwan0 riittää signaalitietoihin",
+          "correct": false
+        },
+        {
+          "text": "nmcli device wifi list",
+          "correct": false
+        },
+        {
+          "text": "cat /sys/class/net/modem0/signal",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "mmcli puhuu org.freedesktop.ModemManager1 D-Bus-palvelulle — signaali, operaattori, APN.",
+      "wrongFeedback": "wwan0 linkkitila ei kerro RSSI:ta. Wi-Fi-komennot eivät koske cellular-modemia.",
+      "sourceRef": "ModemManager/mmcli",
+      "sourceUrl": "https://www.freedesktop.org/software/ModemManager/doc/latest/mmcli.8.html",
+      "featureId": "linux:dbus-modem",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-dbus-polkit-deny",
+      "chapter": "linux-dbus",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Polkit estää — käyttäjällä ei ole oikeuksia NM-asetuksiin ilman auth_admin",
+          "correct": true
+        },
+        {
+          "text": "Väärä journald-priority",
+          "correct": false
+        },
+        {
+          "text": "D-Bus daemon on kaatunut — reboot auttaa aina",
+          "correct": false
+        },
+        {
+          "text": "dbus-send vaatii aina rootin — nmcli ei",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "NetworkManager, BlueZ ja ModemManager käyttävät polkit-sääntöjä — tarkista `journalctl -u polkit`.",
+      "wrongFeedback": "Access denied on tyypillisesti polkit/oikeudet, ei journald tai daemon-kaatuminen.",
+      "sourceRef": "polkit/NetworkManager",
+      "sourceUrl": "https://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html",
+      "featureId": "linux:dbus-polkit",
+      "featurePoints": 4
+    },
+    {
+      "id": "b12-linux-arp-static-neigh",
+      "chapter": "linux-arp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merkinnän. Komento?",
+      "choices": [
+        {
+          "text": "ip neigh add 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 nud permanent",
+          "correct": true
+        },
+        {
+          "text": "arp -s 192.168.1.1 eth0",
+          "correct": false
+        },
+        {
+          "text": "echo aa:bb > /proc/net/arp",
+          "correct": false
+        },
+        {
+          "text": "ip route add 192.168.1.1 dev eth0",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ip neigh add ... nud permanent — staattinen neighbor iproute2:lla.",
+      "wrongFeedback": "Vanha arp-komento toimii joissain distrossa, mutta ip neigh on moderni ja eksplisiittinen.",
+      "sourceRef": "man8/ip-neighbour",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-neighbour.8.html",
+      "featureId": "linux:arp-static",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-arp-gratuitous-duplicate",
+      "chapter": "linux-arp",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. Nopein varmistus lähiverkossa?",
+      "choices": [
+        {
+          "text": "arping -D -I eth0 10.0.0.50 — gratuitous ARP paljastaa duplikaatin",
+          "correct": true
+        },
+        {
+          "text": "ip route flush table main",
+          "correct": false
+        },
+        {
+          "text": "ping -f 10.0.0.50 riittää aina",
+          "correct": false
+        },
+        {
+          "text": "ss -tan | grep 10.0.0.50",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "arping -D lähettää gratuitous ARP:n — toinen laite vastaa jos IP on jo käytössä.",
+      "wrongFeedback": "Ping ei paljasta duplikaattia luotettavasti. ARP-tason työkalu tarvitaan.",
+      "sourceRef": "man8/arping",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/arping.8.html",
+      "featureId": "linux:arp-duplicate",
+      "featurePoints": 4
+    },
+    {
+      "id": "b12-linux-arp-flush-migration",
+      "chapter": "linux-arp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "VM siirrettiin toiseen hypervisorille — vanhat MAC-osoitteet jäävät ARP-cacheen. Turvallisin tyhjennys?",
+      "choices": [
+        {
+          "text": "ip neigh flush dev eth0 — vain kyseisen rajapinnan cache",
+          "correct": true
+        },
+        {
+          "text": "ip neigh flush all — kaikki naapurit kaikilla rajapinnoilla heti",
+          "correct": false
+        },
+        {
+          "text": "reboot on ainoa tapa tyhjentää ARP",
+          "correct": false
+        },
+        {
+          "text": "systemctl restart systemd-networkd poistaa ARP:n automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rajapintakohtainen flush riittää migraatioon — vähentää tuotantokatkoa.",
+      "wrongFeedback": "Globaali flush voi aiheuttaa lyhyen katkon kaikille naapureille turhaan.",
+      "sourceRef": "man8/ip-neighbour",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-neighbour.8.html",
+      "featureId": "linux:arp-flush",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-arp-failed-state",
+      "chapter": "linux-arp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "`ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene. Ensimmäinen toimenpide?",
+      "choices": [
+        {
+          "text": "Tarkista L2: kaapeli, VLAN, kytkinportti — sitten ip neigh del + uusi ARP-yritys",
+          "correct": true
+        },
+        {
+          "text": "Lisää staattinen ip route ilman gateway-MAC:ia",
+          "correct": false
+        },
+        {
+          "text": "Muuta TCP keepalive-asetuksia",
+          "correct": false
+        },
+        {
+          "text": "Ota UDP pois käytöstä palomuurista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "FAILED = kernel luovutti ARP-yrityksistä — juurisyy on L2/VLAN/IP-konflikti.",
+      "wrongFeedback": "Reititys tai TCP/UDP-asetukset eivät korjaa ARP-kerroksen ongelmaa.",
+      "sourceRef": "man8/ip-neighbour",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-neighbour.8.html",
+      "featureId": "linux:arp-failed",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-network-ip-route-replace",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Oletusreitti pitää vaihtaa uuteen gatewayhin ilman että vanha jää roikkuun. iproute2-komento?",
+      "choices": [
+        {
+          "text": "ip route replace default via 10.0.0.1 dev eth0",
+          "correct": true
+        },
+        {
+          "text": "ip route add default via 10.0.0.1 dev eth0 — add riittää aina",
+          "correct": false
+        },
+        {
+          "text": "route add default gw 10.0.0.1",
+          "correct": false
+        },
+        {
+          "text": "ifconfig eth0 gateway 10.0.0.1",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "replace päivittää olemassa olevan reitin tai luo uuden — ip-route man.",
+      "wrongFeedback": "add voi epäonnistua tai jättää vanhan oletusreitin. replace on idempotentti.",
+      "sourceRef": "man8/ip-route",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-route.8.html",
+      "featureId": "linux:ip-route-replace",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-network-ip-rule-policy",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Liikenne lähteestä 10.10.0.0/24 pitää reitittää VPN-tauluun 100, ei main-tauluun. Mitä konfiguroit?",
+      "choices": [
+        {
+          "text": "ip rule add from 10.10.0.0/24 lookup 100 + ip route add ... table 100",
+          "correct": true
+        },
+        {
+          "text": "ip route add 10.10.0.0/24 dev tun0 — riittää policy routingiin",
+          "correct": false
+        },
+        {
+          "text": "echo 100 > /proc/sys/net/ipv4/route/flush",
+          "correct": false
+        },
+        {
+          "text": "nmcli connection modify vpn ipv4.routes",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Policy routing = ip rule + erillinen routing table — ip-rule man.",
+      "wrongFeedback": "Pelkkä dev-reitti ei ohjaa lähde-IP:n mukaan. rule + table on oikea malli.",
+      "sourceRef": "man8/ip-rule",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-rule.8.html",
+      "featureId": "linux:ip-policy-routing",
+      "featurePoints": 4
+    },
+    {
+      "id": "b12-linux-network-ip-addr-secondary",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Palvelimelle tarvitaan toinen IPv4 samaan rajapintaan (VIP). Linux-komento — ei Windows ipconfig?",
+      "choices": [
+        {
+          "text": "ip addr add 10.0.0.99/24 dev eth0",
+          "correct": true
+        },
+        {
+          "text": "ipconfig eth0 10.0.0.99",
+          "correct": false
+        },
+        {
+          "text": "ifconfig eth0:1 alias — ainoa tuettu tapa",
+          "correct": false
+        },
+        {
+          "text": "echo 10.0.0.99 > /etc/hosts riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ip addr add liittää secondary-osoitteen — iproute2 korvaa ifconfig/ipconfig-komennot.",
+      "wrongFeedback": "ipconfig on Windows. /etc/hosts ei lisää osoitetta kernelille.",
+      "sourceRef": "man8/ip-address",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-address.8.html",
+      "featureId": "linux:ip-addr-secondary",
+      "featurePoints": 2
+    },
+    {
+      "id": "b12-linux-network-ip-link-admin",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein palautus?",
+      "choices": [
+        {
+          "text": "ip link set eth0 up",
+          "correct": true
+        },
+        {
+          "text": "ip route add default via 0.0.0.0",
+          "correct": false
+        },
+        {
+          "text": "systemctl restart networking",
+          "correct": false
+        },
+        {
+          "text": "modprobe -r eth0",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ip link set up/down hallitsee admin-tilaa — ennen IP- tai reittikonfigia.",
+      "wrongFeedback": "Reitti tai daemon-restart ei nosta linkkiä jos admin DOWN. Ajurin poisto rikkoo enemmän.",
+      "sourceRef": "man8/ip-link",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-link.8.html",
+      "featureId": "linux:ip-link",
+      "featurePoints": 2
+    },
+    {
+      "id": "b12-linux-network-route-get-from",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Split-horizon: paketti kohteeseen 172.16.5.10 lähteestä 10.0.1.5 menee väärään tunneliin. Diagnostiikka?",
+      "choices": [
+        {
+          "text": "ip route get 172.16.5.10 from 10.0.1.5 iif eth0",
+          "correct": true
+        },
+        {
+          "text": "traceroute 172.16.5.10 — näyttää aina lähde-IP:n",
+          "correct": false
+        },
+        {
+          "text": "ip addr show tun0",
+          "correct": false
+        },
+        {
+          "text": "cat /proc/net/route",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ip route get simuloi reitityspäätöksen lähde-IP:llä — policy routing debug.",
+      "wrongFeedback": "traceroute ei simuloi kernelin route lookupia lähde-IP:llä samalla tavalla.",
+      "sourceRef": "man8/ip-route",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-route.8.html",
+      "featureId": "linux:ip-route-get",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-tcp-syn-backlog",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja SYN-jono: mitä tarkistat?",
+      "choices": [
+        {
+          "text": "ss -ltn sport = :8080 — LISTEN ja backlog; prosessi ei kuuntele = refused",
+          "correct": true
+        },
+        {
+          "text": "ss -uln — UDP riittää TCP-ongelmaan",
+          "correct": false
+        },
+        {
+          "text": "ip neigh show — refused tulee ARP:sta",
+          "correct": false
+        },
+        {
+          "text": "journalctl -u firewalld — refused = aina palomuuri",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Connection refused = ei kuuntelijaa tai ei hyväksytä SYN:ä portissa — ss -ltn.",
+      "wrongFeedback": "Refused ei ole ARP- tai UDP-ongelma. Palomuuri usein timeout/RST, ei aina refused.",
+      "sourceRef": "man8/ss",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ss.8.html",
+      "featureId": "linux:tcp-listen",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-tcp-close-wait-leak",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellus ei sulje. ss-suodatin?",
+      "choices": [
+        {
+          "text": "ss -tan state close-wait",
+          "correct": true
+        },
+        {
+          "text": "ss -uln state established",
+          "correct": false
+        },
+        {
+          "text": "ss -ltn state listening",
+          "correct": false
+        },
+        {
+          "text": "netstat -r",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CLOSE-WAIT = remote sulki, paikallinen prosessi ei sulkenut socketia — ss states.",
+      "wrongFeedback": "UDP ja LISTEN eivät näytä CLOSE-WAIT-vuotoa. netstat -r on reititystä.",
+      "sourceRef": "man8/ss",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ss.8.html",
+      "featureId": "linux:tcp-close-wait",
+      "featurePoints": 4
+    },
+    {
+      "id": "b12-linux-tcp-retransmit-info",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?",
+      "choices": [
+        {
+          "text": "ss -ti — TCP info: rtt, retrans, cwnd",
+          "correct": true
+        },
+        {
+          "text": "ss -u — UDP timerit",
+          "correct": false
+        },
+        {
+          "text": "ss -s — vain yhteenveto, ei per-yhteys RTT",
+          "correct": false
+        },
+        {
+          "text": "tcpdump -i any — ss korvaa tcpdumpin aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ss -ti (tiedot, TCP) paljastaa retransmit- ja RTT-kentät — ss man.",
+      "wrongFeedback": "-s on summary. tcpdump näyttää paketteja, ei socket-timer metadataa samalla tavalla.",
+      "sourceRef": "man8/ss",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ss.8.html",
+      "featureId": "linux:tcp-retransmit",
+      "featurePoints": 4
+    },
+    {
+      "id": "b12-linux-udp-stateless-firewall",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomuuri. Tyypillinen UDP-ero TCP:hen?",
+      "choices": [
+        {
+          "text": "UDP on yhteydetön — palomuuri tarvitsee conntrack/state tai eksplisiittisen allow return",
+          "correct": true
+        },
+        {
+          "text": "UDP käyttää aina kolmen suun kättelyä kuten TCP",
+          "correct": false
+        },
+        {
+          "text": "UDP ei kulje NAT:in läpi koskaan",
+          "correct": false
+        },
+        {
+          "text": "ss -ltn näyttää UDP-vastaukset",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UDP ei luo TCP-tyyppistä sessiota — nftables/conntrack tai stateful säännöt tarvitaan.",
+      "wrongFeedback": "UDP on datagram-pohjainen. Kolmen suun kättely ja LISTEN ovat TCP-käsitteitä.",
+      "sourceRef": "man8/nft",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/nft.8.html",
+      "featureId": "linux:udp-stateless",
+      "featurePoints": 3
+    },
+    {
+      "id": "b12-linux-tcp-udp-handshake",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa?",
+      "choices": [
+        {
+          "text": "TCP: kolmen suun kättely (SYN, SYN-ACK, ACK) ennen dataa; UDP: ei kättelyä",
+          "correct": true
+        },
+        {
+          "text": "UDP: kolmen suun kättely; TCP: suora datagram",
+          "correct": false
+        },
+        {
+          "text": "Molemmat vaativat TLS-handshaken",
+          "correct": false
+        },
+        {
+          "text": "TCP on aina UDP:n päällä portissa 53",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "TCP on yhteyspohjainen; UDP lähettää datagrammeja ilman sessiota — RFC 793 vs UDP.",
+      "wrongFeedback": "Kättely ja TLS eivät kuulu UDP:hen. DNS voi käyttää molempia, mutta protokollat eroavat.",
+      "sourceRef": "RFC793/TCP",
+      "sourceUrl": "https://datatracker.ietf.org/doc/html/rfc793",
+      "featureId": "linux:tcp-udp-basics",
+      "featurePoints": 2
+    },
+    {
+      "id": "b12-linux-tcp-established-filter",
+      "chapter": "linux-tcp-udp",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443. ss-komento?",
+      "choices": [
+        {
+          "text": "ss -tn state established sport = :443 or dport = :443",
+          "correct": true
+        },
+        {
+          "text": "ss -uln dport = :443",
+          "correct": false
+        },
+        {
+          "text": "ss -ltn state established",
+          "correct": false
+        },
+        {
+          "text": "ip route get :443",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ss -tn + state established + port filter — aktiiviset TCP-sessiot.",
+      "wrongFeedback": "-u on UDP. -l on LISTEN (ei established). ip route ei listaa socketeja.",
+      "sourceRef": "man8/ss",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/ss.8.html",
+      "featureId": "linux:tcp-established",
       "featurePoints": 3
     }
   ]
