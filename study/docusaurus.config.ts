@@ -14,9 +14,11 @@ const config: Config = {
   organizationName: "terotests",
   projectName: "koodisampo",
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
   markdown: {
     format: "md",
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
   },
   i18n: {
     defaultLocale: "fi",
