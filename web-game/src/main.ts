@@ -1,11 +1,10 @@
 import { createBrowserGame } from "./boot";
-import { initTheme, mountThemePicker } from "./theme";
+import { initTheme } from "./theme";
 import { initRenderTheme, mountRenderThemePicker } from "./renderTheme";
 import { mountGameUI } from "./ui";
 
 initTheme();
 initRenderTheme();
-mountThemePicker();
 mountRenderThemePicker();
 
 async function start() {
