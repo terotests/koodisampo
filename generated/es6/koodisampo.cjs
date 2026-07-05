@@ -4595,7 +4595,11 @@ class WorldMap  {
     view.statusLine = this.lastStatus;
     view.ambientLine = this.overheardMsg;
     if ( this.policeChaseActive ) {
-      view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!";
+      if ( this.currentFloor == 0 ) {
+        view.hintLine = "⚠ POLIISIT! Juokse hissille (E) — kulkukortilla pääset turvaan sisälle!";
+      } else {
+        view.hintLine = "⚠ POLIISIT TAKAA-AJAVAT! Juokse käytävää pitkin!";
+      }
     } else {
       view.hintLine = "wasd | e=työkalu | h=piiloudu | i=inventaario | b=opiskelulista | t/x=työkalu | 1-9/0=hissi | ?=oppitunnit | q=lopeta";
     }
@@ -6030,6 +6034,67 @@ class QuizReactionCatalog  {
     return entry.text;
   };
 }
+class GameOverTextCatalog  {
+  constructor() {
+    this.policeLines = [];
+    let empty_8 = [];
+    this.policeLines = empty_8;
+  }
+  reset () {
+    let empty = [];
+    this.policeLines = empty;
+  };
+  loadDefaults () {
+    this.reset();
+    this.addPolice("Poliisi sai sinut kiinni pihalla. Hissi olisi vienyt turvaan — ilman kulkukorttia ulkopuolinen ei pääse perään.");
+    this.addPolice("Käsiraudat lukittuivat ranteesi. Ovi rakennukseen oli metrin päässä, mutta et ehtinyt.");
+    this.addPolice("\"Seis!\" — viimeinen komento ennen lattiaa. Sisällä olisit ollut turvassa, jos korttisi olisi ollut taskussa.");
+    this.addPolice("Kolme mustapaitaista poliisia ympäröi sinut. He eivät voi seurata sinua sisälle ilman kulkukorttia — valitettavasti et päässyt sinne.");
+    this.addPolice("Pihamaa on viimeinen näkymäsi. Rakennuksen kiviseinät suojasivat niitä, joilla oli avain.");
+    this.addPolice("Poliisi pysäytti takaa-ajon. Hissi huokui tyhjyyttä kollegan luokse — sinä et ehtinyt sinne.");
+    this.addPolice("\"Meillä ei ole kulkulupaa tähän rakennukseen\", poliisi mutisee harmistuneena — sinut on kuitenkin saatu kiinni ulkona.");
+    this.addPolice("Juoksit loppuun asti, mutta partio ehti ensin. Sisään olisit päässyt, jos olisit ollut sekunnin nopeampi.");
+    this.addPolice("HR:n soittama 112 toimii. Poliisi ei pääse sisälle, mutta sinä et päässyt pois pihalta.");
+    this.addPolice("Takaa-ajo päättyi ulkoseinää vasten — et sisäseinään. Turva olisi ollut sisällä.");
+    this.addPolice("Poliisi tarkistaa taskusi. Rakennukseen johtava ovi pysyy lukittuna heille — kuten sinullekin, nyt.");
+    this.addPolice("Viimeinen yritys juosta pääovea kohti epäonnistui. Sisällä kollegat jatkavat kahvittelua.");
+    this.addPolice("\"Anteeksi, tarvitsen kulkukortin\", lukee ovikyltti. Poliisi nyökkää: \"Juuri niin.\" Sinä et ole enää vapaa.");
+    this.addPolice("Pihalla on kylmää, käsiraudoissa vielä kylmemmin. Hissiin olisi mahtunut juuri sinä — jos olisit ehtinyt.");
+    this.addPolice("Poliisin radiopuhelu vahvistaa: \"Epäilty saatu.\" Sisäinen turva jäi saavuttamatta.");
+    this.addPolice("Kollega ikkunasta katsoo alas — näkee sinut pihalla poliisin kanssa. Hänellä on kortti, sinulla ei enää vapautta.");
+    this.addPolice("Takaa-ajo kesti kolmekymmentä sekuntia liian kauan. Kulkukortti taskussa, mutta jalat eivät enää kantaneet.");
+    this.addPolice("Poliisi ei astu kynnyksen yli — lupa puuttuu. Sinut saatiin kuitenkin ennen kynnystä.");
+    this.addPolice("Hissi välähti sinisenä pihalla — se odottaa seuraavaa kulkukorttia. Et ollut se seuraava.");
+    this.addPolice("\"Rakennukseen ei pääse ilman lupaa\", huutaa vartija sisältä. Poliisi ulkoa: \"Juuri tämä kaveri yritti!\"");
+    this.addPolice("Viimeinen nurkan takaa juoksu — suoraan partion syliin. Turvallinen kerros jäi yhden hissimatkan päähän.");
+    this.addPolice("Poliisi tarkistaa ovilukon: \"Ei pääsyä.\" Hän tarkistaa sinut: \"Pääsy evätty.\"");
+    this.addPolice("Pihakivet kertovat juoksusta, joka päättyi liian aikaisin. Sisällä olisi ollut hiljaista.");
+    this.addPolice("Et ehtinyt E-ruudulle. Poliisi ehti P-ruudulle.");
+    this.addPolice("Kulkukorttimagneetti piippaa hississä jollekin toiselle. Sinulle piippaa käsiraudat.");
+    this.addPolice("Rakennus seisoo vakaana; sinä et enää. Poliisi jää odottamaan ovelle — turhaan.");
+    this.addPolice("Takaa-ajon loppu kirjoitetaan pöytäkirjaan. Turvallinen sisäpuoli jää lukion taakse.");
+    this.addPolice("Poliisi kokeilee ovea: lukossa. Sinut pidetään: kiinni. Kaksi eri kohtaloa, metrin väli.");
+    this.addPolice("Viimeinen ajatuksesi: \"Jos ehdin vielä hissille…\" — et ehtinyt.");
+    this.addPolice("Game Over. Poliisi pihalla, turva sisällä — et ole enää kumpaankaan.");
+  };
+  addPolice (line) {
+    this.policeLines.push(line);
+  };
+  policeCount () {
+    return this.policeLines.length;
+  };
+  pickPoliceLine (seed) {
+    const count = this.policeCount();
+    if ( count < 1 ) {
+      return "Kiinni poliisien toimesta.";
+    }
+    let idx = seed % count;
+    if ( idx < 0 ) {
+      idx = 0 - idx;
+    }
+    return this.policeLines[idx];
+  };
+}
 class ArrestView  {
   constructor() {
     this.catcherName = "";
@@ -6714,6 +6779,8 @@ class GameSession  extends RangerProcessBase {
     this.dialogueCatalog = new DialogueCatalog();
     this.quizReactionCatalog = new QuizReactionCatalog();
     this.quizReactionCatalog.loadDefaults();
+    this.gameOverTexts = new GameOverTextCatalog();
+    this.gameOverTexts.loadDefaults();
     this.emotionMath = new EmotionMath();
     this.eventPerception = new EventPerception();
     this.escalation = new Escalation();
@@ -7186,10 +7253,18 @@ class GameSession  extends RangerProcessBase {
     this.screen = "map";
     this.markStateDirty();
   };
-  gameOverArrested () {
+  policeDeathSeed () {
+    const deaths = this.exportDeaths();
+    return (((deaths * 73856093) + (this._map.playerX * 19349663)) + (this._map.playerY * 83492791)) + (this._map.currentFloor * 97);
+  };
+  pickPoliceDeathLine () {
+    const seed = this.policeDeathSeed();
+    return this.gameOverTexts.pickPoliceLine(seed);
+  };
+  enterGameOverDeath (reason, deathLine) {
     this.ensureEngine();
     this.engine.deaths = this.engine.deaths + 1;
-    this.gameOverReason = "Arrested";
+    this.gameOverReason = reason;
     this._map.clearPoliceSquad();
     this._map.clearOuterWallBreaches();
     const floor = this._map.activeFloor();
@@ -7197,45 +7272,36 @@ class GameSession  extends RangerProcessBase {
     this._map.playerY = floor.spawnY;
     this._map.playerHidden = false;
     this._map.ensurePlayerOnWalkable();
-    const deathMsg = "Kiinni — " + this.arrestReasonLine();
-    this.buildMemorialMourners(deathMsg);
+    this.buildMemorialMourners(deathLine);
     this._map.lastStatus = this.memorialDeathLine;
     this.arrestReason = "";
     this.clearEncounter();
     this.screen = "gameover";
     this.markStateDirty();
   };
+  gameOverArrested () {
+    const deathMsg = "Kiinni — " + this.arrestReasonLine();
+    this.enterGameOverDeath("Arrested", deathMsg);
+  };
   gameOverPolice () {
-    this.ensureEngine();
-    this.engine.deaths = this.engine.deaths + 1;
-    this.gameOverReason = "PoliceCaught";
-    this._map.clearPoliceSquad();
-    this._map.clearOuterWallBreaches();
-    const floor = this._map.activeFloor();
-    this._map.playerX = floor.spawnX;
-    this._map.playerY = floor.spawnY;
-    this._map.playerHidden = false;
-    this._map.ensurePlayerOnWalkable();
-    this.buildMemorialMourners("Kiinni poliisien toimesta.");
-    this._map.lastStatus = this.memorialDeathLine;
-    this.screen = "gameover";
-    this.markStateDirty();
+    const deathLine = this.pickPoliceDeathLine();
+    this.enterGameOverDeath("PoliceCaught", deathLine);
   };
   gameOverFall () {
-    this.ensureEngine();
-    this.engine.deaths = this.engine.deaths + 1;
-    this.gameOverReason = "FallDeath";
+    this.enterGameOverDeath("FallDeath", "Putosit rakennuksesta ulos.");
+  };
+  tryEscapePoliceFromCourtyard (targetFloor) {
+    if ( this._map.policeChaseActive == false ) {
+      return;
+    }
+    if ( targetFloor < 1 ) {
+      return;
+    }
+    if ( this.tools.hasBuildingAccess() == false ) {
+      return;
+    }
     this._map.clearPoliceSquad();
-    this._map.clearOuterWallBreaches();
-    const floor = this._map.activeFloor();
-    this._map.playerX = floor.spawnX;
-    this._map.playerY = floor.spawnY;
-    this._map.playerHidden = false;
-    this._map.ensurePlayerOnWalkable();
-    this.buildMemorialMourners("Putosit rakennuksesta ulos.");
-    this._map.lastStatus = this.memorialDeathLine;
-    this.screen = "gameover";
-    this.markStateDirty();
+    this._map.lastStatus = "Pääsit sisälle turvaan — poliisi jää pihalle ilman kulkukorttia.";
   };
   handleBuildingExit () {
     if ( this._map.currentFloor == 1 ) {
@@ -7348,18 +7414,7 @@ class GameSession  extends RangerProcessBase {
     return "";
   };
   encounterDeath (message) {
-    this.ensureEngine();
-    this.engine.deaths = this.engine.deaths + 1;
-    this.applyDeathReset();
-    const floor = this._map.activeFloor();
-    this._map.playerX = floor.spawnX;
-    this._map.playerY = floor.spawnY;
-    this._map.playerHidden = false;
-    this._map.ensurePlayerOnWalkable();
-    this._map.lastStatus = message + " Heräsit toimiston spawn-pisteellä.";
-    this.clearEncounter();
-    this.screen = "map";
-    this.encounterResult = "death";
+    this.enterGameOverDeath("EncounterDeath", message);
   };
   clearEncounter () {
     this.pendingEntityId = "";
@@ -7694,7 +7749,11 @@ class GameSession  extends RangerProcessBase {
         this.markStateDirty();
         return;
       }
+      const wasCourtyard = this._map.currentFloor == 0;
       if ( this._map.tryElevatorTo(idx) ) {
+        if ( wasCourtyard ) {
+          this.tryEscapePoliceFromCourtyard(idx);
+        }
         this.markStateDirty();
       }
     }
@@ -9579,7 +9638,7 @@ class GameSession  extends RangerProcessBase {
       if ( this.isCeoEncounter() ) {
         const totalKarma = this.karma.total();
         if ( totalKarma < 100 ) {
-          this.encounterDeath("YOU ARE FIRED!!!!");
+          this.encounterDeath("Potkut — toimitusjohtajaan hyökkäys on urasi loppu.");
           this.markStateDirty();
           return;
         }
@@ -10721,6 +10780,7 @@ module.exports.EmotionalDialogue = EmotionalDialogue;
 module.exports.DialogueCatalog = DialogueCatalog;
 module.exports.QuizReactionEntry = QuizReactionEntry;
 module.exports.QuizReactionCatalog = QuizReactionCatalog;
+module.exports.GameOverTextCatalog = GameOverTextCatalog;
 module.exports.ArrestView = ArrestView;
 module.exports.ProximityGreeting = ProximityGreeting;
 module.exports.WorldClock = WorldClock;
