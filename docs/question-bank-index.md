@@ -1,6 +1,6 @@
 # Koodisampo — kysymyspankin kooste
 
-Yhteensä **1173** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
+Yhteensä **1193** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
 
 Oikea vastaus merkitty **lihavoituna**.
 
@@ -84,18 +84,18 @@ Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. Miksi tark
 Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?
 
 - **<=> (spaceship) tai std::strong_ordering — totaalinen järjestys** ✓
-- Palauta a < b || a == b
-- Käytä qsort C:stä
-- Comparator ei saa koskaan palauttaa false
+- Palauta a < b || a == b — kattaa yhtäsuuruuden erikseen comparatorissa
+- Vaihda std::sort std::stable_sort:iin — yhtäsuuruus ei enää haittaa
+- Kirjoita kaksi eri comparatoria: yksi < ja yksi > vertailulle
 
 #### `b03-cpp-prod-exception-noexcept` · diff 4
 
-Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja tila epävarma. Mitä merkitset?
+Koodikatselmassa ehdotetaan tiimin coding-standardiin sääntöä: merkitse jokainen move-konstruktori `noexcept`, myös ne jotka allokoivat muistia. Mikä on riski, jos allokoiva move silti heittää ajonaikana?
 
-- **noexcept move — kontainerit käyttävät movea vain jos noexcept** ✓
-- throw() on pakollinen kaikissa funktioissa
-- Poista move — käytä copy aina
-- catch(...) move-operaattorissa
+- **Ohjelma kutsuu std::terminate:a — väärä noexcept-lupaus ei ole vain dokumentaatiota** ✓
+- Kääntäjä hylkää noexcept-merkinnän käännösaikana jos move voi allokoida
+- Poikkeus etenee normaalisti kutsujalle — noexcept vain nopeuttaa moveä
+- noexcept pakottaa kääntäjän lisäämään implisiittisen try/catch-lohkon moveen
 
 #### `b04-cpp-auto-deduction-trap` · diff 3
 
@@ -340,18 +340,18 @@ Koodi purkaa `std::pair<int,std::string>` käsin `.first` ja `.second`. Moderni 
 Tiimi kirjoittaa copy assignment -operaattorin käsin ja unohtaa self-assignmentin. Idiomivaihtoehto?
 
 - **Copy-and-swap: copy constructor + swap — strong exception safety** ✓
-- memcpy koko structille
-- Poista copy assignment ja käytä shallow copy
-- Globaali flag selfAssignmentDetected
+- memcpy koko structille copy assignmentin toteutuksena
+- Poista copy assignment kokonaan ja luota shallow-kopiointiin
+- Globaali flag selfAssignmentDetected tarkistamaan tilanteen
 
 #### `b03-cpp-sprint-const-correctness` · diff 2
 
 Code review: getter palauttaa `std::string` kopiona vaikka dataa ei muuteta. Parannus?
 
 - **const std::string& tai std::string_view read-only pääsyyn** ✓
-- Palauta aina shared_ptr<string>
-- Muuta getter -> global
-- Poista const metodeista
+- Palauta aina shared_ptr<string> jaettuun omistukseen getterissä
+- Muuta getter globaaliksi muuttujaksi jota kaikki voivat lukea
+- Poista const metodeista — se ei vaikuta kopiointikustannukseen
 
 #### `b04-cpp-ranges-filter-view` · diff 3
 
@@ -439,18 +439,18 @@ Koodi: `assert(registerCallback(handler));` — release-buildissa callback ei re
 API: `void save(File& f, bool fast);` — kutsuissa `save(f, true)` ei kerro mitään. Parannus?
 
 - **Enum class tai erilliset funktiot — bool-parametri piilottaa intentin** ✓
-- Lisää kolmas bool-parametri verbose-tilaa varten
-- int 0/1 boolin sijaan — selkeämpi dokumentaatiossa
-- Macro SAVE_FAST(f) korvaa bool-parametrin
+- Lisää kolmas bool-parametri selventämään verbose-tilaa erikseen
+- int 0/1 boolin sijaan — selkeämpi kutsukohdan dokumentaatiossa
+- Macro SAVE_FAST(f) korvaa bool-parametrin kutsukohdassa
 
 #### `b11-cpp-macro-to-constexpr` · diff 2
 
 Konfiguraatiossa `#define MAX_CONNECTIONS 100`. Miksi cpp-best-practices suosii constexpria?
 
 - **Makro ei noudata nimiavaruuksia eikä näy debuggerissa — constexpr on tyyppiturvallinen** ✓
-- #define on aina nopeampi koska preprocessor on ennen kääntäjää
-- constexpr toimii vain float-arvoille
-- Makrot ovat pakollisia header-guardien kanssa
+- #define on aina nopeampi koska preprocessor korvaa tekstin ennen kääntäjää
+- constexpr toimii vain liukulukuarvoille, ei kokonaisluvuille
+- Makrot ovat pakollisia header-guardien ja versionumeroiden kanssa
 
 #### `exp-cpp-cr-raii-file` · diff 2
 
@@ -549,9 +549,9 @@ Silmukka liittää tuhansia rivejä `std::string`iin — profiloija näyttää t
 std::vector<MyType> kasvaa hitaasti vaikka move-operaattori on olemassa. Profileri näyttää kopioita. Todennäköisin syy?
 
 - **Move-operaattori ei ole noexcept — vector käyttää copya reallocationissa** ✓
-- Vector on liian pieni reserve:lle
-- Move on aina hitaampi kuin copy
-- Poista move-operaattori kokonaan
+- Vector on liian pieni reserve:lle — kasvustrategia ei riitä tähän
+- Move on aina hitaampi kuin copy suurille kontti-tyypeille
+- Poista move-operaattori kokonaan — copy on aina turvallisempi
 
 #### `b05-cpp-move-review-temp` · diff 3
 
@@ -639,9 +639,9 @@ Callback rekisteröidään `std::bind(&Service::handle, this, std::placeholders:
 Luokassa on custom destructor mutta ei move-operaatioita. Mitä cpp-best-practices ehdottaa?
 
 - **= default move constructor/assignment jos jäsenet tukevat — muuten Rule of Five** ✓
-- Poista destructor — compiler generoi move automaattisesti aina
-- Kopioi aina käsin — move on vain std::vectorille
-- shared_ptr kaikille jäsenille — move ei enää tarpeen
+- Poista destructor kokonaan — compiler generoi move automaattisesti aina
+- Kopioi aina käsin sen sijaan — move on tarkoitettu vain std::vectorille
+- shared_ptr kaikille jäsenille — move-operaatiot eivät enää ole tarpeen
 
 #### `b11-cpp-forward-declare-header` · diff 3
 
@@ -657,36 +657,36 @@ Headeriin lisätään `#include "HeavyWidget.hpp"` vain koska funktio ottaa `con
 Funktio hakee arvon mapista ja tarkistaa sen: `auto it = m.find(k); if (it != m.end())`. C++17-parannus?
 
 - **if (auto it = m.find(k); it != m.end()) — init-statement rajaa muuttujan eliniän** ✓
-- Globaali it vähentää toistuvia find-kutsuja
-- Macro FIND_OR_CONTINUE(k) on luettavin ratkaisu
-- Poista tarkistus — operator[] on aina turvallinen
+- Globaali it-muuttuja vähentää toistuvia find-kutsuja funktiossa
+- Macro FIND_OR_CONTINUE(k) on luettavin ratkaisu tähän tarkoitukseen
+- Poista tarkistus kokonaan — operator[] luo puuttuvan avaimen turvallisesti
 
 #### `b11-cpp-in-place-optional` · diff 3
 
 Koodi tekee `std::optional<BigType> o; o = BigType(args);` — kaksi konstruktiota. Tehokkaampi tapa?
 
-- **std::in_place_type + emplace — rakenna arvo suoraan optionalin sisään** ✓
-- optional<BigType*> ja new BigType — vähemmän kopioita
-- optional ei tue in-place-luontia — käytä unique_ptr
-- Kopioi BigType ensin stackille ja assign optionaliin
+- **o.emplace(args) tai std::optional<BigType> o{std::in_place, args} — rakenna paikalleen** ✓
+- optional<BigType*> ja new BigType — vähemmän kopioita mutta lisää heap-allokaation
+- optional ei tue in-place-luontia ollenkaan — käytä sen sijaan unique_ptr
+- Kopioi BigType ensin stackille ja assignaa se sitten optionaliin
 
 #### `b11-cpp-preincrement` · diff 1
 
 Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin silmukassa. Miksi cpp-best-practices suosii `++i`?
 
 - **Pre-increment ei kopioi iteratoria — semanttisesti oikea kun arvoa ei tarvita** ✓
-- Post-increment on aina kielletty C++17:ssä
-- i++ on hitaampi vain Pythonissa, C++:ssa ei eroa
-- ++i pakottaa kääntäjän vektorisoimaan silmukan
+- Post-increment on aina kielletty modernin C++17-standardin mukaan
+- i++ on hitaampi vain tulkatuissa kielissä, C++:ssa ei koskaan eroa
+- ++i pakottaa kääntäjän vektorisoimaan silmukan automaattisesti
 
 #### `b11-cpp-shared-ptr-copy-hot` · diff 3
 
 Funktio ottaa `std::shared_ptr<Foo>` arvona ja kutsutaan jokaisella frame:lla. Miksi tämä on ongelma?
 
 - **shared_ptr kopioi atomista ref-countia — käytä const& tai unique_ptr tarvittaessa** ✓
-- shared_ptr kopio on ilmainen — vain pointerin kopiointi
-- unique_ptr ei voi välittyä funktioille lainkaan
-- shared_ptr pitää aina siirtää move:lla — const& on kielletty
+- shared_ptr kopio on ilmainen — kopioi vain sisäisen pointerin
+- unique_ptr ei voi välittyä funktioille millään tavalla
+- shared_ptr pitää aina siirtää move:lla — const& on kielletty rajapinnassa
 
 #### `b11-cpp-std-endl-flush` · diff 2
 
@@ -749,9 +749,9 @@ Verkkoprotokolla vaatii tarkalleen 32-bittisen unsigned-arvon. Mikä tyyppi on p
 Verkkoprotokolla tallentaa `uint32_t` binäärimuodossa eri alustoille. Mitä tyyppiä käytät?
 
 - **std::uint32_t (<cstdint>) — kiinteä leveys** ✓
-- unsigned int — aina 32-bittinen
-- long — riittää kaikissa
-- size_t protokollakentässä
+- unsigned int — standardi takaa aina täsmälleen 32 bittiä
+- long — sama koko kaikilla alustoilla ja kääntäjillä
+- size_t protokollakentässä — koko on vakio kaikkialla
 
 #### `b04-cpp-portability-fixed-width` · diff 3
 
@@ -847,10 +847,10 @@ Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparann
 
 #### `b02-cpp-safety-noexcept-05` · diff 3
 
-std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?
+Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `data_`-pointerin `std::exchange`:llä. Silti `std::vector<Blob>` kopioi elementit reallokoinnissa. Mitä move-operaattorin määrittelyyn lisätään?
 
 - try/catch jokaisen push_back-kutsun ympärillä
-- **noexcept move — vector voi käyttää movea turvallisesti** ✓
+- **noexcept — vector voi siirtää reallokoinnissa** ✓
 - Poista move-operaattorit kokonaan — kopiointi turvallisempaa
 - volatile move estää optimoinnin move-operaatiossa
 
@@ -868,9 +868,9 @@ Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. Mikä kor
 Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?
 
 - **std::array<int,256> tai std::span<int> — koko mukana** ✓
-- Jatka C-taulukkoa — nopeampi
-- Muuta int -> short
-- Lisää kommentti // caller must ensure size
+- Jatka C-taulukkoa — se on nopeampi kuin std::array tässä
+- Muuta int lyhyemmäksi short-tyypiksi pienentääksesi puskuria
+- Lisää kommentti // caller must ensure correct buffer size
 
 #### `b04-cpp-rule-of-five` · diff 4
 
@@ -895,9 +895,9 @@ Code review: `shared_ptr<Foo>(new Foo(), customDeleter)`. Milloin make_shared EI
 Funktio palauttaa `std::string_view` joka viittaa paikalliseen std::stringiin. Tuotannossa satunnainen data. Mikä on oikea korjaus?
 
 - **Palauta std::string tai pidä string elossa kutsujan omistuksessa** ✓
-- Muuta string_view volatile:ksi
-- Käytä const_cast poistamaan const
-- string_view on aina turvallinen — bugi on muualla
+- Muuta string_view-jäsen volatile:ksi estämään optimoinnin
+- Käytä const_cast poistamaan const ja pidennä elinikää manuaalisesti
+- string_view on aina turvallinen palautusarvona — bugi on muualla koodissa
 
 #### `b05-cpp-lock-guard-incident` · diff 3
 
@@ -1185,18 +1185,18 @@ Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita 
 Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `void draw()` ilman overridea. Riski?
 
 - **Kääntäjä ei varoita jos signatuuri hieman eri — piilotettu bugi** ✓
-- override hidastaa virtual-kutsua
-- override on pakollinen C++11:ssä
-- Ilman overridea kutsutaan aina base-versiota
+- override-avainsana hidastaa virtuaalikutsun suoritusaikaa
+- override on pakollinen kaikissa C++11-luokissa aina
+- Ilman overridea kutsutaan aina perusluokan versiota ajossa
 
 #### `b03-cpp-style-explicit-ctor` · diff 2
 
 Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m = d;`. Miten estät?
 
 - **explicit Meters(int v) — estää implisiittiset muunnokset** ✓
-- operator int() palautuksessa
-- Muuta int -> long
-- Poista constructor — käytä factorya aina
+- Lisää operator int() palautuksessa selkeyttämään muunnosta
+- Muuta parametrityyppi int:stä long:ksi estämään muunnoksen
+- Poista constructor kokonaan ja käytä tehdasfunktiota Metersille
 
 #### `b04-cpp-explicit-constructor` · diff 3
 
@@ -1339,9 +1339,9 @@ Code review täyttyy väittelyistä sijoittelusta ja rivipituudesta. Miten cpp-b
 Projektin oma header includataan `#include <MyWidget.hpp>`. Mitä cpp-best-practices suosittelee?
 
 - **#include "MyWidget.hpp" paikallisille — <> järjestelmä/SDK-headereille** ✓
-- <> on aina nopeampi kuin lainausmerkit
-- Käytä aina <> jotta include-polku on lyhyempi
-- Include-tyyppi ei vaikuta käännökseen tai paketointiin
+- <> on aina nopeampi kääntäjän include-haussa kuin lainausmerkit
+- Käytä aina <> jotta include-polku pysyy lyhyempänä projektissa
+- Include-tyyppi ei vaikuta käännökseen, linkitykseen tai paketointiin
 
 #### `b11-cpp-out-of-source-build` · diff 2
 
@@ -1357,18 +1357,18 @@ CMake generoi object-tiedostot samaan hakemistoon kuin lähdekoodi. Mitä cpp-be
 Uusi globaali funktio nimetään `_init_app()`. Miksi cpp-best-practices varoittaa alaviivasta alussa?
 
 - **Tunnisteet _-alkuisina ovat varattuja implementaatiolle — törmäysriski** ✓
-- Alaviiva alussa tekee funktiosta automaattisesti staticin
-- Vain luokissa kielletty — globaaleissa sallittu
-- C++20 kieltää kaikki alaviivat nimissä
+- Alaviiva alussa tekee funktiosta automaattisesti staticin tiedostossa
+- Vain luokan jäsenissä kielletty — globaaleissa nimissä sallittu
+- C++20 kieltää kaikki alaviivat kaikista tunnisteista kokonaan
 
 #### `b11-cpp-using-namespace-header` · diff 2
 
 Uusi header alkaa `using namespace std;` ja includataan kymmenessä moduulissa. Mikä riski?
 
 - **Namespace pollution ja nimiristiriidat kaikissa includereissa — älä käytä headerissa** ✓
-- using namespace std nopeuttaa käännöstä merkittävästi
-- Se on pakollinen C++17:ssä jotta string toimii
-- using namespace std estää ADL:n toimimasta
+- using namespace std headerissa nopeuttaa käännöstä kaikissa includereissa
+- Se on pakollinen C++17:ssä, muuten std::string ei toimi headerissa
+- using namespace std headerissa estää ADL:n toimimasta oikein
 
 #### `exp-cpp-cr-default-delete` · diff 3
 
@@ -1458,27 +1458,27 @@ Funktio lukitsee kaksi mutexia — riski deadlockille. C++17-ratkaisu?
 Yksinkertainen shutdown-flag jaettiin bool:lla ilman synkronointia — satunnainen jumi. Ratkaisu?
 
 - **std::atomic<bool> tai atomic_flag — memory ordering mukana** ✓
-- volatile bool riittää aina
-- Globaali mutex jokaiselle lukemiselle
-- sleep(1) ennen lukemista
+- volatile bool riittää aina yksinkertaiseen shutdown-flagiin
+- Globaali mutex jokaiselle lukemiselle — raskas yhdelle flagille
+- sleep(1) ennen lukemista varmistaakseen flagin päivittymisen
 
 #### `b03-cpp-thread-mutex-order` · diff 4
 
 Deadlock kahdessa mutexissa: thread A lukitsee m1→m2, thread B m2→m1. Miten estät?
 
 - **Lukitse aina samassa järjestyksessä tai käytä std::scoped_lock molempiin** ✓
-- Vaihda mutexit spinlock:eihin
-- Poista toinen mutex kokonaan
-- Käytä volatile mutex-flageja
+- Vaihda molemmat mutexit spinlock-tyyppisiksi vähentämään odotusaikaa
+- Käytä std::recursive_mutex:ia molemmissa uudelleenlukittavuuden vuoksi
+- Lisää satunnainen sleep() kummankin säikeen toisen lukituksen eteen
 
 #### `b04-cpp-lock-guard-deadlock` · diff 4
 
 Kaksi mutexia lukitaan eri järjestyksessä kahdessa säikeessä — satunnainen deadlock. Mikä standardiratkaisu auttaa?
 
 - **std::lock(m1, m2) + std::lock_guard adopt_lock — lukitsee atomisesti** ✓
-- sleep(100) ennen toista lukitusta
-- Käytä try_lock silmukassa ikuisesti
-- Yksi globaali mutex kaikelle
+- sleep(100) ennen toista lukitusta kummassakin säikeessä
+- Käytä try_lock silmukassa ikuisesti kunnes molemmat vapautuvat
+- Yksi globaali mutex kaikelle datalle koko sovelluksessa
 
 #### `b04-cpp-static-local-thread` · diff 3
 
@@ -1557,9 +1557,9 @@ Moduulissa on `static std::map<int, User> g_cache` ja useat säikeet kutsuvat si
 const-metodi päivittää cachea mutta tarvitsee mutexin. Mitä cpp-best-practices M&M-sääntö tarkoittaa?
 
 - **mutable jäsen + mutex yhdessä — mutex itse mutable jotta const-metodi voi lukita** ✓
-- Poista const metodista — mutex vaatii ei-const metodin
-- volatile mutex korvaa mutable+mutex -yhdistelmän
-- const-metodi ei saa koskaan käyttää mutexia
+- Poista const metodista kokonaan — mutex vaatii aina ei-const metodin
+- volatile-määre mutexille korvaa mutable+mutex -yhdistelmän kokonaan
+- const-metodi ei saa koskaan käyttää mutexia edes mutable-jäsenen kautta
 
 #### `exp-cpp-thread-once-flag` · diff 4
 
@@ -1622,36 +1622,36 @@ Code reviewissa funktio luo `new Database()` ja palauttaa raakaa osoitinta. Mik�
 Tuotantoon pääsee signed overflow -bugi vain tietyllä ARM-buildilla. CI-parannus?
 
 - **Ota UBSan/ASan debug-buildiin ja -fsanitize=undefined testeihin** ✓
-- Vain x86-buildi tuotantoon
-- Poista signed integerit kokonaan
-- Luota pelkkään code reviewhun
+- Vain x86-buildi tuotantoon — ARM-alusta poistetaan CI-matriisista
+- Poista signed integerit kokonaan ja käytä vain unsigned-tyyppejä
+- Luota pelkkään code reviewhun ilman automatisoitua CI-tarkistusta
 
 #### `b03-cpp-tools-if-constexpr` · diff 3
 
 Template-funktio tarvitsee eri haaran integraalisille vs float-tyypeille compile-time. Mitä käytät?
 
 - **if constexpr — haara poistuu instanssoinnissa** ✓
-- Runtime if + typeid
-- Macro #ifdef aina
-- dynamic_cast templatessa
+- Runtime if + typeid jokaisella kutsulla — tarkistus tapahtuu ajossa
+- Macro #ifdef INTEGRAL_ONLY ehdollistamaan molemmat koodihaarat
+- dynamic_cast templatessa erottamaan integraaliset ja float-tyypit
 
 #### `b04-cpp-concept-constraints` · diff 4
 
 Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virheviesteihin kun T on custom-tyyppi. Miten rajaat template-parametrin luettavaksi?
 
 - **C++20 concepts: template<std::ranges::sortable R> tai requires-lause** ✓
-- static_assert(false) funktion alussa
-- Kommentti // T must be sortable
-- Käytä void* ja castaa jokaisessa kutsussa
+- static_assert(false) funktion alussa jokaiselle template-tyypille
+- Kommentti // T must be sortable funktion määrittelyn yläpuolella
+- Käytä void*-parametria ja castaa oikeaan tyyppiin funktion sisällä
 
 #### `b04-cpp-consteval-compile-time` · diff 4
 
 Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?
 
 - **consteval funktio — pakottaa compile-time evaluoinnin** ✓
-- constexpr riittää aina — sama asia
-- Macro #define TABLE_SIZE 256
-- static initializer ilman constevalia riittää aina
+- constexpr riittää aina — se on täysin sama asia kuin consteval
+- Macro #define TABLE_SIZE 256 laskee taulukon käännösaikana
+- static initializer ilman constevalia riittää aina tähän
 
 #### `b05-cpp-constexpr-config` · diff 3
 
@@ -1820,27 +1820,27 @@ clang-tidy ei löydä oikeita include-polkuja CMake-projektissa. Mitä build-ase
 PR:ssä jokainen header vetää mukaan `<iostream>` vaikka käytetään vain `std::vector`. Miten automatisoidaan siivous?
 
 - **include-what-you-use (IWYU) — ehdottaa poistettavia ja puuttuvia headereita** ✓
-- Lisää `-w` kääntäjään piilottaaksesi include-varoitukset
-- Siirrä kaikki #include yhteen master-headeriin
-- Käytä using namespace std jokaisessa headerissa
+- Lisää `-w` kääntäjään piilottaaksesi kaikki include-varoitukset
+- Siirrä kaikki #include-rivit yhteen jaettuun master-headeriin
+- Käytä using namespace std jokaisessa headerissa includejen sijaan
 
 #### `b11-cpp-pch-tradeoff` · diff 4
 
 Iso C++-projekti harkitsee precompiled headereita (PCH). Mitä cpp-best-practices varoittaa?
 
 - **PCH nopeuttaa buildia mutta voi piilottaa header-riippuvuusvirheitä — testaa myös ilman PCH:ä** ✓
-- PCH on täysin portable kaikille alustoille ilman kompromisseja
-- PCH korvaa IWYU:n — includet voi jättää huolimatta
-- PCH-tiedostot ovat aina pieniä ja versionhallittavia
+- PCH on täysin portable kaikille kääntäjille ja alustoille ilman kompromisseja
+- PCH korvaa IWYU:n kokonaan — yksittäiset includet eivät enää merkitse
+- PCH-tiedostot ovat aina pieniä ja turvallista lisätä versionhallintaan
 
 #### `b11-cpp-werror-policy` · diff 3
 
 Tiimi haluaa ettei uusia varoituksia päädy main-haaraan. Mikä käytäntö vastaa cpp-best-practices -suositusta?
 
 - **Treat warnings as errors (-Werror / /WX) CI:ssä alusta alkaen** ✓
-- Korjaa varoitukset vain ennen major-releaseä
-- Poista -Wall nopeuden vuoksi
-- Jokainen kehittäjä valitsee omat warning-flagit
+- Korjaa kertyneet varoitukset vasta ennen major-releaseä
+- Poista -Wall kokonaan käännösnopeuden parantamiseksi
+- Jokainen kehittäjä valitsee itse omat warning-flagit projektissa
 
 #### `exp-cpp-cr-optional-review` · diff 3
 
@@ -5506,7 +5506,7 @@ API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` on turval
 - any on aina readonly — unknown sallii mielivaltaisen mutoinnin
 - unknown kääntyy aina nopeammin kuin any — pienempi tyyppigraafi
 
-## linux (148)
+## linux (168)
 
 ### apt (8)
 
@@ -5625,9 +5625,9 @@ Kaksi konetta ilmoittaa saman `.local`-nimen — palvelu flapping. Syy?
 Kehität paikallista HTTP-palvelua — haluat sen löytyvän `_http._tcp`. Miten?
 
 - **Avahi service XML / avahi-publish-service tai systemd service with Avahi** ✓
-- Kirjoita vain /etc/hosts
-- Broadcast UDP manually
-- SSH tunnel riittää
+- Lisää palvelun IP-osoite /etc/hosts-tiedostoon kaikilla lähiverkon koneilla manuaalisesti
+- Kirjoita oma UDP-broadcast-skripti joka lähettää palvelutiedot porttiin 5353 säännöllisesti
+- Avaa SSH-tunneli palvelimelle — asiakkaat löytävät palvelun tunnelin kautta automaattisesti
 
 #### `b03-linux-avahi-browse-services` · diff 2
 
@@ -5652,9 +5652,9 @@ Kehityskone hostaa API:n osoitteessa devbox.local — toinen kone ei resolvaa. T
 IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista IP:tä. Ratkaisu?
 
 - **Avahi service file / avahi-publish-service — mDNS ilmoitus** ✓
-- Kovakoodaa IP sovellukseen
-- Broadcast UDP kaikille porteille
-- Avahi vain client, ei publish
+- Kovakoodaa IP-osoite sovellukseen — rikkoutuu heti kun DHCP vaihtaa gatewayn osoitteen
+- Broadcast UDP kaikille porteille — ei noudata mDNS/DNS-SD-protokollan service-tyyppiä
+- Avahi toimii vain clientinä eikä pysty julkaisemaan omia palveluita lähiverkkoon
 
 #### `b04-linux-avahi-browse` · diff 3
 
@@ -5679,9 +5679,9 @@ Toimiston tulostin pitäisi löytyä verkosta automaattisesti. Mikä työkalu li
 Kaksi konetta ilmoittaa saman `.local`-hostname:n — palvelut vaihtelevat. Mikä on juurisyy?
 
 - **Hostname-konflikti mDNS:ssä — hostnamet täytyy olla uniikit verkossa** ✓
-- Avahi ei tue useaa konetta
-- Vain DNS-palvelin korjaa konfliktin
-- Konflikti johtuu aina palomuurista
+- Avahi ei tue useaa konetta samassa lähiverkossa — jokainen kone tarvitsee oman Avahi-instanssinsa
+- Vain keskitetty DNS-palvelin korjaa konfliktin — mDNS ei toimi ilman perinteistä nimipalvelinta
+- Konflikti johtuu aina palomuurista joka estää liikennettä koneiden välillä lähiverkossa
 
 #### `b05-linux-avahi-publish-service` · diff 3
 
@@ -5861,18 +5861,18 @@ SIEM tarvitsee journal-lokeja JSON-muodossa. Mikä journalctl-lippu?
 DoS-yritys tulvittaa journald:n identtisillä virheillä — levy täyttyy. Mitä tarkistat?
 
 - **RateLimitIntervalSec / RateLimitBurst journald.conf:ssa** ✓
-- Poista journald kokonaan
-- SystemMaxUse=0
-- Journal ei tue rate limitingiä
+- Poista journald kokonaan ja korvaa se pelkällä syslogilla ilman rate limiting -ratkaisua
+- SystemMaxUse=0 — asettaa levykiintiön nollaan mikä ei rajoita viestien tulotahtia
+- Journal ei tue rate limitingiä lainkaan — kaikki viestit kirjoitetaan aina levylle
 
 #### `b04-linux-journalctl-boot` · diff 2
 
 Palvelin kaatui yöllä rebootiin — haluat lokit vain viime bootista. journalctl-lippu?
 
 - **journalctl -b tai journalctl -b -1 edelliseen bootiin** ✓
-- journalctl --all-time
-- dmesg riittää aina
-- cat /var/log/boot.log
+- journalctl --all-time näyttää kaikkien boottien lokit sekaisin ilman rajausta
+- dmesg riittää aina — kernel-rengaspuskuri tyhjenee eikä sisällä sovelluslokeja
+- cat /var/log/boot.log — tiedostoa ei oletuksena ole systemd-journald-pohjaisissa jakeluissa
 
 #### `b04-linux-journalctl-follow` · diff 2
 
@@ -5888,18 +5888,18 @@ Haluat seurata palvelun lokia reaaliajassa tuotantodebugissa. Mikä komento?
 Incident: tarvitset vain virhe- ja kriittiset viestit viime tunnilta. journalctl suodatin?
 
 - **journalctl -p err --since '1 hour ago'** ✓
-- journalctl | grep ERROR — riittää
-- journalctl -q
-- Vain dmesg
+- journalctl | grep ERROR — riittää vaikka ohittaa priority-metadatan ja muunkieliset viestit
+- journalctl -q hiljentää varoitukset lokitiedostoista, ei suodata priority-tason mukaan
+- Vain dmesg — kernel-rengaspuskuri ei sisällä sovellusten err-tason journal-viestejä
 
 #### `b04-linux-journald-RateLimit` · diff 4
 
 Bugi tulvittaa journald:n identtisillä virheillä — diagnostiikka vaikeaa. Mitä konfiguroit?
 
 - **RateLimitIntervalSec / RateLimitBurst journald.conf:ssa** ✓
-- Poista journald kokonaan
-- rm -rf /var/log/journal
-- Vain syslog — ei rate limitiä
+- Poista journald kokonaan ja siirrä kaikki lokitus perinteiseen syslog-daemoniin
+- rm -rf /var/log/journal poistaa vanhat lokit mutta ei estä uutta floodia täyttämästä levyä uudelleen
+- Vain syslog — ei rate limitiä — syslogilla ei ole journaldin sisäänrakennettua flood-suojaa
 
 #### `b05-linux-journalctl-unit-since` · diff 2
 
@@ -5924,9 +5924,9 @@ Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain virheisii
 Rebootin jälkeen edellisen bootin lokit katoavat. Mikä journald.conf-asetus korjaa?
 
 - **Storage=persistent — lokit /var/log/journal** ✓
-- ForwardToSyslog=no
-- MaxLevelStore=debug
-- RateLimitInterval=0
+- ForwardToSyslog=no estää journalin lähettämisen syslogille, ei vaikuta talletuksen pysyvyyteen
+- MaxLevelStore=debug säätää tallennettavan lokitason, ei sitä säilyykö loki rebootin yli
+- RateLimitInterval=0 poistaa nopeusrajoituksen, ei vaikuta journalin tallennuspaikkaan
 
 #### `b06-linux-journalctl-reverse` · diff 2
 
@@ -6090,7 +6090,92 @@ Lokitulva tuotannossa. Miten näytät vain virheet ja kriittiset nginx-unitilta?
 - dmesg | grep nginx
 - systemctl status --no-pager riittää
 
-### linux-network (41)
+### linux-arp (4)
+
+#### `b12-linux-arp-failed-state` · diff 3
+
+`ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene. Ensimmäinen toimenpide?
+
+- **Tarkista L2: kaapeli, VLAN, kytkinportti — sitten ip neigh del + uusi ARP-yritys** ✓
+- Lisää staattinen ip route ilman gateway-MAC:ia — reititystaulu ei korjaa puuttuvaa ARP-vastausta
+- Muuta TCP keepalive-asetuksia — kuljetuskerroksen aikakatkaisut eivät vaikuta ARP-tason FAILED-tilaan
+- Ota UDP pois käytöstä palomuurista — protokollakohtainen sääntö ei liity naapuritaulun ongelmaan
+
+#### `b12-linux-arp-flush-migration` · diff 3
+
+VM siirrettiin toiseen hypervisorille — vanhat MAC-osoitteet jäävät ARP-cacheen. Turvallisin tyhjennys?
+
+- **ip neigh flush dev eth0 — vain kyseisen rajapinnan cache** ✓
+- ip neigh flush all — kaikki naapurit kaikilla rajapinnoilla heti
+- reboot on ainoa tapa tyhjentää ARP
+- systemctl restart systemd-networkd poistaa ARP:n automaattisesti
+
+#### `b12-linux-arp-gratuitous-duplicate` · diff 4
+
+Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. Nopein varmistus lähiverkossa?
+
+- **arping -D -I eth0 10.0.0.50 — gratuitous ARP paljastaa duplikaatin** ✓
+- ip route flush table main — tyhjentää reititystaulun mutta ei paljasta ARP-tason duplikaattia
+- ping -f 10.0.0.50 riittää aina — flood-ping testaa vain saavutettavuutta, ei kerro kumpi kone vastaa
+- ss -tan | grep 10.0.0.50 — näyttää TCP-socketit, ei ARP-tason osoitekonfliktia
+
+#### `b12-linux-arp-static-neigh` · diff 3
+
+Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merkinnän. Komento?
+
+- **ip neigh add 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 nud permanent** ✓
+- arp -s 192.168.1.1 eth0 — legacy-komento vaatii MAC-osoitteen parametrina, pelkkä interface ei riitä
+- echo aa:bb > /proc/net/arp — ARP-taulua ei voi muokata suoraan kirjoittamalla /proc-tiedostoon
+- ip route add 192.168.1.1 dev eth0 — tämä lisää reitin, ei kiinteää MAC-osoitetta ARP-tauluun
+
+### linux-dbus (5)
+
+#### `b12-linux-dbus-bluez-pair` · diff 3
+
+Bluetooth-kuulokkeet eivät yhdisty — BlueZ pyörii mutta laite on untrusted. CLI-korjaus ennen D-Bus-skriptiä?
+
+- **bluetoothctl → pair MAC, trust MAC, connect MAC** ✓
+- modprobe btusb reset — ajurin uudelleenlataus ei korjaa laitteen untrusted-tilaa
+- rfkill block bluetooth — sammuttaa radion kokonaan eikä ratkaise parituksen luottamusongelmaa
+- systemctl stop org.bluez — pysäyttää koko BlueZ-palvelun eikä ole edes validi unit-nimi
+
+#### `b12-linux-dbus-busctl-introspect` · diff 2
+
+Haluat listata NetworkManagerin D-Bus-metodit terminaalista ennen automaatiota. Ensimmäinen komento?
+
+- **busctl introspect org.freedesktop.NetworkManager /org/freedesktop/NetworkManager** ✓
+- dbus-launch --list-services | grep Network — dbus-launch käynnistää session-busin, ei listaa system-bus-palveluita
+- systemctl cat NetworkManager.service näyttää unit-tiedoston sisällön, ei D-Bus-rajapintaa
+- nmcli general permissions listaa polkit-oikeudet, ei D-Bus-metodeja tai propertyja
+
+#### `b12-linux-dbus-modemmanager-signal` · diff 3
+
+LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-CLI tarkistukseen?
+
+- **mmcli -L && mmcli -m 0 --signal-get** ✓
+- ip link show wwan0 riittää signaalitietoihin
+- nmcli device wifi list
+- cat /sys/class/net/modem0/signal
+
+#### `b12-linux-dbus-nm-wifi-scan` · diff 3
+
+NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?
+
+- **busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager/Devices/3 org.freedesktop.NetworkManager.Device.Wireless RequestScan a{sv} 0** ✓
+- systemctl restart NetworkManager poistaa Wi-Fi-välimuistin ja käynnistää skannauksen automaattisesti taustalla
+- echo scan > /proc/net/wireless — tiedosto on vain luku -tilastoraportti, ei ohjausrajapinta skannaukselle
+- dbus-send --session org.freedesktop.NetworkManager /Scan — väärä bus, väärä polku eikä metodia/rajapintaa ole määritelty
+
+#### `b12-linux-dbus-polkit-deny` · diff 4
+
+Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäköisin syy?
+
+- **Polkit estää — käyttäjällä ei ole oikeuksia NM-asetuksiin ilman auth_admin** ✓
+- Väärä journald-priority-asetus estää dbus-send-kutsun näkymisen lokissa, ei itse kutsua
+- D-Bus daemon on kaatunut — reboot auttaa aina, vaikka daemon on selvästi käynnissä ja vastaa muille
+- dbus-send vaatii aina rootin — nmcli käyttää samaa D-Bus-rajapintaa samoilla polkit-säännöillä
+
+### linux-network (46)
 
 #### `b02-linux-network-nmcli-11` · diff 2
 
@@ -6187,9 +6272,9 @@ Kaksi oletusreittiä — liikenne menee väärää VPN:ää pitkin. Miten näet 
 resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Todennäköisin syy?
 
 - **systemd-resolved stub resolver — tarkista resolvectl status** ✓
-- 127.0.0.53 on aina virheellinen
-- Poista resolv.conf — DNS toimii ilman
-- Vain /etc/hosts käytössä
+- 127.0.0.53 on aina virheellinen konfiguraatio joka pitää korjata osoittamaan suoraan ISP:n nameserveriin
+- Poista resolv.conf kokonaan — kernel osaa silti resolvoida nimiä ilman mitään resolver-konfiguraatiota
+- Vain /etc/hosts on käytössä — systemd-resolved ei voi koskaan olla stub-osoitteen takana
 
 #### `b04-linux-ss-tuln` · diff 3
 
@@ -6205,9 +6290,9 @@ Portti 8080 pitäisi kuunnella mutta palvelu ei vastaa. Mikä komento listaa LIS
 VPN-yhteys toimii mutta sisäverkon aliverkko on tavoittamaton. Mitä tarkistat ensin?
 
 - **ip route — onko reitti sisäverkkoon oikean gatewayn kautta** ✓
-- Vain DNS /etc/hosts
-- chmod +x reititin
-- systemctl restart avahi
+- Muokkaa vain /etc/hosts-tiedostoa lisäämällä sisäverkon osoitteet käsin sinne
+- Aja chmod +x reitittimen konfiguraatiotiedostoon jotta reititys aktivoituu
+- Käynnistä avahi-daemon uudelleen — mDNS ei liity VPN:n sisäverkon reitityksen tavoitettavuuteen
 
 #### `b05-linux-network-nmcli-connect` · diff 2
 
@@ -6223,18 +6308,18 @@ Wi-Fi katkesi toimistossa. Miten nmcli:llä yhdistät tunnetun profiilin?
 Sisäinen hostname `app.internal` ei resolvdu mutta FQDN toimii. Mikä resolv.conf-asetus auttaa?
 
 - **search internal — lyhyet nimet kokeillaan search-domaineissa** ✓
-- nameserver 127.0.0.1 riittää aina
-- options rotate korjaa searchin
-- Poista resolv.conf kokonaan
+- nameserver 127.0.0.1 riittää aina — määrittää DNS-palvelimen, ei lyhyiden nimien suffixia
+- options rotate korjaa searchin — rotate vaihtaa nameserver-järjestystä, ei lisää domain-suffixia
+- Poista resolv.conf kokonaan — ilman tiedostoa myöskään FQDN-haku ei enää toimi
 
 #### `b05-linux-network-ss-listen` · diff 2
 
 Portti 8080 on jo käytössä — uusi palvelu ei käynnisty. Mikä komento näyttää prosessin?
 
 - **ss -tlnp | grep 8080 — kuuntelevat TCP-portit + prosessi** ✓
-- ping localhost 8080
-- ifconfig 8080
-- netstat on ainoa tapa — ss ei toimi
+- ping localhost 8080 — ICMP-ping ei tue porttinumeroa eikä kerro mikä prosessi kuuntelee
+- ifconfig 8080 — työkalu näyttää verkkorajapinnat, ei kuunteleva prosessi tai portti
+- netstat on ainoa tapa — ss ei toimi nykyaikaisissa jakeluissa lainkaan
 
 #### `b06-linux-network-ethtool-offload` · diff 5
 
@@ -6389,6 +6474,51 @@ API-kutsu timeoutaa tuotannossa — epäilet pakettihäviötä. Nopea kaappaus?
 - iptables -F ratkaisee API-kutsun timeoutin tuotannossa
 - tcpdump vaatii aina GUI:n pakettikaappaukseen tuotannossa
 
+#### `b12-linux-network-ip-addr-secondary` · diff 2
+
+Palvelimelle tarvitaan toinen IPv4 samaan rajapintaan (VIP). Linux-komento — ei Windows ipconfig?
+
+- **ip addr add 10.0.0.99/24 dev eth0** ✓
+- ipconfig eth0 10.0.0.99
+- ifconfig eth0:1 alias — ainoa tuettu tapa
+- echo 10.0.0.99 > /etc/hosts riittää
+
+#### `b12-linux-network-ip-link-admin` · diff 2
+
+Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein palautus?
+
+- **ip link set eth0 up** ✓
+- ip route add default via 0.0.0.0
+- systemctl restart networking
+- modprobe -r eth0
+
+#### `b12-linux-network-ip-route-replace` · diff 3
+
+Oletusreitti pitää vaihtaa uuteen gatewayhin ilman että vanha jää roikkuun. iproute2-komento?
+
+- **ip route replace default via 10.0.0.1 dev eth0** ✓
+- ip route add default via 10.0.0.1 dev eth0 — add riittää aina
+- route add default gw 10.0.0.1
+- ifconfig eth0 gateway 10.0.0.1
+
+#### `b12-linux-network-ip-rule-policy` · diff 4
+
+Liikenne lähteestä 10.10.0.0/24 pitää reitittää VPN-tauluun 100, ei main-tauluun. Mitä konfiguroit?
+
+- **ip rule add from 10.10.0.0/24 lookup 100 + ip route add ... table 100** ✓
+- ip route add 10.10.0.0/24 dev tun0 — riittää policy routingiin
+- echo 100 > /proc/sys/net/ipv4/route/flush
+- nmcli connection modify vpn ipv4.routes
+
+#### `b12-linux-network-route-get-from` · diff 3
+
+Split-horizon: paketti kohteeseen 172.16.5.10 lähteestä 10.0.1.5 menee väärään tunneliin. Diagnostiikka?
+
+- **ip route get 172.16.5.10 from 10.0.1.5 iif eth0** ✓
+- traceroute 172.16.5.10 — näyttää aina lähde-IP:n
+- ip addr show tun0
+- cat /proc/net/route
+
 #### `exp-linux-network-nmcli-down` · diff 3
 
 Wi-Fi profiili jää roikkuun VPN-konfigin jälkeen. Miten NetworkManagerilla palautat yhteyden?
@@ -6461,6 +6591,62 @@ Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento?
 - cat /etc/services listaa prosessit portti 8080 kuuntelijana
 - ifconfig -a näyttää TCP-kuuntelijat ja niiden prosessit
 
+### linux-tcp-udp (6)
+
+#### `b12-linux-tcp-close-wait-leak` · diff 4
+
+Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellus ei sulje. ss-suodatin?
+
+- **ss -tan state close-wait** ✓
+- ss -uln state established
+- ss -ltn state listening
+- netstat -r
+
+#### `b12-linux-tcp-established-filter` · diff 3
+
+Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443. ss-komento?
+
+- **ss -tn state established sport = :443 or dport = :443** ✓
+- ss -uln dport = :443 — näyttää UDP-kuuntelijat, ei TCP-yhteyksien tilaa
+- ss -ltn state established — -l rajaa pelkkiin LISTEN-socketeihin, joten established-suodatin ei toimi
+- ip route get :443 — reititystyökalu ei tunne porttinumeroita eikä listaa socketeja
+
+#### `b12-linux-tcp-retransmit-info` · diff 4
+
+Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?
+
+- **ss -ti — TCP info: rtt, retrans, cwnd** ✓
+- ss -u — UDP timerit
+- ss -s — vain yhteenveto, ei per-yhteys RTT
+- tcpdump -i any — ss korvaa tcpdumpin aina
+
+#### `b12-linux-tcp-syn-backlog` · diff 3
+
+API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja SYN-jono: mitä tarkistat?
+
+- **ss -ltn sport = :8080 — LISTEN ja backlog; prosessi ei kuuntele = refused** ✓
+- ss -uln — UDP riittää TCP-ongelmaan
+- ip neigh show — refused tulee ARP:sta
+- journalctl -u firewalld — refused = aina palomuuri
+
+#### `b12-linux-tcp-udp-handshake` · diff 2
+
+Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa?
+
+- **TCP: kolmen suun kättely (SYN, SYN-ACK, ACK) ennen dataa; UDP: ei kättelyä** ✓
+- UDP: kolmen suun kättely (SYN, SYN-ACK, ACK); TCP lähettää suoraan datagrammin ilman kättelyä
+- Molemmat protokollat vaativat aina TLS-handshaken ennen sovellusdatan lähettämistä
+- TCP on aina UDP:n päällä portissa 53 — DNS käyttää TCP:tä vain UDP-kehyksen sisällä kapseloituna
+
+#### `b12-linux-udp-stateless-firewall` · diff 3
+
+DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomuuri. Tyypillinen UDP-ero TCP:hen?
+
+- **UDP on yhteydetön — palomuuri tarvitsee conntrack/state tai eksplisiittisen allow return** ✓
+- UDP käyttää aina kolmen suun kättelyä (SYN/SYN-ACK/ACK) kuten TCP ennen datansiirtoa
+- UDP ei kulje NAT:in läpi koskaan — palomuurit pudottavat kaiken UDP-liikenteen automaattisesti
+- ss -ltn näyttää UDP-vastaukset — -t ja -l rajaavat näkymän pelkkiin TCP LISTEN-socketeihin
+
 ### systemd (43)
 
 #### `b02-linux-systemd-env-04` · diff 4
@@ -6504,9 +6690,9 @@ Palvelu ei käynnisty bootissa vaikka `systemctl start` toimii. Mitä unohdettii
 Palvelin käynnistyy hitaasti tuotantoon noston jälkeen. Mikä systemd-komento paikantaa hitaat unitit?
 
 - **systemd-analyze blame — näyttää unit-kohtaiset viiveet** ✓
-- systemctl restart --all
-- journalctl -k vain
-- kill -9 init
+- systemctl restart --all — käynnistää kaikki unitit uudelleen paljastamatta viiveitä
+- journalctl -k rajoittuu kernel-viesteihin eikä näytä unit-kohtaisia käynnistysaikoja
+- kill -9 init pakottaa koko järjestelmän uudelleenkäynnistyksen ilman diagnostiikkaa
 
 #### `b03-linux-systemd-env-file` · diff 2
 
@@ -6522,36 +6708,36 @@ Salaisuudet ovat suoraan unit-tiedostossa gitissä. Miten systemd hoitaa ympäri
 Bugi aiheuttaa crash loopin — palvelu käynnistyy uudelleen 500 kertaa minuutissa. Mitä säädät?
 
 - **StartLimitIntervalSec / StartLimitBurst — rajoita uudelleenkäynnistyksiä** ✓
-- Restart=always ilman rajoja
-- Poista Restart kokonaan
-- KillMode=none
+- Restart=always ilman StartLimitBurst-rajoitusta — palvelu yrittää loputtomasti uudelleen
+- Poista Restart-rivi kokonaan ja anna palvelun jäädä pysyvästi kaatuneeksi tilaan
+- KillMode=none joka jättää lapsiprosessit henkiin eikä vaikuta restart-tiheyteen mitenkään
 
 #### `b03-linux-systemd-type-notify` · diff 4
 
 CI merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?
 
 - **Type=notify — palvelu ilmoittaa sd_notify:llä kun valmis** ✓
-- Type=simple riittää aina
-- Type=idle nopeuttaa bootia
-- Type=forking pakollinen kaikille
+- Type=simple riittää aina — simple merkitsee palvelun valmiiksi heti exec-kutsun jälkeen
+- Type=idle nopeuttaa bootia viivästämällä käynnistystä, ei liity valmiussignalointiin
+- Type=forking pakollinen kaikille — forking sopii vain daemonisoituville prosesseille
 
 #### `b04-linux-systemd-ExecStartPre` · diff 3
 
 Palvelu käynnistyy ennen kuin tietokanta on valmis — yhteys epäonnistuu. Mitä unit-tiedostoon?
 
 - **ExecStartPre=/bin/sh -c 'until pg_isready; do sleep 1; done' tai After=postgresql.service** ✓
-- Restart=no — ei yritä uudestaan
-- Type=oneshot aina
-- Poista ExecStart
+- Restart=on-failure ilman riippuvuutta — yrittää uudestaan mutta ei odota tietokannan valmistumista ensin
+- Type=oneshot ja RemainAfterExit=yes — merkitsee palvelun valmiiksi heti prosessin päätyttyä
+- Poista ExecStart kokonaan ja korvaa se ExecStartPost-komennolla joka odottaa tietokantaa
 
 #### `b04-linux-systemd-mask` · diff 3
 
 Vanha palvelu käynnistyy uudestaan päivityksen jälkeen vaikka disable tehtiin. Miten estät pysyvästi?
 
 - **systemctl mask palvelu.service — estää käynnistyksen symlinkillä /dev/null** ✓
-- chmod 000 unit-tiedosto riittää
-- disable ja reboot riittää aina
-- Poista binary — systemd lopettaa
+- chmod 000 unit-tiedostoon riittää — systemd voi silti ladata unitin oikeuksista huolimatta
+- disable ja reboot riittää aina — toinen paketti voi palauttaa symlinkin päivityksen yhteydessä
+- Poista binary levyltä — systemd yrittää silti käynnistää unitin ja jää failed-tilaan
 
 #### `b04-linux-systemd-override` · diff 3
 
@@ -6567,27 +6753,27 @@ Haluat muuttaa vain yhden Environment-rivin vendor unitiin ilman tiedoston kopio
 Kun `web.target` pysähtyy, worker-prosessit jäävät roikkumaan. Miten sidot workerit targetiin?
 
 - **PartOf=web.target — worker pysähtyy kun target pysähtyy** ✓
-- Wants= riittää aina samaan
-- KillMode=none
-- Ignore target — erilliset unitit
+- Wants= riittää aina samaan — Wants määrittää vain käynnistysjärjestyksen, ei pysäytystä
+- KillMode=none jättää lapsiprosessit hengissä eikä sido elinkaarta targetiin mitenkään
+- Ignore target ja pidä unitit täysin erillisinä — worker jää silti roikkumaan targetin pysähtyessä
 
 #### `b04-linux-systemd-user-unit` · diff 3
 
 Kehittäjä haluaa ajaa daemonin ilman root-oikeuksia login-sessionissa. Minne unit-tiedosto?
 
 - **~/.config/systemd/user/palvelu.service + systemctl --user enable** ✓
-- /etc/systemd/system/ aina
-- crontab @reboot riittää
-- /etc/init.d/ vanha tapa
+- /etc/systemd/system/ aina — system-wide-hakemisto vaatii silti root-oikeudet käyttöön
+- crontab @reboot riittää — cron ei tue systemd-user-instanssin resurssienhallintaa
+- /etc/init.d/ vanha SysV-tapa — vaatii myös root-oikeudet eikä toimi user-sessiossa
 
 #### `b05-linux-systemd-exec-reload` · diff 3
 
 Config muuttui — haluat ladata palvelun ilman katkoa. Mitä eroa on reload ja restart?
 
 - **ExecReload ajaa määritellyn komennon — palvelu voi jatkaa pyyntöjä** ✓
-- reload ja restart ovat identtiset
-- reload vaatii aina rebootin
-- Vain systemctl restart on tuettu
+- reload ja restart ovat identtiset — molemmat pysäyttävät ja käynnistävät prosessin uudelleen
+- reload vaatii aina koko järjestelmän rebootin ennen kuin uusi konfiguraatio tulee voimaan
+- Vain systemctl restart on tuettu — ExecReload-direktiiviä ei ole olemassa systemd-unitissa
 
 #### `b05-linux-systemd-socket-activation` · diff 4
 
@@ -6612,9 +6798,9 @@ Cron-korvaaja ajaa backup-skriptin maanantaisin klo 03:00. Miten määrität sys
 Palvelu käynnistyy ennen kuin se kuuntelee porttia — riippuvat unitit jatkavat liian aikaisin. Mikä Type= arvo auttaa?
 
 - **Type=notify — palvelu ilmoittaa valmiudesta sd_notify:llä** ✓
-- Type=oneshot aina
-- Type=simple estää riippuvuudet
-- Type=idle riittää tuotantoon
+- Type=oneshot aina — sopii kertaluontoisiin skripteihin, ei jatkuvasti käynnissä oleviin palveluihin
+- Type=simple estää riippuvuudet — simple ei tue riippuvuuksia lainkaan systemd-unitissa
+- Type=idle riittää tuotantoon — idle vain viivästää käynnistystä bootissa, ei odota valmiussignaalia
 
 #### `b06-linux-systemd-ConditionPath` · diff 4
 

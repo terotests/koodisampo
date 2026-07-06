@@ -149,10 +149,10 @@ export const EXPANSION = {
           "coworker",
           "guru"
         ],
-        prompt: "std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?",
+        prompt: "Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `data_`-pointerin `std::exchange`:llä. Silti `std::vector<Blob>` kopioi elementit reallokoinnissa. Mitä move-operaattorin määrittelyyn lisätään?",
         choices: [
           {
-            text: "noexcept move constructor/assignment — vector voi käyttää movea turvallisesti",
+            text: "noexcept — vector voi siirtää reallokoinnissa",
             correct: true
           },
           {
@@ -168,8 +168,8 @@ export const EXPANSION = {
             correct: false
           }
         ],
-        correctFeedback: "noexcept move mahdollistaa strong exception guarantee — safety-parannus.",
-        wrongFeedback: "Heittävä move estää optimoinnin. noexcept on osa turvallista API:a.",
+        correctFeedback: "Vector päättää move vs copy compile-time-ominaisuuden perusteella — ilman `noexcept`-merkintää se olettaa, että move voi heittää.",
+        wrongFeedback: "Vector ei analysoi move-toteutusta. Se katsoo move-operaattorin poikkeusspesifikaatiota (`noexcept`).",
         sourceRef: "CppCoreGuidelines#noexcept",
         sourceUrl: "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#noexcept",
         featureId: "cpp:noexcept-move",

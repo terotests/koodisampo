@@ -31,7 +31,7 @@
 | ✅ | 4 | `b02-cpp-correct-dangling-15` | Funktio palauttaa `const std::string&` paikallisesta muuttujasta — cras… |
 | ✅ | 3 | `b02-cpp-correct-signed-14` | Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. M… |
 | ✅ | 3 | `b03-cpp-correct-three-way-default` | Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy ou… |
-| ✅ | 4 | `b03-cpp-prod-exception-noexcept` | Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja … |
+| ✅ | 4 | `b03-cpp-prod-exception-noexcept` | Koodikatselmassa ehdotetaan tiimin coding-standardiin sääntöä: merkitse… |
 | ✅ | 3 | `b04-cpp-auto-deduction-trap` | `auto x = {1, 2, 3};` aiheuttaa yllätyksen — x ei ole std::vector. Mikä… |
 | ✅ | 3 | `b04-cpp-final-override-virtual` | Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatu… |
 | ✅ | 3 | `b05-cpp-explicit-constructor` | Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. … |
@@ -139,7 +139,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `b02-cpp-safety-make-unique-06` | Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusp… |
-| ✅ | 3 | `b02-cpp-safety-noexcept-05` | std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — t… |
+| ✅ | 3 | `b02-cpp-safety-noexcept-05` | Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `da… |
 | ✅ | 3 | `b03-cpp-prod-virtual-dtor` | Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. … |
 | ✅ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. M… |
 | ✅ | 4 | `b04-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia — destructor on määritelty, mutta … |

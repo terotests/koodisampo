@@ -1451,15 +1451,15 @@
           "correct": true
         },
         {
-          "text": "Kirjoita vain /etc/hosts",
+          "text": "Lisää palvelun IP-osoite /etc/hosts-tiedostoon kaikilla lähiverkon koneilla manuaalisesti",
           "correct": false
         },
         {
-          "text": "Broadcast UDP manually",
+          "text": "Kirjoita oma UDP-broadcast-skripti joka lähettää palvelutiedot porttiin 5353 säännöllisesti",
           "correct": false
         },
         {
-          "text": "SSH tunnel riittää",
+          "text": "Avaa SSH-tunneli palvelimelle — asiakkaat löytävät palvelun tunnelin kautta automaattisesti",
           "correct": false
         }
       ],
@@ -1486,15 +1486,15 @@
           "correct": true
         },
         {
-          "text": "systemctl restart --all",
+          "text": "systemctl restart --all — käynnistää kaikki unitit uudelleen paljastamatta viiveitä",
           "correct": false
         },
         {
-          "text": "journalctl -k vain",
+          "text": "journalctl -k rajoittuu kernel-viesteihin eikä näytä unit-kohtaisia käynnistysaikoja",
           "correct": false
         },
         {
-          "text": "kill -9 init",
+          "text": "kill -9 init pakottaa koko järjestelmän uudelleenkäynnistyksen ilman diagnostiikkaa",
           "correct": false
         }
       ],
@@ -1521,15 +1521,15 @@
           "correct": true
         },
         {
-          "text": "Type=simple riittää aina",
+          "text": "Type=simple riittää aina — simple merkitsee palvelun valmiiksi heti exec-kutsun jälkeen",
           "correct": false
         },
         {
-          "text": "Type=idle nopeuttaa bootia",
+          "text": "Type=idle nopeuttaa bootia viivästämällä käynnistystä, ei liity valmiussignalointiin",
           "correct": false
         },
         {
-          "text": "Type=forking pakollinen kaikille",
+          "text": "Type=forking pakollinen kaikille — forking sopii vain daemonisoituville prosesseille",
           "correct": false
         }
       ],
@@ -1591,15 +1591,15 @@
           "correct": true
         },
         {
-          "text": "Restart=always ilman rajoja",
+          "text": "Restart=always ilman StartLimitBurst-rajoitusta — palvelu yrittää loputtomasti uudelleen",
           "correct": false
         },
         {
-          "text": "Poista Restart kokonaan",
+          "text": "Poista Restart-rivi kokonaan ja anna palvelun jäädä pysyvästi kaatuneeksi tilaan",
           "correct": false
         },
         {
-          "text": "KillMode=none",
+          "text": "KillMode=none joka jättää lapsiprosessit henkiin eikä vaikuta restart-tiheyteen mitenkään",
           "correct": false
         }
       ],
@@ -1661,15 +1661,15 @@
           "correct": true
         },
         {
-          "text": "Poista journald kokonaan",
+          "text": "Poista journald kokonaan ja korvaa se pelkällä syslogilla ilman rate limiting -ratkaisua",
           "correct": false
         },
         {
-          "text": "SystemMaxUse=0",
+          "text": "SystemMaxUse=0 — asettaa levykiintiön nollaan mikä ei rajoita viestien tulotahtia",
           "correct": false
         },
         {
-          "text": "Journal ei tue rate limitingiä",
+          "text": "Journal ei tue rate limitingiä lainkaan — kaikki viestit kirjoitetaan aina levylle",
           "correct": false
         }
       ],
@@ -1941,15 +1941,15 @@
           "correct": true
         },
         {
-          "text": "Kovakoodaa IP sovellukseen",
+          "text": "Kovakoodaa IP-osoite sovellukseen — rikkoutuu heti kun DHCP vaihtaa gatewayn osoitteen",
           "correct": false
         },
         {
-          "text": "Broadcast UDP kaikille porteille",
+          "text": "Broadcast UDP kaikille porteille — ei noudata mDNS/DNS-SD-protokollan service-tyyppiä",
           "correct": false
         },
         {
-          "text": "Avahi vain client, ei publish",
+          "text": "Avahi toimii vain clientinä eikä pysty julkaisemaan omia palveluita lähiverkkoon",
           "correct": false
         }
       ],
@@ -1976,15 +1976,15 @@
           "correct": true
         },
         {
-          "text": "Restart=no — ei yritä uudestaan",
+          "text": "Restart=on-failure ilman riippuvuutta — yrittää uudestaan mutta ei odota tietokannan valmistumista ensin",
           "correct": false
         },
         {
-          "text": "Type=oneshot aina",
+          "text": "Type=oneshot ja RemainAfterExit=yes — merkitsee palvelun valmiiksi heti prosessin päätyttyä",
           "correct": false
         },
         {
-          "text": "Poista ExecStart",
+          "text": "Poista ExecStart kokonaan ja korvaa se ExecStartPost-komennolla joka odottaa tietokantaa",
           "correct": false
         }
       ],
@@ -2011,15 +2011,15 @@
           "correct": true
         },
         {
-          "text": "Wants= riittää aina samaan",
+          "text": "Wants= riittää aina samaan — Wants määrittää vain käynnistysjärjestyksen, ei pysäytystä",
           "correct": false
         },
         {
-          "text": "KillMode=none",
+          "text": "KillMode=none jättää lapsiprosessit hengissä eikä sido elinkaarta targetiin mitenkään",
           "correct": false
         },
         {
-          "text": "Ignore target — erilliset unitit",
+          "text": "Ignore target ja pidä unitit täysin erillisinä — worker jää silti roikkumaan targetin pysähtyessä",
           "correct": false
         }
       ],
@@ -2080,15 +2080,15 @@
           "correct": true
         },
         {
-          "text": "Poista journald kokonaan",
+          "text": "Poista journald kokonaan ja siirrä kaikki lokitus perinteiseen syslog-daemoniin",
           "correct": false
         },
         {
-          "text": "rm -rf /var/log/journal",
+          "text": "rm -rf /var/log/journal poistaa vanhat lokit mutta ei estä uutta floodia täyttämästä levyä uudelleen",
           "correct": false
         },
         {
-          "text": "Vain syslog — ei rate limitiä",
+          "text": "Vain syslog — ei rate limitiä — syslogilla ei ole journaldin sisäänrakennettua flood-suojaa",
           "correct": false
         }
       ],
@@ -2219,15 +2219,15 @@
           "correct": true
         },
         {
-          "text": "127.0.0.53 on aina virheellinen",
+          "text": "127.0.0.53 on aina virheellinen konfiguraatio joka pitää korjata osoittamaan suoraan ISP:n nameserveriin",
           "correct": false
         },
         {
-          "text": "Poista resolv.conf — DNS toimii ilman",
+          "text": "Poista resolv.conf kokonaan — kernel osaa silti resolvoida nimiä ilman mitään resolver-konfiguraatiota",
           "correct": false
         },
         {
-          "text": "Vain /etc/hosts käytössä",
+          "text": "Vain /etc/hosts on käytössä — systemd-resolved ei voi koskaan olla stub-osoitteen takana",
           "correct": false
         }
       ],
@@ -2288,15 +2288,15 @@
           "correct": true
         },
         {
-          "text": "chmod 000 unit-tiedosto riittää",
+          "text": "chmod 000 unit-tiedostoon riittää — systemd voi silti ladata unitin oikeuksista huolimatta",
           "correct": false
         },
         {
-          "text": "disable ja reboot riittää aina",
+          "text": "disable ja reboot riittää aina — toinen paketti voi palauttaa symlinkin päivityksen yhteydessä",
           "correct": false
         },
         {
-          "text": "Poista binary — systemd lopettaa",
+          "text": "Poista binary levyltä — systemd yrittää silti käynnistää unitin ja jää failed-tilaan",
           "correct": false
         }
       ],
@@ -2323,15 +2323,15 @@
           "correct": true
         },
         {
-          "text": "/etc/systemd/system/ aina",
+          "text": "/etc/systemd/system/ aina — system-wide-hakemisto vaatii silti root-oikeudet käyttöön",
           "correct": false
         },
         {
-          "text": "crontab @reboot riittää",
+          "text": "crontab @reboot riittää — cron ei tue systemd-user-instanssin resurssienhallintaa",
           "correct": false
         },
         {
-          "text": "/etc/init.d/ vanha tapa",
+          "text": "/etc/init.d/ vanha SysV-tapa — vaatii myös root-oikeudet eikä toimi user-sessiossa",
           "correct": false
         }
       ],
@@ -2357,15 +2357,15 @@
           "correct": true
         },
         {
-          "text": "journalctl --all-time",
+          "text": "journalctl --all-time näyttää kaikkien boottien lokit sekaisin ilman rajausta",
           "correct": false
         },
         {
-          "text": "dmesg riittää aina",
+          "text": "dmesg riittää aina — kernel-rengaspuskuri tyhjenee eikä sisällä sovelluslokeja",
           "correct": false
         },
         {
-          "text": "cat /var/log/boot.log",
+          "text": "cat /var/log/boot.log — tiedostoa ei oletuksena ole systemd-journald-pohjaisissa jakeluissa",
           "correct": false
         }
       ],
@@ -2392,15 +2392,15 @@
           "correct": true
         },
         {
-          "text": "journalctl | grep ERROR — riittää",
+          "text": "journalctl | grep ERROR — riittää vaikka ohittaa priority-metadatan ja muunkieliset viestit",
           "correct": false
         },
         {
-          "text": "journalctl -q",
+          "text": "journalctl -q hiljentää varoitukset lokitiedostoista, ei suodata priority-tason mukaan",
           "correct": false
         },
         {
-          "text": "Vain dmesg",
+          "text": "Vain dmesg — kernel-rengaspuskuri ei sisällä sovellusten err-tason journal-viestejä",
           "correct": false
         }
       ],
@@ -2462,15 +2462,15 @@
           "correct": true
         },
         {
-          "text": "Type=oneshot aina",
+          "text": "Type=oneshot aina — sopii kertaluontoisiin skripteihin, ei jatkuvasti käynnissä oleviin palveluihin",
           "correct": false
         },
         {
-          "text": "Type=simple estää riippuvuudet",
+          "text": "Type=simple estää riippuvuudet — simple ei tue riippuvuuksia lainkaan systemd-unitissa",
           "correct": false
         },
         {
-          "text": "Type=idle riittää tuotantoon",
+          "text": "Type=idle riittää tuotantoon — idle vain viivästää käynnistystä bootissa, ei odota valmiussignaalia",
           "correct": false
         }
       ],
@@ -2532,15 +2532,15 @@
           "correct": true
         },
         {
-          "text": "reload ja restart ovat identtiset",
+          "text": "reload ja restart ovat identtiset — molemmat pysäyttävät ja käynnistävät prosessin uudelleen",
           "correct": false
         },
         {
-          "text": "reload vaatii aina rebootin",
+          "text": "reload vaatii aina koko järjestelmän rebootin ennen kuin uusi konfiguraatio tulee voimaan",
           "correct": false
         },
         {
-          "text": "Vain systemctl restart on tuettu",
+          "text": "Vain systemctl restart on tuettu — ExecReload-direktiiviä ei ole olemassa systemd-unitissa",
           "correct": false
         }
       ],
@@ -2637,15 +2637,15 @@
           "correct": true
         },
         {
-          "text": "ForwardToSyslog=no",
+          "text": "ForwardToSyslog=no estää journalin lähettämisen syslogille, ei vaikuta talletuksen pysyvyyteen",
           "correct": false
         },
         {
-          "text": "MaxLevelStore=debug",
+          "text": "MaxLevelStore=debug säätää tallennettavan lokitason, ei sitä säilyykö loki rebootin yli",
           "correct": false
         },
         {
-          "text": "RateLimitInterval=0",
+          "text": "RateLimitInterval=0 poistaa nopeusrajoituksen, ei vaikuta journalin tallennuspaikkaan",
           "correct": false
         }
       ],
@@ -2707,15 +2707,15 @@
           "correct": true
         },
         {
-          "text": "ping localhost 8080",
+          "text": "ping localhost 8080 — ICMP-ping ei tue porttinumeroa eikä kerro mikä prosessi kuuntelee",
           "correct": false
         },
         {
-          "text": "ifconfig 8080",
+          "text": "ifconfig 8080 — työkalu näyttää verkkorajapinnat, ei kuunteleva prosessi tai portti",
           "correct": false
         },
         {
-          "text": "netstat on ainoa tapa — ss ei toimi",
+          "text": "netstat on ainoa tapa — ss ei toimi nykyaikaisissa jakeluissa lainkaan",
           "correct": false
         }
       ],
@@ -2742,15 +2742,15 @@
           "correct": true
         },
         {
-          "text": "Vain DNS /etc/hosts",
+          "text": "Muokkaa vain /etc/hosts-tiedostoa lisäämällä sisäverkon osoitteet käsin sinne",
           "correct": false
         },
         {
-          "text": "chmod +x reititin",
+          "text": "Aja chmod +x reitittimen konfiguraatiotiedostoon jotta reititys aktivoituu",
           "correct": false
         },
         {
-          "text": "systemctl restart avahi",
+          "text": "Käynnistä avahi-daemon uudelleen — mDNS ei liity VPN:n sisäverkon reitityksen tavoitettavuuteen",
           "correct": false
         }
       ],
@@ -2812,15 +2812,15 @@
           "correct": true
         },
         {
-          "text": "nameserver 127.0.0.1 riittää aina",
+          "text": "nameserver 127.0.0.1 riittää aina — määrittää DNS-palvelimen, ei lyhyiden nimien suffixia",
           "correct": false
         },
         {
-          "text": "options rotate korjaa searchin",
+          "text": "options rotate korjaa searchin — rotate vaihtaa nameserver-järjestystä, ei lisää domain-suffixia",
           "correct": false
         },
         {
-          "text": "Poista resolv.conf kokonaan",
+          "text": "Poista resolv.conf kokonaan — ilman tiedostoa myöskään FQDN-haku ei enää toimi",
           "correct": false
         }
       ],
@@ -2882,15 +2882,15 @@
           "correct": true
         },
         {
-          "text": "Avahi ei tue useaa konetta",
+          "text": "Avahi ei tue useaa konetta samassa lähiverkossa — jokainen kone tarvitsee oman Avahi-instanssinsa",
           "correct": false
         },
         {
-          "text": "Vain DNS-palvelin korjaa konfliktin",
+          "text": "Vain keskitetty DNS-palvelin korjaa konfliktin — mDNS ei toimi ilman perinteistä nimipalvelinta",
           "correct": false
         },
         {
-          "text": "Konflikti johtuu aina palomuurista",
+          "text": "Konflikti johtuu aina palomuurista joka estää liikennettä koneiden välillä lähiverkossa",
           "correct": false
         }
       ],
@@ -5191,24 +5191,24 @@
       "prompt": "NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?",
       "choices": [
         {
-          "text": "busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager RequestScan as",
+          "text": "busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager/Devices/3 org.freedesktop.NetworkManager.Device.Wireless RequestScan a{sv} 0",
           "correct": true
         },
         {
-          "text": "systemctl restart NetworkManager poistaa välimuistin automaattisesti",
+          "text": "systemctl restart NetworkManager poistaa Wi-Fi-välimuistin ja käynnistää skannauksen automaattisesti taustalla",
           "correct": false
         },
         {
-          "text": "echo scan > /proc/net/wireless",
+          "text": "echo scan > /proc/net/wireless — tiedosto on vain luku -tilastoraportti, ei ohjausrajapinta skannaukselle",
           "correct": false
         },
         {
-          "text": "dbus-send --session org.freedesktop.NetworkManager /Scan",
+          "text": "dbus-send --session org.freedesktop.NetworkManager /Scan — väärä bus, väärä polku eikä metodia/rajapintaa ole määritelty",
           "correct": false
         }
       ],
-      "correctFeedback": "RequestScan on NetworkManagerin D-Bus-API — system bus, ei session.",
-      "wrongFeedback": "Wi-Fi-skannaus menee NM:n system-bus-rajapinnan kautta. Session-bus ja /proc eivät korvaa sitä.",
+      "correctFeedback": "RequestScan löytyy Device.Wireless-rajapinnasta (ei ylätason NetworkManager-rajapinnasta), ja se ottaa a{sv}-sanakirjan, ei merkkijonotaulukkoa — system bus, ei session.",
+      "wrongFeedback": "Wi-Fi-skannaus menee NM:n Device.Wireless-rajapinnan RequestScan-metodin kautta system busilla. Session-bus ja /proc eivät korvaa sitä.",
       "sourceRef": "NetworkManager/dbus",
       "sourceUrl": "https://networkmanager.dev/docs/api/latest/spec.html",
       "featureId": "linux:dbus-nm-wifi",
@@ -5230,15 +5230,15 @@
           "correct": true
         },
         {
-          "text": "dbus-launch --list-services | grep Network",
+          "text": "dbus-launch --list-services | grep Network — dbus-launch käynnistää session-busin, ei listaa system-bus-palveluita",
           "correct": false
         },
         {
-          "text": "systemctl cat NetworkManager.service",
+          "text": "systemctl cat NetworkManager.service näyttää unit-tiedoston sisällön, ei D-Bus-rajapintaa",
           "correct": false
         },
         {
-          "text": "nmcli general permissions",
+          "text": "nmcli general permissions listaa polkit-oikeudet, ei D-Bus-metodeja tai propertyja",
           "correct": false
         }
       ],
@@ -5265,15 +5265,15 @@
           "correct": true
         },
         {
-          "text": "modprobe btusb reset",
+          "text": "modprobe btusb reset — ajurin uudelleenlataus ei korjaa laitteen untrusted-tilaa",
           "correct": false
         },
         {
-          "text": "rfkill block bluetooth",
+          "text": "rfkill block bluetooth — sammuttaa radion kokonaan eikä ratkaise parituksen luottamusongelmaa",
           "correct": false
         },
         {
-          "text": "systemctl stop org.bluez",
+          "text": "systemctl stop org.bluez — pysäyttää koko BlueZ-palvelun eikä ole edes validi unit-nimi",
           "correct": false
         }
       ],
@@ -5336,15 +5336,15 @@
           "correct": true
         },
         {
-          "text": "Väärä journald-priority",
+          "text": "Väärä journald-priority-asetus estää dbus-send-kutsun näkymisen lokissa, ei itse kutsua",
           "correct": false
         },
         {
-          "text": "D-Bus daemon on kaatunut — reboot auttaa aina",
+          "text": "D-Bus daemon on kaatunut — reboot auttaa aina, vaikka daemon on selvästi käynnissä ja vastaa muille",
           "correct": false
         },
         {
-          "text": "dbus-send vaatii aina rootin — nmcli ei",
+          "text": "dbus-send vaatii aina rootin — nmcli käyttää samaa D-Bus-rajapintaa samoilla polkit-säännöillä",
           "correct": false
         }
       ],
@@ -5371,15 +5371,15 @@
           "correct": true
         },
         {
-          "text": "arp -s 192.168.1.1 eth0",
+          "text": "arp -s 192.168.1.1 eth0 — legacy-komento vaatii MAC-osoitteen parametrina, pelkkä interface ei riitä",
           "correct": false
         },
         {
-          "text": "echo aa:bb > /proc/net/arp",
+          "text": "echo aa:bb > /proc/net/arp — ARP-taulua ei voi muokata suoraan kirjoittamalla /proc-tiedostoon",
           "correct": false
         },
         {
-          "text": "ip route add 192.168.1.1 dev eth0",
+          "text": "ip route add 192.168.1.1 dev eth0 — tämä lisää reitin, ei kiinteää MAC-osoitetta ARP-tauluun",
           "correct": false
         }
       ],
@@ -5407,15 +5407,15 @@
           "correct": true
         },
         {
-          "text": "ip route flush table main",
+          "text": "ip route flush table main — tyhjentää reititystaulun mutta ei paljasta ARP-tason duplikaattia",
           "correct": false
         },
         {
-          "text": "ping -f 10.0.0.50 riittää aina",
+          "text": "ping -f 10.0.0.50 riittää aina — flood-ping testaa vain saavutettavuutta, ei kerro kumpi kone vastaa",
           "correct": false
         },
         {
-          "text": "ss -tan | grep 10.0.0.50",
+          "text": "ss -tan | grep 10.0.0.50 — näyttää TCP-socketit, ei ARP-tason osoitekonfliktia",
           "correct": false
         }
       ],
@@ -5477,15 +5477,15 @@
           "correct": true
         },
         {
-          "text": "Lisää staattinen ip route ilman gateway-MAC:ia",
+          "text": "Lisää staattinen ip route ilman gateway-MAC:ia — reititystaulu ei korjaa puuttuvaa ARP-vastausta",
           "correct": false
         },
         {
-          "text": "Muuta TCP keepalive-asetuksia",
+          "text": "Muuta TCP keepalive-asetuksia — kuljetuskerroksen aikakatkaisut eivät vaikuta ARP-tason FAILED-tilaan",
           "correct": false
         },
         {
-          "text": "Ota UDP pois käytöstä palomuurista",
+          "text": "Ota UDP pois käytöstä palomuurista — protokollakohtainen sääntö ei liity naapuritaulun ongelmaan",
           "correct": false
         }
       ],
@@ -5793,15 +5793,15 @@
           "correct": true
         },
         {
-          "text": "UDP käyttää aina kolmen suun kättelyä kuten TCP",
+          "text": "UDP käyttää aina kolmen suun kättelyä (SYN/SYN-ACK/ACK) kuten TCP ennen datansiirtoa",
           "correct": false
         },
         {
-          "text": "UDP ei kulje NAT:in läpi koskaan",
+          "text": "UDP ei kulje NAT:in läpi koskaan — palomuurit pudottavat kaiken UDP-liikenteen automaattisesti",
           "correct": false
         },
         {
-          "text": "ss -ltn näyttää UDP-vastaukset",
+          "text": "ss -ltn näyttää UDP-vastaukset — -t ja -l rajaavat näkymän pelkkiin TCP LISTEN-socketeihin",
           "correct": false
         }
       ],
@@ -5828,15 +5828,15 @@
           "correct": true
         },
         {
-          "text": "UDP: kolmen suun kättely; TCP: suora datagram",
+          "text": "UDP: kolmen suun kättely (SYN, SYN-ACK, ACK); TCP lähettää suoraan datagrammin ilman kättelyä",
           "correct": false
         },
         {
-          "text": "Molemmat vaativat TLS-handshaken",
+          "text": "Molemmat protokollat vaativat aina TLS-handshaken ennen sovellusdatan lähettämistä",
           "correct": false
         },
         {
-          "text": "TCP on aina UDP:n päällä portissa 53",
+          "text": "TCP on aina UDP:n päällä portissa 53 — DNS käyttää TCP:tä vain UDP-kehyksen sisällä kapseloituna",
           "correct": false
         }
       ],
@@ -5863,15 +5863,15 @@
           "correct": true
         },
         {
-          "text": "ss -uln dport = :443",
+          "text": "ss -uln dport = :443 — näyttää UDP-kuuntelijat, ei TCP-yhteyksien tilaa",
           "correct": false
         },
         {
-          "text": "ss -ltn state established",
+          "text": "ss -ltn state established — -l rajaa pelkkiin LISTEN-socketeihin, joten established-suodatin ei toimi",
           "correct": false
         },
         {
-          "text": "ip route get :443",
+          "text": "ip route get :443 — reititystyökalu ei tunne porttinumeroita eikä listaa socketeja",
           "correct": false
         }
       ],

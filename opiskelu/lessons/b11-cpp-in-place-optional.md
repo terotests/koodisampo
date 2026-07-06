@@ -25,6 +25,6 @@ Yksi konstruktio suoraan optionalin muistiin.
 
 ## Käytännössä
 
-`make_optional` pienille tyypeille. `in_place_type` monimutkaisille. CppCoreGuidelines: emplace when expensive.
+`make_optional` pienille tyypeille. Huomaa: `std::optional` käyttää tagia `std::in_place` (`in_place_t`) — `std::in_place_type` on eri tyyppi, tarkoitettu `std::variant`:lle ja `std::any`:lle valitsemaan alternatiivin tyyppi. CppCoreGuidelines: emplace when expensive.
 
 [Lue lisää](https://en.cppreference.com/w/cpp/utility/in_place)

@@ -1867,14 +1867,14 @@
         "coworker",
         "guru"
       ],
-      "prompt": "std::vector::push_back heittää poikkeuksen kesken move-operaatiosta — tila epävarma. Miten merkitset move-operaattorin?",
+      "prompt": "Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `data_`-pointerin `std::exchange`:llä. Silti `std::vector<Blob>` kopioi elementit reallokoinnissa. Mitä move-operaattorin määrittelyyn lisätään?",
       "choices": [
         {
           "text": "try/catch jokaisen push_back-kutsun ympärillä",
           "correct": false
         },
         {
-          "text": "noexcept move — vector voi käyttää movea turvallisesti",
+          "text": "noexcept — vector voi siirtää reallokoinnissa",
           "correct": true
         },
         {
@@ -1886,8 +1886,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "noexcept move mahdollistaa strong exception guarantee — safety-parannus.",
-      "wrongFeedback": "Heittävä move estää optimoinnin. noexcept on osa turvallista API:a.",
+      "correctFeedback": "Vector päättää move vs copy compile-time-ominaisuuden perusteella — ilman `noexcept`-merkintää se olettaa, että move voi heittää.",
+      "wrongFeedback": "Vector ei analysoi move-toteutusta. Se katsoo move-operaattorin poikkeusspesifikaatiota (`noexcept`).",
       "sourceRef": "CppCoreGuidelines#noexcept",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#noexcept",
       "featureId": "cpp:noexcept-move",
@@ -2326,20 +2326,20 @@
           "correct": true
         },
         {
-          "text": "Vaihda mutexit spinlock:eihin",
+          "text": "Vaihda molemmat mutexit spinlock-tyyppisiksi vähentämään odotusaikaa",
           "correct": false
         },
         {
-          "text": "Poista toinen mutex kokonaan",
+          "text": "Käytä std::recursive_mutex:ia molemmissa uudelleenlukittavuuden vuoksi",
           "correct": false
         },
         {
-          "text": "Käytä volatile mutex-flageja",
+          "text": "Lisää satunnainen sleep() kummankin säikeen toisen lukituksen eteen",
           "correct": false
         }
       ],
       "correctFeedback": "scoped_lock (C++17) hakee useita lukituksia deadlock-vapaasti tai käytä kiinteää järjestystä.",
-      "wrongFeedback": "Satunnainen lukitusjärjestys johtaa helposti deadlockiin tuotannossa.",
+      "wrongFeedback": "recursive_mutex ratkaisee saman säikeen uudelleenlukituksen, ei kahden säikeen ristikkäistä järjestystä. Spinlock ja sleep vain muuttavat deadlockin ilmenemistiheyttä, eivät poista sitä.",
       "sourceRef": "cppreference/scoped_lock",
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread/scoped_lock",
       "featureId": "cpp:mutex-deadlock",
@@ -2361,20 +2361,20 @@
           "correct": true
         },
         {
-          "text": "operator int() palautuksessa",
+          "text": "Lisää operator int() palautuksessa selkeyttämään muunnosta",
           "correct": false
         },
         {
-          "text": "Muuta int -> long",
+          "text": "Muuta parametrityyppi int:stä long:ksi estämään muunnoksen",
           "correct": false
         },
         {
-          "text": "Poista constructor — käytä factorya aina",
+          "text": "Poista constructor kokonaan ja käytä tehdasfunktiota Metersille",
           "correct": false
         }
       ],
       "correctFeedback": "explicit kertoo intentin — cpp-best-practices Style suosittelee single-argument ctor:eihin.",
-      "wrongFeedback": "Ilman explicit:ia kääntäjä voi tehdä hiljaisia tyyppimuunnoksia.",
+      "wrongFeedback": "operator int() lisäisi vielä yhden implisiittisen muunnoksen. long ei estä double→integer-muunnosta. Tehdasfunktio siirtää ongelman, ei poista sitä.",
       "sourceRef": "cppreference/explicit",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/explicit",
       "featureId": "cpp:explicit-constructor",
@@ -2396,20 +2396,20 @@
           "correct": true
         },
         {
-          "text": "Runtime if + typeid",
+          "text": "Runtime if + typeid jokaisella kutsulla — tarkistus tapahtuu ajossa",
           "correct": false
         },
         {
-          "text": "Macro #ifdef aina",
+          "text": "Macro #ifdef INTEGRAL_ONLY ehdollistamaan molemmat koodihaarat",
           "correct": false
         },
         {
-          "text": "dynamic_cast templatessa",
+          "text": "dynamic_cast templatessa erottamaan integraaliset ja float-tyypit",
           "correct": false
         }
       ],
       "correctFeedback": "if constexpr (C++17) valitsee haaran käännösaikana — ei runtime-kustannusta.",
-      "wrongFeedback": "Runtime if ei poista kuollutta koodia templaten instanssista.",
+      "wrongFeedback": "Runtime if ei poista kuollutta koodia templaten instanssista. dynamic_cast toimii vain polymorfisille osoittimille, ei aritmeettisille tyypeille.",
       "sourceRef": "cppreference/if-constexpr",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/if",
       "featureId": "cpp:if-constexpr",
@@ -2431,20 +2431,20 @@
           "correct": true
         },
         {
-          "text": "memcpy koko structille",
+          "text": "memcpy koko structille copy assignmentin toteutuksena",
           "correct": false
         },
         {
-          "text": "Poista copy assignment ja käytä shallow copy",
+          "text": "Poista copy assignment kokonaan ja luota shallow-kopiointiin",
           "correct": false
         },
         {
-          "text": "Globaali flag selfAssignmentDetected",
+          "text": "Globaali flag selfAssignmentDetected tarkistamaan tilanteen",
           "correct": false
         }
       ],
       "correctFeedback": "Copy-and-swap on testattu idiom — Rule of Five -luokille turvallinen.",
-      "wrongFeedback": "Käsin kirjoitettu operator= on helppo rikkoa self-assignmentissa.",
+      "wrongFeedback": "memcpy rikkoo resursseja hallitsevat jäsenet. Shallow copy tuplaa omistuksen. Globaali flag ei skaalaudu eikä ole thread-safe.",
       "sourceRef": "cppreference/copy_assignment",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/as_operator",
       "featureId": "cpp:copy-and-swap",
@@ -2501,20 +2501,20 @@
           "correct": true
         },
         {
-          "text": "Jatka C-taulukkoa — nopeampi",
+          "text": "Jatka C-taulukkoa — se on nopeampi kuin std::array tässä",
           "correct": false
         },
         {
-          "text": "Muuta int -> short",
+          "text": "Muuta int lyhyemmäksi short-tyypiksi pienentääksesi puskuria",
           "correct": false
         },
         {
-          "text": "Lisää kommentti // caller must ensure size",
+          "text": "Lisää kommentti // caller must ensure correct buffer size",
           "correct": false
         }
       ],
       "correctFeedback": "std::array ei dekay → pointer ja span kantaa pituuden — Safety-ohje.",
-      "wrongFeedback": "Raaka taulukko menettää koon parametreissa — buffer overrun riski.",
+      "wrongFeedback": "std::array on yhtä nopea kuin C-taulukko, mutta ei menetä kokoa parametreissa. short ei ratkaise ongelmaa, ja kommentti ei estä väärää kutsua käännösaikana.",
       "sourceRef": "cpp-best-practices/04-Considering_Safety",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md",
       "featureId": "cpp:std-array",
@@ -2536,20 +2536,20 @@
           "correct": true
         },
         {
-          "text": "Palauta a < b || a == b",
+          "text": "Palauta a < b || a == b — kattaa yhtäsuuruuden erikseen comparatorissa",
           "correct": false
         },
         {
-          "text": "Käytä qsort C:stä",
+          "text": "Vaihda std::sort std::stable_sort:iin — yhtäsuuruus ei enää haittaa",
           "correct": false
         },
         {
-          "text": "Comparator ei saa koskaan palauttaa false",
+          "text": "Kirjoita kaksi eri comparatoria: yksi < ja yksi > vertailulle",
           "correct": false
         }
       ],
       "correctFeedback": "Three-way comparison antaa johdonmukaisen ordering — correctness-parannus.",
-      "wrongFeedback": "Virheellinen strict weak ordering rikkoo sort-algoritmit.",
+      "wrongFeedback": "stable_sort vaatii silti pätevän strict weak ordering -comparatorin. Virheellinen yhtäsuuruuden käsittely rikkoo minkä tahansa sort-algoritmin.",
       "sourceRef": "cppreference/operator_spaceship",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_comparison",
       "featureId": "cpp:spaceship",
@@ -2571,20 +2571,20 @@
           "correct": true
         },
         {
-          "text": "unsigned int — aina 32-bittinen",
+          "text": "unsigned int — standardi takaa aina täsmälleen 32 bittiä",
           "correct": false
         },
         {
-          "text": "long — riittää kaikissa",
+          "text": "long — sama koko kaikilla alustoilla ja kääntäjillä",
           "correct": false
         },
         {
-          "text": "size_t protokollakentässä",
+          "text": "size_t protokollakentässä — koko on vakio kaikkialla",
           "correct": false
         }
       ],
       "correctFeedback": "Fixed-width integerit takaavat saman koon — portability best practice.",
-      "wrongFeedback": "int/leveys vaihtelee alustan mukaan — wire format vaatii stdint-tyypit.",
+      "wrongFeedback": "unsigned int, long ja size_t leveys on standardissa vain minimirajattu, ei kiinteä — wire format vaatii stdint-tyypit.",
       "sourceRef": "cppreference/cstdint",
       "sourceUrl": "https://en.cppreference.com/w/cpp/types/integer",
       "featureId": "cpp:fixed-width-int",
@@ -2606,20 +2606,20 @@
           "correct": true
         },
         {
-          "text": "volatile bool riittää aina",
+          "text": "volatile bool riittää aina yksinkertaiseen shutdown-flagiin",
           "correct": false
         },
         {
-          "text": "Globaali mutex jokaiselle lukemiselle",
+          "text": "Globaali mutex jokaiselle lukemiselle — raskas yhdelle flagille",
           "correct": false
         },
         {
-          "text": "sleep(1) ennen lukemista",
+          "text": "sleep(1) ennen lukemista varmistaakseen flagin päivittymisen",
           "correct": false
         }
       ],
       "correctFeedback": "Data race bool:lla on UB — std::atomic on oikea työkalu flagille.",
-      "wrongFeedback": "volatile ei tarjoa atomisuutta eikä memory ordering -takeita.",
+      "wrongFeedback": "volatile ei tarjoa atomisuutta eikä memory ordering -takeita. Mutex toimii mutta on ylimitoitettu. sleep ei takaa näkyvyyttä toisessa säikeessä.",
       "sourceRef": "cppreference/atomic",
       "sourceUrl": "https://en.cppreference.com/w/cpp/atomic/atomic",
       "featureId": "cpp:atomic-flag",
@@ -2641,20 +2641,20 @@
           "correct": true
         },
         {
-          "text": "override hidastaa virtual-kutsua",
+          "text": "override-avainsana hidastaa virtuaalikutsun suoritusaikaa",
           "correct": false
         },
         {
-          "text": "override on pakollinen C++11:ssä",
+          "text": "override on pakollinen kaikissa C++11-luokissa aina",
           "correct": false
         },
         {
-          "text": "Ilman overridea kutsutaan aina base-versiota",
+          "text": "Ilman overridea kutsutaan aina perusluokan versiota ajossa",
           "correct": false
         }
       ],
       "correctFeedback": "override varmistaa että base-funktio on ylikirjoitettu — C++11 työkalu.",
-      "wrongFeedback": "Ilman overridea typo signatuurissa tekee uuden overloadin hiljaa.",
+      "wrongFeedback": "override on pelkkä käännösaikainen tarkistus, ei vaikuta ajonaikaiseen suoritukseen eikä ole pakollinen. Ilman sitä väärä signatuuri luo hiljaa uuden overloadin, ei kutsu basea.",
       "sourceRef": "cppreference/override",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/override",
       "featureId": "cpp:override",
@@ -2669,27 +2669,27 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "Move-operaattori heittää poikkeuksen — std::vector reallokoi kesken ja tila epävarma. Mitä merkitset?",
+      "prompt": "Koodikatselmassa ehdotetaan tiimin coding-standardiin sääntöä: merkitse jokainen move-konstruktori `noexcept`, myös ne jotka allokoivat muistia. Mikä on riski, jos allokoiva move silti heittää ajonaikana?",
       "choices": [
         {
-          "text": "noexcept move — kontainerit käyttävät movea vain jos noexcept",
+          "text": "Ohjelma kutsuu std::terminate:a — väärä noexcept-lupaus ei ole vain dokumentaatiota",
           "correct": true
         },
         {
-          "text": "throw() on pakollinen kaikissa funktioissa",
+          "text": "Kääntäjä hylkää noexcept-merkinnän käännösaikana jos move voi allokoida",
           "correct": false
         },
         {
-          "text": "Poista move — käytä copy aina",
+          "text": "Poikkeus etenee normaalisti kutsujalle — noexcept vain nopeuttaa moveä",
           "correct": false
         },
         {
-          "text": "catch(...) move-operaattorissa",
+          "text": "noexcept pakottaa kääntäjän lisäämään implisiittisen try/catch-lohkon moveen",
           "correct": false
         }
       ],
-      "correctFeedback": "noexcept move mahdollistaa tehokkaan reallokoinnin — strong guarantee.",
-      "wrongFeedback": "Heittävä move pakottaa kopioimaan — huono suorituskyky.",
+      "correctFeedback": "noexcept on ajonaikainen sopimus: jos merkitty funktio silti heittää, kutsutaan std::terminate. Merkitse vain kun se todistettavasti pitää paikkansa.",
+      "wrongFeedback": "Kääntäjä ei tarkista noexcept-lupausta käytännössä, eikä se lisää suojausta — se vain valtuuttaa terminate-kutsun poikkeustilanteessa.",
       "sourceRef": "cppreference/noexcept",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/noexcept",
       "featureId": "cpp:noexcept-move",
@@ -2711,20 +2711,20 @@
           "correct": true
         },
         {
-          "text": "Palauta aina shared_ptr<string>",
+          "text": "Palauta aina shared_ptr<string> jaettuun omistukseen getterissä",
           "correct": false
         },
         {
-          "text": "Muuta getter -> global",
+          "text": "Muuta getter globaaliksi muuttujaksi jota kaikki voivat lukea",
           "correct": false
         },
         {
-          "text": "Poista const metodeista",
+          "text": "Poista const metodeista — se ei vaikuta kopiointikustannukseen",
           "correct": false
         }
       ],
       "correctFeedback": "Const correctness vähentää kopioita ja dokumentoi intentin.",
-      "wrongFeedback": "Turha kopio jokaisella getter-kutsulla on helppo välttää.",
+      "wrongFeedback": "shared_ptr lisää atomisen laskurin ilman tarvetta jaettuun omistukseen. Globaali muuttuja rikkoo kapseloinnin. const ei liity kopiointikustannukseen vaan olion tilan takuuseen.",
       "sourceRef": "cpp-best-practices/03-Style",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/03-Style.md",
       "featureId": "cpp:const-correctness",
@@ -2746,20 +2746,20 @@
           "correct": true
         },
         {
-          "text": "Vain x86-buildi tuotantoon",
+          "text": "Vain x86-buildi tuotantoon — ARM-alusta poistetaan CI-matriisista",
           "correct": false
         },
         {
-          "text": "Poista signed integerit kokonaan",
+          "text": "Poista signed integerit kokonaan ja käytä vain unsigned-tyyppejä",
           "correct": false
         },
         {
-          "text": "Luota pelkkään code reviewhun",
+          "text": "Luota pelkkään code reviewhun ilman automatisoitua CI-tarkistusta",
           "correct": false
         }
       ],
       "correctFeedback": "UndefinedBehaviorSanitizer löytää overflowit — cpp-best-practices tooling.",
-      "wrongFeedback": "UB voi manifestoitua eri tavalla eri alustoilla — sanitizerit auttavat.",
+      "wrongFeedback": "UB voi manifestoitua eri tavalla eri alustoilla — pelkkä alustan rajaaminen tai unsigned-vaihto ei korvaa sanitizeria eikä reviewia.",
       "sourceRef": "clang.llvm.org/UndefinedBehaviorSanitizer",
       "sourceUrl": "https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html",
       "featureId": "cpp:ubsan",
@@ -2781,20 +2781,20 @@
           "correct": true
         },
         {
-          "text": "static_assert(false) funktion alussa",
+          "text": "static_assert(false) funktion alussa jokaiselle template-tyypille",
           "correct": false
         },
         {
-          "text": "Kommentti // T must be sortable",
+          "text": "Kommentti // T must be sortable funktion määrittelyn yläpuolella",
           "correct": false
         },
         {
-          "text": "Käytä void* ja castaa jokaisessa kutsussa",
+          "text": "Käytä void*-parametria ja castaa oikeaan tyyppiin funktion sisällä",
           "correct": false
         }
       ],
       "correctFeedback": "Concepts antavat selkeän kääntäjävirheen — cppreference dokumentoi std::sortable ja requires.",
-      "wrongFeedback": "Ilman rajoitteita virhe tulee syvältä standardikirjastosta. Concepts kertovat intentin kääntäjälle.",
+      "wrongFeedback": "static_assert(false) hylkäisi kaiken instansoinnin ehdoitta. Kommentti ei ole kääntäjän tarkistama. void* menettää tyyppiturvan kokonaan.",
       "sourceRef": "en.cppreference.com/concepts",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/constraints",
       "featureId": "cpp:concepts",
@@ -2816,20 +2816,20 @@
           "correct": true
         },
         {
-          "text": "Muuta string_view volatile:ksi",
+          "text": "Muuta string_view-jäsen volatile:ksi estämään optimoinnin",
           "correct": false
         },
         {
-          "text": "Käytä const_cast poistamaan const",
+          "text": "Käytä const_cast poistamaan const ja pidennä elinikää manuaalisesti",
           "correct": false
         },
         {
-          "text": "string_view on aina turvallinen — bugi on muualla",
+          "text": "string_view on aina turvallinen palautusarvona — bugi on muualla koodissa",
           "correct": false
         }
       ],
       "correctFeedback": "string_view ei omista dataa — CppCoreGuidelines F.42 varoittaa dangling-viittauksista.",
-      "wrongFeedback": "Dangling string_view on klassinen UB. Omista data stringillä tai pidä elossa pidempään.",
+      "wrongFeedback": "volatile ei vaikuta elinikään. const_cast ei voi pidentää jo tuhoutuneen olion elinikää. Dangling string_view on klassinen UB, ei satunnainen muualta tuleva bugi.",
       "sourceRef": "CppCoreGuidelines#F42",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f42",
       "featureId": "cpp:string-view",
@@ -2851,20 +2851,20 @@
           "correct": true
         },
         {
-          "text": "Vector on liian pieni reserve:lle",
+          "text": "Vector on liian pieni reserve:lle — kasvustrategia ei riitä tähän",
           "correct": false
         },
         {
-          "text": "Move on aina hitaampi kuin copy",
+          "text": "Move on aina hitaampi kuin copy suurille kontti-tyypeille",
           "correct": false
         },
         {
-          "text": "Poista move-operaattori kokonaan",
+          "text": "Poista move-operaattori kokonaan — copy on aina turvallisempi",
           "correct": false
         }
       ],
       "correctFeedback": "Vector siirtää elementtejä vain jos move on noexcept — cppreference vector reallocation.",
-      "wrongFeedback": "Strong exception guarantee pakottaa kopioimaan jos move voi heittää. Merkitse noexcept.",
+      "wrongFeedback": "Strong exception guarantee pakottaa kopioimaan jos move voi heittää — reserve ei vaikuta tähän valintaan, eikä move ole luonnostaan copya hitaampi.",
       "sourceRef": "en.cppreference.com/vector",
       "sourceUrl": "https://en.cppreference.com/w/cpp/container/vector",
       "featureId": "cpp:noexcept-move",
@@ -2886,20 +2886,20 @@
           "correct": true
         },
         {
-          "text": "sleep(100) ennen toista lukitusta",
+          "text": "sleep(100) ennen toista lukitusta kummassakin säikeessä",
           "correct": false
         },
         {
-          "text": "Käytä try_lock silmukassa ikuisesti",
+          "text": "Käytä try_lock silmukassa ikuisesti kunnes molemmat vapautuvat",
           "correct": false
         },
         {
-          "text": "Yksi globaali mutex kaikelle",
+          "text": "Yksi globaali mutex kaikelle datalle koko sovelluksessa",
           "correct": false
         }
       ],
       "correctFeedback": "std::lock ottaa useita mutexeja deadlock-vapaasti — en.cppreference lock algorithm.",
-      "wrongFeedback": "Manuaalinen järjestys rikkoutuu refaktoroinnissa. std::lock on oikea työkalu.",
+      "wrongFeedback": "sleep vähentää vain todennäköisyyttä, ei poista riskiä. Busy-loop try_lock kuluttaa CPU:ta turhaan. Yksi globaali mutex serialisoi kaiken tarpeettomasti.",
       "sourceRef": "en.cppreference.com/lock",
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread/lock",
       "featureId": "cpp:deadlock",
@@ -2920,15 +2920,15 @@
           "correct": true
         },
         {
-          "text": "constexpr riittää aina — sama asia",
+          "text": "constexpr riittää aina — se on täysin sama asia kuin consteval",
           "correct": false
         },
         {
-          "text": "Macro #define TABLE_SIZE 256",
+          "text": "Macro #define TABLE_SIZE 256 laskee taulukon käännösaikana",
           "correct": false
         },
         {
-          "text": "static initializer ilman constevalia riittää aina",
+          "text": "static initializer ilman constevalia riittää aina tähän",
           "correct": false
         }
       ],
@@ -6288,15 +6288,15 @@
           "correct": true
         },
         {
-          "text": "Lisää `-w` kääntäjään piilottaaksesi include-varoitukset",
+          "text": "Lisää `-w` kääntäjään piilottaaksesi kaikki include-varoitukset",
           "correct": false
         },
         {
-          "text": "Siirrä kaikki #include yhteen master-headeriin",
+          "text": "Siirrä kaikki #include-rivit yhteen jaettuun master-headeriin",
           "correct": false
         },
         {
-          "text": "Käytä using namespace std jokaisessa headerissa",
+          "text": "Käytä using namespace std jokaisessa headerissa includejen sijaan",
           "correct": false
         }
       ],
@@ -6358,15 +6358,15 @@
           "correct": true
         },
         {
-          "text": "Korjaa varoitukset vain ennen major-releaseä",
+          "text": "Korjaa kertyneet varoitukset vasta ennen major-releaseä",
           "correct": false
         },
         {
-          "text": "Poista -Wall nopeuden vuoksi",
+          "text": "Poista -Wall kokonaan käännösnopeuden parantamiseksi",
           "correct": false
         },
         {
-          "text": "Jokainen kehittäjä valitsee omat warning-flagit",
+          "text": "Jokainen kehittäjä valitsee itse omat warning-flagit projektissa",
           "correct": false
         }
       ],
@@ -6463,20 +6463,20 @@
           "correct": true
         },
         {
-          "text": "PCH on täysin portable kaikille alustoille ilman kompromisseja",
+          "text": "PCH on täysin portable kaikille kääntäjille ja alustoille ilman kompromisseja",
           "correct": false
         },
         {
-          "text": "PCH korvaa IWYU:n — includet voi jättää huolimatta",
+          "text": "PCH korvaa IWYU:n kokonaan — yksittäiset includet eivät enää merkitse",
           "correct": false
         },
         {
-          "text": "PCH-tiedostot ovat aina pieniä ja versionhallittavia",
+          "text": "PCH-tiedostot ovat aina pieniä ja turvallista lisätä versionhallintaan",
           "correct": false
         }
       ],
       "correctFeedback": "PCH:llä on haittoja (portability, piilotetut dependenciet) — cpp-best-practices performance.",
-      "wrongFeedback": "PCH ei korvaa oikeaa header-hygieniaa. Rakenna kerran ilman PCH:ä validoidaksesi dependenciet.",
+      "wrongFeedback": "PCH-toteutukset ja tuki vaihtelevat kääntäjittäin. PCH ei korvaa oikeaa header-hygieniaa, ja PCH-tiedostot ovat tyypillisesti suuria, kääntäjä- ja konekohtaisia — ei versionhallintaan sopivia.",
       "sourceRef": "cpp-best-practices/08-Considering_Performance.md#consider-using-precompiled-headers",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/08-Considering_Performance.md",
       "featureId": "cpp:precompiled-headers",
@@ -6568,20 +6568,20 @@
           "correct": true
         },
         {
-          "text": "Post-increment on aina kielletty C++17:ssä",
+          "text": "Post-increment on aina kielletty modernin C++17-standardin mukaan",
           "correct": false
         },
         {
-          "text": "i++ on hitaampi vain Pythonissa, C++:ssa ei eroa",
+          "text": "i++ on hitaampi vain tulkatuissa kielissä, C++:ssa ei koskaan eroa",
           "correct": false
         },
         {
-          "text": "++i pakottaa kääntäjän vektorisoimaan silmukan",
+          "text": "++i pakottaa kääntäjän vektorisoimaan silmukan automaattisesti",
           "correct": false
         }
       ],
       "correctFeedback": "Prefer ++i when semantically correct — cpp-best-practices performance.",
-      "wrongFeedback": "Post-increment voi luoda kopion user-defined tyypeille. ++i on turvallinen oletus.",
+      "wrongFeedback": "Post-increment ei ole kielletty, vain harvemmin optimaalinen. Käyttäjän määrittelemille iteraattoreille i++ luo väliaikaisen kopion — ero on siis todellinen myös C++:ssa. ++i ei itsessään pakota vektorisointia.",
       "sourceRef": "cpp-best-practices/08-Considering_Performance.md#prefer-i-to-i",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/08-Considering_Performance.md",
       "featureId": "cpp:preincrement",
@@ -6603,20 +6603,20 @@
           "correct": true
         },
         {
-          "text": "Globaali it vähentää toistuvia find-kutsuja",
+          "text": "Globaali it-muuttuja vähentää toistuvia find-kutsuja funktiossa",
           "correct": false
         },
         {
-          "text": "Macro FIND_OR_CONTINUE(k) on luettavin ratkaisu",
+          "text": "Macro FIND_OR_CONTINUE(k) on luettavin ratkaisu tähän tarkoitukseen",
           "correct": false
         },
         {
-          "text": "Poista tarkistus — operator[] on aina turvallinen",
+          "text": "Poista tarkistus kokonaan — operator[] luo puuttuvan avaimen turvallisesti",
           "correct": false
         }
       ],
       "correctFeedback": "Limit variable scope — cpp-best-practices; if-init-statement C++17.",
-      "wrongFeedback": "it elää turhaan funktion loppuun asti. if-init rajaa näkyvyyden.",
+      "wrongFeedback": "Globaali muuttuja ei vähennä find-kutsuja, se vain leviää tarpeettomasti. Macro piilottaa logiikan. operator[] luo hiljaa uuden alkion — se muuttaa mapin sisältöä, ei ole 'turvallinen' korvaaja tarkistukselle.",
       "sourceRef": "cpp-best-practices/08-Considering_Performance.md#limit-variable-scope",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/if",
       "featureId": "cpp:if-init-statement",
@@ -6634,24 +6634,24 @@
       "prompt": "Koodi tekee `std::optional<BigType> o; o = BigType(args);` — kaksi konstruktiota. Tehokkaampi tapa?",
       "choices": [
         {
-          "text": "std::in_place_type + emplace — rakenna arvo suoraan optionalin sisään",
+          "text": "o.emplace(args) tai std::optional<BigType> o{std::in_place, args} — rakenna paikalleen",
           "correct": true
         },
         {
-          "text": "optional<BigType*> ja new BigType — vähemmän kopioita",
+          "text": "optional<BigType*> ja new BigType — vähemmän kopioita mutta lisää heap-allokaation",
           "correct": false
         },
         {
-          "text": "optional ei tue in-place-luontia — käytä unique_ptr",
+          "text": "optional ei tue in-place-luontia ollenkaan — käytä sen sijaan unique_ptr",
           "correct": false
         },
         {
-          "text": "Kopioi BigType ensin stackille ja assign optionaliin",
+          "text": "Kopioi BigType ensin stackille ja assignaa se sitten optionaliin",
           "correct": false
         }
       ],
-      "correctFeedback": "in_place_t välttää ylimääräisen konstruktion — cpp-best-practices standard library.",
-      "wrongFeedback": "Assign luo väliaikaisen. emplace / in_place_type on tehokkaampi.",
+      "correctFeedback": "std::in_place_t (ei in_place_type_t — se on variant/any:lle) välttää ylimääräisen konstruktion optionalissa.",
+      "wrongFeedback": "Assign luo väliaikaisen objektin ennen siirtoa. emplace/in_place rakentaa suoraan optionalin sisäiseen muistiin.",
       "sourceRef": "cpp-best-practices/08-Considering_Performance.md#in_place_t-and-related",
       "sourceUrl": "https://en.cppreference.com/w/cpp/utility/in_place",
       "featureId": "cpp:in-place",
@@ -6673,15 +6673,15 @@
           "correct": true
         },
         {
-          "text": "shared_ptr kopio on ilmainen — vain pointerin kopiointi",
+          "text": "shared_ptr kopio on ilmainen — kopioi vain sisäisen pointerin",
           "correct": false
         },
         {
-          "text": "unique_ptr ei voi välittyä funktioille lainkaan",
+          "text": "unique_ptr ei voi välittyä funktioille millään tavalla",
           "correct": false
         },
         {
-          "text": "shared_ptr pitää aina siirtää move:lla — const& on kielletty",
+          "text": "shared_ptr pitää aina siirtää move:lla — const& on kielletty rajapinnassa",
           "correct": false
         }
       ],
@@ -6708,15 +6708,15 @@
           "correct": true
         },
         {
-          "text": "Poista destructor — compiler generoi move automaattisesti aina",
+          "text": "Poista destructor kokonaan — compiler generoi move automaattisesti aina",
           "correct": false
         },
         {
-          "text": "Kopioi aina käsin — move on vain std::vectorille",
+          "text": "Kopioi aina käsin sen sijaan — move on tarkoitettu vain std::vectorille",
           "correct": false
         },
         {
-          "text": "shared_ptr kaikille jäsenille — move ei enää tarpeen",
+          "text": "shared_ptr kaikille jäsenille — move-operaatiot eivät enää ole tarpeen",
           "correct": false
         }
       ],
@@ -6743,20 +6743,20 @@
           "correct": true
         },
         {
-          "text": "using namespace std nopeuttaa käännöstä merkittävästi",
+          "text": "using namespace std headerissa nopeuttaa käännöstä kaikissa includereissa",
           "correct": false
         },
         {
-          "text": "Se on pakollinen C++17:ssä jotta string toimii",
+          "text": "Se on pakollinen C++17:ssä, muuten std::string ei toimi headerissa",
           "correct": false
         },
         {
-          "text": "using namespace std estää ADL:n toimimasta",
+          "text": "using namespace std headerissa estää ADL:n toimimasta oikein",
           "correct": false
         }
       ],
       "correctFeedback": "Never use using namespace in a header — cpp-best-practices Style.",
-      "wrongFeedback": "Headerin using vuotaa jokaiseen includeriin. Käytä vain .cpp-tiedostoissa.",
+      "wrongFeedback": "using namespace ei vaikuta käännösnopeuteen eikä ole koskaan pakollinen. Se ei myöskään estä ADL:ää — ongelma on nimien vuotaminen jokaiseen includeriin.",
       "sourceRef": "cpp-best-practices/03-Style.md#never-use-using-namespace-in-a-header-file",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/03-Style.md",
       "featureId": "cpp:using-namespace-header",
@@ -6812,15 +6812,15 @@
           "correct": true
         },
         {
-          "text": "<> on aina nopeampi kuin lainausmerkit",
+          "text": "<> on aina nopeampi kääntäjän include-haussa kuin lainausmerkit",
           "correct": false
         },
         {
-          "text": "Käytä aina <> jotta include-polku on lyhyempi",
+          "text": "Käytä aina <> jotta include-polku pysyy lyhyempänä projektissa",
           "correct": false
         },
         {
-          "text": "Include-tyyppi ei vaikuta käännökseen tai paketointiin",
+          "text": "Include-tyyppi ei vaikuta käännökseen, linkitykseen tai paketointiin",
           "correct": false
         }
       ],
@@ -6847,15 +6847,15 @@
           "correct": true
         },
         {
-          "text": "Alaviiva alussa tekee funktiosta automaattisesti staticin",
+          "text": "Alaviiva alussa tekee funktiosta automaattisesti staticin tiedostossa",
           "correct": false
         },
         {
-          "text": "Vain luokissa kielletty — globaaleissa sallittu",
+          "text": "Vain luokan jäsenissä kielletty — globaaleissa nimissä sallittu",
           "correct": false
         },
         {
-          "text": "C++20 kieltää kaikki alaviivat nimissä",
+          "text": "C++20 kieltää kaikki alaviivat kaikista tunnisteista kokonaan",
           "correct": false
         }
       ],
@@ -6917,20 +6917,20 @@
           "correct": true
         },
         {
-          "text": "#define on aina nopeampi koska preprocessor on ennen kääntäjää",
+          "text": "#define on aina nopeampi koska preprocessor korvaa tekstin ennen kääntäjää",
           "correct": false
         },
         {
-          "text": "constexpr toimii vain float-arvoille",
+          "text": "constexpr toimii vain liukulukuarvoille, ei kokonaisluvuille",
           "correct": false
         },
         {
-          "text": "Makrot ovat pakollisia header-guardien kanssa",
+          "text": "Makrot ovat pakollisia header-guardien ja versionumeroiden kanssa",
           "correct": false
         }
       ],
       "correctFeedback": "Avoid compiler macros — cpp-best-practices Maintainability.",
-      "wrongFeedback": "Makrot ovat vaikeita debugata ja voivat rikkoa syntaksia. constexpr/const.",
+      "wrongFeedback": "Preprocessor-korvaus ei tee koodista nopeampaa käännetyssä binäärissä. constexpr toimii kaikille literaalityypeille. Header-guardit hoituvat myös #pragma once:lla.",
       "sourceRef": "cpp-best-practices/05-Considering_Maintainability.md#avoid-compiler-macros",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/05-Considering_Maintainability.md",
       "featureId": "cpp:macro-to-constexpr",
@@ -6952,15 +6952,15 @@
           "correct": true
         },
         {
-          "text": "Lisää kolmas bool-parametri verbose-tilaa varten",
+          "text": "Lisää kolmas bool-parametri selventämään verbose-tilaa erikseen",
           "correct": false
         },
         {
-          "text": "int 0/1 boolin sijaan — selkeämpi dokumentaatiossa",
+          "text": "int 0/1 boolin sijaan — selkeämpi kutsukohdan dokumentaatiossa",
           "correct": false
         },
         {
-          "text": "Macro SAVE_FAST(f) korvaa bool-parametrin",
+          "text": "Macro SAVE_FAST(f) korvaa bool-parametrin kutsukohdassa",
           "correct": false
         }
       ],
@@ -7022,20 +7022,20 @@
           "correct": true
         },
         {
-          "text": "Poista const metodista — mutex vaatii ei-const metodin",
+          "text": "Poista const metodista kokonaan — mutex vaatii aina ei-const metodin",
           "correct": false
         },
         {
-          "text": "volatile mutex korvaa mutable+mutex -yhdistelmän",
+          "text": "volatile-määre mutexille korvaa mutable+mutex -yhdistelmän kokonaan",
           "correct": false
         },
         {
-          "text": "const-metodi ei saa koskaan käyttää mutexia",
+          "text": "const-metodi ei saa koskaan käyttää mutexia edes mutable-jäsenen kautta",
           "correct": false
         }
       ],
       "correctFeedback": "M&M rule: mutex and mutable go together — cpp-best-practices Threadability.",
-      "wrongFeedback": "const-metodi voi synkronoida mutable cachea mutexilla kun mutex on mutable.",
+      "wrongFeedback": "const-metodi ei tarvitse muuttua ei-constiksi — mutable-mutex ratkaisee juuri tämän. volatile ei anna lukitussemantiikkaa. const-metodi voi synkronoida mutable-tilaa mutexilla.",
       "sourceRef": "cpp-best-practices/07-Considering_Threadability.md#mutex-and-mutable-go-together-mm-rule-c11",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/07-Considering_Threadability.md",
       "featureId": "cpp:mutex-mutable",
