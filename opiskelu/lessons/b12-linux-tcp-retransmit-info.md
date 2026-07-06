@@ -9,7 +9,10 @@ API-vastausajat kasvoivat ilman selvää CPU-kuormaa. Epäilet pakettihäviöit�
 ## Ratkaisu
 
 ```bash
+# -t = TCP, -i = sisäiset timer- ja tilatiedot (RTT, retrans, cwnd)
 ss -ti
+
+# dst = suodata kohdeosoite:portti (tietty palvelin)
 ss -ti dst 10.0.0.5:443
 ```
 

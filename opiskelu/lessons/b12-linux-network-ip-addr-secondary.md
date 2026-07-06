@@ -9,19 +9,21 @@ Vanha `ifconfig eth0:1` toimii joissain distrossa, mutta iproute2 on moderni sta
 ## Ratkaisu
 
 ```bash
+# addr add = lisää IP-osoite rajapintaan (secondary/VIP)
+# 10.0.0.99/24 = osoite ja prefix; dev eth0 = kohderajapinta
 ip addr add 10.0.0.99/24 dev eth0
 ```
 
 Tarkista:
 
 ```bash
-ip -br addr show eth0
+ip -br addr show eth0      # -br = tiivis; kaikki osoitteet rajapinnalla
 ```
 
 Poista:
 
 ```bash
-ip addr del 10.0.0.99/24 dev eth0
+ip addr del 10.0.0.99/24 dev eth0   # del = poista tietty osoite
 ```
 
 **ip addr add** liittää secondary-osoitteen kernelille — ip-address man.

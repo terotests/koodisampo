@@ -7,14 +7,19 @@ Asiakas yrittää yhdistää `https://api.example.com:8080` ja saa heti `Connect
 ## Ratkaisu
 
 ```bash
+# -l = vain LISTEN-tilan socketit (ei ESTABLISHED jne.)
+# -t = TCP (ei UDP)
+# -n = numeeriset portit ja osoitteet (ei /etc/services-nimiä)
+# sport = :8080 = suodata paikallinen (lähde)portti 8080
+# recv-q-sarake = SYN-backlog — odottavat yhteyspyynnöt ennen accept():ia
 ss -ltn sport = :8080
-# tai laajemmin:
+
+# tai laajemmin: kaikki 8080-kuuntelijat + prosessi
+# -p = kuunteleva prosessi (PID/nimi)
 ss -ltnp | grep 8080
 ```
 
 Jos tyhjä → prosessi ei kuuntele porttia. Jos LISTEN mutta refused silti → eri namespace, väärä IP-bind (`127.0.0.1` vs `0.0.0.0`).
-
-**ss -ltn** näyttää TCP LISTEN-socketit ja backlogin — ss man.
 
 ## Käytännössä
 

@@ -14,13 +14,15 @@ default via 10.0.0.254 dev eth0
 ## Ratkaisu
 
 ```bash
+# replace = päivitä olemassa oleva reitti tai luo uusi (ei "File exists" -virhettä)
+# default = oletusreitti (0.0.0.0/0); via = gateway; dev = ulostulorajapinta
 ip route replace default via 10.0.0.1 dev eth0
 ```
 
 Tarkista:
 
 ```bash
-ip route get 8.8.8.8
+ip route get 8.8.8.8   # simuloi: mikä reitti ja rajapinta kohteeseen 8.8.8.8
 ```
 
 **replace** päivittää olemassa olevan reitin tai luo uuden — idempotentti skripteissä.

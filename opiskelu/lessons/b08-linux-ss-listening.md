@@ -14,13 +14,17 @@ Tarvit nopeasti tiedon prosessista.
 ## Ratkaisu
 
 ```bash
+# -tlnp = TCP LISTEN + numeerinen + prosessi; grep rajaa porttiin 5432
 ss -tlnp | grep 5432
 ```
 
 PostgreSQL voi kuunnella myös vain Unix-socketia — tarkista:
 
 ```bash
+# sport = :5432 = suodata paikallinen kuunteluportti (tarkempi kuin grep)
 ss -tlnp sport = :5432
+
+# -x = Unix-domain socketit (TCP-portti voi olla tyhjä vaikka DB pyörii)
 ss -xlnp | grep postgres
 ```
 

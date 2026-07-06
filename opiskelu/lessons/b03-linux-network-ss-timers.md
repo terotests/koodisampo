@@ -12,14 +12,17 @@ free -h
 ## Ratkaisu
 
 ```bash
+# -t = TCP, -a = kaikki tilat, -n = numeerinen, -p = prosessi/PID
 ss -tanp
-# tai tarkemmin timerit:
+
+# grep CLOSE-WAIT = vain vuotavat yhteydet (remote sulki, paikallinen ei)
 ss -tanp | grep CLOSE-WAIT
 ```
 
-`-t` TCP, `-a` kaikki tilat, `-n` numeeriset, `-p` prosessit. `-o` näyttää timer-tiedot (keepalive, retransmit):
+`-o` näyttää timer-tiedot (keepalive, retransmit):
 
 ```bash
+# -o = timer-kentät (retransmit, keepalive) mukaan tulosteeseen
 ss -tanpo | grep CLOSE-WAIT
 ```
 

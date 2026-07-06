@@ -7,14 +7,18 @@ Palvelimen RAM kasvaa hitaasti viikkojen aikana. Uudet yhteydet hidastuvat. Epä
 ## Ratkaisu
 
 ```bash
+# -t = TCP, -a = kaikki tilat (ei vain LISTEN), -n = numeerinen
+# state close-wait = remote sulki (FIN), paikallinen prosessi ei sulkenut socketia
 ss -tan state close-wait
+
+# -p = prosessi/PID joka pitää socketin auki
 ss -tan state close-wait -p
 ```
 
 Laske:
 
 ```bash
-ss -tan state close-wait | wc -l
+ss -tan state close-wait | wc -l   # montako vuotavaa yhteyttä
 ```
 
 **CLOSE-WAIT** = remote lähetti FIN, paikallinen sovellus ei kutsunut `close()` — ss states.
