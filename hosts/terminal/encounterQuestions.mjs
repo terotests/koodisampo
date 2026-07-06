@@ -61,6 +61,13 @@ function hashString(s) {
   return h >>> 0;
 }
 
+/**
+ * Testaustuki: paljastaa hash/indeksi-toteutuksen niin että jakauman tasaisuutta
+ * voi mitata suoraan (ilman koko pickQuestion-putkea, joka sekoittaa tarkoituksella
+ * kaksi eri kokoista poolia — ks. ANY_TOPIC_CHANCE).
+ */
+export const _internal = { hashString, pickIndexFromPool: (pool, salt) => pickIndexFromPool(pool, salt) };
+
 /** Satunnainen alkuarvo uuden pelin kysymysvalinnalle (Partio, kollegat, …). */
 export function randomEncounterPickNonce() {
   return ((Date.now() ^ ((Math.random() * 0x7fffffff) | 0)) >>> 0) % 2147483646 + 1;
@@ -391,6 +398,38 @@ function filterAndScoreQuestions(questions, profile, excludeIds, scoreOptions = 
     .sort((a, b) => b.score - a.score || a.q.id.localeCompare(b.q.id));
 }
 
+/**
+ * "Mistä vain"-profiili: samat audience-tagit (jotta kysymys sopii NPC:lle puheessa),
+ * mutta ei topic/domain-bonuksia — antaa tasapuolisen poolin läpi kaikkien aiheiden.
+ */
+function neutralizeProfile(profile) {
+  return { tags: profile.tags };
+}
+
+/**
+ * Ajaa saman 3-vaiheisen poissulkukaskadin (globaali+recent → recent-8 → ei poissulkua)
+ * millä tahansa profiililla. Palauttaa aina jonkin poolin jos audience-osuma löytyy.
+ */
+function scoreWithExclusionCascade(questions, profile, globalAsked, recent, scoreOptions) {
+  let exclude = [...new Set([...globalAsked, ...recent])];
+  let scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
+  if (scored.length === 0) {
+    exclude = [...new Set(recent.slice(-8))];
+    scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
+  }
+  if (scored.length === 0) {
+    scored = filterAndScoreQuestions(questions, profile, [], scoreOptions);
+  }
+  return scored;
+}
+
+/**
+ * Todennäköisyys sille, että kysymys haetaan koko pankista ("mistä vain aiheesta")
+ * sen sijaan että se painotetaan NPC:n omaan topiciin/domainiin.
+ * 0.5 = 50 % ajasta ihan mikä tahansa aihe, 50 % ajasta NPC:n oma aihe.
+ */
+export const ANY_TOPIC_CHANCE = 0.5;
+
 /** Laaja valintapooli — kapea top-6 -taso toisti samoja kysymyksiä ilman historiaa. */
 const QUESTION_POOL_MIN = 20;
 const QUESTION_POOL_MAX = 48;
@@ -478,20 +517,8 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
       ];
   }
 
-  // 1) Älä toista globaalisti kysyttyjä — myös eri NPC:iltä.
-  let exclude = [...new Set([...globalAsked, ...recent])];
-  let scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
-
-  // 2) Jos profiilin pooli loppuu, salli vanhoja mutta ei ihan viimeisiä.
-  if (scored.length === 0) {
-    exclude = [...new Set(recent.slice(-8))];
-    scored = filterAndScoreQuestions(questions, profile, exclude, scoreOptions);
-  }
-
-  // 3) Viimeinen keino: mikä tahansa profiiliin sopiva.
-  if (scored.length === 0) {
-    scored = filterAndScoreQuestions(questions, profile, [], scoreOptions);
-  }
+  // 1)-3) Poissulkukaskadi NPC:n omalla topic/domain-painotuksella.
+  const scored = scoreWithExclusionCascade(questions, profile, globalAsked, recent, scoreOptions);
 
   if (scored.length === 0) {
     const fallbackDomain = profile.preferDomain || profile.playerSpecialty || "cpp";
@@ -504,7 +531,35 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
     return { question: fallback, profile, targetDiff: fallback?.difficulty ?? 1 };
   }
 
-  const pool = buildQuestionPool(scored, profile);
+  const biasedPool = buildQuestionPool(scored, profile);
+
+  // "Mistä vain aiheesta" -pooli: samalla poissulkukaskadilla, mutta ilman
+  // topic/domain-painotusta ja ilman min/max-poolin rajausta — kaikilla audienssiin
+  // sopivilla kysymyksillä on tasan sama pistemäärä (vain "ei kysytty" -bonus vaihtelee),
+  // jolloin buildQuestionPool()-rajaus leikkaisi poolin aakkosjärjestyksen mukaan eikä
+  // tasapuolisesti kaikista domaineista. Käytetään siis suoraan koko poissuljettua listaa.
+  const neutralProfile = neutralizeProfile(profile);
+  const neutralScored = scoreWithExclusionCascade(questions, neutralProfile, globalAsked, recent, scoreOptions);
+  const widePool = neutralScored.length > 0 ? neutralScored : biasedPool;
+
+  // Riippumaton 50/50-arvonta: sama syötesuola kaikissa poimintapaikoissa pitäisi silti
+  // antaa hajonnan, koska entityAsked/globalAsked/recent/pickNonce muuttuvat jokaisella kutsulla.
+  const gateSalt = [
+    "gate",
+    sessionPickSeed,
+    pickNonce,
+    entityAsked.length,
+    deaths,
+    globalAsked.length,
+    recent.length,
+    entityId,
+  ].join(":");
+  const gateRoll = hashString(gateSalt) / 4294967296;
+  const useAnyTopic = gateRoll < ANY_TOPIC_CHANCE;
+
+  let pool = useAnyTopic ? widePool : biasedPool;
+  if (pool.length === 0) pool = useAnyTopic ? biasedPool : widePool;
+
   const salt = [
     sessionPickSeed,
     pickNonce,
@@ -512,6 +567,7 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
     deaths,
     globalAsked.length,
     recent.length,
+    useAnyTopic ? "any" : "topic",
     pool.map((x) => x.q.id).join(","),
   ].join(":");
   const idx = pickIndexFromPool(pool, salt);
