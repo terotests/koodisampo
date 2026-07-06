@@ -50,51 +50,48 @@ assert(
   `50 picks yielded ${uniqueIds.size} unique questions — expected at least 15 for variety`,
 );
 
-// 3) Test that different entity topics bias toward the expected domain, but — since
-// ANY_TOPIC_CHANCE (50 %) also allows questions from any topic — not on every single pick.
+// 3) NPC:n oma entity.topic EI SAA enää lukita kysymyksen domainia (poistettu
+// tarkoituksella audienceTags()-funktiosta). Aiemmin esim. "docker"-topic pakotti
+// kysymykset lähes aina Dockeriin; nyt vain audienssi + pelaajan oma erikoisala (jota ei
+// tässä ole asetettu) vaikuttavat, jolloin osuman pitäisi olla lähellä kysymyspankin
+// luonnollista domain-jakaumaa — ei merkittävästi sen yli.
+const coworkerEligible = allQ.filter((q) => q.audiences.includes("coworker"));
+const baselineByDomain = {};
+for (const q of coworkerEligible) {
+  baselineByDomain[q.domain] = (baselineByDomain[q.domain] ?? 0) + 1;
+}
+const baselineTotal = coworkerEligible.length;
+
 const topics = [
-  { topic: "apt", expectedDomain: "linux" },
-  { topic: "rf-basics", expectedDomain: "robotframework" },
-  { topic: "git-ci", expectedDomain: "git" },
-  { topic: "docker", expectedDomain: "docker" },
-  { topic: "systemd", expectedDomain: "linux" },
+  { topic: "apt", domain: "linux" },
+  { topic: "rf-basics", domain: "robotframework" },
+  { topic: "git-ci", domain: "git" },
+  { topic: "docker", domain: "docker" },
+  { topic: "systemd", domain: "linux" },
 ];
 
-for (const { topic, expectedDomain } of topics) {
+const TOPIC_BIAS_TOLERANCE = 0.15; // sallittu poikkeama luonnollisesta perustasosta (prosenttiyksikköä)
+
+for (const { topic, domain } of topics) {
   const entity = { id: `coworker-1-${topic}`, kind: "coworker", topic, char: "W", name: "Test" };
-  const total = 120;
-  let matches = 0;
+  const total = 300;
+  let hits = 0;
   for (let nonce = 0; nonce < total; nonce += 1) {
     const { question } = pickQuestion(entity, 50, emptyQuizHistory(), {
       pickNonce: nonce,
       sessionPickSeed: 777,
       deaths: 0,
     });
-    if (question.domain === expectedDomain || question.chapter === topic) matches += 1;
+    if (question.domain === domain) hits += 1;
   }
-  const ratio = matches / total;
+  const ratio = hits / total;
+  const baseline = baselineByDomain[domain] / baselineTotal;
   assert(
-    ratio >= 0.3,
-    `topic '${topic}' should still land on '${expectedDomain}' at least ~30% of the time (got ${(ratio * 100).toFixed(1)}%)`,
-  );
-  assert(
-    ratio <= 0.9,
-    `topic '${topic}' should also pick unrelated topics thanks to ANY_TOPIC_CHANCE (got ${(ratio * 100).toFixed(1)}% on-topic — too locked-in)`,
+    ratio <= baseline + TOPIC_BIAS_TOLERANCE,
+    `NPC:n oma topic '${topic}' EI SAISI enää lukita domainia '${domain}': osuma ${(ratio * 100).toFixed(1)}%, ` +
+      `pankin luonnollinen perustaso ${(baseline * 100).toFixed(1)}% (+${(TOPIC_BIAS_TOLERANCE * 100).toFixed(0)}pp raja)`,
   );
 }
-
-// 4) Test that Robot Framework questions are accessible via coworker with rf topic
-// (over several picks, since ANY_TOPIC_CHANCE means not every single pick is on-topic)
-const rfCoworker = { id: "coworker-rf-1", kind: "coworker", char: "W", name: "RF-pro", topic: "rf-basics" };
-let sawRfQuestion = false;
-for (let nonce = 0; nonce < 20; nonce += 1) {
-  const rfPick = pickQuestion(rfCoworker, 60, emptyQuizHistory(), { pickNonce: nonce, deaths: 0 });
-  if (rfPick.question.domain === "robotframework" || rfPick.question.chapter?.startsWith("rf-")) {
-    sawRfQuestion = true;
-    break;
-  }
-}
-assert(sawRfQuestion, "coworker with rf-basics topic gets RF question at least once in 20 picks");
 
 // 5) Verify no question has duplicate ID across all banks
 const allIds = allQ.map((q) => q.id);
@@ -219,10 +216,12 @@ assert(sawHard, "low karma coworker should still receive difficulty 4+ questions
 {
   assert.equal(ANY_TOPIC_CHANCE, 0.5, "any-topic chance should be exactly 50%");
 
+  // 11a) entity.topic EI enää vaikuta poimintaan (ks. testi 3) — myös pienten domainien
+  // (robotframework, git, security) pitäisi olla saavutettavissa isolla otannalla riippumatta
+  // NPC:n omasta topic-kentästä ("tools" tässä on siis vain kosmeettinen, ei vaikuta pisteytykseen).
   const domainCoverageEntity = { id: "coworker-domain-coverage", kind: "coworker", topic: "tools", char: "W", name: "Domainit" };
-  const total = 400;
+  const total = 800;
   const domainsSeen = new Set();
-  let cppOnTopic = 0;
   for (let nonce = 0; nonce < total; nonce += 1) {
     const { question } = pickQuestion(domainCoverageEntity, 50, emptyQuizHistory(), {
       pickNonce: nonce,
@@ -230,18 +229,32 @@ assert(sawHard, "low karma coworker should still receive difficulty 4+ questions
       deaths: 0,
     });
     domainsSeen.add(question.domain);
-    if (question.domain === "cpp") cppOnTopic += 1;
   }
-  // NPC:n oma topic on cpp/tools — koko pankin domainit (linux, docker, scrum, git, ...)
-  // pitäisi silti näkyä ANY_TOPIC_CHANCE:n ansiosta, ei vain cpp.
+  assert(
+    domainsSeen.has("robotframework"),
+    `pieni robotframework-domain pitäisi olla saavutettavissa ${total} arvonnalla vaikka NPC:n topic on "tools", nähty: ${[...domainsSeen].join(", ")}`,
+  );
   assert(
     domainsSeen.size >= 6,
     `50/50-sekoituksella pitäisi nähdä kysymyksiä monesta domainista, nähty: ${[...domainsSeen].join(", ")}`,
   );
-  const cppRatio = cppOnTopic / total;
+
+  // 11b) Pelaajan OMA erikoisala (playerSpecialty) on eri mekanismi kuin NPC:n topic,
+  // ja sen pitäisi edelleen näkyä ANY_TOPIC_CHANCE:n verran, vaikka NPC:n topic ei enää vaikuta.
+  let cppWithSpecialty = 0;
+  for (let nonce = 0; nonce < total; nonce += 1) {
+    const { question } = pickQuestion(domainCoverageEntity, 50, emptyQuizHistory(), {
+      pickNonce: nonce,
+      sessionPickSeed: 3131,
+      deaths: 0,
+      playerSpecialty: "cpp",
+    });
+    if (question.domain === "cpp") cppWithSpecialty += 1;
+  }
+  const cppRatio = cppWithSpecialty / total;
   assert(
     cppRatio > 0.35 && cppRatio < 0.85,
-    `cpp-osuuden pitäisi olla lähellä 50 % + pieni ylimäärä, oli ${(cppRatio * 100).toFixed(1)}%`,
+    `playerSpecialty="cpp" -osuuden pitäisi olla lähellä 50 % + pieni ylimäärä, oli ${(cppRatio * 100).toFixed(1)}%`,
   );
 }
 
