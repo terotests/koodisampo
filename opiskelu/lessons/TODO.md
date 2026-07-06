@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1339 / 1339** valmis (**100 %**).
+**1309 / 1309** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -20,10 +20,7 @@
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
 | Rust | 66 | 66 | 100 |
-| flutter | 10 | 10 | 100 |
-| gameengines | 10 | 10 | 100 |
 | kotlin | 10 | 10 | 100 |
-| react-native | 10 | 10 | 100 |
 | webshell | 10 | 10 | 100 |
 
 ## Kaikki aiheet
@@ -1721,110 +1718,6 @@
 | ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
 | ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
 
-### flutter (10/10)
-
-#### flutter-data `flutter-data` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `flutter-assets` | Sovellus tarvitsee paikallisen JSON-konfiguraation mukaan buildiin. Mit… |
-
-#### flutter-lifecycle `flutter-lifecycle` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-async-init` | StatefulWidgetin alussa pitää hakea data asynkronisesti. Missä käynnist… |
-
-#### flutter-navigation `flutter-navigation` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-navigation-restoration` | Sovelluksen pitää tukea selaimen back-nappia webissä ja deep linkkejä. … |
-
-#### flutter-performance `flutter-performance` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-performance-build` | Flutter-listan scrollaus pätkii, koska rivit tekevät raskasta laskentaa… |
-
-#### flutter-platform `flutter-platform` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `flutter-desktop-targets` | Flutter-sovellus halutaan ajaa Windowsissa, macOS:ssä ja Linuxissa. Mit… |
-| ✅ | 4 | `flutter-platform-channel` | Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät ta… |
-
-#### flutter-rendering `flutter-rendering` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-custompainter` | Tarvitset paljon pieniä vektorimerkintöjä yhdelle pinnalle. Mikä Flutte… |
-
-#### flutter-state `flutter-state` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-provider-riverpod` | Usea näkymä tarvitsee samaa kirjautuneen käyttäjän tilaa. Mikä on järke… |
-
-#### flutter-testing `flutter-testing` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `flutter-testing-widget` | Haluat varmistaa, että nappi näyttää lataustilan klikkauksen jälkeen. M… |
-
-#### flutter-widgets `flutter-widgets` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `flutter-widget-immutability` | Miksi Flutter Widget -objektit ovat käytännössä immutableja? |
-
-### gameengines (10/10)
-
-#### gameengines-architecture `gameengines-architecture` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 4 | `gameengines-scripting-boundary` | Moottoriprojekti käyttää sekä C# / GDScript -skriptejä että natiivilaaj… |
-| ✅ | 3 | `gameengines-update-loop` | Reaaliaikainen moottori tarjoaa Update-loopin. Mitä sinne ei kannata la… |
-
-#### gameengines-assets `gameengines-assets` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `gameengines-asset-pipeline` | Projekti käyttää paljon spritejä, animaatioita ja ääniä. Mikä on pelimo… |
-
-#### gameengines-choice `gameengines-choice` (3/3)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `gameengines-engine-fit` | Milloin yleinen pelimoottori kuten Unity tai Godot on perusteltu valint… |
-| ✅ | 2 | `gameengines-licensing` | Teknologiavalinnassa vertaillaan Unityä, Godotia ja omaa kehystä. Mikä … |
-| ✅ | 2 | `gameengines-ui-vs-native` | Milloin natiivi sovelluskehys voi olla parempi kuin pelimoottorin UI? |
-
-#### gameengines-distribution `gameengines-distribution` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `gameengines-platform-export` | Moottori exporttaa usealle alustalle. Mikä pitää silti testata erikseen? |
-
-#### gameengines-godot `gameengines-godot` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `gameengines-godot-scenes` | Godot-projektissa sama UI-paneeli tarvitaan monessa näkymässä. Mikä rak… |
-
-#### gameengines-physics `gameengines-physics` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `gameengines-physics-choice` | 2D-sovellus tarvitsee törmäyksiä ja rigid body -liikettä. Miksi moottor… |
-
-#### gameengines-unity `gameengines-unity` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `gameengines-unity-prefabs` | Unityssä sama vihollis-/kortti-/paneeliobjekti esiintyy monessa kentäss… |
-
 ### kotlin (10/10)
 
 #### kotlin-android-storage `kotlin-android-storage` (1/1)
@@ -1876,63 +1769,6 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `kotlin-compose-main-safety` | Repository tekee verkkokutsun. Miten pidät ViewModelin kutsun main-safe… |
-
-### react-native (10/10)
-
-#### rn-architecture `rn-architecture` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-new-architecture` | Mitä React Native New Architecture tavoittelee? |
-
-#### rn-input `rn-input` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-gesture-handler` | Sovelluksessa on monimutkaisia swipe- ja pan-eleitä. Mikä kirjasto on y… |
-
-#### rn-native `rn-native` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 4 | `rn-native-modules` | Sovellus tarvitsee alustakohtaisen SDK:n, jolle ei ole valmista paketti… |
-
-#### rn-performance `rn-performance` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-flatlist-keys` | FlatList renderöi datalistaa, jonka järjestys muuttuu. Mikä on tärkeää? |
-| ✅ | 3 | `rn-performance-rerender` | Lista pätkii, koska jokainen rivi renderöityy uudelleen vanhemman state… |
-
-#### rn-runtime `rn-runtime` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-hermes` | Mikä Hermesin rooli on React Native -sovelluksessa? |
-
-#### rn-state `rn-state` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `rn-component-state` | React Native -komponentti tarvitsee paikallisen avaa/sulje-tilan. Mikä … |
-
-#### rn-storage `rn-storage` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-offline-storage` | Sovellus tallentaa pieniä asetuksia paikallisesti. Mikä on tyypillinen … |
-
-#### rn-tooling `rn-tooling` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `rn-expo-dev-build` | Expo-projekti tarvitsee oman natiivimoduulin. Mikä kehitysmalli tarvita… |
-
-#### rn-ui `rn-ui` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `rn-accessibility` | Touchable-komponentti toimii ikonina ilman tekstiä. Mitä lisäät saavute… |
 
 ### webshell (10/10)
 
