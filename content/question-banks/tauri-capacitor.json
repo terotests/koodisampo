@@ -9,14 +9,14 @@
       "domain": "webshell",
       "difficulty": 2,
       "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Desktop-natiivi web-game:lle — miksi Tauri usein voittaa Electronin?",
+      "prompt": "Desktop-natiivi web-pelille — miksi Tauri usein voittaa Electronin?",
       "choices": [
         { "text": "Pienempi binääri ja vähemmän muistia — järjestelmän WebView, Rust-backend tarvittaessa", "correct": true },
         { "text": "Tauri vaatii aina internet-yhteyden", "correct": false },
         { "text": "Electron on ainoa tapa ajaa Vite-buildia desktopilla", "correct": false },
         { "text": "Tauri ei tue näppäimistöä", "correct": false }
       ],
-      "correctFeedback": "Ohut kuori olemassa olevalle web-game/dist:lle — nopein desktop-polku.",
+      "correctFeedback": "Ohut kuori olemassa olevalle web-buildille — nopein desktop-polku.",
       "wrongFeedback": "Electron toimii, mutta Tauri on kevyempi vaihtoehto staattiselle pelille.",
       "sourceRef": "tauri/intro",
       "sourceUrl": "https://tauri.app/start/",
@@ -29,11 +29,11 @@
       "domain": "webshell",
       "difficulty": 2,
       "audiences": ["coworker", "project-lead"],
-      "prompt": "Capacitor mobiilissa — mitä se tekee Koodisampo-web-buildille?",
+      "prompt": "Capacitor mobiilissa — mitä se tekee web-pelin buildille?",
       "choices": [
-        { "text": "Paketoi web-game/dist natiivikonttiin WebViewllä + tiedosto-/plugin-API", "correct": true },
+        { "text": "Paketoi web-buildin natiivikonttiin WebViewllä + tiedosto-/plugin-API", "correct": true },
         { "text": "Kääntää TypeScriptin Kotliniksi automaattisesti", "correct": false },
-        { "text": "Korvaa Ranger-logiikan natiivilla", "correct": false },
+        { "text": "Korvaa pelilogiikan natiivilla", "correct": false },
         { "text": "Toimii vain iOS:llä", "correct": false }
       ],
       "correctFeedback": "Sama peli selaimessa ja App Storessa ilman uutta UI-koodia.",
@@ -49,17 +49,17 @@
       "domain": "webshell",
       "difficulty": 2,
       "audiences": ["coworker", "guru"],
-      "prompt": "Mikä on web-kuoren suurin etu Koodisampo-arkkitehtuurissa?",
+      "prompt": "Mikä on web-kuoren suurin etu web-pelin arkkitehtuurissa?",
       "choices": [
-        { "text": "web-game/ + koodisampo.cjs + content/ toimivat sellaisenaan — yksi build usealle alustalle", "correct": true },
-        { "text": "Web-kuori ajaa Rangerin nopeammin kuin natiivi", "correct": false },
-        { "text": "Ei tarvita sync-web-game-assets -skriptiä", "correct": false },
+        { "text": "Web-build + assetit toimivat sellaisenaan — yksi build usealle alustalle", "correct": true },
+        { "text": "Web-kuori ajaa pelimoottorin nopeammin kuin natiivi", "correct": false },
+        { "text": "Staattisia assetteja ei tarvitse koskaan synkronoida buildiin", "correct": false },
         { "text": "Web-kuori poistaa tarpeen testata pelilogiikkaa", "correct": false }
       ],
       "correctFeedback": "Hosts ovat ohuita — web on jo valmis host; kuori lisää vain jakelukanavan.",
       "wrongFeedback": "Sama CI-build → Tauri/Capacitor/PWA.",
-      "sourceRef": "koodisampo/web-game",
-      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/web-game",
+      "sourceRef": "tauri/webview",
+      "sourceUrl": "https://tauri.app/reference/webview/",
       "featureId": "webshell:reuse-build",
       "featurePoints": 2
     },
@@ -96,7 +96,7 @@
         { "text": "PWA ei toimi offline-tilassa koskaan", "correct": false },
         { "text": "App Store kieltää web-teknologiat kokonaan", "correct": false }
       ],
-      "correctFeedback": "Koodisampo on jo PWA-yhteensopiva GitHub Pagesillä; kuori on valinnainen.",
+      "correctFeedback": "Jos web-peli on jo PWA-yhteensopiva, kuori on valinnainen jakelukanava.",
       "wrongFeedback": "PWA on helpoin; kauppa on erillinen kanava.",
       "sourceRef": "web/progressive-web-apps",
       "sourceUrl": "https://web.dev/explore/progressive-web-apps",
@@ -109,17 +109,17 @@
       "domain": "webshell",
       "difficulty": 2,
       "audiences": ["coworker", "secretary"],
-      "prompt": "web-game bundlaa content/ JSONit public/-kansioon. Toimiiko offline kuoressa?",
+      "prompt": "Web-build bundlaa JSON-assetit staattiseen hakemistoon. Toimiiko offline kuoressa?",
       "choices": [
         { "text": "Kyllä — staattiset assetit mukana paketissa, fetch paikallisista tiedostoista", "correct": true },
         { "text": "Ei — kuori vaatii aina CDN:n", "correct": false },
         { "text": "Vain online-tila tuettu Capacitorissa", "correct": false },
         { "text": "JSON pitää hakea erillisestä API:sta", "correct": false }
       ],
-      "correctFeedback": "sync-web-game-assets kopioi pankit — sama offline kuin GitHub Pages.",
+      "correctFeedback": "Kun assetit kopioidaan buildiin, kuori toimii offline samalla tavoin kuin PWA.",
       "wrongFeedback": "Staattinen build on offline-valmis.",
-      "sourceRef": "koodisampo/sync-assets",
-      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/scripts/sync-web-game-assets.mjs",
+      "sourceRef": "web/app-manifest",
+      "sourceUrl": "https://web.dev/learn/pwa/web-app-manifest",
       "featureId": "webshell:offline-assets",
       "featurePoints": 2
     },
@@ -131,7 +131,7 @@
       "audiences": ["coworker", "guru"],
       "prompt": "Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu?",
       "choices": [
-        { "text": "Varmista WebView focus + pelin keydown-kuuntelijat web-game/src/ui.ts:ssä", "correct": true },
+        { "text": "Varmista WebView focus + pelin keydown-kuuntelijat UI-kerroksessa", "correct": true },
         { "text": "Kirjoita pelilogiikka uudelleen Rustissa", "correct": false },
         { "text": "Desktop ei tue näppäimistöpelejä", "correct": false },
         { "text": "Poista keyboard-tuki ja käytä vain hiirtä", "correct": false }
@@ -196,7 +196,7 @@
         { "text": "Rust korvaa aina JavaScriptin", "correct": false },
         { "text": "Rust-puoli on pakollinen hello world -tasolla", "correct": false }
       ],
-      "correctFeedback": "Rust host-tehtävissä; Ranger pysyy JS/Kotlin-lähteessä.",
+      "correctFeedback": "Rust sopii host-tehtäviin; pelilogiikka pysyy jaetussa coressa.",
       "wrongFeedback": "Pelilogiikan duplikaatio Rustiin rikkoo yhden totuuden periaatteen.",
       "sourceRef": "tauri/core",
       "sourceUrl": "https://tauri.app/develop/",

@@ -9,15 +9,15 @@
       "domain": "react-native",
       "difficulty": 2,
       "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Miksi React Native on huono ensisijainen valinta Koodisampo-tyyppiselle ruudukkopelille?",
+      "prompt": "Miksi React Native on huono ensisijainen valinta custom-ruudukkopelille?",
       "choices": [
-        { "text": "Pelilogiikka on Rangerissa — RN toisi JS-bridge + UI joka ei optimoidu kartalle", "correct": true },
+        { "text": "Pelilogiikka on jaetussa coressa — RN toisi JS-bridgen ja UI-kerroksen, joka ei optimoidu kartalle", "correct": true },
         { "text": "React Native ei tue kosketusnäyttöä", "correct": false },
         { "text": "Apple kieltää React Native -sovellukset", "correct": false },
         { "text": "RN ei voi näyttää tekstiä monospace-fontilla", "correct": false }
       ],
       "correctFeedback": "RN sopii lomake-UI:hin; custom simulaatio + canvas on vieras maasto.",
-      "wrongFeedback": "Ongelma on arkkitehtuuri: kolmas kerros ilman hyötyä olemassa olevaan Rangeriin.",
+      "wrongFeedback": "Ongelma on arkkitehtuuri: kolmas kerros ilman hyötyä olemassa olevaan coreen.",
       "sourceRef": "reactnative/architecture",
       "sourceUrl": "https://reactnative.dev/architecture/overview",
       "featureId": "rn:grid-fit",
@@ -29,11 +29,11 @@
       "domain": "react-native",
       "difficulty": 2,
       "audiences": ["coworker", "guru"],
-      "prompt": "RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-gamesta. Käytännöllisin tapa?",
+      "prompt": "RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-pelistä. Käytännöllisin tapa?",
       "choices": [
         { "text": "WebView tai Capacitor — aja valmis web-build, älä kirjoita RN-UI:ta pelille", "correct": true },
         { "text": "Kirjoita koko kartta uudelleen FlatListillä", "correct": false },
-        { "text": "Porttaa 5700 riviä Ranger-logiikkaa React-komponenteiksi", "correct": false },
+        { "text": "Porttaa koko pelilogiikka React-komponenteiksi", "correct": false },
         { "text": "Expo Go riittää tuotantoon ilman natiivikäännöstä", "correct": false }
       ],
       "correctFeedback": "Web-kuori on rehellisempi kuin RN-jäätyminen WebView-ratkaisuun silti.",
@@ -69,15 +69,15 @@
       "domain": "react-native",
       "difficulty": 4,
       "audiences": ["guru", "project-lead"],
-      "prompt": "Jos RN:ää käytetään silti, missä Ranger-logiikan pitäisi ajaa?",
+      "prompt": "Jos RN:ää käytetään silti, missä pelilogiikan pitäisi ajaa?",
       "choices": [
-        { "text": "Native module (Kotlin/Swift) — JS kutsuu handleKey/snapshot, ei pelisääntöjä JS:ssä", "correct": true },
+        { "text": "Native module (Kotlin/Swift) — JS kutsuu input/snapshot-API:a, ei aja pelisääntöjä", "correct": true },
         { "text": "Redux store pelilogiikalla", "correct": false },
-        { "text": "Hermes bytecode generoitu Rangerista", "correct": false },
+        { "text": "Hermes-bytecode generoitu custom DSL:stä", "correct": false },
         { "text": "AsyncStorage sisältää koko WorldMap-tilan", "correct": false }
       ],
       "correctFeedback": "Ohut JS, paksu natiivi — päinvastoin kuin tyypillinen RN-sovellus.",
-      "wrongFeedback": "Pelisäännöt JS:ssä = kolmas kopio web+Kotlin rinnalle.",
+      "wrongFeedback": "Pelisäännöt JS:ssä = kolmas kopio natiivin ja web-version rinnalle.",
       "sourceRef": "reactnative/native-modules",
       "sourceUrl": "https://reactnative.dev/docs/native-modules-intro",
       "featureId": "rn:native-module",
@@ -96,7 +96,7 @@
         { "text": "Expo ei julkaise App Storeen", "correct": false },
         { "text": "Expo tukee vain iOS:ää", "correct": false }
       ],
-      "correctFeedback": "Oma Ranger-native vaatii custom dev buildin.",
+      "correctFeedback": "Oma natiivimoottori vaatii custom dev buildin.",
       "wrongFeedback": "Expo on hyvä prototyyppeihin, ei custom moottorin hostiin.",
       "sourceRef": "expo/custom-dev",
       "sourceUrl": "https://docs.expo.dev/develop/development-builds/introduction/",
@@ -134,7 +134,7 @@
         { "text": "Nopeampi JS↔native — ei poista tarvetta välttää RN:ää custom-moottorissa", "correct": true },
         { "text": "New Arch korvaa tarpeen natiivi-UI:lle kokonaan", "correct": false },
         { "text": "Fabric renderöi automaattisesti isometrisen kartan", "correct": false },
-        { "text": "TurboModules kääntää Rangerin automaattisesti", "correct": false }
+        { "text": "TurboModules kääntää pelimoottorin automaattisesti", "correct": false }
       ],
       "correctFeedback": "Parannus bridgeen, ei ratkaisua arkkitehtuurivalintaan.",
       "wrongFeedback": "New Arch on hyvä RN-sovelluksille, ei tee RN:stä pelimoottoria.",
@@ -149,11 +149,11 @@
       "domain": "react-native",
       "difficulty": 2,
       "audiences": ["project-lead", "ceo", "coworker"],
-      "prompt": "Valmiit web-game + mobiilijulkaisu. Capacitor vs React Native?",
+      "prompt": "Valmis web-peli + mobiilijulkaisu. Capacitor vs React Native?",
       "choices": [
         { "text": "Capacitor — sama HTML/JS build, ei uutta UI-kerrosta", "correct": true },
         { "text": "React Native — aina parempi koska 'natiivi'", "correct": false },
-        { "text": "Molemmat vaativat Rangerin uudelleenkirjoituksen", "correct": false },
+        { "text": "Molemmat vaativat pelimoottorin uudelleenkirjoituksen", "correct": false },
         { "text": "Capacitor toimii vain Androidilla", "correct": false }
       ],
       "correctFeedback": "Web-kuori on nopein polku; RN ei tuo etua valmiille web-pelille.",
@@ -172,12 +172,12 @@
       "prompt": "Hermes on RN:n oletus-JS-moottori. Relevanssi jos pelilogiikka on silti natiivissa?",
       "choices": [
         { "text": "Vähäinen — JS hoitaa vain ohuen UI-kuoren, ei simulaatiota", "correct": true },
-        { "text": "Hermes ajaa Ranger-käännöksen nopeammin kuin V8", "correct": false },
+        { "text": "Hermes ajaa natiivimoottorin nopeammin kuin V8", "correct": false },
         { "text": "Ilman Hermesiä natiivimoduulit eivät toimi", "correct": false },
         { "text": "Hermes korvaa Kotlin-käännöksen", "correct": false }
       ],
       "correctFeedback": "JS-moottorin valinta merkitsee vain jos logiikka on JS:ssä.",
-      "wrongFeedback": "Ranger natiivissa → Hermes on sivuseikka.",
+      "wrongFeedback": "Kun pelilogiikka on natiivissa, Hermes on sivuseikka.",
       "sourceRef": "reactnative/hermes",
       "sourceUrl": "https://reactnative.dev/docs/hermes",
       "featureId": "rn:hermes",
@@ -193,11 +193,11 @@
       "choices": [
         { "text": "Kun koko tuote on jo RN-sovellus ja peli on pieni osa (esim. quiz-näkymä)", "correct": true },
         { "text": "Aina kun tarvitaan isometrinen kartta", "correct": false },
-        { "text": "Kun pelilogiikka on yli 5000 riviä custom DSL:ssä", "correct": false },
+        { "text": "Kun pelilogiikka on suuri erillinen custom-core", "correct": false },
         { "text": "Kun halutaan välttää App Store -julkaisua", "correct": false }
       ],
       "correctFeedback": "RN sopii upotettuun quiz-/lomakenäkymään olemassaosaan RN-appiin.",
-      "wrongFeedback": "Koodisampo on pääosin peli — RN ei ole sen ydin.",
+      "wrongFeedback": "Jos tuote on pääosin peli, RN ei välttämättä ole sen ydin.",
       "sourceRef": "reactnative/intro",
       "sourceUrl": "https://reactnative.dev/docs/getting-started",
       "featureId": "rn:when-ok",
