@@ -17,7 +17,7 @@ const lessonsDir = path.join(root, "opiskelu/lessons");
 
 const DOMAIN_ORDER = [
   "cpp", "javascript", "postgres", "docker", "linux", "qt", "scrum",
-  "git", "backend", "security", "robotframework",
+  "git", "backend", "security", "robotframework", "rust",
 ];
 
 function resolveSourceUrl(q) {

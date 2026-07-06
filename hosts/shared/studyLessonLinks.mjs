@@ -19,6 +19,7 @@ export const DOMAIN_LABELS = {
   backend: "Backend",
   security: "Turvallisuus",
   robotframework: "Robot Framework",
+  rust: "Rust",
 };
 
 export const CHAPTER_LABELS = {
@@ -78,6 +79,13 @@ export const CHAPTER_LABELS = {
   "rf-web": "RF web-testaus",
   "rf-execution": "RF suoritus/CI",
   "rf-advanced": "RF-laajennukset",
+  "rust-ownership": "Rust omistajuus",
+  "rust-borrowing": "Rust lainaus",
+  "rust-types": "Rust tyypit",
+  "rust-error": "Rust virheenkäsittely",
+  "rust-concurrency": "Rust säikeet",
+  "rust-tooling": "Rust työkalut",
+  "rust-safety": "Rust turvallisuus",
 };
 
 /** Repo/dokumentaatioviite: domain/chapter/id */

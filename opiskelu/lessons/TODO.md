@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1193 / 1193** valmis (**100 %**).
+**1203 / 1203** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -19,6 +19,7 @@
 | Backend | 5 | 5 | 100 |
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
+| Rust | 10 | 10 | 100 |
 
 ## Kaikki aiheet
 
@@ -1516,6 +1517,53 @@
 |---|------|-----|---------|
 | ✅ | 4 | `rf-browser-library` | Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjast… |
 | ✅ | 3 | `rf-wait-until` | Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lata… |
+
+### Rust (10/10)
+
+#### Rust lainaus `rust-borrowing` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 1 | `rust-borrow-immut` | Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä pa… |
+| ✅ | 2 | `rust-borrow-mut` | Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Mi… |
+
+#### Rust säikeet `rust-concurrency` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `rust-concurrency-send-sync` | Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi kor… |
+
+#### Rust virheenkäsittely `rust-error` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rust-error-question-mark` | Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haaras… |
+
+#### Rust omistajuus `rust-ownership` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rust-ownership-drop` | Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti? |
+| ✅ | 1 | `rust-ownership-move` | Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa? |
+
+#### Rust turvallisuus `rust-safety` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rust-safety-borrow-checker` | Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman ros… |
+
+#### Rust työkalut `rust-tooling` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 1 | `rust-tooling-cargo` | Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.to… |
+
+#### Rust tyypit `rust-types` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 1 | `rust-types-option` | Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-poin… |
+| ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
 
 ## Komennot
 

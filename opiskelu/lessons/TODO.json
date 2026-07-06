@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-06T11:23:23.060Z",
+  "generatedAt": "2026-07-06T12:28:53.947Z",
   "summary": {
-    "totalQuestions": 1193,
-    "readyLessons": 1193,
+    "totalQuestions": 1203,
+    "readyLessons": 1203,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -8889,6 +8889,140 @@
               "prompt": "Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun latauduttua. Miten korjaat?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rf-wait-until.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rust",
+      "label": "Rust",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "rust-borrowing",
+          "label": "Rust lainaus",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rust-borrow-immut",
+              "difficulty": 1,
+              "prompt": "Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä parametri?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-immut.md"
+            },
+            {
+              "id": "rust-borrow-mut",
+              "difficulty": 2,
+              "prompt": "Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Miksi kääntäjä hylkää?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-mut.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-concurrency",
+          "label": "Rust säikeet",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "rust-concurrency-send-sync",
+              "difficulty": 3,
+              "prompt": "Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi korvaa sen thread-safe -tilanteessa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-send-sync.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-error",
+          "label": "Rust virheenkäsittely",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "rust-error-question-mark",
+              "difficulty": 2,
+              "prompt": "Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-question-mark.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-ownership",
+          "label": "Rust omistajuus",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rust-ownership-drop",
+              "difficulty": 2,
+              "prompt": "Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-drop.md"
+            },
+            {
+              "id": "rust-ownership-move",
+              "difficulty": 1,
+              "prompt": "Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-move.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-safety",
+          "label": "Rust turvallisuus",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "rust-safety-borrow-checker",
+              "difficulty": 2,
+              "prompt": "Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-safety-borrow-checker.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-tooling",
+          "label": "Rust työkalut",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "rust-tooling-cargo",
+              "difficulty": 1,
+              "prompt": "Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.toml`-projektin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-cargo.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-types",
+          "label": "Rust tyypit",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rust-types-option",
+              "difficulty": 1,
+              "prompt": "Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-pointerin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-option.md"
+            },
+            {
+              "id": "rust-types-result",
+              "difficulty": 2,
+              "prompt": "Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai virheen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-result.md"
             }
           ]
         }

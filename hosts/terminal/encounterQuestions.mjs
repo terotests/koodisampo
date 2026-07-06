@@ -127,6 +127,13 @@ const TOPIC_DOMAINS = {
   "rf-web": "robotframework",
   "rf-execution": "robotframework",
   "rf-advanced": "robotframework",
+  "rust-ownership": "rust",
+  "rust-borrowing": "rust",
+  "rust-types": "rust",
+  "rust-error": "rust",
+  "rust-concurrency": "rust",
+  "rust-tooling": "rust",
+  "rust-safety": "rust",
 };
 
 /** Luvut domainin mukaan (haastattelu/guru-kierros). */
@@ -142,7 +149,7 @@ function specialtyDomain(playerSpecialty, fallback = "cpp") {
 }
 
 /** Kielikohtaiset erikoisalueet — eivät ohita toisiaan työkaverin geneerisen topicin kanssa. */
-const LANGUAGE_SPECIALTY_DOMAINS = new Set(["cpp", "javascript", "qt"]);
+const LANGUAGE_SPECIALTY_DOMAINS = new Set(["cpp", "javascript", "qt", "rust"]);
 
 /**
  * Työkaverin kysymädomain: pelaajan kielivalinta voittaa ristiriitaisen C++/Qt-topicin,

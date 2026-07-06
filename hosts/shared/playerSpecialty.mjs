@@ -6,6 +6,7 @@ export const PLAYER_SPECIALTY_OPTIONS = [
   { id: "linux", label: "Linux / systemd" },
   { id: "qt", label: "Qt / C++ UI" },
   { id: "javascript", label: "JavaScript / TypeScript" },
+  { id: "rust", label: "Rust" },
   { id: "postgres", label: "PostgreSQL" },
   { id: "scrum", label: "Scrum / tiimityö" },
   { id: "git", label: "Git / CI" },

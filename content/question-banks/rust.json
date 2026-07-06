@@ -1,0 +1,337 @@
+{
+  "id": "rust",
+  "domain": "rust",
+  "source": "https://doc.rust-lang.org/book/",
+  "questions": [
+    {
+      "id": "rust-ownership-move",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": ["coworker", "guru", "secretary"],
+      "prompt": "Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa?",
+      "choices": [
+        {
+          "text": "Omistajuus siirtyy funktioon (move) — alkuperäistä muuttujaa ei voi enää käyttää",
+          "correct": true
+        },
+        {
+          "text": "String kopioituu automaattisesti kuten Java-merkkijonossa",
+          "correct": false
+        },
+        {
+          "text": "Kääntäjä luo jaetun viitteen taustalla ilman eksplisiittistä &",
+          "correct": false
+        },
+        {
+          "text": "Move tapahtuu vain jos parametri on merkitty `mut`-avainsanalla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rustissa omistajuus siirtyy oletuksena — move on oletus, ei kopio.",
+      "wrongFeedback": "Rust ei kopioi Stringiä automaattisesti funktiokutsussa. Omistajuus siirtyy.",
+      "featureId": "rust:ownership-move",
+      "featurePoints": 2,
+      "lessonRef": "rust/ownership/rust-ownership-move",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html",
+      "sourceRef": "rust-book/ch04-ownership"
+    },
+    {
+      "id": "rust-borrow-immut",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä parametri?",
+      "choices": [
+        {
+          "text": "&Vec<T> — jaettu lainaus, useita samanaikaisia lukijoita sallittu",
+          "correct": true
+        },
+        {
+          "text": "Vec<T> kopiona — ainoa tapa lukea dataa turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "*const T — raaka osoitin korvaa lainauksen aina",
+          "correct": false
+        },
+        {
+          "text": "Box<Vec<T>> — pakollinen kaikille funktioparametreille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Jaettu lainaus &T antaa luku-oikeuden omistajaa siirtämättä.",
+      "wrongFeedback": "Turha kopio. &T riittää lukemiseen ja sallii useita samanaikaisia lainauksia.",
+      "featureId": "rust:borrow-immut",
+      "featurePoints": 2,
+      "lessonRef": "rust/borrowing/rust-borrow-immut",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html",
+      "sourceRef": "rust-book/ch04-borrowing"
+    },
+    {
+      "id": "rust-borrow-mut",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Miksi kääntäjä hylkää?",
+      "choices": [
+        {
+          "text": "Ei voi olla yhtä aikaa muokkaavaa ja jaettua lainausta samaan dataan",
+          "correct": true
+        },
+        {
+          "text": "&mut vaatii aina `unsafe`-lohkon — se on oletuksena kielletty",
+          "correct": false
+        },
+        {
+          "text": "Vain yksi &mut kerrallaan koko ohjelmassa — globaali rajoitus",
+          "correct": false
+        },
+        {
+          "text": "Vec ei tue muokkaavaa lainausta — käytä `RefCell` aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Borrow checker: yksi writer TAI useita readers — ei molempia yhtä aikaa.",
+      "wrongFeedback": "Sääntö on lainauskohtainen: &mut sulkee pois samanaikaiset &-lainaukset samaan dataan.",
+      "featureId": "rust:borrow-mut",
+      "featurePoints": 3,
+      "lessonRef": "rust/borrowing/rust-borrow-mut",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html",
+      "sourceRef": "rust-book/ch04-borrowing"
+    },
+    {
+      "id": "rust-types-option",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": ["coworker", "secretary", "guru"],
+      "prompt": "Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-pointerin?",
+      "choices": [
+        {
+          "text": "Option<T> — Some(arvo) tai None ilman null-osoitinta",
+          "correct": true
+        },
+        {
+          "text": "T? — valinnainen tyyppiparametri kuten TypeScriptissä",
+          "correct": false
+        },
+        {
+          "text": "Result<T, ()> — virhetyyppi puuttuville arvoille",
+          "correct": false
+        },
+        {
+          "text": "Maybe<T> — standardikirjaston alias Optionille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Option<T> pakottaa käsittelemään puuttuvan arvon — ei null-dereferencea.",
+      "wrongFeedback": "Rustissa ei ole nullia. Option<T> on oikea tapa mallintaa puuttuva arvo.",
+      "featureId": "rust:option",
+      "featurePoints": 2,
+      "lessonRef": "rust/types/rust-types-option",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html",
+      "sourceRef": "rust-book/ch06-enums"
+    },
+    {
+      "id": "rust-types-result",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai virheen?",
+      "choices": [
+        {
+          "text": "Result<T, E> — Ok(arvo) tai Err(virhe)",
+          "correct": true
+        },
+        {
+          "text": "Option<T> — Err-koodi piilotetaan None-arvoon",
+          "correct": false
+        },
+        {
+          "text": "try/catch — Rust tukee poikkeuksia kuten Javassa",
+          "correct": false
+        },
+        {
+          "text": "Either<T, E> — vain kolmannen osapuolen kirjastoissa, ei std:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Result<T, E> on virheiden oletustapa — virheet ovat arvoja, ei poikkeuksia.",
+      "wrongFeedback": "Rust ei käytä poikkeuksia recoverable-virheille. Result on std-tyyppi.",
+      "featureId": "rust:result",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-result",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html",
+      "sourceRef": "rust-book/ch09-result"
+    },
+    {
+      "id": "rust-error-question-mark",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?",
+      "choices": [
+        {
+          "text": "Palauttaa virheen aikaisin kutsujalle (early return) propagoiden Err:n",
+          "correct": true
+        },
+        {
+          "text": "Nielaisee virheen ja jatkaa None-arvolla kuten Optionissa",
+          "correct": false
+        },
+        {
+          "text": "Muuntaa Err:n automaattisesti poikkeukseksi runtime-hetkellä",
+          "correct": false
+        },
+        {
+          "text": "Panikoi aina — sama kuin `.unwrap()`",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "? propagoi Err:n ylöspäin — siisti virheketju ilman nested matchia.",
+      "wrongFeedback": "? ei panikoi eikä nielaise. Se palauttaa Err:n funktiosta heti.",
+      "featureId": "rust:question-mark",
+      "featurePoints": 3,
+      "lessonRef": "rust/error/rust-error-question-mark",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html",
+      "sourceRef": "rust-book/ch09-propagating"
+    },
+    {
+      "id": "rust-ownership-drop",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti?",
+      "choices": [
+        {
+          "text": "Kun muuttuja poistuu scopesta — Drop-trait ajetaan automaattisesti",
+          "correct": true
+        },
+        {
+          "text": "Vain kun kutsutaan eksplisiittistä `free()`-funktiota",
+          "correct": false
+        },
+        {
+          "text": "Taustalla oleva GC skannaa muistin säännöllisesti",
+          "correct": false
+        },
+        {
+          "text": "Kun viimeinen `&`-viittaus tuhoutuu — reference counting std:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RAII + Drop: resurssi vapautuu automaattisesti scopin lopussa.",
+      "wrongFeedback": "Rustissa ei ole GC:tä eikä manuaalista free():ä. Drop hoitaa scopin lopussa.",
+      "featureId": "rust:drop",
+      "featurePoints": 3,
+      "lessonRef": "rust/ownership/rust-ownership-drop",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html",
+      "sourceRef": "rust-book/ch04-drop"
+    },
+    {
+      "id": "rust-concurrency-send-sync",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi korvaa sen thread-safe -tilanteessa?",
+      "choices": [
+        {
+          "text": "Arc<T> — atomisesti laskettu jaettu omistajuus (Send + Sync)",
+          "correct": true
+        },
+        {
+          "text": "Box<T> — heap-allokaatio riittää säikeiden väliseen jakamiseen",
+          "correct": false
+        },
+        {
+          "text": "Mutex<T> ilman Arc:ia — Mutex yksin riittää jaettuun omistukseen",
+          "correct": false
+        },
+        {
+          "text": "unsafe { Rc::from_raw } — ainoa tapa jakaa Rc säikeiden välillä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rc ei ole Send — Arc<T> on thread-safe vastine jaetulle omistajuudelle.",
+      "wrongFeedback": "Rc on single-threaded. Säikeiden välillä tarvitaan Arc (usein Mutex<T> kanssa).",
+      "featureId": "rust:arc",
+      "featurePoints": 4,
+      "lessonRef": "rust/concurrency/rust-concurrency-send-sync",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch16-03-shared-state.html",
+      "sourceRef": "rust-book/ch16-arc"
+    },
+    {
+      "id": "rust-tooling-cargo",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": ["coworker", "secretary", "guru"],
+      "prompt": "Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.toml`-projektin?",
+      "choices": [
+        {
+          "text": "cargo new projektin_nimi — luo binääri- tai kirjastoprojektin",
+          "correct": true
+        },
+        {
+          "text": "rustc --init projektin_nimi — Rustin virallinen projektigeneraattori",
+          "correct": false
+        },
+        {
+          "text": "rustup create projektin_nimi — luo projektin toolchain-managerilla",
+          "correct": false
+        },
+        {
+          "text": "npm init rust projektin_nimi — Rust tukee npm-workspacea natiivisti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Cargo on Rustin paketinhallinta ja build-työkalu — cargo new aloittaa projektin.",
+      "wrongFeedback": "rustc kääntää yksittäisiä tiedostoja. Projekteihin käytetään Cargoa.",
+      "featureId": "rust:cargo",
+      "featurePoints": 2,
+      "lessonRef": "rust/tooling/rust-tooling-cargo",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch01-03-hello-cargo.html",
+      "sourceRef": "rust-book/ch01-cargo"
+    },
+    {
+      "id": "rust-safety-borrow-checker",
+      "chapter": "rust-safety",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru", "security"],
+      "prompt": "Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?",
+      "choices": [
+        {
+          "text": "Borrow checker — omistajuus- ja lainaussäännöt kääntäjässä",
+          "correct": true
+        },
+        {
+          "text": "Runtime GC skannaa jaetut viittaukset ennen säieajoa",
+          "correct": false
+        },
+        {
+          "text": "Kaikki säikeet ajetaan yhdessä prosessissa GIL-lukon alla",
+          "correct": false
+        },
+        {
+          "text": "TSan-instrumentointi jokaisessa release-buildissa oletuksena",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Borrow checker varmistaa compile-time: ei data raceja ilman GC:tä.",
+      "wrongFeedback": "Rust ei käytä GC:tä eikä runtime-tarkistusta data race -estoon. Borrow checker hoitaa käännöksessä.",
+      "featureId": "rust:borrow-checker",
+      "featurePoints": 3,
+      "lessonRef": "rust/safety/rust-safety-borrow-checker",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html",
+      "sourceRef": "rust-book/ch04-ownership"
+    }
+  ]
+}

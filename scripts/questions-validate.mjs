@@ -27,6 +27,9 @@ const TOPIC_DOMAINS = {
   "git-workflow": "git", "git-ci": "git",
   "backend-data": "backend", "backend-api": "backend", "ops-incident": "backend",
   "web-security": "security",
+  "rust-ownership": "rust", "rust-borrowing": "rust", "rust-types": "rust",
+  "rust-error": "rust", "rust-concurrency": "rust", "rust-tooling": "rust",
+  "rust-safety": "rust",
 };
 
 const ids = new Set();
