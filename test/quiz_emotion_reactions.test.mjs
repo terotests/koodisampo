@@ -81,9 +81,9 @@ export function runQuizEmotionReactionTests() {
     );
 
     dispatch(sim.session, () => {
-      sim.session.pendingEntityId = "staff-f3-1";
-      sim.session.pendingEntityName = entity.name;
-      sim.session.pendingEntityKind = "coworker";
+      sim.session.pendingEntity.id = "staff-f3-1";
+      sim.session.pendingEntity.name = entity.name;
+      sim.session.pendingEntity.kind = "coworker";
       sim.session.finishEncounterQuiz(true, "cpp:test", 5, social);
     });
     const status = sessionMap(sim.session).lastStatus;

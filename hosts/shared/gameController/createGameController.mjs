@@ -132,8 +132,8 @@ export function createGameController(deps) {
       return {
         ...base,
         encounter: {
-          entityName: session.pendingEntityName,
-          entityChar: session.pendingEntityChar,
+          entityName: session.pendingEntity?.name ?? "",
+          entityChar: session.pendingEntity?.char ?? "",
           needsQuiz: session.needsEncounterQuiz?.() ?? false,
           isEmotional: view.isEmotional ?? false,
           emotionalQuestion: view.emotionalQuestion ?? "",

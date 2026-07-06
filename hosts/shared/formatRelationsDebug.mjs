@@ -66,7 +66,7 @@ export function formatRelationsDebugText(session, pendingNpcId = "") {
     lines.push("");
   }
 
-  const pendingId = pendingNpcId || session.pendingEntityId || "";
+  const pendingId = pendingNpcId || session.pendingEntity?.id || "";
   if (pendingId) {
     const pendingLive = live.get(pendingId);
     const pendingRel = relationById.get(pendingId);

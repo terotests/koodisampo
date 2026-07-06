@@ -83,10 +83,10 @@ export function runEmotionalDialogueTests() {
       ent.x = 11;
       ent.y = 7;
       ent.romanticPreference = "any";
-      session.pendingEntityId = "staff-f3-1";
-      session.pendingEntityName = ent.name;
-      session.pendingEntityKind = "coworker";
-      session.pendingEntityChar = ent.char;
+      session.pendingEntity.id = "staff-f3-1";
+      session.pendingEntity.name = ent.name;
+      session.pendingEntity.kind = "coworker";
+      session.pendingEntity.char = ent.char;
       session.screen = "encounter";
       session.encounterResult = "emotional";
       const rel = session.npcRelations.getOrCreate("staff-f3-1");

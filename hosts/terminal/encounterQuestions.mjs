@@ -696,11 +696,11 @@ export function frameQuestion(entity, question, profile) {
 }
 
 export function needsEncounterQuiz(session) {
-  if (session.pendingEntityId === "receptionist") {
+  if (session.pendingEntity?.id === "receptionist") {
     if (session.interviewPassed) return false;
     return true;
   }
-  const kind = session.pendingEntityKind;
+  const kind = session.pendingEntity?.kind ?? "";
   if (kind === "guru") {
     if (session.guruIntroPassed) return false;
     return true;
@@ -712,7 +712,7 @@ export function needsEncounterQuiz(session) {
 }
 
 export function findPendingEntity(session) {
-  const id = session.pendingEntityId;
+  const id = session.pendingEntity?.id ?? "";
   if (!id) return null;
   const map = sessionMap(session);
   if (!map) return null;
@@ -725,9 +725,9 @@ export function findPendingEntity(session) {
   }
   return {
     id,
-    name: session.pendingEntityName,
-    char: session.pendingEntityChar,
-    kind: session.pendingEntityKind,
+    name: session.pendingEntity?.name ?? "",
+    char: session.pendingEntity?.char ?? "",
+    kind: session.pendingEntity?.kind ?? "",
   };
 }
 

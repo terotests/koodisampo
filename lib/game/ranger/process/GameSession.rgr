@@ -34,6 +34,8 @@ Import "../Escalation.rgr"
 Import "JSON.rgr"
 Import "../NpcBehaviorRegistry.rgr"
 Import "../StoryJson.rgr"
+Import "../MemorialMourner.rgr"
+Import "../SimEvent.rgr"
 
 class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBase {
   def karma:FeatureKarma
@@ -45,10 +47,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def pendingStoryId:string ""
   def menuMessage:string ""
   def engineReady:boolean false
-  def pendingEntityId:string ""
-  def pendingEntityChar:string ""
-  def pendingEntityName:string ""
-  def pendingEntityKind:string ""
+  def pendingEntity:MapEntity
   def encounterResult:string ""
   def conduct:PlayerConduct
   def tools:PlayerTools
@@ -70,9 +69,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def gameOverReason:string ""
   def memorialDeathLine:string ""
   def memorialPlayerName:string ""
-  def memorialMournerIds:[string]
-  def memorialMournerNames:[string]
-  def memorialMournerEpitaphs:[string]
+  def memorialMourners:[MemorialMourner]
   def encounterCooldown:int 0
   def interviewPassed:boolean false
   def interviewFailed:boolean false
@@ -90,11 +87,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def actionResultOk:boolean false
   def actionResultMessage:string ""
   def actionPendingStoryId:string ""
-  def blockedTalkId:string ""
-  def blockedTalkChar:string ""
-  def blockedTalkName:string ""
-  def blockedTalkKind:string ""
-  def blockedTalkStoryId:string ""
+  def blockedTalk:MapEntity
   def simJson:StoryJson
   def simSeed:int 0
   def simRngState:int 1
@@ -102,8 +95,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def simOutcome:string "running"
   def simStepCount:int 0
   def simMinutesAccum:int 0
-  def simEventTypes:[string]
-  def simEventDetails:[string]
+  def simEvents:[SimEvent]
   def simErrors:[string]
   def playerDisplayName:string ""
   def playerSpecialty:string ""
@@ -136,12 +128,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     proximityGreeting = (new ProximityGreeting)
     npcBehaviors = (new NpcBehaviorRegistry)
     npcBehaviors.loadDefaults()
-    def emptyMemorialIds:[string]
-    def emptyMemorialNames:[string]
-    def emptyMemorialEpitaphs:[string]
-    memorialMournerIds = emptyMemorialIds
-    memorialMournerNames = emptyMemorialNames
-    memorialMournerEpitaphs = emptyMemorialEpitaphs
+    pendingEntity = (new MapEntity)
+    blockedTalk = (new MapEntity)
+    def emptyMourners:[MemorialMourner]
+    memorialMourners = emptyMourners
+    def emptySimEvents:[SimEvent]
+    simEvents = emptySimEvents
   }
 
   fn ensureEngine:void () {
@@ -159,21 +151,21 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn isHostileEncounter:boolean () {
-    if (pendingEntityKind == "hostile") {
+    if (pendingEntity.kind == "hostile") {
       return true
     }
     return false
   }
 
   fn isCeoEncounter:boolean () {
-    if ((strlen pendingEntityId) >= 4) {
-      def prefix:string (substring pendingEntityId 0 4)
+    if ((strlen pendingEntity.id) >= 4) {
+      def prefix:string (substring pendingEntity.id 0 4)
       if (prefix == "ceo-") {
         return true
       }
     }
-    if (pendingEntityKind == "role") {
-      if (pendingEntityChar == "C") {
+    if (pendingEntity.kind == "role") {
+      if (pendingEntity.char == "C") {
         return true
       }
     }
@@ -181,26 +173,26 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn isCoworkerEncounter:boolean () {
-    if (pendingEntityKind == "coworker") {
+    if (pendingEntity.kind == "coworker") {
       return true
     }
     return false
   }
 
   fn needsEncounterQuiz:boolean () {
-    if (pendingEntityId == "receptionist") {
+    if (pendingEntity.id == "receptionist") {
       if (interviewPassed) {
         return false
       }
       return true
     }
-    if (pendingEntityId == "hr-greeter") {
+    if (pendingEntity.id == "hr-greeter") {
       if (hrWelcomeDone) {
         return false
       }
       return true
     }
-    if (pendingEntityKind == "guru") {
+    if (pendingEntity.kind == "guru") {
       if (guruIntroPassed) {
         return false
       }
@@ -209,10 +201,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if ((strlen pendingStoryId) > 0) {
       return false
     }
-    if ((strlen pendingEntityKind) < 1) {
+    if ((strlen pendingEntity.kind) < 1) {
       return false
     }
-    if (pendingEntityKind == "item") {
+    if (pendingEntity.kind == "item") {
       return false
     }
     return true
@@ -224,7 +216,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         karma.add(featureId points)
       }
       def status:string ("✓ " + msg)
-      if (pendingEntityKind == "guru") {
+      if (pendingEntity.kind == "guru") {
         guruQuizCorrect = guruQuizCorrect + 1
         if (guruQuizCorrect >= 2) {
           guruIntroPassed = true
@@ -233,14 +225,14 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
           status = (status + " (" + (to_string guruQuizCorrect) + "/2 oikein Guru-tarkistukseen)")
         }
       }
-      if (pendingEntityId == "receptionist") {
+      if (pendingEntity.id == "receptionist") {
         tools.grant("official_badge")
         interviewPassed = true
         interviewFailed = false
         status = (status + " Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €.")
         this.syncHrGreeter()
       }
-      if (pendingEntityId == "hr-greeter") {
+      if (pendingEntity.id == "hr-greeter") {
         hrWelcomeDone = true
         map.retireEntitySeek("hr-greeter")
         status = (status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.")
@@ -250,12 +242,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     } {
       karma.loseKarma(3)
       def failStatus:string ("✗ " + msg)
-      if (pendingEntityId == "receptionist") {
+      if (pendingEntity.id == "receptionist") {
         interviewFailed = true
         interviewPassed = false
         failStatus = (failStatus + " Haastattelu ei mennyt läpi. Voit yrittää uudelleen tai käyttää varastettua korttia — riskillä.")
       }
-      if (pendingEntityId == "hr-greeter") {
+      if (pendingEntity.id == "hr-greeter") {
         hrWelcomeDone = true
         map.retireEntitySeek("hr-greeter")
         failStatus = (failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.")
@@ -263,7 +255,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       map.overheardMsg = ""
       map.lastStatus = failStatus
     }
-    def quizEnt:MapEntity (map.findEntityById(pendingEntityId))
+    def quizEnt:MapEntity (map.findEntityById(pendingEntity.id))
     if ((strlen quizEnt.id) > 0) {
       def behaviorMsg:string ""
       if (correct) {
@@ -274,10 +266,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if ((strlen behaviorMsg) > 0) {
         map.lastStatus = (map.lastStatus + " " + behaviorMsg)
       }
-      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
-      def emotionReaction:string (quizReactionCatalog.pickStatusReaction(rel correct pendingEntityId))
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
+      def emotionReaction:string (quizReactionCatalog.pickStatusReaction(rel correct pendingEntity.id))
       if ((strlen emotionReaction) > 0) {
-        map.lastStatus = (map.lastStatus + " " + pendingEntityName + " " + emotionReaction)
+        map.lastStatus = (map.lastStatus + " " + pendingEntity.name + " " + emotionReaction)
       }
     }
     this.clearEncounter()
@@ -316,19 +308,16 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn clearMemorial:void () {
     memorialDeathLine = ""
     memorialPlayerName = ""
-    def emptyIds:[string]
-    def emptyNames:[string]
-    def emptyEpitaphs:[string]
-    memorialMournerIds = emptyIds
-    memorialMournerNames = emptyNames
-    memorialMournerEpitaphs = emptyEpitaphs
+    def emptyMourners:[MemorialMourner]
+    memorialMourners = emptyMourners
   }
 
   fn memorialHasId:boolean (entityId:string) {
     def i:int 0
-    def n:int (array_length memorialMournerIds)
+    def n:int (array_length memorialMourners)
     while (i < n) {
-      if ((at memorialMournerIds i) == entityId) {
+      def m:MemorialMourner (at memorialMourners i)
+      if (m.id == entityId) {
         return true
       }
       i = i + 1
@@ -343,9 +332,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (this.memorialHasId(entityId)) {
       return
     }
-    push memorialMournerIds entityId
-    push memorialMournerNames name
-    push memorialMournerEpitaphs epitaph
+    def m:MemorialMourner (new MemorialMourner)
+    m.id = entityId
+    m.name = name
+    m.epitaph = epitaph
+    push memorialMourners m
   }
 
   fn resolveMournerName:string (entityId:string fallback:string) {
@@ -465,27 +456,29 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn memorialCount:int () {
-    return (array_length memorialMournerNames)
+    return (array_length memorialMourners)
   }
 
   fn memorialNameAt:string (index:int) {
     if (index < 0) {
       return ""
     }
-    if (index >= (array_length memorialMournerNames)) {
+    if (index >= (array_length memorialMourners)) {
       return ""
     }
-    return (at memorialMournerNames index)
+    def m:MemorialMourner (at memorialMourners index)
+    return m.name
   }
 
   fn memorialEpitaphAt:string (index:int) {
     if (index < 0) {
       return ""
     }
-    if (index >= (array_length memorialMournerEpitaphs)) {
+    if (index >= (array_length memorialMourners)) {
       return ""
     }
-    return (at memorialMournerEpitaphs index)
+    def m:MemorialMourner (at memorialMourners index)
+    return m.epitaph
   }
 
   fn tryPoliceCapture:boolean () {
@@ -501,10 +494,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn startArrestEncounter:void (reason:string catcher:MapEntity) {
-    pendingEntityId = catcher.id
-    pendingEntityChar = catcher.char
-    pendingEntityName = catcher.name
-    pendingEntityKind = catcher.kind
+    pendingEntity.id = catcher.id
+    pendingEntity.char = catcher.char
+    pendingEntity.name = catcher.name
+    pendingEntity.kind = catcher.kind
     pendingStoryId = ""
     arrestReason = reason
     encounterResult = "arrest"
@@ -514,9 +507,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn startSecurityArrest:void (reason:string) {
     def catcher:MapEntity (new MapEntity)
-    catcher.id = pendingEntityId
-    catcher.char = pendingEntityChar
-    catcher.name = pendingEntityName
+    catcher.id = pendingEntity.id
+    catcher.char = pendingEntity.char
+    catcher.name = pendingEntity.name
     catcher.kind = "security"
     if ((strlen catcher.id) < 1) {
       catcher.id = "security-arrest"
@@ -587,8 +580,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn getArrestView:ArrestView () {
     def view:ArrestView (new ArrestView)
-    view.catcherName = pendingEntityName
-    view.catcherChar = pendingEntityChar
+    view.catcherName = pendingEntity.name
+    view.catcherChar = pendingEntity.char
     view.reasonLine = (this.arrestReasonLine())
     view.evidenceLocked = (this.hasArrestEvidence())
     if (view.evidenceLocked) {
@@ -607,7 +600,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (choice == "cooperate") {
-      if (pendingEntityKind == "police") {
+      if (pendingEntity.kind == "police") {
         this.gameOverPolice()
       } {
         this.gameOverArrested()
@@ -616,7 +609,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     if (this.hasArrestEvidence()) {
       map.lastStatus = "Todisteet ovat liian vahvat — selityksesi ei auta."
-      if (pendingEntityKind == "police") {
+      if (pendingEntity.kind == "police") {
         this.gameOverPolice()
       } {
         this.gameOverArrested()
@@ -721,19 +714,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn encounterGreeting:string () {
-    if (pendingEntityId == "staff-f7-hermit") {
-      return (pendingEntityName + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"")
+    if (pendingEntity.id == "staff-f7-hermit") {
+      return (pendingEntity.name + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"")
     }
-    if (pendingEntityId == "office-dog") {
+    if (pendingEntity.id == "office-dog") {
       return "Toimistokoira heiluttaa häntää ja katsoo sinua odottaen."
     }
-    if (pendingEntityId == "janitor") {
+    if (pendingEntity.id == "janitor") {
       if (tools.hasShedKey) {
         return "Talkkari nyökkää: \"Vajan avain on jo taskussasi. Kadonnut kulkukortti lienee siellä.\""
       }
       return "Talkkari pysähtyy harjan kanssa: \"Uusi tulokas? Piha on rauhallinen — toisin kuin sisällä.\""
     }
-    if (pendingEntityId == "receptionist") {
+    if (pendingEntity.id == "receptionist") {
       if (interviewPassed) {
         return "Vastaanottovirkailija hymyilee: \"Tervetuloa työntekijäksi. Kulkulupasi on voimassa.\""
       }
@@ -745,45 +738,45 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
       return "Vastaanottovirkailija: \"Työhaastatteluun? Yksi C++-kysymys — vastaa oikein niin saat virallisen kulkuluvan.\""
     }
-    if (pendingEntityId == "hr-greeter") {
+    if (pendingEntity.id == "hr-greeter") {
       if (hrWelcomeDone) {
-        return (pendingEntityName + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"")
+        return (pendingEntity.name + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"")
       }
-      return (pendingEntityName + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"")
+      return (pendingEntity.name + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"")
     }
     if (this.isHostileEncounter()) {
-      return (pendingEntityName + " katsoo sinua uhkaavasti. Mitä teet?")
+      return (pendingEntity.name + " katsoo sinua uhkaavasti. Mitä teet?")
     }
     if (this.isCeoEncounter()) {
-      return (pendingEntityName + " pysäyttää sinut: \"Strateginen tilanne. KPI:t eivät odota — mitä haluat?\"")
+      return (pendingEntity.name + " pysäyttää sinut: \"Strateginen tilanne. KPI:t eivät odota — mitä haluat?\"")
     }
-    if (pendingEntityKind == "security") {
+    if (pendingEntity.kind == "security") {
       return ("Turvallisuus tarkkailee sinua: \"Tunniste näkyvissä? Asiallisuus kunnossa?\"")
     }
-    if (pendingEntityKind == "guru") {
+    if (pendingEntity.kind == "guru") {
       if (guruIntroPassed) {
-        return (pendingEntityName + ": \"Perusteet jo kunnossa. Jatka hissillä ylempiin kerroksiin — paina 3 tai korkeampi numero.\"")
+        return (pendingEntity.name + ": \"Perusteet jo kunnossa. Jatka hissillä ylempiin kerroksiin — paina 3 tai korkeampi numero.\"")
       }
       if (guruStoryAttempted) {
-        return (pendingEntityName + " haluaa tarkistaa yhden C++-kysymyksen ennen kuin päästää ylemmäs.")
+        return (pendingEntity.name + " haluaa tarkistaa yhden C++-kysymyksen ennen kuin päästää ylemmäs.")
       }
-      return (pendingEntityName + " nostaa katseensa koodista. Miten lähestyt?")
+      return (pendingEntity.name + " nostaa katseensa koodista. Miten lähestyt?")
     }
     if (this.isCoworkerEncounter()) {
       if ((strlen tools.heldCoworkerCardOwner) > 0) {
-        if (tools.heldCoworkerCardOwner == pendingEntityId) {
-          return (pendingEntityName + " näyttää huolestuneelta: \"Oletko nähnyt kulkukorttiani?\"")
+        if (tools.heldCoworkerCardOwner == pendingEntity.id) {
+          return (pendingEntity.name + " näyttää huolestuneelta: \"Oletko nähnyt kulkukorttiani?\"")
         }
       }
-      return (pendingEntityName + " haluaa kysyä yhden C++-kysymyksen ennen kuin palaat työhön.")
+      return (pendingEntity.name + " haluaa kysyä yhden C++-kysymyksen ennen kuin palaat työhön.")
     }
-    if (pendingEntityChar == "S") {
-      return (pendingEntityName + ": \"Ajanvaraus? Täyttäkää ensin lomake 7B.\"")
+    if (pendingEntity.char == "S") {
+      return (pendingEntity.name + ": \"Ajanvaraus? Täyttäkää ensin lomake 7B.\"")
     }
-    if (pendingEntityChar == "P") {
-      return (pendingEntityName + ": \"Oletko päivittänyt riskirekisteriä tällä viikolla?\"")
+    if (pendingEntity.char == "P") {
+      return (pendingEntity.name + ": \"Oletko päivittänyt riskirekisteriä tällä viikolla?\"")
     }
-    return (pendingEntityName + " huomaa sinut. Mitä teet?")
+    return (pendingEntity.name + " huomaa sinut. Mitä teet?")
   }
 
   fn encounterAttackWarning:string () {
@@ -793,7 +786,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (this.isHostileEncounter()) {
       return " — battle-tilanteessa karma voi kadota pahasti!"
     }
-    if (pendingEntityKind == "security") {
+    if (pendingEntity.kind == "security") {
       return " — turvallisuus vastaa välittömästi!"
     }
     if (this.isCoworkerEncounter()) {
@@ -807,10 +800,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn clearEncounter:void () {
-    pendingEntityId = ""
-    pendingEntityChar = ""
-    pendingEntityName = ""
-    pendingEntityKind = ""
+    pendingEntity.id = ""
+    pendingEntity.char = ""
+    pendingEntity.name = ""
+    pendingEntity.kind = ""
     encounterResult = ""
     pendingEmotionalDialogueIndex = -1
     encounterCooldown = 3
@@ -824,10 +817,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     }
     this.clearPendingGreetWithAck(bump.id)
-    pendingEntityId = bump.id
-    pendingEntityChar = bump.char
-    pendingEntityName = bump.name
-    pendingEntityKind = bump.kind
+    pendingEntity.id = bump.id
+    pendingEntity.char = bump.char
+    pendingEntity.name = bump.name
+    pendingEntity.kind = bump.kind
     pendingStoryId = bump.storyId
     encounterResult = ""
     screen = "encounter"
@@ -1234,28 +1227,28 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn needsEmotionalEncounter:boolean () {
-    if (pendingEntityId == "receptionist") {
+    if (pendingEntity.id == "receptionist") {
       return false
     }
-    if (pendingEntityId == "hr-greeter") {
+    if (pendingEntity.id == "hr-greeter") {
       return false
     }
-    if (pendingEntityKind == "guru") {
+    if (pendingEntity.kind == "guru") {
       return false
     }
-    if (pendingEntityKind == "security") {
+    if (pendingEntity.kind == "security") {
       return false
     }
-    if (pendingEntityKind == "hostile") {
+    if (pendingEntity.kind == "hostile") {
       return false
     }
-    if (pendingEntityKind == "police") {
+    if (pendingEntity.kind == "police") {
       return false
     }
     if (this.isCoworkerEncounter() == false) {
       return false
     }
-    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
     if (rel.isAngryNoticeable()) {
       return true
     }
@@ -1263,27 +1256,27 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn applyWcTalkAngerIfNeeded:void () {
-    def ent:MapEntity (map.findEntityById(pendingEntityId))
+    def ent:MapEntity (map.findEntityById(pendingEntity.id))
     if ((strlen ent.id) < 1) {
       return
     }
     if (ent.mainTask != "toilet") {
       return
     }
-    def floor:MapFloor (map.floorForEntity(pendingEntityId))
+    def floor:MapFloor (map.floorForEntity(pendingEntity.id))
     if (floor.wcX < 0) {
       return
     }
     if (map.isNpcAtWc(ent floor)) {
-      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
       rel.applyStatDelta("anger" 15)
-      map.lastStatus = (pendingEntityName + " ärsyyntyi — häiritsit WC:llä!")
+      map.lastStatus = (pendingEntity.name + " ärsyyntyi — häiritsit WC:llä!")
       return
     }
     if (map.isNpcNearWc(ent floor)) {
-      def relNear:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      def relNear:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
       relNear.applyStatDelta("anger" 8)
-      map.lastStatus = (pendingEntityName + " ärsyyntyi — olet tiellä WC:hen!")
+      map.lastStatus = (pendingEntity.name + " ärsyyntyi — olet tiellä WC:hen!")
     }
   }
 
@@ -1344,7 +1337,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn hasLostBadgeToGive:boolean () {
-    if (tools.heldCoworkerCardOwner == pendingEntityId) {
+    if (tools.heldCoworkerCardOwner == pendingEntity.id) {
       return true
     }
     if (tools.hasStolenCard) {
@@ -1406,7 +1399,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       return
     }
     if (dlg.id == "help_lost_badge") {
-      if (tools.heldCoworkerCardOwner == pendingEntityId) {
+      if (tools.heldCoworkerCardOwner == pendingEntity.id) {
         tools.returnCoworkerCard()
         ent.mainTask = "working"
         map.lastStatus = (ent.name + " huokaisee helpotuksesta: \"Kiitos — tämä on minun korttini! Pelastit päiväni.\"")
@@ -1854,8 +1847,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (pendingEmotionalDialogueIndex < 0) {
       return
     }
-    def ent:MapEntity (map.findEntityById(pendingEntityId))
-    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+    def ent:MapEntity (map.findEntityById(pendingEntity.id))
+    def rel:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
     dialogueCatalog.applyAnswerToRelation(pendingEmotionalDialogueIndex answerIndex rel)
     this.applyEmotionalPlayerEffects(pendingEmotionalDialogueIndex answerIndex)
     this.applyHelpAnswerEffects(ent answerIndex pendingEmotionalDialogueIndex)
@@ -1863,10 +1856,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if ((strlen map.lastStatus) < 1) {
       def reaction:string (dialogueCatalog.answerStatusReaction(pendingEmotionalDialogueIndex answerIndex))
       if ((strlen reaction) > 0) {
-        map.lastStatus = (pendingEntityName + " " + reaction)
+        map.lastStatus = (pendingEntity.name + " " + reaction)
       } {
         def dlg:EmotionalDialogue (dialogueCatalog.dialogueAt(pendingEmotionalDialogueIndex))
-        map.lastStatus = (pendingEntityName + ": " + dlg.text)
+        map.lastStatus = (pendingEntity.name + ": " + dlg.text)
       }
     }
     pendingEmotionalDialogueIndex = -1
@@ -2073,19 +2066,19 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn clearBlockedTalk:void () {
-    blockedTalkId = ""
-    blockedTalkChar = ""
-    blockedTalkName = ""
-    blockedTalkKind = ""
-    blockedTalkStoryId = ""
+    blockedTalk.id = ""
+    blockedTalk.char = ""
+    blockedTalk.name = ""
+    blockedTalk.kind = ""
+    blockedTalk.storyId = ""
   }
 
   fn setBlockedTalk:void (ent:MapEntity) {
-    blockedTalkId = ent.id
-    blockedTalkChar = ent.char
-    blockedTalkName = ent.name
-    blockedTalkKind = ent.kind
-    blockedTalkStoryId = ent.storyId
+    blockedTalk.id = ent.id
+    blockedTalk.char = ent.char
+    blockedTalk.name = ent.name
+    blockedTalk.kind = ent.kind
+    blockedTalk.storyId = ent.storyId
   }
 
   fn computeFacingCell:void () {
@@ -2477,9 +2470,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     view.targetId = scratch.targetId
     view.targetName = scratch.targetName
     this.fillToolsForTarget(view scratch.targetId actionTargetTile)
-    if ((strlen blockedTalkId) > 0) {
+    if ((strlen blockedTalk.id) > 0) {
       view.canTalk = true
-      view.talkName = blockedTalkName
+      view.talkName = blockedTalk.name
     }
     def toolCount:int (this.actionToolCount(view))
     def choiceN:int 1
@@ -2543,11 +2536,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (view.canTalk) {
       if (key == "1") {
         def ent:MapEntity (new MapEntity)
-        ent.id = blockedTalkId
-        ent.char = blockedTalkChar
-        ent.name = blockedTalkName
-        ent.kind = blockedTalkKind
-        ent.storyId = blockedTalkStoryId
+        ent.id = blockedTalk.id
+        ent.char = blockedTalk.char
+        ent.name = blockedTalk.name
+        ent.kind = blockedTalk.kind
+        ent.storyId = blockedTalk.storyId
         this.clearBlockedTalk()
         map.playerHidden = false
         map.lastStatus = ""
@@ -2752,14 +2745,14 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if ((strlen tools.heldCoworkerCardOwner) < 1) {
       return false
     }
-    if (tools.heldCoworkerCardOwner != pendingEntityId) {
+    if (tools.heldCoworkerCardOwner != pendingEntity.id) {
       return false
     }
     return true
   }
 
   fn returnCoworkerCard:void () {
-    def ownerName:string pendingEntityName
+    def ownerName:string pendingEntity.name
     tools.returnCoworkerCard()
     karma.add("social:honest" 8)
     map.lastStatus = ("Palautit kortin — " + ownerName + " kiittää. (+8 karma)")
@@ -3066,7 +3059,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         this.markStateDirty()
         return
       }
-      if (pendingEntityId == "receptionist") {
+      if (pendingEntity.id == "receptionist") {
         if (interviewPassed) {
           map.lastStatus = "Sinulla on jo virallinen kulkulupa. Hissillä pääset kaikkiin kerroksiin, myös 10. kerrokseen (0)."
           this.clearEncounter()
@@ -3085,7 +3078,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         this.markStateDirty()
         return
       }
-      if (pendingEntityKind == "guru") {
+      if (pendingEntity.kind == "guru") {
         if (guruIntroPassed) {
           map.lastStatus = "Senior-guru: \"Olet jo läpäissyt tämän. Jatka hissillä kerrokseen 3 tai ylemmäs.\""
           this.clearEncounter()
@@ -3099,8 +3092,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         return
       }
       this.applyWcTalkAngerIfNeeded()
-      def ent:MapEntity (map.findEntityById(pendingEntityId))
-      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntityId))
+      def ent:MapEntity (map.findEntityById(pendingEntity.id))
+      def rel:NpcRelation (npcRelations.getOrCreate(pendingEntity.id))
       if (this.isCoworkerEncounter()) {
         this.applyTalkLoveBump(ent rel)
       }
@@ -3145,7 +3138,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         this.markStateDirty()
         return
       }
-      if (pendingEntityKind == "security") {
+      if (pendingEntity.kind == "security") {
         karma.loseKarma(20)
         conduct.addMisconduct(20)
         map.lastStatus = "Turvallisuus neutraloi hyökkäyksen."
@@ -3157,12 +3150,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (this.isCoworkerEncounter()) {
         def roll:int (random 0 2)
         if (roll == 0) {
-          this.triggerPoliceChaseAfterAttack(pendingEntityName)
+          this.triggerPoliceChaseAfterAttack(pendingEntity.name)
           return
         }
         karma.loseKarma(15)
         conduct.addMisconduct(15)
-        map.lastStatus = (pendingEntityName + " huusi HR:n. Kollegan hyökkääminen ei ole ok.")
+        map.lastStatus = (pendingEntity.name + " huusi HR:n. Kollegan hyökkääminen ei ole ok.")
         encounterResult = "attack"
         this.clearEncounter()
         screen = "map"
@@ -3172,7 +3165,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       def chaseRoll:int (random 0 2)
       if (chaseRoll == 0) {
         if (this.isHostileEncounter()) {
-          this.triggerPoliceChaseAfterAttack(pendingEntityName)
+          this.triggerPoliceChaseAfterAttack(pendingEntity.name)
           return
         }
       }
@@ -3475,8 +3468,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn getEncounterView:EncounterView () {
     def view:EncounterView (new EncounterView)
-    view.entityChar = pendingEntityChar
-    view.entityName = pendingEntityName
+    view.entityChar = pendingEntity.char
+    view.entityName = pendingEntity.name
     view.isHostile = (this.isHostileEncounter())
     view.greeting = (this.encounterGreeting())
     view.attackWarning = ""
@@ -3574,17 +3567,17 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     simOutcome = "running"
     simStepCount = 0
     simMinutesAccum = 0
-    def emptyTypes:[string]
-    def emptyDetails:[string]
+    def emptyEvents:[SimEvent]
     def emptyErrors:[string]
-    simEventTypes = emptyTypes
-    simEventDetails = emptyDetails
+    simEvents = emptyEvents
     simErrors = emptyErrors
   }
 
   fn simLogEvent:void (etype:string detail:string) {
-    push simEventTypes etype
-    push simEventDetails detail
+    def ev:SimEvent (new SimEvent)
+    ev.type = etype
+    ev.detail = detail
+    push simEvents ev
   }
 
   fn simLogError:void (msg:string) {
@@ -3999,12 +3992,13 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     out = (out + "\"rngSeed\":" + (to_string simSeed) + ",")
     out = (out + "\"eventLog\":[")
     def i:int 0
-    def n:int (array_length simEventTypes)
+    def n:int (array_length simEvents)
     while (i < n) {
       if (i > 0) {
         out = (out + ",")
       }
-      out = (out + "{\"step\":" + (to_string i) + ",\"type\":\"" + (this.simEscapeJson((at simEventTypes i))) + "\",\"detail\":\"" + (this.simEscapeJson((at simEventDetails i))) + "\"}")
+      def ev:SimEvent (at simEvents i)
+      out = (out + "{\"step\":" + (to_string i) + ",\"type\":\"" + (this.simEscapeJson(ev.type)) + "\",\"detail\":\"" + (this.simEscapeJson(ev.detail)) + "\"}")
       i = i + 1
     }
     out = (out + "],\"errors\":[")

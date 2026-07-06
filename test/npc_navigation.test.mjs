@@ -96,7 +96,7 @@ export function runNpcNavigationTests() {
       session.handleAgentTick();
     });
     assert(session.screen === "encounter", "HR should start welcome encounter when adjacent");
-    assert(session.pendingEntityId === "hr-greeter", "encounter is with HR");
+    assert(session.pendingEntity.id === "hr-greeter", "encounter is with HR");
   } finally {
     ctrl.stop();
   }

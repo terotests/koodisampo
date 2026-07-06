@@ -34,7 +34,7 @@ export function runGameControllerEncounterTests() {
       }
       snap = ctrl.snapshot();
       if (snap.screen === "encounter") {
-        assert(session.pendingEntityId === "hr-greeter", "HR welcome encounter");
+        assert(session.pendingEntity.id === "hr-greeter", "HR welcome encounter");
         assert(snap.encounter?.needsQuiz === true, "HR welcome quiz");
         snap = ctrl.handleKey("3");
         assert(snap.screen === "map", "leave HR encounter");
