@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
-import { pickQuestion, listAllQuestions, randomEncounterPickNonce } from "../hosts/terminal/encounterQuestions.mjs";
+import {
+  pickQuestion,
+  listAllQuestions,
+  randomEncounterPickNonce,
+  ANY_TOPIC_CHANCE,
+  _internal,
+} from "../hosts/terminal/encounterQuestions.mjs";
 import { emptyQuizHistory, recordQuizAnswer } from "../hosts/terminal/quizHistory.mjs";
 
 /**
@@ -44,7 +50,8 @@ assert(
   `50 picks yielded ${uniqueIds.size} unique questions — expected at least 15 for variety`,
 );
 
-// 3) Test that different entity topics yield different domains
+// 3) Test that different entity topics bias toward the expected domain, but — since
+// ANY_TOPIC_CHANCE (50 %) also allows questions from any topic — not on every single pick.
 const topics = [
   { topic: "apt", expectedDomain: "linux" },
   { topic: "rf-basics", expectedDomain: "robotframework" },
@@ -55,20 +62,39 @@ const topics = [
 
 for (const { topic, expectedDomain } of topics) {
   const entity = { id: `coworker-1-${topic}`, kind: "coworker", topic, char: "W", name: "Test" };
-  const { question } = pickQuestion(entity, 50);
+  const total = 120;
+  let matches = 0;
+  for (let nonce = 0; nonce < total; nonce += 1) {
+    const { question } = pickQuestion(entity, 50, emptyQuizHistory(), {
+      pickNonce: nonce,
+      sessionPickSeed: 777,
+      deaths: 0,
+    });
+    if (question.domain === expectedDomain || question.chapter === topic) matches += 1;
+  }
+  const ratio = matches / total;
   assert(
-    question.domain === expectedDomain || question.chapter === topic,
-    `topic '${topic}' should bias toward '${expectedDomain}', got domain='${question.domain}' chapter='${question.chapter}'`,
+    ratio >= 0.3,
+    `topic '${topic}' should still land on '${expectedDomain}' at least ~30% of the time (got ${(ratio * 100).toFixed(1)}%)`,
+  );
+  assert(
+    ratio <= 0.9,
+    `topic '${topic}' should also pick unrelated topics thanks to ANY_TOPIC_CHANCE (got ${(ratio * 100).toFixed(1)}% on-topic — too locked-in)`,
   );
 }
 
 // 4) Test that Robot Framework questions are accessible via coworker with rf topic
+// (over several picks, since ANY_TOPIC_CHANCE means not every single pick is on-topic)
 const rfCoworker = { id: "coworker-rf-1", kind: "coworker", char: "W", name: "RF-pro", topic: "rf-basics" };
-const rfPick = pickQuestion(rfCoworker, 60);
-assert(
-  rfPick.question.domain === "robotframework" || rfPick.question.chapter?.startsWith("rf-"),
-  "coworker with rf-basics topic gets RF question",
-);
+let sawRfQuestion = false;
+for (let nonce = 0; nonce < 20; nonce += 1) {
+  const rfPick = pickQuestion(rfCoworker, 60, emptyQuizHistory(), { pickNonce: nonce, deaths: 0 });
+  if (rfPick.question.domain === "robotframework" || rfPick.question.chapter?.startsWith("rf-")) {
+    sawRfQuestion = true;
+    break;
+  }
+}
+assert(sawRfQuestion, "coworker with rf-basics topic gets RF question at least once in 20 picks");
 
 // 5) Verify no question has duplicate ID across all banks
 const allIds = allQ.map((q) => q.id);
@@ -185,6 +211,77 @@ for (let nonce = 1; nonce <= 80; nonce += 1) {
   }
 }
 assert(sawHard, "low karma coworker should still receive difficulty 4+ questions");
+
+// 11) "Mistä vain aiheesta" -sekoitus: NPC:n oman aiheen kysymyksiä TAI ihan minkä
+// tahansa aiheen kysymyksiä pitäisi tulla suunnilleen ANY_TOPIC_CHANCE-osuudella.
+// Tarkistus koko kysymyspankin laajuudella (ei vain 1-2 domainia), jotta nähdään
+// että jakauma on lähellä 50 % eikä esim. topic-painotus dominoi silti.
+{
+  assert.equal(ANY_TOPIC_CHANCE, 0.5, "any-topic chance should be exactly 50%");
+
+  const domainCoverageEntity = { id: "coworker-domain-coverage", kind: "coworker", topic: "tools", char: "W", name: "Domainit" };
+  const total = 400;
+  const domainsSeen = new Set();
+  let cppOnTopic = 0;
+  for (let nonce = 0; nonce < total; nonce += 1) {
+    const { question } = pickQuestion(domainCoverageEntity, 50, emptyQuizHistory(), {
+      pickNonce: nonce,
+      sessionPickSeed: 3131,
+      deaths: 0,
+    });
+    domainsSeen.add(question.domain);
+    if (question.domain === "cpp") cppOnTopic += 1;
+  }
+  // NPC:n oma topic on cpp/tools — koko pankin domainit (linux, docker, scrum, git, ...)
+  // pitäisi silti näkyä ANY_TOPIC_CHANCE:n ansiosta, ei vain cpp.
+  assert(
+    domainsSeen.size >= 6,
+    `50/50-sekoituksella pitäisi nähdä kysymyksiä monesta domainista, nähty: ${[...domainsSeen].join(", ")}`,
+  );
+  const cppRatio = cppOnTopic / total;
+  assert(
+    cppRatio > 0.35 && cppRatio < 0.85,
+    `cpp-osuuden pitäisi olla lähellä 50 % + pieni ylimäärä, oli ${(cppRatio * 100).toFixed(1)}%`,
+  );
+}
+
+// 12) Hash-pohjaisen indeksivalitsimen jakaumatasaisuus (matemaattinen tasaisuus).
+// pickQuestion() yhdistää tarkoituksella kaksi eri kokoista poolia (topic-painotettu +
+// "mistä vain"), jolloin lopulliset kysymys-ID:t EIVÄT ole tasajakautuneita keskenään —
+// se on tarkoituksellista (ks. testi 11). Sen sijaan testataan suoraan pickIndexFromPool()-
+// funktion sisäistä hashString(salt) % pool.length -mekanismia, joka on se osa joka
+// vastaa "onko satunnaisgeneraattori/seed tasainen" -kysymykseen.
+{
+  const { pickIndexFromPool, hashString } = _internal;
+
+  // Käytetään alkulukukokoista poolia (37) jotta modulo-vinouma näkyisi jos sitä olisi.
+  const poolSize = 37;
+  const fakePool = Array.from({ length: poolSize }, (_, i) => ({ q: { id: `q${i}` } }));
+  const counts = new Array(poolSize).fill(0);
+  const totalSalts = 200000;
+  for (let i = 0; i < totalSalts; i += 1) {
+    const idx = pickIndexFromPool(fakePool, `salt-${i}:${i * 7919}`);
+    counts[idx] += 1;
+  }
+  const expected = totalSalts / poolSize;
+  const maxDeviation = Math.max(...counts.map((c) => Math.abs(c - expected)));
+  const relativeDeviation = maxDeviation / expected;
+  assert(
+    relativeDeviation < 0.05,
+    `pickIndexFromPool ei ole tasajakautunut ${poolSize}-kokoisella poolilla: suurin poikkeama ${(relativeDeviation * 100).toFixed(2)}% odotusarvosta ${expected.toFixed(0)} (raja 5%)`,
+  );
+
+  // hashString():n koko 32-bittinen tulosavaruus — modulo-vinouma pienelle poolille pitäisi
+  // olla häviävän pieni (< poolSize / 2^32), joten se ei näy käytännössä millään otoskoolla.
+  assert(
+    typeof hashString("koodisampo") === "number" && hashString("koodisampo") >= 0 && hashString("koodisampo") < 4294967296,
+    "hashString palauttaa 32-bittisen etumerkittömän kokonaisluvun",
+  );
+  assert(
+    hashString("a") !== hashString("b"),
+    "hashString erottaa eri syötteet (ei degeneroitunut vakiofunktio)",
+  );
+}
 
 console.log("question_randomness.test.mjs OK");
 console.log(`  Total questions: ${allQ.length}`);
