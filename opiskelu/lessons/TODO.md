@@ -1195,11 +1195,11 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `qt-native-android-not-replace` | Qt Mobile Androidille — korvaako se projektin Compose-linjan? |
-| ✅ | 2 | `qt-native-desktop-why` | Miksi Qt 6 on varteenotettava Koodisampo-tyyppiselle desktop-natiiville? |
+| ✅ | 2 | `qt-native-android-not-replace` | Qt Mobile Androidille — korvaako se valitun Compose-linjan? |
+| ✅ | 2 | `qt-native-desktop-why` | Miksi Qt 6 on varteenotettava custom-pelin desktop-natiiville? |
 | ✅ | 3 | `qt-native-qml-vs-widgets` | Quiz-dialogit ja valikot Qt-hostissa — QML vai Widgets? |
 | ✅ | 3 | `qt-native-snapshot-ui` | Qt-host saa JSON-snapshotin pelistä. Miten päivität näkymän? |
-| ✅ | 3 | `qt-native-threading` | Ranger-dispatch tulevaisuudessa raskaampi. Qt-threading-malli? |
+| ✅ | 3 | `qt-native-threading` | Simulaatiodispatch on tulevaisuudessa raskaampi. Qt-threading-malli? |
 | ✅ | 2 | `qt-native-vs-web` | Milloin Qt desktop voittaa selainversion (GitHub Pages)? |
 
 #### Qt OpenGL `qt-opengl` (21/21)
@@ -1707,10 +1707,10 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 4 | `flutter-platform-channel` | Ranger ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä? |
-| ✅ | 3 | `flutter-thin-host` | Flutter-versio Koodisampo-tyyppisestä pelistä — minne pelisäännöt kuulu… |
-| ✅ | 2 | `flutter-turnbased-no-loop` | Koodisampo on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game lo… |
-| ✅ | 3 | `flutter-vs-compose` | Projektissa on jo Android Compose + Ranger Kotlin. Milloin Flutter olis… |
+| ✅ | 4 | `flutter-platform-channel` | Pelimoottori ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä? |
+| ✅ | 3 | `flutter-thin-host` | Flutter-versio vuoropohjaisesta simulaatiopelistä — minne pelisäännöt k… |
+| ✅ | 2 | `flutter-turnbased-no-loop` | Peli on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game loop? |
+| ✅ | 3 | `flutter-vs-compose` | Projektissa on jo Android Compose + natiivi core. Milloin Flutter olisi… |
 
 #### flutter-data `flutter-data` (1/1)
 
@@ -1745,7 +1745,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `gameengines-data-driven-json` | content/worlds, question-banks, stories — miksi tämä sopii custom-moott… |
-| ✅ | 3 | `gameengines-multi-target-ranger` | Miten Koodisampo saavuttaa monialustaisuuden ilman Unityä? |
+| ✅ | 3 | `gameengines-multi-target-core` | Miten custom-peli saavuttaa monialustaisuuden ilman Unityä? |
 | ✅ | 3 | `gameengines-test-headless` | npm run test:engine ajaa 50+ headless-testiä ilman UI:ta. Hyöty arkkite… |
 | ✅ | 3 | `gameengines-thin-host-pattern` | Snapshot + handleKey -malli — mikä on pelimoottorin vastine? |
 
@@ -1754,9 +1754,9 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `gameengines-ascii-grid-simple` | ASCII/isometrinen ruudukko — tarvitaanko scene graph -moottoria? |
+| ✅ | 2 | `gameengines-custom-engine-not-unity` | Miksi Unity/Godot ei ole ensisijainen valinta olemassa olevalle custom-… |
 | ✅ | 2 | `gameengines-dialog-heavy` | Peli on pääosin dialogeja, quizeja ja teksti-UI:ta. Mikä renderöintitar… |
-| ✅ | 3 | `gameengines-godot-gdscript-cost` | Godot + GDScript Koodisampo-logiikalle — mikä on piilokustannus? |
-| ✅ | 2 | `gameengines-ranger-not-unity` | Miksi Unity/Godot ei ole ensisijainen valinta Koodisampo-tyyppiselle pe… |
+| ✅ | 3 | `gameengines-godot-gdscript-cost` | Godot + GDScript olemassa olevalle pelilogiikalle — mikä on piilokustan… |
 | ✅ | 2 | `gameengines-turnbased-sim` | Vuoropohjainen toimistosimulaatio — mitä pelimoottorin ominaisuuksia EI… |
 | ✅ | 2 | `gameengines-when-unity-ok` | Milloin Unity/Godot OLISI järkevä aloittaa tyhjästä? |
 
@@ -1767,9 +1767,9 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 4 | `kotlin-compose-kmp-ios` | Haluat saman Compose-UI:n Androidin ja iOS:n natiiviversioihin. Mikä po… |
-| ✅ | 3 | `kotlin-compose-ranger-kotlin` | Miten Android-host saa saman pelilogiikan kuin web-versio ilman JS-kopi… |
-| ✅ | 3 | `kotlin-compose-snapshot-host` | Koodisampo-tyyppisessä pelissä pelilogiikka on Rangerissa ja host raken… |
-| ✅ | 2 | `kotlin-compose-vs-rn` | Miksi Koodisampo-projekti suosii Composea React Nativelle Android-natii… |
+| ✅ | 3 | `kotlin-compose-shared-core` | Miten Android-host saa saman pelilogiikan kuin web-versio ilman JS-kopi… |
+| ✅ | 3 | `kotlin-compose-snapshot-host` | Vuoropohjaisessa pelissä pelilogiikka on jaetussa simulaatiokirjastossa… |
+| ✅ | 2 | `kotlin-compose-vs-rn` | Miksi projekti voisi suosia Composea React Nativelle Android-natiivissa? |
 
 #### kotlin-compose-persist `kotlin-compose-persist` (1/1)
 
@@ -1781,8 +1781,8 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-main-thread` | Ranger-dispatch kestää alle millisekunnin. Mistä päivität UI:n dispatch… |
-| ✅ | 2 | `kotlin-compose-viewmodel` | Pelin UI-tila (hissivalitsimen collapse, aktiivinen overlay) elää hosti… |
+| ✅ | 3 | `kotlin-compose-main-thread` | Simulaatiodispatch kestää alle millisekunnin. Mistä päivität UI:n dispa… |
+| ✅ | 2 | `kotlin-compose-viewmodel` | Pelin UI-tila (valitsimen collapse, aktiivinen overlay) elää hostissa e… |
 
 #### kotlin-compose-ui `kotlin-compose-ui` (3/3)
 
@@ -1798,10 +1798,10 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `rn-grid-game-fit` | Miksi React Native on huono ensisijainen valinta Koodisampo-tyyppiselle… |
-| ✅ | 4 | `rn-native-module` | Jos RN:ää käytetään silti, missä Ranger-logiikan pitäisi ajaa? |
-| ✅ | 2 | `rn-vs-capacitor` | Valmiit web-game + mobiilijulkaisu. Capacitor vs React Native? |
-| ✅ | 2 | `rn-webview-wrap` | RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-gamesta… |
+| ✅ | 2 | `rn-grid-game-fit` | Miksi React Native on huono ensisijainen valinta custom-ruudukkopelille? |
+| ✅ | 4 | `rn-native-module` | Jos RN:ää käytetään silti, missä pelilogiikan pitäisi ajaa? |
+| ✅ | 2 | `rn-vs-capacitor` | Valmis web-peli + mobiilijulkaisu. Capacitor vs React Native? |
+| ✅ | 2 | `rn-webview-wrap` | RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-pelistä… |
 | ✅ | 2 | `rn-when-ok` | Milloin React Native olisi silti perusteltu peliprojektissa? |
 
 #### rn-perf `rn-perf` (2/2)
@@ -1831,14 +1831,14 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `webshell-pwa-vs-shell` | GitHub Pages -PWA vs Capacitor App Store -julkaisu? |
-| ✅ | 2 | `webshell-reuse-web-build` | Mikä on web-kuoren suurin etu Koodisampo-arkkitehtuurissa? |
+| ✅ | 2 | `webshell-reuse-web-build` | Mikä on web-kuoren suurin etu web-pelin arkkitehtuurissa? |
 | ✅ | 2 | `webshell-vs-true-native` | Milloin web-kuori EI riitä ja tarvitaan Compose/Qt? |
 
 #### webshell-data `webshell-data` (1/1)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `webshell-offline-assets` | web-game bundlaa content/ JSONit public/-kansioon. Toimiiko offline kuo… |
+| ✅ | 2 | `webshell-offline-assets` | Web-build bundlaa JSON-assetit staattiseen hakemistoon. Toimiiko offlin… |
 
 #### webshell-desktop `webshell-desktop` (3/3)
 
@@ -1846,13 +1846,13 @@
 |---|------|-----|---------|
 | ✅ | 3 | `webshell-keyboard-forward` | Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu? |
 | ✅ | 3 | `webshell-tauri-rust-side` | Milloin Tauri Rust-puoli (`src-tauri`) on hyödyllinen peli-hostissa? |
-| ✅ | 2 | `webshell-tauri-vs-electron` | Desktop-natiivi web-game:lle — miksi Tauri usein voittaa Electronin? |
+| ✅ | 2 | `webshell-tauri-vs-electron` | Desktop-natiivi web-pelille — miksi Tauri usein voittaa Electronin? |
 
 #### webshell-mobile `webshell-mobile` (1/1)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `webshell-capacitor-mobile` | Capacitor mobiilissa — mitä se tekee Koodisampo-web-buildille? |
+| ✅ | 2 | `webshell-capacitor-mobile` | Capacitor mobiilissa — mitä se tekee web-pelin buildille? |
 
 #### webshell-persist `webshell-persist` (1/1)
 

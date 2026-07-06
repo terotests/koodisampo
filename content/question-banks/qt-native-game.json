@@ -9,11 +9,11 @@
       "domain": "qt",
       "difficulty": 2,
       "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Miksi Qt 6 on varteenotettava Koodisampo-tyyppiselle desktop-natiiville?",
+      "prompt": "Miksi Qt 6 on varteenotettava custom-pelin desktop-natiiville?",
       "choices": [
         { "text": "Yksi C++/Qt-koodi Linux/Windows/macOS — näppäimistö, ikkuna, offline ilman selainta", "correct": true },
         { "text": "Qt on pakollinen kaikille peleille", "correct": false },
-        { "text": "Qt korvaa Ranger-logiikan automaattisesti", "correct": false },
+        { "text": "Qt korvaa pelilogiikan automaattisesti", "correct": false },
         { "text": "Qt toimii vain Androidilla", "correct": false }
       ],
       "correctFeedback": "Desktop-natiivi erillisellä UI-pinolla — rinnakkain web/Compose.",
@@ -33,7 +33,7 @@
       "choices": [
         { "text": "GameController emitoi snapshotReady — widgetit/slotit piirtävät uudelleen", "correct": true },
         { "text": "QTimer pollaa tiedostoa 60 Hz", "correct": false },
-        { "text": "Ranger piirtää suoraan QPainteriin ilman hostia", "correct": false },
+        { "text": "Simulaatiokirjasto piirtää suoraan QPainteriin ilman hostia", "correct": false },
         { "text": "Snapshot tallennetaan QSettingsiin joka ruudulla", "correct": false }
       ],
       "correctFeedback": "Sama signaali/snapshot-malli kuin web GameController.",
@@ -53,7 +53,7 @@
       "choices": [
         { "text": "keyPressEvent → handleKey(\"h\") → päivitä snapshot — sama API kuin web", "correct": true },
         { "text": "Muuta suoraan WorldMap-koordinaatteja widgetissä", "correct": false },
-        { "text": "Lähetä QKeyEvent Rangerille ilman host-kontrolleria", "correct": false },
+        { "text": "Lähetä QKeyEvent simulaatiokirjastolle ilman host-kontrolleria", "correct": false },
         { "text": "Näppäimet eivät toimi QWidget-sovelluksissa", "correct": false }
       ],
       "correctFeedback": "Ohut host välittää merkkijononäppäimet — ei duplikaattiliikelogiikkaa.",
@@ -149,7 +149,7 @@
       "domain": "qt",
       "difficulty": 3,
       "audiences": ["guru", "coworker"],
-      "prompt": "Ranger-dispatch tulevaisuudessa raskaampi. Qt-threading-malli?",
+      "prompt": "Simulaatiodispatch on tulevaisuudessa raskaampi. Qt-threading-malli?",
       "choices": [
         { "text": "Worker QThread + QueuedConnection takaisin GUI:hin — snapshot vain main threadissä", "correct": true },
         { "text": "QPainter suoraan worker-threadistä", "correct": false },
@@ -189,17 +189,17 @@
       "domain": "qt",
       "difficulty": 2,
       "audiences": ["project-lead", "ceo", "coworker"],
-      "prompt": "Qt Mobile Androidille — korvaako se projektin Compose-linjan?",
+      "prompt": "Qt Mobile Androidille — korvaako se valitun Compose-linjan?",
       "choices": [
-        { "text": "Ei suositella — Compose + Ranger Kotlin on jo valittu polku; Qt desktop erikseen", "correct": true },
+        { "text": "Ei suositella, jos Compose + natiivi core on jo valittu polku; Qt desktop erikseen", "correct": true },
         { "text": "Kyllä — Qt Mobile on aina parempi kuin Compose", "correct": false },
         { "text": "Qt ja Compose eivät voi jakaa samaa logiikkaa", "correct": false },
         { "text": "Android vaatii Qt:n App Store -julkaisuun", "correct": false }
       ],
       "correctFeedback": "Qt desktop + Compose Android on järkevä jako — ei kahta mobiili-UI:ta.",
-      "wrongFeedback": "Ranger on jaettu; UI-valinta on alustakohtainen.",
-      "sourceRef": "koodisampo/android-parity",
-      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/docs/android-web-controller-parity.md",
+      "wrongFeedback": "Core on jaettu; UI-valinta on alustakohtainen.",
+      "sourceRef": "qt/android",
+      "sourceUrl": "https://doc.qt.io/qt-6/android.html",
       "featureId": "qt:not-replace-compose",
       "featurePoints": 2
     }

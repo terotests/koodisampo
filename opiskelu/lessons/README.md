@@ -10,7 +10,7 @@ npm run study:dev       # synkronoi + paikallinen dev-palvelin
 npm run build:study     # tuotantobuild
 ```
 
-Julkaistu osoitteessa: https://terotests.github.io/koodisampo/opiskelu/docs/intro/
+Julkaistaan opiskelusivuston oppituntiosioon.
 
 Tuo vanha `oppitunnit.md` tähän (ilman pelihahmoja):
 

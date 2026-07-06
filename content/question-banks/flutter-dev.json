@@ -9,9 +9,9 @@
       "domain": "flutter",
       "difficulty": 3,
       "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Flutter-versio Koodisampo-tyyppisestä pelistä — minne pelisäännöt kuuluvat?",
+      "prompt": "Flutter-versio vuoropohjaisesta simulaatiopelistä — minne pelisäännöt kuuluvat?",
       "choices": [
-        { "text": "Erilliseen logiikkakerrokseen (Ranger/Kotlin/JS FFI) — Flutter vain snapshot + input", "correct": true },
+        { "text": "Erilliseen logiikkakerrokseen (natiivi kirjasto / FFI / jaettu core) — Flutter vain snapshot + input", "correct": true },
         { "text": "StatefulWidget build()-metodiin if-lauseina", "correct": false },
         { "text": "Firebase Remote Config -sääntöihin", "correct": false },
         { "text": "Shader-tiedostoihin GLSL:nä", "correct": false }
@@ -69,15 +69,15 @@
       "domain": "flutter",
       "difficulty": 4,
       "audiences": ["guru", "project-lead"],
-      "prompt": "Ranger ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä?",
+      "prompt": "Pelimoottori ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä?",
       "choices": [
         { "text": "Platform channel / FFI — natiivi kirjasto palauttaa snapshot-JSONin", "correct": true },
-        { "text": "Käännä koko Ranger Dartiksi käsin", "correct": false },
+        { "text": "Kirjoita koko pelimoottori Dartiksi käsin", "correct": false },
         { "text": "Ajetaan Node.js erillisessä prosessissa ilman bridgeä", "correct": false },
         { "text": "Flutter ei tue natiivikoodia lainkaan", "correct": false }
       ],
       "correctFeedback": "MethodChannel tai dart:ffi yhdistää Flutter-UI:n olemassa olevaan moottoriin.",
-      "wrongFeedback": "Rangerin uudelleenkirjoitus Dartiin hylkää pääinvestoinnin.",
+      "wrongFeedback": "Pelimoottorin uudelleenkirjoitus Dartiin hylkää pääinvestoinnin.",
       "sourceRef": "flutter/platform-channels",
       "sourceUrl": "https://docs.flutter.dev/platform-integration/platform-channels",
       "featureId": "flutter:platform-channel",
@@ -96,7 +96,7 @@
         { "text": "Kovakoodaa maailmat Dart-luokkiin", "correct": false },
         { "text": "SQLite migraatio jokaiselle JSON-kentälle", "correct": false }
       ],
-      "correctFeedback": "Asset-bundle on offline-valmis — peilaa web-game/public -synkkiä.",
+      "correctFeedback": "Asset-bundle on offline-valmis — peilaa web-buildin staattisia assetteja.",
       "wrongFeedback": "Data-driven peli pitää JSONin ulkopuolisena koodista.",
       "sourceRef": "flutter/assets",
       "sourceUrl": "https://docs.flutter.dev/ui/assets/assets-and-images",
@@ -129,7 +129,7 @@
       "domain": "flutter",
       "difficulty": 2,
       "audiences": ["coworker", "guru"],
-      "prompt": "Koodisampo on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game loop?",
+      "prompt": "Peli on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game loop?",
       "choices": [
         { "text": "Ei — päivitys tapahtuu näppäinsyötteen perusteella, ei jatkuvaa tickiä", "correct": true },
         { "text": "Kyllä — 60 FPS loop pakollinen kaikissa peleissä", "correct": false },
@@ -149,7 +149,7 @@
       "domain": "flutter",
       "difficulty": 3,
       "audiences": ["project-lead", "ceo", "guru"],
-      "prompt": "Projektissa on jo Android Compose + Ranger Kotlin. Milloin Flutter olisi silti järkevä?",
+      "prompt": "Projektissa on jo Android Compose + natiivi core. Milloin Flutter olisi silti järkevä?",
       "choices": [
         { "text": "Kun halutaan yksi UI-koodi myös iOS:lle ja desktopille — Compose-työ hylätään", "correct": true },
         { "text": "Aina — Flutter korvaa kaiken muun automaattisesti", "correct": false },
