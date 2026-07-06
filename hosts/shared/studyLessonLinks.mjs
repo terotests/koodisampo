@@ -52,6 +52,7 @@ export const CHAPTER_LABELS = {
   "qt-models": "Qt-mallit",
   "qt-opengl": "Qt OpenGL",
   "qt-shaders": "Qt-shaders",
+  "qt-quick": "Qt Quick / QML",
   "js-async": "JavaScript async",
   "js-types": "JavaScript-tyypit",
   "js-modules": "JS-moduulit",

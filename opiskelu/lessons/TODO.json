@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-06T11:23:23.060Z",
+  "generatedAt": "2026-07-06T12:42:01.099Z",
   "summary": {
-    "totalQuestions": 1193,
-    "readyLessons": 1193,
+    "totalQuestions": 1213,
+    "readyLessons": 1213,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -6826,8 +6826,8 @@
     {
       "id": "qt",
       "label": "Qt",
-      "ready": 134,
-      "total": 134,
+      "ready": 154,
+      "total": 154,
       "chapters": [
         {
           "id": "qt-models",
@@ -7122,6 +7122,154 @@
               "prompt": "Piirrät paljon kolmioita QOpenGLWidgetissä. Miten vältät turhat CPU→GPU-kopiointi joka framella?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/qt-opengl-vbo.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-quick",
+          "label": "Qt Quick / QML",
+          "ready": 20,
+          "total": 20,
+          "questions": [
+            {
+              "id": "b13-qt-quick-anchors-layout",
+              "difficulty": 2,
+              "prompt": "Nappi pitää keskittää ikkunaan ja venyttää leveys 80 % parentista. QML-layout?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-anchors-layout.md"
+            },
+            {
+              "id": "b13-qt-quick-application-engine",
+              "difficulty": 2,
+              "prompt": "Uusi Qt 6 -sovellus lataa QML-tiedoston `main.qml`. Mikä C++-luokka on suositeltu entry point?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-application-engine.md"
+            },
+            {
+              "id": "b13-qt-quick-connections-signal",
+              "difficulty": 2,
+              "prompt": "QML:ssä haluat kuunnella C++-backendin signaalia ilman suoraa `onFoo`-handleria eri tiedostossa. Ratkaisu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-connections-signal.md"
+            },
+            {
+              "id": "b13-qt-quick-context-property",
+              "difficulty": 3,
+              "prompt": "Yksi globaali `AppSettings`-olio pitää olla kaikkien QML-tiedostojen saatavilla ilman importtia. Tapaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-context-property.md"
+            },
+            {
+              "id": "b13-qt-quick-controls-style",
+              "difficulty": 3,
+              "prompt": "Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä. Miten saat natiivin ulkoasun?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-controls-style.md"
+            },
+            {
+              "id": "b13-qt-quick-debug-console",
+              "difficulty": 2,
+              "prompt": "QML binding ei toimi odotetusti — haluat nopean lokituksen ilman C++-debuggeria. Ensimmäinen askel?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-debug-console.md"
+            },
+            {
+              "id": "b13-qt-quick-i18n-retranslate",
+              "difficulty": 4,
+              "prompt": "Käyttäjä vaihtaa kielen lennossa — qsTr()-tekstit eivät päivity QML:ssä. Mitä kutsutaan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-i18n-retranslate.md"
+            },
+            {
+              "id": "b13-qt-quick-image-async",
+              "difficulty": 2,
+              "prompt": "Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-image-async.md"
+            },
+            {
+              "id": "b13-qt-quick-listview-delegate",
+              "difficulty": 2,
+              "prompt": "ListView näyttää 10 000 riviä hitaasti — kaikki delegate-instanssit luodaan kerralla. Miten korjaat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-listview-delegate.md"
+            },
+            {
+              "id": "b13-qt-quick-loader-component",
+              "difficulty": 3,
+              "prompt": "Haluat ladata raskaan QML-näkymän vasta kun käyttäjä avaa sen. Qt Quick -komponentti?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-loader-component.md"
+            },
+            {
+              "id": "b13-qt-quick-property-animation",
+              "difficulty": 3,
+              "prompt": "Rectangle liikkuu x: 0 → 300 kun `running` muuttuu true. Yksinkertaisin animaatio?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-property-animation.md"
+            },
+            {
+              "id": "b13-qt-quick-property-binding",
+              "difficulty": 3,
+              "prompt": "QML:ssä `width: parent.width` ja `onWidthChanged: width = parent.width` aiheuttavat jatkuvaa päivitystä. Mikä on oikea tapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-property-binding.md"
+            },
+            {
+              "id": "b13-qt-quick-qt-binding",
+              "difficulty": 4,
+              "prompt": "Käyttäjä muokkaa TextFieldiä — haluat palauttaa automaattisen bindingin `text: model.name` kun focus poistuu. Qt 6?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-qt-binding.md"
+            },
+            {
+              "id": "b13-qt-quick-register-type",
+              "difficulty": 4,
+              "prompt": "C++-luokka `SensorModel` pitää käyttää QML:ssä `SensorModel { }` -instanssina. Rekisteröinti?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-register-type.md"
+            },
+            {
+              "id": "b13-qt-quick-repeater-model",
+              "difficulty": 2,
+              "prompt": "Haluat piirtää kiinteän 5 tagia vaakasuoraan ilman C++-mallia. Qt Quick -ratkaisu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-repeater-model.md"
+            },
+            {
+              "id": "b13-qt-quick-required-property",
+              "difficulty": 3,
+              "prompt": "Custom `DetailPage`-komponentti vaatii `title`-tekstin — virhe jos parent ei anna sitä. Qt 6 QML?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-required-property.md"
+            },
+            {
+              "id": "b13-qt-quick-singleton",
+              "difficulty": 4,
+              "prompt": "QML-moduulissa tarvitaan jaettu `Theme`-olio (värit, fontit) ilman useita instansseja. Qt 6 -tapaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-singleton.md"
+            },
+            {
+              "id": "b13-qt-quick-stackview",
+              "difficulty": 3,
+              "prompt": "Mobiilisovelluksessa näkymät pinoutuvat (lista → detail → asetukset) takaisin-navigoinnilla. Qt Quick Controls?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-stackview.md"
+            },
+            {
+              "id": "b13-qt-quick-state-transition",
+              "difficulty": 3,
+              "prompt": "Painike vaihtaa väriä hover-tilassa animoidusti. Qt Quick -rakenne?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-state-transition.md"
+            },
+            {
+              "id": "b13-qt-quick-worker-script",
+              "difficulty": 4,
+              "prompt": "QML:ssä pitää ajaa raskasta JSON-parsintaa ilman UI-jumitusta. Qt Quick -vaihtoehto ennen C++-Workeria?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/b13-qt-quick-worker-script.md"
             }
           ]
         },

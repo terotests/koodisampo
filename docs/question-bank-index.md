@@ -1,6 +1,6 @@
 # Koodisampo — kysymyspankin kooste
 
-Yhteensä **1193** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
+Yhteensä **1213** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
 
 Oikea vastaus merkitty **lihavoituna**.
 
@@ -8676,7 +8676,7 @@ Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?
 - SELECT-kyselyt tarvitsevat REINDEX ennen jokaista UPDATE-operaatiota
 - PostgreSQL ei tue UPDATE:ia MVCC-mallissa, vain INSERT ja DELETE
 
-## qt (134)
+## qt (154)
 
 ### qt-models (19)
 
@@ -9041,6 +9041,188 @@ Piirrät paljon kolmioita QOpenGLWidgetissä. Miten vältät turhat CPU→GPU-ko
 - glBegin/glEnd-kutsut jokaisella framella pitävät piirron yksinkertaisena
 - QPainter::drawPolygon QOpenGLWidgetissä hoitaa geometrian GPU:lle
 - QPixmap-cache kolmioille vähentää draw call -määrää 3D-näkymässä
+
+### qt-quick (20)
+
+#### `b13-qt-quick-anchors-layout` · diff 2
+
+Nappi pitää keskittää ikkunaan ja venyttää leveys 80 % parentista. QML-layout?
+
+- **anchors.centerIn: parent; width: parent.width * 0.8** ✓
+- x: parent.width/2; y: parent.height/2 — riittää ilman width-bindingia
+- Layout.fillWidth: true RowLayoutissa ilman parent-layoutia
+- position: absolute — QML CSS-tyyli keskitykseen
+
+#### `b13-qt-quick-application-engine` · diff 2
+
+Uusi Qt 6 -sovellus lataa QML-tiedoston `main.qml`. Mikä C++-luokka on suositeltu entry point?
+
+- **QQmlApplicationEngine — lataa QML ja hallitsee kontekstia ilman erillistä ikkunaa** ✓
+- QQuickView — ainoa tuettu tapa Qt 6:ssa
+- QWidget::loadQml() — widget-sovellus lataa QML:n suoraan
+- QApplication::exec() riittää — QML ajetaan automaattisesti
+
+#### `b13-qt-quick-connections-signal` · diff 2
+
+QML:ssä haluat kuunnella C++-backendin signaalia ilman suoraa `onFoo`-handleria eri tiedostossa. Ratkaisu?
+
+- **Connections { target: backend; function onDataReady() { ... } }** ✓
+- Signal { name: "dataReady" } — se yhdistää automaattisesti
+- QML ei voi kuunnella C++-signaaleja — tarvitaan callback property
+- Timer pollaa backend.dataReady joka frame
+
+#### `b13-qt-quick-context-property` · diff 3
+
+Yksi globaali `AppSettings`-olio pitää olla kaikkien QML-tiedostojen saatavilla ilman importtia. Tapaa?
+
+- **engine.rootContext()->setContextProperty("appSettings", &settings)** ✓
+- property var appSettings: AppSettings {} jokaisessa QML-tiedostossa
+- qmlRegisterSingletonInstance riippuu aina .qml-tiedostosta
+- QML Global { } -avainsana Qt 6:ssa
+
+#### `b13-qt-quick-controls-style` · diff 3
+
+Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä. Miten saat natiivin ulkoasun?
+
+- **QQuickStyle::setStyle("Fusion") tai platform-tyyli — valitse Style ennen QML-latausta** ✓
+- Controls.Style = Native QML:ssä — riittää ilman C++:ta
+- Qt 6 poisti tyylit — kaikki alustat näyttävät identtisiltä
+- import QtQuick.Controls.Basic — se käyttää aina natiivityyliä
+
+#### `b13-qt-quick-debug-console` · diff 2
+
+QML binding ei toimi odotetusti — haluat nopean lokituksen ilman C++-debuggeria. Ensimmäinen askel?
+
+- **console.log() / console.warn() — QML JavaScript console** ✓
+- qDebug() QML-tiedostossa suoraan ilman importtia
+- Qt Quick Designer breakpoints — ainoa tapa QML:ään
+- Logger { } — built-in QML-komponentti
+
+#### `b13-qt-quick-i18n-retranslate` · diff 4
+
+Käyttäjä vaihtaa kielen lennossa — qsTr()-tekstit eivät päivity QML:ssä. Mitä kutsutaan?
+
+- **engine.retranslate() — päivittää qsTr-bindingit QML-puussa** ✓
+- QCoreApplication::installTranslator() riittää — QML päivittyy automaattisesti
+- text: qsTr("key") pitää poistaa ja käyttää hardcoded stringejä
+- QQmlApplicationEngine::clearComponentCache() — ainoa tapa
+
+#### `b13-qt-quick-image-async` · diff 2
+
+Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. QML-korjaus?
+
+- **asynchronous: true (oletus) + placeholder/pienoiskuva — lataus taustasäikeessä** ✓
+- cache: false — pakottaa async-latauksen
+- QML Image ei tue verkko-URL:ia — lataa C++:lla
+- sourceSize: 0 — lataa aina täyden resoluution synkronisesti
+
+#### `b13-qt-quick-listview-delegate` · diff 2
+
+ListView näyttää 10 000 riviä hitaasti — kaikki delegate-instanssit luodaan kerralla. Miten korjaat?
+
+- **ListView kierrättää delegateja — varmista että model on QAbstractListModel/C++ tai ListModel, ei toistettu Repeater** ✓
+- Lisää `cacheBuffer: 0` — se poistaa kaikki delegate-instanssit
+- Korvaa ListView Column-layoutilla — se on nopeampi
+- delegate: Item {} tyhjä delegate nopeuttaa piirtoa
+
+#### `b13-qt-quick-loader-component` · diff 3
+
+Haluat ladata raskaan QML-näkymän vasta kun käyttäjä avaa sen. Qt Quick -komponentti?
+
+- **Loader + sourceComponent / source — lataa komponentin tarpeen mukaan** ✓
+- StackView.preload — se lataa kaiken taustalla automaattisesti
+- import "HeavyView.qml" as H — import lataa aina heti
+- Timer + visible: false riittää — QML ei luo puuta ennen show():ia
+
+#### `b13-qt-quick-property-animation` · diff 3
+
+Rectangle liikkuu x: 0 → 300 kun `running` muuttuu true. Yksinkertaisin animaatio?
+
+- **PropertyAnimation on x { from: 0; to: 300; running: root.running }** ✓
+- Timer { interval: 16; onTriggered: x++ } — sujuvin tapa
+- Behavior on x { ScriptAction { script: x=300 } }
+- Animation { target: rect; property: "geometry" } — ei tuettu
+
+#### `b13-qt-quick-property-binding` · diff 3
+
+QML:ssä `width: parent.width` ja `onWidthChanged: width = parent.width` aiheuttavat jatkuvaa päivitystä. Mikä on oikea tapa?
+
+- **Käytä vain property bindingia — poista onWidthChanged-syklittävä sijoitus** ✓
+- Lisää `Qt.callLater()` jokaiseen onWidthChanged-kutsuun
+- Korvaa binding Timer-komponentilla 16 ms välein
+- Binding-loop on normaalia — Qt rajoittaa päivitykset automaattisesti
+
+#### `b13-qt-quick-qt-binding` · diff 4
+
+Käyttäjä muokkaa TextFieldiä — haluat palauttaa automaattisen bindingin `text: model.name` kun focus poistuu. Qt 6?
+
+- **onEditingFinished: text = Qt.binding(() => model.name)** ✓
+- text = model.name riittää — binding palautuu automaattisesti
+- Binding { property: "text"; value: model.name } poistuu itsestään
+- restoreBinding() — QML built-in funktio
+
+#### `b13-qt-quick-register-type` · diff 4
+
+C++-luokka `SensorModel` pitää käyttää QML:ssä `SensorModel { }` -instanssina. Rekisteröinti?
+
+- **qmlRegisterType<SensorModel>("com.app", 1, 0, "SensorModel") ennen engine.load()** ✓
+- Q_OBJECT makro riittää — moc rekisteröi tyypin automaattisesti QML:ään
+- engine.rootContext()->setContextProperty("SensorModel", new SensorModel)
+- import com.app 1.0 — riittää ilman C++-rekisteröintiä
+
+#### `b13-qt-quick-repeater-model` · diff 2
+
+Haluat piirtää kiinteän 5 tagia vaakasuoraan ilman C++-mallia. Qt Quick -ratkaisu?
+
+- **Row + Repeater { model: 5; delegate: Tag {} } tai model: ["a","b",...]** ✓
+- ListView model: 5 — se on kevyempi kuin Repeater pieneen määrään
+- Repeater vaatii aina QAbstractItemModel C++:sta
+- Flow + GridLayout — ainoa tapa toistaa QML-elementtejä
+
+#### `b13-qt-quick-required-property` · diff 3
+
+Custom `DetailPage`-komponentti vaatii `title`-tekstin — virhe jos parent ei anna sitä. Qt 6 QML?
+
+- **required property string title — compile-time/varoitus puuttuvalle arvolle** ✓
+- property string title: "" — tyhjä oletus riittää API-sopimukseen
+- readonly property string title — parent ei voi asettaa
+- Qt.binding(() => title) pakottaa parentin antamaan arvon
+
+#### `b13-qt-quick-singleton` · diff 4
+
+QML-moduulissa tarvitaan jaettu `Theme`-olio (värit, fontit) ilman useita instansseja. Qt 6 -tapaa?
+
+- **pragma Singleton + QML_SINGLETON C++:ssä tai singleton .qml tiedostossa** ✓
+- import Theme as T — jokainen import luo uuden kopion
+- Singleton toimii vain Qt Quick Controlsissa
+- GlobalObject { id: theme } main.qml:ssä riittää kaikille tiedostoille
+
+#### `b13-qt-quick-stackview` · diff 3
+
+Mobiilisovelluksessa näkymät pinoutuvat (lista → detail → asetukset) takaisin-navigoinnilla. Qt Quick Controls?
+
+- **StackView — push/pop/popToRoot navigoi komponenttipinoa** ✓
+- SwipeView — se pinouttaa näkymiä syvyysnavigaatiolla
+- TabBar riittää — ei tarvita pinomallia
+- Loader.source vaihto ilman historiaa — suositeltu tuotantoon
+
+#### `b13-qt-quick-state-transition` · diff 3
+
+Painike vaihtaa väriä hover-tilassa animoidusti. Qt Quick -rakenne?
+
+- **states + transitions — State määrittää propertyt, Transition animoi muutoksen** ✓
+- onHoverChanged: color = "red" — animaatio tulee automaattisesti
+- Style.qml hover — Qt Quick Controls hoitaa animaatiot aina
+- PropertyAnimation vaatii C++-backendin — QML ei animoi propertyjä
+
+#### `b13-qt-quick-worker-script` · diff 4
+
+QML:ssä pitää ajaa raskasta JSON-parsintaa ilman UI-jumitusta. Qt Quick -vaihtoehto ennen C++-Workeria?
+
+- **WorkerScript — erillinen QML-säie, viestit sendMessage/onMessage** ✓
+- Qt.createQmlObject() taustasäikeessä — tuettu suoraan
+- Timer { repeat: true } jakaa työn frameihin — riittää megatavuille dataa
+- QML JavaScript on aina async — ei tarvita WorkerScriptiä
 
 ### qt-shaders (24)
 
