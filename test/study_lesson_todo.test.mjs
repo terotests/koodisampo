@@ -26,7 +26,12 @@ assert.ok(pgConfig, "pg-config chapter");
 assert.equal(pgConfig.questions.length, 24, "pg-config question count");
 
 const md = fs.readFileSync(mdPath, "utf8");
-assert.ok(md.includes("✅") && md.includes("⬜"), "markdown has status marks");
+assert.ok(md.includes("✅"), "markdown has ready status marks");
+if (data.summary.pendingLessons > 0) {
+  assert.ok(md.includes("⬜"), "markdown has pending status marks");
+} else {
+  assert.doesNotMatch(md, /⬜/, "markdown has no pending marks when all lessons are ready");
+}
 assert.ok(md.includes("npm run study:todo"), "markdown has command hint");
 
 console.log("study_lesson_todo tests OK");

@@ -25,6 +25,10 @@ const topicsDir = path.join(root, "study/docs/topics");
 const postgres = fs.readFileSync(path.join(topicsDir, "postgres.md"), "utf8");
 assert.match(postgres, /\[OOM\]\(\/docs\/lyhenteet#oom\)/, "manual lessons link OOM to glossary");
 
+function withoutFencedCode(md) {
+  return md.replace(/```[\s\S]*?```/g, "");
+}
+
 for (const q of listAllQuestions()) {
   if (!q.sourceUrl) continue;
   assert.match(
@@ -35,7 +39,7 @@ for (const q of listAllQuestions()) {
 }
 
 for (const file of fs.readdirSync(topicsDir)) {
-  const md = fs.readFileSync(path.join(topicsDir, file), "utf8");
+  const md = withoutFencedCode(fs.readFileSync(path.join(topicsDir, file), "utf8"));
   const badLinks = [...md.matchAll(/\[[^\]]+\]\(([^)#][^)]*)\)/g)]
     .map((m) => m[1])
     .filter((url) => !/^https?:\/\//i.test(url) && !url.startsWith("/docs/"));
