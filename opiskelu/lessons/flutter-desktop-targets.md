@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Flutter-sovellus halutaan ajaa Windowsissa, macOS:ssä ja Linuxissa. Mitä pitää huomioida?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Desktop targetit ovat tuettuja, mutta natiivit plugin-riippuvuudet pitää tarkistaa per alusta
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Flutter desktop on virallinen, mutta pluginien tuki vaihtelee.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Alustatuki ei tarkoita, että jokainen natiiviplugin toimii kaikkialla. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Flutter toimii vain Androidissa ja iOS:ssä; Desktop vaatii Electronin Flutterin ympärille.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/platform-integration/desktop)

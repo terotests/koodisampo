@@ -4,204 +4,354 @@
   "source": "https://docs.flutter.dev/",
   "questions": [
     {
-      "id": "flutter-thin-host",
-      "chapter": "flutter-arch",
+      "id": "flutter-widget-immutability",
+      "chapter": "flutter-widgets",
       "domain": "flutter",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Flutter-versio vuoropohjaisesta simulaatiopelistä — minne pelisäännöt kuuluvat?",
-      "choices": [
-        { "text": "Erilliseen logiikkakerrokseen (natiivi kirjasto / FFI / jaettu core) — Flutter vain snapshot + input", "correct": true },
-        { "text": "StatefulWidget build()-metodiin if-lauseina", "correct": false },
-        { "text": "Firebase Remote Config -sääntöihin", "correct": false },
-        { "text": "Shader-tiedostoihin GLSL:nä", "correct": false }
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Flutter on näkymä; vuoropohjainen simulaatio ei kuulu widget-puuhun.",
-      "wrongFeedback": "Sama ohut host -malli kuin web/Compose — logiikka ulkopuolella.",
-      "sourceRef": "flutter/architecture",
+      "prompt": "Miksi Flutter Widget -objektit ovat käytännössä immutableja?",
+      "choices": [
+        {
+          "text": "UI kuvataan uudelleen halvalla; muuttuva tila pidetään State/Notifier-kerroksessa",
+          "correct": true
+        },
+        {
+          "text": "Widgetit kirjoittavat suoraan render treehen",
+          "correct": false
+        },
+        {
+          "text": "Immutable-malli estää kaiken tilan käytön",
+          "correct": false
+        },
+        {
+          "text": "Koska Dart ei tue muuttuvia kenttiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Flutter erottaa widget-konfiguraation ja pitkäikäisen State-olion.",
+      "wrongFeedback": "Tila kuuluu selkeään state-kerrokseen, ei widgetin muuttuviin kenttiin.",
+      "sourceRef": "docs.flutter.dev/resources/architectural-overview",
       "sourceUrl": "https://docs.flutter.dev/resources/architectural-overview",
-      "featureId": "flutter:thin-host",
-      "featurePoints": 3
+      "featureId": "flutter:widget-immutability",
+      "featurePoints": 2
     },
     {
-      "id": "flutter-custompaint-grid",
-      "chapter": "flutter-ui",
-      "domain": "flutter",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "ASCII/isometrinen kartta Flutterissa — tehokkain tapa?",
-      "choices": [
-        { "text": "CustomPainter — piirrät snapshotin kerralla, RepaintBoundary tarvittaessa", "correct": true },
-        { "text": "GridView.builder jokaiselle solulle erillinen Container", "correct": false },
-        { "text": "HtmlElementView selainmoottorilla", "correct": false },
-        { "text": "Flame-pelikone pakollinen 2D-ruudukolle", "correct": false }
-      ],
-      "correctFeedback": "CustomPainter on Flutterin vastine canvas-piirrolle — kevyt vuoropohjaiseen peliin.",
-      "wrongFeedback": "Tuhansien widgetien grid on raskas; suora piirto on nopeampaa.",
-      "sourceRef": "flutter/custom-paint",
-      "sourceUrl": "https://api.flutter.dev/flutter/rendering/CustomPainter-class.html",
-      "featureId": "flutter:custompaint",
-      "featurePoints": 3
-    },
-    {
-      "id": "flutter-state-management",
+      "id": "flutter-provider-riverpod",
       "chapter": "flutter-state",
       "domain": "flutter",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "GameController päivittää snapshotin jokaisen näppäimen jälkeen. Mikä state-ratkaisu sopii?",
-      "choices": [
-        { "text": "ChangeNotifier / Riverpod / Bloc — yksi lähde totuudelle, UI kuuntelee", "correct": true },
-        { "text": "setState koko MaterialApp:in juuressa", "correct": false },
-        { "text": "Global muuttujat ilman notifyListeners", "correct": false },
-        { "text": "InheritedWidget manuaalisesti jokaisessa leaf-widgetissä", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Snapshot on reaktiivinen tila — valitse yksi selkeä pattern.",
-      "wrongFeedback": "Hajautettu setState skaalaa huonosti moniruutuisessa pelissä.",
-      "sourceRef": "flutter/state-mgmt",
+      "prompt": "Usea näkymä tarvitsee samaa kirjautuneen käyttäjän tilaa. Mikä on järkevä state management -periaate?",
+      "choices": [
+        {
+          "text": "Yksi jaettu state-lähde esimerkiksi Provider/Riverpod/Bloc-kerroksessa",
+          "correct": true
+        },
+        {
+          "text": "Kopioi käyttäjäolio jokaisen näytön Stateen",
+          "correct": false
+        },
+        {
+          "text": "Lue käyttäjä suoraan tiedostosta build()-metodissa",
+          "correct": false
+        },
+        {
+          "text": "Pidä tila vain Navigatorin route-nimessä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Jaettu tila estää ristiriidat ja helpottaa testausta.",
+      "wrongFeedback": "Build-metodi voi ajautua usein; IO ja kopiot siellä ovat huono malli.",
+      "sourceRef": "docs.flutter.dev/data-and-backend/state-mgmt/intro",
       "sourceUrl": "https://docs.flutter.dev/data-and-backend/state-mgmt/intro",
-      "featureId": "flutter:state-mgmt",
+      "featureId": "flutter:state-management",
       "featurePoints": 3
     },
     {
       "id": "flutter-platform-channel",
-      "chapter": "flutter-arch",
+      "chapter": "flutter-platform",
       "domain": "flutter",
       "difficulty": 4,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Pelimoottori ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä?",
-      "choices": [
-        { "text": "Platform channel / FFI — natiivi kirjasto palauttaa snapshot-JSONin", "correct": true },
-        { "text": "Kirjoita koko pelimoottori Dartiksi käsin", "correct": false },
-        { "text": "Ajetaan Node.js erillisessä prosessissa ilman bridgeä", "correct": false },
-        { "text": "Flutter ei tue natiivikoodia lainkaan", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "MethodChannel tai dart:ffi yhdistää Flutter-UI:n olemassa olevaan moottoriin.",
-      "wrongFeedback": "Pelimoottorin uudelleenkirjoitus Dartiin hylkää pääinvestoinnin.",
-      "sourceRef": "flutter/platform-channels",
+      "prompt": "Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?",
+      "choices": [
+        {
+          "text": "Platform channel tai dart:ffi natiivikoodiin",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita Kotlin-koodi suoraan Dart-tiedostoon",
+          "correct": false
+        },
+        {
+          "text": "Käytä setStatea natiivikutsun tilalla",
+          "correct": false
+        },
+        {
+          "text": "Muokkaa Flutter engineä joka ominaisuudelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Platform channel on virallinen silta Dartin ja natiivin välillä.",
+      "wrongFeedback": "UI:n state API ei korvaa platform-integraatiota.",
+      "sourceRef": "docs.flutter.dev/platform-integration/platform-channels",
       "sourceUrl": "https://docs.flutter.dev/platform-integration/platform-channels",
       "featureId": "flutter:platform-channel",
       "featurePoints": 4
     },
     {
-      "id": "flutter-assets-json",
+      "id": "flutter-custompainter",
+      "chapter": "flutter-rendering",
+      "domain": "flutter",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tarvitset paljon pieniä vektorimerkintöjä yhdelle pinnalle. Mikä Flutter-ratkaisu on kevyt?",
+      "choices": [
+        {
+          "text": "CustomPainter ja tarvittaessa RepaintBoundary",
+          "correct": true
+        },
+        {
+          "text": "Tuhansia Container-widgettejä ilman virtualisointia",
+          "correct": false
+        },
+        {
+          "text": "Avaa erillinen WebView piirtoa varten",
+          "correct": false
+        },
+        {
+          "text": "Käytä TextFieldiä joka muodolle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CustomPainter sopii suoraan 2D-piirtoon ilman isoa widget-puuta.",
+      "wrongFeedback": "Widget-per-shape kasvattaa layout- ja build-kustannusta.",
+      "sourceRef": "api.flutter.dev/flutter/rendering/CustomPainter-class.html",
+      "sourceUrl": "https://api.flutter.dev/flutter/rendering/CustomPainter-class.html",
+      "featureId": "flutter:custom-painter",
+      "featurePoints": 3
+    },
+    {
+      "id": "flutter-async-init",
+      "chapter": "flutter-lifecycle",
+      "domain": "flutter",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "StatefulWidgetin alussa pitää hakea data asynkronisesti. Missä käynnistys tehdään?",
+      "choices": [
+        {
+          "text": "initState käynnistää futuren, tulos päivittää tilan kun mounted on yhä true",
+          "correct": true
+        },
+        {
+          "text": "await suoraan build()-metodissa",
+          "correct": false
+        },
+        {
+          "text": "constructorissa async-awaitilla",
+          "correct": false
+        },
+        {
+          "text": "dispose-metodissa ennen näkymän näyttöä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "initState sopii kertaluonteiseen alustukseen.",
+      "wrongFeedback": "Build voi ajaa monta kertaa, joten lataus siellä monistuu.",
+      "sourceRef": "docs.flutter.dev/get-started/fundamentals/state-management",
+      "sourceUrl": "https://docs.flutter.dev/get-started/fundamentals/state-management",
+      "featureId": "flutter:async-init",
+      "featurePoints": 3
+    },
+    {
+      "id": "flutter-navigation-restoration",
+      "chapter": "flutter-navigation",
+      "domain": "flutter",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Sovelluksen pitää tukea selaimen back-nappia webissä ja deep linkkejä. Mikä navigointimalli auttaa?",
+      "choices": [
+        {
+          "text": "Declarative Router / Navigator 2.0 -tyylinen reittitila",
+          "correct": true
+        },
+        {
+          "text": "Pelkkä Navigator.push ilman reittitilaa aina",
+          "correct": false
+        },
+        {
+          "text": "Globaali int currentPage ilman URLia",
+          "correct": false
+        },
+        {
+          "text": "Sulje sovellus back-napilla kaikissa tilanteissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Deklaratiivinen reittitila tekee URL:sta ja sovellustilasta synkronoitavan.",
+      "wrongFeedback": "Imperatiivinen push riittää pieniin appeihin, mutta deep linkit vaativat lisää mallia.",
+      "sourceRef": "docs.flutter.dev/ui/navigation",
+      "sourceUrl": "https://docs.flutter.dev/ui/navigation",
+      "featureId": "flutter:declarative-navigation",
+      "featurePoints": 3
+    },
+    {
+      "id": "flutter-desktop-targets",
+      "chapter": "flutter-platform",
+      "domain": "flutter",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Flutter-sovellus halutaan ajaa Windowsissa, macOS:ssä ja Linuxissa. Mitä pitää huomioida?",
+      "choices": [
+        {
+          "text": "Desktop targetit ovat tuettuja, mutta natiivit plugin-riippuvuudet pitää tarkistaa per alusta",
+          "correct": true
+        },
+        {
+          "text": "Flutter toimii vain Androidissa ja iOS:ssä",
+          "correct": false
+        },
+        {
+          "text": "Desktop vaatii Electronin Flutterin ympärille",
+          "correct": false
+        },
+        {
+          "text": "Kaikki mobiilipluginit toimivat automaattisesti desktopissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Flutter desktop on virallinen, mutta pluginien tuki vaihtelee.",
+      "wrongFeedback": "Alustatuki ei tarkoita, että jokainen natiiviplugin toimii kaikkialla.",
+      "sourceRef": "docs.flutter.dev/platform-integration/desktop",
+      "sourceUrl": "https://docs.flutter.dev/platform-integration/desktop",
+      "featureId": "flutter:desktop-targets",
+      "featurePoints": 2
+    },
+    {
+      "id": "flutter-assets",
       "chapter": "flutter-data",
       "domain": "flutter",
       "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "content/worlds/*.json ja question-banks bundlataan mobiiliin. Flutter-mekanismi?",
-      "choices": [
-        { "text": "pubspec.yaml assets + rootBundle.loadString — sama JSON kuin webissä", "correct": true },
-        { "text": "HTTP fetch vain localhostista", "correct": false },
-        { "text": "Kovakoodaa maailmat Dart-luokkiin", "correct": false },
-        { "text": "SQLite migraatio jokaiselle JSON-kentälle", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Asset-bundle on offline-valmis — peilaa web-buildin staattisia assetteja.",
-      "wrongFeedback": "Data-driven peli pitää JSONin ulkopuolisena koodista.",
-      "sourceRef": "flutter/assets",
+      "prompt": "Sovellus tarvitsee paikallisen JSON-konfiguraation mukaan buildiin. Miten se lisätään?",
+      "choices": [
+        {
+          "text": "Määritä asset pubspec.yamlissa ja lue rootBundle.loadStringillä",
+          "correct": true
+        },
+        {
+          "text": "Laita JSON lib/-kansioon ja importtaa se Dart-luokkana",
+          "correct": false
+        },
+        {
+          "text": "Hae tiedosto aina internetistä",
+          "correct": false
+        },
+        {
+          "text": "Kirjoita JSON AndroidManifestiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Asset bundle on Flutterin tapa jakaa staattiset tiedostot sovelluksen mukana.",
+      "wrongFeedback": "Verkkohaku ei ole offline-ratkaisu.",
+      "sourceRef": "docs.flutter.dev/ui/assets/assets-and-images",
       "sourceUrl": "https://docs.flutter.dev/ui/assets/assets-and-images",
       "featureId": "flutter:assets-json",
       "featurePoints": 2
     },
     {
-      "id": "flutter-desktop-linux",
-      "chapter": "flutter-platform",
-      "domain": "flutter",
-      "difficulty": 2,
-      "audiences": ["coworker", "project-lead"],
-      "prompt": "Haluat yhden Flutter-koodipohjan Android + Linux desktop -natiiviin. Onnistuuko?",
-      "choices": [
-        { "text": "Kyllä — Flutter tukee desktopia (Linux/Windows/macOS) samalla UI-koodilla", "correct": true },
-        { "text": "Flutter toimii vain mobiilissa", "correct": false },
-        { "text": "Linux vaatii erillisen GTK-version koodista", "correct": false },
-        { "text": "Desktop vaatii aina Electron-kääreen", "correct": false }
-      ],
-      "correctFeedback": "Flutter on varteenotettava kun tavoite on yksi UI kaikille alustoille.",
-      "wrongFeedback": "Desktop-tuki on virallinen — `flutter run -d linux` toimii.",
-      "sourceRef": "flutter/desktop",
-      "sourceUrl": "https://docs.flutter.dev/platform-integration/desktop",
-      "featureId": "flutter:desktop",
-      "featurePoints": 2
-    },
-    {
-      "id": "flutter-turnbased-no-loop",
-      "chapter": "flutter-arch",
-      "domain": "flutter",
-      "difficulty": 2,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Peli on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game loop?",
-      "choices": [
-        { "text": "Ei — päivitys tapahtuu näppäinsyötteen perusteella, ei jatkuvaa tickiä", "correct": true },
-        { "text": "Kyllä — 60 FPS loop pakollinen kaikissa peleissä", "correct": false },
-        { "text": "Vain jos kartta on isometrinen", "correct": false },
-        { "text": "Flutter ei piirrä ilman game loopia", "correct": false }
-      ],
-      "correctFeedback": "Simulaatiopeli ≠ action-peli; event-driven riittää.",
-      "wrongFeedback": "Walk-animaatio voi käyttää AnimationControlleria, ei koko pelin loopia.",
-      "sourceRef": "flutter/animation",
-      "sourceUrl": "https://docs.flutter.dev/ui/animations",
-      "featureId": "flutter:no-game-loop",
-      "featurePoints": 2
-    },
-    {
-      "id": "flutter-vs-compose",
-      "chapter": "flutter-arch",
+      "id": "flutter-performance-build",
+      "chapter": "flutter-performance",
       "domain": "flutter",
       "difficulty": 3,
-      "audiences": ["project-lead", "ceo", "guru"],
-      "prompt": "Projektissa on jo Android Compose + natiivi core. Milloin Flutter olisi silti järkevä?",
-      "choices": [
-        { "text": "Kun halutaan yksi UI-koodi myös iOS:lle ja desktopille — Compose-työ hylätään", "correct": true },
-        { "text": "Aina — Flutter korvaa kaiken muun automaattisesti", "correct": false },
-        { "text": "Koska Flutter käyttää JavaScriptiä samalla tavalla kuin web", "correct": false },
-        { "text": "Flutter on pakollinen Google Play -julkaisuun", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Flutter voittaa kun monialusta-ui on tärkeämpi kuin olemassa oleva Compose-työ.",
-      "wrongFeedback": "Olemassa oleva Kotlin/Compose-investointi puoltaa sen jatkamista.",
-      "sourceRef": "flutter/multi-platform",
-      "sourceUrl": "https://docs.flutter.dev/platform-integration",
-      "featureId": "flutter:vs-compose",
+      "prompt": "Flutter-listan scrollaus pätkii, koska rivit tekevät raskasta laskentaa buildissä. Ensimmäinen korjaus?",
+      "choices": [
+        {
+          "text": "Siirrä laskenta pois buildistä ja anna ListView.builder rakentaa vain näkyvät rivit",
+          "correct": true
+        },
+        {
+          "text": "Kutsu setState joka framella",
+          "correct": false
+        },
+        {
+          "text": "Poista avaimet kaikilta riveiltä",
+          "correct": false
+        },
+        {
+          "text": "Kasvata fonttikokoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Buildin pitää olla nopea ja sivuvaikutukseton.",
+      "wrongFeedback": "Raskas työ buildissä toistuu usein ja näkyy scrollauksessa.",
+      "sourceRef": "docs.flutter.dev/perf/best-practices",
+      "sourceUrl": "https://docs.flutter.dev/perf/best-practices",
+      "featureId": "flutter:build-performance",
       "featurePoints": 3
     },
     {
-      "id": "flutter-repaint-boundary",
-      "chapter": "flutter-ui",
+      "id": "flutter-testing-widget",
+      "chapter": "flutter-testing",
       "domain": "flutter",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "Kartta piirretään uudelleen, mutta HUD (karma, nälkä) pysyy samana. Optimointi?",
-      "choices": [
-        { "text": "RepaintBoundary kartan ympärillä — erillinen repaint-alue", "correct": true },
-        { "text": "Koko Scaffold invalidoidaan aina", "correct": false },
-        { "text": "Poista HUD kokonaan suorituskyvyn vuoksi", "correct": false },
-        { "text": "Käytä StatelessWidgetia kaikkialla — ei optimointia tarvita", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "RepaintBoundary rajoittaa piirron vain muuttuneeseen osaan.",
-      "wrongFeedback": "Flutterin renderöinti on halpaa, mutta iso kartta hyötyy rajauksesta.",
-      "sourceRef": "flutter/perf",
-      "sourceUrl": "https://docs.flutter.dev/perf/rendering-performance",
-      "featureId": "flutter:repaint-boundary",
+      "prompt": "Haluat varmistaa, että nappi näyttää lataustilan klikkauksen jälkeen. Mikä testi sopii?",
+      "choices": [
+        {
+          "text": "Widget test pumpWidgetillä ja interaktiolla tester.tap + pump",
+          "correct": true
+        },
+        {
+          "text": "Vain manuaalinen testaus emulaattorissa",
+          "correct": false
+        },
+        {
+          "text": "Unit-testi ilman widget-puuta ja findereitä",
+          "correct": false
+        },
+        {
+          "text": "Golden-testi ilman toimintoa aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Widget-testit ajavat UI:n nopeasti ilman täyttä laitetta.",
+      "wrongFeedback": "Golden-testit sopivat visuaaliin, mutta interaktio tarvitsee widget-testin.",
+      "sourceRef": "docs.flutter.dev/testing/overview",
+      "sourceUrl": "https://docs.flutter.dev/testing/overview",
+      "featureId": "flutter:widget-test",
       "featurePoints": 3
-    },
-    {
-      "id": "flutter-keyboard-input",
-      "chapter": "flutter-ui",
-      "domain": "flutter",
-      "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Desktop-Flutter: pelaaja käyttää näppäimistöä (hjkl). Miten otat syötteen vastaan?",
-      "choices": [
-        { "text": "Focus + KeyboardListener / Shortcuts widget — key → handleKey", "correct": true },
-        { "text": "Vain TextField joka kaappaa kaikki merkit", "correct": false },
-        { "text": "RawKeyboard.instance ilman focus-hallintaa aina", "correct": false },
-        { "text": "Näppäimistö ei toimi Flutter desktopissa", "correct": false }
-      ],
-      "correctFeedback": "Focus-node + keyboard callback on sama idea kuin web keydown.",
-      "wrongFeedback": "Shortcuts/Actions on Flutterin idiomaattinen tapa bindata näppäimiä.",
-      "sourceRef": "flutter/keyboard",
-      "sourceUrl": "https://api.flutter.dev/flutter/widgets/KeyboardListener-class.html",
-      "featureId": "flutter:keyboard",
-      "featurePoints": 2
     }
   ]
 }

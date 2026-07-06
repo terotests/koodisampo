@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Sovelluksen pitää tukea selaimen back-nappia webissä ja deep linkkejä. Mikä navigointimalli auttaa?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Declarative Router / Navigator 2.0 -tyylinen reittitila
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Deklaratiivinen reittitila tekee URL:sta ja sovellustilasta synkronoitavan.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Imperatiivinen push riittää pieniin appeihin, mutta deep linkit vaativat lisää mallia. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Pelkkä Navigator.push ilman reittitilaa aina; Globaali int currentPage ilman URLia.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/ui/navigation)

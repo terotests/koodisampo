@@ -1,25 +1,23 @@
-# Web tallentaa karmaa localStorageen. Android-pariteetti tallennukselle?
+# Sovellus tallentaa käyttäjän asetuksia Androidissa. Mikä korvaa SharedPreferencesin modernissa arkkitehtuurissa?
 
 ## Tilanne
 
-Android-natiivi voi rakentua Kotlin + Jetpack Compose -pinon varaan. Pelilogiikka tulee jaetusta simulaatiokirjastosta, host hoitaa snapshotin ja syötteen.
+Androidin Kotlin + Jetpack Compose -kehityksessä olennaista on erottaa UI-tila, sovellustila ja alustapalvelut toisistaan. Compose kuvaa näkymän deklaratiivisesti, ViewModel säilyttää näytön tilan ja repositoryt hoitavat datalähteet.
 
-Olet suunnittelemassa vuoropohjaisen simulaatiopelin natiivijulkaisua. Pelilogiikka elää jaetussa simulaatiokirjastossa, ja alustahostit ovat ohuita: ne välittävät näppäinsyötteen logiikkakerrokselle ja renderöivät palautetun snapshotin. Kysymys testaa alustavalinnan käytännön vaikutusta tähän arkkitehtuuriin.
-
-Tyypillinen virhe on siirtää pelisääntöjä UI-kerrokseen (Compose-widget, Flutter build(), Qt slot) tai valita teknologia, joka pakottaa logiikan uudelleenkirjoituksen.
+Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen kehityksessä: mihin kerrokseen vastuu kuuluu, mitä alustatyökalua kannattaa käyttää ja mitä riskejä valinnasta seuraa. Hyvä vastaus ei perustu teknologian nimeen vaan siihen, miten ratkaisu käyttäytyy elinkaaren, suorituskyvyn, saavutettavuuden, turvallisuuden ja ylläpidon kannalta.
 
 ## Ratkaisu
 
-**Oikea vastaus:** DataStore (Preferences tai Proto) — sama JSON-skeema kuin web/terminaali
+**Oikea vastaus:** Jetpack DataStore Preferences tai Proto DataStore
 
-Jaettu tallennusskeema hostissa — DataStore on moderni korvike SharedPreferencesille.
+DataStore tarjoaa coroutine/Flow-pohjaisen, asynkronisen asetustallennuksen.
 
-Väärät vaihtoehdot johtavat yleensä johonkin näistä ongelmista: Vain muistissa — tallennus ei kuulu mobiiliin; SQLite-taulu jokaiselle NPC-suhteelle erikseen ilman skeemaa. Persistenssi on host-vastuu; Android-gap dokumentissa yksi suurimmista puutteista.
+Instance state ei ole pysyvää tallennusta, ja raakafilet ovat turvattomia. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: SQLiteOpenHelper jokaiselle boolean-asetukselle; Kirjoita asetukset raakatekstinä /sdcard-hakemistoon.
 
 ## Käytännössä
 
-Pidä mielessä jaettu snapshot-skeema: kartta, kohtaaminen, tarina, valikot ja overlayt tulevat host-kontrollerista. UI ei päätä pelitilaa — se reagoi snapshotin `screen`-kenttään. Uusi alusta tarkoittaa uutta hostia ja renderöintiä, ei uutta pelimoottoria.
+Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, state-kerros säilyttää näytön tai sovelluksen tilan, data- tai platform-kerros hoitaa IO:n, tallennuksen ja natiivit integraatiot. Kun nämä rajat pysyvät selkeinä, samaa toimintoa on helpompi testata ja siirtää toiselle alustalle.
 
-Testaa logiikka aina headless-testeillä ennen kuin investoit natiivi-UI-pariteettiin.
+Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
 [Lue lisää](https://developer.android.com/topic/libraries/architecture/datastore)

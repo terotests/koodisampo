@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Tarvitset paljon pieniä vektorimerkintöjä yhdelle pinnalle. Mikä Flutter-ratkaisu on kevyt?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** CustomPainter ja tarvittaessa RepaintBoundary
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+CustomPainter sopii suoraan 2D-piirtoon ilman isoa widget-puuta.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Widget-per-shape kasvattaa layout- ja build-kustannusta. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Tuhansia Container-widgettejä ilman virtualisointia; Avaa erillinen WebView piirtoa varten.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://api.flutter.dev/flutter/rendering/CustomPainter-class.html)

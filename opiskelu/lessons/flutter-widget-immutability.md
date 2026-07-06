@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Miksi Flutter Widget -objektit ovat käytännössä immutableja?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** UI kuvataan uudelleen halvalla; muuttuva tila pidetään State/Notifier-kerroksessa
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Flutter erottaa widget-konfiguraation ja pitkäikäisen State-olion.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Tila kuuluu selkeään state-kerrokseen, ei widgetin muuttuviin kenttiin. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Widgetit kirjoittavat suoraan render treehen; Immutable-malli estää kaiken tilan käytön.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/resources/architectural-overview)
