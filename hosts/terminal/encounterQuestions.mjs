@@ -136,6 +136,7 @@ const TOPIC_DOMAINS = {
   "rust-safety": "rust",
   "rust-traits": "rust",
   "rust-async": "rust",
+  "rust-testing": "rust",
 };
 
 /** Luvut domainin mukaan (haastattelu/guru-kierros). */

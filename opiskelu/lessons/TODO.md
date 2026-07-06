@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1243 / 1243** valmis (**100 %**).
+**1259 / 1259** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -19,7 +19,7 @@
 | Backend | 5 | 5 | 100 |
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
-| Rust | 50 | 50 | 100 |
+| Rust | 66 | 66 | 100 |
 
 ## Kaikki aiheet
 
@@ -1518,14 +1518,22 @@
 | ✅ | 4 | `rf-browser-library` | Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjast… |
 | ✅ | 3 | `rf-wait-until` | Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lata… |
 
-### Rust (50/50)
+### Rust (66/66)
 
-#### Rust async `rust-async` (2/2)
+#### Rust async `rust-async` (10/10)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `rust-async-future-await` | Mitä `async fn` palauttaa Rustissa? |
+| ✅ | 2 | `rust-async-tokio-join-handle` | tokio::spawn palauttaa JoinHandle<T>. Miten saat tehtävän tuloksen tai … |
+| ✅ | 3 | `rust-async-tokio-mpsc` | Async-tehtävät viestivät toisilleen tokio-runtime:ssa. Mikä kanava on a… |
+| ✅ | 3 | `rust-async-tokio-mutex` | Jaettu tila async-tehtävissä — `std::sync::Mutex` aiheuttaa blokkausta … |
 | ✅ | 3 | `rust-async-tokio-runtime` | async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnist… |
+| ✅ | 3 | `rust-async-tokio-runtime-flavor` | CLI-työkalu ajaa yhden async-mainin ilman rinnakkaisia worker-säikeitä.… |
+| ✅ | 3 | `rust-async-tokio-select` | Odotat useaa Futurea — ensimmäinen valmis voittaa (timeout, cancel). Mi… |
+| ✅ | 2 | `rust-async-tokio-sleep` | async-funktiossa tarvitset viiveen. Miksi `std::thread::sleep` on huono… |
+| ✅ | 2 | `rust-async-tokio-spawn` | async fn:ssä haluat ajaa toisen async-tehtävän taustalla saman runtime:… |
+| ✅ | 3 | `rust-async-tokio-tcp` | Rakennat async TCP-palvelimen tokio:lla. Mikä tyyppi acceptoi yhteydet … |
 
 #### Rust lainaus `rust-borrowing` (6/6)
 
@@ -1577,6 +1585,19 @@
 |---|------|-----|---------|
 | ✅ | 2 | `rust-safety-borrow-checker` | Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman ros… |
 | ✅ | 3 | `rust-safety-unsafe-block` | Milloin `unsafe`-lohko on perusteltu? |
+
+#### Rust testaus `rust-testing` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `rust-testing-catch-unwind` | Testissä haluat varmistaa panicin ilman #[should_panic] — esim. dynaami… |
+| ✅ | 2 | `rust-testing-dev-dependencies` | mockall ja tokio-test dev-testeissä — minne Cargo.toml riippuvuus? |
+| ✅ | 2 | `rust-testing-doc-tests` | Esimerkkikoodi ///-doc-kommentissa pitää pysyä oikeana. Miten ajat doc … |
+| ✅ | 2 | `rust-testing-integration-dir` | Haluat testata kirjastoa ulkoisena asiakkaana (public API). Minne integ… |
+| ✅ | 3 | `rust-testing-mock-trait` | Haluat korvata HTTP-clientin testissä ilman oikeaa verkkoa. Mikä patter… |
+| ✅ | 4 | `rust-testing-proptest` | Haluat generoida satoja satunnaisia syötteitä parserille. Mikä crate so… |
+| ✅ | 2 | `rust-testing-should-panic` | Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutt… |
+| ✅ | 2 | `rust-testing-tokio-test` | Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen… |
 
 #### Rust työkalut `rust-tooling` (6/6)
 

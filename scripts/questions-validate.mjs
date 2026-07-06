@@ -30,6 +30,7 @@ const TOPIC_DOMAINS = {
   "rust-ownership": "rust", "rust-borrowing": "rust", "rust-types": "rust",
   "rust-error": "rust", "rust-concurrency": "rust", "rust-tooling": "rust",
   "rust-safety": "rust", "rust-traits": "rust", "rust-async": "rust",
+  "rust-testing": "rust",
 };
 
 const ids = new Set();

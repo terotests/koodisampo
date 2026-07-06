@@ -1823,6 +1823,588 @@
       "lessonRef": "rust/traits/rust-traits-deref-coercion",
       "sourceUrl": "https://doc.rust-lang.org/book/ch15-02-deref.html",
       "sourceRef": "rust-book/rust-traits-deref-coercion"
+    },
+    {
+      "id": "rust-async-tokio-spawn",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "async fn:ssä haluat ajaa toisen async-tehtävän taustalla saman runtime:n alla. Mikä tokio-API?",
+      "choices": [
+        {
+          "text": "tokio::spawn(async { ... }) — palauttaa JoinHandle, ei blokkaa executor-säiettä",
+          "correct": true
+        },
+        {
+          "text": "std::thread::spawn — idiomaattinen async-kontekstissa",
+          "correct": false
+        },
+        {
+          "text": "async fn spawn() — std tarjoaa spawn:in",
+          "correct": false
+        },
+        {
+          "text": "tokio::run blocking — pakollinen jokaiselle tehtävälle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tokio::spawn ajaa Futuren runtime-executorilla — concurrent async tehtävät.",
+      "wrongFeedback": "std::thread::spawn ei integroidu async runtimeen. tokio::spawn on oikea valinta.",
+      "featureId": "rust:tokio-spawn",
+      "featurePoints": 3,
+      "lessonRef": "rust/async/rust-async-tokio-spawn",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/fn.spawn.html",
+      "sourceRef": "rust-book/rust-async-tokio-spawn"
+    },
+    {
+      "id": "rust-async-tokio-select",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Odotat useaa Futurea — ensimmäinen valmis voittaa (timeout, cancel). Mikä tokio-makro?",
+      "choices": [
+        {
+          "text": "tokio::select! { ... } — odottaa useaa haaraa, suorittaa ensimmäisen valmistuneen",
+          "correct": true
+        },
+        {
+          "text": "Future::join aina — select poistettu",
+          "correct": false
+        },
+        {
+          "text": "tokio::wait_all — std-makro",
+          "correct": false
+        },
+        {
+          "text": "async if-else riittää aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "select! on async vastine epoll/select-kutsulle — race + peruutus.",
+      "wrongFeedback": "join odottaa kaikkia. select! palauttaa kun yksi haara valmistuu.",
+      "featureId": "rust:tokio-select",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-select",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/macro.select.html",
+      "sourceRef": "rust-book/rust-async-tokio-select"
+    },
+    {
+      "id": "rust-async-tokio-sleep",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "async-funktiossa tarvitset viiveen. Miksi `std::thread::sleep` on huono valinta?",
+      "choices": [
+        {
+          "text": "Blokkaa executor-säikeen — tokio::time::sleep().await yieldaa runtimeille",
+          "correct": true
+        },
+        {
+          "text": "thread::sleep on nopeampi aina async:ssä",
+          "correct": false
+        },
+        {
+          "text": "sleep ei toimi Rustissa",
+          "correct": false
+        },
+        {
+          "text": "await korvaa sleep:in automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Blocking sleep jäädyttää worker-säikeen — tokio::time::sleep on async.",
+      "wrongFeedback": "Executor-säie ei saa blokata. Käytä tokio::time::sleep().await.",
+      "featureId": "rust:tokio-sleep",
+      "featurePoints": 3,
+      "lessonRef": "rust/async/rust-async-tokio-sleep",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/time/fn.sleep.html",
+      "sourceRef": "rust-book/rust-async-tokio-sleep"
+    },
+    {
+      "id": "rust-async-tokio-mutex",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Jaettu tila async-tehtävissä — `std::sync::Mutex` aiheuttaa blokkausta awaitin yli. Mikä korvaaja?",
+      "choices": [
+        {
+          "text": "tokio::sync::Mutex — async lock().await ei blokkaa executor-säiettä",
+          "correct": true
+        },
+        {
+          "text": "RefCell async:ssä säikeiden välillä",
+          "correct": false
+        },
+        {
+          "text": "std::Mutex on aina parempi",
+          "correct": false
+        },
+        {
+          "text": "Arc<RwLock> std — sama kuin tokio",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tokio::sync::Mutex on async-aware — lock odottaa awaitilla.",
+      "wrongFeedback": "std::sync::Mutex blokkaa worker-säikeen async-kontekstissa.",
+      "featureId": "rust:tokio-mutex",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-mutex",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html",
+      "sourceRef": "rust-book/rust-async-tokio-mutex"
+    },
+    {
+      "id": "rust-async-tokio-tcp",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Rakennat async TCP-palvelimen tokio:lla. Mikä tyyppi acceptoi yhteydet ilman blokkaavaa IO:ta?",
+      "choices": [
+        {
+          "text": "tokio::net::TcpListener — bind + accept().await async IO:lle",
+          "correct": true
+        },
+        {
+          "text": "std::net::TcpListener + set_nonblocking riittää aina",
+          "correct": false
+        },
+        {
+          "text": "tokio::TcpServer std:ssä",
+          "correct": false
+        },
+        {
+          "text": "hyper::Server ainoa tapa TCP:lle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tokio::net wrapaa async IO — accept/read/write awaitilla.",
+      "wrongFeedback": "Std TcpListener blokkaa. tokio::net integroituu runtimeen.",
+      "featureId": "rust:tokio-tcp",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-tcp",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/net/struct.TcpListener.html",
+      "sourceRef": "rust-book/rust-async-tokio-tcp"
+    },
+    {
+      "id": "rust-async-tokio-join-handle",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "tokio::spawn palauttaa JoinHandle<T>. Miten saat tehtävän tuloksen tai virheen?",
+      "choices": [
+        {
+          "text": "handle.await — palauttaa Result<T, JoinError> (panic taskissa → Err)",
+          "correct": true
+        },
+        {
+          "text": "handle.join() synkroninen metodi",
+          "correct": false
+        },
+        {
+          "text": "handle.unwrap() palauttaa T suoraan",
+          "correct": false
+        },
+        {
+          "text": "JoinHandle poll manually aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "await JoinHandle:sta = odota spawnattu tehtävä. Panic propagoidaan JoinError:na.",
+      "wrongFeedback": "JoinHandle on Future — await, ei join(). Result käsittelee task-panicin.",
+      "featureId": "rust:tokio-join",
+      "featurePoints": 3,
+      "lessonRef": "rust/async/rust-async-tokio-join-handle",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/task/struct.JoinHandle.html",
+      "sourceRef": "rust-book/rust-async-tokio-join-handle"
+    },
+    {
+      "id": "rust-async-tokio-runtime-flavor",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "CLI-työkalu ajaa yhden async-mainin ilman rinnakkaisia worker-säikeitä. Mikä #[tokio::main] asetus?",
+      "choices": [
+        {
+          "text": "flavor = \"current_thread\" — yksi säie, tehtävät vuorotellen pollauksessa",
+          "correct": true
+        },
+        {
+          "text": "flavor = \"single\" — virallinen nimi",
+          "correct": false
+        },
+        {
+          "text": "threads = 0 poistaa runtime:n",
+          "correct": false
+        },
+        {
+          "text": "async main ei tarvitse runtimea CLI:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "current_thread kevyempi yksisäieiseen async-sovellukseen.",
+      "wrongFeedback": "Oletus multi_thread. current_thread CLI/testeihin.",
+      "featureId": "rust:tokio-flavor",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-runtime-flavor",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/attr.main.html",
+      "sourceRef": "rust-book/rust-async-tokio-runtime-flavor"
+    },
+    {
+      "id": "rust-async-tokio-mpsc",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Async-tehtävät viestivät toisilleen tokio-runtime:ssa. Mikä kanava on async-native?",
+      "choices": [
+        {
+          "text": "tokio::sync::mpsc — send().await / recv().await ilman blokkausta",
+          "correct": true
+        },
+        {
+          "text": "std::sync::mpsc — async send odottaa awaitilla",
+          "correct": false
+        },
+        {
+          "text": "tokio::channel on deprecated",
+          "correct": false
+        },
+        {
+          "text": "UdpSocket viestikanavana aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tokio mpsc integroituu awaitiin — backpressure async-tyylillä.",
+      "wrongFeedback": "std::sync::mpsc blokkaa. tokio::sync::mpsc on async-idiomi.",
+      "featureId": "rust:tokio-mpsc",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-mpsc",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/sync/mpsc/index.html",
+      "sourceRef": "rust-book/rust-async-tokio-mpsc"
+    },
+    {
+      "id": "rust-testing-integration-dir",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat testata kirjastoa ulkoisena asiakkaana (public API). Minne integration testit?",
+      "choices": [
+        {
+          "text": "tests/*.rs projektin juuressa — jokainen tiedosto erillinen crate",
+          "correct": true
+        },
+        {
+          "text": "src/tests/mod.rs — ainoa paikka",
+          "correct": false
+        },
+        {
+          "text": "#[integration] attribuutti funktiossa",
+          "correct": false
+        },
+        {
+          "text": "tests/ kääntyy osaksi lib.rs:ää suoraan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tests/ on erillinen crate joka riippuu Cargo.toml [lib]:stä.",
+      "wrongFeedback": "Integration testit eivät ole src/:ssä. tests/*.rs on Cargo-konventio.",
+      "featureId": "rust:integration-tests",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-integration-dir",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch11-03-test-organization.html",
+      "sourceRef": "rust-book/rust-testing-integration-dir"
+    },
+    {
+      "id": "rust-testing-should-panic",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutti?",
+      "choices": [
+        {
+          "text": "#[should_panic] — testi onnistuu jos funktio panikoi",
+          "correct": true
+        },
+        {
+          "text": "#[expect_panic] — Rust 2024 attribuutti",
+          "correct": false
+        },
+        {
+          "text": "#[test(panic)] cargo syntax",
+          "correct": false
+        },
+        {
+          "text": "catch_unwind ainoa tapa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "should_panic varmistaa panic-polun — optional expected message.",
+      "wrongFeedback": "should_panic on std-test attribuutti. catch_unwind monimutkaisempiin tapauksiin.",
+      "featureId": "rust:should-panic",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-should-panic",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch11-01-writing-tests.html#checking-for-panics-with-should-panic",
+      "sourceRef": "rust-book/rust-testing-should-panic"
+    },
+    {
+      "id": "rust-testing-tokio-test",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testissä?",
+      "choices": [
+        {
+          "text": "#[tokio::test] async fn ... — luo test-runtime ja sallii .await",
+          "correct": true
+        },
+        {
+          "text": "#[test] async fn — toimii ilman makroa",
+          "correct": false
+        },
+        {
+          "text": "block_on testissä aina kielletty",
+          "correct": false
+        },
+        {
+          "text": "cargo test --async flag",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "tokio::test macro = mini runtime yksittäiselle async-testille.",
+      "wrongFeedback": "Tavallinen #[test] ei tue async fn:ää. #[tokio::test] on standardi.",
+      "featureId": "rust:tokio-test",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-tokio-test",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/attr.test.html",
+      "sourceRef": "rust-book/rust-testing-tokio-test"
+    },
+    {
+      "id": "rust-testing-mock-trait",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Haluat korvata HTTP-clientin testissä ilman oikeaa verkkoa. Mikä pattern Rustissa?",
+      "choices": [
+        {
+          "text": "Trait abstraction + mock (mockall) — injektoi fake-toteutus",
+          "correct": true
+        },
+        {
+          "text": "#[mock] built-in derive std:ssä",
+          "correct": false
+        },
+        {
+          "text": "static mut global fake aina",
+          "correct": false
+        },
+        {
+          "text": "cfg(test) unreachable! production code",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Trait + DI mahdollistaa mockall-automock tai manual fake.",
+      "wrongFeedback": "Rustissa ei ole Java-tyyppistä Mockitoa std:ssä. Trait + mockall on idiomi.",
+      "featureId": "rust:mock-trait",
+      "featurePoints": 4,
+      "lessonRef": "rust/testing/rust-testing-mock-trait",
+      "sourceUrl": "https://docs.rs/mockall/latest/mockall/",
+      "sourceRef": "rust-book/rust-testing-mock-trait"
+    },
+    {
+      "id": "rust-testing-proptest",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat generoida satoja satunnaisia syötteitä parserille. Mikä crate sopii property-based -testaukseen?",
+      "choices": [
+        {
+          "text": "proptest — generoi inputeja ja shrinks failing casea",
+          "correct": true
+        },
+        {
+          "text": "quickcheck — ei Rustissa",
+          "correct": false
+        },
+        {
+          "text": "rand::test — std test runner",
+          "correct": false
+        },
+        {
+          "text": "cargo fuzz korvaa proptest:in aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "proptest löytää counterexampleit automaattisesti — shrink pienentää bugia.",
+      "wrongFeedback": "proptest on Rust property-based testing -standardi. cargo fuzz erilliseen fuzzaukseen.",
+      "featureId": "rust:proptest",
+      "featurePoints": 4,
+      "lessonRef": "rust/testing/rust-testing-proptest",
+      "sourceUrl": "https://docs.rs/proptest/latest/proptest/",
+      "sourceRef": "rust-book/rust-testing-proptest"
+    },
+    {
+      "id": "rust-testing-dev-dependencies",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "mockall ja tokio-test dev-testeissä — minne Cargo.toml riippuvuus?",
+      "choices": [
+        {
+          "text": "[dev-dependencies] — vain testit ja examples, ei release-binaryn mukana",
+          "correct": true
+        },
+        {
+          "text": "[dependencies] aina — dev-deps poistettu",
+          "correct": false
+        },
+        {
+          "text": "[test-dependencies] erillinen osio",
+          "correct": false
+        },
+        {
+          "text": "[build-dependencies] testeille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "dev-dependencies eivät mene tuotantobinaryn mukaan — kevyempi release.",
+      "wrongFeedback": "dev-dependencies on Cargo-konventio testikirjastoille.",
+      "featureId": "rust:dev-dependencies",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-dev-dependencies",
+      "sourceUrl": "https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#development-dependencies",
+      "sourceRef": "rust-book/rust-testing-dev-dependencies"
+    },
+    {
+      "id": "rust-testing-doc-tests",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "secretary"
+      ],
+      "prompt": "Esimerkkikoodi ///-doc-kommentissa pitää pysyä oikeana. Miten ajat doc testit?",
+      "choices": [
+        {
+          "text": "cargo test — doc testit ajetaan automaattisesti (/// ``` ... ```)",
+          "correct": true
+        },
+        {
+          "text": "cargo doc --test erillinen komento",
+          "correct": false
+        },
+        {
+          "text": "Doc testit vain nightlyllä",
+          "correct": false
+        },
+        {
+          "text": "/// koodi ei koskaan suoriteta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Doc examples ovat testejä — rikkinäinen docs rikkoo CI:n.",
+      "wrongFeedback": "cargo test suorittaa myös doc testit. cargo test --doc vain docit.",
+      "featureId": "rust:doc-tests",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-doc-tests",
+      "sourceUrl": "https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html",
+      "sourceRef": "rust-book/rust-testing-doc-tests"
+    },
+    {
+      "id": "rust-testing-catch-unwind",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Testissä haluat varmistaa panicin ilman #[should_panic] — esim. dynaaminen viesti. Mikä std-API?",
+      "choices": [
+        {
+          "text": "std::panic::catch_unwind(Closure) — palauttaa Result<R, Box<dyn Any>>",
+          "correct": true
+        },
+        {
+          "text": "std::panic::try_catch — Rust 2024",
+          "correct": false
+        },
+        {
+          "text": "panic::Assert trait",
+          "correct": false
+        },
+        {
+          "text": "catch_unwind toimii async closureissa aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "catch_unwind sieppaa unwind-panicin testissä — tarkempi kontrolli.",
+      "wrongFeedback": "catch_unwind on std::panic. Async vaatii erillisen käsittelyn.",
+      "featureId": "rust:catch-unwind",
+      "featurePoints": 4,
+      "lessonRef": "rust/testing/rust-testing-catch-unwind",
+      "sourceUrl": "https://doc.rust-lang.org/std/panic/fn.catch_unwind.html",
+      "sourceRef": "rust-book/rust-testing-catch-unwind"
     }
   ]
 }

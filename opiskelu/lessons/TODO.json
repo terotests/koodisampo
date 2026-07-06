@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-06T12:41:14.288Z",
+  "generatedAt": "2026-07-06T12:43:09.705Z",
   "summary": {
-    "totalQuestions": 1243,
-    "readyLessons": 1243,
+    "totalQuestions": 1259,
+    "readyLessons": 1259,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -8897,14 +8897,14 @@
     {
       "id": "rust",
       "label": "Rust",
-      "ready": 50,
-      "total": 50,
+      "ready": 66,
+      "total": 66,
       "chapters": [
         {
           "id": "rust-async",
           "label": "Rust async",
-          "ready": 2,
-          "total": 2,
+          "ready": 10,
+          "total": 10,
           "questions": [
             {
               "id": "rust-async-future-await",
@@ -8914,11 +8914,67 @@
               "lessonFile": "opiskelu/lessons/rust-async-future-await.md"
             },
             {
+              "id": "rust-async-tokio-join-handle",
+              "difficulty": 2,
+              "prompt": "tokio::spawn palauttaa JoinHandle<T>. Miten saat tehtävän tuloksen tai virheen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-join-handle.md"
+            },
+            {
+              "id": "rust-async-tokio-mpsc",
+              "difficulty": 3,
+              "prompt": "Async-tehtävät viestivät toisilleen tokio-runtime:ssa. Mikä kanava on async-native?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-mpsc.md"
+            },
+            {
+              "id": "rust-async-tokio-mutex",
+              "difficulty": 3,
+              "prompt": "Jaettu tila async-tehtävissä — `std::sync::Mutex` aiheuttaa blokkausta awaitin yli. Mikä korvaaja?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-mutex.md"
+            },
+            {
               "id": "rust-async-tokio-runtime",
               "difficulty": 3,
               "prompt": "async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnistys?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-async-tokio-runtime.md"
+            },
+            {
+              "id": "rust-async-tokio-runtime-flavor",
+              "difficulty": 3,
+              "prompt": "CLI-työkalu ajaa yhden async-mainin ilman rinnakkaisia worker-säikeitä. Mikä #[tokio::main] asetus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-runtime-flavor.md"
+            },
+            {
+              "id": "rust-async-tokio-select",
+              "difficulty": 3,
+              "prompt": "Odotat useaa Futurea — ensimmäinen valmis voittaa (timeout, cancel). Mikä tokio-makro?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-select.md"
+            },
+            {
+              "id": "rust-async-tokio-sleep",
+              "difficulty": 2,
+              "prompt": "async-funktiossa tarvitset viiveen. Miksi `std::thread::sleep` on huono valinta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-sleep.md"
+            },
+            {
+              "id": "rust-async-tokio-spawn",
+              "difficulty": 2,
+              "prompt": "async fn:ssä haluat ajaa toisen async-tehtävän taustalla saman runtime:n alla. Mikä tokio-API?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-spawn.md"
+            },
+            {
+              "id": "rust-async-tokio-tcp",
+              "difficulty": 3,
+              "prompt": "Rakennat async TCP-palvelimen tokio:lla. Mikä tyyppi acceptoi yhteydet ilman blokkaavaa IO:ta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-tcp.md"
             }
           ]
         },
@@ -9141,6 +9197,70 @@
               "prompt": "Milloin `unsafe`-lohko on perusteltu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-safety-unsafe-block.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-testing",
+          "label": "Rust testaus",
+          "ready": 8,
+          "total": 8,
+          "questions": [
+            {
+              "id": "rust-testing-catch-unwind",
+              "difficulty": 3,
+              "prompt": "Testissä haluat varmistaa panicin ilman #[should_panic] — esim. dynaaminen viesti. Mikä std-API?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-catch-unwind.md"
+            },
+            {
+              "id": "rust-testing-dev-dependencies",
+              "difficulty": 2,
+              "prompt": "mockall ja tokio-test dev-testeissä — minne Cargo.toml riippuvuus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-dev-dependencies.md"
+            },
+            {
+              "id": "rust-testing-doc-tests",
+              "difficulty": 2,
+              "prompt": "Esimerkkikoodi ///-doc-kommentissa pitää pysyä oikeana. Miten ajat doc testit?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-doc-tests.md"
+            },
+            {
+              "id": "rust-testing-integration-dir",
+              "difficulty": 2,
+              "prompt": "Haluat testata kirjastoa ulkoisena asiakkaana (public API). Minne integration testit?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-integration-dir.md"
+            },
+            {
+              "id": "rust-testing-mock-trait",
+              "difficulty": 3,
+              "prompt": "Haluat korvata HTTP-clientin testissä ilman oikeaa verkkoa. Mikä pattern Rustissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-mock-trait.md"
+            },
+            {
+              "id": "rust-testing-proptest",
+              "difficulty": 4,
+              "prompt": "Haluat generoida satoja satunnaisia syötteitä parserille. Mikä crate sopii property-based -testaukseen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-proptest.md"
+            },
+            {
+              "id": "rust-testing-should-panic",
+              "difficulty": 2,
+              "prompt": "Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutti?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-should-panic.md"
+            },
+            {
+              "id": "rust-testing-tokio-test",
+              "difficulty": 2,
+              "prompt": "Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testissä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-tokio-test.md"
             }
           ]
         },
