@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-06T12:44:07.743Z",
+  "generatedAt": "2026-07-06T12:54:35.539Z",
   "summary": {
-    "totalQuestions": 1279,
-    "readyLessons": 1279,
+    "totalQuestions": 1339,
+    "readyLessons": 1339,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -6826,8 +6826,8 @@
     {
       "id": "qt",
       "label": "Qt",
-      "ready": 154,
-      "total": 154,
+      "ready": 164,
+      "total": 164,
       "chapters": [
         {
           "id": "qt-models",
@@ -6967,6 +6967,116 @@
               "prompt": "Taulukkomalli päivittyy (lajittelu/suodatus). Miten tallennat rivin tunnisteen turvallisesti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/qt-models-persistent-index.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-native-data",
+          "label": "qt-native-data",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "qt-native-json-content",
+              "difficulty": 2,
+              "prompt": "content/question-banks/*.json Qt-hostissa — miten ladataan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-json-content.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-native-deploy",
+          "label": "qt-native-deploy",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "qt-native-packaging",
+              "difficulty": 3,
+              "prompt": "Qt desktop -peli ja content/-JSONit mukana. Julkaisutapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-packaging.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-native-input",
+          "label": "qt-native-input",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "qt-native-keyboard-handlekey",
+              "difficulty": 2,
+              "prompt": "Pelaaja painaa H-näppäintä. Qt-hostin tehtävä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-keyboard-handlekey.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-native-render",
+          "label": "qt-native-render",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "qt-native-canvas-isometric",
+              "difficulty": 3,
+              "prompt": "Isometrinen kartta Qt desktopissa — tyypillinen piirtopinta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-canvas-isometric.md"
+            }
+          ]
+        },
+        {
+          "id": "qt-native-shell",
+          "label": "qt-native-shell",
+          "ready": 6,
+          "total": 6,
+          "questions": [
+            {
+              "id": "qt-native-android-not-replace",
+              "difficulty": 2,
+              "prompt": "Qt Mobile Androidille — korvaako se projektin Compose-linjan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-android-not-replace.md"
+            },
+            {
+              "id": "qt-native-desktop-why",
+              "difficulty": 2,
+              "prompt": "Miksi Qt 6 on varteenotettava Koodisampo-tyyppiselle desktop-natiiville?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-desktop-why.md"
+            },
+            {
+              "id": "qt-native-qml-vs-widgets",
+              "difficulty": 3,
+              "prompt": "Quiz-dialogit ja valikot Qt-hostissa — QML vai Widgets?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-qml-vs-widgets.md"
+            },
+            {
+              "id": "qt-native-snapshot-ui",
+              "difficulty": 3,
+              "prompt": "Qt-host saa JSON-snapshotin pelistä. Miten päivität näkymän?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-snapshot-ui.md"
+            },
+            {
+              "id": "qt-native-threading",
+              "difficulty": 3,
+              "prompt": "Ranger-dispatch tulevaisuudessa raskaampi. Qt-threading-malli?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-threading.md"
+            },
+            {
+              "id": "qt-native-vs-web",
+              "difficulty": 2,
+              "prompt": "Milloin Qt desktop voittaa selainversion (GitHub Pages)?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/qt-native-vs-web.md"
             }
           ]
         },
@@ -9587,6 +9697,564 @@
               "prompt": "Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavalliseen u64:ään. Miten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-types-tuple-struct.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flutter",
+      "label": "flutter",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "flutter-arch",
+          "label": "flutter-arch",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "flutter-platform-channel",
+              "difficulty": 4,
+              "prompt": "Ranger ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-platform-channel.md"
+            },
+            {
+              "id": "flutter-thin-host",
+              "difficulty": 3,
+              "prompt": "Flutter-versio Koodisampo-tyyppisestä pelistä — minne pelisäännöt kuuluvat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-thin-host.md"
+            },
+            {
+              "id": "flutter-turnbased-no-loop",
+              "difficulty": 2,
+              "prompt": "Koodisampo on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game loop?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-turnbased-no-loop.md"
+            },
+            {
+              "id": "flutter-vs-compose",
+              "difficulty": 3,
+              "prompt": "Projektissa on jo Android Compose + Ranger Kotlin. Milloin Flutter olisi silti järkevä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-vs-compose.md"
+            }
+          ]
+        },
+        {
+          "id": "flutter-data",
+          "label": "flutter-data",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "flutter-assets-json",
+              "difficulty": 2,
+              "prompt": "content/worlds/*.json ja question-banks bundlataan mobiiliin. Flutter-mekanismi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-assets-json.md"
+            }
+          ]
+        },
+        {
+          "id": "flutter-platform",
+          "label": "flutter-platform",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "flutter-desktop-linux",
+              "difficulty": 2,
+              "prompt": "Haluat yhden Flutter-koodipohjan Android + Linux desktop -natiiviin. Onnistuuko?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-desktop-linux.md"
+            }
+          ]
+        },
+        {
+          "id": "flutter-state",
+          "label": "flutter-state",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "flutter-state-management",
+              "difficulty": 3,
+              "prompt": "GameController päivittää snapshotin jokaisen näppäimen jälkeen. Mikä state-ratkaisu sopii?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-state-management.md"
+            }
+          ]
+        },
+        {
+          "id": "flutter-ui",
+          "label": "flutter-ui",
+          "ready": 3,
+          "total": 3,
+          "questions": [
+            {
+              "id": "flutter-custompaint-grid",
+              "difficulty": 3,
+              "prompt": "ASCII/isometrinen kartta Flutterissa — tehokkain tapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-custompaint-grid.md"
+            },
+            {
+              "id": "flutter-keyboard-input",
+              "difficulty": 2,
+              "prompt": "Desktop-Flutter: pelaaja käyttää näppäimistöä (hjkl). Miten otat syötteen vastaan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-keyboard-input.md"
+            },
+            {
+              "id": "flutter-repaint-boundary",
+              "difficulty": 3,
+              "prompt": "Kartta piirretään uudelleen, mutta HUD (karma, nälkä) pysyy samana. Optimointi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/flutter-repaint-boundary.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gameengines",
+      "label": "gameengines",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "gameengines-arch",
+          "label": "gameengines-arch",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "gameengines-data-driven-json",
+              "difficulty": 3,
+              "prompt": "content/worlds, question-banks, stories — miksi tämä sopii custom-moottoriin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-data-driven-json.md"
+            },
+            {
+              "id": "gameengines-multi-target-ranger",
+              "difficulty": 3,
+              "prompt": "Miten Koodisampo saavuttaa monialustaisuuden ilman Unityä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-multi-target-ranger.md"
+            },
+            {
+              "id": "gameengines-test-headless",
+              "difficulty": 3,
+              "prompt": "npm run test:engine ajaa 50+ headless-testiä ilman UI:ta. Hyöty arkkitehtuurivalinnassa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-test-headless.md"
+            },
+            {
+              "id": "gameengines-thin-host-pattern",
+              "difficulty": 3,
+              "prompt": "Snapshot + handleKey -malli — mikä on pelimoottorin vastine?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-thin-host-pattern.md"
+            }
+          ]
+        },
+        {
+          "id": "gameengines-choice",
+          "label": "gameengines-choice",
+          "ready": 6,
+          "total": 6,
+          "questions": [
+            {
+              "id": "gameengines-ascii-grid-simple",
+              "difficulty": 2,
+              "prompt": "ASCII/isometrinen ruudukko — tarvitaanko scene graph -moottoria?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-ascii-grid-simple.md"
+            },
+            {
+              "id": "gameengines-dialog-heavy",
+              "difficulty": 2,
+              "prompt": "Peli on pääosin dialogeja, quizeja ja teksti-UI:ta. Mikä renderöintitarve?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-dialog-heavy.md"
+            },
+            {
+              "id": "gameengines-godot-gdscript-cost",
+              "difficulty": 3,
+              "prompt": "Godot + GDScript Koodisampo-logiikalle — mikä on piilokustannus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-godot-gdscript-cost.md"
+            },
+            {
+              "id": "gameengines-ranger-not-unity",
+              "difficulty": 2,
+              "prompt": "Miksi Unity/Godot ei ole ensisijainen valinta Koodisampo-tyyppiselle pelille?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-ranger-not-unity.md"
+            },
+            {
+              "id": "gameengines-turnbased-sim",
+              "difficulty": 2,
+              "prompt": "Vuoropohjainen toimistosimulaatio — mitä pelimoottorin ominaisuuksia EI tarvita?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-turnbased-sim.md"
+            },
+            {
+              "id": "gameengines-when-unity-ok",
+              "difficulty": 2,
+              "prompt": "Milloin Unity/Godot OLISI järkevä aloittaa tyhjästä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/gameengines-when-unity-ok.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kotlin",
+      "label": "kotlin",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "kotlin-compose-arch",
+          "label": "kotlin-compose-arch",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "kotlin-compose-kmp-ios",
+              "difficulty": 4,
+              "prompt": "Haluat saman Compose-UI:n Androidin ja iOS:n natiiviversioihin. Mikä polku?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-kmp-ios.md"
+            },
+            {
+              "id": "kotlin-compose-ranger-kotlin",
+              "difficulty": 3,
+              "prompt": "Miten Android-host saa saman pelilogiikan kuin web-versio ilman JS-kopiota?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-ranger-kotlin.md"
+            },
+            {
+              "id": "kotlin-compose-snapshot-host",
+              "difficulty": 3,
+              "prompt": "Koodisampo-tyyppisessä pelissä pelilogiikka on Rangerissa ja host rakentaa snapshotin UI:lle. Mikä on Compose-hostin rooli?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-snapshot-host.md"
+            },
+            {
+              "id": "kotlin-compose-vs-rn",
+              "difficulty": 2,
+              "prompt": "Miksi Koodisampo-projekti suosii Composea React Nativelle Android-natiivissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-vs-rn.md"
+            }
+          ]
+        },
+        {
+          "id": "kotlin-compose-persist",
+          "label": "kotlin-compose-persist",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "kotlin-compose-datastore",
+              "difficulty": 3,
+              "prompt": "Web tallentaa karmaa localStorageen. Android-pariteetti tallennukselle?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-datastore.md"
+            }
+          ]
+        },
+        {
+          "id": "kotlin-compose-state",
+          "label": "kotlin-compose-state",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "kotlin-compose-main-thread",
+              "difficulty": 3,
+              "prompt": "Ranger-dispatch kestää alle millisekunnin. Mistä päivität UI:n dispatchin jälkeen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-main-thread.md"
+            },
+            {
+              "id": "kotlin-compose-viewmodel",
+              "difficulty": 2,
+              "prompt": "Pelin UI-tila (hissivalitsimen collapse, aktiivinen overlay) elää hostissa eikä Rangerissa. Minne se kannattaa laittaa Androidissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-viewmodel.md"
+            }
+          ]
+        },
+        {
+          "id": "kotlin-compose-ui",
+          "label": "kotlin-compose-ui",
+          "ready": 3,
+          "total": 3,
+          "questions": [
+            {
+              "id": "kotlin-compose-canvas-grid",
+              "difficulty": 3,
+              "prompt": "Isometrinen ruudukkokartta Androidissa — mikä Compose-ratkaisu sopii parhaiten?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-canvas-grid.md"
+            },
+            {
+              "id": "kotlin-compose-screen-routing",
+              "difficulty": 2,
+              "prompt": "Snapshot palauttaa screen: map | encounter | story | menu. Miten Compose vaihtaa näkymää?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-screen-routing.md"
+            },
+            {
+              "id": "kotlin-compose-touch-dpad",
+              "difficulty": 2,
+              "prompt": "Mobiilipelaaja liikkuu D-pad-napeilla. Miten välität suuntanäppäimen hostille?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/kotlin-compose-touch-dpad.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "react-native",
+      "label": "react-native",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "rn-arch",
+          "label": "rn-arch",
+          "ready": 5,
+          "total": 5,
+          "questions": [
+            {
+              "id": "rn-grid-game-fit",
+              "difficulty": 2,
+              "prompt": "Miksi React Native on huono ensisijainen valinta Koodisampo-tyyppiselle ruudukkopelille?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-grid-game-fit.md"
+            },
+            {
+              "id": "rn-native-module",
+              "difficulty": 4,
+              "prompt": "Jos RN:ää käytetään silti, missä Ranger-logiikan pitäisi ajaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-native-module.md"
+            },
+            {
+              "id": "rn-vs-capacitor",
+              "difficulty": 2,
+              "prompt": "Valmiit web-game + mobiilijulkaisu. Capacitor vs React Native?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-vs-capacitor.md"
+            },
+            {
+              "id": "rn-webview-wrap",
+              "difficulty": 2,
+              "prompt": "RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-gamesta. Käytännöllisin tapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-webview-wrap.md"
+            },
+            {
+              "id": "rn-when-ok",
+              "difficulty": 2,
+              "prompt": "Milloin React Native olisi silti perusteltu peliprojektissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-when-ok.md"
+            }
+          ]
+        },
+        {
+          "id": "rn-perf",
+          "label": "rn-perf",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rn-bridge-overhead",
+              "difficulty": 3,
+              "prompt": "RN kutsuu natiivimoduulia jokaisella näppäinpainalluksella. Mikä riski vuoropohjaisessa pelissä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-bridge-overhead.md"
+            },
+            {
+              "id": "rn-new-architecture",
+              "difficulty": 3,
+              "prompt": "React Native New Architecture (Fabric/TurboModules) — hyöty peli-hostille?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-new-architecture.md"
+            }
+          ]
+        },
+        {
+          "id": "rn-tooling",
+          "label": "rn-tooling",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rn-expo-limits",
+              "difficulty": 2,
+              "prompt": "Expo managed workflow — mikä rajoitus osuu custom-pelimoottoriin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-expo-limits.md"
+            },
+            {
+              "id": "rn-hermes-engine",
+              "difficulty": 3,
+              "prompt": "Hermes on RN:n oletus-JS-moottori. Relevanssi jos pelilogiikka on silti natiivissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-hermes-engine.md"
+            }
+          ]
+        },
+        {
+          "id": "rn-ui",
+          "label": "rn-ui",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "rn-flatlist-vs-canvas",
+              "difficulty": 3,
+              "prompt": "Ruudukkokartta RN:ssä — miksi FlatList jokaiselle solulle on huono idea?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rn-flatlist-vs-canvas.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "webshell",
+      "label": "webshell",
+      "ready": 10,
+      "total": 10,
+      "chapters": [
+        {
+          "id": "webshell-arch",
+          "label": "webshell-arch",
+          "ready": 3,
+          "total": 3,
+          "questions": [
+            {
+              "id": "webshell-pwa-vs-shell",
+              "difficulty": 2,
+              "prompt": "GitHub Pages -PWA vs Capacitor App Store -julkaisu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-pwa-vs-shell.md"
+            },
+            {
+              "id": "webshell-reuse-web-build",
+              "difficulty": 2,
+              "prompt": "Mikä on web-kuoren suurin etu Koodisampo-arkkitehtuurissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-reuse-web-build.md"
+            },
+            {
+              "id": "webshell-vs-true-native",
+              "difficulty": 2,
+              "prompt": "Milloin web-kuori EI riitä ja tarvitaan Compose/Qt?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-vs-true-native.md"
+            }
+          ]
+        },
+        {
+          "id": "webshell-data",
+          "label": "webshell-data",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "webshell-offline-assets",
+              "difficulty": 2,
+              "prompt": "web-game bundlaa content/ JSONit public/-kansioon. Toimiiko offline kuoressa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-offline-assets.md"
+            }
+          ]
+        },
+        {
+          "id": "webshell-desktop",
+          "label": "webshell-desktop",
+          "ready": 3,
+          "total": 3,
+          "questions": [
+            {
+              "id": "webshell-keyboard-forward",
+              "difficulty": 3,
+              "prompt": "Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-keyboard-forward.md"
+            },
+            {
+              "id": "webshell-tauri-rust-side",
+              "difficulty": 3,
+              "prompt": "Milloin Tauri Rust-puoli (`src-tauri`) on hyödyllinen peli-hostissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-tauri-rust-side.md"
+            },
+            {
+              "id": "webshell-tauri-vs-electron",
+              "difficulty": 2,
+              "prompt": "Desktop-natiivi web-game:lle — miksi Tauri usein voittaa Electronin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-tauri-vs-electron.md"
+            }
+          ]
+        },
+        {
+          "id": "webshell-mobile",
+          "label": "webshell-mobile",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "webshell-capacitor-mobile",
+              "difficulty": 2,
+              "prompt": "Capacitor mobiilissa — mitä se tekee Koodisampo-web-buildille?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-capacitor-mobile.md"
+            }
+          ]
+        },
+        {
+          "id": "webshell-persist",
+          "label": "webshell-persist",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "webshell-save-storage",
+              "difficulty": 3,
+              "prompt": "Web käyttää IndexedDB:tä. Capacitor/Tauri-tallennus vastine?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-save-storage.md"
+            }
+          ]
+        },
+        {
+          "id": "webshell-security",
+          "label": "webshell-security",
+          "ready": 1,
+          "total": 1,
+          "questions": [
+            {
+              "id": "webshell-security-csp",
+              "difficulty": 3,
+              "prompt": "Tauri-sovellus lataa paikallisen index.html:n. Turvallisuushuomio?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/webshell-security-csp.md"
             }
           ]
         }

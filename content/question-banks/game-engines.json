@@ -1,0 +1,207 @@
+{
+  "id": "game-engines",
+  "domain": "gameengines",
+  "source": "https://docs.godotengine.org/",
+  "questions": [
+    {
+      "id": "gameengines-ranger-not-unity",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": ["coworker", "project-lead", "ceo"],
+      "prompt": "Miksi Unity/Godot ei ole ensisijainen valinta Koodisampo-tyyppiselle pelille?",
+      "choices": [
+        { "text": "~5700 riviä pelilogiikkaa on jo Rangerissa — uudelleenkirjoitus moottoriin on turhaa", "correct": true },
+        { "text": "Unity ei tue 2D-karttoja", "correct": false },
+        { "text": "Godot kieltää JSON-sisällön", "correct": false },
+        { "text": "Pelimoottorit eivät toimi mobiilissa", "correct": false }
+      ],
+      "correctFeedback": "Moottori on jo olemassa (.rgr + testit); tarvitaan host, ei Unity.",
+      "wrongFeedback": "Ongelma on investoidun logiikan uudelleenkäyttö, ei 2D-rajoite.",
+      "sourceRef": "koodisampo/ranger",
+      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/lib/game/ranger",
+      "featureId": "gameengines:not-unity",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-turnbased-sim",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Vuoropohjainen toimistosimulaatio — mitä pelimoottorin ominaisuuksia EI tarvita?",
+      "choices": [
+        { "text": "Fysiikkamoottori, partikkelit, 3D-valaistus — peli on event-driven grid", "correct": true },
+        { "text": "Scene graph ja input-käsittely", "correct": false },
+        { "text": "Asset pipeline kuville", "correct": false },
+        { "text": "Äänen toisto", "correct": false }
+      ],
+      "correctFeedback": "NetHack-tyyppinen simu on kevyt — custom host riittää.",
+      "wrongFeedback": "Input ja renderöinti tarvitaan, mutta raskas 3D-fysiikka ei.",
+      "sourceRef": "godot/2d",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/2d/",
+      "featureId": "gameengines:turnbased",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-data-driven-json",
+      "chapter": "gameengines-arch",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "content/worlds, question-banks, stories — miksi tämä sopii custom-moottoriin?",
+      "choices": [
+        { "text": "Data on jo JSONissa — pelimoottori lataa, Ranger tulkitsee; ei editorin lock-inia", "correct": true },
+        { "text": "JSON toimii vain Unityssä ScriptableObjecteina", "correct": false },
+        { "text": "Godot ei voi lukea ulkoisia tiedostoja", "correct": false },
+        { "text": "JSON pitää aina kovakoodata C#:ään", "correct": false }
+      ],
+      "correctFeedback": "Data-driven arkkitehtuuri on vahvuus — moottorivalinta ei muuta sitä.",
+      "wrongFeedback": "Unity/Godot voisivat lukea JSONin, mutta logiikka on silti Rangerissa.",
+      "sourceRef": "koodisampo/content",
+      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/content",
+      "featureId": "gameengines:data-json",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-thin-host-pattern",
+      "chapter": "gameengines-arch",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": ["guru", "project-lead"],
+      "prompt": "Snapshot + handleKey -malli — mikä on pelimoottorin vastine?",
+      "choices": [
+        { "text": "Ei perinteistä moottoria — GameSession on simulaatio, host on 'platform layer'", "correct": true },
+        { "text": "Unity Update()-loop kutsuu GameSessionia", "correct": false },
+        { "text": "Godot _process() on pakollinen joka framella", "correct": false },
+        { "text": "Unreal GameMode hoitaa quiz-kysymykset", "correct": false }
+      ],
+      "correctFeedback": "Koodisampo on simulaatiokirjasto + hostit, ei scene-puu-peli.",
+      "wrongFeedback": "Event-driven API ei tarvitse frame loop -moottoria.",
+      "sourceRef": "koodisampo/controller-parity",
+      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/docs/android-web-controller-parity.md",
+      "featureId": "gameengines:thin-host",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-dialog-heavy",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": ["coworker", "secretary"],
+      "prompt": "Peli on pääosin dialogeja, quizeja ja teksti-UI:ta. Mikä renderöintitarve?",
+      "choices": [
+        { "text": "Kevyt 2D/teksti riittää — DOM, Compose tai Qt Widgets, ei 3D-pipelinea", "correct": true },
+        { "text": "Pakollinen Unreal Motion Matching NPC:ille", "correct": false },
+        { "text": "Unity HDRP varjojen vuoksi", "correct": false },
+        { "text": "Pelimoottori pakollinen tekstin wrapille", "correct": false }
+      ],
+      "correctFeedback": "UI-kerros hoitaa tekstin; moottorin 3D-ominaisuudet ovat ylikilloa.",
+      "wrongFeedback": "Teksti- ja valikkopohjainen peli on web/natiivi-UI:n vahvuusalue.",
+      "sourceRef": "koodisampo/features",
+      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/README.md",
+      "featureId": "gameengines:dialog-ui",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-multi-target-ranger",
+      "chapter": "gameengines-arch",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": ["guru", "project-lead"],
+      "prompt": "Miten Koodisampo saavuttaa monialustaisuuden ilman Unityä?",
+      "choices": [
+        { "text": "Ranger kääntyy JS/Kotliniin — sama logiikka, eri ohut host per alusta", "correct": true },
+        { "text": "Unity buildaa kaikille alustoille automaattisesti", "correct": false },
+        { "text": "Godot export riittää ilman logiikan uudelleenkirjoitusta", "correct": false },
+        { "text": "Vain yksi alusta tuettu suunnitelmallisesti", "correct": false }
+      ],
+      "correctFeedback": "Käännös-targetit + host-pariteetti on oikea multiplatform-strategia.",
+      "wrongFeedback": "Unity-export ei auta jos logiikka ei ole Unityssä.",
+      "sourceRef": "koodisampo/agents",
+      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/AGENTS.md",
+      "featureId": "gameengines:multi-ranger",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-when-unity-ok",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": ["project-lead", "ceo"],
+      "prompt": "Milloin Unity/Godot OLISI järkevä aloittaa tyhjästä?",
+      "choices": [
+        { "text": "Uusi real-time action/3D-peli ilman olemassa olevaa simulaatiokoodia", "correct": true },
+        { "text": "Aina kun projektissa on JSON-tiedostoja", "correct": false },
+        { "text": "Kun tarvitaan quiz-kysymyksiä", "correct": false },
+        { "text": "Kun peli on vuoropohjainen ASCII-grid", "correct": false }
+      ],
+      "correctFeedback": "Pelimoottorit loistavat uusissa visuaalisissa peleissä — ei legacy-simulaatiossa.",
+      "wrongFeedback": "Koodisampo on jo simulaatio — moottorin vaihto maksaa enemmän kuin hyöty.",
+      "sourceRef": "unity/manual",
+      "sourceUrl": "https://docs.unity3d.com/Manual/index.html",
+      "featureId": "gameengines:when-unity",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-godot-gdscript-cost",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": ["guru", "coworker"],
+      "prompt": "Godot + GDScript Koodisampo-logiikalle — mikä on piilokustannus?",
+      "choices": [
+        { "text": "Koko Ranger + testit + CI pitää portata — kaksi totuutta ylläpidossa", "correct": true },
+        { "text": "GDScript on identtinen Rangerin kanssa", "correct": false },
+        { "text": "Godot lukee .rgr-tiedostoja suoraan", "correct": false },
+        { "text": "Ei kustannusta — Godot on ilmainen", "correct": false }
+      ],
+      "correctFeedback": "Ilmainen moottori ≠ ilmainen migraatio.",
+      "wrongFeedback": "Ylläpito-kustannus on duplikaattilogiikassa, ei lisenssissä.",
+      "sourceRef": "godot/scripting",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/scripting/",
+      "featureId": "gameengines:godot-cost",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-test-headless",
+      "chapter": "gameengines-arch",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": ["guru", "coworker"],
+      "prompt": "npm run test:engine ajaa 50+ headless-testiä ilman UI:ta. Hyöty arkkitehtuurivalinnassa?",
+      "choices": [
+        { "text": "Logiikka erotettu UI:sta — CI varmistaa säännöt ilman Unity-editoria", "correct": true },
+        { "text": "Testit vaativat aina Unity Test Runnerin", "correct": false },
+        { "text": "Headless-testit eivät kata pelilogiikkaa", "correct": false },
+        { "text": "Vain manuaalinen pelitestaus on luotettavaa", "correct": false }
+      ],
+      "correctFeedback": "Ranger + Node-testit on vahvuus jota pelimoottorin vaihto heikentäisi.",
+      "wrongFeedback": "Simulaatiokerros on testattavissa suoraan — UI ei tarvita.",
+      "sourceRef": "koodisampo/test",
+      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/test",
+      "featureId": "gameengines:headless-test",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-ascii-grid-simple",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": ["coworker", "secretary"],
+      "prompt": "ASCII/isometrinen ruudukko — tarvitaanko scene graph -moottoria?",
+      "choices": [
+        { "text": "Ei — canvas/terminal/Compose piirtää snapshot-rivit, logiikka on string[][]", "correct": true },
+        { "text": "Kyllä — ilman Unity Tilemapia kartta ei toimi", "correct": false },
+        { "text": "Godot TileMapLayer on pakollinen", "correct": false },
+        { "text": "Ruudukko vaatii aina GPU-fysiikan", "correct": false }
+      ],
+      "correctFeedback": "Yksinkertainen renderöinti — moottorin scene-puu on overkill.",
+      "wrongFeedback": "MapView on data — piirto on hostin tehtävä.",
+      "sourceRef": "koodisampo/map",
+      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/web-game/src/render",
+      "featureId": "gameengines:ascii-grid",
+      "featurePoints": 2
+    }
+  ]
+}

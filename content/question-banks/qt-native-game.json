@@ -1,0 +1,207 @@
+{
+  "id": "qt-native-game",
+  "domain": "qt",
+  "source": "https://doc.qt.io/qt-6/",
+  "questions": [
+    {
+      "id": "qt-native-desktop-why",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": ["coworker", "project-lead", "ceo"],
+      "prompt": "Miksi Qt 6 on varteenotettava Koodisampo-tyyppiselle desktop-natiiville?",
+      "choices": [
+        { "text": "Yksi C++/Qt-koodi Linux/Windows/macOS — näppäimistö, ikkuna, offline ilman selainta", "correct": true },
+        { "text": "Qt on pakollinen kaikille peleille", "correct": false },
+        { "text": "Qt korvaa Ranger-logiikan automaattisesti", "correct": false },
+        { "text": "Qt toimii vain Androidilla", "correct": false }
+      ],
+      "correctFeedback": "Desktop-natiivi erillisellä UI-pinolla — rinnakkain web/Compose.",
+      "wrongFeedback": "Qt on työkalu desktop-kuoreen, ei pelimoottorin korvike.",
+      "sourceRef": "qt/supported-platforms",
+      "sourceUrl": "https://doc.qt.io/qt-6/supported-platforms.html",
+      "featureId": "qt:native-desktop",
+      "featurePoints": 2
+    },
+    {
+      "id": "qt-native-snapshot-ui",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Qt-host saa JSON-snapshotin pelistä. Miten päivität näkymän?",
+      "choices": [
+        { "text": "GameController emitoi snapshotReady — widgetit/slotit piirtävät uudelleen", "correct": true },
+        { "text": "QTimer pollaa tiedostoa 60 Hz", "correct": false },
+        { "text": "Ranger piirtää suoraan QPainteriin ilman hostia", "correct": false },
+        { "text": "Snapshot tallennetaan QSettingsiin joka ruudulla", "correct": false }
+      ],
+      "correctFeedback": "Sama signaali/snapshot-malli kuin web GameController.",
+      "wrongFeedback": "Event-driven päivitys näppäimen jälkeen — ei jatkuvaa pollausta.",
+      "sourceRef": "qt/signals-slots",
+      "sourceUrl": "https://doc.qt.io/qt-6/signalsandslots.html",
+      "featureId": "qt:snapshot-ui",
+      "featurePoints": 3
+    },
+    {
+      "id": "qt-native-keyboard-handlekey",
+      "chapter": "qt-native-input",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Pelaaja painaa H-näppäintä. Qt-hostin tehtävä?",
+      "choices": [
+        { "text": "keyPressEvent → handleKey(\"h\") → päivitä snapshot — sama API kuin web", "correct": true },
+        { "text": "Muuta suoraan WorldMap-koordinaatteja widgetissä", "correct": false },
+        { "text": "Lähetä QKeyEvent Rangerille ilman host-kontrolleria", "correct": false },
+        { "text": "Näppäimet eivät toimi QWidget-sovelluksissa", "correct": false }
+      ],
+      "correctFeedback": "Ohut host välittää merkkijononäppäimet — ei duplikaattiliikelogiikkaa.",
+      "wrongFeedback": "QShortcut/keyPressEvent on Qt-idiomi; logiikka hostissa.",
+      "sourceRef": "qt/qkeyevent",
+      "sourceUrl": "https://doc.qt.io/qt-6/qkeyevent.html",
+      "featureId": "qt:keyboard-handlekey",
+      "featurePoints": 2
+    },
+    {
+      "id": "qt-native-canvas-isometric",
+      "chapter": "qt-native-render",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Isometrinen kartta Qt desktopissa — tyypillinen piirtopinta?",
+      "choices": [
+        { "text": "QOpenGLWidget tai QPainter custom widgetissä — snapshot → piirto", "correct": true },
+        { "text": "QTableWidget jokaiselle solulle", "correct": false },
+        { "text": "QML 3D Scene ilman 2D-vaihtoehtoa", "correct": false },
+        { "text": "Vain QLabel monospace-tekstillä ilman scrollia", "correct": false }
+      ],
+      "correctFeedback": "Sama idea kuin web isometricCanvas.ts — yksi piirtopinta.",
+      "wrongFeedback": "Ruudukko custom widgetissä skaalautuu paremmin kuin taulukko.",
+      "sourceRef": "qt/qopenglwidget",
+      "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
+      "featureId": "qt:canvas-isometric",
+      "featurePoints": 3
+    },
+    {
+      "id": "qt-native-vs-web",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": ["project-lead", "ceo"],
+      "prompt": "Milloin Qt desktop voittaa selainversion (GitHub Pages)?",
+      "choices": [
+        { "text": "Offline-asennus, natiivi tiedostotallennus, parempi näppäimistö/focus ilman WebView-rajoja", "correct": true },
+        { "text": "Aina — selain on aina huonompi", "correct": false },
+        { "text": "Qt ei tarvitse pelilogiikkaa ollenkaan", "correct": false },
+        { "text": "Vain jos peli on 3D", "correct": false }
+      ],
+      "correctFeedback": "Qt on investointi desktop-kokemukseen; web on edelleen helpoin jakaa.",
+      "wrongFeedback": "Molemmat voivat jakaa saman snapshot-skeeman.",
+      "sourceRef": "qt/qtwidgets",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtwidgets-index.html",
+      "featureId": "qt:vs-web",
+      "featurePoints": 2
+    },
+    {
+      "id": "qt-native-json-content",
+      "chapter": "qt-native-data",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": ["coworker", "secretary"],
+      "prompt": "content/question-banks/*.json Qt-hostissa — miten ladataan?",
+      "choices": [
+        { "text": "QFile + QJsonDocument — sama JSON kuin web/Node fetch", "correct": true },
+        { "text": "JSON pitää muuntaa .ui-tiedostoiksi", "correct": false },
+        { "text": "Qt ei tue JSONia natiivisti", "correct": false },
+        { "text": "Vain SQL-tietokanta tuettu", "correct": false }
+      ],
+      "correctFeedback": "Data-driven sisältö pysyy JSONissa kaikilla hosteilla.",
+      "wrongFeedback": "QJsonDocument on Qt:n standarditapa lukea pankit.",
+      "sourceRef": "qt/qjsondocument",
+      "sourceUrl": "https://doc.qt.io/qt-6/qjsondocument.html",
+      "featureId": "qt:json-content",
+      "featurePoints": 2
+    },
+    {
+      "id": "qt-native-qml-vs-widgets",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": ["guru", "coworker"],
+      "prompt": "Quiz-dialogit ja valikot Qt-hostissa — QML vai Widgets?",
+      "choices": [
+        { "text": "Molemmat toimivat — Widgets nopea prototyyppiin, QML joustava animaatioon", "correct": true },
+        { "text": "QML pakollinen kaikissa Qt 6 -peleissä", "correct": false },
+        { "text": "Widgets poistettu Qt 6:ssa", "correct": false },
+        { "text": "Vain QDialog HTML:llä", "correct": false }
+      ],
+      "correctFeedback": "Teksti-painotteinen UI on Widgets/QML:n vahvuus — ei 3D-moottoria.",
+      "wrongFeedback": "Valinta on tiimin maku; molemmat sopivat dialogeihin.",
+      "sourceRef": "qt/qml-vs-widgets",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtquick-index.html",
+      "featureId": "qt:qml-vs-widgets",
+      "featurePoints": 3
+    },
+    {
+      "id": "qt-native-threading",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": ["guru", "coworker"],
+      "prompt": "Ranger-dispatch tulevaisuudessa raskaampi. Qt-threading-malli?",
+      "choices": [
+        { "text": "Worker QThread + QueuedConnection takaisin GUI:hin — snapshot vain main threadissä", "correct": true },
+        { "text": "QPainter suoraan worker-threadistä", "correct": false },
+        { "text": "Kaikki GameSession GUI-threadissä aina", "correct": false },
+        { "text": "Qt ei tue taustasäikeitä", "correct": false }
+      ],
+      "correctFeedback": "Sama sääntö kuin Compose: logiikka voi olla taustalla, UI ei.",
+      "wrongFeedback": "GUI ei ole thread-safe — QueuedConnection on pakollinen.",
+      "sourceRef": "qt/thread-basics",
+      "sourceUrl": "https://doc.qt.io/qt-6/thread-basics.html",
+      "featureId": "qt:threading",
+      "featurePoints": 3
+    },
+    {
+      "id": "qt-native-packaging",
+      "chapter": "qt-native-deploy",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": ["coworker", "project-lead"],
+      "prompt": "Qt desktop -peli ja content/-JSONit mukana. Julkaisutapa?",
+      "choices": [
+        { "text": "windeployqt/macdeployqt/linuxdeploy — bundlaa Qt + assets samassa paketissa", "correct": true },
+        { "text": "Käyttäjä kloonaa git-repon ja ajaa npm install", "correct": false },
+        { "text": "JSONit haetaan aina internetistä", "correct": false },
+        { "text": "Qt-sovelluksia ei voi paketoida staattisesti", "correct": false }
+      ],
+      "correctFeedback": "Deploy-työkalut kopioivat riippuvuudet — content/ mukaan resursseihin.",
+      "wrongFeedback": "Offline-peli vaatii assetit paketissa.",
+      "sourceRef": "qt/deployment",
+      "sourceUrl": "https://doc.qt.io/qt-6/deployment.html",
+      "featureId": "qt:packaging",
+      "featurePoints": 3
+    },
+    {
+      "id": "qt-native-android-not-replace",
+      "chapter": "qt-native-shell",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": ["project-lead", "ceo", "coworker"],
+      "prompt": "Qt Mobile Androidille — korvaako se projektin Compose-linjan?",
+      "choices": [
+        { "text": "Ei suositella — Compose + Ranger Kotlin on jo valittu polku; Qt desktop erikseen", "correct": true },
+        { "text": "Kyllä — Qt Mobile on aina parempi kuin Compose", "correct": false },
+        { "text": "Qt ja Compose eivät voi jakaa samaa logiikkaa", "correct": false },
+        { "text": "Android vaatii Qt:n App Store -julkaisuun", "correct": false }
+      ],
+      "correctFeedback": "Qt desktop + Compose Android on järkevä jako — ei kahta mobiili-UI:ta.",
+      "wrongFeedback": "Ranger on jaettu; UI-valinta on alustakohtainen.",
+      "sourceRef": "koodisampo/android-parity",
+      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/docs/android-web-controller-parity.md",
+      "featureId": "qt:not-replace-compose",
+      "featurePoints": 2
+    }
+  ]
+}

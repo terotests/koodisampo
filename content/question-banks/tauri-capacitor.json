@@ -1,0 +1,207 @@
+{
+  "id": "tauri-capacitor",
+  "domain": "webshell",
+  "source": "https://tauri.app/",
+  "questions": [
+    {
+      "id": "webshell-tauri-vs-electron",
+      "chapter": "webshell-desktop",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["coworker", "project-lead", "ceo"],
+      "prompt": "Desktop-natiivi web-game:lle — miksi Tauri usein voittaa Electronin?",
+      "choices": [
+        { "text": "Pienempi binääri ja vähemmän muistia — järjestelmän WebView, Rust-backend tarvittaessa", "correct": true },
+        { "text": "Tauri vaatii aina internet-yhteyden", "correct": false },
+        { "text": "Electron on ainoa tapa ajaa Vite-buildia desktopilla", "correct": false },
+        { "text": "Tauri ei tue näppäimistöä", "correct": false }
+      ],
+      "correctFeedback": "Ohut kuori olemassa olevalle web-game/dist:lle — nopein desktop-polku.",
+      "wrongFeedback": "Electron toimii, mutta Tauri on kevyempi vaihtoehto staattiselle pelille.",
+      "sourceRef": "tauri/intro",
+      "sourceUrl": "https://tauri.app/start/",
+      "featureId": "webshell:tauri-electron",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-capacitor-mobile",
+      "chapter": "webshell-mobile",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["coworker", "project-lead"],
+      "prompt": "Capacitor mobiilissa — mitä se tekee Koodisampo-web-buildille?",
+      "choices": [
+        { "text": "Paketoi web-game/dist natiivikonttiin WebViewllä + tiedosto-/plugin-API", "correct": true },
+        { "text": "Kääntää TypeScriptin Kotliniksi automaattisesti", "correct": false },
+        { "text": "Korvaa Ranger-logiikan natiivilla", "correct": false },
+        { "text": "Toimii vain iOS:llä", "correct": false }
+      ],
+      "correctFeedback": "Sama peli selaimessa ja App Storessa ilman uutta UI-koodia.",
+      "wrongFeedback": "Capacitor on web-kuori, ei pelimoottori.",
+      "sourceRef": "capacitor/intro",
+      "sourceUrl": "https://capacitorjs.com/docs",
+      "featureId": "webshell:capacitor",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-reuse-web-build",
+      "chapter": "webshell-arch",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Mikä on web-kuoren suurin etu Koodisampo-arkkitehtuurissa?",
+      "choices": [
+        { "text": "web-game/ + koodisampo.cjs + content/ toimivat sellaisenaan — yksi build usealle alustalle", "correct": true },
+        { "text": "Web-kuori ajaa Rangerin nopeammin kuin natiivi", "correct": false },
+        { "text": "Ei tarvita sync-web-game-assets -skriptiä", "correct": false },
+        { "text": "Web-kuori poistaa tarpeen testata pelilogiikkaa", "correct": false }
+      ],
+      "correctFeedback": "Hosts ovat ohuita — web on jo valmis host; kuori lisää vain jakelukanavan.",
+      "wrongFeedback": "Sama CI-build → Tauri/Capacitor/PWA.",
+      "sourceRef": "koodisampo/web-game",
+      "sourceUrl": "https://github.com/terotests/koodisampo/tree/main/web-game",
+      "featureId": "webshell:reuse-build",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-save-storage",
+      "chapter": "webshell-persist",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Web käyttää IndexedDB:tä. Capacitor/Tauri-tallennus vastine?",
+      "choices": [
+        { "text": "Capacitor Preferences / Filesystem tai Tauri fs plugin — sama JSON-skeema", "correct": true },
+        { "text": "Tallennus ei toimi kuoressa — vain selain", "correct": false },
+        { "text": "localStorage toimii aina ilman rajoituksia mobiilissa", "correct": false },
+        { "text": "Pakota käyttäjä tallentamaan manuaalisesti tiedostoon", "correct": false }
+      ],
+      "correctFeedback": "Host hoitaa persistenssin — plugin API korvaa IndexedDB:n tarvittaessa.",
+      "wrongFeedback": "WebView IndexedDB voi toimia, mutta natiivi plugin on luotettavampi.",
+      "sourceRef": "capacitor/preferences",
+      "sourceUrl": "https://capacitorjs.com/docs/apis/preferences",
+      "featureId": "webshell:save-storage",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-pwa-vs-shell",
+      "chapter": "webshell-arch",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["project-lead", "ceo"],
+      "prompt": "GitHub Pages -PWA vs Capacitor App Store -julkaisu?",
+      "choices": [
+        { "text": "PWA riittää jaettuun linkkiin; kauppa vaatii kuoren tai natiivin", "correct": true },
+        { "text": "PWA ja natiiviappi ovat identtisiä kaupan näkökulmasta", "correct": false },
+        { "text": "PWA ei toimi offline-tilassa koskaan", "correct": false },
+        { "text": "App Store kieltää web-teknologiat kokonaan", "correct": false }
+      ],
+      "correctFeedback": "Koodisampo on jo PWA-yhteensopiva GitHub Pagesillä; kuori on valinnainen.",
+      "wrongFeedback": "PWA on helpoin; kauppa on erillinen kanava.",
+      "sourceRef": "web/progressive-web-apps",
+      "sourceUrl": "https://web.dev/explore/progressive-web-apps",
+      "featureId": "webshell:pwa-vs-shell",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-offline-assets",
+      "chapter": "webshell-data",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["coworker", "secretary"],
+      "prompt": "web-game bundlaa content/ JSONit public/-kansioon. Toimiiko offline kuoressa?",
+      "choices": [
+        { "text": "Kyllä — staattiset assetit mukana paketissa, fetch paikallisista tiedostoista", "correct": true },
+        { "text": "Ei — kuori vaatii aina CDN:n", "correct": false },
+        { "text": "Vain online-tila tuettu Capacitorissa", "correct": false },
+        { "text": "JSON pitää hakea erillisestä API:sta", "correct": false }
+      ],
+      "correctFeedback": "sync-web-game-assets kopioi pankit — sama offline kuin GitHub Pages.",
+      "wrongFeedback": "Staattinen build on offline-valmis.",
+      "sourceRef": "koodisampo/sync-assets",
+      "sourceUrl": "https://github.com/terotests/koodisampo/blob/main/scripts/sync-web-game-assets.mjs",
+      "featureId": "webshell:offline-assets",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-keyboard-forward",
+      "chapter": "webshell-desktop",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu?",
+      "choices": [
+        { "text": "Varmista WebView focus + pelin keydown-kuuntelijat web-game/src/ui.ts:ssä", "correct": true },
+        { "text": "Kirjoita pelilogiikka uudelleen Rustissa", "correct": false },
+        { "text": "Desktop ei tue näppäimistöpelejä", "correct": false },
+        { "text": "Poista keyboard-tuki ja käytä vain hiirtä", "correct": false }
+      ],
+      "correctFeedback": "Web-peli käsittelee jo näppäimet — kuoren tehtävä on focus/ikkuna.",
+      "wrongFeedback": "Ongelma on yleensä focus, ei pelikoodi.",
+      "sourceRef": "tauri/webview",
+      "sourceUrl": "https://tauri.app/reference/webview/",
+      "featureId": "webshell:keyboard",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-security-csp",
+      "chapter": "webshell-security",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": ["guru", "security"],
+      "prompt": "Tauri-sovellus lataa paikallisen index.html:n. Turvallisuushuomio?",
+      "choices": [
+        { "text": "CSP + rajoita Tauri allowlist — älä expose turhia shell-komentoja", "correct": true },
+        { "text": "Paikallinen HTML on aina turvallinen ilman CSP:tä", "correct": false },
+        { "text": "WebView ei voi ajaa JavaScriptiä", "correct": false },
+        { "text": "Turvallisuus ei koske offline-pelejä", "correct": false }
+      ],
+      "correctFeedback": "Tauri capabilities ja CSP estävät XSS:stä shell-pääsyn.",
+      "wrongFeedback": "Paikallinen ≠ automaattisesti turvallinen jos lataat ulkoista sisältöä.",
+      "sourceRef": "tauri/security",
+      "sourceUrl": "https://tauri.app/security/",
+      "featureId": "webshell:security-csp",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-vs-true-native",
+      "chapter": "webshell-arch",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": ["project-lead", "ceo", "coworker"],
+      "prompt": "Milloin web-kuori EI riitä ja tarvitaan Compose/Qt?",
+      "choices": [
+        { "text": "Kun tarvitaan syvä natiivi-integraatio, parempi suorituskyky tai offline ilman WebView-rajoja", "correct": true },
+        { "text": "Aina — web-kuori on vain demo", "correct": false },
+        { "text": "Kun pelissä on alle 10 kysymystä", "correct": false },
+        { "text": "Kun julkaistaan GitHub Pagesiin", "correct": false }
+      ],
+      "correctFeedback": "Kuori on pragmatismi; natiivi on investointi pariteettiin ja UX:ään.",
+      "wrongFeedback": "Monelle pelille web-kuori on tuotantokelpoinen.",
+      "sourceRef": "capacitor/vs-native",
+      "sourceUrl": "https://capacitorjs.com/docs/v3/plugins",
+      "featureId": "webshell:vs-native",
+      "featurePoints": 2
+    },
+    {
+      "id": "webshell-tauri-rust-side",
+      "chapter": "webshell-desktop",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": ["guru", "coworker"],
+      "prompt": "Milloin Tauri Rust-puoli (`src-tauri`) on hyödyllinen peli-hostissa?",
+      "choices": [
+        { "text": "Tiedostopolku tallennukseen, autostart, single-instance — ei pelilogiikkaan", "correct": true },
+        { "text": "Kirjoita GameSession Rustiin suorituskyvyn vuoksi", "correct": false },
+        { "text": "Rust korvaa aina JavaScriptin", "correct": false },
+        { "text": "Rust-puoli on pakollinen hello world -tasolla", "correct": false }
+      ],
+      "correctFeedback": "Rust host-tehtävissä; Ranger pysyy JS/Kotlin-lähteessä.",
+      "wrongFeedback": "Pelilogiikan duplikaatio Rustiin rikkoo yhden totuuden periaatteen.",
+      "sourceRef": "tauri/core",
+      "sourceUrl": "https://tauri.app/develop/",
+      "featureId": "webshell:tauri-rust",
+      "featurePoints": 3
+    }
+  ]
+}
