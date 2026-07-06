@@ -4,203 +4,353 @@
   "source": "https://tauri.app/",
   "questions": [
     {
+      "id": "webshell-tauri-security",
+      "chapter": "webshell-security",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tauri-sovellus exposeeraa komentoja frontendille. Mikä on turvallinen periaate?",
+      "choices": [
+        {
+          "text": "Salli vain tarvittavat capabilityt/komennot ja validoi syötteet backendissä",
+          "correct": true
+        },
+        {
+          "text": "Exposeeraa koko shell API frontendille",
+          "correct": false
+        },
+        {
+          "text": "Poista CSP koska sovellus on paikallinen",
+          "correct": false
+        },
+        {
+          "text": "Luota siihen että WebView ei voi ajaa hyökkäyskoodia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pienin oikeus ja syötteen validointi ovat Tauri-turvan perusta.",
+      "wrongFeedback": "Paikallinen sovellus voi silti kärsiä XSS:stä ja vääristä oikeuksista.",
+      "sourceRef": "tauri.app/security/",
+      "sourceUrl": "https://tauri.app/security/",
+      "featureId": "webshell:tauri-security",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-capacitor-plugin",
+      "chapter": "webshell-mobile",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Capacitor-sovellus tarvitsee kameran. Mikä on oikea lähestymistapa?",
+      "choices": [
+        {
+          "text": "Käytä Capacitor Camera -pluginia ja käsittele käyttöoikeudet",
+          "correct": true
+        },
+        {
+          "text": "Kutsu selaimen fs API:a kameran tilalla",
+          "correct": false
+        },
+        {
+          "text": "Kirjoita iOS Swift -koodi Android-projektiin",
+          "correct": false
+        },
+        {
+          "text": "Tallenna kuva localStorageen base64:nä aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Plugin abstrahoi natiivit käyttöoikeudet ja API-erot.",
+      "wrongFeedback": "Kamera on alustakohtainen ominaisuus, joka tarvitsee luvitukset.",
+      "sourceRef": "capacitorjs.com/docs/apis/camera",
+      "sourceUrl": "https://capacitorjs.com/docs/apis/camera",
+      "featureId": "webshell:capacitor-camera",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-pwa-vs-capacitor",
+      "chapter": "webshell-architecture",
+      "domain": "webshell",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Milloin PWA riittää Capacitor-sovelluksen sijaan?",
+      "choices": [
+        {
+          "text": "Kun tarvitaan linkillä jaettava web-kokemus ilman kauppajulkaisua tai syviä natiiviplugineja",
+          "correct": true
+        },
+        {
+          "text": "Aina kun tarvitaan push-ilmoituksia kaikilla alustoilla täydellä pariteetilla",
+          "correct": false
+        },
+        {
+          "text": "Kun sovellus ei saa toimia selaimessa",
+          "correct": false
+        },
+        {
+          "text": "Kun App Store -jakelu on pakollinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PWA on nopea jakelukanava, mutta kaupat ja natiivipluginit muuttavat vaatimuksia.",
+      "wrongFeedback": "Capacitor on hyödyllinen, kun web tarvitsee natiivikuoren.",
+      "sourceRef": "web.dev/explore/progressive-web-apps",
+      "sourceUrl": "https://web.dev/explore/progressive-web-apps",
+      "featureId": "webshell:pwa-vs-capacitor",
+      "featurePoints": 2
+    },
+    {
       "id": "webshell-tauri-vs-electron",
       "chapter": "webshell-desktop",
       "domain": "webshell",
       "difficulty": 2,
-      "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Desktop-natiivi web-pelille — miksi Tauri usein voittaa Electronin?",
-      "choices": [
-        { "text": "Pienempi binääri ja vähemmän muistia — järjestelmän WebView, Rust-backend tarvittaessa", "correct": true },
-        { "text": "Tauri vaatii aina internet-yhteyden", "correct": false },
-        { "text": "Electron on ainoa tapa ajaa Vite-buildia desktopilla", "correct": false },
-        { "text": "Tauri ei tue näppäimistöä", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Ohut kuori olemassa olevalle web-buildille — nopein desktop-polku.",
-      "wrongFeedback": "Electron toimii, mutta Tauri on kevyempi vaihtoehto staattiselle pelille.",
-      "sourceRef": "tauri/intro",
+      "prompt": "Mikä erottaa Taurin Electronista desktop-jakelussa?",
+      "choices": [
+        {
+          "text": "Tauri käyttää järjestelmän WebViewiä ja Rust-backendiä, Electron bundlaa Chromiumin ja Node.js:n",
+          "correct": true
+        },
+        {
+          "text": "Tauri ei tue JavaScriptiä",
+          "correct": false
+        },
+        {
+          "text": "Electron toimii vain Linuxissa",
+          "correct": false
+        },
+        {
+          "text": "Tauri vaatii aina pilvipalvelun",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tauri voi tuottaa pienempiä paketteja, Electron tarjoaa yhtenäisen Chromium-ympäristön.",
+      "wrongFeedback": "Molemmat ajavat web-frontendin, mutta runtime ja turvamalli eroavat.",
+      "sourceRef": "tauri.app/start/",
       "sourceUrl": "https://tauri.app/start/",
-      "featureId": "webshell:tauri-electron",
+      "featureId": "webshell:tauri-vs-electron",
       "featurePoints": 2
     },
     {
-      "id": "webshell-capacitor-mobile",
-      "chapter": "webshell-mobile",
-      "domain": "webshell",
-      "difficulty": 2,
-      "audiences": ["coworker", "project-lead"],
-      "prompt": "Capacitor mobiilissa — mitä se tekee web-pelin buildille?",
-      "choices": [
-        { "text": "Paketoi web-buildin natiivikonttiin WebViewllä + tiedosto-/plugin-API", "correct": true },
-        { "text": "Kääntää TypeScriptin Kotliniksi automaattisesti", "correct": false },
-        { "text": "Korvaa pelilogiikan natiivilla", "correct": false },
-        { "text": "Toimii vain iOS:llä", "correct": false }
-      ],
-      "correctFeedback": "Sama peli selaimessa ja App Storessa ilman uutta UI-koodia.",
-      "wrongFeedback": "Capacitor on web-kuori, ei pelimoottori.",
-      "sourceRef": "capacitor/intro",
-      "sourceUrl": "https://capacitorjs.com/docs",
-      "featureId": "webshell:capacitor",
-      "featurePoints": 2
-    },
-    {
-      "id": "webshell-reuse-web-build",
-      "chapter": "webshell-arch",
-      "domain": "webshell",
-      "difficulty": 2,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Mikä on web-kuoren suurin etu web-pelin arkkitehtuurissa?",
-      "choices": [
-        { "text": "Web-build + assetit toimivat sellaisenaan — yksi build usealle alustalle", "correct": true },
-        { "text": "Web-kuori ajaa pelimoottorin nopeammin kuin natiivi", "correct": false },
-        { "text": "Staattisia assetteja ei tarvitse koskaan synkronoida buildiin", "correct": false },
-        { "text": "Web-kuori poistaa tarpeen testata pelilogiikkaa", "correct": false }
-      ],
-      "correctFeedback": "Hosts ovat ohuita — web on jo valmis host; kuori lisää vain jakelukanavan.",
-      "wrongFeedback": "Sama CI-build → Tauri/Capacitor/PWA.",
-      "sourceRef": "tauri/webview",
-      "sourceUrl": "https://tauri.app/reference/webview/",
-      "featureId": "webshell:reuse-build",
-      "featurePoints": 2
-    },
-    {
-      "id": "webshell-save-storage",
-      "chapter": "webshell-persist",
+      "id": "webshell-local-files",
+      "chapter": "webshell-storage",
       "domain": "webshell",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Web käyttää IndexedDB:tä. Capacitor/Tauri-tallennus vastine?",
-      "choices": [
-        { "text": "Capacitor Preferences / Filesystem tai Tauri fs plugin — sama JSON-skeema", "correct": true },
-        { "text": "Tallennus ei toimi kuoressa — vain selain", "correct": false },
-        { "text": "localStorage toimii aina ilman rajoituksia mobiilissa", "correct": false },
-        { "text": "Pakota käyttäjä tallentamaan manuaalisesti tiedostoon", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Host hoitaa persistenssin — plugin API korvaa IndexedDB:n tarvittaessa.",
-      "wrongFeedback": "WebView IndexedDB voi toimia, mutta natiivi plugin on luotettavampi.",
-      "sourceRef": "capacitor/preferences",
-      "sourceUrl": "https://capacitorjs.com/docs/apis/preferences",
-      "featureId": "webshell:save-storage",
+      "prompt": "Desktop-webkuori tarvitsee käyttäjän valitseman tiedoston lukemisen. Mitä pitää huomioida?",
+      "choices": [
+        {
+          "text": "Käytä kuoren tiedosto/dialogi-API:a ja rajaa pääsy valittuihin polkuihin",
+          "correct": true
+        },
+        {
+          "text": "Anna frontendille rajoittamaton pääsy koko levyyn",
+          "correct": false
+        },
+        {
+          "text": "Oleta että selain fetch voi lukea minkä tahansa paikallisen tiedoston",
+          "correct": false
+        },
+        {
+          "text": "Tallenna polku evästeeseen ja ohita luvat",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Desktop-kuori voi antaa hallitun tiedostopääsyn, mutta oikeudet pitää rajata.",
+      "wrongFeedback": "Webin sandbox estää mielivaltaisen tiedostoluvun.",
+      "sourceRef": "tauri.app/plugin/file-system/",
+      "sourceUrl": "https://tauri.app/plugin/file-system/",
+      "featureId": "webshell:local-files",
       "featurePoints": 3
     },
     {
-      "id": "webshell-pwa-vs-shell",
-      "chapter": "webshell-arch",
+      "id": "webshell-mobile-live-reload",
+      "chapter": "webshell-tooling",
       "domain": "webshell",
       "difficulty": 2,
-      "audiences": ["project-lead", "ceo"],
-      "prompt": "GitHub Pages -PWA vs Capacitor App Store -julkaisu?",
-      "choices": [
-        { "text": "PWA riittää jaettuun linkkiin; kauppa vaatii kuoren tai natiivin", "correct": true },
-        { "text": "PWA ja natiiviappi ovat identtisiä kaupan näkökulmasta", "correct": false },
-        { "text": "PWA ei toimi offline-tilassa koskaan", "correct": false },
-        { "text": "App Store kieltää web-teknologiat kokonaan", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Jos web-peli on jo PWA-yhteensopiva, kuori on valinnainen jakelukanava.",
-      "wrongFeedback": "PWA on helpoin; kauppa on erillinen kanava.",
-      "sourceRef": "web/progressive-web-apps",
-      "sourceUrl": "https://web.dev/explore/progressive-web-apps",
-      "featureId": "webshell:pwa-vs-shell",
+      "prompt": "Capacitor-kehityksessä haluat testata puhelimella paikallista dev-palvelinta. Mikä on tyypillinen malli?",
+      "choices": [
+        {
+          "text": "Aja dev server --host/--external ja osoita Capacitor server.url lähiverkon osoitteeseen",
+          "correct": true
+        },
+        {
+          "text": "Asenna Xcode Android-testaukseen",
+          "correct": false
+        },
+        {
+          "text": "Kopioi build käsin puhelimen Downloads-kansioon joka muutoksella",
+          "correct": false
+        },
+        {
+          "text": "Käytä vain tuotanto-CDN:ää kehityksessä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Live reload nopeuttaa mobiili-WebViewin iterointia.",
+      "wrongFeedback": "Android-testaukseen ei tarvita Xcodea.",
+      "sourceRef": "capacitorjs.com/docs/guides/live-reload",
+      "sourceUrl": "https://capacitorjs.com/docs/guides/live-reload",
+      "featureId": "webshell:live-reload",
       "featurePoints": 2
     },
     {
-      "id": "webshell-offline-assets",
-      "chapter": "webshell-data",
-      "domain": "webshell",
-      "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Web-build bundlaa JSON-assetit staattiseen hakemistoon. Toimiiko offline kuoressa?",
-      "choices": [
-        { "text": "Kyllä — staattiset assetit mukana paketissa, fetch paikallisista tiedostoista", "correct": true },
-        { "text": "Ei — kuori vaatii aina CDN:n", "correct": false },
-        { "text": "Vain online-tila tuettu Capacitorissa", "correct": false },
-        { "text": "JSON pitää hakea erillisestä API:sta", "correct": false }
-      ],
-      "correctFeedback": "Kun assetit kopioidaan buildiin, kuori toimii offline samalla tavoin kuin PWA.",
-      "wrongFeedback": "Staattinen build on offline-valmis.",
-      "sourceRef": "web/app-manifest",
-      "sourceUrl": "https://web.dev/learn/pwa/web-app-manifest",
-      "featureId": "webshell:offline-assets",
-      "featurePoints": 2
-    },
-    {
-      "id": "webshell-keyboard-forward",
-      "chapter": "webshell-desktop",
+      "id": "webshell-indexeddb-webview",
+      "chapter": "webshell-storage",
       "domain": "webshell",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu?",
-      "choices": [
-        { "text": "Varmista WebView focus + pelin keydown-kuuntelijat UI-kerroksessa", "correct": true },
-        { "text": "Kirjoita pelilogiikka uudelleen Rustissa", "correct": false },
-        { "text": "Desktop ei tue näppäimistöpelejä", "correct": false },
-        { "text": "Poista keyboard-tuki ja käytä vain hiirtä", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Web-peli käsittelee jo näppäimet — kuoren tehtävä on focus/ikkuna.",
-      "wrongFeedback": "Ongelma on yleensä focus, ei pelikoodi.",
-      "sourceRef": "tauri/webview",
-      "sourceUrl": "https://tauri.app/reference/webview/",
-      "featureId": "webshell:keyboard",
+      "prompt": "WebView-sovellus käyttää IndexedDB:tä. Mikä riski pitää tunnistaa?",
+      "choices": [
+        {
+          "text": "WebViewin storage-käytös ja backup/poisto voivat poiketa selaimesta; kriittinen data kannattaa hallita pluginilla",
+          "correct": true
+        },
+        {
+          "text": "IndexedDB ei toimi missään WebViewissä",
+          "correct": false
+        },
+        {
+          "text": "IndexedDB on aina salattu salaisuuksille",
+          "correct": false
+        },
+        {
+          "text": "IndexedDB synkronoituu automaattisesti iCloudiin ja Google Driveen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WebView storage on kätevä, mutta natiivivarasto voi olla luotettavampi asetuksille ja salaisuuksille.",
+      "wrongFeedback": "IndexedDB ei ole salaisuuksien turvallinen varasto oletuksena.",
+      "sourceRef": "developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API",
+      "featureId": "webshell:indexeddb-webview",
       "featurePoints": 3
     },
     {
-      "id": "webshell-security-csp",
+      "id": "webshell-csp",
       "chapter": "webshell-security",
       "domain": "webshell",
       "difficulty": 3,
-      "audiences": ["guru", "security"],
-      "prompt": "Tauri-sovellus lataa paikallisen index.html:n. Turvallisuushuomio?",
-      "choices": [
-        { "text": "CSP + rajoita Tauri allowlist — älä expose turhia shell-komentoja", "correct": true },
-        { "text": "Paikallinen HTML on aina turvallinen ilman CSP:tä", "correct": false },
-        { "text": "WebView ei voi ajaa JavaScriptiä", "correct": false },
-        { "text": "Turvallisuus ei koske offline-pelejä", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Tauri capabilities ja CSP estävät XSS:stä shell-pääsyn.",
-      "wrongFeedback": "Paikallinen ≠ automaattisesti turvallinen jos lataat ulkoista sisältöä.",
-      "sourceRef": "tauri/security",
-      "sourceUrl": "https://tauri.app/security/",
-      "featureId": "webshell:security-csp",
+      "prompt": "Web-kuoressa ladataan etäistä sisältöä. Mikä suojaus on erityisen tärkeä?",
+      "choices": [
+        {
+          "text": "Tiukka Content Security Policy ja rajatut natiivikomennot",
+          "correct": true
+        },
+        {
+          "text": "Poista HTTPS-vaatimus kehityksen helpottamiseksi",
+          "correct": false
+        },
+        {
+          "text": "Salli inline-script kaikkialta",
+          "correct": false
+        },
+        {
+          "text": "Anna etäsivulle täydet natiivioikeudet",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CSP pienentää XSS-riskiä, joka voisi muuten päästä natiivibridgeen.",
+      "wrongFeedback": "Etäsisältö ja natiivioikeudet ovat vaarallinen yhdistelmä ilman rajoja.",
+      "sourceRef": "developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+      "featureId": "webshell:csp",
       "featurePoints": 3
     },
     {
-      "id": "webshell-vs-true-native",
-      "chapter": "webshell-arch",
-      "domain": "webshell",
-      "difficulty": 2,
-      "audiences": ["project-lead", "ceo", "coworker"],
-      "prompt": "Milloin web-kuori EI riitä ja tarvitaan Compose/Qt?",
-      "choices": [
-        { "text": "Kun tarvitaan syvä natiivi-integraatio, parempi suorituskyky tai offline ilman WebView-rajoja", "correct": true },
-        { "text": "Aina — web-kuori on vain demo", "correct": false },
-        { "text": "Kun pelissä on alle 10 kysymystä", "correct": false },
-        { "text": "Kun julkaistaan GitHub Pagesiin", "correct": false }
-      ],
-      "correctFeedback": "Kuori on pragmatismi; natiivi on investointi pariteettiin ja UX:ään.",
-      "wrongFeedback": "Monelle pelille web-kuori on tuotantokelpoinen.",
-      "sourceRef": "capacitor/vs-native",
-      "sourceUrl": "https://capacitorjs.com/docs/v3/plugins",
-      "featureId": "webshell:vs-native",
-      "featurePoints": 2
-    },
-    {
-      "id": "webshell-tauri-rust-side",
-      "chapter": "webshell-desktop",
+      "id": "webshell-deep-links",
+      "chapter": "webshell-mobile",
       "domain": "webshell",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "Milloin Tauri Rust-puoli (`src-tauri`) on hyödyllinen peli-hostissa?",
-      "choices": [
-        { "text": "Tiedostopolku tallennukseen, autostart, single-instance — ei pelilogiikkaan", "correct": true },
-        { "text": "Kirjoita GameSession Rustiin suorituskyvyn vuoksi", "correct": false },
-        { "text": "Rust korvaa aina JavaScriptin", "correct": false },
-        { "text": "Rust-puoli on pakollinen hello world -tasolla", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Rust sopii host-tehtäviin; pelilogiikka pysyy jaetussa coressa.",
-      "wrongFeedback": "Pelilogiikan duplikaatio Rustiin rikkoo yhden totuuden periaatteen.",
-      "sourceRef": "tauri/core",
-      "sourceUrl": "https://tauri.app/develop/",
-      "featureId": "webshell:tauri-rust",
+      "prompt": "Mobiilikuori avaa sovelluksen linkistä tiettyyn näkymään. Mitä tarvitaan?",
+      "choices": [
+        {
+          "text": "Universal/App Links -konfiguraatio ja reitin käsittely frontendissä",
+          "correct": true
+        },
+        {
+          "text": "Pelkkä CSS media query",
+          "correct": false
+        },
+        {
+          "text": "LocalStorageen kirjoitettu viimeisin sivu",
+          "correct": false
+        },
+        {
+          "text": "Poista selaimen history API",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Deep link vaatii sekä alustakonfiguraation että sovelluksen reittilogiikan.",
+      "wrongFeedback": "Responsiivinen CSS ei avaa sovellusta linkistä.",
+      "sourceRef": "capacitorjs.com/docs/guides/deep-links",
+      "sourceUrl": "https://capacitorjs.com/docs/guides/deep-links",
+      "featureId": "webshell:deep-links",
+      "featurePoints": 3
+    },
+    {
+      "id": "webshell-updates",
+      "chapter": "webshell-distribution",
+      "domain": "webshell",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tauri/Capacitor-sovelluksen frontend muuttuu usein. Mitä päivitysmallissa pitää päättää?",
+      "choices": [
+        {
+          "text": "Jaetaanko muutokset app store / installer -päivityksinä vai hallitulla live update -ratkaisulla",
+          "correct": true
+        },
+        {
+          "text": "Frontend päivittyy aina automaattisesti ilman infrastruktuuria",
+          "correct": false
+        },
+        {
+          "text": "Käyttäjän pitää tyhjentää cache käsin joka release",
+          "correct": false
+        },
+        {
+          "text": "Versioinnilla ei ole merkitystä web-kuoressa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Natiivikuori tuo jakelun ja versionhallinnan web-kehityksen rinnalle.",
+      "wrongFeedback": "Live update vaatii oman palvelun, allekirjoituksen ja rollback-ajattelun.",
+      "sourceRef": "capacitorjs.com/docs/guides/deploying-updates",
+      "sourceUrl": "https://capacitorjs.com/docs/guides/deploying-updates",
+      "featureId": "webshell:updates",
       "featurePoints": 3
     }
   ]

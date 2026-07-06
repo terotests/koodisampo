@@ -1,18 +1,18 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Uusi Qt desktop -sovellus tarvitsee lomakkeita, taulukoita ja perinteisiä dialogeja. Widgets vai Qt Quick?
 
 ## Tilanne
 
-Flutterissa käyttöliittymä rakennetaan widget-puuna ja tila pidetään selkeässä state-kerroksessa. Sama koodipohja voi tavoitella mobiilia, webiä ja desktopia, mutta alustakohtaiset plugin-riippuvuudet pitää suunnitella erikseen.
+Qt 6 on laaja natiivi sovelluskehys desktop- ja sulautettuihin käyttöliittymiin. Sen vahvuuksia ovat signal/slot-malli, Model/View-arkkitehtuuri, Widgets- ja QML-vaihtoehdot sekä hyvät deploy-työkalut.
 
 Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen kehityksessä: mihin kerrokseen vastuu kuuluu, mitä alustatyökalua kannattaa käyttää ja mitä riskejä valinnasta seuraa. Hyvä vastaus ei perustu teknologian nimeen vaan siihen, miten ratkaisu käyttäytyy elinkaaren, suorituskyvyn, saavutettavuuden, turvallisuuden ja ylläpidon kannalta.
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Qt Widgets on usein nopea perinteiseen desktop-UI:hin; Qt Quick sopii dynaamisempiin/animoituihin näkymiin
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Valinta riippuu UI:n luonteesta ja tiimin osaamisesta.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Qt 6 tukee sekä Widgets- että Quick-pohjaisia sovelluksia. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Qt Widgets on poistettu Qt 6:ssa; Qt Quick toimii vain mobiilissa.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://doc.qt.io/qt-6/qtwidgets-index.html)

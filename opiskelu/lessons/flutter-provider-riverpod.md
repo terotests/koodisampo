@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Usea näkymä tarvitsee samaa kirjautuneen käyttäjän tilaa. Mikä on järkevä state management -periaate?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Yksi jaettu state-lähde esimerkiksi Provider/Riverpod/Bloc-kerroksessa
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Jaettu tila estää ristiriidat ja helpottaa testausta.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Build-metodi voi ajautua usein; IO ja kopiot siellä ovat huono malli. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kopioi käyttäjäolio jokaisen näytön Stateen; Lue käyttäjä suoraan tiedostosta build()-metodissa.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/data-and-backend/state-mgmt/intro)

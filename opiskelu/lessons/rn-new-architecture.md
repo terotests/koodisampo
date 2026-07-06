@@ -1,25 +1,23 @@
-# React Native New Architecture (Fabric/TurboModules) — hyöty peli-hostille?
+# Mitä React Native New Architecture tavoittelee?
 
 ## Tilanne
 
-React Native sopii lomake- ja feed-sovelluksiin. Ruudukkopelissä, jossa logiikka on jo jaetussa simulaatiokerroksessa, RN tuo usein turhan JavaScript-kerroksen.
+React Native yhdistää React-mallin ja natiivikomponentit. Hyvä arkkitehtuuri erottaa komponenttien paikallisen tilan, jaetun sovellustilan sekä natiivimoduulit, joita tarvitaan alustakohtaisiin ominaisuuksiin.
 
-Olet suunnittelemassa vuoropohjaisen simulaatiopelin natiivijulkaisua. Pelilogiikka elää jaetussa simulaatiokirjastossa, ja alustahostit ovat ohuita: ne välittävät näppäinsyötteen logiikkakerrokselle ja renderöivät palautetun snapshotin. Kysymys testaa alustavalinnan käytännön vaikutusta tähän arkkitehtuuriin.
-
-Tyypillinen virhe on siirtää pelisääntöjä UI-kerrokseen (Compose-widget, Flutter build(), Qt slot) tai valita teknologia, joka pakottaa logiikan uudelleenkirjoituksen.
+Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen kehityksessä: mihin kerrokseen vastuu kuuluu, mitä alustatyökalua kannattaa käyttää ja mitä riskejä valinnasta seuraa. Hyvä vastaus ei perustu teknologian nimeen vaan siihen, miten ratkaisu käyttäytyy elinkaaren, suorituskyvyn, saavutettavuuden, turvallisuuden ja ylläpidon kannalta.
 
 ## Ratkaisu
 
-**Oikea vastaus:** Nopeampi JS↔native — ei poista tarvetta välttää RN:ää custom-moottorissa
+**Oikea vastaus:** Parempi natiivi-JS integraatio Fabric-rendererillä ja TurboModuleilla
 
-Parannus bridgeen, ei ratkaisua arkkitehtuurivalintaan.
+New Architecture modernisoi RN:n renderöintiä ja moduulijärjestelmää.
 
-Väärät vaihtoehdot johtavat yleensä johonkin näistä ongelmista: New Arch korvaa tarpeen natiivi-UI:lle kokonaan; Fabric renderöi automaattisesti isometrisen kartan. New Arch on hyvä RN-sovelluksille, ei tee RN:stä pelimoottoria.
+Se ei muuta RN:ää selainkehykseksi. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: React-komponenttien poistamista kokonaan; CSS-renderöintiä selaimen kautta.
 
 ## Käytännössä
 
-Pidä mielessä jaettu snapshot-skeema: kartta, kohtaaminen, tarina, valikot ja overlayt tulevat host-kontrollerista. UI ei päätä pelitilaa — se reagoi snapshotin `screen`-kenttään. Uusi alusta tarkoittaa uutta hostia ja renderöintiä, ei uutta pelimoottoria.
+Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, state-kerros säilyttää näytön tai sovelluksen tilan, data- tai platform-kerros hoitaa IO:n, tallennuksen ja natiivit integraatiot. Kun nämä rajat pysyvät selkeinä, samaa toimintoa on helpompi testata ja siirtää toiselle alustalle.
 
-Testaa logiikka aina headless-testeillä ennen kuin investoit natiivi-UI-pariteettiin.
+Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
 [Lue lisää](https://reactnative.dev/architecture/landing-page)

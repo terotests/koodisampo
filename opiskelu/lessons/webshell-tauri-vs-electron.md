@@ -1,25 +1,23 @@
-# Desktop-natiivi web-pelille — miksi Tauri usein voittaa Electronin?
+# Mikä erottaa Taurin Electronista desktop-jakelussa?
 
 ## Tilanne
 
-Tauri ja Capacitor paketoivat olemassa olevan web-buildin natiivikonttiin. Nopein tapa saada desktop- tai kauppajulkaisu ilman uutta UI-koodia.
+Tauri ja Capacitor paketoivat web-frontendin natiivimpaan jakeluympäristöön. Hyöty tulee nopeasta jakelusta ja plugin-API:sta, mutta samalla pitää hallita WebViewin turvallisuus, tallennus ja alustakohtaiset oikeudet.
 
-Olet suunnittelemassa vuoropohjaisen simulaatiopelin natiivijulkaisua. Pelilogiikka elää jaetussa simulaatiokirjastossa, ja alustahostit ovat ohuita: ne välittävät näppäinsyötteen logiikkakerrokselle ja renderöivät palautetun snapshotin. Kysymys testaa alustavalinnan käytännön vaikutusta tähän arkkitehtuuriin.
-
-Tyypillinen virhe on siirtää pelisääntöjä UI-kerrokseen (Compose-widget, Flutter build(), Qt slot) tai valita teknologia, joka pakottaa logiikan uudelleenkirjoituksen.
+Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen kehityksessä: mihin kerrokseen vastuu kuuluu, mitä alustatyökalua kannattaa käyttää ja mitä riskejä valinnasta seuraa. Hyvä vastaus ei perustu teknologian nimeen vaan siihen, miten ratkaisu käyttäytyy elinkaaren, suorituskyvyn, saavutettavuuden, turvallisuuden ja ylläpidon kannalta.
 
 ## Ratkaisu
 
-**Oikea vastaus:** Pienempi binääri ja vähemmän muistia — järjestelmän WebView, Rust-backend tarvittaessa
+**Oikea vastaus:** Tauri käyttää järjestelmän WebViewiä ja Rust-backendiä, Electron bundlaa Chromiumin ja Node.js:n
 
-Ohut kuori olemassa olevalle web-buildille — nopein desktop-polku.
+Tauri voi tuottaa pienempiä paketteja, Electron tarjoaa yhtenäisen Chromium-ympäristön.
 
-Väärät vaihtoehdot johtavat yleensä johonkin näistä ongelmista: Tauri vaatii aina internet-yhteyden; Electron on ainoa tapa ajaa Vite-buildia desktopilla. Electron toimii, mutta Tauri on kevyempi vaihtoehto staattiselle pelille.
+Molemmat ajavat web-frontendin, mutta runtime ja turvamalli eroavat. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Tauri ei tue JavaScriptiä; Electron toimii vain Linuxissa.
 
 ## Käytännössä
 
-Pidä mielessä jaettu snapshot-skeema: kartta, kohtaaminen, tarina, valikot ja overlayt tulevat host-kontrollerista. UI ei päätä pelitilaa — se reagoi snapshotin `screen`-kenttään. Uusi alusta tarkoittaa uutta hostia ja renderöintiä, ei uutta pelimoottoria.
+Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, state-kerros säilyttää näytön tai sovelluksen tilan, data- tai platform-kerros hoitaa IO:n, tallennuksen ja natiivit integraatiot. Kun nämä rajat pysyvät selkeinä, samaa toimintoa on helpompi testata ja siirtää toiselle alustalle.
 
-Testaa logiikka aina headless-testeillä ennen kuin investoit natiivi-UI-pariteettiin.
+Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
 [Lue lisää](https://tauri.app/start/)

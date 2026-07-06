@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Flutter-listan scrollaus pätkii, koska rivit tekevät raskasta laskentaa buildissä. Ensimmäinen korjaus?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Siirrä laskenta pois buildistä ja anna ListView.builder rakentaa vain näkyvät rivit
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Buildin pitää olla nopea ja sivuvaikutukseton.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Raskas työ buildissä toistuu usein ja näkyy scrollauksessa. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kutsu setState joka framella; Poista avaimet kaikilta riveiltä.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/perf/best-practices)

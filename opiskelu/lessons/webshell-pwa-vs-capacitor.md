@@ -1,18 +1,18 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Milloin PWA riittää Capacitor-sovelluksen sijaan?
 
 ## Tilanne
 
-Flutterissa käyttöliittymä rakennetaan widget-puuna ja tila pidetään selkeässä state-kerroksessa. Sama koodipohja voi tavoitella mobiilia, webiä ja desktopia, mutta alustakohtaiset plugin-riippuvuudet pitää suunnitella erikseen.
+Tauri ja Capacitor paketoivat web-frontendin natiivimpaan jakeluympäristöön. Hyöty tulee nopeasta jakelusta ja plugin-API:sta, mutta samalla pitää hallita WebViewin turvallisuus, tallennus ja alustakohtaiset oikeudet.
 
 Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen kehityksessä: mihin kerrokseen vastuu kuuluu, mitä alustatyökalua kannattaa käyttää ja mitä riskejä valinnasta seuraa. Hyvä vastaus ei perustu teknologian nimeen vaan siihen, miten ratkaisu käyttäytyy elinkaaren, suorituskyvyn, saavutettavuuden, turvallisuuden ja ylläpidon kannalta.
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Kun tarvitaan linkillä jaettava web-kokemus ilman kauppajulkaisua tai syviä natiiviplugineja
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+PWA on nopea jakelukanava, mutta kaupat ja natiivipluginit muuttavat vaatimuksia.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Capacitor on hyödyllinen, kun web tarvitsee natiivikuoren. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Aina kun tarvitaan push-ilmoituksia kaikilla alustoilla täydellä pariteetilla; Kun sovellus ei saa toimia selaimessa.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://web.dev/explore/progressive-web-apps)

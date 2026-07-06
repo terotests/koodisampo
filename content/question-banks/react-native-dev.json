@@ -4,204 +4,354 @@
   "source": "https://reactnative.dev/docs/getting-started",
   "questions": [
     {
-      "id": "rn-grid-game-fit",
-      "chapter": "rn-arch",
+      "id": "rn-component-state",
+      "chapter": "rn-state",
       "domain": "react-native",
       "difficulty": 2,
-      "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Miksi React Native on huono ensisijainen valinta custom-ruudukkopelille?",
-      "choices": [
-        { "text": "Pelilogiikka on jaetussa coressa — RN toisi JS-bridgen ja UI-kerroksen, joka ei optimoidu kartalle", "correct": true },
-        { "text": "React Native ei tue kosketusnäyttöä", "correct": false },
-        { "text": "Apple kieltää React Native -sovellukset", "correct": false },
-        { "text": "RN ei voi näyttää tekstiä monospace-fontilla", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "RN sopii lomake-UI:hin; custom simulaatio + canvas on vieras maasto.",
-      "wrongFeedback": "Ongelma on arkkitehtuuri: kolmas kerros ilman hyötyä olemassa olevaan coreen.",
-      "sourceRef": "reactnative/architecture",
-      "sourceUrl": "https://reactnative.dev/architecture/overview",
-      "featureId": "rn:grid-fit",
+      "prompt": "React Native -komponentti tarvitsee paikallisen avaa/sulje-tilan. Mikä hook sopii?",
+      "choices": [
+        {
+          "text": "useState paikalliselle UI-tilalle",
+          "correct": true
+        },
+        {
+          "text": "AsyncStorage jokaiselle klikkaukselle",
+          "correct": false
+        },
+        {
+          "text": "Redux store kaikelle paikalliselle tilalle aina",
+          "correct": false
+        },
+        {
+          "text": "Muuta props-objektia suoraan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "useState on yksinkertainen ja riittävä komponentin omalle tilalle.",
+      "wrongFeedback": "Pysyvä storage tai globaali store on ylimitoitettu paikalliseen UI-tilaan.",
+      "sourceRef": "reactnative.dev/docs/state",
+      "sourceUrl": "https://reactnative.dev/docs/state",
+      "featureId": "rn:use-state",
       "featurePoints": 2
     },
     {
-      "id": "rn-webview-wrap",
-      "chapter": "rn-arch",
-      "domain": "react-native",
-      "difficulty": 2,
-      "audiences": ["coworker", "guru"],
-      "prompt": "RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-pelistä. Käytännöllisin tapa?",
-      "choices": [
-        { "text": "WebView tai Capacitor — aja valmis web-build, älä kirjoita RN-UI:ta pelille", "correct": true },
-        { "text": "Kirjoita koko kartta uudelleen FlatListillä", "correct": false },
-        { "text": "Porttaa koko pelilogiikka React-komponenteiksi", "correct": false },
-        { "text": "Expo Go riittää tuotantoon ilman natiivikäännöstä", "correct": false }
-      ],
-      "correctFeedback": "Web-kuori on rehellisempi kuin RN-jäätyminen WebView-ratkaisuun silti.",
-      "wrongFeedback": "Capacitor/Tauri hoitaa saman ilman React Native -kerrosta.",
-      "sourceRef": "reactnative/webview",
-      "sourceUrl": "https://github.com/react-native-webview/react-native-webview",
-      "featureId": "rn:webview-wrap",
-      "featurePoints": 2
-    },
-    {
-      "id": "rn-bridge-overhead",
-      "chapter": "rn-perf",
-      "domain": "react-native",
-      "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "RN kutsuu natiivimoduulia jokaisella näppäinpainalluksella. Mikä riski vuoropohjaisessa pelissä?",
-      "choices": [
-        { "text": "Bridge-viive ja serialisointi — turhaa jos logiikka voisi olla natiivissa suoraan", "correct": true },
-        { "text": "Bridge estää kaiken JavaScriptin suorituksen", "correct": false },
-        { "text": "Ei riskiä — bridge on aina alle 1 µs", "correct": false },
-        { "text": "Vain iOS:llä on bridge, Android ajaa suoraan", "correct": false }
-      ],
-      "correctFeedback": "JSAI + bridge on ok listoille; tiheä pelisyöte kannattaa pitää natiivissa.",
-      "wrongFeedback": "New Architecture parantaa, mutta arkkitehtuuri on silti ylimääräinen.",
-      "sourceRef": "reactnative/bridge",
-      "sourceUrl": "https://reactnative.dev/architecture/landing-page",
-      "featureId": "rn:bridge-overhead",
-      "featurePoints": 3
-    },
-    {
-      "id": "rn-native-module",
-      "chapter": "rn-arch",
+      "id": "rn-native-modules",
+      "chapter": "rn-native",
       "domain": "react-native",
       "difficulty": 4,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Jos RN:ää käytetään silti, missä pelilogiikan pitäisi ajaa?",
-      "choices": [
-        { "text": "Native module (Kotlin/Swift) — JS kutsuu input/snapshot-API:a, ei aja pelisääntöjä", "correct": true },
-        { "text": "Redux store pelilogiikalla", "correct": false },
-        { "text": "Hermes-bytecode generoitu custom DSL:stä", "correct": false },
-        { "text": "AsyncStorage sisältää koko WorldMap-tilan", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Ohut JS, paksu natiivi — päinvastoin kuin tyypillinen RN-sovellus.",
-      "wrongFeedback": "Pelisäännöt JS:ssä = kolmas kopio natiivin ja web-version rinnalle.",
-      "sourceRef": "reactnative/native-modules",
+      "prompt": "Sovellus tarvitsee alustakohtaisen SDK:n, jolle ei ole valmista pakettia. Mitä rakennat?",
+      "choices": [
+        {
+          "text": "Native module tai TurboModule Kotlin/Swift-koodilla",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita SDK-kutsu CSS:ään",
+          "correct": false
+        },
+        {
+          "text": "Käytä pelkkää useEffectiä ilman natiivisiltaa",
+          "correct": false
+        },
+        {
+          "text": "Kopioi Android AAR iOS-projektiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Native module exposeeraa alustatoiminnon JavaScriptille hallitusti.",
+      "wrongFeedback": "React hook ei yksin luo pääsyä natiivi-SDK:hon.",
+      "sourceRef": "reactnative.dev/docs/native-modules-intro",
       "sourceUrl": "https://reactnative.dev/docs/native-modules-intro",
       "featureId": "rn:native-module",
       "featurePoints": 4
     },
     {
-      "id": "rn-expo-limits",
-      "chapter": "rn-tooling",
-      "domain": "react-native",
-      "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Expo managed workflow — mikä rajoitus osuu custom-pelimoottoriin?",
-      "choices": [
-        { "text": "Raskas custom natiivikoodi vaatii dev client / prebuild — ei pelkkää Expo Go:ta", "correct": true },
-        { "text": "Expo kieltää kaiken JavaScriptin", "correct": false },
-        { "text": "Expo ei julkaise App Storeen", "correct": false },
-        { "text": "Expo tukee vain iOS:ää", "correct": false }
-      ],
-      "correctFeedback": "Oma natiivimoottori vaatii custom dev buildin.",
-      "wrongFeedback": "Expo on hyvä prototyyppeihin, ei custom moottorin hostiin.",
-      "sourceRef": "expo/custom-dev",
-      "sourceUrl": "https://docs.expo.dev/develop/development-builds/introduction/",
-      "featureId": "rn:expo-limits",
-      "featurePoints": 2
-    },
-    {
-      "id": "rn-flatlist-vs-canvas",
-      "chapter": "rn-ui",
+      "id": "rn-flatlist-keys",
+      "chapter": "rn-performance",
       "domain": "react-native",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Ruudukkokartta RN:ssä — miksi FlatList jokaiselle solulle on huono idea?",
-      "choices": [
-        { "text": "Tuhansia React-komponentteja — layout ja reconciler-kustannus kasvaa", "correct": true },
-        { "text": "FlatList ei skrollaa pystysuunnassa", "correct": false },
-        { "text": "React Native ei tue monospace-fonttia", "correct": false },
-        { "text": "FlatList toimii vain verkkodatalla", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Canvas/Skia/react-native-skia on parempi ruudukolle kuin cell-per-View.",
-      "wrongFeedback": "RN optimoi listoja, mutta 2D-kartta ei ole lista-UI.",
-      "sourceRef": "reactnative/performance",
-      "sourceUrl": "https://reactnative.dev/docs/performance",
-      "featureId": "rn:flatlist-canvas",
+      "prompt": "FlatList renderöi datalistaa, jonka järjestys muuttuu. Mikä on tärkeää?",
+      "choices": [
+        {
+          "text": "keyExtractor palauttaa stabiilin yksilöllisen avaimen",
+          "correct": true
+        },
+        {
+          "text": "Käytä aina array-indeksiä avaimena",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki keyt suorituskyvyn vuoksi",
+          "correct": false
+        },
+        {
+          "text": "Anna sama key kaikille riveille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stabiilit keyt auttavat Reactia säilyttämään rivien identiteetin.",
+      "wrongFeedback": "Indeksiavaimet aiheuttavat väärää tilan kierrätystä järjestyksen muuttuessa.",
+      "sourceRef": "reactnative.dev/docs/flatlist",
+      "sourceUrl": "https://reactnative.dev/docs/flatlist",
+      "featureId": "rn:flatlist-keys",
+      "featurePoints": 3
+    },
+    {
+      "id": "rn-gesture-handler",
+      "chapter": "rn-input",
+      "domain": "react-native",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Sovelluksessa on monimutkaisia swipe- ja pan-eleitä. Mikä kirjasto on yleinen ratkaisu?",
+      "choices": [
+        {
+          "text": "react-native-gesture-handler yhdessä Reanimatedin kanssa",
+          "correct": true
+        },
+        {
+          "text": "Pelkkä alert jokaiselle kosketukselle",
+          "correct": false
+        },
+        {
+          "text": "KeyboardAvoidingView eleiden tunnistukseen",
+          "correct": false
+        },
+        {
+          "text": "AsyncStorage swipe-tapahtumille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Gesture Handler antaa natiivimman eleiden käsittelyn kuin pelkkä JS responder monissa tapauksissa.",
+      "wrongFeedback": "KeyboardAvoidingView ei ole elekirjasto.",
+      "sourceRef": "docs.swmansion.com/react-native-gesture-handler/",
+      "sourceUrl": "https://docs.swmansion.com/react-native-gesture-handler/",
+      "featureId": "rn:gesture-handler",
+      "featurePoints": 3
+    },
+    {
+      "id": "rn-hermes",
+      "chapter": "rn-runtime",
+      "domain": "react-native",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä Hermesin rooli on React Native -sovelluksessa?",
+      "choices": [
+        {
+          "text": "Se on optimoitu JavaScript-moottori RN:lle, joka voi parantaa käynnistystä ja muistinkäyttöä",
+          "correct": true
+        },
+        {
+          "text": "Se korvaa Android Runtime -ympäristön",
+          "correct": false
+        },
+        {
+          "text": "Se tekee natiivimoduulit tarpeettomiksi",
+          "correct": false
+        },
+        {
+          "text": "Se kääntää Swiftin JavaScriptiksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Hermes ajaa JS-bundlea tehokkaasti erityisesti mobiilissa.",
+      "wrongFeedback": "JS-moottori ei poista tarvetta natiivi-integraatioille.",
+      "sourceRef": "reactnative.dev/docs/hermes",
+      "sourceUrl": "https://reactnative.dev/docs/hermes",
+      "featureId": "rn:hermes-runtime",
+      "featurePoints": 3
+    },
+    {
+      "id": "rn-expo-dev-build",
+      "chapter": "rn-tooling",
+      "domain": "react-native",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Expo-projekti tarvitsee oman natiivimoduulin. Mikä kehitysmalli tarvitaan?",
+      "choices": [
+        {
+          "text": "Development build / prebuild, ei pelkkä Expo Go",
+          "correct": true
+        },
+        {
+          "text": "Expo Go tukee kaikkia omia natiivimoduuleja automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Poista natiivimoduuli ja käytä console.logia",
+          "correct": false
+        },
+        {
+          "text": "Muokkaa App Store -pakettia käsin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Custom natiivikoodi vaatii oman buildin, jossa moduuli on mukana.",
+      "wrongFeedback": "Expo Go sisältää vain valmiiksi pakatut natiivimoduulit.",
+      "sourceRef": "docs.expo.dev/develop/development-builds/introduction/",
+      "sourceUrl": "https://docs.expo.dev/develop/development-builds/introduction/",
+      "featureId": "rn:expo-dev-build",
       "featurePoints": 3
     },
     {
       "id": "rn-new-architecture",
-      "chapter": "rn-perf",
+      "chapter": "rn-architecture",
       "domain": "react-native",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "React Native New Architecture (Fabric/TurboModules) — hyöty peli-hostille?",
-      "choices": [
-        { "text": "Nopeampi JS↔native — ei poista tarvetta välttää RN:ää custom-moottorissa", "correct": true },
-        { "text": "New Arch korvaa tarpeen natiivi-UI:lle kokonaan", "correct": false },
-        { "text": "Fabric renderöi automaattisesti isometrisen kartan", "correct": false },
-        { "text": "TurboModules kääntää pelimoottorin automaattisesti", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Parannus bridgeen, ei ratkaisua arkkitehtuurivalintaan.",
-      "wrongFeedback": "New Arch on hyvä RN-sovelluksille, ei tee RN:stä pelimoottoria.",
-      "sourceRef": "reactnative/new-arch",
+      "prompt": "Mitä React Native New Architecture tavoittelee?",
+      "choices": [
+        {
+          "text": "Parempi natiivi-JS integraatio Fabric-rendererillä ja TurboModuleilla",
+          "correct": true
+        },
+        {
+          "text": "React-komponenttien poistamista kokonaan",
+          "correct": false
+        },
+        {
+          "text": "CSS-renderöintiä selaimen kautta",
+          "correct": false
+        },
+        {
+          "text": "Vain iOS-tukea ilman Androidia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "New Architecture modernisoi RN:n renderöintiä ja moduulijärjestelmää.",
+      "wrongFeedback": "Se ei muuta RN:ää selainkehykseksi.",
+      "sourceRef": "reactnative.dev/architecture/landing-page",
       "sourceUrl": "https://reactnative.dev/architecture/landing-page",
-      "featureId": "rn:new-arch",
+      "featureId": "rn:new-architecture",
       "featurePoints": 3
     },
     {
-      "id": "rn-vs-capacitor",
-      "chapter": "rn-arch",
+      "id": "rn-accessibility",
+      "chapter": "rn-ui",
       "domain": "react-native",
       "difficulty": 2,
-      "audiences": ["project-lead", "ceo", "coworker"],
-      "prompt": "Valmis web-peli + mobiilijulkaisu. Capacitor vs React Native?",
-      "choices": [
-        { "text": "Capacitor — sama HTML/JS build, ei uutta UI-kerrosta", "correct": true },
-        { "text": "React Native — aina parempi koska 'natiivi'", "correct": false },
-        { "text": "Molemmat vaativat pelimoottorin uudelleenkirjoituksen", "correct": false },
-        { "text": "Capacitor toimii vain Androidilla", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Web-kuori on nopein polku; RN ei tuo etua valmiille web-pelille.",
-      "wrongFeedback": "Capacitor paketoi olemassa olevan; RN rakentaa uuden UI-pinon.",
-      "sourceRef": "capacitor/vs-rn",
-      "sourceUrl": "https://capacitorjs.com/docs",
-      "featureId": "rn:vs-capacitor",
+      "prompt": "Touchable-komponentti toimii ikonina ilman tekstiä. Mitä lisäät saavutettavuuteen?",
+      "choices": [
+        {
+          "text": "accessibilityRole ja accessibilityLabel",
+          "correct": true
+        },
+        {
+          "text": "Poista accessibility käytöstä",
+          "correct": false
+        },
+        {
+          "text": "Lisää vain pienempi ikonikuva",
+          "correct": false
+        },
+        {
+          "text": "Käytä satunnaista testID:tä käyttäjälle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Label ja role kertovat ruudunlukijalle kontrollin merkityksen.",
+      "wrongFeedback": "testID on testejä varten, ei käyttäjän apuvälineille.",
+      "sourceRef": "reactnative.dev/docs/accessibility",
+      "sourceUrl": "https://reactnative.dev/docs/accessibility",
+      "featureId": "rn:accessibility",
       "featurePoints": 2
     },
     {
-      "id": "rn-hermes-engine",
-      "chapter": "rn-tooling",
+      "id": "rn-offline-storage",
+      "chapter": "rn-storage",
       "domain": "react-native",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "Hermes on RN:n oletus-JS-moottori. Relevanssi jos pelilogiikka on silti natiivissa?",
-      "choices": [
-        { "text": "Vähäinen — JS hoitaa vain ohuen UI-kuoren, ei simulaatiota", "correct": true },
-        { "text": "Hermes ajaa natiivimoottorin nopeammin kuin V8", "correct": false },
-        { "text": "Ilman Hermesiä natiivimoduulit eivät toimi", "correct": false },
-        { "text": "Hermes korvaa Kotlin-käännöksen", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "JS-moottorin valinta merkitsee vain jos logiikka on JS:ssä.",
-      "wrongFeedback": "Kun pelilogiikka on natiivissa, Hermes on sivuseikka.",
-      "sourceRef": "reactnative/hermes",
-      "sourceUrl": "https://reactnative.dev/docs/hermes",
-      "featureId": "rn:hermes",
+      "prompt": "Sovellus tallentaa pieniä asetuksia paikallisesti. Mikä on tyypillinen ratkaisu?",
+      "choices": [
+        {
+          "text": "AsyncStorage tai alustaan sopiva turvallinen storage kirjasto tarpeen mukaan",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita asetukset komponentin stateen pysyvästi",
+          "correct": false
+        },
+        {
+          "text": "Tallenna salaisuudet plaintext AsyncStorageen aina",
+          "correct": false
+        },
+        {
+          "text": "Käytä vain URL-parametreja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pienet asetukset sopivat AsyncStorageen; salaisuudet vaativat turvallisemman varaston.",
+      "wrongFeedback": "Komponentin state häviää sovelluksen sulkeutuessa.",
+      "sourceRef": "react-native-async-storage.github.io/async-storage/",
+      "sourceUrl": "https://react-native-async-storage.github.io/async-storage/",
+      "featureId": "rn:offline-storage",
       "featurePoints": 3
     },
     {
-      "id": "rn-when-ok",
-      "chapter": "rn-arch",
+      "id": "rn-performance-rerender",
+      "chapter": "rn-performance",
       "domain": "react-native",
-      "difficulty": 2,
-      "audiences": ["project-lead", "ceo"],
-      "prompt": "Milloin React Native olisi silti perusteltu peliprojektissa?",
-      "choices": [
-        { "text": "Kun koko tuote on jo RN-sovellus ja peli on pieni osa (esim. quiz-näkymä)", "correct": true },
-        { "text": "Aina kun tarvitaan isometrinen kartta", "correct": false },
-        { "text": "Kun pelilogiikka on suuri erillinen custom-core", "correct": false },
-        { "text": "Kun halutaan välttää App Store -julkaisua", "correct": false }
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "RN sopii upotettuun quiz-/lomakenäkymään olemassaosaan RN-appiin.",
-      "wrongFeedback": "Jos tuote on pääosin peli, RN ei välttämättä ole sen ydin.",
-      "sourceRef": "reactnative/intro",
-      "sourceUrl": "https://reactnative.dev/docs/getting-started",
-      "featureId": "rn:when-ok",
-      "featurePoints": 2
+      "prompt": "Lista pätkii, koska jokainen rivi renderöityy uudelleen vanhemman state-muutoksessa. Mikä auttaa?",
+      "choices": [
+        {
+          "text": "Memoisoi rivikomponentti ja callbackit, pidä propsit stabiileina",
+          "correct": true
+        },
+        {
+          "text": "Pakota kaikki rivit setNativePropsilla",
+          "correct": false
+        },
+        {
+          "text": "Käynnistä sovellus uudelleen scrollin aikana",
+          "correct": false
+        },
+        {
+          "text": "Käytä aina inline-objekteja propsina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "React.memo ja stabiilit propsit vähentävät turhia renderöintejä.",
+      "wrongFeedback": "Inline-objektit ja callbackit rikkovat usein memoisaation.",
+      "sourceRef": "reactnative.dev/docs/optimizing-flatlist-configuration",
+      "sourceUrl": "https://reactnative.dev/docs/optimizing-flatlist-configuration",
+      "featureId": "rn:rerender-performance",
+      "featurePoints": 3
     }
   ]
 }

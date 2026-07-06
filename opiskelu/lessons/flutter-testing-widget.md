@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Haluat varmistaa, että nappi näyttää lataustilan klikkauksen jälkeen. Mikä testi sopii?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Widget test pumpWidgetillä ja interaktiolla tester.tap + pump
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Widget-testit ajavat UI:n nopeasti ilman täyttä laitetta.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Golden-testit sopivat visuaaliin, mutta interaktio tarvitsee widget-testin. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Vain manuaalinen testaus emulaattorissa; Unit-testi ilman widget-puuta ja findereitä.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/testing/overview)

@@ -4,203 +4,353 @@
   "source": "https://developer.android.com/jetpack/compose",
   "questions": [
     {
-      "id": "kotlin-compose-snapshot-host",
-      "chapter": "kotlin-compose-arch",
-      "domain": "kotlin",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Vuoropohjaisessa pelissä pelilogiikka on jaetussa simulaatiokirjastossa ja host rakentaa snapshotin UI:lle. Mikä on Compose-hostin rooli?",
-      "choices": [
-        { "text": "Ohut kerros: input → simulaatiokirjasto, snapshot → Composable-näkymät", "correct": true },
-        { "text": "Compose hoitaa NPC-tunteet ja kerroslukot suoraan StateFlow:ssa", "correct": false },
-        { "text": "Simulaatiokirjasto ajetaan Composable-funktion sisällä ilman erillistä kontrolleria", "correct": false },
-        { "text": "Snapshot korvataan Room-tietokannalla joka frame", "correct": false }
-      ],
-      "correctFeedback": "Sama malli eri hosteissa: logiikka erillisessä coressa, UI vain renderöi snapshotin.",
-      "wrongFeedback": "Host ei saa sisältää pelisääntöjä — se välittää syötteen ja rakentaa näytettävän tilan.",
-      "sourceRef": "android/compose/architecture",
-      "sourceUrl": "https://developer.android.com/topic/architecture",
-      "featureId": "kotlin:snapshot-host",
-      "featurePoints": 3
-    },
-    {
-      "id": "kotlin-compose-viewmodel",
+      "id": "kotlin-compose-state-hoisting",
       "chapter": "kotlin-compose-state",
       "domain": "kotlin",
       "difficulty": 2,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Pelin UI-tila (valitsimen collapse, aktiivinen overlay) elää hostissa eikä simulaatiokirjastossa. Minne se kannattaa laittaa Androidissa?",
-      "choices": [
-        { "text": "ViewModel + StateFlow / mutableStateOf — selkeä elinkaari ja rotaatio", "correct": true },
-        { "text": "Singleton Application-luokassa ilman scopetusta", "correct": false },
-        { "text": "GameSession-kenttään pysyvästi", "correct": false },
-        { "text": "SharedPreferences jokaisella näppäinpainalluksella", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "UI-only tila (kuten elevatorPickerCollapsed) kuuluu ViewModeliin, ei pelimoottoriin.",
-      "wrongFeedback": "ViewModel erottaa näkymätilan pelilogiikasta ja selviää konfiguraatiomuutoksista.",
-      "sourceRef": "android/viewmodel",
-      "sourceUrl": "https://developer.android.com/topic/libraries/architecture/viewmodel",
-      "featureId": "kotlin:viewmodel-ui",
+      "prompt": "Compose-näkymässä lapsikomponentti muokkaa tekstikentän arvoa. Mikä on suositeltu state hoisting -malli?",
+      "choices": [
+        {
+          "text": "Tila pidetään omistavassa komponentissa ja lapselle annetaan value + onValueChange-callback",
+          "correct": true
+        },
+        {
+          "text": "Lapsi tallentaa tilan globaaliin singletoniin",
+          "correct": false
+        },
+        {
+          "text": "Jokainen TextField lukee arvon SharedPreferencesistä",
+          "correct": false
+        },
+        {
+          "text": "Tila kirjoitetaan suoraan Android Manifestiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "State hoisting tekee komponentista uudelleenkäytettävän ja testattavan.",
+      "wrongFeedback": "Composable ei saa piilottaa omistamaansa sovellustilaa ilman syytä.",
+      "sourceRef": "developer.android.com/develop/ui/compose/state",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/state",
+      "featureId": "kotlin:compose-state-hoisting",
       "featurePoints": 2
     },
     {
-      "id": "kotlin-compose-shared-core",
-      "chapter": "kotlin-compose-arch",
+      "id": "kotlin-compose-viewmodel-flow",
+      "chapter": "kotlin-compose-state",
       "domain": "kotlin",
       "difficulty": 3,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Miten Android-host saa saman pelilogiikan kuin web-versio ilman JS-kopiota?",
-      "choices": [
-        { "text": "Jaettu core käännetään tai paketoidaan Kotlin-kirjastoksi samaa lähdettä käyttäen", "correct": true },
-        { "text": "Käännä web-bundlen JavaScript Kotliniksi käsin jokaisessa releasessa", "correct": false },
-        { "text": "Upota Node.js WebViewiin ja aja JS suoraan", "correct": false },
-        { "text": "Kirjoita GameSession uudelleen Kotlinilla testejä lukematta", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Sama lähde ja sama testattu logiikka — yksi totuus kaikilla alustoilla.",
-      "wrongFeedback": "Duplikaattilogiikka on ylläpidon painajainen, vaikka se näyttäisi aluksi nopealta.",
-      "sourceRef": "android/kotlin",
-      "sourceUrl": "https://developer.android.com/kotlin",
-      "featureId": "kotlin:shared-core",
+      "prompt": "Näytön data tulee repositoryltä Flow-muodossa. Miten tuot sen Compose-UI:hin elinkaariturvallisesti?",
+      "choices": [
+        {
+          "text": "Kerää Flow collectAsStateWithLifecycle-funktiolla ViewModelin exposeeraamasta tilasta",
+          "correct": true
+        },
+        {
+          "text": "Kutsu runBlocking suoraan Composable-funktiossa",
+          "correct": false
+        },
+        {
+          "text": "Aloita GlobalScope.launch jokaisessa recompositiossa",
+          "correct": false
+        },
+        {
+          "text": "Tallenna viimeisin arvo companion objectiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Lifecycle-aware keräys pysähtyy ja jatkuu näkymän elinkaaren mukaan.",
+      "wrongFeedback": "Recomposition ei saa käynnistää hallitsemattomia coroutineja.",
+      "sourceRef": "developer.android.com/develop/ui/compose/state",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/state",
+      "featureId": "kotlin:compose-flow-lifecycle",
       "featurePoints": 3
     },
     {
-      "id": "kotlin-compose-canvas-grid",
-      "chapter": "kotlin-compose-ui",
+      "id": "kotlin-compose-recomposition-keys",
+      "chapter": "kotlin-compose-performance",
       "domain": "kotlin",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Isometrinen ruudukkokartta Androidissa — mikä Compose-ratkaisu sopii parhaiten?",
-      "choices": [
-        { "text": "Canvas + drawIntoCanvas tai custom Layout — piirrät snapshotin rivit/glyfit", "correct": true },
-        { "text": "LazyColumn jokaiselle karttariville — skaalautuu parhaiten", "correct": false },
-        { "text": "WebView joka ajaa web-buildia", "correct": false },
-        { "text": "Text-komponentti monospace-fontilla ilman scrollia", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Canvas antaa saman vapauden kuin web-canvas — yksi pinta, vähän recompositioita.",
-      "wrongFeedback": "Ruudukkopeli hyötyy suorasta piirrosta; LazyColumn on raskas satojen solujen kanssa.",
-      "sourceRef": "android/compose/draw",
-      "sourceUrl": "https://developer.android.com/jetpack/compose/graphics/draw/overview",
-      "featureId": "kotlin:canvas-grid",
+      "prompt": "LazyColumn näyttää muuttuvaa listaa. Miten vältät turhat itemien uudelleenluonnit järjestyksen muuttuessa?",
+      "choices": [
+        {
+          "text": "Anna itemeille stabiili key, esimerkiksi tietueen id",
+          "correct": true
+        },
+        {
+          "text": "Käytä listan indeksiä avaimena aina",
+          "correct": false
+        },
+        {
+          "text": "Poista LazyColumn ja rakenna kaikki Columniin",
+          "correct": false
+        },
+        {
+          "text": "Kutsu notifyDataSetChanged Composessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Stabiili key auttaa Composea säilyttämään item-kohtaisen tilan.",
+      "wrongFeedback": "Indeksiavaimet rikkoutuvat, kun rivejä lisätään tai poistetaan keskeltä.",
+      "sourceRef": "developer.android.com/develop/ui/compose/lists",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/lists",
+      "featureId": "kotlin:compose-lazy-key",
       "featurePoints": 3
     },
     {
-      "id": "kotlin-compose-screen-routing",
-      "chapter": "kotlin-compose-ui",
+      "id": "kotlin-compose-side-effects",
+      "chapter": "kotlin-compose-effects",
       "domain": "kotlin",
-      "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Snapshot palauttaa screen: map | encounter | story | menu. Miten Compose vaihtaa näkymää?",
-      "choices": [
-        { "text": "when(snapshot.screen) { ... } — yksi root joka renderöi aktiivisen ruudun", "correct": true },
-        { "text": "Erillinen Activity jokaiselle ruudulle", "correct": false },
-        { "text": "NavHost ilman snapshot-tietoa — Compose päättää itse", "correct": false },
-        { "text": "FragmentManager + XML-layoutit", "correct": false }
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Snapshot on totuus — UI seuraa sitä, ei päinvastoin.",
-      "wrongFeedback": "Yksi Activity + screen-kentän perusteella vaihtuva Composable on yksinkertaisin malli.",
-      "sourceRef": "android/compose/navigation",
-      "sourceUrl": "https://developer.android.com/jetpack/compose/navigation",
-      "featureId": "kotlin:screen-routing",
-      "featurePoints": 2
+      "prompt": "Composablein pitää käynnistää kertaluonteinen lataus kun userId vaihtuu. Mikä efekti sopii?",
+      "choices": [
+        {
+          "text": "LaunchedEffect(userId) käynnistää coroutinen avaimen muuttuessa",
+          "correct": true
+        },
+        {
+          "text": "Kutsu suspend-funktiota suoraan build-polussa",
+          "correct": false
+        },
+        {
+          "text": "Käytä Thread.sleep Composable-funktiossa",
+          "correct": false
+        },
+        {
+          "text": "Tee lataus remember-lohkon sisällä ilman cleanupia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "LaunchedEffect sitoo coroutine-työn composablen elinkaareen.",
+      "wrongFeedback": "Suorat sivuvaikutukset renderöinnissä aiheuttavat toistoa ja kilpailutilanteita.",
+      "sourceRef": "developer.android.com/develop/ui/compose/side-effects",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/side-effects",
+      "featureId": "kotlin:compose-launched-effect",
+      "featurePoints": 3
+    },
+    {
+      "id": "kotlin-compose-navigation-args",
+      "chapter": "kotlin-compose-navigation",
+      "domain": "kotlin",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Compose Navigationissa detail-näkymä tarvitsee tietueen id:n. Mikä on turvallinen malli?",
+      "choices": [
+        {
+          "text": "Välitä vain id navigointireitissä ja hae data ViewModelissa",
+          "correct": true
+        },
+        {
+          "text": "Serialisoi koko tietue reittimerkkijonoon",
+          "correct": false
+        },
+        {
+          "text": "Tallenna valittu objekti globaaliin muuttujaan",
+          "correct": false
+        },
+        {
+          "text": "Lue tietue suoraan edellisen composablen local-muuttujasta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pienet argumentit pitävät reitit vakaina ja palautettavina.",
+      "wrongFeedback": "Koko objektin kuljettaminen navigaatiossa tekee palautuksesta ja deeplinkeistä hauraita.",
+      "sourceRef": "developer.android.com/develop/ui/compose/navigation",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/navigation",
+      "featureId": "kotlin:compose-navigation-id",
+      "featurePoints": 3
     },
     {
       "id": "kotlin-compose-datastore",
-      "chapter": "kotlin-compose-persist",
+      "chapter": "kotlin-android-storage",
       "domain": "kotlin",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Web tallentaa karmaa localStorageen. Android-pariteetti tallennukselle?",
-      "choices": [
-        { "text": "DataStore (Preferences tai Proto) — sama JSON-skeema kuin web/terminaali", "correct": true },
-        { "text": "Vain muistissa — tallennus ei kuulu mobiiliin", "correct": false },
-        { "text": "SQLite-taulu jokaiselle NPC-suhteelle erikseen ilman skeemaa", "correct": false },
-        { "text": "Tallenna vain screenshot kartasta", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Jaettu tallennusskeema hostissa — DataStore on moderni korvike SharedPreferencesille.",
-      "wrongFeedback": "Persistenssi on host-vastuu; Android-gap dokumentissa yksi suurimmista puutteista.",
-      "sourceRef": "android/datastore",
+      "prompt": "Sovellus tallentaa käyttäjän asetuksia Androidissa. Mikä korvaa SharedPreferencesin modernissa arkkitehtuurissa?",
+      "choices": [
+        {
+          "text": "Jetpack DataStore Preferences tai Proto DataStore",
+          "correct": true
+        },
+        {
+          "text": "SQLiteOpenHelper jokaiselle boolean-asetukselle",
+          "correct": false
+        },
+        {
+          "text": "Kirjoita asetukset raakatekstinä /sdcard-hakemistoon",
+          "correct": false
+        },
+        {
+          "text": "Tallenna asetukset Activityn instance stateen pysyvästi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "DataStore tarjoaa coroutine/Flow-pohjaisen, asynkronisen asetustallennuksen.",
+      "wrongFeedback": "Instance state ei ole pysyvää tallennusta, ja raakafilet ovat turvattomia.",
+      "sourceRef": "developer.android.com/topic/libraries/architecture/datastore",
       "sourceUrl": "https://developer.android.com/topic/libraries/architecture/datastore",
-      "featureId": "kotlin:datastore-save",
+      "featureId": "kotlin:datastore-settings",
       "featurePoints": 3
     },
     {
-      "id": "kotlin-compose-main-thread",
-      "chapter": "kotlin-compose-state",
-      "domain": "kotlin",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Simulaatiodispatch kestää alle millisekunnin. Mistä päivität UI:n dispatchin jälkeen?",
-      "choices": [
-        { "text": "Main dispatcher / UI-thread — snapshot StateFlow:hun, Compose recompose", "correct": true },
-        { "text": "Dispatchers.IO — kaikki Composable-kutsut taustalla", "correct": false },
-        { "text": "GlobalScope.launch ilman thread-vaihtoa", "correct": false },
-        { "text": "Handler.postDelayed 500 ms viiveellä joka näppäimellä", "correct": false }
-      ],
-      "correctFeedback": "GameSession voi ajaa taustalla, mutta state-päivitys ja Compose ovat main-threadillä.",
-      "wrongFeedback": "Compose ei ole thread-safe — UI-päivitykset aina pääsäikeeseen.",
-      "sourceRef": "kotlin/coroutines-main",
-      "sourceUrl": "https://developer.android.com/kotlin/coroutines",
-      "featureId": "kotlin:main-thread",
-      "featurePoints": 3
-    },
-    {
-      "id": "kotlin-compose-kmp-ios",
-      "chapter": "kotlin-compose-arch",
-      "domain": "kotlin",
-      "difficulty": 4,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Haluat saman Compose-UI:n Androidin ja iOS:n natiiviversioihin. Mikä polku?",
-      "choices": [
-        { "text": "Kotlin Multiplatform + Compose Multiplatform — jaettu UI + erilliset platform-hostit", "correct": true },
-        { "text": "Käännä Jetpack Compose SwiftUI:ksi skriptillä", "correct": false },
-        { "text": "React Native iOS:lle, Compose Androidille — sama logiikka kopioituna", "correct": false },
-        { "text": "iOS ajaa aina selainversiota App Storessa", "correct": false }
-      ],
-      "correctFeedback": "KMP on luonnollinen jatko Android-Compose-linjalle kun iOS tulee mukaan.",
-      "wrongFeedback": "Compose Multiplatform jakaa UI-koodin; core/host pitää silti bridgata per alusta.",
-      "sourceRef": "kotlin/multiplatform",
-      "sourceUrl": "https://www.jetbrains.com/compose-multiplatform/",
-      "featureId": "kotlin:kmp-ios",
-      "featurePoints": 4
-    },
-    {
-      "id": "kotlin-compose-touch-dpad",
-      "chapter": "kotlin-compose-ui",
+      "id": "kotlin-compose-preview",
+      "chapter": "kotlin-compose-tooling",
       "domain": "kotlin",
       "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Mobiilipelaaja liikkuu D-pad-napeilla. Miten välität suuntanäppäimen hostille?",
-      "choices": [
-        { "text": "Button onClick → gameController.handleKey(\"h\") jne. — sama API kuin web/terminaali", "correct": true },
-        { "text": "Accelerometer liikuttaa hahmoa suoraan simulaatiokirjastossa", "correct": false },
-        { "text": "Swipe-gesture muuttaa WorldMap-koordinaatteja UI:ssa", "correct": false },
-        { "text": "Vain fyysinen Bluetooth-näppäimistö — kosketus ei tuettu", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Ohut host: UI lähettää merkkijononäppäimiä, simulaatiokirjasto tulkitsee ne.",
-      "wrongFeedback": "Sama handleKey-sopimus kaikilla alustoilla — ei erillisiä liike-API:ta.",
-      "sourceRef": "android/compose/input",
-      "sourceUrl": "https://developer.android.com/develop/ui/compose/touch-input",
-      "featureId": "kotlin:touch-dpad",
+      "prompt": "UI-komponentin eri tiloja halutaan tarkastella ilman sovelluksen käynnistämistä. Mikä Compose-työkalu auttaa?",
+      "choices": [
+        {
+          "text": "@Preview annotaatio ja erilliset preview-parametrit",
+          "correct": true
+        },
+        {
+          "text": "AndroidManifest activity-alias",
+          "correct": false
+        },
+        {
+          "text": "ProGuard-sääntö jokaiselle tilalle",
+          "correct": false
+        },
+        {
+          "text": "ADB shell input tap -skripti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Preview nopeuttaa UI-kehitystä, kun komponentti on riippuvuuksiltaan kevyt.",
+      "wrongFeedback": "Preview ei korvaa testejä, mutta vähentää käsin ajamista.",
+      "sourceRef": "developer.android.com/develop/ui/compose/tooling/previews",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/tooling/previews",
+      "featureId": "kotlin:compose-preview",
       "featurePoints": 2
     },
     {
-      "id": "kotlin-compose-vs-rn",
-      "chapter": "kotlin-compose-arch",
+      "id": "kotlin-compose-accessibility",
+      "chapter": "kotlin-compose-ui",
+      "domain": "kotlin",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "IconButton näyttää pelkän ikonigrafiikan. Mitä saavutettavuuden kannalta pitää lisätä?",
+      "choices": [
+        {
+          "text": "contentDescription tai selkeä semantics-merkintä ruudunlukijalle",
+          "correct": true
+        },
+        {
+          "text": "Pelkkä väri riittää merkitykseksi",
+          "correct": false
+        },
+        {
+          "text": "Poista nappi accessibility-puusta aina",
+          "correct": false
+        },
+        {
+          "text": "Käytä pienempää fonttikokoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Semantics kertoo avustaville teknologioille, mitä kontrolli tekee.",
+      "wrongFeedback": "Visuaalinen ikoni ei yksin riitä ruudunlukijalle.",
+      "sourceRef": "developer.android.com/develop/ui/compose/accessibility",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/accessibility",
+      "featureId": "kotlin:compose-accessibility",
+      "featurePoints": 3
+    },
+    {
+      "id": "kotlin-compose-main-safety",
+      "chapter": "kotlin-coroutines",
+      "domain": "kotlin",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Repository tekee verkkokutsun. Miten pidät ViewModelin kutsun main-safe-mallisena?",
+      "choices": [
+        {
+          "text": "Repository vaihtaa tarvittaessa Dispatchers.IO:lle sisäisesti",
+          "correct": true
+        },
+        {
+          "text": "ViewModelin kutsuja arvaa aina oikean säikeen",
+          "correct": false
+        },
+        {
+          "text": "Verkkokutsu ajetaan pääsäikeessä koska coroutine",
+          "correct": false
+        },
+        {
+          "text": "Käytä StrictMode.disable kaikkialla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Main-safe API:a voi kutsua ViewModelista ilman säieyksityiskohtien vuotamista.",
+      "wrongFeedback": "Coroutine ei automaattisesti siirrä työtä IO-säikeelle.",
+      "sourceRef": "developer.android.com/kotlin/coroutines/coroutines-best-practices",
+      "sourceUrl": "https://developer.android.com/kotlin/coroutines/coroutines-best-practices",
+      "featureId": "kotlin:coroutines-main-safe",
+      "featurePoints": 3
+    },
+    {
+      "id": "kotlin-compose-material-theme",
+      "chapter": "kotlin-compose-ui",
       "domain": "kotlin",
       "difficulty": 2,
-      "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Miksi projekti voisi suosia Composea React Nativelle Android-natiivissa?",
-      "choices": [
-        { "text": "Pelilogiikka on Kotlinissa tai natiivissa coressa — RN toisi ylimääräisen JS-kerroksen ilman hyötyä", "correct": true },
-        { "text": "Compose on aina nopeampi kuin React Native kaikissa sovelluksissa", "correct": false },
-        { "text": "React Native ei toimi Androidilla ollenkaan", "correct": false },
-        { "text": "Google kieltää pelien julkaisun ilman Composea", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Suora natiivi host on yksinkertaisempi polku; RN sopii paremmin CRUD-sovelluksiin.",
-      "wrongFeedback": "Kyse on arkkitehtuurista: custom pelimoottori + RN = turha bridge.",
-      "sourceRef": "android/compose",
-      "sourceUrl": "https://developer.android.com/jetpack/compose",
-      "featureId": "kotlin:vs-rn",
+      "prompt": "Sovellus tarvitsee yhtenäiset värit ja typografian. Mihin Compose-rakenteeseen ne kannattaa keskittää?",
+      "choices": [
+        {
+          "text": "MaterialTheme ja oma theme-wrapper sovelluksen juuressa",
+          "correct": true
+        },
+        {
+          "text": "Kovakoodaa värit jokaiseen Text-komponenttiin",
+          "correct": false
+        },
+        {
+          "text": "Lue värit BuildConfigista joka recompositiossa",
+          "correct": false
+        },
+        {
+          "text": "Käytä vain järjestelmän oletusfonttia ilman teemaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Theme tekee UI:sta yhtenäisen ja helpottaa dark mode -tukea.",
+      "wrongFeedback": "Kovakoodaus hajottaa ylläpidon ja saavutettavuuden.",
+      "sourceRef": "developer.android.com/develop/ui/compose/designsystems/material3",
+      "sourceUrl": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+      "featureId": "kotlin:compose-theme",
       "featurePoints": 2
     }
   ]

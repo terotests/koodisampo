@@ -1,4 +1,4 @@
-# Flutter tarvitsee laitteen natiivin ominaisuuden, jota paketit eivät tarjoa. Mikä mekanismi sopii?
+# Sovellus tarvitsee paikallisen JSON-konfiguraation mukaan buildiin. Miten se lisätään?
 
 ## Tilanne
 
@@ -8,11 +8,11 @@ Kysymys kuvaa tavallista päätöstä, joka tulee vastaan tuotantosovelluksen ke
 
 ## Ratkaisu
 
-**Oikea vastaus:** Platform channel tai dart:ffi natiivikoodiin
+**Oikea vastaus:** Määritä asset pubspec.yamlissa ja lue rootBundle.loadStringillä
 
-Platform channel on virallinen silta Dartin ja natiivin välillä.
+Asset bundle on Flutterin tapa jakaa staattiset tiedostot sovelluksen mukana.
 
-UI:n state API ei korvaa platform-integraatiota. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Kirjoita Kotlin-koodi suoraan Dart-tiedostoon; Käytä setStatea natiivikutsun tilalla.
+Verkkohaku ei ole offline-ratkaisu. Tyypillisiä vääriä suuntia tässä tilanteessa ovat esimerkiksi: Laita JSON lib/-kansioon ja importtaa se Dart-luokkana; Hae tiedosto aina internetistä.
 
 ## Käytännössä
 
@@ -20,4 +20,4 @@ Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötteen, 
 
 Tarkista lisäksi virallinen dokumentaatio ennen tuotantopäätöstä, koska alustojen plugin-, deploy- ja turvallisuusmallit muuttuvat versioiden mukana.
 
-[Lue lisää](https://docs.flutter.dev/platform-integration/platform-channels)
+[Lue lisää](https://docs.flutter.dev/ui/assets/assets-and-images)

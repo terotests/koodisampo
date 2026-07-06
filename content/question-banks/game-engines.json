@@ -4,203 +4,353 @@
   "source": "https://docs.godotengine.org/",
   "questions": [
     {
-      "id": "gameengines-custom-engine-not-unity",
+      "id": "gameengines-engine-fit",
       "chapter": "gameengines-choice",
       "domain": "gameengines",
       "difficulty": 2,
-      "audiences": ["coworker", "project-lead", "ceo"],
-      "prompt": "Miksi Unity/Godot ei ole ensisijainen valinta olemassa olevalle custom-simulaatiopelille?",
-      "choices": [
-        { "text": "Pelilogiikka on jo omassa simulaatiokirjastossa — uudelleenkirjoitus moottoriin on turhaa", "correct": true },
-        { "text": "Unity ei tue 2D-karttoja", "correct": false },
-        { "text": "Godot kieltää JSON-sisällön", "correct": false },
-        { "text": "Pelimoottorit eivät toimi mobiilissa", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Moottori on jo olemassa ja testattu; tarvitaan host, ei automaattisesti Unityä.",
-      "wrongFeedback": "Ongelma on investoidun logiikan uudelleenkäyttö, ei 2D-rajoite.",
-      "sourceRef": "unity/architecture",
-      "sourceUrl": "https://docs.unity3d.com/Manual/ExecutionOrder.html",
-      "featureId": "gameengines:not-unity",
-      "featurePoints": 2
-    },
-    {
-      "id": "gameengines-turnbased-sim",
-      "chapter": "gameengines-choice",
-      "domain": "gameengines",
-      "difficulty": 2,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Vuoropohjainen toimistosimulaatio — mitä pelimoottorin ominaisuuksia EI tarvita?",
+      "prompt": "Milloin yleinen pelimoottori kuten Unity tai Godot on perusteltu valinta?",
       "choices": [
-        { "text": "Fysiikkamoottori, partikkelit, 3D-valaistus — peli on event-driven grid", "correct": true },
-        { "text": "Scene graph ja input-käsittely", "correct": false },
-        { "text": "Asset pipeline kuville", "correct": false },
-        { "text": "Äänen toisto", "correct": false }
+        {
+          "text": "Kun sovellus hyötyy valmiista scene graphista, asset-pipelinesta, fysiikasta tai monialusta-exportista",
+          "correct": true
+        },
+        {
+          "text": "Aina kun sovelluksessa on yksi animaatio",
+          "correct": false
+        },
+        {
+          "text": "Kun tarvitaan vain lomake-UI ja REST API",
+          "correct": false
+        },
+        {
+          "text": "Kun kaikki logiikka on valmiiksi toisessa tuotantokoodissa eikä integraatiota tarvita",
+          "correct": false
+        }
       ],
-      "correctFeedback": "NetHack-tyyppinen simu on kevyt — custom host riittää.",
-      "wrongFeedback": "Input ja renderöinti tarvitaan, mutta raskas 3D-fysiikka ei.",
-      "sourceRef": "godot/2d",
-      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/2d/",
-      "featureId": "gameengines:turnbased",
-      "featurePoints": 2
-    },
-    {
-      "id": "gameengines-data-driven-json",
-      "chapter": "gameengines-arch",
-      "domain": "gameengines",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "content/worlds, question-banks, stories — miksi tämä sopii custom-moottoriin?",
-      "choices": [
-        { "text": "Data on jo JSONissa — pelimoottori lataa ja core tulkitsee; ei editorin lock-inia", "correct": true },
-        { "text": "JSON toimii vain Unityssä ScriptableObjecteina", "correct": false },
-        { "text": "Godot ei voi lukea ulkoisia tiedostoja", "correct": false },
-        { "text": "JSON pitää aina kovakoodata C#:ään", "correct": false }
-      ],
-      "correctFeedback": "Data-driven arkkitehtuuri on vahvuus — moottorivalinta ei muuta sitä.",
-      "wrongFeedback": "Unity/Godot voisivat lukea JSONin, mutta logiikka pitäisi silti integroida tai portata.",
-      "sourceRef": "godot/json",
-      "sourceUrl": "https://docs.godotengine.org/en/stable/classes/class_json.html",
-      "featureId": "gameengines:data-json",
-      "featurePoints": 3
-    },
-    {
-      "id": "gameengines-thin-host-pattern",
-      "chapter": "gameengines-arch",
-      "domain": "gameengines",
-      "difficulty": 3,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Snapshot + handleKey -malli — mikä on pelimoottorin vastine?",
-      "choices": [
-        { "text": "Ei perinteistä moottoria — GameSession on simulaatio, host on 'platform layer'", "correct": true },
-        { "text": "Unity Update()-loop kutsuu GameSessionia", "correct": false },
-        { "text": "Godot _process() on pakollinen joka framella", "correct": false },
-        { "text": "Unreal GameMode hoitaa quiz-kysymykset", "correct": false }
-      ],
-      "correctFeedback": "Tällainen peli on simulaatiokirjasto + hostit, ei välttämättä scene-puu-peli.",
-      "wrongFeedback": "Event-driven API ei tarvitse frame loop -moottoria.",
-      "sourceRef": "godot/game-loop",
-      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/scripting/idle_and_physics_processing.html",
-      "featureId": "gameengines:thin-host",
-      "featurePoints": 3
-    },
-    {
-      "id": "gameengines-dialog-heavy",
-      "chapter": "gameengines-choice",
-      "domain": "gameengines",
-      "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "Peli on pääosin dialogeja, quizeja ja teksti-UI:ta. Mikä renderöintitarve?",
-      "choices": [
-        { "text": "Kevyt 2D/teksti riittää — DOM, Compose tai Qt Widgets, ei 3D-pipelinea", "correct": true },
-        { "text": "Pakollinen Unreal Motion Matching NPC:ille", "correct": false },
-        { "text": "Unity HDRP varjojen vuoksi", "correct": false },
-        { "text": "Pelimoottori pakollinen tekstin wrapille", "correct": false }
-      ],
-      "correctFeedback": "UI-kerros hoitaa tekstin; moottorin 3D-ominaisuudet ovat ylikilloa.",
-      "wrongFeedback": "Teksti- ja valikkopohjainen peli on web/natiivi-UI:n vahvuusalue.",
-      "sourceRef": "godot/ui",
-      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/ui/index.html",
-      "featureId": "gameengines:dialog-ui",
-      "featurePoints": 2
-    },
-    {
-      "id": "gameengines-multi-target-core",
-      "chapter": "gameengines-arch",
-      "domain": "gameengines",
-      "difficulty": 3,
-      "audiences": ["guru", "project-lead"],
-      "prompt": "Miten custom-peli saavuttaa monialustaisuuden ilman Unityä?",
-      "choices": [
-        { "text": "Jaettu core julkaistaan usealle targetille — sama logiikka, eri ohut host per alusta", "correct": true },
-        { "text": "Unity buildaa kaikille alustoille automaattisesti", "correct": false },
-        { "text": "Godot export riittää ilman logiikan uudelleenkirjoitusta", "correct": false },
-        { "text": "Vain yksi alusta tuettu suunnitelmallisesti", "correct": false }
-      ],
-      "correctFeedback": "Käännös-targetit + host-pariteetti on oikea multiplatform-strategia.",
-      "wrongFeedback": "Unity-export ei auta jos logiikka ei ole Unityssä.",
-      "sourceRef": "flutter/platform-integration",
-      "sourceUrl": "https://docs.flutter.dev/platform-integration",
-      "featureId": "gameengines:multi-core",
-      "featurePoints": 3
-    },
-    {
-      "id": "gameengines-when-unity-ok",
-      "chapter": "gameengines-choice",
-      "domain": "gameengines",
-      "difficulty": 2,
-      "audiences": ["project-lead", "ceo"],
-      "prompt": "Milloin Unity/Godot OLISI järkevä aloittaa tyhjästä?",
-      "choices": [
-        { "text": "Uusi real-time action/3D-peli ilman olemassa olevaa simulaatiokoodia", "correct": true },
-        { "text": "Aina kun projektissa on JSON-tiedostoja", "correct": false },
-        { "text": "Kun tarvitaan quiz-kysymyksiä", "correct": false },
-        { "text": "Kun peli on vuoropohjainen ASCII-grid", "correct": false }
-      ],
-      "correctFeedback": "Pelimoottorit loistavat uusissa visuaalisissa peleissä — ei legacy-simulaatiossa.",
-      "wrongFeedback": "Jos simulaatio on jo olemassa, moottorin vaihto voi maksaa enemmän kuin hyöty.",
-      "sourceRef": "unity/manual",
+      "correctFeedback": "Moottori kannattaa valita, jos sen tarjoamat työkalut vähentävät kokonaismonimutkaisuutta.",
+      "wrongFeedback": "Pelimoottori ei ole automaattisesti paras yleissovelluskehykseksi.",
+      "sourceRef": "docs.unity3d.com/Manual/index.html",
       "sourceUrl": "https://docs.unity3d.com/Manual/index.html",
-      "featureId": "gameengines:when-unity",
+      "featureId": "gameengines:engine-fit",
       "featurePoints": 2
     },
     {
-      "id": "gameengines-godot-gdscript-cost",
-      "chapter": "gameengines-choice",
+      "id": "gameengines-godot-scenes",
+      "chapter": "gameengines-godot",
       "domain": "gameengines",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "Godot + GDScript olemassa olevalle pelilogiikalle — mikä on piilokustannus?",
-      "choices": [
-        { "text": "Koko core + testit + CI pitää portata — kaksi totuutta ylläpidossa", "correct": true },
-        { "text": "GDScript on identtinen minkä tahansa custom DSL:n kanssa", "correct": false },
-        { "text": "Godot lukee custom-lähdekoodin suoraan ilman integraatiota", "correct": false },
-        { "text": "Ei kustannusta — Godot on ilmainen", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Ilmainen moottori ≠ ilmainen migraatio.",
-      "wrongFeedback": "Ylläpito-kustannus on duplikaattilogiikassa, ei lisenssissä.",
-      "sourceRef": "godot/scripting",
-      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/scripting/",
-      "featureId": "gameengines:godot-cost",
+      "prompt": "Godot-projektissa sama UI-paneeli tarvitaan monessa näkymässä. Mikä rakenne sopii?",
+      "choices": [
+        {
+          "text": "Tee paneelista oma Scene ja instansioi se tarvittaviin paikkoihin",
+          "correct": true
+        },
+        {
+          "text": "Kopioi node-puu käsin jokaiseen sceneen",
+          "correct": false
+        },
+        {
+          "text": "Kirjoita paneeli engine-lähdekoodiin",
+          "correct": false
+        },
+        {
+          "text": "Tallenna paneeli kuvana ja näytä spritenä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Godotin Scene-malli tukee kompositiota ja uudelleenkäyttöä.",
+      "wrongFeedback": "Kopioitu node-puu vaikeuttaa korjauksia ja ylläpitoa.",
+      "sourceRef": "docs.godotengine.org/en/stable/getting_started/step_by_step/scenes_and_nodes.html",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/getting_started/step_by_step/scenes_and_nodes.html",
+      "featureId": "gameengines:godot-scenes",
       "featurePoints": 3
     },
     {
-      "id": "gameengines-test-headless",
-      "chapter": "gameengines-arch",
+      "id": "gameengines-unity-prefabs",
+      "chapter": "gameengines-unity",
       "domain": "gameengines",
       "difficulty": 3,
-      "audiences": ["guru", "coworker"],
-      "prompt": "npm run test:engine ajaa 50+ headless-testiä ilman UI:ta. Hyöty arkkitehtuurivalinnassa?",
-      "choices": [
-        { "text": "Logiikka erotettu UI:sta — CI varmistaa säännöt ilman Unity-editoria", "correct": true },
-        { "text": "Testit vaativat aina Unity Test Runnerin", "correct": false },
-        { "text": "Headless-testit eivät kata pelilogiikkaa", "correct": false },
-        { "text": "Vain manuaalinen pelitestaus on luotettavaa", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Headless-testattu core on vahvuus, jota pelimoottorin vaihto voi heikentää.",
-      "wrongFeedback": "Simulaatiokerros on testattavissa suoraan — UI ei tarvita.",
-      "sourceRef": "node/test-runner",
-      "sourceUrl": "https://nodejs.org/api/test.html",
-      "featureId": "gameengines:headless-test",
+      "prompt": "Unityssä sama vihollis-/kortti-/paneeliobjekti esiintyy monessa kentässä. Mitä käytät?",
+      "choices": [
+        {
+          "text": "Prefabia, jossa jaettu rakenne ja komponentit ovat yhdessä paikassa",
+          "correct": true
+        },
+        {
+          "text": "Kopioi GameObject joka sceneen ilman prefab-yhteyttä",
+          "correct": false
+        },
+        {
+          "text": "Luo objekti vain screenshotina",
+          "correct": false
+        },
+        {
+          "text": "Muokkaa Unityn editorin cache-tiedostoja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Prefab on Unityn keskeinen uudelleenkäytettävän objektin malli.",
+      "wrongFeedback": "Kopiot irtoavat toisistaan ja bugikorjaukset unohtuvat helposti.",
+      "sourceRef": "docs.unity3d.com/Manual/Prefabs.html",
+      "sourceUrl": "https://docs.unity3d.com/Manual/Prefabs.html",
+      "featureId": "gameengines:unity-prefabs",
       "featurePoints": 3
     },
     {
-      "id": "gameengines-ascii-grid-simple",
+      "id": "gameengines-update-loop",
+      "chapter": "gameengines-architecture",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Reaaliaikainen moottori tarjoaa Update-loopin. Mitä sinne ei kannata laittaa?",
+      "choices": [
+        {
+          "text": "Raskasta IO:ta tai harvoin muuttuvaa liiketoimintalogiikkaa joka framelle",
+          "correct": true
+        },
+        {
+          "text": "Kevyt inputin lukeminen tarpeen mukaan",
+          "correct": false
+        },
+        {
+          "text": "Animaation aikaperusteinen päivitys",
+          "correct": false
+        },
+        {
+          "text": "Frame-kohtainen interpolointi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Update ajetaan usein, joten siellä oleva turha työ näkyy heti suorituskyvyssä.",
+      "wrongFeedback": "Kaikki logiikka ei kuulu frame loopiin.",
+      "sourceRef": "docs.unity3d.com/Manual/ExecutionOrder.html",
+      "sourceUrl": "https://docs.unity3d.com/Manual/ExecutionOrder.html",
+      "featureId": "gameengines:update-loop",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-physics-choice",
+      "chapter": "gameengines-physics",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "2D-sovellus tarvitsee törmäyksiä ja rigid body -liikettä. Miksi moottorin fysiikka voi auttaa?",
+      "choices": [
+        {
+          "text": "Valmis collision detection ja solver vähentävät oman fysiikkakoodin tarvetta",
+          "correct": true
+        },
+        {
+          "text": "Fysiikka korvaa käyttöliittymän saavutettavuuden",
+          "correct": false
+        },
+        {
+          "text": "Fysiikka tekee tietokantamigraatiot automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Rigid body tarvitaan kaikkiin nappeihin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fysiikkamoottori on hyödyllinen, kun simulaatio vastaa sen mallia.",
+      "wrongFeedback": "Sitä ei pidä käyttää asioihin, jotka eivät ole fysiikkaa.",
+      "sourceRef": "docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html",
+      "featureId": "gameengines:physics-choice",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-asset-pipeline",
+      "chapter": "gameengines-assets",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Projekti käyttää paljon spritejä, animaatioita ja ääniä. Mikä on pelimoottorin asset-pipelinen hyöty?",
+      "choices": [
+        {
+          "text": "Import-asetukset, pakkaus ja riippuvuudet hallitaan keskitetysti",
+          "correct": true
+        },
+        {
+          "text": "Kaikki assetit muutetaan automaattisesti koodiksi",
+          "correct": false
+        },
+        {
+          "text": "Asset-pipeline poistaa versionhallinnan tarpeen",
+          "correct": false
+        },
+        {
+          "text": "Äänet toimivat vain jos ne ovat tietokannassa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Moottorin import pipeline säästää käsityötä ja yhtenäistää buildit.",
+      "wrongFeedback": "Versionhallinta ja asset-käytännöt tarvitaan silti.",
+      "sourceRef": "docs.unity3d.com/Manual/AssetWorkflow.html",
+      "sourceUrl": "https://docs.unity3d.com/Manual/AssetWorkflow.html",
+      "featureId": "gameengines:asset-pipeline",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-ui-vs-native",
       "chapter": "gameengines-choice",
       "domain": "gameengines",
       "difficulty": 2,
-      "audiences": ["coworker", "secretary"],
-      "prompt": "ASCII/isometrinen ruudukko — tarvitaanko scene graph -moottoria?",
-      "choices": [
-        { "text": "Ei — canvas/terminal/Compose piirtää snapshot-rivit, logiikka on string[][]", "correct": true },
-        { "text": "Kyllä — ilman Unity Tilemapia kartta ei toimi", "correct": false },
-        { "text": "Godot TileMapLayer on pakollinen", "correct": false },
-        { "text": "Ruudukko vaatii aina GPU-fysiikan", "correct": false }
+      "audiences": [
+        "coworker",
+        "guru"
       ],
-      "correctFeedback": "Yksinkertainen renderöinti — moottorin scene-puu on overkill.",
-      "wrongFeedback": "MapView on data — piirto on hostin tehtävä.",
-      "sourceRef": "canvas/api",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
-      "featureId": "gameengines:ascii-grid",
+      "prompt": "Milloin natiivi sovelluskehys voi olla parempi kuin pelimoottorin UI?",
+      "choices": [
+        {
+          "text": "Kun sovellus on pääosin lomakkeita, listoja, tekstinsyöttöä ja alustakohtaisia käyttöliittymäkontrolleja",
+          "correct": true
+        },
+        {
+          "text": "Kun tarvitaan particle system",
+          "correct": false
+        },
+        {
+          "text": "Kun halutaan 3D-valaistus",
+          "correct": false
+        },
+        {
+          "text": "Kun projekti on kokonaan reaaliaikainen simulaatio",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Natiivi UI antaa usein paremmat tekstikentät, saavutettavuuden ja alustakonventiot.",
+      "wrongFeedback": "Pelimoottorin UI on vahva pelin sisäisissä HUD- ja menu-tarpeissa.",
+      "sourceRef": "developer.apple.com/design/human-interface-guidelines/",
+      "sourceUrl": "https://developer.apple.com/design/human-interface-guidelines/",
+      "featureId": "gameengines:ui-vs-native",
+      "featurePoints": 2
+    },
+    {
+      "id": "gameengines-scripting-boundary",
+      "chapter": "gameengines-architecture",
+      "domain": "gameengines",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Moottoriprojekti käyttää sekä C# / GDScript -skriptejä että natiivilaajennuksia. Mihin raja kannattaa vetää?",
+      "choices": [
+        {
+          "text": "Pidä korkean tason pelilogiikka skripteissä ja suorituskykykriittinen tai SDK-integraatio natiivilaajennuksissa",
+          "correct": true
+        },
+        {
+          "text": "Kirjoita kaikki engineen C++:lla alusta asti",
+          "correct": false
+        },
+        {
+          "text": "Sekoita sama vastuu sekä skriptiin että natiivipuolelle",
+          "correct": false
+        },
+        {
+          "text": "Kutsu natiivilaajennusta jokaisesta property getteristä ilman tarvetta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Selkeä vastuuraja pitää kehityksen nopeana ja suorituskyvyn hallittavana.",
+      "wrongFeedback": "Turha natiivikerros hidastaa iterointia.",
+      "sourceRef": "docs.godotengine.org/en/stable/tutorials/scripting/gdextension/",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/",
+      "featureId": "gameengines:scripting-boundary",
+      "featurePoints": 4
+    },
+    {
+      "id": "gameengines-platform-export",
+      "chapter": "gameengines-distribution",
+      "domain": "gameengines",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Moottori exporttaa usealle alustalle. Mikä pitää silti testata erikseen?",
+      "choices": [
+        {
+          "text": "Input, suorituskyky, tiedostopolut, plugin-tuet ja kauppakohtaiset vaatimukset per alusta",
+          "correct": true
+        },
+        {
+          "text": "Vain editorissa Play-nappi riittää kaikille alustoille",
+          "correct": false
+        },
+        {
+          "text": "Alustakohtaisia eroja ei ole moottorissa",
+          "correct": false
+        },
+        {
+          "text": "Export poistaa tarvetta QA:lle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Export helpottaa jakelua, mutta alustat eroavat käytännön yksityiskohdissa.",
+      "wrongFeedback": "Editorissa toimiminen ei takaa mobiili- tai konsolitoimivuutta.",
+      "sourceRef": "docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html",
+      "sourceUrl": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html",
+      "featureId": "gameengines:platform-export",
+      "featurePoints": 3
+    },
+    {
+      "id": "gameengines-licensing",
+      "chapter": "gameengines-choice",
+      "domain": "gameengines",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Teknologiavalinnassa vertaillaan Unityä, Godotia ja omaa kehystä. Mikä ei saa unohtua?",
+      "choices": [
+        {
+          "text": "Lisenssi, runtime-koko, tiimin osaaminen ja pitkän aikavälin ylläpito",
+          "correct": true
+        },
+        {
+          "text": "Vain logon väri",
+          "correct": false
+        },
+        {
+          "text": "Montako esimerkkiprojektia etusivulla on",
+          "correct": false
+        },
+        {
+          "text": "Onko editorin splash screen hauska",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Alustavalinta vaikuttaa kustannuksiin, rekrytointiin ja ylläpitoon.",
+      "wrongFeedback": "Tekninen demo ei yksin riitä tuotantopäätökseen.",
+      "sourceRef": "opensource.org/licenses/MIT",
+      "sourceUrl": "https://opensource.org/licenses/MIT",
+      "featureId": "gameengines:licensing",
       "featurePoints": 2
     }
   ]
