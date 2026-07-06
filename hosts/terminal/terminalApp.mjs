@@ -328,11 +328,12 @@ function flushPersist(session) {
 }
 
 function pendingEncounterEntity(session) {
+  const pe = session.pendingEntity;
   return {
-    id: session.pendingEntityId,
-    name: session.pendingEntityName,
-    kind: session.pendingEntityKind,
-    char: session.pendingEntityChar,
+    id: pe?.id ?? "",
+    name: pe?.name ?? "",
+    kind: pe?.kind ?? "",
+    char: pe?.char ?? "",
   };
 }
 
@@ -771,7 +772,7 @@ async function runInventoryLoop(session) {
 }
 
 async function runCardReturnLoop(session) {
-  const name = session.pendingEntityName || "Työkaveri";
+  const name = session.pendingEntity?.name || "Työkaveri";
   while (session.screen === "encounter" && session.encounterResult === "card_return" && !session.shouldQuit) {
     drawLinesClear([
       BANNER,
@@ -1007,7 +1008,7 @@ async function showQuizOutcome(session, quiz, correct) {
 async function showAiStudy(session, quiz) {
   const cost = AI_STUDY_KARMA_COST;
   const text = buildAiStudyText(quiz.question);
-  const entityName = quiz.entity?.name || session.pendingEntityName;
+  const entityName = quiz.entity?.name || session.pendingEntity?.name;
 
   drawLinesClear([
     BANNER,

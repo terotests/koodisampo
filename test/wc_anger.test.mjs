@@ -12,10 +12,10 @@ const worldJson = readFileSync(
 );
 
 function talkToNpc(session, npcId, npcName) {
-  session.pendingEntityId = npcId;
-  session.pendingEntityName = npcName;
-  session.pendingEntityKind = "coworker";
-  session.pendingEntityChar = "c";
+  session.pendingEntity.id = npcId;
+  session.pendingEntity.name = npcName;
+  session.pendingEntity.kind = "coworker";
+  session.pendingEntity.char = "c";
   session.screen = "encounter";
   session.encounterResult = "";
   session.onEncounterChoice("talk");

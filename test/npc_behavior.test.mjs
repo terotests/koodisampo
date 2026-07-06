@@ -66,10 +66,10 @@ export function runNpcBehaviorTests() {
     }
 
     dispatch(session, () => {
-      session.pendingEntityId = candidate.id;
-      session.pendingEntityName = candidate.name;
-      session.pendingEntityKind = candidate.kind;
-      session.pendingEntityChar = candidate.char;
+      session.pendingEntity.id = candidate.id;
+      session.pendingEntity.name = candidate.name;
+      session.pendingEntity.kind = candidate.kind;
+      session.pendingEntity.char = candidate.char;
       session.screen = "encounter";
       session.encounterResult = "quiz";
       session.finishEncounterQuiz(true, "quiz:test", 5, "Hyvä vastaus!");
@@ -82,10 +82,10 @@ export function runNpcBehaviorTests() {
     assert(ent.behaviorParam >= 3 && ent.behaviorParam <= 5, `follow distance ${ent.behaviorParam}`);
 
     dispatch(session, () => {
-      session.pendingEntityId = candidate.id;
-      session.pendingEntityName = candidate.name;
-      session.pendingEntityKind = candidate.kind;
-      session.pendingEntityChar = candidate.char;
+      session.pendingEntity.id = candidate.id;
+      session.pendingEntity.name = candidate.name;
+      session.pendingEntity.kind = candidate.kind;
+      session.pendingEntity.char = candidate.char;
       session.screen = "encounter";
       session.encounterResult = "quiz";
       session.finishEncounterQuiz(false, "", 0, "Väärin.");

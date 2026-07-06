@@ -6707,6 +6707,19 @@ class NpcBehaviorRegistry  {
     };
   };
 }
+class MemorialMourner  {
+  constructor() {
+    this.id = "";
+    this.name = "";
+    this.epitaph = "";
+  }
+}
+class SimEvent  {
+  constructor() {
+    this.type = "";
+    this.detail = "";
+  }
+}
 class GameSession  extends RangerProcessBase {
   constructor() {
     super()
@@ -6715,10 +6728,6 @@ class GameSession  extends RangerProcessBase {
     this.pendingStoryId = "";
     this.menuMessage = "";
     this.engineReady = false;
-    this.pendingEntityId = "";
-    this.pendingEntityChar = "";
-    this.pendingEntityName = "";
-    this.pendingEntityKind = "";
     this.encounterResult = "";
     this.relationTickAccum = 0;
     this.socialTickAccum = 0;
@@ -6729,9 +6738,7 @@ class GameSession  extends RangerProcessBase {
     this.gameOverReason = "";
     this.memorialDeathLine = "";
     this.memorialPlayerName = "";
-    this.memorialMournerIds = [];
-    this.memorialMournerNames = [];
-    this.memorialMournerEpitaphs = [];
+    this.memorialMourners = [];
     this.encounterCooldown = 0;
     this.interviewPassed = false;
     this.interviewFailed = false;
@@ -6748,19 +6755,13 @@ class GameSession  extends RangerProcessBase {
     this.actionResultOk = false;
     this.actionResultMessage = "";
     this.actionPendingStoryId = "";
-    this.blockedTalkId = "";
-    this.blockedTalkChar = "";
-    this.blockedTalkName = "";
-    this.blockedTalkKind = "";
-    this.blockedTalkStoryId = "";
     this.simSeed = 0;
     this.simRngState = 1;
     this.simScenarioId = "";
     this.simOutcome = "running";
     this.simStepCount = 0;
     this.simMinutesAccum = 0;
-    this.simEventTypes = [];
-    this.simEventDetails = [];
+    this.simEvents = [];
     this.simErrors = [];
     this.playerDisplayName = "";
     this.playerSpecialty = "";
@@ -6789,12 +6790,12 @@ class GameSession  extends RangerProcessBase {
     this.proximityGreeting = new ProximityGreeting();
     this.npcBehaviors = new NpcBehaviorRegistry();
     this.npcBehaviors.loadDefaults();
-    let emptyMemorialIds = [];
-    let emptyMemorialNames = [];
-    let emptyMemorialEpitaphs = [];
-    this.memorialMournerIds = emptyMemorialIds;
-    this.memorialMournerNames = emptyMemorialNames;
-    this.memorialMournerEpitaphs = emptyMemorialEpitaphs;
+    this.pendingEntity = new MapEntity();
+    this.blockedTalk = new MapEntity();
+    let emptyMourners = [];
+    this.memorialMourners = emptyMourners;
+    let emptySimEvents = [];
+    this.simEvents = emptySimEvents;
   }
   ensureEngine () {
     if ( this.engineReady ) {
@@ -6809,45 +6810,45 @@ class GameSession  extends RangerProcessBase {
     this.ensureEngine();
   };
   isHostileEncounter () {
-    if ( this.pendingEntityKind == "hostile" ) {
+    if ( this.pendingEntity.kind == "hostile" ) {
       return true;
     }
     return false;
   };
   isCeoEncounter () {
-    if ( (this.pendingEntityId.length) >= 4 ) {
-      const prefix = this.pendingEntityId.substring(0, 4 );
+    if ( (this.pendingEntity.id.length) >= 4 ) {
+      const prefix = this.pendingEntity.id.substring(0, 4 );
       if ( prefix == "ceo-" ) {
         return true;
       }
     }
-    if ( this.pendingEntityKind == "role" ) {
-      if ( this.pendingEntityChar == "C" ) {
+    if ( this.pendingEntity.kind == "role" ) {
+      if ( this.pendingEntity.char == "C" ) {
         return true;
       }
     }
     return false;
   };
   isCoworkerEncounter () {
-    if ( this.pendingEntityKind == "coworker" ) {
+    if ( this.pendingEntity.kind == "coworker" ) {
       return true;
     }
     return false;
   };
   needsEncounterQuiz () {
-    if ( this.pendingEntityId == "receptionist" ) {
+    if ( this.pendingEntity.id == "receptionist" ) {
       if ( this.interviewPassed ) {
         return false;
       }
       return true;
     }
-    if ( this.pendingEntityId == "hr-greeter" ) {
+    if ( this.pendingEntity.id == "hr-greeter" ) {
       if ( this.hrWelcomeDone ) {
         return false;
       }
       return true;
     }
-    if ( this.pendingEntityKind == "guru" ) {
+    if ( this.pendingEntity.kind == "guru" ) {
       if ( this.guruIntroPassed ) {
         return false;
       }
@@ -6856,10 +6857,10 @@ class GameSession  extends RangerProcessBase {
     if ( (this.pendingStoryId.length) > 0 ) {
       return false;
     }
-    if ( (this.pendingEntityKind.length) < 1 ) {
+    if ( (this.pendingEntity.kind.length) < 1 ) {
       return false;
     }
-    if ( this.pendingEntityKind == "item" ) {
+    if ( this.pendingEntity.kind == "item" ) {
       return false;
     }
     return true;
@@ -6870,7 +6871,7 @@ class GameSession  extends RangerProcessBase {
         this.karma.add(featureId, points);
       }
       let status = "✓ " + msg;
-      if ( this.pendingEntityKind == "guru" ) {
+      if ( this.pendingEntity.kind == "guru" ) {
         this.guruQuizCorrect = this.guruQuizCorrect + 1;
         if ( this.guruQuizCorrect >= 2 ) {
           this.guruIntroPassed = true;
@@ -6879,14 +6880,14 @@ class GameSession  extends RangerProcessBase {
           status = ((status + " (") + ((this.guruQuizCorrect.toString()))) + "/2 oikein Guru-tarkistukseen)";
         }
       }
-      if ( this.pendingEntityId == "receptionist" ) {
+      if ( this.pendingEntity.id == "receptionist" ) {
         this.tools.grant("official_badge");
         this.interviewPassed = true;
         this.interviewFailed = false;
         status = status + " Sait virallisen kulkuluvan — haastattelu meni läpi! Kuukausipalkka 2 500 €.";
         this.syncHrGreeter();
       }
-      if ( this.pendingEntityId == "hr-greeter" ) {
+      if ( this.pendingEntity.id == "hr-greeter" ) {
         this.hrWelcomeDone = true;
         this._map.retireEntitySeek("hr-greeter");
         status = status + " HR toivottaa sinut virallisesti tervetulleeksi tiimiin.";
@@ -6896,12 +6897,12 @@ class GameSession  extends RangerProcessBase {
     } else {
       this.karma.loseKarma(3);
       let failStatus = "✗ " + msg;
-      if ( this.pendingEntityId == "receptionist" ) {
+      if ( this.pendingEntity.id == "receptionist" ) {
         this.interviewFailed = true;
         this.interviewPassed = false;
         failStatus = failStatus + " Haastattelu ei mennyt läpi. Voit yrittää uudelleen tai käyttää varastettua korttia — riskillä.";
       }
-      if ( this.pendingEntityId == "hr-greeter" ) {
+      if ( this.pendingEntity.id == "hr-greeter" ) {
         this.hrWelcomeDone = true;
         this._map.retireEntitySeek("hr-greeter");
         failStatus = failStatus + " HR jättää sinulle onboarding-materiaalit myöhemmin.";
@@ -6909,7 +6910,7 @@ class GameSession  extends RangerProcessBase {
       this._map.overheardMsg = "";
       this._map.lastStatus = failStatus;
     }
-    const quizEnt = this._map.findEntityById(this.pendingEntityId);
+    const quizEnt = this._map.findEntityById(this.pendingEntity.id);
     if ( (quizEnt.id.length) > 0 ) {
       let behaviorMsg = "";
       if ( correct ) {
@@ -6920,10 +6921,10 @@ class GameSession  extends RangerProcessBase {
       if ( (behaviorMsg.length) > 0 ) {
         this._map.lastStatus = (this._map.lastStatus + " ") + behaviorMsg;
       }
-      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
-      const emotionReaction = this.quizReactionCatalog.pickStatusReaction(rel, correct, this.pendingEntityId);
+      const rel = this.npcRelations.getOrCreate(this.pendingEntity.id);
+      const emotionReaction = this.quizReactionCatalog.pickStatusReaction(rel, correct, this.pendingEntity.id);
       if ( (emotionReaction.length) > 0 ) {
-        this._map.lastStatus = (((this._map.lastStatus + " ") + this.pendingEntityName) + " ") + emotionReaction;
+        this._map.lastStatus = (((this._map.lastStatus + " ") + this.pendingEntity.name) + " ") + emotionReaction;
       }
     }
     this.clearEncounter();
@@ -6958,18 +6959,15 @@ class GameSession  extends RangerProcessBase {
   clearMemorial () {
     this.memorialDeathLine = "";
     this.memorialPlayerName = "";
-    let emptyIds = [];
-    let emptyNames = [];
-    let emptyEpitaphs = [];
-    this.memorialMournerIds = emptyIds;
-    this.memorialMournerNames = emptyNames;
-    this.memorialMournerEpitaphs = emptyEpitaphs;
+    let emptyMourners = [];
+    this.memorialMourners = emptyMourners;
   };
   memorialHasId (entityId) {
     let i = 0;
-    const n = this.memorialMournerIds.length;
+    const n = this.memorialMourners.length;
     while (i < n) {
-      if ( (this.memorialMournerIds[i]) == entityId ) {
+      const m = this.memorialMourners[i];
+      if ( m.id == entityId ) {
         return true;
       }
       i = i + 1;
@@ -6983,9 +6981,11 @@ class GameSession  extends RangerProcessBase {
     if ( this.memorialHasId(entityId) ) {
       return;
     }
-    this.memorialMournerIds.push(entityId);
-    this.memorialMournerNames.push(name);
-    this.memorialMournerEpitaphs.push(epitaph);
+    const m = new MemorialMourner();
+    m.id = entityId;
+    m.name = name;
+    m.epitaph = epitaph;
+    this.memorialMourners.push(m);
   };
   resolveMournerName (entityId, fallback) {
     const ent = this._map.findEntityById(entityId);
@@ -7097,25 +7097,27 @@ class GameSession  extends RangerProcessBase {
     }
   };
   memorialCount () {
-    return this.memorialMournerNames.length;
+    return this.memorialMourners.length;
   };
   memorialNameAt (index) {
     if ( index < 0 ) {
       return "";
     }
-    if ( index >= (this.memorialMournerNames.length) ) {
+    if ( index >= (this.memorialMourners.length) ) {
       return "";
     }
-    return this.memorialMournerNames[index];
+    const m = this.memorialMourners[index];
+    return m.name;
   };
   memorialEpitaphAt (index) {
     if ( index < 0 ) {
       return "";
     }
-    if ( index >= (this.memorialMournerEpitaphs.length) ) {
+    if ( index >= (this.memorialMourners.length) ) {
       return "";
     }
-    return this.memorialMournerEpitaphs[index];
+    const m = this.memorialMourners[index];
+    return m.epitaph;
   };
   tryPoliceCapture () {
     if ( this._map.policeChaseActive == false ) {
@@ -7129,10 +7131,10 @@ class GameSession  extends RangerProcessBase {
     return false;
   };
   startArrestEncounter (reason, catcher) {
-    this.pendingEntityId = catcher.id;
-    this.pendingEntityChar = catcher.char;
-    this.pendingEntityName = catcher.name;
-    this.pendingEntityKind = catcher.kind;
+    this.pendingEntity.id = catcher.id;
+    this.pendingEntity.char = catcher.char;
+    this.pendingEntity.name = catcher.name;
+    this.pendingEntity.kind = catcher.kind;
     this.pendingStoryId = "";
     this.arrestReason = reason;
     this.encounterResult = "arrest";
@@ -7141,9 +7143,9 @@ class GameSession  extends RangerProcessBase {
   };
   startSecurityArrest (reason) {
     const catcher = new MapEntity();
-    catcher.id = this.pendingEntityId;
-    catcher.char = this.pendingEntityChar;
-    catcher.name = this.pendingEntityName;
+    catcher.id = this.pendingEntity.id;
+    catcher.char = this.pendingEntity.char;
+    catcher.name = this.pendingEntity.name;
     catcher.kind = "security";
     if ( (catcher.id.length) < 1 ) {
       catcher.id = "security-arrest";
@@ -7211,8 +7213,8 @@ class GameSession  extends RangerProcessBase {
   };
   getArrestView () {
     const view = new ArrestView();
-    view.catcherName = this.pendingEntityName;
-    view.catcherChar = this.pendingEntityChar;
+    view.catcherName = this.pendingEntity.name;
+    view.catcherChar = this.pendingEntity.char;
     view.reasonLine = this.arrestReasonLine();
     view.evidenceLocked = this.hasArrestEvidence();
     if ( view.evidenceLocked ) {
@@ -7230,7 +7232,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( choice == "cooperate" ) {
-      if ( this.pendingEntityKind == "police" ) {
+      if ( this.pendingEntity.kind == "police" ) {
         this.gameOverPolice();
       } else {
         this.gameOverArrested();
@@ -7239,7 +7241,7 @@ class GameSession  extends RangerProcessBase {
     }
     if ( this.hasArrestEvidence() ) {
       this._map.lastStatus = "Todisteet ovat liian vahvat — selityksesi ei auta.";
-      if ( this.pendingEntityKind == "police" ) {
+      if ( this.pendingEntity.kind == "police" ) {
         this.gameOverPolice();
       } else {
         this.gameOverArrested();
@@ -7334,19 +7336,19 @@ class GameSession  extends RangerProcessBase {
     this.markStateDirty();
   };
   encounterGreeting () {
-    if ( this.pendingEntityId == "staff-f7-hermit" ) {
-      return this.pendingEntityName + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"";
+    if ( this.pendingEntity.id == "staff-f7-hermit" ) {
+      return this.pendingEntity.name + " räpäyttää silmiään valoa vasten: \"Joko projekti on valmis?! Olen odottanut compliance-kierrosta… tai auringonnousua. Kumpi tulee ensin, selviää yhdellä kysymyksellä.\"";
     }
-    if ( this.pendingEntityId == "office-dog" ) {
+    if ( this.pendingEntity.id == "office-dog" ) {
       return "Toimistokoira heiluttaa häntää ja katsoo sinua odottaen.";
     }
-    if ( this.pendingEntityId == "janitor" ) {
+    if ( this.pendingEntity.id == "janitor" ) {
       if ( this.tools.hasShedKey ) {
         return "Talkkari nyökkää: \"Vajan avain on jo taskussasi. Kadonnut kulkukortti lienee siellä.\"";
       }
       return "Talkkari pysähtyy harjan kanssa: \"Uusi tulokas? Piha on rauhallinen — toisin kuin sisällä.\"";
     }
-    if ( this.pendingEntityId == "receptionist" ) {
+    if ( this.pendingEntity.id == "receptionist" ) {
       if ( this.interviewPassed ) {
         return "Vastaanottovirkailija hymyilee: \"Tervetuloa työntekijäksi. Kulkulupasi on voimassa.\"";
       }
@@ -7358,45 +7360,45 @@ class GameSession  extends RangerProcessBase {
       }
       return "Vastaanottovirkailija: \"Työhaastatteluun? Yksi C++-kysymys — vastaa oikein niin saat virallisen kulkuluvan.\"";
     }
-    if ( this.pendingEntityId == "hr-greeter" ) {
+    if ( this.pendingEntity.id == "hr-greeter" ) {
       if ( this.hrWelcomeDone ) {
-        return this.pendingEntityName + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"";
+        return this.pendingEntity.name + " nyökkää: \"Nähdään tauolla — tervetuloa mukaan!\"";
       }
-      return this.pendingEntityName + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"";
+      return this.pendingEntity.name + " lähestyy: \"Hei! Tervetuloa Koodisampoon. Vastataan pariin pikaiseen aloituskysymykseen, niin pääset kunnolla alkuun.\"";
     }
     if ( this.isHostileEncounter() ) {
-      return this.pendingEntityName + " katsoo sinua uhkaavasti. Mitä teet?";
+      return this.pendingEntity.name + " katsoo sinua uhkaavasti. Mitä teet?";
     }
     if ( this.isCeoEncounter() ) {
-      return this.pendingEntityName + " pysäyttää sinut: \"Strateginen tilanne. KPI:t eivät odota — mitä haluat?\"";
+      return this.pendingEntity.name + " pysäyttää sinut: \"Strateginen tilanne. KPI:t eivät odota — mitä haluat?\"";
     }
-    if ( this.pendingEntityKind == "security" ) {
+    if ( this.pendingEntity.kind == "security" ) {
       return "Turvallisuus tarkkailee sinua: \"Tunniste näkyvissä? Asiallisuus kunnossa?\"";
     }
-    if ( this.pendingEntityKind == "guru" ) {
+    if ( this.pendingEntity.kind == "guru" ) {
       if ( this.guruIntroPassed ) {
-        return this.pendingEntityName + ": \"Perusteet jo kunnossa. Jatka hissillä ylempiin kerroksiin — paina 3 tai korkeampi numero.\"";
+        return this.pendingEntity.name + ": \"Perusteet jo kunnossa. Jatka hissillä ylempiin kerroksiin — paina 3 tai korkeampi numero.\"";
       }
       if ( this.guruStoryAttempted ) {
-        return this.pendingEntityName + " haluaa tarkistaa yhden C++-kysymyksen ennen kuin päästää ylemmäs.";
+        return this.pendingEntity.name + " haluaa tarkistaa yhden C++-kysymyksen ennen kuin päästää ylemmäs.";
       }
-      return this.pendingEntityName + " nostaa katseensa koodista. Miten lähestyt?";
+      return this.pendingEntity.name + " nostaa katseensa koodista. Miten lähestyt?";
     }
     if ( this.isCoworkerEncounter() ) {
       if ( (this.tools.heldCoworkerCardOwner.length) > 0 ) {
-        if ( this.tools.heldCoworkerCardOwner == this.pendingEntityId ) {
-          return this.pendingEntityName + " näyttää huolestuneelta: \"Oletko nähnyt kulkukorttiani?\"";
+        if ( this.tools.heldCoworkerCardOwner == this.pendingEntity.id ) {
+          return this.pendingEntity.name + " näyttää huolestuneelta: \"Oletko nähnyt kulkukorttiani?\"";
         }
       }
-      return this.pendingEntityName + " haluaa kysyä yhden C++-kysymyksen ennen kuin palaat työhön.";
+      return this.pendingEntity.name + " haluaa kysyä yhden C++-kysymyksen ennen kuin palaat työhön.";
     }
-    if ( this.pendingEntityChar == "S" ) {
-      return this.pendingEntityName + ": \"Ajanvaraus? Täyttäkää ensin lomake 7B.\"";
+    if ( this.pendingEntity.char == "S" ) {
+      return this.pendingEntity.name + ": \"Ajanvaraus? Täyttäkää ensin lomake 7B.\"";
     }
-    if ( this.pendingEntityChar == "P" ) {
-      return this.pendingEntityName + ": \"Oletko päivittänyt riskirekisteriä tällä viikolla?\"";
+    if ( this.pendingEntity.char == "P" ) {
+      return this.pendingEntity.name + ": \"Oletko päivittänyt riskirekisteriä tällä viikolla?\"";
     }
-    return this.pendingEntityName + " huomaa sinut. Mitä teet?";
+    return this.pendingEntity.name + " huomaa sinut. Mitä teet?";
   };
   encounterAttackWarning () {
     if ( this.isCeoEncounter() ) {
@@ -7405,7 +7407,7 @@ class GameSession  extends RangerProcessBase {
     if ( this.isHostileEncounter() ) {
       return " — battle-tilanteessa karma voi kadota pahasti!";
     }
-    if ( this.pendingEntityKind == "security" ) {
+    if ( this.pendingEntity.kind == "security" ) {
       return " — turvallisuus vastaa välittömästi!";
     }
     if ( this.isCoworkerEncounter() ) {
@@ -7417,10 +7419,10 @@ class GameSession  extends RangerProcessBase {
     this.enterGameOverDeath("EncounterDeath", message);
   };
   clearEncounter () {
-    this.pendingEntityId = "";
-    this.pendingEntityChar = "";
-    this.pendingEntityName = "";
-    this.pendingEntityKind = "";
+    this.pendingEntity.id = "";
+    this.pendingEntity.char = "";
+    this.pendingEntity.name = "";
+    this.pendingEntity.kind = "";
     this.encounterResult = "";
     this.pendingEmotionalDialogueIndex = -1;
     this.encounterCooldown = 3;
@@ -7433,10 +7435,10 @@ class GameSession  extends RangerProcessBase {
       }
     }
     this.clearPendingGreetWithAck(bump.id);
-    this.pendingEntityId = bump.id;
-    this.pendingEntityChar = bump.char;
-    this.pendingEntityName = bump.name;
-    this.pendingEntityKind = bump.kind;
+    this.pendingEntity.id = bump.id;
+    this.pendingEntity.char = bump.char;
+    this.pendingEntity.name = bump.name;
+    this.pendingEntity.kind = bump.kind;
     this.pendingStoryId = bump.storyId;
     this.encounterResult = "";
     this.screen = "encounter";
@@ -7816,55 +7818,55 @@ class GameSession  extends RangerProcessBase {
     this.markStateDirty();
   };
   needsEmotionalEncounter () {
-    if ( this.pendingEntityId == "receptionist" ) {
+    if ( this.pendingEntity.id == "receptionist" ) {
       return false;
     }
-    if ( this.pendingEntityId == "hr-greeter" ) {
+    if ( this.pendingEntity.id == "hr-greeter" ) {
       return false;
     }
-    if ( this.pendingEntityKind == "guru" ) {
+    if ( this.pendingEntity.kind == "guru" ) {
       return false;
     }
-    if ( this.pendingEntityKind == "security" ) {
+    if ( this.pendingEntity.kind == "security" ) {
       return false;
     }
-    if ( this.pendingEntityKind == "hostile" ) {
+    if ( this.pendingEntity.kind == "hostile" ) {
       return false;
     }
-    if ( this.pendingEntityKind == "police" ) {
+    if ( this.pendingEntity.kind == "police" ) {
       return false;
     }
     if ( this.isCoworkerEncounter() == false ) {
       return false;
     }
-    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+    const rel = this.npcRelations.getOrCreate(this.pendingEntity.id);
     if ( rel.isAngryNoticeable() ) {
       return true;
     }
     return false;
   };
   applyWcTalkAngerIfNeeded () {
-    const ent = this._map.findEntityById(this.pendingEntityId);
+    const ent = this._map.findEntityById(this.pendingEntity.id);
     if ( (ent.id.length) < 1 ) {
       return;
     }
     if ( ent.mainTask != "toilet" ) {
       return;
     }
-    const floor = this._map.floorForEntity(this.pendingEntityId);
+    const floor = this._map.floorForEntity(this.pendingEntity.id);
     if ( floor.wcX < 0 ) {
       return;
     }
     if ( this._map.isNpcAtWc(ent, floor) ) {
-      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+      const rel = this.npcRelations.getOrCreate(this.pendingEntity.id);
       rel.applyStatDelta("anger", 15);
-      this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — häiritsit WC:llä!";
+      this._map.lastStatus = this.pendingEntity.name + " ärsyyntyi — häiritsit WC:llä!";
       return;
     }
     if ( this._map.isNpcNearWc(ent, floor) ) {
-      const relNear = this.npcRelations.getOrCreate(this.pendingEntityId);
+      const relNear = this.npcRelations.getOrCreate(this.pendingEntity.id);
       relNear.applyStatDelta("anger", 8);
-      this._map.lastStatus = this.pendingEntityName + " ärsyyntyi — olet tiellä WC:hen!";
+      this._map.lastStatus = this.pendingEntity.name + " ärsyyntyi — olet tiellä WC:hen!";
     }
   };
   tickNpcRelations () {
@@ -7920,7 +7922,7 @@ class GameSession  extends RangerProcessBase {
     rel.applyStatDelta("love", 5);
   };
   hasLostBadgeToGive () {
-    if ( this.tools.heldCoworkerCardOwner == this.pendingEntityId ) {
+    if ( this.tools.heldCoworkerCardOwner == this.pendingEntity.id ) {
       return true;
     }
     if ( this.tools.hasStolenCard ) {
@@ -7979,7 +7981,7 @@ class GameSession  extends RangerProcessBase {
       return;
     }
     if ( dlg.id == "help_lost_badge" ) {
-      if ( this.tools.heldCoworkerCardOwner == this.pendingEntityId ) {
+      if ( this.tools.heldCoworkerCardOwner == this.pendingEntity.id ) {
         this.tools.returnCoworkerCard();
         ent.mainTask = "working";
         this._map.lastStatus = ent.name + " huokaisee helpotuksesta: \"Kiitos — tämä on minun korttini! Pelastit päiväni.\"";
@@ -8403,8 +8405,8 @@ class GameSession  extends RangerProcessBase {
     if ( this.pendingEmotionalDialogueIndex < 0 ) {
       return;
     }
-    const ent = this._map.findEntityById(this.pendingEntityId);
-    const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+    const ent = this._map.findEntityById(this.pendingEntity.id);
+    const rel = this.npcRelations.getOrCreate(this.pendingEntity.id);
     this.dialogueCatalog.applyAnswerToRelation(this.pendingEmotionalDialogueIndex, answerIndex, rel);
     this.applyEmotionalPlayerEffects(this.pendingEmotionalDialogueIndex, answerIndex);
     this.applyHelpAnswerEffects(ent, answerIndex, this.pendingEmotionalDialogueIndex);
@@ -8412,10 +8414,10 @@ class GameSession  extends RangerProcessBase {
     if ( (this._map.lastStatus.length) < 1 ) {
       const reaction = this.dialogueCatalog.answerStatusReaction(this.pendingEmotionalDialogueIndex, answerIndex);
       if ( (reaction.length) > 0 ) {
-        this._map.lastStatus = (this.pendingEntityName + " ") + reaction;
+        this._map.lastStatus = (this.pendingEntity.name + " ") + reaction;
       } else {
         const dlg = this.dialogueCatalog.dialogueAt(this.pendingEmotionalDialogueIndex);
-        this._map.lastStatus = (this.pendingEntityName + ": ") + dlg.text;
+        this._map.lastStatus = (this.pendingEntity.name + ": ") + dlg.text;
       }
     }
     this.pendingEmotionalDialogueIndex = -1;
@@ -8612,18 +8614,18 @@ class GameSession  extends RangerProcessBase {
     return this._map.tryMove(dx, dy);
   };
   clearBlockedTalk () {
-    this.blockedTalkId = "";
-    this.blockedTalkChar = "";
-    this.blockedTalkName = "";
-    this.blockedTalkKind = "";
-    this.blockedTalkStoryId = "";
+    this.blockedTalk.id = "";
+    this.blockedTalk.char = "";
+    this.blockedTalk.name = "";
+    this.blockedTalk.kind = "";
+    this.blockedTalk.storyId = "";
   };
   setBlockedTalk (ent) {
-    this.blockedTalkId = ent.id;
-    this.blockedTalkChar = ent.char;
-    this.blockedTalkName = ent.name;
-    this.blockedTalkKind = ent.kind;
-    this.blockedTalkStoryId = ent.storyId;
+    this.blockedTalk.id = ent.id;
+    this.blockedTalk.char = ent.char;
+    this.blockedTalk.name = ent.name;
+    this.blockedTalk.kind = ent.kind;
+    this.blockedTalk.storyId = ent.storyId;
   };
   computeFacingCell () {
     const fx = this._map.facingX;
@@ -8998,9 +9000,9 @@ class GameSession  extends RangerProcessBase {
     view.targetId = scratch.targetId;
     view.targetName = scratch.targetName;
     this.fillToolsForTarget(view, scratch.targetId, this.actionTargetTile);
-    if ( (this.blockedTalkId.length) > 0 ) {
+    if ( (this.blockedTalk.id.length) > 0 ) {
       view.canTalk = true;
-      view.talkName = this.blockedTalkName;
+      view.talkName = this.blockedTalk.name;
     }
     const toolCount = this.actionToolCount(view);
     let choiceN = 1;
@@ -9062,11 +9064,11 @@ class GameSession  extends RangerProcessBase {
     if ( view.canTalk ) {
       if ( key == "1" ) {
         const ent = new MapEntity();
-        ent.id = this.blockedTalkId;
-        ent.char = this.blockedTalkChar;
-        ent.name = this.blockedTalkName;
-        ent.kind = this.blockedTalkKind;
-        ent.storyId = this.blockedTalkStoryId;
+        ent.id = this.blockedTalk.id;
+        ent.char = this.blockedTalk.char;
+        ent.name = this.blockedTalk.name;
+        ent.kind = this.blockedTalk.kind;
+        ent.storyId = this.blockedTalk.storyId;
         this.clearBlockedTalk();
         this._map.playerHidden = false;
         this._map.lastStatus = "";
@@ -9264,13 +9266,13 @@ class GameSession  extends RangerProcessBase {
     if ( (this.tools.heldCoworkerCardOwner.length) < 1 ) {
       return false;
     }
-    if ( this.tools.heldCoworkerCardOwner != this.pendingEntityId ) {
+    if ( this.tools.heldCoworkerCardOwner != this.pendingEntity.id ) {
       return false;
     }
     return true;
   };
   returnCoworkerCard () {
-    const ownerName = this.pendingEntityName;
+    const ownerName = this.pendingEntity.name;
     this.tools.returnCoworkerCard();
     this.karma.add("social:honest", 8);
     this._map.lastStatus = ("Palautit kortin — " + ownerName) + " kiittää. (+8 karma)";
@@ -9572,7 +9574,7 @@ class GameSession  extends RangerProcessBase {
         this.markStateDirty();
         return;
       }
-      if ( this.pendingEntityId == "receptionist" ) {
+      if ( this.pendingEntity.id == "receptionist" ) {
         if ( this.interviewPassed ) {
           this._map.lastStatus = "Sinulla on jo virallinen kulkulupa. Hissillä pääset kaikkiin kerroksiin, myös 10. kerrokseen (0).";
           this.clearEncounter();
@@ -9591,7 +9593,7 @@ class GameSession  extends RangerProcessBase {
         this.markStateDirty();
         return;
       }
-      if ( this.pendingEntityKind == "guru" ) {
+      if ( this.pendingEntity.kind == "guru" ) {
         if ( this.guruIntroPassed ) {
           this._map.lastStatus = "Senior-guru: \"Olet jo läpäissyt tämän. Jatka hissillä kerrokseen 3 tai ylemmäs.\"";
           this.clearEncounter();
@@ -9605,8 +9607,8 @@ class GameSession  extends RangerProcessBase {
         return;
       }
       this.applyWcTalkAngerIfNeeded();
-      const ent = this._map.findEntityById(this.pendingEntityId);
-      const rel = this.npcRelations.getOrCreate(this.pendingEntityId);
+      const ent = this._map.findEntityById(this.pendingEntity.id);
+      const rel = this.npcRelations.getOrCreate(this.pendingEntity.id);
       if ( this.isCoworkerEncounter() ) {
         this.applyTalkLoveBump(ent, rel);
       }
@@ -9651,7 +9653,7 @@ class GameSession  extends RangerProcessBase {
         this.markStateDirty();
         return;
       }
-      if ( this.pendingEntityKind == "security" ) {
+      if ( this.pendingEntity.kind == "security" ) {
         this.karma.loseKarma(20);
         this.conduct.addMisconduct(20);
         this._map.lastStatus = "Turvallisuus neutraloi hyökkäyksen.";
@@ -9663,12 +9665,12 @@ class GameSession  extends RangerProcessBase {
       if ( this.isCoworkerEncounter() ) {
         const roll = Math.floor(Math.random()*(2 - 0 + 1) + 0);
         if ( roll == 0 ) {
-          this.triggerPoliceChaseAfterAttack(this.pendingEntityName);
+          this.triggerPoliceChaseAfterAttack(this.pendingEntity.name);
           return;
         }
         this.karma.loseKarma(15);
         this.conduct.addMisconduct(15);
-        this._map.lastStatus = this.pendingEntityName + " huusi HR:n. Kollegan hyökkääminen ei ole ok.";
+        this._map.lastStatus = this.pendingEntity.name + " huusi HR:n. Kollegan hyökkääminen ei ole ok.";
         this.encounterResult = "attack";
         this.clearEncounter();
         this.screen = "map";
@@ -9678,7 +9680,7 @@ class GameSession  extends RangerProcessBase {
       const chaseRoll = Math.floor(Math.random()*(2 - 0 + 1) + 0);
       if ( chaseRoll == 0 ) {
         if ( this.isHostileEncounter() ) {
-          this.triggerPoliceChaseAfterAttack(this.pendingEntityName);
+          this.triggerPoliceChaseAfterAttack(this.pendingEntity.name);
           return;
         }
       }
@@ -9960,8 +9962,8 @@ class GameSession  extends RangerProcessBase {
   };
   getEncounterView () {
     const view = new EncounterView();
-    view.entityChar = this.pendingEntityChar;
-    view.entityName = this.pendingEntityName;
+    view.entityChar = this.pendingEntity.char;
+    view.entityName = this.pendingEntity.name;
     view.isHostile = this.isHostileEncounter();
     view.greeting = this.encounterGreeting();
     view.attackWarning = "";
@@ -10052,16 +10054,16 @@ class GameSession  extends RangerProcessBase {
     this.simOutcome = "running";
     this.simStepCount = 0;
     this.simMinutesAccum = 0;
-    let emptyTypes = [];
-    let emptyDetails = [];
+    let emptyEvents = [];
     let emptyErrors = [];
-    this.simEventTypes = emptyTypes;
-    this.simEventDetails = emptyDetails;
+    this.simEvents = emptyEvents;
     this.simErrors = emptyErrors;
   };
   simLogEvent (etype, detail) {
-    this.simEventTypes.push(etype);
-    this.simEventDetails.push(detail);
+    const ev = new SimEvent();
+    ev.type = etype;
+    ev.detail = detail;
+    this.simEvents.push(ev);
   };
   simLogError (msg) {
     this.simErrors.push(msg);
@@ -10464,12 +10466,13 @@ class GameSession  extends RangerProcessBase {
     out = ((out + "\"rngSeed\":") + ((this.simSeed.toString()))) + ",";
     out = out + "\"eventLog\":[";
     let i = 0;
-    const n = this.simEventTypes.length;
+    const n = this.simEvents.length;
     while (i < n) {
       if ( i > 0 ) {
         out = out + ",";
       }
-      out = ((((((out + "{\"step\":") + ((i.toString()))) + ",\"type\":\"") + this.simEscapeJson((this.simEventTypes[i]))) + "\",\"detail\":\"") + this.simEscapeJson((this.simEventDetails[i]))) + "\"}";
+      const ev = this.simEvents[i];
+      out = ((((((out + "{\"step\":") + ((i.toString()))) + ",\"type\":\"") + this.simEscapeJson(ev.type)) + "\",\"detail\":\"") + this.simEscapeJson(ev.detail)) + "\"}";
       i = i + 1;
     };
     out = out + "],\"errors\":[";
@@ -10787,6 +10790,8 @@ module.exports.WorldClock = WorldClock;
 module.exports.EventPerception = EventPerception;
 module.exports.Escalation = Escalation;
 module.exports.NpcBehaviorRegistry = NpcBehaviorRegistry;
+module.exports.MemorialMourner = MemorialMourner;
+module.exports.SimEvent = SimEvent;
 module.exports.GameSession = GameSession;
 module.exports.KoodisampoAppRoot = KoodisampoAppRoot;
 module.exports.KoodisampoLib = KoodisampoLib;

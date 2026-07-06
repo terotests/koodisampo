@@ -337,10 +337,10 @@ function updateLocalSave() {
 
 function pendingEncounterEntity() {
   return findPendingEntity(session) || {
-    id: session.pendingEntityId,
-    name: session.pendingEntityName,
-    kind: session.pendingEntityKind,
-    char: session.pendingEntityChar,
+    id: session.pendingEntity?.id ?? "",
+    name: session.pendingEntity?.name ?? "",
+    kind: session.pendingEntity?.kind ?? "",
+    char: session.pendingEntity?.char ?? "",
   };
 }
 
@@ -445,7 +445,7 @@ function processEncounterAfterChoice() {
   if (result === "card_return") {
     overlay = {
       type: "cardReturn",
-      entityName: session.pendingEntityName || "Työkaveri",
+      entityName: session.pendingEntity?.name || "Työkaveri",
     };
     return;
   }
@@ -486,8 +486,8 @@ function buildEncounterSnapshot(base) {
       ...base,
       encounter: {
         mode: "arrest",
-        char: session.pendingEntityChar,
-        name: session.pendingEntityName,
+        char: session.pendingEntity?.char ?? "",
+        name: session.pendingEntity?.name ?? "",
       },
       overlay: serializeOverlay(overlay),
     };
@@ -498,7 +498,7 @@ function buildEncounterSnapshot(base) {
   // checks shouldUseEmotionalDialogue (45% random + emotion-based triggers).
   if (
     session.encounterResult === "" &&
-    session.pendingEntityKind === "coworker" &&
+    session.pendingEntity?.kind === "coworker" &&
     needsEncounterQuiz(session)
   ) {
     dispatch(session, () => session.onEncounterChoice("talk"));
@@ -1011,7 +1011,7 @@ function handleQuizKey(key) {
     if (!charged) return;
     overlay = {
       type: "aiStudy",
-      entityName: quiz.entity?.name || session.pendingEntityName,
+      entityName: quiz.entity?.name || session.pendingEntity?.name,
       text: buildAiStudyText(quiz.question),
       lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
     };
@@ -1228,7 +1228,7 @@ function handleKey(key) {
     expandElevatorPicker: () => {
       elevatorUi.expand();
     },
-    getRelationsDebugText: () => formatRelationsDebugText(session, session.pendingEntityId || ""),
+    getRelationsDebugText: () => formatRelationsDebugText(session, session.pendingEntity?.id || ""),
     setPlayerProfile: (name, specialty) => {
       let ok = false;
       dispatch(session, () => {
