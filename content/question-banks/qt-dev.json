@@ -4672,6 +4672,706 @@
       "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-shadereffect.html",
       "featureId": "qt:qml-shader",
       "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-application-engine",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Uusi Qt 6 -sovellus lataa QML-tiedoston `main.qml`. Mikä C++-luokka on suositeltu entry point?",
+      "choices": [
+        {
+          "text": "QQmlApplicationEngine — lataa QML ja hallitsee kontekstia ilman erillistä ikkunaa",
+          "correct": true
+        },
+        {
+          "text": "QQuickView — ainoa tuettu tapa Qt 6:ssa",
+          "correct": false
+        },
+        {
+          "text": "QWidget::loadQml() — widget-sovellus lataa QML:n suoraan",
+          "correct": false
+        },
+        {
+          "text": "QApplication::exec() riittää — QML ajetaan automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QQmlApplicationEngine on Qt 6 -sovelluksen oletus — Qt Quick docs.",
+      "wrongFeedback": "QQuickView on vanhempi ikkunapohjainen tapa. Qt 6 desktop-sovelluksissa käytä QQmlApplicationEnginea.",
+      "sourceRef": "qqmlapplicationengine",
+      "sourceUrl": "https://doc.qt.io/qt-6/qqmlapplicationengine.html",
+      "featureId": "qt:qml-engine",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-property-binding",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "QML:ssä `width: parent.width` ja `onWidthChanged: width = parent.width` aiheuttavat jatkuvaa päivitystä. Mikä on oikea tapa?",
+      "choices": [
+        {
+          "text": "Käytä vain property bindingia — poista onWidthChanged-syklittävä sijoitus",
+          "correct": true
+        },
+        {
+          "text": "Lisää `Qt.callLater()` jokaiseen onWidthChanged-kutsuun",
+          "correct": false
+        },
+        {
+          "text": "Korvaa binding Timer-komponentilla 16 ms välein",
+          "correct": false
+        },
+        {
+          "text": "Binding-loop on normaalia — Qt rajoittaa päivitykset automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Binding vs. assignment — QML property system docs.",
+      "wrongFeedback": "Sijoitus handlerissa rikkoo deklaratiivisen bindingin ja voi luoda silmukan. Yksi binding riittää.",
+      "sourceRef": "qtqml-syntax-propertybinding",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtqml-syntax-propertybinding.html",
+      "featureId": "qt:qml-binding",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-listview-delegate",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "ListView näyttää 10 000 riviä hitaasti — kaikki delegate-instanssit luodaan kerralla. Miten korjaat?",
+      "choices": [
+        {
+          "text": "ListView kierrättää delegateja — varmista että model on QAbstractListModel/C++ tai ListModel, ei toistettu Repeater",
+          "correct": true
+        },
+        {
+          "text": "Lisää `cacheBuffer: 0` — se poistaa kaikki delegate-instanssit",
+          "correct": false
+        },
+        {
+          "text": "Korvaa ListView Column-layoutilla — se on nopeampi",
+          "correct": false
+        },
+        {
+          "text": "delegate: Item {} tyhjä delegate nopeuttaa piirtoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ListView virtualisoi näkyvät rivit — Qt Quick ListView docs.",
+      "wrongFeedback": "Column/Repeater luo kaikki lapset. ListView kierrättää delegate-komponentteja.",
+      "sourceRef": "qml-qtquick-listview",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-listview.html",
+      "featureId": "qt:qml-listview",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-loader-component",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat ladata raskaan QML-näkymän vasta kun käyttäjä avaa sen. Qt Quick -komponentti?",
+      "choices": [
+        {
+          "text": "Loader + sourceComponent / source — lataa komponentin tarpeen mukaan",
+          "correct": true
+        },
+        {
+          "text": "StackView.preload — se lataa kaiken taustalla automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "import \"HeavyView.qml\" as H — import lataa aina heti",
+          "correct": false
+        },
+        {
+          "text": "Timer + visible: false riittää — QML ei luo puuta ennen show():ia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Loader lazy-load — Qt Quick Loader docs.",
+      "wrongFeedback": "visible: false ei estä instanssin luontia. Loader viivästyttää komponentin rakentamista.",
+      "sourceRef": "qml-qtquick-loader",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-loader.html",
+      "featureId": "qt:qml-loader",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-connections-signal",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "QML:ssä haluat kuunnella C++-backendin signaalia ilman suoraa `onFoo`-handleria eri tiedostossa. Ratkaisu?",
+      "choices": [
+        {
+          "text": "Connections { target: backend; function onDataReady() { ... } }",
+          "correct": true
+        },
+        {
+          "text": "Signal { name: \"dataReady\" } — se yhdistää automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "QML ei voi kuunnella C++-signaaleja — tarvitaan callback property",
+          "correct": false
+        },
+        {
+          "text": "Timer pollaa backend.dataReady joka frame",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Connections element — Qt Quick docs.",
+      "wrongFeedback": "Connections on deklaratiivinen tapa kuunnella signaaleja eri scopeissa.",
+      "sourceRef": "qml-qtqml-connections",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtqml-connections.html",
+      "featureId": "qt:qml-connections",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-anchors-layout",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Nappi pitää keskittää ikkunaan ja venyttää leveys 80 % parentista. QML-layout?",
+      "choices": [
+        {
+          "text": "anchors.centerIn: parent; width: parent.width * 0.8",
+          "correct": true
+        },
+        {
+          "text": "x: parent.width/2; y: parent.height/2 — riittää ilman width-bindingia",
+          "correct": false
+        },
+        {
+          "text": "Layout.fillWidth: true RowLayoutissa ilman parent-layoutia",
+          "correct": false
+        },
+        {
+          "text": "position: absolute — QML CSS-tyyli keskitykseen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Anchor-based layout — Qt Quick Item anchors.",
+      "wrongFeedback": "Keskitys vaatii anchors.centerIn tai Layout. Pelkkä x/y asettaa vasemman yläkulman.",
+      "sourceRef": "qtquick-positioning-anchors",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtquick-positioning-anchors.html",
+      "featureId": "qt:qml-anchors",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-state-transition",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Painike vaihtaa väriä hover-tilassa animoidusti. Qt Quick -rakenne?",
+      "choices": [
+        {
+          "text": "states + transitions — State määrittää propertyt, Transition animoi muutoksen",
+          "correct": true
+        },
+        {
+          "text": "onHoverChanged: color = \"red\" — animaatio tulee automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Style.qml hover — Qt Quick Controls hoitaa animaatiot aina",
+          "correct": false
+        },
+        {
+          "text": "PropertyAnimation vaatii C++-backendin — QML ei animoi propertyjä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "States and transitions — Qt Quick docs.",
+      "wrongFeedback": "State/Transition on deklaratiivinen tapa. Pelkkä sijoitus ei animoi.",
+      "sourceRef": "qtquick-statesanimations-states",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtquick-statesanimations-states.html",
+      "featureId": "qt:qml-states",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-property-animation",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Rectangle liikkuu x: 0 → 300 kun `running` muuttuu true. Yksinkertaisin animaatio?",
+      "choices": [
+        {
+          "text": "PropertyAnimation on x { from: 0; to: 300; running: root.running }",
+          "correct": true
+        },
+        {
+          "text": "Timer { interval: 16; onTriggered: x++ } — sujuvin tapa",
+          "correct": false
+        },
+        {
+          "text": "Behavior on x { ScriptAction { script: x=300 } }",
+          "correct": false
+        },
+        {
+          "text": "Animation { target: rect; property: \"geometry\" } — ei tuettu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PropertyAnimation — Qt Quick animation docs.",
+      "wrongFeedback": "PropertyAnimation animoi yhden numeropropertyn. Timer-silmukka on turha ja epätarkka.",
+      "sourceRef": "qml-qtquick-propertyanimation",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-propertyanimation.html",
+      "featureId": "qt:qml-animation",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-register-type",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "C++-luokka `SensorModel` pitää käyttää QML:ssä `SensorModel { }` -instanssina. Rekisteröinti?",
+      "choices": [
+        {
+          "text": "qmlRegisterType<SensorModel>(\"com.app\", 1, 0, \"SensorModel\") ennen engine.load()",
+          "correct": true
+        },
+        {
+          "text": "Q_OBJECT makro riittää — moc rekisteröi tyypin automaattisesti QML:ään",
+          "correct": false
+        },
+        {
+          "text": "engine.rootContext()->setContextProperty(\"SensorModel\", new SensorModel)",
+          "correct": false
+        },
+        {
+          "text": "import com.app 1.0 — riittää ilman C++-rekisteröintiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Exposing C++ types — Qt QML integration docs.",
+      "wrongFeedback": "QML ei näe C++-tyyppiä ilman qmlRegisterType tai QML_ELEMENT. Context property on eri käyttötapaus.",
+      "sourceRef": "qtqml-cppintegration-definetypes",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtqml-cppintegration-definetypes.html",
+      "featureId": "qt:qml-register-type",
+      "featurePoints": 4
+    },
+    {
+      "id": "b13-qt-quick-context-property",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Yksi globaali `AppSettings`-olio pitää olla kaikkien QML-tiedostojen saatavilla ilman importtia. Tapaa?",
+      "choices": [
+        {
+          "text": "engine.rootContext()->setContextProperty(\"appSettings\", &settings)",
+          "correct": true
+        },
+        {
+          "text": "property var appSettings: AppSettings {} jokaisessa QML-tiedostossa",
+          "correct": false
+        },
+        {
+          "text": "qmlRegisterSingletonInstance riippuu aina .qml-tiedostosta",
+          "correct": false
+        },
+        {
+          "text": "QML Global { } -avainsana Qt 6:ssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Context properties — QQmlContext docs.",
+      "wrongFeedback": "Context property injektoi C++-olion juurikontekstiin. Singleton on vaihtoehto, mutta setContextProperty on suora tapa.",
+      "sourceRef": "qqmlcontext-setcontextproperty",
+      "sourceUrl": "https://doc.qt.io/qt-6/qqmlcontext.html#setContextProperty",
+      "featureId": "qt:qml-context-property",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-singleton",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "QML-moduulissa tarvitaan jaettu `Theme`-olio (värit, fontit) ilman useita instansseja. Qt 6 -tapaa?",
+      "choices": [
+        {
+          "text": "pragma Singleton + QML_SINGLETON C++:ssä tai singleton .qml tiedostossa",
+          "correct": true
+        },
+        {
+          "text": "import Theme as T — jokainen import luo uuden kopion",
+          "correct": false
+        },
+        {
+          "text": "Singleton toimii vain Qt Quick Controlsissa",
+          "correct": false
+        },
+        {
+          "text": "GlobalObject { id: theme } main.qml:ssä riittää kaikille tiedostoille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QML singleton types — Qt QML module docs.",
+      "wrongFeedback": "Singleton varmistaa yhden instanssin moduulissa. tavallinen QML-tiedosto luo uuden instanssin per import.",
+      "sourceRef": "qtqml-typesystem-objecttypes",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtqml-typesystem-objecttypes.html",
+      "featureId": "qt:qml-singleton",
+      "featurePoints": 4
+    },
+    {
+      "id": "b13-qt-quick-stackview",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mobiilisovelluksessa näkymät pinoutuvat (lista → detail → asetukset) takaisin-navigoinnilla. Qt Quick Controls?",
+      "choices": [
+        {
+          "text": "StackView — push/pop/popToRoot navigoi komponenttipinoa",
+          "correct": true
+        },
+        {
+          "text": "SwipeView — se pinouttaa näkymiä syvyysnavigaatiolla",
+          "correct": false
+        },
+        {
+          "text": "TabBar riittää — ei tarvita pinomallia",
+          "correct": false
+        },
+        {
+          "text": "Loader.source vaihto ilman historiaa — suositeltu tuotantoon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "StackView navigation — Qt Quick Controls docs.",
+      "wrongFeedback": "StackView hallitsee näkymäpinoa ja siirtymät. SwipeView on sivuttain pyyhkäisy, ei syvyys.",
+      "sourceRef": "qml-qtquick-controls-stackview",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-controls-stackview.html",
+      "featureId": "qt:qml-stackview",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-required-property",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Custom `DetailPage`-komponentti vaatii `title`-tekstin — virhe jos parent ei anna sitä. Qt 6 QML?",
+      "choices": [
+        {
+          "text": "required property string title — compile-time/varoitus puuttuvalle arvolle",
+          "correct": true
+        },
+        {
+          "text": "property string title: \"\" — tyhjä oletus riittää API-sopimukseen",
+          "correct": false
+        },
+        {
+          "text": "readonly property string title — parent ei voi asettaa",
+          "correct": false
+        },
+        {
+          "text": "Qt.binding(() => title) pakottaa parentin antamaan arvon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Required properties Qt 6 — QML syntax docs.",
+      "wrongFeedback": "required property pakottaa parentin antamaan arvon. Tyhjä oletus ei estä virheellistä käyttöä.",
+      "sourceRef": "qtqml-syntax-objectattributes-required",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtqml-syntax-objectattributes.html#required-properties",
+      "featureId": "qt:qml-required",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-qt-binding",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Käyttäjä muokkaa TextFieldiä — haluat palauttaa automaattisen bindingin `text: model.name` kun focus poistuu. Qt 6?",
+      "choices": [
+        {
+          "text": "onEditingFinished: text = Qt.binding(() => model.name)",
+          "correct": true
+        },
+        {
+          "text": "text = model.name riittää — binding palautuu automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Binding { property: \"text\"; value: model.name } poistuu itsestään",
+          "correct": false
+        },
+        {
+          "text": "restoreBinding() — QML built-in funktio",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt.binding() restores binding — QML JavaScript environment.",
+      "wrongFeedback": "Käyttäjän syöte rikkoo bindingin. Qt.binding() luo uuden bindingin ohjelmallisesti.",
+      "sourceRef": "qtqml-javascript-hostenvironment",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtqml-javascript-hostenvironment.html",
+      "featureId": "qt:qml-qt-binding",
+      "featurePoints": 4
+    },
+    {
+      "id": "b13-qt-quick-image-async",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
+      "choices": [
+        {
+          "text": "asynchronous: true (oletus) + placeholder/pienoiskuva — lataus taustasäikeessä",
+          "correct": true
+        },
+        {
+          "text": "cache: false — pakottaa async-latauksen",
+          "correct": false
+        },
+        {
+          "text": "QML Image ei tue verkko-URL:ia — lataa C++:lla",
+          "correct": false
+        },
+        {
+          "text": "sourceSize: 0 — lataa aina täyden resoluution synkronisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Image asynchronous loading — Qt Quick Image docs.",
+      "wrongFeedback": "Image lataa oletuksena async. Tarkista placeholder ja sourceSize suorituskyvyn vuoksi.",
+      "sourceRef": "qml-qtquick-image",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-image.html",
+      "featureId": "qt:qml-image",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-controls-style",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä. Miten saat natiivin ulkoasun?",
+      "choices": [
+        {
+          "text": "QQuickStyle::setStyle(\"Fusion\") tai platform-tyyli — valitse Style ennen QML-latausta",
+          "correct": true
+        },
+        {
+          "text": "Controls.Style = Native QML:ssä — riittää ilman C++:ta",
+          "correct": false
+        },
+        {
+          "text": "Qt 6 poisti tyylit — kaikki alustat näyttävät identtisiltä",
+          "correct": false
+        },
+        {
+          "text": "import QtQuick.Controls.Basic — se käyttää aina natiivityyliä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Qt Quick Controls styling — QQuickStyle docs.",
+      "wrongFeedback": "Tyyli valitaan QQuickStyle:llä tai QT_QUICK_CONTROLS_STYLE. Basic/Fusion/Material ovat eri teemoja.",
+      "sourceRef": "qtquickcontrols2-styles",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtquickcontrols2-styles.html",
+      "featureId": "qt:qml-controls-style",
+      "featurePoints": 3
+    },
+    {
+      "id": "b13-qt-quick-repeater-model",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Haluat piirtää kiinteän 5 tagia vaakasuoraan ilman C++-mallia. Qt Quick -ratkaisu?",
+      "choices": [
+        {
+          "text": "Row + Repeater { model: 5; delegate: Tag {} } tai model: [\"a\",\"b\",...]",
+          "correct": true
+        },
+        {
+          "text": "ListView model: 5 — se on kevyempi kuin Repeater pieneen määrään",
+          "correct": false
+        },
+        {
+          "text": "Repeater vaatii aina QAbstractItemModel C++:sta",
+          "correct": false
+        },
+        {
+          "text": "Flow + GridLayout — ainoa tapa toistaa QML-elementtejä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Repeater — Qt Quick Repeater docs.",
+      "wrongFeedback": "Repeater toistaa delegatea staattiseen malliin. ListView on parempi pitkille listoille.",
+      "sourceRef": "qml-qtquick-repeater",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-repeater.html",
+      "featureId": "qt:qml-repeater",
+      "featurePoints": 2
+    },
+    {
+      "id": "b13-qt-quick-worker-script",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 4,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "QML:ssä pitää ajaa raskasta JSON-parsintaa ilman UI-jumitusta. Qt Quick -vaihtoehto ennen C++-Workeria?",
+      "choices": [
+        {
+          "text": "WorkerScript — erillinen QML-säie, viestit sendMessage/onMessage",
+          "correct": true
+        },
+        {
+          "text": "Qt.createQmlObject() taustasäikeessä — tuettu suoraan",
+          "correct": false
+        },
+        {
+          "text": "Timer { repeat: true } jakaa työn frameihin — riittää megatavuille dataa",
+          "correct": false
+        },
+        {
+          "text": "QML JavaScript on aina async — ei tarvita WorkerScriptiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WorkerScript — Qt Quick WorkerScript docs.",
+      "wrongFeedback": "QML JS ajetaan UI-säikeessä. WorkerScript tai C++ QThread backend raskaille tehtäville.",
+      "sourceRef": "qml-qtquick-workerscript",
+      "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-workerscript.html",
+      "featureId": "qt:qml-workerscript",
+      "featurePoints": 4
+    },
+    {
+      "id": "b13-qt-quick-i18n-retranslate",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Käyttäjä vaihtaa kielen lennossa — qsTr()-tekstit eivät päivity QML:ssä. Mitä kutsutaan?",
+      "choices": [
+        {
+          "text": "engine.retranslate() — päivittää qsTr-bindingit QML-puussa",
+          "correct": true
+        },
+        {
+          "text": "QCoreApplication::installTranslator() riittää — QML päivittyy automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "text: qsTr(\"key\") pitää poistaa ja käyttää hardcoded stringejä",
+          "correct": false
+        },
+        {
+          "text": "QQmlApplicationEngine::clearComponentCache() — ainoa tapa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QQmlEngine::retranslate — i18n QML docs.",
+      "wrongFeedback": "Translator + retranslate() päivittää QML-tekstit. Pelkkä installTranslator ei riitä ilman retranslate-kutsua.",
+      "sourceRef": "qqmlengine-retranslate",
+      "sourceUrl": "https://doc.qt.io/qt-6/qqmlengine.html#retranslate",
+      "featureId": "qt:qml-i18n",
+      "featurePoints": 4
+    },
+    {
+      "id": "b13-qt-quick-debug-console",
+      "chapter": "qt-quick",
+      "domain": "qt",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "QML binding ei toimi odotetusti — haluat nopean lokituksen ilman C++-debuggeria. Ensimmäinen askel?",
+      "choices": [
+        {
+          "text": "console.log() / console.warn() — QML JavaScript console",
+          "correct": true
+        },
+        {
+          "text": "qDebug() QML-tiedostossa suoraan ilman importtia",
+          "correct": false
+        },
+        {
+          "text": "Qt Quick Designer breakpoints — ainoa tapa QML:ään",
+          "correct": false
+        },
+        {
+          "text": "Logger { } — built-in QML-komponentti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Debugging QML — console.log in Qt QML.",
+      "wrongFeedback": "console.log on QML:n nopein debug-tapa. qmlprofiler ja Qt Creator debugger syvempään analyysiin.",
+      "sourceRef": "qtquick-debugging",
+      "sourceUrl": "https://doc.qt.io/qt-6/qtquick-debugging.html",
+      "featureId": "qt:qml-debug",
+      "featurePoints": 2
     }
   ]
 }
