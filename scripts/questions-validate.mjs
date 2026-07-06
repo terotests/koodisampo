@@ -19,7 +19,7 @@ const TOPIC_DOMAINS = {
   "linux-dbus": "linux", "linux-arp": "linux", "linux-tcp-udp": "linux",
   docker: "docker", "docker-network": "docker", "docker-volumes": "docker",
   "qt-widgets": "qt", "qt-signals": "qt", "qt-threading": "qt", "qt-models": "qt",
-  "qt-opengl": "qt", "qt-shaders": "qt",
+  "qt-opengl": "qt", "qt-shaders": "qt", "qt-quick": "qt",
   "js-async": "javascript", "js-types": "javascript", "js-modules": "javascript", "js-runtime": "javascript",
   "js-typescript": "javascript",
   "pg-indexes": "postgres", "pg-explain": "postgres", "pg-vacuum": "postgres", "pg-config": "postgres",

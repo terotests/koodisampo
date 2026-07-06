@@ -489,7 +489,7 @@ const OPS_TOPICS = [
   "docker-production", "git-workflow", "git-ci", "ops-incident",
 ];
 const DEV_TOPICS = [
-  "qt-widgets", "qt-signals", "qt-threading", "qt-models", "qt-opengl", "qt-shaders",
+  "qt-widgets", "qt-signals", "qt-threading", "qt-models", "qt-opengl", "qt-shaders", "qt-quick",
   "js-async", "js-types", "js-modules", "js-runtime", "js-typescript",
   "pg-indexes", "pg-explain", "pg-vacuum", "pg-config",
   "pg-query-design", "pg-cte-window", "pg-joins", "pg-json", "pg-sql-security",
@@ -497,7 +497,7 @@ const DEV_TOPICS = [
 ];
 const ROOM_TOPIC_BIAS = {
   cubicle: [...CPP_TOPICS, "cpp-production"],
-  pair: ["safety", "style", "qt-signals", "js-async", "cpp-production"],
+  pair: ["safety", "style", "qt-signals", "qt-quick", "js-async", "cpp-production"],
   team: ["maintainability", "safety", "qt-widgets", "pg-indexes", "pg-query-design", "backend-data"],
   meeting: ["scrum-sprint", "scrum-dor", "scrum-estimation", "git-workflow"],
   executive: ["portability", "pg-explain", "pg-cte-window", "pg-config", "ops-incident"],

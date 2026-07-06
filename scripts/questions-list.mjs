@@ -11,7 +11,7 @@ const EXPECTED_CHAPTERS = [
   "scrum-dod", "scrum-dor", "scrum-estimation", "scrum-sprint", "scrum-team",
   "systemd", "journald", "linux-network", "avahi",
   "docker", "docker-network", "docker-volumes",
-  "qt-widgets", "qt-signals", "qt-threading", "qt-models", "qt-opengl", "qt-shaders",
+  "qt-widgets", "qt-signals", "qt-threading", "qt-models", "qt-opengl", "qt-shaders", "qt-quick",
   "js-async", "js-types", "js-modules", "js-runtime", "js-typescript",
   "pg-indexes", "pg-explain", "pg-vacuum", "pg-config",
   "pg-query-design", "pg-cte-window", "pg-joins", "pg-json", "pg-sql-security",

@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1259 / 1259** valmis (**100 %**).
+**1279 / 1279** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -13,7 +13,7 @@
 | PostgreSQL | 180 | 180 | 100 |
 | Docker | 142 | 142 | 100 |
 | Linux | 168 | 168 | 100 |
-| Qt | 134 | 134 | 100 |
+| Qt | 154 | 154 | 100 |
 | Scrum | 90 | 90 | 100 |
 | Git | 20 | 20 | 100 |
 | Backend | 5 | 5 | 100 |
@@ -1136,7 +1136,7 @@
 | ✅ | 4 | `systemd-timer` | Haluat ajastaa yöllisen backup-skriptin ilman cronia. Mikä systemd-ratk… |
 | ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:ll… |
 
-### Qt (134/134)
+### Qt (154/154)
 
 #### Qt-mallit `qt-models` (19/19)
 
@@ -1187,6 +1187,31 @@
 | ✅ | 4 | `exp-qt-opengl-vao-vbo` | Piirrät meshiä joka frame ilman buffer-objekteja — CPU bottleneck. Ensi… |
 | ✅ | 4 | `qt-opengl-makecurrent` | QOpenGLWidget piirtää mustaa. OpenGL-kutsut tehdään väärästä säikeestä.… |
 | ✅ | 5 | `qt-opengl-vbo` | Piirrät paljon kolmioita QOpenGLWidgetissä. Miten vältät turhat CPU→GPU… |
+
+#### Qt Quick / QML `qt-quick` (20/20)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `b13-qt-quick-anchors-layout` | Nappi pitää keskittää ikkunaan ja venyttää leveys 80 % parentista. QML-… |
+| ✅ | 2 | `b13-qt-quick-application-engine` | Uusi Qt 6 -sovellus lataa QML-tiedoston `main.qml`. Mikä C++-luokka on … |
+| ✅ | 2 | `b13-qt-quick-connections-signal` | QML:ssä haluat kuunnella C++-backendin signaalia ilman suoraa `onFoo`-h… |
+| ✅ | 3 | `b13-qt-quick-context-property` | Yksi globaali `AppSettings`-olio pitää olla kaikkien QML-tiedostojen sa… |
+| ✅ | 3 | `b13-qt-quick-controls-style` | Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä… |
+| ✅ | 2 | `b13-qt-quick-debug-console` | QML binding ei toimi odotetusti — haluat nopean lokituksen ilman C++-de… |
+| ✅ | 4 | `b13-qt-quick-i18n-retranslate` | Käyttäjä vaihtaa kielen lennossa — qsTr()-tekstit eivät päivity QML:ssä… |
+| ✅ | 2 | `b13-qt-quick-image-async` | Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. Q… |
+| ✅ | 2 | `b13-qt-quick-listview-delegate` | ListView näyttää 10 000 riviä hitaasti — kaikki delegate-instanssit luo… |
+| ✅ | 3 | `b13-qt-quick-loader-component` | Haluat ladata raskaan QML-näkymän vasta kun käyttäjä avaa sen. Qt Quick… |
+| ✅ | 3 | `b13-qt-quick-property-animation` | Rectangle liikkuu x: 0 → 300 kun `running` muuttuu true. Yksinkertaisin… |
+| ✅ | 3 | `b13-qt-quick-property-binding` | QML:ssä `width: parent.width` ja `onWidthChanged: width = parent.width`… |
+| ✅ | 4 | `b13-qt-quick-qt-binding` | Käyttäjä muokkaa TextFieldiä — haluat palauttaa automaattisen bindingin… |
+| ✅ | 4 | `b13-qt-quick-register-type` | C++-luokka `SensorModel` pitää käyttää QML:ssä `SensorModel { }` -insta… |
+| ✅ | 2 | `b13-qt-quick-repeater-model` | Haluat piirtää kiinteän 5 tagia vaakasuoraan ilman C++-mallia. Qt Quick… |
+| ✅ | 3 | `b13-qt-quick-required-property` | Custom `DetailPage`-komponentti vaatii `title`-tekstin — virhe jos pare… |
+| ✅ | 4 | `b13-qt-quick-singleton` | QML-moduulissa tarvitaan jaettu `Theme`-olio (värit, fontit) ilman usei… |
+| ✅ | 3 | `b13-qt-quick-stackview` | Mobiilisovelluksessa näkymät pinoutuvat (lista → detail → asetukset) ta… |
+| ✅ | 3 | `b13-qt-quick-state-transition` | Painike vaihtaa väriä hover-tilassa animoidusti. Qt Quick -rakenne? |
+| ✅ | 4 | `b13-qt-quick-worker-script` | QML:ssä pitää ajaa raskasta JSON-parsintaa ilman UI-jumitusta. Qt Quick… |
 
 #### Qt-shaders `qt-shaders` (24/24)
 
