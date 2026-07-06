@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1309 / 1309** valmis (**100 %**).
+**1289 / 1289** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -20,8 +20,6 @@
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
 | Rust | 66 | 66 | 100 |
-| kotlin | 10 | 10 | 100 |
-| webshell | 10 | 10 | 100 |
 
 ## Kaikki aiheet
 
@@ -1717,105 +1715,6 @@
 | ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
 | ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
 | ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
-
-### kotlin (10/10)
-
-#### kotlin-android-storage `kotlin-android-storage` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-datastore` | Sovellus tallentaa käyttäjän asetuksia Androidissa. Mikä korvaa SharedP… |
-
-#### kotlin-compose-effects `kotlin-compose-effects` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-side-effects` | Composablein pitää käynnistää kertaluonteinen lataus kun userId vaihtuu… |
-
-#### kotlin-compose-navigation `kotlin-compose-navigation` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-navigation-args` | Compose Navigationissa detail-näkymä tarvitsee tietueen id:n. Mikä on t… |
-
-#### kotlin-compose-performance `kotlin-compose-performance` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-recomposition-keys` | LazyColumn näyttää muuttuvaa listaa. Miten vältät turhat itemien uudell… |
-
-#### kotlin-compose-state `kotlin-compose-state` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `kotlin-compose-state-hoisting` | Compose-näkymässä lapsikomponentti muokkaa tekstikentän arvoa. Mikä on … |
-| ✅ | 3 | `kotlin-compose-viewmodel-flow` | Näytön data tulee repositoryltä Flow-muodossa. Miten tuot sen Compose-U… |
-
-#### kotlin-compose-tooling `kotlin-compose-tooling` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `kotlin-compose-preview` | UI-komponentin eri tiloja halutaan tarkastella ilman sovelluksen käynni… |
-
-#### kotlin-compose-ui `kotlin-compose-ui` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-accessibility` | IconButton näyttää pelkän ikonigrafiikan. Mitä saavutettavuuden kannalt… |
-| ✅ | 2 | `kotlin-compose-material-theme` | Sovellus tarvitsee yhtenäiset värit ja typografian. Mihin Compose-raken… |
-
-#### kotlin-coroutines `kotlin-coroutines` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `kotlin-compose-main-safety` | Repository tekee verkkokutsun. Miten pidät ViewModelin kutsun main-safe… |
-
-### webshell (10/10)
-
-#### webshell-architecture `webshell-architecture` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `webshell-pwa-vs-capacitor` | Milloin PWA riittää Capacitor-sovelluksen sijaan? |
-
-#### webshell-desktop `webshell-desktop` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `webshell-tauri-vs-electron` | Mikä erottaa Taurin Electronista desktop-jakelussa? |
-
-#### webshell-distribution `webshell-distribution` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `webshell-updates` | Tauri/Capacitor-sovelluksen frontend muuttuu usein. Mitä päivitysmallis… |
-
-#### webshell-mobile `webshell-mobile` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `webshell-capacitor-plugin` | Capacitor-sovellus tarvitsee kameran. Mikä on oikea lähestymistapa? |
-| ✅ | 3 | `webshell-deep-links` | Mobiilikuori avaa sovelluksen linkistä tiettyyn näkymään. Mitä tarvitaa… |
-
-#### webshell-security `webshell-security` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `webshell-csp` | Web-kuoressa ladataan etäistä sisältöä. Mikä suojaus on erityisen tärke… |
-| ✅ | 3 | `webshell-tauri-security` | Tauri-sovellus exposeeraa komentoja frontendille. Mikä on turvallinen p… |
-
-#### webshell-storage `webshell-storage` (2/2)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 3 | `webshell-indexeddb-webview` | WebView-sovellus käyttää IndexedDB:tä. Mikä riski pitää tunnistaa? |
-| ✅ | 3 | `webshell-local-files` | Desktop-webkuori tarvitsee käyttäjän valitseman tiedoston lukemisen. Mi… |
-
-#### webshell-tooling `webshell-tooling` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 2 | `webshell-mobile-live-reload` | Capacitor-kehityksessä haluat testata puhelimella paikallista dev-palve… |
 
 ## Komennot
 
