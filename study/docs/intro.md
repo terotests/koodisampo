@@ -47,7 +47,7 @@ Kysymyspankin JSON-tiedostoissa (`content/question-banks/`) kenttä `lessonRef` 
 
 Pelin linkki vie domain-sivulle ankkuriin: `/docs/topics/cpp/#tools-auto`.
 
-## Laajempi tausta
+## Peli
 
-- [Opiskeluopas](https://github.com/terotests/koodisampo/blob/main/opiskelu/opiskelu-opas.md) — PIMPL, planning poker, …
+- [Koodisampo](https://terotests.github.io/koodisampo/) — Corporate NetHack -tyylinen koodauspeli
 - Ulkoiset lähteet: kunkin oppitunnin *Lue lisää* -osio
