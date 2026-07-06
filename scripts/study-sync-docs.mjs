@@ -28,11 +28,21 @@ function resolveSourceUrl(q) {
   return null;
 }
 
-function escapeMdProse(s) {
+function escapeMdProseSegment(s) {
   return String(s || "")
     .replace(/</g, "&lt;")
     .replace(/\{/g, "\\{")
     .replace(/\}/g, "\\}");
+}
+
+/** MDX-turva prose-osille; inline-koodi (`...`) jätetään koskematta. */
+function escapeMdProse(s) {
+  return String(s || "")
+    .split(/(`[^`]*`)/g)
+    .map((part) =>
+      part.startsWith("`") && part.endsWith("`") ? part : escapeMdProseSegment(part),
+    )
+    .join("");
 }
 
 function readManualLesson(questionId) {

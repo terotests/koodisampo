@@ -25,6 +25,14 @@ const topicsDir = path.join(root, "study/docs/topics");
 const postgres = fs.readFileSync(path.join(topicsDir, "postgres.md"), "utf8");
 assert.match(postgres, /\[OOM\]\(\/docs\/lyhenteet#oom\)/, "manual lessons link OOM to glossary");
 
+const rust = fs.readFileSync(path.join(topicsDir, "rust.md"), "utf8");
+assert.match(
+  rust,
+  /### Funktio palauttaa `Result<T, MyError>` ja kutsuu std-io funktiota\. Miten yhdistät virhetyypit siististi\? \{#rust-error-from-into\}/,
+  "inline code in headings must keep < unescaped",
+);
+assert.doesNotMatch(rust, /Result&lt;T, MyError>/, "headings must not show HTML entities inside inline code");
+
 function withoutFencedCode(md) {
   return md.replace(/```[\s\S]*?```/g, "");
 }
