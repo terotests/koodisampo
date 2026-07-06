@@ -141,23 +141,6 @@ function specialtyDomain(playerSpecialty, fallback = "cpp") {
   return playerSpecialty || fallback;
 }
 
-/** Kielikohtaiset erikoisalueet — eivät ohita toisiaan työkaverin geneerisen topicin kanssa. */
-const LANGUAGE_SPECIALTY_DOMAINS = new Set(["cpp", "javascript", "qt"]);
-
-/**
- * Työkaverin kysymädomain: pelaajan kielivalinta voittaa ristiriitaisen C++/Qt-topicin,
- * mutta Scrum, Docker, Linux jne. säilyvät työkaverin omana aiheena.
- */
-function coworkerQuestionDomain(playerSpecialty, topicDomain) {
-  if (!playerSpecialty) return topicDomain || "";
-  if (!topicDomain) return playerSpecialty;
-  if (topicDomain === playerSpecialty) return topicDomain;
-  const playerIsLanguage = LANGUAGE_SPECIALTY_DOMAINS.has(playerSpecialty);
-  const topicIsLanguage = LANGUAGE_SPECIALTY_DOMAINS.has(topicDomain);
-  if (playerIsLanguage && topicIsLanguage) return playerSpecialty;
-  return topicDomain;
-}
-
 function audienceTags(entity, playerSpecialty = "") {
   if (entity.id === "receptionist") {
     const domain = specialtyDomain(playerSpecialty);
@@ -223,15 +206,16 @@ function audienceTags(entity, playerSpecialty = "") {
     }
   }
   if (entity.kind === "coworker") {
-    const topic = entity.topic || "";
-    const topicDomain = TOPIC_DOMAINS[topic] || "";
+    // HUOM: NPC:n oma entity.topic EI enää vaikuta kysymysvalintaan — vain pelaajan oma
+    // erikoisala painottaa poimintaa (ja sitäkin vain ANY_TOPIC_CHANCE:n verran, ks.
+    // pickQuestion()). "Docker-työkaveri" ei siis enää lukitse kysymyksiä Dockeriin;
+    // entity.topic näkyy edelleen vain kosmeettisena juttutunnisteena (frameQuestion()).
     const specialty = playerSpecialty || "";
-    const preferDomain = coworkerQuestionDomain(specialty, topicDomain);
     return {
       tags: ["coworker"],
       voice: "colleague",
-      preferChapter: topic && preferDomain === topicDomain ? topic : "",
-      preferDomain,
+      preferChapter: "",
+      preferDomain: specialty,
       playerSpecialty: specialty,
     };
   }
@@ -674,7 +658,9 @@ export const AI_STUDY_KARMA_COST = 5;
 
 export function frameQuestion(entity, question, profile) {
   const voice = VOICES[profile.voice] ?? VOICES.colleague;
-  const topic = entity.topic || question.chapter || "";
+  // Näytetään poimitun kysymyksen oma aihe eikä NPC:n staattista entity.topic-kenttää,
+  // koska kysymys ei enää välttämättä liity NPC:n omaan topiciin (ks. audienceTags()).
+  const topic = question.chapter || entity.topic || "";
   const ctx = {
     domain: question.domain,
     topic,
