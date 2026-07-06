@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-06T12:28:53.947Z",
+  "generatedAt": "2026-07-06T12:41:14.288Z",
   "summary": {
-    "totalQuestions": 1203,
-    "readyLessons": 1203,
+    "totalQuestions": 1243,
+    "readyLessons": 1243,
     "pendingLessons": 0,
     "percent": 100
   },
@@ -8897,14 +8897,36 @@
     {
       "id": "rust",
       "label": "Rust",
-      "ready": 10,
-      "total": 10,
+      "ready": 50,
+      "total": 50,
       "chapters": [
+        {
+          "id": "rust-async",
+          "label": "Rust async",
+          "ready": 2,
+          "total": 2,
+          "questions": [
+            {
+              "id": "rust-async-future-await",
+              "difficulty": 3,
+              "prompt": "Mitä `async fn` palauttaa Rustissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-future-await.md"
+            },
+            {
+              "id": "rust-async-tokio-runtime",
+              "difficulty": 3,
+              "prompt": "async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnistys?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-tokio-runtime.md"
+            }
+          ]
+        },
         {
           "id": "rust-borrowing",
           "label": "Rust lainaus",
-          "ready": 2,
-          "total": 2,
+          "ready": 6,
+          "total": 6,
           "questions": [
             {
               "id": "rust-borrow-immut",
@@ -8914,50 +8936,162 @@
               "lessonFile": "opiskelu/lessons/rust-borrow-immut.md"
             },
             {
+              "id": "rust-borrow-lifetime-elision",
+              "difficulty": 3,
+              "prompt": "Funktio palauttaa `&str` kahdesta parametrista. Milloin tarvitset eksplisiittiset lifetime-merkinnät?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-lifetime-elision.md"
+            },
+            {
               "id": "rust-borrow-mut",
               "difficulty": 2,
               "prompt": "Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Miksi kääntäjä hylkää?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-borrow-mut.md"
+            },
+            {
+              "id": "rust-borrow-refcell-interior",
+              "difficulty": 3,
+              "prompt": "Tarvitset muokata arvoa &self-metodissa (interior mutability). Mikä tyyppi auttaa single-threaded -tilanteessa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-refcell-interior.md"
+            },
+            {
+              "id": "rust-borrow-slice-type",
+              "difficulty": 2,
+              "prompt": "Miksi `&Vec<T>` funktioparametrina on usein huono verrattuna `&[T]`:hen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-slice-type.md"
+            },
+            {
+              "id": "rust-borrow-static-lifetime",
+              "difficulty": 2,
+              "prompt": "Mikä `'static` lifetime tarkoittaa Rustissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-borrow-static-lifetime.md"
             }
           ]
         },
         {
           "id": "rust-concurrency",
           "label": "Rust säikeet",
-          "ready": 1,
-          "total": 1,
+          "ready": 6,
+          "total": 6,
           "questions": [
+            {
+              "id": "rust-concurrency-mpsc-channel",
+              "difficulty": 3,
+              "prompt": "Worker-säikeet lähettävät tuloksia pääsäikeelle. Mikä std-primitiivi sopii?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-mpsc-channel.md"
+            },
+            {
+              "id": "rust-concurrency-mutex-deadlock",
+              "difficulty": 3,
+              "prompt": "Kaksi Mutex-lukitusta eri järjestyksessä kahdessa säikeessä — riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-mutex-deadlock.md"
+            },
+            {
+              "id": "rust-concurrency-rwlock-readers",
+              "difficulty": 3,
+              "prompt": "Monta säiettä lukee harvoin kirjoittavaa cachea. Mutex vs RwLock?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-rwlock-readers.md"
+            },
             {
               "id": "rust-concurrency-send-sync",
               "difficulty": 3,
               "prompt": "Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi korvaa sen thread-safe -tilanteessa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-concurrency-send-sync.md"
+            },
+            {
+              "id": "rust-concurrency-send-sync-def",
+              "difficulty": 3,
+              "prompt": "Mikä ero `Send`- ja `Sync`-traitien välillä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-send-sync-def.md"
+            },
+            {
+              "id": "rust-concurrency-thread-spawn",
+              "difficulty": 2,
+              "prompt": "Miten käynnistät uuden OS-säikeen std-kirjastolla?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-concurrency-thread-spawn.md"
             }
           ]
         },
         {
           "id": "rust-error",
           "label": "Rust virheenkäsittely",
-          "ready": 1,
-          "total": 1,
+          "ready": 5,
+          "total": 5,
           "questions": [
+            {
+              "id": "rust-error-from-into",
+              "difficulty": 2,
+              "prompt": "Funktio palauttaa `Result<T, MyError>` ja kutsuu std-io funktiota. Miten yhdistät virhetyypit siististi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-from-into.md"
+            },
+            {
+              "id": "rust-error-option-result-convert",
+              "difficulty": 2,
+              "prompt": "Funktio palauttaa `Option<T>` mutta kutsuja tarvitsee `Result<T, MyError>`. Mikä metodi auttaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-option-result-convert.md"
+            },
+            {
+              "id": "rust-error-panic-unrecoverable",
+              "difficulty": 2,
+              "prompt": "Milloin `panic!` on perusteltu recoverable-virheen sijaan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-panic-unrecoverable.md"
+            },
             {
               "id": "rust-error-question-mark",
               "difficulty": 2,
               "prompt": "Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-error-question-mark.md"
+            },
+            {
+              "id": "rust-error-unwrap-vs-expect",
+              "difficulty": 2,
+              "prompt": "Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suosittelee tuotantoon?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-unwrap-vs-expect.md"
             }
           ]
         },
         {
           "id": "rust-ownership",
           "label": "Rust omistajuus",
-          "ready": 2,
-          "total": 2,
+          "ready": 7,
+          "total": 7,
           "questions": [
+            {
+              "id": "rust-ownership-box-heap",
+              "difficulty": 2,
+              "prompt": "Haluat siirtää suuren structin heapille ilman `new`/`delete`-paria. Mikä tyyppi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-box-heap.md"
+            },
+            {
+              "id": "rust-ownership-clone-explicit",
+              "difficulty": 2,
+              "prompt": "Tarvitset kaksi itsenäistä kopioita samasta `Vec<i32>`:stä. Mikä on oikea tapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-clone-explicit.md"
+            },
+            {
+              "id": "rust-ownership-copy-trait",
+              "difficulty": 2,
+              "prompt": "Miksi `let b = a;` toimii `i32`:lle mutta ei `String`:lle ilman `.clone()`?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-copy-trait.md"
+            },
             {
               "id": "rust-ownership-drop",
               "difficulty": 2,
@@ -8971,14 +9105,28 @@
               "prompt": "Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-ownership-move.md"
+            },
+            {
+              "id": "rust-ownership-string-str",
+              "difficulty": 1,
+              "prompt": "Funktio ottaa merkkijonon parametriksi mutta ei tarvitse omistaa sitä. Mikä tyyppi on idiomaattisin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-string-str.md"
+            },
+            {
+              "id": "rust-ownership-vec-push-invalidate",
+              "difficulty": 3,
+              "prompt": "Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-ownership-vec-push-invalidate.md"
             }
           ]
         },
         {
           "id": "rust-safety",
           "label": "Rust turvallisuus",
-          "ready": 1,
-          "total": 1,
+          "ready": 2,
+          "total": 2,
           "questions": [
             {
               "id": "rust-safety-borrow-checker",
@@ -8986,14 +9134,21 @@
               "prompt": "Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-safety-borrow-checker.md"
+            },
+            {
+              "id": "rust-safety-unsafe-block",
+              "difficulty": 3,
+              "prompt": "Milloin `unsafe`-lohko on perusteltu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-safety-unsafe-block.md"
             }
           ]
         },
         {
           "id": "rust-tooling",
           "label": "Rust työkalut",
-          "ready": 1,
-          "total": 1,
+          "ready": 6,
+          "total": 6,
           "questions": [
             {
               "id": "rust-tooling-cargo",
@@ -9001,15 +9156,142 @@
               "prompt": "Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.toml`-projektin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-tooling-cargo.md"
+            },
+            {
+              "id": "rust-tooling-cargo-features",
+              "difficulty": 3,
+              "prompt": "Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille. Miten?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-cargo-features.md"
+            },
+            {
+              "id": "rust-tooling-cargo-test",
+              "difficulty": 1,
+              "prompt": "Miten ajat yksikkötestit Rust-projektissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-cargo-test.md"
+            },
+            {
+              "id": "rust-tooling-clippy",
+              "difficulty": 2,
+              "prompt": "Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-clippy.md"
+            },
+            {
+              "id": "rust-tooling-derive-macro",
+              "difficulty": 2,
+              "prompt": "Mitä `#[derive(Clone, PartialEq)]` tekee käännöksen aikana?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-derive-macro.md"
+            },
+            {
+              "id": "rust-tooling-release-profile",
+              "difficulty": 2,
+              "prompt": "Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-release-profile.md"
+            }
+          ]
+        },
+        {
+          "id": "rust-traits",
+          "label": "Rust traitit",
+          "ready": 8,
+          "total": 8,
+          "questions": [
+            {
+              "id": "rust-traits-bounds-generic",
+              "difficulty": 3,
+              "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-bounds-generic.md"
+            },
+            {
+              "id": "rust-traits-default-impl",
+              "difficulty": 2,
+              "prompt": "Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa impl:ia?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-default-impl.md"
+            },
+            {
+              "id": "rust-traits-definition",
+              "difficulty": 2,
+              "prompt": "Mikä Rustin trait vastaa käytännössä Java-interfacen roolia?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-definition.md"
+            },
+            {
+              "id": "rust-traits-deref-coercion",
+              "difficulty": 3,
+              "prompt": "Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-deref-coercion.md"
+            },
+            {
+              "id": "rust-traits-derive-debug",
+              "difficulty": 1,
+              "prompt": "Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-derive-debug.md"
+            },
+            {
+              "id": "rust-traits-dyn-trait-object",
+              "difficulty": 3,
+              "prompt": "Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä tyyppi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-dyn-trait-object.md"
+            },
+            {
+              "id": "rust-traits-impl-trait-return",
+              "difficulty": 3,
+              "prompt": "Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-impl-trait-return.md"
+            },
+            {
+              "id": "rust-traits-iterator",
+              "difficulty": 2,
+              "prompt": "Mikä trait mahdollistaa `for item in collection` -silmukan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-iterator.md"
             }
           ]
         },
         {
           "id": "rust-types",
           "label": "Rust tyypit",
-          "ready": 2,
-          "total": 2,
+          "ready": 8,
+          "total": 8,
           "questions": [
+            {
+              "id": "rust-types-enum-variants",
+              "difficulty": 2,
+              "prompt": "Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-enum-variants.md"
+            },
+            {
+              "id": "rust-types-if-let",
+              "difficulty": 1,
+              "prompt": "Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-if-let.md"
+            },
+            {
+              "id": "rust-types-match-exhaustive",
+              "difficulty": 2,
+              "prompt": "Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-match-exhaustive.md"
+            },
+            {
+              "id": "rust-types-method-receiver",
+              "difficulty": 2,
+              "prompt": "Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&mut self`?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-method-receiver.md"
+            },
             {
               "id": "rust-types-option",
               "difficulty": 1,
@@ -9023,6 +9305,20 @@
               "prompt": "Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai virheen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-types-result.md"
+            },
+            {
+              "id": "rust-types-struct-update",
+              "difficulty": 2,
+              "prompt": "Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden kentän. Mikä syntaksi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-struct-update.md"
+            },
+            {
+              "id": "rust-types-tuple-struct",
+              "difficulty": 2,
+              "prompt": "Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavalliseen u64:ään. Miten?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-types-tuple-struct.md"
             }
           ]
         }

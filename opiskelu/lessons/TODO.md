@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1203 / 1203** valmis (**100 %**).
+**1243 / 1243** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -19,7 +19,7 @@
 | Backend | 5 | 5 | 100 |
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
-| Rust | 10 | 10 | 100 |
+| Rust | 50 | 50 | 100 |
 
 ## Kaikki aiheet
 
@@ -1518,52 +1518,102 @@
 | ✅ | 4 | `rf-browser-library` | Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjast… |
 | ✅ | 3 | `rf-wait-until` | Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lata… |
 
-### Rust (10/10)
+### Rust (50/50)
 
-#### Rust lainaus `rust-borrowing` (2/2)
+#### Rust async `rust-async` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `rust-async-future-await` | Mitä `async fn` palauttaa Rustissa? |
+| ✅ | 3 | `rust-async-tokio-runtime` | async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnist… |
+
+#### Rust lainaus `rust-borrowing` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 1 | `rust-borrow-immut` | Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä pa… |
+| ✅ | 3 | `rust-borrow-lifetime-elision` | Funktio palauttaa `&str` kahdesta parametrista. Milloin tarvitset ekspl… |
 | ✅ | 2 | `rust-borrow-mut` | Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Mi… |
+| ✅ | 3 | `rust-borrow-refcell-interior` | Tarvitset muokata arvoa &self-metodissa (interior mutability). Mikä tyy… |
+| ✅ | 2 | `rust-borrow-slice-type` | Miksi `&Vec<T>` funktioparametrina on usein huono verrattuna `&[T]`:hen? |
+| ✅ | 2 | `rust-borrow-static-lifetime` | Mikä `'static` lifetime tarkoittaa Rustissa? |
 
-#### Rust säikeet `rust-concurrency` (1/1)
+#### Rust säikeet `rust-concurrency` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 3 | `rust-concurrency-mpsc-channel` | Worker-säikeet lähettävät tuloksia pääsäikeelle. Mikä std-primitiivi so… |
+| ✅ | 3 | `rust-concurrency-mutex-deadlock` | Kaksi Mutex-lukitusta eri järjestyksessä kahdessa säikeessä — riski? |
+| ✅ | 3 | `rust-concurrency-rwlock-readers` | Monta säiettä lukee harvoin kirjoittavaa cachea. Mutex vs RwLock? |
 | ✅ | 3 | `rust-concurrency-send-sync` | Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi kor… |
+| ✅ | 3 | `rust-concurrency-send-sync-def` | Mikä ero `Send`- ja `Sync`-traitien välillä? |
+| ✅ | 2 | `rust-concurrency-thread-spawn` | Miten käynnistät uuden OS-säikeen std-kirjastolla? |
 
-#### Rust virheenkäsittely `rust-error` (1/1)
+#### Rust virheenkäsittely `rust-error` (5/5)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 2 | `rust-error-from-into` | Funktio palauttaa `Result<T, MyError>` ja kutsuu std-io funktiota. Mite… |
+| ✅ | 2 | `rust-error-option-result-convert` | Funktio palauttaa `Option<T>` mutta kutsuja tarvitsee `Result<T, MyErro… |
+| ✅ | 2 | `rust-error-panic-unrecoverable` | Milloin `panic!` on perusteltu recoverable-virheen sijaan? |
 | ✅ | 2 | `rust-error-question-mark` | Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haaras… |
+| ✅ | 2 | `rust-error-unwrap-vs-expect` | Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suos… |
 
-#### Rust omistajuus `rust-ownership` (2/2)
+#### Rust omistajuus `rust-ownership` (7/7)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 2 | `rust-ownership-box-heap` | Haluat siirtää suuren structin heapille ilman `new`/`delete`-paria. Mik… |
+| ✅ | 2 | `rust-ownership-clone-explicit` | Tarvitset kaksi itsenäistä kopioita samasta `Vec<i32>`:stä. Mikä on oik… |
+| ✅ | 2 | `rust-ownership-copy-trait` | Miksi `let b = a;` toimii `i32`:lle mutta ei `String`:lle ilman `.clone… |
 | ✅ | 2 | `rust-ownership-drop` | Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti? |
 | ✅ | 1 | `rust-ownership-move` | Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa? |
+| ✅ | 1 | `rust-ownership-string-str` | Funktio ottaa merkkijonon parametriksi mutta ei tarvitse omistaa sitä. … |
+| ✅ | 3 | `rust-ownership-vec-push-invalidate` | Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe? |
 
-#### Rust turvallisuus `rust-safety` (1/1)
+#### Rust turvallisuus `rust-safety` (2/2)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `rust-safety-borrow-checker` | Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman ros… |
+| ✅ | 3 | `rust-safety-unsafe-block` | Milloin `unsafe`-lohko on perusteltu? |
 
-#### Rust työkalut `rust-tooling` (1/1)
+#### Rust työkalut `rust-tooling` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 1 | `rust-tooling-cargo` | Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.to… |
+| ✅ | 3 | `rust-tooling-cargo-features` | Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille.… |
+| ✅ | 1 | `rust-tooling-cargo-test` | Miten ajat yksikkötestit Rust-projektissa? |
+| ✅ | 2 | `rust-tooling-clippy` | Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu? |
+| ✅ | 2 | `rust-tooling-derive-macro` | Mitä `#[derive(Clone, PartialEq)]` tekee käännöksen aikana? |
+| ✅ | 2 | `rust-tooling-release-profile` | Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento? |
 
-#### Rust tyypit `rust-types` (2/2)
+#### Rust traitit `rust-traits` (8/8)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 3 | `rust-traits-bounds-generic` | Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. M… |
+| ✅ | 2 | `rust-traits-default-impl` | Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa… |
+| ✅ | 2 | `rust-traits-definition` | Mikä Rustin trait vastaa käytännössä Java-interfacen roolia? |
+| ✅ | 3 | `rust-traits-deref-coercion` | Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy? |
+| ✅ | 1 | `rust-traits-derive-debug` | Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia… |
+| ✅ | 3 | `rust-traits-dyn-trait-object` | Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä… |
+| ✅ | 3 | `rust-traits-impl-trait-return` | Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä pa… |
+| ✅ | 2 | `rust-traits-iterator` | Mikä trait mahdollistaa `for item in collection` -silmukan? |
+
+#### Rust tyypit `rust-types` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rust-types-enum-variants` | Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä… |
+| ✅ | 1 | `rust-types-if-let` | Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siiste… |
+| ✅ | 2 | `rust-types-match-exhaustive` | Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi? |
+| ✅ | 2 | `rust-types-method-receiver` | Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&… |
 | ✅ | 1 | `rust-types-option` | Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-poin… |
 | ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
+| ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
+| ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
 
 ## Komennot
 

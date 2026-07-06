@@ -86,6 +86,8 @@ export const CHAPTER_LABELS = {
   "rust-concurrency": "Rust säikeet",
   "rust-tooling": "Rust työkalut",
   "rust-safety": "Rust turvallisuus",
+  "rust-traits": "Rust traitit",
+  "rust-async": "Rust async",
 };
 
 /** Repo/dokumentaatioviite: domain/chapter/id */

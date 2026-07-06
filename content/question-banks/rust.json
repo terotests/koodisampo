@@ -8,7 +8,11 @@
       "chapter": "rust-ownership",
       "domain": "rust",
       "difficulty": 1,
-      "audiences": ["coworker", "guru", "secretary"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "secretary"
+      ],
       "prompt": "Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa?",
       "choices": [
         {
@@ -41,7 +45,10 @@
       "chapter": "rust-borrowing",
       "domain": "rust",
       "difficulty": 1,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä parametri?",
       "choices": [
         {
@@ -74,7 +81,11 @@
       "chapter": "rust-borrowing",
       "domain": "rust",
       "difficulty": 2,
-      "audiences": ["coworker", "guru", "project-lead"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
       "prompt": "Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Miksi kääntäjä hylkää?",
       "choices": [
         {
@@ -107,7 +118,11 @@
       "chapter": "rust-types",
       "domain": "rust",
       "difficulty": 1,
-      "audiences": ["coworker", "secretary", "guru"],
+      "audiences": [
+        "coworker",
+        "secretary",
+        "guru"
+      ],
       "prompt": "Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-pointerin?",
       "choices": [
         {
@@ -140,7 +155,10 @@
       "chapter": "rust-types",
       "domain": "rust",
       "difficulty": 2,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai virheen?",
       "choices": [
         {
@@ -173,7 +191,11 @@
       "chapter": "rust-error",
       "domain": "rust",
       "difficulty": 2,
-      "audiences": ["coworker", "guru", "project-lead"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
       "prompt": "Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?",
       "choices": [
         {
@@ -206,7 +228,10 @@
       "chapter": "rust-ownership",
       "domain": "rust",
       "difficulty": 2,
-      "audiences": ["coworker", "guru"],
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
       "prompt": "Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti?",
       "choices": [
         {
@@ -239,7 +264,11 @@
       "chapter": "rust-concurrency",
       "domain": "rust",
       "difficulty": 3,
-      "audiences": ["coworker", "guru", "project-lead"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
       "prompt": "Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi korvaa sen thread-safe -tilanteessa?",
       "choices": [
         {
@@ -272,7 +301,11 @@
       "chapter": "rust-tooling",
       "domain": "rust",
       "difficulty": 1,
-      "audiences": ["coworker", "secretary", "guru"],
+      "audiences": [
+        "coworker",
+        "secretary",
+        "guru"
+      ],
       "prompt": "Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.toml`-projektin?",
       "choices": [
         {
@@ -305,7 +338,11 @@
       "chapter": "rust-safety",
       "domain": "rust",
       "difficulty": 2,
-      "audiences": ["coworker", "guru", "security"],
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
       "prompt": "Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?",
       "choices": [
         {
@@ -332,6 +369,1460 @@
       "lessonRef": "rust/safety/rust-safety-borrow-checker",
       "sourceUrl": "https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html",
       "sourceRef": "rust-book/ch04-ownership"
+    },
+    {
+      "id": "rust-ownership-copy-trait",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi `let b = a;` toimii `i32`:lle mutta ei `String`:lle ilman `.clone()`?",
+      "choices": [
+        {
+          "text": "i32 toteuttaa Copy-traitin — pienet arvot kopioituvat, String siirtyy (move)",
+          "correct": true
+        },
+        {
+          "text": "Copy on oletus kaikille tyypeille",
+          "correct": false
+        },
+        {
+          "text": "String on stack-tyyppi kuten i32",
+          "correct": false
+        },
+        {
+          "text": "Kääntäjä kopioi aina heap-tyypit automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Copy vs Move: primitiivit kopioituvat, omistajuus vaativat tyypit siirtyvät.",
+      "wrongFeedback": "Kaikki tyypit eivät ole Copy. String siirtyy oletuksena.",
+      "featureId": "rust:copy-trait",
+      "featurePoints": 3,
+      "lessonRef": "rust/ownership/rust-ownership-copy-trait",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy",
+      "sourceRef": "rust-book/rust-ownership-copy-trait"
+    },
+    {
+      "id": "rust-ownership-box-heap",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat siirtää suuren structin heapille ilman `new`/`delete`-paria. Mikä tyyppi?",
+      "choices": [
+        {
+          "text": "Box<T> — omistettu heap-allokaatio, vapautuu Drop:lla",
+          "correct": true
+        },
+        {
+          "text": "*mut T — Box korvataan aina raakaosoittimella",
+          "correct": false
+        },
+        {
+          "text": "Rc<T> — ainoa tapa heap-allokoida",
+          "correct": false
+        },
+        {
+          "text": "Vec<T> — pakollinen yksittäisille olioille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Box<T> on yksinkertaisin omistettu heap-säiliö std:ssä.",
+      "wrongFeedback": "Raaka osoitin ei hallitse elinkaarta. Box hoitaa allokaation ja vapautuksen.",
+      "featureId": "rust:box",
+      "featurePoints": 3,
+      "lessonRef": "rust/ownership/rust-ownership-box-heap",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch15-01-box.html",
+      "sourceRef": "rust-book/rust-ownership-box-heap"
+    },
+    {
+      "id": "rust-ownership-string-str",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary",
+        "guru"
+      ],
+      "prompt": "Funktio ottaa merkkijonon parametriksi mutta ei tarvitse omistaa sitä. Mikä tyyppi on idiomaattisin?",
+      "choices": [
+        {
+          "text": "&str — lainattu merkkijononäkymä (string slice)",
+          "correct": true
+        },
+        {
+          "text": "String aina — &str on vanhentunut",
+          "correct": false
+        },
+        {
+          "text": "char* — C-tyylinen merkkijono Rustissa",
+          "correct": false
+        },
+        {
+          "text": "Cow<str> pakollinen kaikissa API:ssa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "&str riittää lukemiseen — String vain kun omistetaan tai rakennetaan.",
+      "wrongFeedback": "String on omistettu, kasvatettava merkkijono. &str on lainattu näkymä.",
+      "featureId": "rust:str-slice",
+      "featurePoints": 2,
+      "lessonRef": "rust/ownership/rust-ownership-string-str",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-03-slices.html",
+      "sourceRef": "rust-book/rust-ownership-string-str"
+    },
+    {
+      "id": "rust-ownership-clone-explicit",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tarvitset kaksi itsenäistä kopioita samasta `Vec<i32>`:stä. Mikä on oikea tapa?",
+      "choices": [
+        {
+          "text": "vec.clone() — eksplisiittinen syvä kopio Clone-traitin kautta",
+          "correct": true
+        },
+        {
+          "text": "let b = a; — move riittää kahdelle omistajalle",
+          "correct": false
+        },
+        {
+          "text": "&a kopioi automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "std::copy(a, b) — std-kirjaston memcpy",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Clone on eksplisiittinen — koodi näyttää kopiointikustannuksen.",
+      "wrongFeedback": "Move siirtää omistajuuden. Lainaus ei luo toista omistettua kopiota.",
+      "featureId": "rust:clone",
+      "featurePoints": 3,
+      "lessonRef": "rust/ownership/rust-ownership-clone-explicit",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone",
+      "sourceRef": "rust-book/rust-ownership-clone-explicit"
+    },
+    {
+      "id": "rust-ownership-vec-push-invalidate",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe?",
+      "choices": [
+        {
+          "text": "push voi reallokoida vektorin — r voisi osoittaa invalidiin muistiin",
+          "correct": true
+        },
+        {
+          "text": "Vec ei salli pushia lainauksen aikana koskaan runtime-virheenä",
+          "correct": false
+        },
+        {
+          "text": "Indeksointi palauttaa aina kopion — viittaus ok",
+          "correct": false
+        },
+        {
+          "text": "Borrow checker ei koske vektoreihin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Reallokointi invalidoi elementtiviittaukset — borrow checker estää sen.",
+      "wrongFeedback": "Vec voi siirtää dataa heapissa. Viittaus vanhaan paikkaan olisi UB ilman tarkistusta.",
+      "featureId": "rust:vec-realloc",
+      "featurePoints": 4,
+      "lessonRef": "rust/ownership/rust-ownership-vec-push-invalidate",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings",
+      "sourceRef": "rust-book/rust-ownership-vec-push-invalidate"
+    },
+    {
+      "id": "rust-borrow-lifetime-elision",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio palauttaa `&str` kahdesta parametrista. Milloin tarvitset eksplisiittiset lifetime-merkinnät?",
+      "choices": [
+        {
+          "text": "Kun kääntäjä ei voi päättää palautusviittauksen lähdettä (useita samansyvyisiä inputteja)",
+          "correct": true
+        },
+        {
+          "text": "Aina — jokaisessa funktiossa pakollinen",
+          "correct": false
+        },
+        {
+          "text": "Ei koskaan — Rust päättelee automaattisesti aina",
+          "correct": false
+        },
+        {
+          "text": "Vain unsafe-lohkoissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Lifetime-elision kattaa yleiset tapaukset; monimutkaisissa palautuksissa tarvitaan annotaatio.",
+      "wrongFeedback": "Elision-säännöt eivät kata kaikkia tapauksia — esim. palautus kahdesta &str:stä vaatii `'a`.",
+      "featureId": "rust:lifetimes",
+      "featurePoints": 4,
+      "lessonRef": "rust/borrowing/rust-borrow-lifetime-elision",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html",
+      "sourceRef": "rust-book/rust-borrow-lifetime-elision"
+    },
+    {
+      "id": "rust-borrow-static-lifetime",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä `'static` lifetime tarkoittaa Rustissa?",
+      "choices": [
+        {
+          "text": "Viittaus elää koko ohjelman ajan — esim. string literalit",
+          "correct": true
+        },
+        {
+          "text": "Staattinen muuttuja C-tyyliin — global mut aina",
+          "correct": false
+        },
+        {
+          "text": "Viittaus validi vain compile-time",
+          "correct": false
+        },
+        {
+          "text": "Sama kuin Arc<T> elinkaari",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "'static = koko prosessin elinikä. String literalit ovat &'static str.",
+      "wrongFeedback": "'static on elinikä, ei tallennusluokka. Ei tarkoita globaalia mut-muuttujaa.",
+      "featureId": "rust:static-lifetime",
+      "featurePoints": 3,
+      "lessonRef": "rust/borrowing/rust-borrow-static-lifetime",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#the-static-lifetime",
+      "sourceRef": "rust-book/rust-borrow-static-lifetime"
+    },
+    {
+      "id": "rust-borrow-refcell-interior",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Tarvitset muokata arvoa &self-metodissa (interior mutability). Mikä tyyppi auttaa single-threaded -tilanteessa?",
+      "choices": [
+        {
+          "text": "RefCell<T> — runtime borrow checker Cell/RefCell-perheessä",
+          "correct": true
+        },
+        {
+          "text": "Mutex<T> aina — RefCell on poistettu",
+          "correct": false
+        },
+        {
+          "text": "mut self riittää aina ilman wrapperia",
+          "correct": false
+        },
+        {
+          "text": "unsafe mut static",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RefCell siirtää lainaussäännöt runtimeen — borrow() / borrow_mut().",
+      "wrongFeedback": "&self ei salli suoraa mut-muutosta. RefCell on single-threaded sisäinen mutabiliteetti.",
+      "featureId": "rust:refcell",
+      "featurePoints": 4,
+      "lessonRef": "rust/borrowing/rust-borrow-refcell-interior",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch15-05-interior-mutability.html",
+      "sourceRef": "rust-book/rust-borrow-refcell-interior"
+    },
+    {
+      "id": "rust-borrow-slice-type",
+      "chapter": "rust-borrowing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi `&Vec<T>` funktioparametrina on usein huono verrattuna `&[T]`:hen?",
+      "choices": [
+        {
+          "text": "&[T] hyväksyy Vec, array ja muut slice-kelpoiset — joustavampi API",
+          "correct": true
+        },
+        {
+          "text": "&[T] ei toimi Vec:in kanssa",
+          "correct": false
+        },
+        {
+          "text": "Vec on ainoa tapa välittää taulukko",
+          "correct": false
+        },
+        {
+          "text": "&[T] kopioi aina koko vektorin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Slice-abstraktio on idiomaattinen — Deref coercion Vec → &[T].",
+      "wrongFeedback": "&[T] on yleisempi. &Vec<T> rajoittaa turhaan kutsujaa.",
+      "featureId": "rust:slice",
+      "featurePoints": 3,
+      "lessonRef": "rust/borrowing/rust-borrow-slice-type",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch04-03-slices.html",
+      "sourceRef": "rust-book/rust-borrow-slice-type"
+    },
+    {
+      "id": "rust-types-match-exhaustive",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi?",
+      "choices": [
+        {
+          "text": "Exhaustive matching — kääntäjä varmistaa ettei varianttia jää käsittelemättä",
+          "correct": true
+        },
+        {
+          "text": "Runtime-default None jos variant puuttuu",
+          "correct": false
+        },
+        {
+          "text": "match on vain syntaktinen sokeri if:lle ilman tarkistusta",
+          "correct": false
+        },
+        {
+          "text": "Vain Option vaatii exhaustivenessin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Exhaustiveness on compile-time turvallisuutta — uusi variantti rikkoo buildin.",
+      "wrongFeedback": "Puuttuva haara on kääntäjävirhe, ei runtime-yllätys.",
+      "featureId": "rust:match-exhaustive",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-match-exhaustive",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch06-02-match.html",
+      "sourceRef": "rust-book/rust-types-match-exhaustive"
+    },
+    {
+      "id": "rust-types-if-let",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?",
+      "choices": [
+        {
+          "text": "if let Some(x) = opt { ... }",
+          "correct": true
+        },
+        {
+          "text": "match opt { Some(x) => ..., None => {} } aina pakollinen",
+          "correct": false
+        },
+        {
+          "text": "opt.unwrap() tuotantokoodissa",
+          "correct": false
+        },
+        {
+          "text": "if opt.is_some() { opt.unwrap() }",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "if let on syntaktinen sokeri yksittäiseen pattern-haaraan.",
+      "wrongFeedback": "unwrap on vaarallinen. if let on idiomaattinen yhdelle haaralle.",
+      "featureId": "rust:if-let",
+      "featurePoints": 2,
+      "lessonRef": "rust/types/rust-types-if-let",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch18-01-all-the-places-for-patterns.html",
+      "sourceRef": "rust-book/rust-types-if-let"
+    },
+    {
+      "id": "rust-types-enum-variants",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?",
+      "choices": [
+        {
+          "text": "Enum variantit datalla: Ok(String) / Err(StatusCode) — algebraic data type",
+          "correct": true
+        },
+        {
+          "text": "Struct + bool flag — Rustin suositeltu tapa",
+          "correct": false
+        },
+        {
+          "text": "Union kuten C — oletus Rustissa",
+          "correct": false
+        },
+        {
+          "text": "HashMap<String, Value> aina",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Enum + data on Rustin vahvuus — tyyppiturvallinen union.",
+      "wrongFeedback": "Bool-flag + struct on virhealtis. Enum kapseloi variantit turvallisesti.",
+      "featureId": "rust:enum-data",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-enum-variants",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html",
+      "sourceRef": "rust-book/rust-types-enum-variants"
+    },
+    {
+      "id": "rust-types-struct-update",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden kentän. Mikä syntaksi?",
+      "choices": [
+        {
+          "text": "Struct update syntax: `User { email: new, ..old }`",
+          "correct": true
+        },
+        {
+          "text": "old.email = new — struct-kentät aina mut oletuksena",
+          "correct": false
+        },
+        {
+          "text": "User::clone(&old) ainoa tapa",
+          "correct": false
+        },
+        {
+          "text": "memcpy(&old, &new)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "..old kopioi loput kentät — kätevä config-päivityksiin.",
+      "wrongFeedback": "Kentät eivät ole oletuksena mut. Struct update .. syntax on idiomaattinen.",
+      "featureId": "rust:struct-update",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-struct-update",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax",
+      "sourceRef": "rust-book/rust-types-struct-update"
+    },
+    {
+      "id": "rust-types-method-receiver",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&mut self`?",
+      "choices": [
+        {
+          "text": "&mut self — eksklusiivinen muokkauslainaus ilman omistajuuden siirtoa",
+          "correct": true
+        },
+        {
+          "text": "self aina — muokkaus vaatii omistajuuden siirron",
+          "correct": false
+        },
+        {
+          "text": "&self riittää aina mut-kentille",
+          "correct": false
+        },
+        {
+          "text": "mut self ilman & — validi Rust 2021",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "&mut self = metodi lainaa muokattavasti. self = kuluttaa arvon.",
+      "wrongFeedback": "&self ei muokkaa. `mut self` ei ole validi receiver-syntaksi.",
+      "featureId": "rust:method-receiver",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-method-receiver",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch05-03-method-syntax.html",
+      "sourceRef": "rust-book/rust-types-method-receiver"
+    },
+    {
+      "id": "rust-types-tuple-struct",
+      "chapter": "rust-types",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavalliseen u64:ään. Miten?",
+      "choices": [
+        {
+          "text": "Tuple struct: `struct UserId(u64);` — erillinen tyyppi samaan dataan",
+          "correct": true
+        },
+        {
+          "text": "type UserId = u64 — newtype turvallisuus",
+          "correct": false
+        },
+        {
+          "text": "const UserId: u64",
+          "correct": false
+        },
+        {
+          "text": "#define UserId u64",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tuple struct luo nimetyn tyypin ilman kenttänimiä — newtype pattern.",
+      "wrongFeedback": "type alias ei luo uutta tyyppiä — UserId sekoittuu u64:ään.",
+      "featureId": "rust:tuple-struct",
+      "featurePoints": 3,
+      "lessonRef": "rust/types/rust-types-tuple-struct",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types",
+      "sourceRef": "rust-book/rust-types-tuple-struct"
+    },
+    {
+      "id": "rust-error-from-into",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio palauttaa `Result<T, MyError>` ja kutsuu std-io funktiota. Miten yhdistät virhetyypit siististi?",
+      "choices": [
+        {
+          "text": "From/Into + ? — io::Error muuntuu MyError:ksi jos From impl on olemassa",
+          "correct": true
+        },
+        {
+          "text": "unwrap() jokaisessa io-kutsussa",
+          "correct": false
+        },
+        {
+          "text": "panic! kaikissa Err-haaroissa",
+          "correct": false
+        },
+        {
+          "text": "Box<dyn Error> ainoa tapa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "? käyttää From-traitia automaattiseen konversioon.",
+      "wrongFeedback": "Manuaalinen map joka kerta on verbose. From/Into + ? on idiomaattinen.",
+      "featureId": "rust:from-into",
+      "featurePoints": 3,
+      "lessonRef": "rust/error/rust-error-from-into",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html",
+      "sourceRef": "rust-book/rust-error-from-into"
+    },
+    {
+      "id": "rust-error-unwrap-vs-expect",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suosittelee tuotantoon?",
+      "choices": [
+        {
+          "text": "Käsittele Err (?, match) tai expect vain invarianteille selkeällä viestillä",
+          "correct": true
+        },
+        {
+          "text": "unwrap on OK tuotannossa jos testit menevät läpi",
+          "correct": false
+        },
+        {
+          "text": "catch_unwind korvaa Err-käsittelyn",
+          "correct": false
+        },
+        {
+          "text": "unwrap_or_else on aina forbidden",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "unwrap panikoi — tuotannossa propagoi virhe tai loggaa konteksti.",
+      "wrongFeedback": "Testit eivät kata kaikkia virhepolkuja. unwrap on teknistä velkaa tuotannossa.",
+      "featureId": "rust:unwrap-expect",
+      "featurePoints": 3,
+      "lessonRef": "rust/error/rust-error-unwrap-vs-expect",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html",
+      "sourceRef": "rust-book/rust-error-unwrap-vs-expect"
+    },
+    {
+      "id": "rust-error-panic-unrecoverable",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Milloin `panic!` on perusteltu recoverable-virheen sijaan?",
+      "choices": [
+        {
+          "text": "Ohjelmarikko / invariantti rikki — tilanne josta ei voi jatk turvallisesti",
+          "correct": true
+        },
+        {
+          "text": "Aina kun tiedosto puuttuu",
+          "correct": false
+        },
+        {
+          "text": "Käyttäjän syöttövirhe",
+          "correct": false
+        },
+        {
+          "text": "Verkko timeout — aina panic",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "panic = bug or unrecoverable. Käyttäjävirheet → Result.",
+      "wrongFeedback": "Puuttuva tiedosto on recoverable. panic! on viimeinen keino.",
+      "featureId": "rust:panic",
+      "featurePoints": 3,
+      "lessonRef": "rust/error/rust-error-panic-unrecoverable",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html",
+      "sourceRef": "rust-book/rust-error-panic-unrecoverable"
+    },
+    {
+      "id": "rust-error-option-result-convert",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio palauttaa `Option<T>` mutta kutsuja tarvitsee `Result<T, MyError>`. Mikä metodi auttaa?",
+      "choices": [
+        {
+          "text": "ok_or / ok_or_else — muuntaa None Err:ksi määritellyllä virheellä",
+          "correct": true
+        },
+        {
+          "text": ".unwrap() — Option → Result suoraan",
+          "correct": false
+        },
+        {
+          "text": "From<Option<T>> for Result automaattisesti aina",
+          "correct": false
+        },
+        {
+          "text": "Option::Err variantti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ok_or_else(|| MyError::NotFound) on idiomaattinen Option → Result.",
+      "wrongFeedback": "unwrap panikoi None:ssa. ok_or/ok_or_else muuntaa eksplisiittisesti.",
+      "featureId": "rust:ok-or",
+      "featurePoints": 3,
+      "lessonRef": "rust/error/rust-error-option-result-convert",
+      "sourceUrl": "https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or",
+      "sourceRef": "rust-book/rust-error-option-result-convert"
+    },
+    {
+      "id": "rust-traits-definition",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä Rustin trait vastaa käytännössä Java-interfacen roolia?",
+      "choices": [
+        {
+          "text": "trait — jaettu käyttäytymismäärittely impl-lohkoilla",
+          "correct": true
+        },
+        {
+          "text": "abstract class — Rustin perustyypit",
+          "correct": false
+        },
+        {
+          "text": "protocol extension Swift-tyyliin natiivisti",
+          "correct": false
+        },
+        {
+          "text": "vtable aina compile-time ilman dyn",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "trait määrittää metodit; impl Trait for Type toteuttaa.",
+      "wrongFeedback": "Rustissa ei ole perintää kuten Java. trait + impl on vastine.",
+      "featureId": "rust:trait",
+      "featurePoints": 3,
+      "lessonRef": "rust/traits/rust-traits-definition",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-02-traits.html",
+      "sourceRef": "rust-book/rust-traits-definition"
+    },
+    {
+      "id": "rust-traits-impl-trait-return",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?",
+      "choices": [
+        {
+          "text": "impl Trait — staattinen dispatch palautuksessa (opaque return type)",
+          "correct": true
+        },
+        {
+          "text": "concrete struct aina — impl Trait kielletty",
+          "correct": false
+        },
+        {
+          "text": "Box<dyn Trait> ainoa tapa",
+          "correct": false
+        },
+        {
+          "text": "enum EveryVariant — pakollinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "impl Summary palauttaa jokin Summary-toteuttaja ilman dyn-allokaatiota.",
+      "wrongFeedback": "dyn Trait toimii heapissä. impl Trait on compile-time polymorfismi paluuarvoissa.",
+      "featureId": "rust:impl-trait",
+      "featurePoints": 4,
+      "lessonRef": "rust/traits/rust-traits-impl-trait-return",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-02-traits.html",
+      "sourceRef": "rust-book/rust-traits-impl-trait-return"
+    },
+    {
+      "id": "rust-traits-dyn-trait-object",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä tyyppi?",
+      "choices": [
+        {
+          "text": "Vec<Box<dyn Trait>> — trait object dynaamisella dispatchilla",
+          "correct": true
+        },
+        {
+          "text": "Vec<impl Trait> — sallittu heterogeeniselle",
+          "correct": false
+        },
+        {
+          "text": "Vec<T> where T: Trait ilman Box",
+          "correct": false
+        },
+        {
+          "text": "Any<T> std:ssä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "dyn Trait = vtable runtime-polymorfia. Box omistaa olion heapissä.",
+      "wrongFeedback": "impl Trait ei heterogeeniseen collectioniin. Tarvitaan indirection (Box).",
+      "featureId": "rust:dyn-trait",
+      "featurePoints": 4,
+      "lessonRef": "rust/traits/rust-traits-dyn-trait-object",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch17-02-trait-objects.html",
+      "sourceRef": "rust-book/rust-traits-dyn-trait-object"
+    },
+    {
+      "id": "rust-traits-iterator",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä trait mahdollistaa `for item in collection` -silmukan?",
+      "choices": [
+        {
+          "text": "IntoIterator — for kutsuu into_iter() automaattisesti",
+          "correct": true
+        },
+        {
+          "text": "Iterator aina suoraan for-silmukassa ilman into_iter",
+          "correct": false
+        },
+        {
+          "text": "Iterable trait std:ssä",
+          "correct": false
+        },
+        {
+          "text": "foreach! makro",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "for desugar: into_iter() → next() kunnes None.",
+      "wrongFeedback": "for käyttää IntoIteratoria. Iterator trait on iteraattorin next()-metodi.",
+      "featureId": "rust:iterator",
+      "featurePoints": 3,
+      "lessonRef": "rust/traits/rust-traits-iterator",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch13-02-iterators.html",
+      "sourceRef": "rust-book/rust-traits-iterator"
+    },
+    {
+      "id": "rust-traits-bounds-generic",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?",
+      "choices": [
+        {
+          "text": "where T: PartialOrd — trait bound geneeriselle tyypille",
+          "correct": true
+        },
+        {
+          "text": "T: Sortable — std-trait",
+          "correct": false
+        },
+        {
+          "text": "dyn PartialOrd parametri",
+          "correct": false
+        },
+        {
+          "text": "Ei rajoituksia — Rust päättelee",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Trait bounds kertovat kääntäjälle mitä T:n täytyy toteuttaa.",
+      "wrongFeedback": "Sortable ei ole std-trait. PartialOrd/Ord rajaavat vertailua.",
+      "featureId": "rust:trait-bounds",
+      "featurePoints": 4,
+      "lessonRef": "rust/traits/rust-traits-bounds-generic",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-02-traits.html",
+      "sourceRef": "rust-book/rust-traits-bounds-generic"
+    },
+    {
+      "id": "rust-traits-default-impl",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa impl:ia?",
+      "choices": [
+        {
+          "text": "impl Trait for Type {} — tyhjä impl riittää jos metodilla on default body",
+          "correct": true
+        },
+        {
+          "text": "Pakollinen override jokaiselle metodille aina",
+          "correct": false
+        },
+        {
+          "text": "default keyword struct-kentässä",
+          "correct": false
+        },
+        {
+          "text": "derive(Default) korvaa trait-metodit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Default body traitissä: impl voi olla tyhjä tai override yksittäisen metodin.",
+      "wrongFeedback": "Ei tarvitse kirjoittaa metodia uudestaan jos default riittää.",
+      "featureId": "rust:trait-default",
+      "featurePoints": 3,
+      "lessonRef": "rust/traits/rust-traits-default-impl",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch10-02-traits.html#default-implementations",
+      "sourceRef": "rust-book/rust-traits-default-impl"
+    },
+    {
+      "id": "rust-traits-derive-debug",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary",
+        "guru"
+      ],
+      "prompt": "Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?",
+      "choices": [
+        {
+          "text": "#[derive(Debug)] struct Foo { ... } — automaattinen Debug-toteutus",
+          "correct": true
+        },
+        {
+          "text": "impl Debug käsin aina pakollinen",
+          "correct": false
+        },
+        {
+          "text": "println!(\"{:?}\", foo) toimii ilman Debugia",
+          "correct": false
+        },
+        {
+          "text": "#[debug] attribuutti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "derive(Debug) generoi fmt-toteutuksen käännöksessä.",
+      "wrongFeedback": "{:?} vaatii Debug-traitin. derive on yleisin tapa.",
+      "featureId": "rust:derive-debug",
+      "featurePoints": 2,
+      "lessonRef": "rust/traits/rust-traits-derive-debug",
+      "sourceUrl": "https://doc.rust-lang.org/book/appendix-03-derivable-traits.html",
+      "sourceRef": "rust-book/rust-traits-derive-debug"
+    },
+    {
+      "id": "rust-concurrency-thread-spawn",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miten käynnistät uuden OS-säikeen std-kirjastolla?",
+      "choices": [
+        {
+          "text": "thread::spawn(closure) — palauttaa JoinHandle<T>",
+          "correct": true
+        },
+        {
+          "text": "async fn spawn — std async runtime",
+          "correct": false
+        },
+        {
+          "text": "pthread_create wrapper ainoa",
+          "correct": false
+        },
+        {
+          "text": "Process::fork Rustissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "spawn ajaa closuren uudessa säikeessä. join() odottaa valmistumista.",
+      "wrongFeedback": "async on erillinen malli. std::thread::spawn on OS-säie.",
+      "featureId": "rust:thread-spawn",
+      "featurePoints": 3,
+      "lessonRef": "rust/concurrency/rust-concurrency-thread-spawn",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch16-01-threads.html",
+      "sourceRef": "rust-book/rust-concurrency-thread-spawn"
+    },
+    {
+      "id": "rust-concurrency-mpsc-channel",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Worker-säikeet lähettävät tuloksia pääsäikeelle. Mikä std-primitiivi sopii?",
+      "choices": [
+        {
+          "text": "mpsc::channel — multiple producer, single consumer -viestijono",
+          "correct": true
+        },
+        {
+          "text": "Arc<Mutex<Vec>> aina parempi kuin kanava",
+          "correct": false
+        },
+        {
+          "text": "UdpSocket localhost viestintään",
+          "correct": false
+        },
+        {
+          "text": "RefCell<Vec> säikeiden välillä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kanava omistajuuden siirtoon säikeiden välillä — idiomaattinen message passing.",
+      "wrongFeedback": "Jaettu vektori + mutex toimii mutta kanava on selkeämpi omistajuudelle.",
+      "featureId": "rust:mpsc",
+      "featurePoints": 4,
+      "lessonRef": "rust/concurrency/rust-concurrency-mpsc-channel",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch16-02-message-passing.html",
+      "sourceRef": "rust-book/rust-concurrency-mpsc-channel"
+    },
+    {
+      "id": "rust-concurrency-mutex-deadlock",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Kaksi Mutex-lukitusta eri järjestyksessä kahdessa säikeessä — riski?",
+      "choices": [
+        {
+          "text": "Deadlock — sama järjestys kaikissa säikeissä tai yksi lukko",
+          "correct": true
+        },
+        {
+          "text": "Borrow checker estää deadlocks automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Mutex on deadlock-proof Rustissa",
+          "correct": false
+        },
+        {
+          "text": "Deadlock vain async-koodissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rust estää data racet, ei deadlockia — lukitusjärjestys on ohjelmoijan vastuulla.",
+      "wrongFeedback": "Borrow checker ei näe runtime-lukituksia. Mutex voi deadlockata.",
+      "featureId": "rust:mutex-deadlock",
+      "featurePoints": 4,
+      "lessonRef": "rust/concurrency/rust-concurrency-mutex-deadlock",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch16-03-shared-state.html",
+      "sourceRef": "rust-book/rust-concurrency-mutex-deadlock"
+    },
+    {
+      "id": "rust-concurrency-send-sync-def",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä ero `Send`- ja `Sync`-traitien välillä?",
+      "choices": [
+        {
+          "text": "Send = siirrettävissä toiseen säikeeseen; Sync = jaettu &T viittaus säikeiden välillä turvallinen",
+          "correct": true
+        },
+        {
+          "text": "Identtiset traitit — alias",
+          "correct": false
+        },
+        {
+          "text": "Send vain async, Sync vain sync",
+          "correct": false
+        },
+        {
+          "text": "Automaattinen kaikille tyypeille ilman poikkeuksia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rc<T>: !Send. Cell: !Sync. Arc<Mutex<T>>: Send + Sync.",
+      "wrongFeedback": "Send/Sync marker traitit — kääntäjä valvoo thread safetyä.",
+      "featureId": "rust:send-sync",
+      "featurePoints": 4,
+      "lessonRef": "rust/concurrency/rust-concurrency-send-sync-def",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch16-04-extensible-concurrency-sync-and-send.html",
+      "sourceRef": "rust-book/rust-concurrency-send-sync-def"
+    },
+    {
+      "id": "rust-concurrency-rwlock-readers",
+      "chapter": "rust-concurrency",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Monta säiettä lukee harvoin kirjoittavaa cachea. Mutex vs RwLock?",
+      "choices": [
+        {
+          "text": "RwLock — useita concurrent reader-lukituksia, yksi writer",
+          "correct": true
+        },
+        {
+          "text": "Mutex nopeampi aina usealla lukijalla",
+          "correct": false
+        },
+        {
+          "text": "RefCell säikeiden välillä",
+          "correct": false
+        },
+        {
+          "text": "Atomi u32 kaikkeen cacheen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RwLock optimoi read-heavy -kuormaa Mutexiin verrattuna.",
+      "wrongFeedback": "Mutex serialisoi kaiken. RwLock sopii lukupainotteiseen jaettuun tilaan.",
+      "featureId": "rust:rwlock",
+      "featurePoints": 4,
+      "lessonRef": "rust/concurrency/rust-concurrency-rwlock-readers",
+      "sourceUrl": "https://doc.rust-lang.org/std/sync/struct.RwLock.html",
+      "sourceRef": "rust-book/rust-concurrency-rwlock-readers"
+    },
+    {
+      "id": "rust-async-future-await",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Mitä `async fn` palauttaa Rustissa?",
+      "choices": [
+        {
+          "text": "Implementoinnin Future-traitille — lazy, poll-kontrolloidusti ajettava",
+          "correct": true
+        },
+        {
+          "text": "Os-säie heti kun funktio kutsutaan",
+          "correct": false
+        },
+        {
+          "text": "Blocking thread pool entry",
+          "correct": false
+        },
+        {
+          "text": "Promise<T> JavaScript-objekti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "async fn = syntactic sugar Future:lle. .await yieldaa executorille.",
+      "wrongFeedback": "async ei luo säiettä automaattisesti. Future on lazy until awaited.",
+      "featureId": "rust:async-future",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-future-await",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch17-01-futures-and-syntax.html",
+      "sourceRef": "rust-book/rust-async-future-await"
+    },
+    {
+      "id": "rust-async-tokio-runtime",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnistys?",
+      "choices": [
+        {
+          "text": "#[tokio::main] async fn main() { ... } — makro alustaa multi-thread runtime",
+          "correct": true
+        },
+        {
+          "text": "std::async::main built-in Rust 1.85",
+          "correct": false
+        },
+        {
+          "text": "async main toimii ilman attributia",
+          "correct": false
+        },
+        {
+          "text": "cargo async-run pakollinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Executor pollaa Futureja — tokio::main on yleisin käynnistys.",
+      "wrongFeedback": "Std ei sisällä async runtimea. Tarvitaan tokio/async-std tms.",
+      "featureId": "rust:tokio",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-tokio-runtime",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/attr.main.html",
+      "sourceRef": "rust-book/rust-async-tokio-runtime"
+    },
+    {
+      "id": "rust-tooling-cargo-test",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary",
+        "guru"
+      ],
+      "prompt": "Miten ajat yksikkötestit Rust-projektissa?",
+      "choices": [
+        {
+          "text": "cargo test — kääntää ja ajaa #[test]-funktiot ja doc testit",
+          "correct": true
+        },
+        {
+          "text": "rustc --test only",
+          "correct": false
+        },
+        {
+          "text": "cargo run --tests",
+          "correct": false
+        },
+        {
+          "text": "make test rust standard",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "cargo test on standardi — moduulit tests/ tai inline #[cfg(test)].",
+      "wrongFeedback": "Testit integroituvat Cargoonsa. cargo test, ei erillistä test runneria.",
+      "featureId": "rust:cargo-test",
+      "featurePoints": 2,
+      "lessonRef": "rust/tooling/rust-tooling-cargo-test",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch11-01-writing-tests.html",
+      "sourceRef": "rust-book/rust-tooling-cargo-test"
+    },
+    {
+      "id": "rust-tooling-derive-macro",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mitä `#[derive(Clone, PartialEq)]` tekee käännöksen aikana?",
+      "choices": [
+        {
+          "text": "Procedural/derive macro generoi trait-toteutukset automaattisesti",
+          "correct": true
+        },
+        {
+          "text": "Runtime-reflection kuten Java",
+          "correct": false
+        },
+        {
+          "text": "Kopioi structin binaryn toiseen moduleen",
+          "correct": false
+        },
+        {
+          "text": "Vain debug-buildissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Derive on compile-time koodigenerointia — zero runtime cost.",
+      "wrongFeedback": "Derive laajentaa impl:iä käännöksessä. Ei runtime reflectionia.",
+      "featureId": "rust:derive",
+      "featurePoints": 3,
+      "lessonRef": "rust/tooling/rust-tooling-derive-macro",
+      "sourceUrl": "https://doc.rust-lang.org/book/appendix-03-derivable-traits.html",
+      "sourceRef": "rust-book/rust-tooling-derive-macro"
+    },
+    {
+      "id": "rust-tooling-clippy",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu?",
+      "choices": [
+        {
+          "text": "cargo clippy — linteri idiomaattisille virheille ja hajuille",
+          "correct": true
+        },
+        {
+          "text": "rustfmt — clippy korvattu",
+          "correct": false
+        },
+        {
+          "text": "rustc -Wall",
+          "correct": false
+        },
+        {
+          "text": "eslint-plugin-rust",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Clippy tarkistaa anti-patternit — redundant clone, useless format, jne.",
+      "wrongFeedback": "rustfmt formatoi. clippy linttaa. Molemmat CI:ssä.",
+      "featureId": "rust:clippy",
+      "featurePoints": 3,
+      "lessonRef": "rust/tooling/rust-tooling-clippy",
+      "sourceUrl": "https://doc.rust-lang.org/clippy/",
+      "sourceRef": "rust-book/rust-tooling-clippy"
+    },
+    {
+      "id": "rust-tooling-cargo-features",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille. Miten?",
+      "choices": [
+        {
+          "text": "Cargo features — [features] default = [] optional json = [\"serde_json\"]",
+          "correct": true
+        },
+        {
+          "text": "#[cfg(json)] runtime flag only",
+          "correct": false
+        },
+        {
+          "text": "Erillinen crate aina",
+          "correct": false
+        },
+        {
+          "text": "Cargo.toml ei tue valinnaisia deps",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Features konditionoivat deps ja cfg(feature)-koodia.",
+      "wrongFeedback": "Cargo features on standardi valinnaisille ominaisuuksille.",
+      "featureId": "rust:cargo-features",
+      "featurePoints": 4,
+      "lessonRef": "rust/tooling/rust-tooling-cargo-features",
+      "sourceUrl": "https://doc.rust-lang.org/cargo/reference/features.html",
+      "sourceRef": "rust-book/rust-tooling-cargo-features"
+    },
+    {
+      "id": "rust-tooling-release-profile",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento?",
+      "choices": [
+        {
+          "text": "cargo build --release — optimoinnit päälle (opt-level 3)",
+          "correct": true
+        },
+        {
+          "text": "cargo build --fast",
+          "correct": false
+        },
+        {
+          "text": "RUSTFLAGS=--O cargo build",
+          "correct": false
+        },
+        {
+          "text": "cargo deploy production",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Debug = nopeat buildit, release = optimoitu binary.",
+      "wrongFeedback": "Release profile Cargo.toml [profile.release]. --release valitsee sen.",
+      "featureId": "rust:release",
+      "featurePoints": 3,
+      "lessonRef": "rust/tooling/rust-tooling-release-profile",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch01-03-hello-cargo.html#building-to-release",
+      "sourceRef": "rust-book/rust-tooling-release-profile"
+    },
+    {
+      "id": "rust-safety-unsafe-block",
+      "chapter": "rust-safety",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Milloin `unsafe`-lohko on perusteltu?",
+      "choices": [
+        {
+          "text": "Kun kääntäjä ei voi varmistaa turvallisuutta — FFI, raw pointerit, optimointi",
+          "correct": true
+        },
+        {
+          "text": "Aina kun borrow checker valittaa — unsafe ohittaa kaiken",
+          "correct": false
+        },
+        {
+          "text": "Performance aina — safe Rust on hidas",
+          "correct": false
+        },
+        {
+          "text": "unsafe kielletty tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "unsafe avaa viisi toimintoa — ohjelmoija vakuuttaa invarianssit.",
+      "wrongFeedback": "unsafe ei poista borrow checkeria kokonaan. Vain merkityt operaatiot.",
+      "featureId": "rust:unsafe",
+      "featurePoints": 4,
+      "lessonRef": "rust/safety/rust-safety-unsafe-block",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html",
+      "sourceRef": "rust-book/rust-safety-unsafe-block"
+    },
+    {
+      "id": "rust-traits-deref-coercion",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy?",
+      "choices": [
+        {
+          "text": "Deref coercion — String dereferoi &str:ksi automaattisesti",
+          "correct": true
+        },
+        {
+          "text": "String perii str Rustissa",
+          "correct": false
+        },
+        {
+          "text": "Implisiittinen clone merkkijonoon",
+          "correct": false
+        },
+        {
+          "text": "Kääntäjäbugi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Deref/DerefMut mahdollistaa automaattisen &→&target coercion.",
+      "wrongFeedback": "Ei perintää. Deref-trait + coercion on mekanismi.",
+      "featureId": "rust:deref",
+      "featurePoints": 4,
+      "lessonRef": "rust/traits/rust-traits-deref-coercion",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch15-02-deref.html",
+      "sourceRef": "rust-book/rust-traits-deref-coercion"
     }
   ]
 }
