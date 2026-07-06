@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1279 / 1279** valmis (**100 %**).
+**1339 / 1339** valmis (**100 %**).
 
 ## Domain-yhteenveto
 
@@ -13,13 +13,18 @@
 | PostgreSQL | 180 | 180 | 100 |
 | Docker | 142 | 142 | 100 |
 | Linux | 168 | 168 | 100 |
-| Qt | 154 | 154 | 100 |
+| Qt | 164 | 164 | 100 |
 | Scrum | 90 | 90 | 100 |
 | Git | 20 | 20 | 100 |
 | Backend | 5 | 5 | 100 |
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
 | Rust | 66 | 66 | 100 |
+| flutter | 10 | 10 | 100 |
+| gameengines | 10 | 10 | 100 |
+| kotlin | 10 | 10 | 100 |
+| react-native | 10 | 10 | 100 |
+| webshell | 10 | 10 | 100 |
 
 ## Kaikki aiheet
 
@@ -1136,7 +1141,7 @@
 | ✅ | 4 | `systemd-timer` | Haluat ajastaa yöllisen backup-skriptin ilman cronia. Mikä systemd-ratk… |
 | ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:ll… |
 
-### Qt (154/154)
+### Qt (164/164)
 
 #### Qt-mallit `qt-models` (19/19)
 
@@ -1161,6 +1166,41 @@
 | ✅ | 4 | `exp-qt-models-persistent-index` | Delegate tallentaa QModelIndexin myöhempää käyttöä varten — data väärää… |
 | ✅ | 4 | `exp-qt-models-reset-vs-layout` | Taulukko välkkyy kun päivität 10 000 riviä — koko model resetataan. Teh… |
 | ✅ | 4 | `qt-models-persistent-index` | Taulukkomalli päivittyy (lajittelu/suodatus). Miten tallennat rivin tun… |
+
+#### qt-native-data `qt-native-data` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `qt-native-json-content` | content/question-banks/*.json Qt-hostissa — miten ladataan? |
+
+#### qt-native-deploy `qt-native-deploy` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `qt-native-packaging` | Qt desktop -peli ja content/-JSONit mukana. Julkaisutapa? |
+
+#### qt-native-input `qt-native-input` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `qt-native-keyboard-handlekey` | Pelaaja painaa H-näppäintä. Qt-hostin tehtävä? |
+
+#### qt-native-render `qt-native-render` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `qt-native-canvas-isometric` | Isometrinen kartta Qt desktopissa — tyypillinen piirtopinta? |
+
+#### qt-native-shell `qt-native-shell` (6/6)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `qt-native-android-not-replace` | Qt Mobile Androidille — korvaako se projektin Compose-linjan? |
+| ✅ | 2 | `qt-native-desktop-why` | Miksi Qt 6 on varteenotettava Koodisampo-tyyppiselle desktop-natiiville? |
+| ✅ | 3 | `qt-native-qml-vs-widgets` | Quiz-dialogit ja valikot Qt-hostissa — QML vai Widgets? |
+| ✅ | 3 | `qt-native-snapshot-ui` | Qt-host saa JSON-snapshotin pelistä. Miten päivität näkymän? |
+| ✅ | 3 | `qt-native-threading` | Ranger-dispatch tulevaisuudessa raskaampi. Qt-threading-malli? |
+| ✅ | 2 | `qt-native-vs-web` | Milloin Qt desktop voittaa selainversion (GitHub Pages)? |
 
 #### Qt OpenGL `qt-opengl` (21/21)
 
@@ -1660,6 +1700,171 @@
 | ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
 | ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
 | ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
+
+### flutter (10/10)
+
+#### flutter-arch `flutter-arch` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `flutter-platform-channel` | Ranger ajetaan natiivisti (Kotlin/C++). Miten Flutter kutsuu sitä? |
+| ✅ | 3 | `flutter-thin-host` | Flutter-versio Koodisampo-tyyppisestä pelistä — minne pelisäännöt kuulu… |
+| ✅ | 2 | `flutter-turnbased-no-loop` | Koodisampo on vuoropohjainen — tarvitaanko Flame/Unity-tyylinen game lo… |
+| ✅ | 3 | `flutter-vs-compose` | Projektissa on jo Android Compose + Ranger Kotlin. Milloin Flutter olis… |
+
+#### flutter-data `flutter-data` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `flutter-assets-json` | content/worlds/*.json ja question-banks bundlataan mobiiliin. Flutter-m… |
+
+#### flutter-platform `flutter-platform` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `flutter-desktop-linux` | Haluat yhden Flutter-koodipohjan Android + Linux desktop -natiiviin. On… |
+
+#### flutter-state `flutter-state` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `flutter-state-management` | GameController päivittää snapshotin jokaisen näppäimen jälkeen. Mikä st… |
+
+#### flutter-ui `flutter-ui` (3/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `flutter-custompaint-grid` | ASCII/isometrinen kartta Flutterissa — tehokkain tapa? |
+| ✅ | 2 | `flutter-keyboard-input` | Desktop-Flutter: pelaaja käyttää näppäimistöä (hjkl). Miten otat syötte… |
+| ✅ | 3 | `flutter-repaint-boundary` | Kartta piirretään uudelleen, mutta HUD (karma, nälkä) pysyy samana. Opt… |
+
+### gameengines (10/10)
+
+#### gameengines-arch `gameengines-arch` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `gameengines-data-driven-json` | content/worlds, question-banks, stories — miksi tämä sopii custom-moott… |
+| ✅ | 3 | `gameengines-multi-target-ranger` | Miten Koodisampo saavuttaa monialustaisuuden ilman Unityä? |
+| ✅ | 3 | `gameengines-test-headless` | npm run test:engine ajaa 50+ headless-testiä ilman UI:ta. Hyöty arkkite… |
+| ✅ | 3 | `gameengines-thin-host-pattern` | Snapshot + handleKey -malli — mikä on pelimoottorin vastine? |
+
+#### gameengines-choice `gameengines-choice` (6/6)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `gameengines-ascii-grid-simple` | ASCII/isometrinen ruudukko — tarvitaanko scene graph -moottoria? |
+| ✅ | 2 | `gameengines-dialog-heavy` | Peli on pääosin dialogeja, quizeja ja teksti-UI:ta. Mikä renderöintitar… |
+| ✅ | 3 | `gameengines-godot-gdscript-cost` | Godot + GDScript Koodisampo-logiikalle — mikä on piilokustannus? |
+| ✅ | 2 | `gameengines-ranger-not-unity` | Miksi Unity/Godot ei ole ensisijainen valinta Koodisampo-tyyppiselle pe… |
+| ✅ | 2 | `gameengines-turnbased-sim` | Vuoropohjainen toimistosimulaatio — mitä pelimoottorin ominaisuuksia EI… |
+| ✅ | 2 | `gameengines-when-unity-ok` | Milloin Unity/Godot OLISI järkevä aloittaa tyhjästä? |
+
+### kotlin (10/10)
+
+#### kotlin-compose-arch `kotlin-compose-arch` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `kotlin-compose-kmp-ios` | Haluat saman Compose-UI:n Androidin ja iOS:n natiiviversioihin. Mikä po… |
+| ✅ | 3 | `kotlin-compose-ranger-kotlin` | Miten Android-host saa saman pelilogiikan kuin web-versio ilman JS-kopi… |
+| ✅ | 3 | `kotlin-compose-snapshot-host` | Koodisampo-tyyppisessä pelissä pelilogiikka on Rangerissa ja host raken… |
+| ✅ | 2 | `kotlin-compose-vs-rn` | Miksi Koodisampo-projekti suosii Composea React Nativelle Android-natii… |
+
+#### kotlin-compose-persist `kotlin-compose-persist` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `kotlin-compose-datastore` | Web tallentaa karmaa localStorageen. Android-pariteetti tallennukselle? |
+
+#### kotlin-compose-state `kotlin-compose-state` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `kotlin-compose-main-thread` | Ranger-dispatch kestää alle millisekunnin. Mistä päivität UI:n dispatch… |
+| ✅ | 2 | `kotlin-compose-viewmodel` | Pelin UI-tila (hissivalitsimen collapse, aktiivinen overlay) elää hosti… |
+
+#### kotlin-compose-ui `kotlin-compose-ui` (3/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `kotlin-compose-canvas-grid` | Isometrinen ruudukkokartta Androidissa — mikä Compose-ratkaisu sopii pa… |
+| ✅ | 2 | `kotlin-compose-screen-routing` | Snapshot palauttaa screen: map | encounter | story | menu. Miten Compos… |
+| ✅ | 2 | `kotlin-compose-touch-dpad` | Mobiilipelaaja liikkuu D-pad-napeilla. Miten välität suuntanäppäimen ho… |
+
+### react-native (10/10)
+
+#### rn-arch `rn-arch` (5/5)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rn-grid-game-fit` | Miksi React Native on huono ensisijainen valinta Koodisampo-tyyppiselle… |
+| ✅ | 4 | `rn-native-module` | Jos RN:ää käytetään silti, missä Ranger-logiikan pitäisi ajaa? |
+| ✅ | 2 | `rn-vs-capacitor` | Valmiit web-game + mobiilijulkaisu. Capacitor vs React Native? |
+| ✅ | 2 | `rn-webview-wrap` | RN-projekti haluaa silti mobiilijulkaisun olemassa olevasta web-gamesta… |
+| ✅ | 2 | `rn-when-ok` | Milloin React Native olisi silti perusteltu peliprojektissa? |
+
+#### rn-perf `rn-perf` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `rn-bridge-overhead` | RN kutsuu natiivimoduulia jokaisella näppäinpainalluksella. Mikä riski … |
+| ✅ | 3 | `rn-new-architecture` | React Native New Architecture (Fabric/TurboModules) — hyöty peli-hostil… |
+
+#### rn-tooling `rn-tooling` (2/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `rn-expo-limits` | Expo managed workflow — mikä rajoitus osuu custom-pelimoottoriin? |
+| ✅ | 3 | `rn-hermes-engine` | Hermes on RN:n oletus-JS-moottori. Relevanssi jos pelilogiikka on silti… |
+
+#### rn-ui `rn-ui` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `rn-flatlist-vs-canvas` | Ruudukkokartta RN:ssä — miksi FlatList jokaiselle solulle on huono idea? |
+
+### webshell (10/10)
+
+#### webshell-arch `webshell-arch` (3/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `webshell-pwa-vs-shell` | GitHub Pages -PWA vs Capacitor App Store -julkaisu? |
+| ✅ | 2 | `webshell-reuse-web-build` | Mikä on web-kuoren suurin etu Koodisampo-arkkitehtuurissa? |
+| ✅ | 2 | `webshell-vs-true-native` | Milloin web-kuori EI riitä ja tarvitaan Compose/Qt? |
+
+#### webshell-data `webshell-data` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `webshell-offline-assets` | web-game bundlaa content/ JSONit public/-kansioon. Toimiiko offline kuo… |
+
+#### webshell-desktop `webshell-desktop` (3/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `webshell-keyboard-forward` | Tauri-desktop: näppäimistö ei mene WebViewiin oletuksena. Ratkaisu? |
+| ✅ | 3 | `webshell-tauri-rust-side` | Milloin Tauri Rust-puoli (`src-tauri`) on hyödyllinen peli-hostissa? |
+| ✅ | 2 | `webshell-tauri-vs-electron` | Desktop-natiivi web-game:lle — miksi Tauri usein voittaa Electronin? |
+
+#### webshell-mobile `webshell-mobile` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `webshell-capacitor-mobile` | Capacitor mobiilissa — mitä se tekee Koodisampo-web-buildille? |
+
+#### webshell-persist `webshell-persist` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `webshell-save-storage` | Web käyttää IndexedDB:tä. Capacitor/Tauri-tallennus vastine? |
+
+#### webshell-security `webshell-security` (1/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `webshell-security-csp` | Tauri-sovellus lataa paikallisen index.html:n. Turvallisuushuomio? |
 
 ## Komennot
 
