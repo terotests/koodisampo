@@ -14,16 +14,17 @@ Palvelu saattaa silti kuunnella UDP:53.
 ## Ratkaisu
 
 ```bash
+# -u = UDP, -l = LISTEN, -n = numeerinen, -p = prosessi/PID
 ss -ulnp
 ```
 
 Tai suodatettuna:
 
 ```bash
-ss -ulnp | grep 53
+ss -ulnp | grep 53   # DNS kuuntelee tyypillisesti UDP:53
 ```
 
-**ss -ulnp — UDP-kuuntelijat ja prosessit listataan porteittain.** `-u` UDP, `-l` LISTEN, `-n` numeeriset, `-p` prosessit.
+**ss -ulnp — UDP-kuuntelijat ja prosessit listataan porteittain.**
 
 ## Käytännössä
 

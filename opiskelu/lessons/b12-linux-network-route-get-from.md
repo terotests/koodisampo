@@ -7,6 +7,10 @@ Palvelimella on useita reititystauluja ja VPN-tunneli. Liikenne kohteeseen `172.
 ## Ratkaisu
 
 ```bash
+# route get = simuloi kernelin reitityspäätöstä (ei lähetä pakettia)
+# 172.16.5.10 = kohde-IP
+# from 10.0.1.5 = lähde-IP jolla päätös tehdään (policy routing)
+# iif eth0 = saapumisrajapinta (input interface)
 ip route get 172.16.5.10 from 10.0.1.5 iif eth0
 ```
 

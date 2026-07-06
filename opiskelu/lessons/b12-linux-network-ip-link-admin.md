@@ -12,14 +12,16 @@ Rajapinta on administratiivisesti alas — ei IP-osoitetta, ei ARP:ia, ei liiken
 ## Ratkaisu
 
 ```bash
+# link set = muuta rajapinnan admin-tilaa (ei IP-osoitetta)
+# up = nosta rajapinta ylös (DOWN → UP); vasta sitten IP/reitit toimivat
 ip link set eth0 up
 ```
 
 Tarkista:
 
 ```bash
-ip link show eth0
-ip -br addr show eth0
+ip link show eth0          # admin-tila (UP/DOWN) ja MAC
+ip -br addr show eth0      # -br = tiivis; IP-osoitteet rajapinnalla
 ```
 
 **ip link set up** nostaa admin-tilan — vasta sitten IP ja reitit toimivat.

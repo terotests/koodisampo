@@ -7,19 +7,22 @@ Palvelin palvelee HTTPS:ää portissa 443. Haluat nähdä vain **aktiiviset** as
 ## Ratkaisu
 
 ```bash
+# -t = TCP, -n = numeerinen, state established = vain aktiiviset yhteydet (ei LISTEN)
+# dport = kohdeportti, sport = lähdeportti — molemmat kattavat inbound ja outbound
 ss -tn state established '( dport = :443 or sport = :443 )'
 ```
 
 Tai ilman sulkeita:
 
 ```bash
-ss -tn state established dport = :443
-ss -tn state established sport = :443
+ss -tn state established dport = :443   # paikallinen asiakas → ulko :443
+ss -tn state established sport = :443   # paikallinen palvelin kuuntelee :443
 ```
 
 Prosessit mukaan:
 
 ```bash
+# -p = prosessi/PID; dport = :443 = yhteydet joissa kohdeportti on 443
 ss -tnp state established dport = :443
 ```
 

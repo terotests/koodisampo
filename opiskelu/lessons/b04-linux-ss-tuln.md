@@ -14,18 +14,19 @@ Palvelu näyttää systemd:ssä "active (running)", mutta se ei välttämättä 
 ## Ratkaisu
 
 ```bash
+# -t = TCP, -u = UDP, -l = vain LISTEN, -n = numeeriset portit
 ss -tuln
-# prosessit mukaan:
+
+# prosessit mukaan: -p = PID ja prosessinimi
 ss -tlnp
 ```
-
-`-t` TCP, `-u` UDP, `-l` LISTEN, `-n` numeeriset portit.
 
 **ss on moderni netstat-korvike — ss(8) dokumentoi -tuln flagit.**
 
 Etsi 8080:
 
 ```bash
+# -tlnp = TCP LISTEN + numeerinen + prosessi; grep rajaa porttiin 8080
 ss -tlnp | grep 8080
 ```
 
