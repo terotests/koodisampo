@@ -8,10 +8,12 @@ NetworkManager tarjoaa D-Bus-rajapinnan system-busilla — skannaus voidaan pako
 
 ## Ratkaisu
 
+Selvitä ensin Wi-Fi-laitteen D-Bus-polku (`nmcli -t -f GENERAL.DBUS-PATH device show wlan0` tai `busctl tree org.freedesktop.NetworkManager`), koska `RequestScan` on laitekohtaisen `Device.Wireless`-rajapinnan metodi, ei ylätason `NetworkManager`-rajapinnan:
+
 ```bash
 busctl call org.freedesktop.NetworkManager \
-  /org/freedesktop/NetworkManager \
-  org.freedesktop.NetworkManager RequestScan as
+  /org/freedesktop/NetworkManager/Devices/3 \
+  org.freedesktop.NetworkManager.Device.Wireless RequestScan a{sv} 0
 ```
 
 Tarkista tulos:
@@ -20,10 +22,10 @@ Tarkista tulos:
 nmcli device wifi list
 ```
 
-**RequestScan on NetworkManagerin virallinen D-Bus-metodi** — vastaa `nmcli device wifi rescan` -komennon taustalla olevaa kutsua.
+**RequestScan ottaa parametrikseen tyhjän `a{sv}`-sanakirjan** (valinnainen `ssids`-suodatin), ei merkkijonotaulukkoa (`as`) — väärä signatuuri palauttaa D-Bus-virheen.
 
 ## Käytännössä
 
-Käytä system-bus (`busctl`), ei session-bus. Skripteissä `nmcli device wifi rescan` on usein helpompi, mutta D-Bus-kutsu on hyödyllinen kun nmcli ei ole saatavilla tai automaatio käyttää jo `busctl`:ia. Jos skannaus epäonnistuu polkit-virheeseen, tarkista käyttäjän oikeudet NetworkManageriin.
+Käytä system-bus (`busctl`), ei session-bus, ja kohdista kutsu oikeaan laitepolkuun (`/org/freedesktop/NetworkManager/Devices/N`) ja `Device.Wireless`-rajapintaan. Skripteissä `nmcli device wifi rescan` on usein helpompi, mutta D-Bus-kutsu on hyödyllinen kun nmcli ei ole saatavilla tai automaatio käyttää jo `busctl`:ia. Jos skannaus epäonnistuu polkit-virheeseen, tarkista käyttäjän oikeudet NetworkManageriin.
 
 [Lue lisää](https://networkmanager.dev/docs/api/latest/spec.html)

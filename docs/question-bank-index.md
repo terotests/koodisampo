@@ -5625,9 +5625,9 @@ Kaksi konetta ilmoittaa saman `.local`-nimen — palvelu flapping. Syy?
 Kehität paikallista HTTP-palvelua — haluat sen löytyvän `_http._tcp`. Miten?
 
 - **Avahi service XML / avahi-publish-service tai systemd service with Avahi** ✓
-- Kirjoita vain /etc/hosts
-- Broadcast UDP manually
-- SSH tunnel riittää
+- Lisää palvelun IP-osoite /etc/hosts-tiedostoon kaikilla lähiverkon koneilla manuaalisesti
+- Kirjoita oma UDP-broadcast-skripti joka lähettää palvelutiedot porttiin 5353 säännöllisesti
+- Avaa SSH-tunneli palvelimelle — asiakkaat löytävät palvelun tunnelin kautta automaattisesti
 
 #### `b03-linux-avahi-browse-services` · diff 2
 
@@ -5652,9 +5652,9 @@ Kehityskone hostaa API:n osoitteessa devbox.local — toinen kone ei resolvaa. T
 IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista IP:tä. Ratkaisu?
 
 - **Avahi service file / avahi-publish-service — mDNS ilmoitus** ✓
-- Kovakoodaa IP sovellukseen
-- Broadcast UDP kaikille porteille
-- Avahi vain client, ei publish
+- Kovakoodaa IP-osoite sovellukseen — rikkoutuu heti kun DHCP vaihtaa gatewayn osoitteen
+- Broadcast UDP kaikille porteille — ei noudata mDNS/DNS-SD-protokollan service-tyyppiä
+- Avahi toimii vain clientinä eikä pysty julkaisemaan omia palveluita lähiverkkoon
 
 #### `b04-linux-avahi-browse` · diff 3
 
@@ -5679,9 +5679,9 @@ Toimiston tulostin pitäisi löytyä verkosta automaattisesti. Mikä työkalu li
 Kaksi konetta ilmoittaa saman `.local`-hostname:n — palvelut vaihtelevat. Mikä on juurisyy?
 
 - **Hostname-konflikti mDNS:ssä — hostnamet täytyy olla uniikit verkossa** ✓
-- Avahi ei tue useaa konetta
-- Vain DNS-palvelin korjaa konfliktin
-- Konflikti johtuu aina palomuurista
+- Avahi ei tue useaa konetta samassa lähiverkossa — jokainen kone tarvitsee oman Avahi-instanssinsa
+- Vain keskitetty DNS-palvelin korjaa konfliktin — mDNS ei toimi ilman perinteistä nimipalvelinta
+- Konflikti johtuu aina palomuurista joka estää liikennettä koneiden välillä lähiverkossa
 
 #### `b05-linux-avahi-publish-service` · diff 3
 
@@ -5861,18 +5861,18 @@ SIEM tarvitsee journal-lokeja JSON-muodossa. Mikä journalctl-lippu?
 DoS-yritys tulvittaa journald:n identtisillä virheillä — levy täyttyy. Mitä tarkistat?
 
 - **RateLimitIntervalSec / RateLimitBurst journald.conf:ssa** ✓
-- Poista journald kokonaan
-- SystemMaxUse=0
-- Journal ei tue rate limitingiä
+- Poista journald kokonaan ja korvaa se pelkällä syslogilla ilman rate limiting -ratkaisua
+- SystemMaxUse=0 — asettaa levykiintiön nollaan mikä ei rajoita viestien tulotahtia
+- Journal ei tue rate limitingiä lainkaan — kaikki viestit kirjoitetaan aina levylle
 
 #### `b04-linux-journalctl-boot` · diff 2
 
 Palvelin kaatui yöllä rebootiin — haluat lokit vain viime bootista. journalctl-lippu?
 
 - **journalctl -b tai journalctl -b -1 edelliseen bootiin** ✓
-- journalctl --all-time
-- dmesg riittää aina
-- cat /var/log/boot.log
+- journalctl --all-time näyttää kaikkien boottien lokit sekaisin ilman rajausta
+- dmesg riittää aina — kernel-rengaspuskuri tyhjenee eikä sisällä sovelluslokeja
+- cat /var/log/boot.log — tiedostoa ei oletuksena ole systemd-journald-pohjaisissa jakeluissa
 
 #### `b04-linux-journalctl-follow` · diff 2
 
@@ -5888,18 +5888,18 @@ Haluat seurata palvelun lokia reaaliajassa tuotantodebugissa. Mikä komento?
 Incident: tarvitset vain virhe- ja kriittiset viestit viime tunnilta. journalctl suodatin?
 
 - **journalctl -p err --since '1 hour ago'** ✓
-- journalctl | grep ERROR — riittää
-- journalctl -q
-- Vain dmesg
+- journalctl | grep ERROR — riittää vaikka ohittaa priority-metadatan ja muunkieliset viestit
+- journalctl -q hiljentää varoitukset lokitiedostoista, ei suodata priority-tason mukaan
+- Vain dmesg — kernel-rengaspuskuri ei sisällä sovellusten err-tason journal-viestejä
 
 #### `b04-linux-journald-RateLimit` · diff 4
 
 Bugi tulvittaa journald:n identtisillä virheillä — diagnostiikka vaikeaa. Mitä konfiguroit?
 
 - **RateLimitIntervalSec / RateLimitBurst journald.conf:ssa** ✓
-- Poista journald kokonaan
-- rm -rf /var/log/journal
-- Vain syslog — ei rate limitiä
+- Poista journald kokonaan ja siirrä kaikki lokitus perinteiseen syslog-daemoniin
+- rm -rf /var/log/journal poistaa vanhat lokit mutta ei estä uutta floodia täyttämästä levyä uudelleen
+- Vain syslog — ei rate limitiä — syslogilla ei ole journaldin sisäänrakennettua flood-suojaa
 
 #### `b05-linux-journalctl-unit-since` · diff 2
 
@@ -5924,9 +5924,9 @@ Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain virheisii
 Rebootin jälkeen edellisen bootin lokit katoavat. Mikä journald.conf-asetus korjaa?
 
 - **Storage=persistent — lokit /var/log/journal** ✓
-- ForwardToSyslog=no
-- MaxLevelStore=debug
-- RateLimitInterval=0
+- ForwardToSyslog=no estää journalin lähettämisen syslogille, ei vaikuta talletuksen pysyvyyteen
+- MaxLevelStore=debug säätää tallennettavan lokitason, ei sitä säilyykö loki rebootin yli
+- RateLimitInterval=0 poistaa nopeusrajoituksen, ei vaikuta journalin tallennuspaikkaan
 
 #### `b06-linux-journalctl-reverse` · diff 2
 
@@ -6097,9 +6097,9 @@ Lokitulva tuotannossa. Miten näytät vain virheet ja kriittiset nginx-unitilta?
 `ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene. Ensimmäinen toimenpide?
 
 - **Tarkista L2: kaapeli, VLAN, kytkinportti — sitten ip neigh del + uusi ARP-yritys** ✓
-- Lisää staattinen ip route ilman gateway-MAC:ia
-- Muuta TCP keepalive-asetuksia
-- Ota UDP pois käytöstä palomuurista
+- Lisää staattinen ip route ilman gateway-MAC:ia — reititystaulu ei korjaa puuttuvaa ARP-vastausta
+- Muuta TCP keepalive-asetuksia — kuljetuskerroksen aikakatkaisut eivät vaikuta ARP-tason FAILED-tilaan
+- Ota UDP pois käytöstä palomuurista — protokollakohtainen sääntö ei liity naapuritaulun ongelmaan
 
 #### `b12-linux-arp-flush-migration` · diff 3
 
@@ -6115,18 +6115,18 @@ VM siirrettiin toiseen hypervisorille — vanhat MAC-osoitteet jäävät ARP-cac
 Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. Nopein varmistus lähiverkossa?
 
 - **arping -D -I eth0 10.0.0.50 — gratuitous ARP paljastaa duplikaatin** ✓
-- ip route flush table main
-- ping -f 10.0.0.50 riittää aina
-- ss -tan | grep 10.0.0.50
+- ip route flush table main — tyhjentää reititystaulun mutta ei paljasta ARP-tason duplikaattia
+- ping -f 10.0.0.50 riittää aina — flood-ping testaa vain saavutettavuutta, ei kerro kumpi kone vastaa
+- ss -tan | grep 10.0.0.50 — näyttää TCP-socketit, ei ARP-tason osoitekonfliktia
 
 #### `b12-linux-arp-static-neigh` · diff 3
 
 Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merkinnän. Komento?
 
 - **ip neigh add 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 nud permanent** ✓
-- arp -s 192.168.1.1 eth0
-- echo aa:bb > /proc/net/arp
-- ip route add 192.168.1.1 dev eth0
+- arp -s 192.168.1.1 eth0 — legacy-komento vaatii MAC-osoitteen parametrina, pelkkä interface ei riitä
+- echo aa:bb > /proc/net/arp — ARP-taulua ei voi muokata suoraan kirjoittamalla /proc-tiedostoon
+- ip route add 192.168.1.1 dev eth0 — tämä lisää reitin, ei kiinteää MAC-osoitetta ARP-tauluun
 
 ### linux-dbus (5)
 
@@ -6135,18 +6135,18 @@ Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merki
 Bluetooth-kuulokkeet eivät yhdisty — BlueZ pyörii mutta laite on untrusted. CLI-korjaus ennen D-Bus-skriptiä?
 
 - **bluetoothctl → pair MAC, trust MAC, connect MAC** ✓
-- modprobe btusb reset
-- rfkill block bluetooth
-- systemctl stop org.bluez
+- modprobe btusb reset — ajurin uudelleenlataus ei korjaa laitteen untrusted-tilaa
+- rfkill block bluetooth — sammuttaa radion kokonaan eikä ratkaise parituksen luottamusongelmaa
+- systemctl stop org.bluez — pysäyttää koko BlueZ-palvelun eikä ole edes validi unit-nimi
 
 #### `b12-linux-dbus-busctl-introspect` · diff 2
 
 Haluat listata NetworkManagerin D-Bus-metodit terminaalista ennen automaatiota. Ensimmäinen komento?
 
 - **busctl introspect org.freedesktop.NetworkManager /org/freedesktop/NetworkManager** ✓
-- dbus-launch --list-services | grep Network
-- systemctl cat NetworkManager.service
-- nmcli general permissions
+- dbus-launch --list-services | grep Network — dbus-launch käynnistää session-busin, ei listaa system-bus-palveluita
+- systemctl cat NetworkManager.service näyttää unit-tiedoston sisällön, ei D-Bus-rajapintaa
+- nmcli general permissions listaa polkit-oikeudet, ei D-Bus-metodeja tai propertyja
 
 #### `b12-linux-dbus-modemmanager-signal` · diff 3
 
@@ -6161,19 +6161,19 @@ LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-CLI tar
 
 NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?
 
-- **busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager RequestScan as** ✓
-- systemctl restart NetworkManager poistaa välimuistin automaattisesti
-- echo scan > /proc/net/wireless
-- dbus-send --session org.freedesktop.NetworkManager /Scan
+- **busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager/Devices/3 org.freedesktop.NetworkManager.Device.Wireless RequestScan a{sv} 0** ✓
+- systemctl restart NetworkManager poistaa Wi-Fi-välimuistin ja käynnistää skannauksen automaattisesti taustalla
+- echo scan > /proc/net/wireless — tiedosto on vain luku -tilastoraportti, ei ohjausrajapinta skannaukselle
+- dbus-send --session org.freedesktop.NetworkManager /Scan — väärä bus, väärä polku eikä metodia/rajapintaa ole määritelty
 
 #### `b12-linux-dbus-polkit-deny` · diff 4
 
 Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäköisin syy?
 
 - **Polkit estää — käyttäjällä ei ole oikeuksia NM-asetuksiin ilman auth_admin** ✓
-- Väärä journald-priority
-- D-Bus daemon on kaatunut — reboot auttaa aina
-- dbus-send vaatii aina rootin — nmcli ei
+- Väärä journald-priority-asetus estää dbus-send-kutsun näkymisen lokissa, ei itse kutsua
+- D-Bus daemon on kaatunut — reboot auttaa aina, vaikka daemon on selvästi käynnissä ja vastaa muille
+- dbus-send vaatii aina rootin — nmcli käyttää samaa D-Bus-rajapintaa samoilla polkit-säännöillä
 
 ### linux-network (46)
 
@@ -6272,9 +6272,9 @@ Kaksi oletusreittiä — liikenne menee väärää VPN:ää pitkin. Miten näet 
 resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Todennäköisin syy?
 
 - **systemd-resolved stub resolver — tarkista resolvectl status** ✓
-- 127.0.0.53 on aina virheellinen
-- Poista resolv.conf — DNS toimii ilman
-- Vain /etc/hosts käytössä
+- 127.0.0.53 on aina virheellinen konfiguraatio joka pitää korjata osoittamaan suoraan ISP:n nameserveriin
+- Poista resolv.conf kokonaan — kernel osaa silti resolvoida nimiä ilman mitään resolver-konfiguraatiota
+- Vain /etc/hosts on käytössä — systemd-resolved ei voi koskaan olla stub-osoitteen takana
 
 #### `b04-linux-ss-tuln` · diff 3
 
@@ -6290,9 +6290,9 @@ Portti 8080 pitäisi kuunnella mutta palvelu ei vastaa. Mikä komento listaa LIS
 VPN-yhteys toimii mutta sisäverkon aliverkko on tavoittamaton. Mitä tarkistat ensin?
 
 - **ip route — onko reitti sisäverkkoon oikean gatewayn kautta** ✓
-- Vain DNS /etc/hosts
-- chmod +x reititin
-- systemctl restart avahi
+- Muokkaa vain /etc/hosts-tiedostoa lisäämällä sisäverkon osoitteet käsin sinne
+- Aja chmod +x reitittimen konfiguraatiotiedostoon jotta reititys aktivoituu
+- Käynnistä avahi-daemon uudelleen — mDNS ei liity VPN:n sisäverkon reitityksen tavoitettavuuteen
 
 #### `b05-linux-network-nmcli-connect` · diff 2
 
@@ -6308,18 +6308,18 @@ Wi-Fi katkesi toimistossa. Miten nmcli:llä yhdistät tunnetun profiilin?
 Sisäinen hostname `app.internal` ei resolvdu mutta FQDN toimii. Mikä resolv.conf-asetus auttaa?
 
 - **search internal — lyhyet nimet kokeillaan search-domaineissa** ✓
-- nameserver 127.0.0.1 riittää aina
-- options rotate korjaa searchin
-- Poista resolv.conf kokonaan
+- nameserver 127.0.0.1 riittää aina — määrittää DNS-palvelimen, ei lyhyiden nimien suffixia
+- options rotate korjaa searchin — rotate vaihtaa nameserver-järjestystä, ei lisää domain-suffixia
+- Poista resolv.conf kokonaan — ilman tiedostoa myöskään FQDN-haku ei enää toimi
 
 #### `b05-linux-network-ss-listen` · diff 2
 
 Portti 8080 on jo käytössä — uusi palvelu ei käynnisty. Mikä komento näyttää prosessin?
 
 - **ss -tlnp | grep 8080 — kuuntelevat TCP-portit + prosessi** ✓
-- ping localhost 8080
-- ifconfig 8080
-- netstat on ainoa tapa — ss ei toimi
+- ping localhost 8080 — ICMP-ping ei tue porttinumeroa eikä kerro mikä prosessi kuuntelee
+- ifconfig 8080 — työkalu näyttää verkkorajapinnat, ei kuunteleva prosessi tai portti
+- netstat on ainoa tapa — ss ei toimi nykyaikaisissa jakeluissa lainkaan
 
 #### `b06-linux-network-ethtool-offload` · diff 5
 
@@ -6607,9 +6607,9 @@ Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellus ei 
 Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443. ss-komento?
 
 - **ss -tn state established sport = :443 or dport = :443** ✓
-- ss -uln dport = :443
-- ss -ltn state established
-- ip route get :443
+- ss -uln dport = :443 — näyttää UDP-kuuntelijat, ei TCP-yhteyksien tilaa
+- ss -ltn state established — -l rajaa pelkkiin LISTEN-socketeihin, joten established-suodatin ei toimi
+- ip route get :443 — reititystyökalu ei tunne porttinumeroita eikä listaa socketeja
 
 #### `b12-linux-tcp-retransmit-info` · diff 4
 
@@ -6634,18 +6634,18 @@ API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja SYN-jono
 Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa?
 
 - **TCP: kolmen suun kättely (SYN, SYN-ACK, ACK) ennen dataa; UDP: ei kättelyä** ✓
-- UDP: kolmen suun kättely; TCP: suora datagram
-- Molemmat vaativat TLS-handshaken
-- TCP on aina UDP:n päällä portissa 53
+- UDP: kolmen suun kättely (SYN, SYN-ACK, ACK); TCP lähettää suoraan datagrammin ilman kättelyä
+- Molemmat protokollat vaativat aina TLS-handshaken ennen sovellusdatan lähettämistä
+- TCP on aina UDP:n päällä portissa 53 — DNS käyttää TCP:tä vain UDP-kehyksen sisällä kapseloituna
 
 #### `b12-linux-udp-stateless-firewall` · diff 3
 
 DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomuuri. Tyypillinen UDP-ero TCP:hen?
 
 - **UDP on yhteydetön — palomuuri tarvitsee conntrack/state tai eksplisiittisen allow return** ✓
-- UDP käyttää aina kolmen suun kättelyä kuten TCP
-- UDP ei kulje NAT:in läpi koskaan
-- ss -ltn näyttää UDP-vastaukset
+- UDP käyttää aina kolmen suun kättelyä (SYN/SYN-ACK/ACK) kuten TCP ennen datansiirtoa
+- UDP ei kulje NAT:in läpi koskaan — palomuurit pudottavat kaiken UDP-liikenteen automaattisesti
+- ss -ltn näyttää UDP-vastaukset — -t ja -l rajaavat näkymän pelkkiin TCP LISTEN-socketeihin
 
 ### systemd (43)
 
@@ -6690,9 +6690,9 @@ Palvelu ei käynnisty bootissa vaikka `systemctl start` toimii. Mitä unohdettii
 Palvelin käynnistyy hitaasti tuotantoon noston jälkeen. Mikä systemd-komento paikantaa hitaat unitit?
 
 - **systemd-analyze blame — näyttää unit-kohtaiset viiveet** ✓
-- systemctl restart --all
-- journalctl -k vain
-- kill -9 init
+- systemctl restart --all — käynnistää kaikki unitit uudelleen paljastamatta viiveitä
+- journalctl -k rajoittuu kernel-viesteihin eikä näytä unit-kohtaisia käynnistysaikoja
+- kill -9 init pakottaa koko järjestelmän uudelleenkäynnistyksen ilman diagnostiikkaa
 
 #### `b03-linux-systemd-env-file` · diff 2
 
@@ -6708,36 +6708,36 @@ Salaisuudet ovat suoraan unit-tiedostossa gitissä. Miten systemd hoitaa ympäri
 Bugi aiheuttaa crash loopin — palvelu käynnistyy uudelleen 500 kertaa minuutissa. Mitä säädät?
 
 - **StartLimitIntervalSec / StartLimitBurst — rajoita uudelleenkäynnistyksiä** ✓
-- Restart=always ilman rajoja
-- Poista Restart kokonaan
-- KillMode=none
+- Restart=always ilman StartLimitBurst-rajoitusta — palvelu yrittää loputtomasti uudelleen
+- Poista Restart-rivi kokonaan ja anna palvelun jäädä pysyvästi kaatuneeksi tilaan
+- KillMode=none joka jättää lapsiprosessit henkiin eikä vaikuta restart-tiheyteen mitenkään
 
 #### `b03-linux-systemd-type-notify` · diff 4
 
 CI merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?
 
 - **Type=notify — palvelu ilmoittaa sd_notify:llä kun valmis** ✓
-- Type=simple riittää aina
-- Type=idle nopeuttaa bootia
-- Type=forking pakollinen kaikille
+- Type=simple riittää aina — simple merkitsee palvelun valmiiksi heti exec-kutsun jälkeen
+- Type=idle nopeuttaa bootia viivästämällä käynnistystä, ei liity valmiussignalointiin
+- Type=forking pakollinen kaikille — forking sopii vain daemonisoituville prosesseille
 
 #### `b04-linux-systemd-ExecStartPre` · diff 3
 
 Palvelu käynnistyy ennen kuin tietokanta on valmis — yhteys epäonnistuu. Mitä unit-tiedostoon?
 
 - **ExecStartPre=/bin/sh -c 'until pg_isready; do sleep 1; done' tai After=postgresql.service** ✓
-- Restart=no — ei yritä uudestaan
-- Type=oneshot aina
-- Poista ExecStart
+- Restart=on-failure ilman riippuvuutta — yrittää uudestaan mutta ei odota tietokannan valmistumista ensin
+- Type=oneshot ja RemainAfterExit=yes — merkitsee palvelun valmiiksi heti prosessin päätyttyä
+- Poista ExecStart kokonaan ja korvaa se ExecStartPost-komennolla joka odottaa tietokantaa
 
 #### `b04-linux-systemd-mask` · diff 3
 
 Vanha palvelu käynnistyy uudestaan päivityksen jälkeen vaikka disable tehtiin. Miten estät pysyvästi?
 
 - **systemctl mask palvelu.service — estää käynnistyksen symlinkillä /dev/null** ✓
-- chmod 000 unit-tiedosto riittää
-- disable ja reboot riittää aina
-- Poista binary — systemd lopettaa
+- chmod 000 unit-tiedostoon riittää — systemd voi silti ladata unitin oikeuksista huolimatta
+- disable ja reboot riittää aina — toinen paketti voi palauttaa symlinkin päivityksen yhteydessä
+- Poista binary levyltä — systemd yrittää silti käynnistää unitin ja jää failed-tilaan
 
 #### `b04-linux-systemd-override` · diff 3
 
@@ -6753,27 +6753,27 @@ Haluat muuttaa vain yhden Environment-rivin vendor unitiin ilman tiedoston kopio
 Kun `web.target` pysähtyy, worker-prosessit jäävät roikkumaan. Miten sidot workerit targetiin?
 
 - **PartOf=web.target — worker pysähtyy kun target pysähtyy** ✓
-- Wants= riittää aina samaan
-- KillMode=none
-- Ignore target — erilliset unitit
+- Wants= riittää aina samaan — Wants määrittää vain käynnistysjärjestyksen, ei pysäytystä
+- KillMode=none jättää lapsiprosessit hengissä eikä sido elinkaarta targetiin mitenkään
+- Ignore target ja pidä unitit täysin erillisinä — worker jää silti roikkumaan targetin pysähtyessä
 
 #### `b04-linux-systemd-user-unit` · diff 3
 
 Kehittäjä haluaa ajaa daemonin ilman root-oikeuksia login-sessionissa. Minne unit-tiedosto?
 
 - **~/.config/systemd/user/palvelu.service + systemctl --user enable** ✓
-- /etc/systemd/system/ aina
-- crontab @reboot riittää
-- /etc/init.d/ vanha tapa
+- /etc/systemd/system/ aina — system-wide-hakemisto vaatii silti root-oikeudet käyttöön
+- crontab @reboot riittää — cron ei tue systemd-user-instanssin resurssienhallintaa
+- /etc/init.d/ vanha SysV-tapa — vaatii myös root-oikeudet eikä toimi user-sessiossa
 
 #### `b05-linux-systemd-exec-reload` · diff 3
 
 Config muuttui — haluat ladata palvelun ilman katkoa. Mitä eroa on reload ja restart?
 
 - **ExecReload ajaa määritellyn komennon — palvelu voi jatkaa pyyntöjä** ✓
-- reload ja restart ovat identtiset
-- reload vaatii aina rebootin
-- Vain systemctl restart on tuettu
+- reload ja restart ovat identtiset — molemmat pysäyttävät ja käynnistävät prosessin uudelleen
+- reload vaatii aina koko järjestelmän rebootin ennen kuin uusi konfiguraatio tulee voimaan
+- Vain systemctl restart on tuettu — ExecReload-direktiiviä ei ole olemassa systemd-unitissa
 
 #### `b05-linux-systemd-socket-activation` · diff 4
 
@@ -6798,9 +6798,9 @@ Cron-korvaaja ajaa backup-skriptin maanantaisin klo 03:00. Miten määrität sys
 Palvelu käynnistyy ennen kuin se kuuntelee porttia — riippuvat unitit jatkavat liian aikaisin. Mikä Type= arvo auttaa?
 
 - **Type=notify — palvelu ilmoittaa valmiudesta sd_notify:llä** ✓
-- Type=oneshot aina
-- Type=simple estää riippuvuudet
-- Type=idle riittää tuotantoon
+- Type=oneshot aina — sopii kertaluontoisiin skripteihin, ei jatkuvasti käynnissä oleviin palveluihin
+- Type=simple estää riippuvuudet — simple ei tue riippuvuuksia lainkaan systemd-unitissa
+- Type=idle riittää tuotantoon — idle vain viivästää käynnistystä bootissa, ei odota valmiussignaalia
 
 #### `b06-linux-systemd-ConditionPath` · diff 4
 
