@@ -167,25 +167,31 @@ export function runEncounterTests() {
   const noRepeat = pickQuestion(otherCoworker, 40, hist);
   assert(noRepeat.question.id !== "tools-auto", "mastered question not repeated for other NPC");
 
-  const dockerCoworker = { ...coworker, topic: "docker-network" };
-  const dockerPick = pickQuestion(dockerCoworker, 60);
-  assert(
-    dockerPick.question.domain === "docker" || dockerPick.question.chapter === "docker-network",
-    "topic-biased coworker gets docker question",
-  );
+  // NPC:n oma entity.topic EI ENÄÄ vaikuta kysymyksen domainiin (poistettu tarkoituksella
+  // audienceTags()-funktiosta, ks. encounterQuestions.mjs) — se lukitsi kysymykset liian
+  // voimakkaasti NPC:n omaan aiheeseen. Alla varmistetaan reachability (eri domainit ovat
+  // yhä saavutettavissa useamman poiminnan yli), EI enää sitä että topic pakottaisi domainin.
+  function reachesDomain(entity, domain, attempts = 40) {
+    for (let nonce = 0; nonce < attempts; nonce += 1) {
+      const { question } = pickQuestion(entity, 60, emptyQuizHistory(), { pickNonce: nonce, sessionPickSeed: nonce * 31 + 7 });
+      if (question.domain === domain) return true;
+    }
+    return false;
+  }
 
-  const scrumPick = pickQuestion({ ...coworker, topic: "scrum-estimation", kind: "coworker" }, 60);
-  assert(scrumPick.question.domain === "scrum", "scrum topic coworker gets scrum question");
+  const dockerCoworker = { ...coworker, topic: "docker-network" };
+  assert(reachesDomain(dockerCoworker, "docker"), "docker questions still reachable for docker-topic coworker");
+
+  const scrumCoworker = { ...coworker, topic: "scrum-estimation", kind: "coworker" };
+  assert(reachesDomain(scrumCoworker, "scrum"), "scrum questions still reachable for scrum-topic coworker");
 
   assert(allQ.some((q) => q.domain === "docker"), "docker bank present");
 
   const qtCoworker = { ...coworker, topic: "qt-shaders", kind: "coworker" };
-  const qtPick = pickQuestion(qtCoworker, 60);
-  assert(qtPick.question.domain === "qt", "qt topic coworker gets qt question");
+  assert(reachesDomain(qtCoworker, "qt"), "qt questions still reachable for qt-topic coworker");
 
   const pgCoworker = { ...coworker, topic: "pg-explain", kind: "coworker" };
-  const pgPick = pickQuestion(pgCoworker, 60);
-  assert(pgPick.question.domain === "postgres", "postgres topic coworker gets postgres question");
+  assert(reachesDomain(pgCoworker, "postgres"), "postgres questions still reachable for postgres-topic coworker");
 
   assert(allQ.some((q) => q.domain === "qt"), "qt bank present");
   assert(allQ.some((q) => q.domain === "javascript"), "javascript bank present");
