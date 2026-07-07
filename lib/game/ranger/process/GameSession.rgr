@@ -280,7 +280,15 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       }
     }
     if (correct) {
+      fruitSalaryBonus = fruitSalaryBonus + 10
+      this.recordSalaryPickupEffect(10 "€")
       map.spawnQuizRewardFruits(worldClock.gameMinutes)
+    } {
+      if (fruitSalaryBonus > 5) {
+        fruitSalaryBonus = fruitSalaryBonus - 5
+      } {
+        fruitSalaryBonus = 0
+      }
     }
     this.clearEncounter()
     screen = "map"
@@ -2740,7 +2748,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
 
   fn playerSalary:int () {
     if (this.isEmployed() == false) {
-      return 0
+      return fruitSalaryBonus
     }
     def base:int 2500
     def floor:int map.currentFloor
@@ -3423,6 +3431,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   fn applyDeathReset:void () {
     map.restoreMapTiles()
     map.clearPoliceSquad()
+    fruitSalaryBonus = 0
     this.resetEmploymentProgress()
   }
 
