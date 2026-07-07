@@ -8119,6 +8119,9 @@ class GameSession  extends RangerProcessBase {
     return false;
   };
   shouldUseEmotionalDialogue (ent, rel) {
+    if ( this.kidsMode ) {
+      return false;
+    }
     if ( this.isCoworkerEncounter() == false ) {
       return false;
     }
