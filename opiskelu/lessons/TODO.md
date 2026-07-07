@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1289 / 1289** valmis (**100 %**).
+**1289 / 1301** valmis (**99.1 %**).
 
 ## Domain-yhteenveto
 
@@ -20,6 +20,7 @@
 | Turvallisuus | 4 | 4 | 100 |
 | Robot Framework | 12 | 12 | 100 |
 | Rust | 66 | 66 | 100 |
+| kids | 0 | 12 | 0 |
 
 ## Kaikki aiheet
 
@@ -499,7 +500,7 @@
 | ✅ | 2 | `b12-js-types-spread-copy` | Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nope… |
 | ✅ | 3 | `b12-js-types-structured-equality` | Kaksi eri objektia {a:1} ja {a:1} — {} === {} on false. Miksi? |
 | ✅ | 4 | `b12-js-types-symbol-tostring` | Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne? |
-| ✅ | 1 | `b12-js-types-template-literal` | Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi? |
+| ✅ | 1 | `b12-js-types-template-literal` | Haluat rakentaa tervehdyksen muuttujasta `name` ilman `+`-ketjua (`'Hei… |
 | ✅ | 4 | `b12-js-types-temporal-api` | Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi? |
 | ✅ | 2 | `b12-js-types-truthy-falsy` | Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus … |
 | ✅ | 1 | `b12-js-types-typeof-string` | Mikä `typeof 'hello'` palauttaa? |
@@ -1715,6 +1716,65 @@
 | ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
 | ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
 | ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
+
+### kids (0/12)
+
+#### kids-animals `kids-animals` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-animal-cow` | Mikä eläin sanoo mää? |
+
+#### kids-body `kids-body` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-body-eyes` | Millä katsomme ympärillemme? |
+
+#### kids-computer `kids-computer` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 2 | `kids-computer-mouse` | Millä liikutat nuolta tietokoneen ruudulla? |
+
+#### kids-food `kids-food` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-food-fruit` | Mikä näistä on hedelmä? |
+
+#### kids-math `kids-math` (0/2)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-math-one-plus-one` | Paljonko on 1 + 1? |
+| ⬜ | 1 | `kids-math-two-plus-two` | Paljonko on 2 + 2? |
+
+#### kids-nature `kids-nature` (0/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-color-sky` | Mikä väri on kirkkaalla taivaalla? |
+| ⬜ | 1 | `kids-colors-grass` | Mikä väri on nurmikolla kesällä? |
+| ⬜ | 1 | `kids-season-winter` | Milloin sataa lunta? |
+
+#### kids-safety `kids-safety` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 2 | `kids-safety-fire` | Mitä teet jos näet tulen? |
+
+#### kids-time `kids-time` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-time-days` | Kuinka monta päivää viikossa on? |
+
+#### kids-transport `kids-transport` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 1 | `kids-transport-bike` | Millä ajetaan polkemalla? |
 
 ## Komennot
 

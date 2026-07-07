@@ -1,6 +1,6 @@
 # Koodisampo — kysymyspankin kooste
 
-Yhteensä **1213** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
+Yhteensä **1301** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
 
 Oikea vastaus merkitty **lihavoituna**.
 
@@ -5236,9 +5236,9 @@ Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne?
 
 #### `b12-js-types-template-literal` · diff 1
 
-Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi?
+Haluat rakentaa tervehdyksen muuttujasta `name` ilman `+`-ketjua (`'Hei ' + name + '!'`). Mikä syntaksi upottaa arvon merkkijonoon?
 
-- **Template literal backtick-merkeillä: `Hei ${name}`** ✓
+- **Template literal backtick-merkeillä ja ${}-interpoloinnilla** ✓
 - 'Hei $name' yksinkertaisilla heittomerkeillä
 - sprintf() on ainoa tapa JS:ssä
 - String.concat vaatii kolme argumenttia
@@ -5505,6 +5505,134 @@ API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` on turval
 - unknown poistaa kaikki runtime-virheet automaattisesti parsauksessa
 - any on aina readonly — unknown sallii mielivaltaisen mutoinnin
 - unknown kääntyy aina nopeammin kuin any — pienempi tyyppigraafi
+
+## kids (12)
+
+### kids-animals (1)
+
+#### `kids-animal-cow` · diff 1
+
+Mikä eläin sanoo mää?
+
+- **Lehmä** ✓
+- Koira
+- Kissa
+- Kala
+
+### kids-body (1)
+
+#### `kids-body-eyes` · diff 1
+
+Millä katsomme ympärillemme?
+
+- **Silmillä** ✓
+- Korvilla
+- Kynsillä
+- Polvilla
+
+### kids-computer (1)
+
+#### `kids-computer-mouse` · diff 2
+
+Millä liikutat nuolta tietokoneen ruudulla?
+
+- **Hiirellä tai kosketuslevyllä** ✓
+- Kynällä paperilla
+- Avaimilla ovelta
+- Kengän nauhoilla
+
+### kids-food (1)
+
+#### `kids-food-fruit` · diff 1
+
+Mikä näistä on hedelmä?
+
+- **Omena** ✓
+- Leipä
+- Juusto
+- Keitto
+
+### kids-math (2)
+
+#### `kids-math-one-plus-one` · diff 1
+
+Paljonko on 1 + 1?
+
+- **2** ✓
+- 1
+- 11
+- 0
+
+#### `kids-math-two-plus-two` · diff 1
+
+Paljonko on 2 + 2?
+
+- **4** ✓
+- 3
+- 5
+- 22
+
+### kids-nature (3)
+
+#### `kids-color-sky` · diff 1
+
+Mikä väri on kirkkaalla taivaalla?
+
+- **Sininen** ✓
+- Musta
+- Violetti
+- Ruskea
+
+#### `kids-colors-grass` · diff 1
+
+Mikä väri on nurmikolla kesällä?
+
+- **Vihreä** ✓
+- Sininen
+- Oranssi
+- Harmaa
+
+#### `kids-season-winter` · diff 1
+
+Milloin sataa lunta?
+
+- **Talvella** ✓
+- Kesällä
+- Aina yöllä
+- Vain maanantaisin
+
+### kids-safety (1)
+
+#### `kids-safety-fire` · diff 2
+
+Mitä teet jos näet tulen?
+
+- **Kerrot aikuiselle ja menet turvalliseen paikkaan** ✓
+- Piilotat sen peiton alle yksin
+- Juokset kohti tulta
+- Et tee mitään
+
+### kids-time (1)
+
+#### `kids-time-days` · diff 1
+
+Kuinka monta päivää viikossa on?
+
+- **7** ✓
+- 5
+- 10
+- 3
+
+### kids-transport (1)
+
+#### `kids-transport-bike` · diff 1
+
+Millä ajetaan polkemalla?
+
+- **Polkupyörällä** ✓
+- Autolla
+- Lentokoneella
+- Juna ei liiku polkemalla
 
 ## linux (168)
 
@@ -8676,7 +8804,7 @@ Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?
 - SELECT-kyselyt tarvitsevat REINDEX ennen jokaista UPDATE-operaatiota
 - PostgreSQL ei tue UPDATE:ia MVCC-mallissa, vain INSERT ja DELETE
 
-## qt (154)
+## qt (164)
 
 ### qt-models (19)
 
@@ -8850,6 +8978,114 @@ Taulukkomalli päivittyy (lajittelu/suodatus). Miten tallennat rivin tunnisteen 
 - QModelIndex tallennetaan suoraan sessioon ikuisesti
 - Rivinumero riittää aina
 - Model ei saa muuttua käytön aikana
+
+### qt-native-architecture (1)
+
+#### `qt-native-signals-slots` · diff 2
+
+Qt-luokan pitää ilmoittaa UI:lle, että data muuttui. Mikä on idiomi?
+
+- **Signal emittoidaan ja UI:n slot päivittyy** ✓
+- UI pollaa dataa while(true)-silmukassa
+- Kutsu repaintia jokaisesta setteristä ilman dataChanged-signaalia
+- Kirjoita muutos globaaliin tekstitiedostoon
+
+### qt-native-data (1)
+
+#### `qt-native-json` · diff 2
+
+Qt-sovellus lukee JSON-konfiguraation tiedostosta. Mitä käytät?
+
+- **QFile + QJsonDocument** ✓
+- QPixmap koska JSON on tekstiä
+- QSqlQuery ilman tietokantaa
+- QObject::connect suoraan tiedostoon
+
+### qt-native-deploy (1)
+
+#### `qt-native-deploy` · diff 3
+
+Qt-sovellus pitää toimittaa Windows-käyttäjälle ilman Qt-asennusta. Mikä työkalu auttaa?
+
+- **windeployqt kopioi tarvittavat Qt DLL:t ja plugin-hakemistot** ✓
+- Pyydä käyttäjää asentamaan Qt Creator
+- Kopioi vain .exe ilman plugin-hakemistoja
+- Nimeä lähdekoodi .dll-päätteiseksi
+
+### qt-native-input (1)
+
+#### `qt-native-event-filter` · diff 3
+
+Haluat siepata Enter-näppäimen tietyssä tekstikentässä ilman subclassia. Mikä mekanismi sopii?
+
+- **QObject event filter tekstikentälle** ✓
+- Globaali käyttöjärjestelmän keyboard hook aina
+- Muokkaa Qt:n lähdekoodia
+- Käytä QTimeria arvaamaan näppäimet
+
+### qt-native-models (1)
+
+#### `qt-native-model-view` · diff 3
+
+Suuri lista pitää näyttää QTableViewissä ja suodattaa. Mikä rakenne sopii?
+
+- **QAbstractTableModel + QSortFilterProxyModel** ✓
+- QTableWidget ja tuhansien solujen manuaalikopio aina
+- Yksi QLabel johon yhdistetään kaikki teksti
+- Mallin data suoraan paintEventissä
+
+### qt-native-qml (1)
+
+#### `qt-native-qml-binding` · diff 3
+
+QML-näkymässä teksti riippuu model.count-arvosta. Mikä tekee päivityksestä automaattisen?
+
+- **Property binding kuten text: model.count.toString()** ✓
+- Aseta teksti kerran Component.onCompletedissä
+- Kutsu repaint C++:sta joka sekunti
+- Tallenna arvo singletoniin ilman notify-signaalia
+
+### qt-native-storage (1)
+
+#### `qt-native-qsettings` · diff 2
+
+Desktop-sovellus tallentaa ikkunan koon ja käyttäjän asetuksia. Mikä Qt-luokka sopii?
+
+- **QSettings** ✓
+- QTemporaryFile pysyville asetuksille
+- QPainter asetusten serialisointiin
+- QShortcut tallennukseen
+
+### qt-native-threading (1)
+
+#### `qt-native-threading-ui` · diff 3
+
+Worker-säie saa laskennan valmiiksi ja haluaa päivittää QLabelin. Mitä tehdään?
+
+- **Lähetä signaali queued connectionilla GUI-säikeeseen** ✓
+- Kutsu label->setText suoraan workerista
+- Siirrä QLabel worker-säikeeseen
+- Poista event loop päivityksen ajaksi
+
+### qt-native-ui (2)
+
+#### `qt-native-high-dpi` · diff 3
+
+Sovellus näyttää suttuiselta high-DPI-näytöllä. Mitä pitää huomioida?
+
+- **Käytä Qt:n high-DPI-tukea ja skaalausta kestäviä assetteja** ✓
+- Pakota kaikki ikonit 16x16-kokoon
+- Piirrä fyysisillä pikseleillä ilman devicePixelRatio-tietoa
+- Poista fonttien skaalaus
+
+#### `qt-native-widgets-vs-quick` · diff 3
+
+Uusi Qt desktop -sovellus tarvitsee lomakkeita, taulukoita ja perinteisiä dialogeja. Widgets vai Qt Quick?
+
+- **Qt Widgets on usein nopea perinteiseen desktop-UI:hin; Qt Quick sopii dynaamisempiin/animoituihin näkymiin** ✓
+- Qt Widgets on poistettu Qt 6:ssa
+- Qt Quick toimii vain mobiilissa
+- Molemmat vaativat aina OpenGL-shadereita
 
 ### qt-opengl (21)
 
@@ -10195,6 +10431,622 @@ Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lataudutt
 - Sleep 5s ennen jokaista klikkausta varmistaa että sivu on latautunut
 - Set Selenium Speed 2s hidastaa kaikkia toimintoja riittävästi
 - Poista implicit wait kokonaan ja käytä try/except logiikkaa testissä
+
+## rust (66)
+
+### rust-async (10)
+
+#### `rust-async-future-await` · diff 3
+
+Mitä `async fn` palauttaa Rustissa?
+
+- **Implementoinnin Future-traitille — lazy, poll-kontrolloidusti ajettava** ✓
+- Os-säie heti kun funktio kutsutaan
+- Blocking thread pool entry
+- Promise<T> JavaScript-objekti
+
+#### `rust-async-tokio-join-handle` · diff 2
+
+tokio::spawn palauttaa JoinHandle<T>. Miten saat tehtävän tuloksen tai virheen?
+
+- **handle.await — palauttaa Result<T, JoinError> (panic taskissa → Err)** ✓
+- handle.join() synkroninen metodi
+- handle.unwrap() palauttaa T suoraan
+- JoinHandle poll manually aina
+
+#### `rust-async-tokio-mpsc` · diff 3
+
+Async-tehtävät viestivät toisilleen tokio-runtime:ssa. Mikä kanava on async-native?
+
+- **tokio::sync::mpsc — send().await / recv().await ilman blokkausta** ✓
+- std::sync::mpsc — async send odottaa awaitilla
+- tokio::channel on deprecated
+- UdpSocket viestikanavana aina
+
+#### `rust-async-tokio-mutex` · diff 3
+
+Jaettu tila async-tehtävissä — `std::sync::Mutex` aiheuttaa blokkausta awaitin yli. Mikä korvaaja?
+
+- **tokio::sync::Mutex — async lock().await ei blokkaa executor-säiettä** ✓
+- RefCell async:ssä säikeiden välillä
+- std::Mutex on aina parempi
+- Arc<RwLock> std — sama kuin tokio
+
+#### `rust-async-tokio-runtime` · diff 3
+
+async main ei käänny ilman runtimea. Mikä on tyypillinen tokio-käynnistys?
+
+- **#[tokio::main] async fn main() { ... } — makro alustaa multi-thread runtime** ✓
+- std::async::main built-in Rust 1.85
+- async main toimii ilman attributia
+- cargo async-run pakollinen
+
+#### `rust-async-tokio-runtime-flavor` · diff 3
+
+CLI-työkalu ajaa yhden async-mainin ilman rinnakkaisia worker-säikeitä. Mikä #[tokio::main] asetus?
+
+- **flavor = "current_thread" — yksi säie, tehtävät vuorotellen pollauksessa** ✓
+- flavor = "single" — virallinen nimi
+- threads = 0 poistaa runtime:n
+- async main ei tarvitse runtimea CLI:ssä
+
+#### `rust-async-tokio-select` · diff 3
+
+Odotat useaa Futurea — ensimmäinen valmis voittaa (timeout, cancel). Mikä tokio-makro?
+
+- **tokio::select! { ... } — odottaa useaa haaraa, suorittaa ensimmäisen valmistuneen** ✓
+- Future::join aina — select poistettu
+- tokio::wait_all — std-makro
+- async if-else riittää aina
+
+#### `rust-async-tokio-sleep` · diff 2
+
+async-funktiossa tarvitset viiveen. Miksi `std::thread::sleep` on huono valinta?
+
+- **Blokkaa executor-säikeen — tokio::time::sleep().await yieldaa runtimeille** ✓
+- thread::sleep on nopeampi aina async:ssä
+- sleep ei toimi Rustissa
+- await korvaa sleep:in automaattisesti
+
+#### `rust-async-tokio-spawn` · diff 2
+
+async fn:ssä haluat ajaa toisen async-tehtävän taustalla saman runtime:n alla. Mikä tokio-API?
+
+- **tokio::spawn(async { ... }) — palauttaa JoinHandle, ei blokkaa executor-säiettä** ✓
+- std::thread::spawn — idiomaattinen async-kontekstissa
+- async fn spawn() — std tarjoaa spawn:in
+- tokio::run blocking — pakollinen jokaiselle tehtävälle
+
+#### `rust-async-tokio-tcp` · diff 3
+
+Rakennat async TCP-palvelimen tokio:lla. Mikä tyyppi acceptoi yhteydet ilman blokkaavaa IO:ta?
+
+- **tokio::net::TcpListener — bind + accept().await async IO:lle** ✓
+- std::net::TcpListener + set_nonblocking riittää aina
+- tokio::TcpServer std:ssä
+- hyper::Server ainoa tapa TCP:lle
+
+### rust-borrowing (6)
+
+#### `rust-borrow-immut` · diff 1
+
+Haluat lukea vektoria funktiossa ilman omistajuuden luovutusta. Mikä parametri?
+
+- **&Vec<T> — jaettu lainaus, useita samanaikaisia lukijoita sallittu** ✓
+- Vec<T> kopiona — ainoa tapa lukea dataa turvallisesti
+- *const T — raaka osoitin korvaa lainauksen aina
+- Box<Vec<T>> — pakollinen kaikille funktioparametreille
+
+#### `rust-borrow-lifetime-elision` · diff 3
+
+Funktio palauttaa `&str` kahdesta parametrista. Milloin tarvitset eksplisiittiset lifetime-merkinnät?
+
+- **Kun kääntäjä ei voi päättää palautusviittauksen lähdettä (useita samansyvyisiä inputteja)** ✓
+- Aina — jokaisessa funktiossa pakollinen
+- Ei koskaan — Rust päättelee automaattisesti aina
+- Vain unsafe-lohkoissa
+
+#### `rust-borrow-mut` · diff 2
+
+Code review: sama vektori on sekä `&mut` että `&` samassa scope:ssa. Miksi kääntäjä hylkää?
+
+- **Ei voi olla yhtä aikaa muokkaavaa ja jaettua lainausta samaan dataan** ✓
+- &mut vaatii aina `unsafe`-lohkon — se on oletuksena kielletty
+- Vain yksi &mut kerrallaan koko ohjelmassa — globaali rajoitus
+- Vec ei tue muokkaavaa lainausta — käytä `RefCell` aina
+
+#### `rust-borrow-refcell-interior` · diff 3
+
+Tarvitset muokata arvoa &self-metodissa (interior mutability). Mikä tyyppi auttaa single-threaded -tilanteessa?
+
+- **RefCell<T> — runtime borrow checker Cell/RefCell-perheessä** ✓
+- Mutex<T> aina — RefCell on poistettu
+- mut self riittää aina ilman wrapperia
+- unsafe mut static
+
+#### `rust-borrow-slice-type` · diff 2
+
+Miksi `&Vec<T>` funktioparametrina on usein huono verrattuna `&[T]`:hen?
+
+- **&[T] hyväksyy Vec, array ja muut slice-kelpoiset — joustavampi API** ✓
+- &[T] ei toimi Vec:in kanssa
+- Vec on ainoa tapa välittää taulukko
+- &[T] kopioi aina koko vektorin
+
+#### `rust-borrow-static-lifetime` · diff 2
+
+Mikä `'static` lifetime tarkoittaa Rustissa?
+
+- **Viittaus elää koko ohjelman ajan — esim. string literalit** ✓
+- Staattinen muuttuja C-tyyliin — global mut aina
+- Viittaus validi vain compile-time
+- Sama kuin Arc<T> elinkaari
+
+### rust-concurrency (6)
+
+#### `rust-concurrency-mpsc-channel` · diff 3
+
+Worker-säikeet lähettävät tuloksia pääsäikeelle. Mikä std-primitiivi sopii?
+
+- **mpsc::channel — multiple producer, single consumer -viestijono** ✓
+- Arc<Mutex<Vec>> aina parempi kuin kanava
+- UdpSocket localhost viestintään
+- RefCell<Vec> säikeiden välillä
+
+#### `rust-concurrency-mutex-deadlock` · diff 3
+
+Kaksi Mutex-lukitusta eri järjestyksessä kahdessa säikeessä — riski?
+
+- **Deadlock — sama järjestys kaikissa säikeissä tai yksi lukko** ✓
+- Borrow checker estää deadlocks automaattisesti
+- Mutex on deadlock-proof Rustissa
+- Deadlock vain async-koodissa
+
+#### `rust-concurrency-rwlock-readers` · diff 3
+
+Monta säiettä lukee harvoin kirjoittavaa cachea. Mutex vs RwLock?
+
+- **RwLock — useita concurrent reader-lukituksia, yksi writer** ✓
+- Mutex nopeampi aina usealla lukijalla
+- RefCell säikeiden välillä
+- Atomi u32 kaikkeen cacheen
+
+#### `rust-concurrency-send-sync` · diff 3
+
+Jaat `Rc<T>` usean säikeen välillä — kääntäjä valittaa. Mikä tyyppi korvaa sen thread-safe -tilanteessa?
+
+- **Arc<T> — atomisesti laskettu jaettu omistajuus (Send + Sync)** ✓
+- Box<T> — heap-allokaatio riittää säikeiden väliseen jakamiseen
+- Mutex<T> ilman Arc:ia — Mutex yksin riittää jaettuun omistukseen
+- unsafe { Rc::from_raw } — ainoa tapa jakaa Rc säikeiden välillä
+
+#### `rust-concurrency-send-sync-def` · diff 3
+
+Mikä ero `Send`- ja `Sync`-traitien välillä?
+
+- **Send = siirrettävissä toiseen säikeeseen; Sync = jaettu &T viittaus säikeiden välillä turvallinen** ✓
+- Identtiset traitit — alias
+- Send vain async, Sync vain sync
+- Automaattinen kaikille tyypeille ilman poikkeuksia
+
+#### `rust-concurrency-thread-spawn` · diff 2
+
+Miten käynnistät uuden OS-säikeen std-kirjastolla?
+
+- **thread::spawn(closure) — palauttaa JoinHandle<T>** ✓
+- async fn spawn — std async runtime
+- pthread_create wrapper ainoa
+- Process::fork Rustissa
+
+### rust-error (5)
+
+#### `rust-error-from-into` · diff 2
+
+Funktio palauttaa `Result<T, MyError>` ja kutsuu std-io funktiota. Miten yhdistät virhetyypit siististi?
+
+- **From/Into + ? — io::Error muuntuu MyError:ksi jos From impl on olemassa** ✓
+- unwrap() jokaisessa io-kutsussa
+- panic! kaikissa Err-haaroissa
+- Box<dyn Error> ainoa tapa
+
+#### `rust-error-option-result-convert` · diff 2
+
+Funktio palauttaa `Option<T>` mutta kutsuja tarvitsee `Result<T, MyError>`. Mikä metodi auttaa?
+
+- **ok_or / ok_or_else — muuntaa None Err:ksi määritellyllä virheellä** ✓
+- .unwrap() — Option → Result suoraan
+- From<Option<T>> for Result automaattisesti aina
+- Option::Err variantti
+
+#### `rust-error-panic-unrecoverable` · diff 2
+
+Milloin `panic!` on perusteltu recoverable-virheen sijaan?
+
+- **Ohjelmarikko / invariantti rikki — tilanne josta ei voi jatk turvallisesti** ✓
+- Aina kun tiedosto puuttuu
+- Käyttäjän syöttövirhe
+- Verkko timeout — aina panic
+
+#### `rust-error-question-mark` · diff 2
+
+Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?
+
+- **Palauttaa virheen aikaisin kutsujalle (early return) propagoiden Err:n** ✓
+- Nielaisee virheen ja jatkaa None-arvolla kuten Optionissa
+- Muuntaa Err:n automaattisesti poikkeukseksi runtime-hetkellä
+- Panikoi aina — sama kuin `.unwrap()`
+
+#### `rust-error-unwrap-vs-expect` · diff 2
+
+Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suosittelee tuotantoon?
+
+- **Käsittele Err (?, match) tai expect vain invarianteille selkeällä viestillä** ✓
+- unwrap on OK tuotannossa jos testit menevät läpi
+- catch_unwind korvaa Err-käsittelyn
+- unwrap_or_else on aina forbidden
+
+### rust-ownership (7)
+
+#### `rust-ownership-box-heap` · diff 2
+
+Haluat siirtää suuren structin heapille ilman `new`/`delete`-paria. Mikä tyyppi?
+
+- **Box<T> — omistettu heap-allokaatio, vapautuu Drop:lla** ✓
+- *mut T — Box korvataan aina raakaosoittimella
+- Rc<T> — ainoa tapa heap-allokoida
+- Vec<T> — pakollinen yksittäisille olioille
+
+#### `rust-ownership-clone-explicit` · diff 2
+
+Tarvitset kaksi itsenäistä kopioita samasta `Vec<i32>`:stä. Mikä on oikea tapa?
+
+- **vec.clone() — eksplisiittinen syvä kopio Clone-traitin kautta** ✓
+- let b = a; — move riittää kahdelle omistajalle
+- &a kopioi automaattisesti
+- std::copy(a, b) — std-kirjaston memcpy
+
+#### `rust-ownership-copy-trait` · diff 2
+
+Miksi `let b = a;` toimii `i32`:lle mutta ei `String`:lle ilman `.clone()`?
+
+- **i32 toteuttaa Copy-traitin — pienet arvot kopioituvat, String siirtyy (move)** ✓
+- Copy on oletus kaikille tyypeille
+- String on stack-tyyppi kuten i32
+- Kääntäjä kopioi aina heap-tyypit automaattisesti
+
+#### `rust-ownership-drop` · diff 2
+
+Milloin Rust vapauttaa heap-muistin `String`-oliosta automaattisesti?
+
+- **Kun muuttuja poistuu scopesta — Drop-trait ajetaan automaattisesti** ✓
+- Vain kun kutsutaan eksplisiittistä `free()`-funktiota
+- Taustalla oleva GC skannaa muistin säännöllisesti
+- Kun viimeinen `&`-viittaus tuhoutuu — reference counting std:ssä
+
+#### `rust-ownership-move` · diff 1
+
+Funktio ottaa `String`-parametrin arvona. Mitä tapahtuu kutsukohdassa?
+
+- **Omistajuus siirtyy funktioon (move) — alkuperäistä muuttujaa ei voi enää käyttää** ✓
+- String kopioituu automaattisesti kuten Java-merkkijonossa
+- Kääntäjä luo jaetun viitteen taustalla ilman eksplisiittistä &
+- Move tapahtuu vain jos parametri on merkitty `mut`-avainsanalla
+
+#### `rust-ownership-string-str` · diff 1
+
+Funktio ottaa merkkijonon parametriksi mutta ei tarvitse omistaa sitä. Mikä tyyppi on idiomaattisin?
+
+- **&str — lainattu merkkijononäkymä (string slice)** ✓
+- String aina — &str on vanhentunut
+- char* — C-tyylinen merkkijono Rustissa
+- Cow<str> pakollinen kaikissa API:ssa
+
+#### `rust-ownership-vec-push-invalidate` · diff 3
+
+Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe?
+
+- **push voi reallokoida vektorin — r voisi osoittaa invalidiin muistiin** ✓
+- Vec ei salli pushia lainauksen aikana koskaan runtime-virheenä
+- Indeksointi palauttaa aina kopion — viittaus ok
+- Borrow checker ei koske vektoreihin
+
+### rust-safety (2)
+
+#### `rust-safety-borrow-checker` · diff 2
+
+Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?
+
+- **Borrow checker — omistajuus- ja lainaussäännöt kääntäjässä** ✓
+- Runtime GC skannaa jaetut viittaukset ennen säieajoa
+- Kaikki säikeet ajetaan yhdessä prosessissa GIL-lukon alla
+- TSan-instrumentointi jokaisessa release-buildissa oletuksena
+
+#### `rust-safety-unsafe-block` · diff 3
+
+Milloin `unsafe`-lohko on perusteltu?
+
+- **Kun kääntäjä ei voi varmistaa turvallisuutta — FFI, raw pointerit, optimointi** ✓
+- Aina kun borrow checker valittaa — unsafe ohittaa kaiken
+- Performance aina — safe Rust on hidas
+- unsafe kielletty tuotannossa
+
+### rust-testing (8)
+
+#### `rust-testing-catch-unwind` · diff 3
+
+Testissä haluat varmistaa panicin ilman #[should_panic] — esim. dynaaminen viesti. Mikä std-API?
+
+- **std::panic::catch_unwind(Closure) — palauttaa Result<R, Box<dyn Any>>** ✓
+- std::panic::try_catch — Rust 2024
+- panic::Assert trait
+- catch_unwind toimii async closureissa aina
+
+#### `rust-testing-dev-dependencies` · diff 2
+
+mockall ja tokio-test dev-testeissä — minne Cargo.toml riippuvuus?
+
+- **[dev-dependencies] — vain testit ja examples, ei release-binaryn mukana** ✓
+- [dependencies] aina — dev-deps poistettu
+- [test-dependencies] erillinen osio
+- [build-dependencies] testeille
+
+#### `rust-testing-doc-tests` · diff 2
+
+Esimerkkikoodi ///-doc-kommentissa pitää pysyä oikeana. Miten ajat doc testit?
+
+- **cargo test — doc testit ajetaan automaattisesti (/// ``` ... ```)** ✓
+- cargo doc --test erillinen komento
+- Doc testit vain nightlyllä
+- /// koodi ei koskaan suoriteta
+
+#### `rust-testing-integration-dir` · diff 2
+
+Haluat testata kirjastoa ulkoisena asiakkaana (public API). Minne integration testit?
+
+- **tests/*.rs projektin juuressa — jokainen tiedosto erillinen crate** ✓
+- src/tests/mod.rs — ainoa paikka
+- #[integration] attribuutti funktiossa
+- tests/ kääntyy osaksi lib.rs:ää suoraan
+
+#### `rust-testing-mock-trait` · diff 3
+
+Haluat korvata HTTP-clientin testissä ilman oikeaa verkkoa. Mikä pattern Rustissa?
+
+- **Trait abstraction + mock (mockall) — injektoi fake-toteutus** ✓
+- #[mock] built-in derive std:ssä
+- static mut global fake aina
+- cfg(test) unreachable! production code
+
+#### `rust-testing-proptest` · diff 4
+
+Haluat generoida satoja satunnaisia syötteitä parserille. Mikä crate sopii property-based -testaukseen?
+
+- **proptest — generoi inputeja ja shrinks failing casea** ✓
+- quickcheck — ei Rustissa
+- rand::test — std test runner
+- cargo fuzz korvaa proptest:in aina
+
+#### `rust-testing-should-panic` · diff 2
+
+Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutti?
+
+- **#[should_panic] — testi onnistuu jos funktio panikoi** ✓
+- #[expect_panic] — Rust 2024 attribuutti
+- #[test(panic)] cargo syntax
+- catch_unwind ainoa tapa
+
+#### `rust-testing-tokio-test` · diff 2
+
+Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testissä?
+
+- **#[tokio::test] async fn ... — luo test-runtime ja sallii .await** ✓
+- #[test] async fn — toimii ilman makroa
+- block_on testissä aina kielletty
+- cargo test --async flag
+
+### rust-tooling (6)
+
+#### `rust-tooling-cargo` · diff 1
+
+Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.toml`-projektin?
+
+- **cargo new projektin_nimi — luo binääri- tai kirjastoprojektin** ✓
+- rustc --init projektin_nimi — Rustin virallinen projektigeneraattori
+- rustup create projektin_nimi — luo projektin toolchain-managerilla
+- npm init rust projektin_nimi — Rust tukee npm-workspacea natiivisti
+
+#### `rust-tooling-cargo-features` · diff 3
+
+Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille. Miten?
+
+- **Cargo features — [features] default = [] optional json = ["serde_json"]** ✓
+- #[cfg(json)] runtime flag only
+- Erillinen crate aina
+- Cargo.toml ei tue valinnaisia deps
+
+#### `rust-tooling-cargo-test` · diff 1
+
+Miten ajat yksikkötestit Rust-projektissa?
+
+- **cargo test — kääntää ja ajaa #[test]-funktiot ja doc testit** ✓
+- rustc --test only
+- cargo run --tests
+- make test rust standard
+
+#### `rust-tooling-clippy` · diff 2
+
+Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu?
+
+- **cargo clippy — linteri idiomaattisille virheille ja hajuille** ✓
+- rustfmt — clippy korvattu
+- rustc -Wall
+- eslint-plugin-rust
+
+#### `rust-tooling-derive-macro` · diff 2
+
+Mitä `#[derive(Clone, PartialEq)]` tekee käännöksen aikana?
+
+- **Procedural/derive macro generoi trait-toteutukset automaattisesti** ✓
+- Runtime-reflection kuten Java
+- Kopioi structin binaryn toiseen moduleen
+- Vain debug-buildissa
+
+#### `rust-tooling-release-profile` · diff 2
+
+Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento?
+
+- **cargo build --release — optimoinnit päälle (opt-level 3)** ✓
+- cargo build --fast
+- RUSTFLAGS=--O cargo build
+- cargo deploy production
+
+### rust-traits (8)
+
+#### `rust-traits-bounds-generic` · diff 3
+
+Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?
+
+- **where T: PartialOrd — trait bound geneeriselle tyypille** ✓
+- T: Sortable — std-trait
+- dyn PartialOrd parametri
+- Ei rajoituksia — Rust päättelee
+
+#### `rust-traits-default-impl` · diff 2
+
+Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa impl:ia?
+
+- **impl Trait for Type {} — tyhjä impl riittää jos metodilla on default body** ✓
+- Pakollinen override jokaiselle metodille aina
+- default keyword struct-kentässä
+- derive(Default) korvaa trait-metodit
+
+#### `rust-traits-definition` · diff 2
+
+Mikä Rustin trait vastaa käytännössä Java-interfacen roolia?
+
+- **trait — jaettu käyttäytymismäärittely impl-lohkoilla** ✓
+- abstract class — Rustin perustyypit
+- protocol extension Swift-tyyliin natiivisti
+- vtable aina compile-time ilman dyn
+
+#### `rust-traits-deref-coercion` · diff 3
+
+Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy?
+
+- **Deref coercion — String dereferoi &str:ksi automaattisesti** ✓
+- String perii str Rustissa
+- Implisiittinen clone merkkijonoon
+- Kääntäjäbugi
+
+#### `rust-traits-derive-debug` · diff 1
+
+Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?
+
+- **#[derive(Debug)] struct Foo { ... } — automaattinen Debug-toteutus** ✓
+- impl Debug käsin aina pakollinen
+- println!("{:?}", foo) toimii ilman Debugia
+- #[debug] attribuutti
+
+#### `rust-traits-dyn-trait-object` · diff 3
+
+Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä tyyppi?
+
+- **Vec<Box<dyn Trait>> — trait object dynaamisella dispatchilla** ✓
+- Vec<impl Trait> — sallittu heterogeeniselle
+- Vec<T> where T: Trait ilman Box
+- Any<T> std:ssä
+
+#### `rust-traits-impl-trait-return` · diff 3
+
+Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?
+
+- **impl Trait — staattinen dispatch palautuksessa (opaque return type)** ✓
+- concrete struct aina — impl Trait kielletty
+- Box<dyn Trait> ainoa tapa
+- enum EveryVariant — pakollinen
+
+#### `rust-traits-iterator` · diff 2
+
+Mikä trait mahdollistaa `for item in collection` -silmukan?
+
+- **IntoIterator — for kutsuu into_iter() automaattisesti** ✓
+- Iterator aina suoraan for-silmukassa ilman into_iter
+- Iterable trait std:ssä
+- foreach! makro
+
+### rust-types (8)
+
+#### `rust-types-enum-variants` · diff 2
+
+Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?
+
+- **Enum variantit datalla: Ok(String) / Err(StatusCode) — algebraic data type** ✓
+- Struct + bool flag — Rustin suositeltu tapa
+- Union kuten C — oletus Rustissa
+- HashMap<String, Value> aina
+
+#### `rust-types-if-let` · diff 1
+
+Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?
+
+- **if let Some(x) = opt { ... }** ✓
+- match opt { Some(x) => ..., None => {} } aina pakollinen
+- opt.unwrap() tuotantokoodissa
+- if opt.is_some() { opt.unwrap() }
+
+#### `rust-types-match-exhaustive` · diff 2
+
+Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi?
+
+- **Exhaustive matching — kääntäjä varmistaa ettei varianttia jää käsittelemättä** ✓
+- Runtime-default None jos variant puuttuu
+- match on vain syntaktinen sokeri if:lle ilman tarkistusta
+- Vain Option vaatii exhaustivenessin
+
+#### `rust-types-method-receiver` · diff 2
+
+Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&mut self`?
+
+- **&mut self — eksklusiivinen muokkauslainaus ilman omistajuuden siirtoa** ✓
+- self aina — muokkaus vaatii omistajuuden siirron
+- &self riittää aina mut-kentille
+- mut self ilman & — validi Rust 2021
+
+#### `rust-types-option` · diff 1
+
+Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-pointerin?
+
+- **Option<T> — Some(arvo) tai None ilman null-osoitinta** ✓
+- T? — valinnainen tyyppiparametri kuten TypeScriptissä
+- Result<T, ()> — virhetyyppi puuttuville arvoille
+- Maybe<T> — standardikirjaston alias Optionille
+
+#### `rust-types-result` · diff 2
+
+Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai virheen?
+
+- **Result<T, E> — Ok(arvo) tai Err(virhe)** ✓
+- Option<T> — Err-koodi piilotetaan None-arvoon
+- try/catch — Rust tukee poikkeuksia kuten Javassa
+- Either<T, E> — vain kolmannen osapuolen kirjastoissa, ei std:ssä
+
+#### `rust-types-struct-update` · diff 2
+
+Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden kentän. Mikä syntaksi?
+
+- **Struct update syntax: `User { email: new, ..old }`** ✓
+- old.email = new — struct-kentät aina mut oletuksena
+- User::clone(&old) ainoa tapa
+- memcpy(&old, &new)
+
+#### `rust-types-tuple-struct` · diff 2
+
+Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavalliseen u64:ään. Miten?
+
+- **Tuple struct: `struct UserId(u64);` — erillinen tyyppi samaan dataan** ✓
+- type UserId = u64 — newtype turvallisuus
+- const UserId: u64
+- #define UserId u64
 
 ## scrum (90)
 
