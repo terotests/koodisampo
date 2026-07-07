@@ -3183,7 +3183,7 @@ class WorldMap  {
     return true;
   };
   spawnQuizRewardFruits (gameMinutes) {
-    const expireMinute = gameMinutes + 20;
+    const expireMinute = gameMinutes + 60;
     let fruitCount = 1;
     const countRoll = Math.floor(Math.random()*(1 - 0 + 1) + 0);
     if ( countRoll == 1 ) {

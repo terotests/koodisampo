@@ -1786,7 +1786,7 @@ class WorldMap {
   }
 
   fn spawnQuizRewardFruits:void (gameMinutes:int) {
-    def expireMinute:int (gameMinutes + 20)
+    def expireMinute:int (gameMinutes + 60)
     def fruitCount:int 1
     def countRoll:int (random 0 1)
     if (countRoll == 1) {
