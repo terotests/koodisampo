@@ -16,16 +16,28 @@ Molemmat ovat autentikaatio- ja valtuutusaukkoja, jotka eivät näy yksinkertais
 
 **Vanhentunut tai väärälle aud:lle myönnetty token voidaan hyväksyä edelleen.**
 
-Palvelimen on validoitava kaikki relevantit claimit: `exp` (token ei saa olla vanhentunut), `aud` (token on tarkoitettu tälle API:lle), `iss` (luotettu myöntäjä) ja allekirjoitus (`alg`, avain/jwks). RFC 7519 määrittelee nämä pakollisiksi turvalliseen käyttöön. Validoi exp, aud, iss ja allekirjoitus palvelimella — RFC 7519.
+Palvelimen on validoitava tämän käyttötapauksen kannalta relevantit claimit: allekirjoitus ja algoritmi, `exp`, odotettu `aud`, odotettu `iss` sekä tarvittaessa `nbf`, `iat` ja `scope`/`roles`. RFC 7519 määrittelee näiden claimien merkityksen; sovellus päättää, mitkä ovat sen turvallisuusmallissa pakollisia.
 
 Esimerkki tarkistuslogiikasta (pseudo):
 
 ```
-verify_signature(token, jwks)
-assert token.exp > now()
-assert token.aud == "admin-api"
-assert token.iss == "https://auth.example.com"
+claims = verifyJwt(token, {
+  issuer: "https://auth.example.com",
+  audience: "admin-api",
+  algorithms: ["RS256"],
+  jwks: trustedJwks
+})
+
+if claims.exp <= now:
+    reject()
 ```
+
+Lisäksi tuotannossa:
+
+- Älä hyväksy tokenin headerista algoritmia sokkona; salli vain odotettu algoritmi.
+- Tarkista `kid` JWKS-avaimista turvallisesti.
+- Käytä pientä clock skew -toleranssia `exp`/`nbf`-tarkistuksissa.
+- Älä käytä `assert`-lausetta tuotantovalidointiin esimerkkipseudossakaan, koska monissa kielissä assertit voidaan poistaa käytöstä.
 
 ## Käytännössä
 

