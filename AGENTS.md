@@ -78,6 +78,10 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | `npm run study:sync` | Generoi `study/docs/topics/` kysymyspankista |
 | `npm run study:progress` | Oppituntidokumentaation kattavuus |
 | `npm run study:import` | Tuo `opiskelu/oppitunnit.md` → `opiskelu/lessons/` |
+| `npm run study:glossary:scan` | Etsi puuttuvat lyhenteet → `.tmp/glossary-scan.json` |
+| `npm run study:glossary:export-batches` | Vie tyhjät kuvaus-erät → `scripts/data/glossary-descriptions/` |
+| `npm run study:glossary:apply` | Yhdistä kuvaukset + oppituntilinkit → `opiskelu/lyhenteet.md` |
+| `npm run study:glossary:update` | Lisää vain puuttuvat stub-otsikot (ei ylikirjoita kuvauksia) |
 
 ## CI / GitHub Pages
 

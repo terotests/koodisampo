@@ -8,6 +8,8 @@ title: Lyhenteet
 
 Tekniset lyhenteet ja akronyymit oppitunneissa. Oppitunneissa lyhenteet linkitetään automaattisesti tähän hakemistoon (`npm run study:sync`). Käsin kirjoittaessa voit linkittää muodossa `[GUC](/docs/lyhenteet#guc)`.
 
+Ylläpito: kuvaukset `scripts/data/glossary-descriptions/` → `npm run study:glossary:apply` (generoi myös **Oppitunnit**-takaisinlinkit kysymys-id:ihin). Skannaus: `npm run study:glossary:scan`.
+
 ## PostgreSQL ja tietokannat
 
 ### GUC {#guc}

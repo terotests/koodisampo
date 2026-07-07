@@ -30,7 +30,19 @@ Tiedosto `opiskelu/lessons/{question-id}.md`:
 2. Jokaisessa osiossa **2–4 kappaletta** (## Tilanne, ## Ratkaisu, ## Käyttöönotto / ## Taustaa tms.).
 3. **Ei** "Miksi muut eivät kelpaa?" -listaa — väärät vaihtoehdot kuuluvat peliin, ei oppitunnille.
 4. Linkitä virallinen lähde (`sourceUrl` kysymyspankissa) lopussa tai upota `[Lue lisää](url)`.
-5. Lyhenteet (GUC, OOM, RAII, …): älä toista pitkiä selityksiä joka kerta — ne linkitetään automaattisesti [lyhennehakemistoon](/docs/lyhenteet) `npm run study:sync`:ssä. Uusi lyhenne: lisää `opiskelu/lyhenteet.md` muodossa `### TERM {#anchor}`.
+5. Lyhenteet (GUC, OOM, RAII, …): älä toista pitkiä selityksiä joka kerta — ne linkitetään automaattisesti [lyhennehakemistoon](/docs/lyhenteet) `npm run study:sync`:ssä. Uusi lyhenne: lisää kuvaus `scripts/data/glossary-descriptions/` (tai suoraan `opiskelu/lyhenteet.md` muodossa `### TERM {#anchor}`), aja `npm run study:glossary:apply` ja sitten `npm run study:sync`.
+
+   Lyhennehakemiston ylläpito:
+
+   ```bash
+   npm run study:glossary:scan           # löydä puuttuvat termit + viitteet
+   npm run study:glossary:export-batches # tyhjät batch-tiedostot kuvauksille
+   # täydennä scripts/data/glossary-descriptions/batch-*.json
+   npm run study:glossary:apply          # kuvaukset + Oppitunnit-takaisinlinkit
+   npm run study:sync
+   ```
+
+   Suodatin vääriä osumia: `scripts/data/glossary-filter.json`.
 
 Esimerkki valmiista laajasta oppitunnista: `b03-pg-config-statements-ext.md`.
 
