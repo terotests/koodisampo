@@ -594,8 +594,8 @@
     ]
   },
   "SYN/SYN": {
-    "description": "TCP-yhteyden kolmivaiheisen kättelyn paketit: `SYN` (client→server), `SYN-ACK` (server→client) ja `ACK` (client→server). UDP on yhteydeton protokolla eikä käytä SYN/SYN-ACK-kättelyä — väite \"UDP käyttää kolmivaiheista kättelyä\" on virheellinen.",
-    "skip": false,
+    "description": "Virheellinen skannausartefakti (SYN/SYN-ACK/ACK) — ei erillistä hakemistotermiä.",
+    "skip": true,
     "context": [
       {
         "file": "content/question-banks/linux-ops.json",
