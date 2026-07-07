@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { generateCorporateHq } from "../hosts/terminal/mapGenerator.mjs";
 import { getEncounterQuiz, pickQuestion, listAllQuestions, buildQuizReaction, buildAiStudyText, AI_STUDY_KARMA_COST, buildDismissiveLine, needsEncounterQuiz, clearEncounterQuizCache } from "../hosts/terminal/encounterQuestions.mjs";
+import { createLessonFileReader } from "../hosts/shared/lessonSolution.mjs";
 import { getMasteredQuestionIds, emptyQuizHistory, recordQuizAnswer } from "../hosts/terminal/quizHistory.mjs";
 import { sessionMap } from "../hosts/shared/sessionMap.mjs";
 
@@ -231,7 +232,8 @@ export function runEncounterTests() {
 
     const avahiQ = allQ.find((q) => q.id === "avahi-mdns");
     assert(avahiQ, "avahi question exists");
-    const study = buildAiStudyText(avahiQ);
+    const readLesson = createLessonFileReader();
+    const study = buildAiStudyText(avahiQ, readLesson);
     assert(study.includes("mDNS"), "AI study text explains mDNS");
     assert(study.includes("Ratkaisu"), "AI study has solution section");
     assert(study.includes("[") && study.includes("]"), "AI study lists numbered correct answer");

@@ -35,6 +35,7 @@ import {
   scheduleQuizChoiceFeedback,
   spawnQuizMoneyFlyAtKey,
 } from "./quizChoiceEffects";
+import { md2html } from "../../hosts/shared/md2html.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
  type State = any;
@@ -513,7 +514,7 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="overlay-title ai">═══ AI-opetus (ChatCorp™) ═══</div>`;
         html += `<div class="stats" style="margin-bottom:8px">Palkka: ${esc(formatSalary(state.salary))} <span style="color:#f85149">−5 €</span></div>`;
         html += `<div><span class="entity-name">${esc(ov.entityName)}</span> <span style="color:#8b949e">katselee sivuun kun kaivat puhelimen.</span></div>`;
-        if (ov.solutionChoiceN > 0 || ov.solutionText) {
+        if (ov.solutionChoiceN > 0 || ov.solutionText || ov.solutionMarkdown) {
           html += `<div class="quiz-ai-solution">`;
           html += `<h4>── Ratkaisu ──</h4>`;
           if (ov.solutionChoiceN > 0) {
@@ -521,8 +522,8 @@ export function mountGameUI(game: WebGame) {
           } else if (ov.solutionText) {
             html += `<div class="quiz-ai-solution-choice">${esc(ov.solutionText)}</div>`;
           }
-          if (ov.solutionExplanation) {
-            html += `<div class="quiz-ai-solution-note">${esc(ov.solutionExplanation)}</div>`;
+          if (ov.solutionMarkdown) {
+            html += `<div class="quiz-ai-solution-body markdown-body">${md2html(String(ov.solutionMarkdown))}</div>`;
           }
           html += `</div>`;
         }

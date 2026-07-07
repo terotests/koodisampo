@@ -31,7 +31,11 @@ export async function createBrowserGame(): Promise<WebGame> {
   const dialoguePath = `${base}content/dialogues/pack.json`;
   const dialogueUrl = import.meta.env.DEV ? `${dialoguePath}?v=${Date.now()}` : dialoguePath;
   let currentMapJson = await fetchWorldText(base, import.meta.env.DEV);
-  const [dialogueRes, npcBehaviorRes, quizReactionRes, questions] = await Promise.all([
+  const lessonSolutionsPath = `${base}content/lesson-solutions.json`;
+  const lessonSolutionsUrl = import.meta.env.DEV
+    ? `${lessonSolutionsPath}?v=${Date.now()}`
+    : lessonSolutionsPath;
+  const [dialogueRes, npcBehaviorRes, quizReactionRes, lessonSolutionsRes, questions] = await Promise.all([
     fetch(dialogueUrl),
     fetch(
       import.meta.env.DEV
@@ -43,6 +47,7 @@ export async function createBrowserGame(): Promise<WebGame> {
         ? `${base}content/quiz-reactions/pack.json?v=${Date.now()}`
         : `${base}content/quiz-reactions/pack.json`,
     ),
+    fetch(lessonSolutionsUrl),
     loadAllQuestionsFromPublic(base),
   ]);
   setQuestionLoader(() => questions);
@@ -55,9 +60,13 @@ export async function createBrowserGame(): Promise<WebGame> {
   if (!quizReactionRes.ok) {
     throw new Error("Koodivastausreaktioiden lataus epäonnistui");
   }
+  if (!lessonSolutionsRes.ok) {
+    throw new Error("Oppituntiratkaisujen lataus epäonnistui");
+  }
   const dialoguePackJson = await dialogueRes.text();
   const npcBehaviorPackJson = await npcBehaviorRes.text();
   const quizReactionPackJson = await quizReactionRes.text();
+  const lessonSolutions = await lessonSolutionsRes.json();
   let cachedSave = (await loadPlayerSave()) ?? {};
   const storyCatalog = new StoryCatalog();
 
@@ -77,6 +86,7 @@ export async function createBrowserGame(): Promise<WebGame> {
     dialoguePackJson,
     npcBehaviorPackJson,
     quizReactionPackJson,
+    lessonSolutions,
     storyCatalog,
     gameHost,
     loadSave: () => cachedSave,

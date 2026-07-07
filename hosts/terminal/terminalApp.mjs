@@ -58,6 +58,7 @@ import {
   randomEncounterPickNonce,
 } from "./encounterQuestions.mjs";
 import { lessonLinkLine } from "../shared/studyLessonLinks.mjs";
+import { createLessonFileReader } from "../shared/lessonSolution.mjs";
 import { castListEnabledForTerminal } from "./debugFlags.mjs";
 import { collectAllCastFromSession, formatCastRosterText } from "./staffRoster.mjs";
 import {
@@ -1007,7 +1008,8 @@ async function showQuizOutcome(session, quiz, correct) {
 
 async function showAiStudy(session, quiz) {
   const cost = AI_STUDY_KARMA_COST;
-  const text = buildAiStudyText(quiz.question);
+  const readLesson = createLessonFileReader();
+  const text = buildAiStudyText(quiz.question, readLesson);
   const entityName = quiz.entity?.name || session.pendingEntity?.name;
 
   drawLinesClear([

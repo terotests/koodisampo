@@ -14,6 +14,11 @@ import {
 } from "./quizHistory.mjs";
 import { shuffleChoices } from "./shuffleChoices.mjs";
 import { lessonLinkLine } from "../shared/studyLessonLinks.mjs";
+import {
+  getAiStudySolution,
+  lessonSolutionMarkdown,
+  resolveAiStudySolution,
+} from "../shared/lessonSolutionCore.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const banksDir = resolve(__dirname, "../../content/question-banks");
@@ -657,28 +662,13 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
 }
 
 /** Ratkaisu shufflatusta monivalinnasta (valintanumero + teksti). */
-export function getAiStudySolution(question) {
-  const choices = question?.choices ?? [];
-  const correctIdx = choices.findIndex((c) => c.correct);
-  if (correctIdx < 0) {
-    return {
-      choiceN: 0,
-      choiceText: "",
-      explanation: question?.studyNotes || question?.correctFeedback || "",
-    };
-  }
-  return {
-    choiceN: correctIdx + 1,
-    choiceText: choices[correctIdx]?.text ?? "",
-    explanation: question?.studyNotes || question?.correctFeedback || "",
-  };
-}
+export { getAiStudySolution, resolveAiStudySolution } from "../shared/lessonSolutionCore.mjs";
 
 /** Laajempi opetusnäkymä AI-vihjeeseen. */
-export function buildAiStudyText(question) {
-  const correct = question.choices?.find((c) => c.correct);
+export function buildAiStudyText(question, readLessonFile = null) {
   const wrong = question.choices?.filter((c) => !c.correct) || [];
   const solution = getAiStudySolution(question);
+  const lesson = lessonSolutionMarkdown(question, readLessonFile);
   const parts = [];
 
   const tag = question.chapter || question.domain || "aihe";
@@ -689,12 +679,12 @@ export function buildAiStudyText(question) {
   parts.push("── Ratkaisu ──");
   if (solution.choiceN > 0) {
     parts.push(`[${solution.choiceN}] ${solution.choiceText}`);
-  } else if (correct?.text) {
-    parts.push(correct.text);
+  } else if (solution.choiceText) {
+    parts.push(solution.choiceText);
   }
-  if (solution.explanation) {
+  if (lesson.markdown) {
     parts.push("");
-    parts.push(solution.explanation);
+    parts.push(lesson.markdown);
   }
   if (wrong.length > 0) {
     parts.push("");
@@ -706,10 +696,6 @@ export function buildAiStudyText(question) {
   if (question.wrongFeedback && question.studyNotes) {
     parts.push("");
     parts.push(`Yleinen virhe: ${question.wrongFeedback}`);
-  }
-  const src = question.sourceUrl || question.bankSource;
-  if (src) {
-    parts.push(`\n── Lisätietoa ──\n${src}`);
   }
   parts.push(`\n── Oppitunti ──\n${lessonLinkLine(question)}`);
   return parts.join("\n");

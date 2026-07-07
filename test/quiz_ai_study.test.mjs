@@ -5,7 +5,8 @@ import assert from "node:assert/strict";
 import * as gameHost from "../hosts/terminal/gameHost.mjs";
 import { createWebGameController } from "../hosts/shared/webGameController.mjs";
 import { dispatch, sessionMap } from "../hosts/terminal/gameHost.mjs";
-import { getAiStudySolution } from "../hosts/terminal/encounterQuestions.mjs";
+import { buildLessonSolutionsIndex } from "../hosts/shared/lessonSolution.mjs";
+import { getAiStudySolution, listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
@@ -36,6 +37,7 @@ function createQuizGame() {
     },
     loadStoryJson: () => null,
     castListEnabled: () => true,
+    lessonSolutions: buildLessonSolutionsIndex(listAllQuestions()),
   });
 }
 
@@ -56,7 +58,7 @@ export function runQuizAiStudyTests() {
       map.playerX = coworker.x;
       map.playerY = coworker.y - 1;
       session.startEncounter(coworker);
-      session.onEncounterChoice("talk");
+      session.encounterResult = "quiz";
     });
 
     let snap = game.snapshot();
@@ -70,6 +72,7 @@ export function runQuizAiStudyTests() {
     assert.ok(snap.overlay?.solutionChoiceN >= 1, "AI overlay exposes solution choice number");
     assert.equal(snap.quizAiUsed, true, "AI use tracked for later answer feedback");
     assert.ok(snap.overlay?.solutionText, "AI overlay exposes solution text");
+    assert.ok(snap.overlay?.solutionMarkdown, "AI overlay exposes lesson markdown");
 
     game.handleKey("enter");
     snap = game.snapshot();
@@ -78,6 +81,12 @@ export function runQuizAiStudyTests() {
     assert.ok(snap.quiz?.choices?.length, "same quiz still available");
     assert.equal(snap.quiz?.choices?.map((c) => c.text).join("|"), choicesBefore, "AI return keeps same shuffled question");
     assert.equal(snap.quizAiUsed, true, "AI use remains until quiz completes");
+
+    const avahi = listAllQuestions().find((q) => q.id === "avahi-mdns");
+    assert.ok(avahi, "avahi-mdns exists for solution test");
+    const avahiSolution = buildLessonSolutionsIndex([avahi])[avahi.id];
+    assert.equal(avahiSolution.source, "lesson");
+    assert.match(avahiSolution.markdown, /avahi-browse/u, "lesson index includes study Ratkaisu");
 
     const shuffled = [
       { text: "wrong", correct: false },

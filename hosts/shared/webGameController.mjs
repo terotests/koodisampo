@@ -36,6 +36,7 @@ import {
   emptyStudyBacklog,
 } from "../terminal/studyBacklog.mjs";
 import { lessonUrl } from "./studyLessonLinks.mjs";
+import { resolveAiStudySolution } from "./lessonSolutionCore.mjs";
 import {
   collectAllCastFromSession,
   collectStaffFromSession,
@@ -164,6 +165,7 @@ export function createWebGameController(deps) {
   const dialoguePackJson = loadDialoguePackJson(deps);
   const npcBehaviorPackJson = loadNpcBehaviorPackJson(deps);
   const quizReactionPackJson = loadQuizReactionPackJson(deps);
+  const lessonSolutions = deps.lessonSolutions ?? {};
   let mapJson = initialMapJson ?? (getMapJson ? getMapJson() : "");
   const {
     createGameSession,
@@ -679,7 +681,8 @@ function serializeOverlay(ov) {
       lessonUrl: ov.lessonUrl || "",
       solutionChoiceN: ov.solutionChoiceN ?? 0,
       solutionText: ov.solutionText ?? "",
-      solutionExplanation: ov.solutionExplanation ?? "",
+      solutionMarkdown: ov.solutionMarkdown ?? "",
+      solutionSource: ov.solutionSource ?? "stub",
     };
   }
   if (ov.type === "banter") {
@@ -1099,7 +1102,7 @@ function handleQuizKey(key) {
     });
     if (!charged) return;
     quizAiUsed = true;
-    const solution = getAiStudySolution(quiz.question);
+    const solution = resolveAiStudySolution(quiz.question, (id) => lessonSolutions[id]);
     overlay = {
       type: "aiStudy",
       entityName: quiz.entity?.name || session.pendingEntity?.name,
@@ -1107,7 +1110,8 @@ function handleQuizKey(key) {
       lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
       solutionChoiceN: solution.choiceN,
       solutionText: solution.choiceText,
-      solutionExplanation: solution.explanation,
+      solutionMarkdown: solution.markdown,
+      solutionSource: solution.source,
     };
     persistWeb();
     return;
