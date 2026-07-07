@@ -1,0 +1,1507 @@
+{
+  "POSIX": {
+    "description": "**Portable Operating System Interface** — IEEE-standardi Unix-yhteensopiville käyttöjärjestelmille. Määrittelee C-kirjaston funktiot, tiedostojärjestelmän rajapinnan ja prosessien hallinnan. `rename()` ja tiedosto-operaatiot ovat POSIX-standardoituja; C++17:n `std::filesystem` korvaa useimmat POSIX-spesifiset kutsut kannettavalla tavalla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-cpp-endian-portable.md",
+        "questionId": "b07-cpp-endian-portable",
+        "excerpt": "Vanhemmassa C++:ssa: / (POSIX) tai kirjastot kuten Boost.Endian. Struct…"
+      },
+      {
+        "file": "opiskelu/lessons/b11-cpp-std-filesystem.md",
+        "questionId": "b11-cpp-std-filesystem",
+        "excerpt": "Jokainen polku-operaatio vaatii -haarat. Virheet copy-paste:ssa — Windo…"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "prod-cpp-raii-rollback",
+        "excerpt": "Write-then-rename on klassinen atomisuusmalli — POSIX rename on atomine…"
+      }
+    ]
+  },
+  "PRECEDING": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-window-frame-rows.md",
+        "questionId": "sqd-window-frame-rows",
+        "excerpt": "**ROWS BETWEEN 6 PRECEDING AND CURRENT ROW** — seitsemän rivin ikkuna:"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-running-total",
+        "excerpt": "SUM(amount) OVER (ORDER BY day ROWS BETWEEN UNBOUNDED PRECEDING AND CUR…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-window-frame-rows",
+        "excerpt": "ROWS BETWEEN 6 PRECEDING AND CURRENT ROW — seitsemän päivän ikkuna"
+      }
+    ]
+  },
+  "READ": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-isolation-level",
+        "excerpt": "PostgreSQL default READ COMMITTED — transaction isolation docs."
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-isolation-level",
+        "excerpt": "READ COMMITTED sallii non-repeatable read — tarvitset REPEATABLE READ j…"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-isolation-level",
+        "excerpt": "READ UNCOMMITTED on Postgres default"
+      }
+    ]
+  },
+  "SAST": {
+    "description": "**Static Application Security Testing** — staattinen tietoturva-analyysi lähdekoodille ilman suoritusta. CI-putkeen integroitu SAST-skanneri (esim. SonarQube, Semgrep) löytää injektiohaavoittuvuudet ja insecure API -käytöt automaattisesti. SAST täydentää dependency-skannausta ja dynaamista DAST-testausta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/exp-scrum-dod-security-review.md",
+        "questionId": "exp-scrum-dod-security-review",
+        "excerpt": "DoD voidaan laajentaa domain-kohtaisesti — security on osa valmiutta. L…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-scrum-dod-security-review.md",
+        "questionId": "exp-scrum-dod-security-review",
+        "excerpt": "Kirjautuminen, maksut, henkilötiedot ja ulkoiset rajapinnat ansaitsevat…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-scrum-dod-security-review.md",
+        "questionId": "exp-scrum-dod-security-review",
+        "excerpt": "- Integroi SAST/dependency scan CI-portiksi; punainen skannaus = ei Don…"
+      }
+    ]
+  },
+  "SDK": {
+    "description": "**Software Development Kit** — ohjelmistokehityspaketti, joka sisältää kirjastot, headerit, esimerkit ja työkalut tietyn alustan tai API:n käyttöön. Järjestelmän tai laitteiston SDK toimittaa `<>`-muotoiset headerit, joita `#include`-direktiivit kutsuvat projektin omien `\"\"`-headereiden sijaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-dynamic-08.md",
+        "questionId": "b02-js-modules-dynamic-08",
+        "excerpt": "Kääri kutsu try/catchiin — verkko- tai CSP-virhe ei kaada koko appia. F…"
+      },
+      {
+        "file": "opiskelu/lessons/b11-cpp-local-include-quotes.md",
+        "questionId": "b11-cpp-local-include-quotes",
+        "excerpt": "etsii ensin nykyisestä hakemistosta, sitten include pathista. vain syst…"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b11-cpp-local-include-quotes",
+        "excerpt": "#include \"MyWidget.hpp\" paikallisille — <> järjestelmä/SDK-headereille"
+      }
+    ]
+  },
+  "SETS": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-grouping-sets.md",
+        "questionId": "sqd-grouping-sets",
+        "excerpt": "GROUPING SETS määrittelee tarkat aggregaatiotasot — tehokkaampi kuin us…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-grouping-sets.md",
+        "questionId": "sqd-grouping-sets",
+        "excerpt": "ja ovat erikoistapauksia GROUPING SETS:stä. Käytä GROUPING SETS, kun ta…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-grouping-sets",
+        "excerpt": "GROUPING SETS määrittelee tarkat aggregaatiotasot."
+      }
+    ]
+  },
+  "URI": {
+    "description": "**Uniform Resource Identifier** — yleinen tunniste resurssille verkossa tai järjestelmässä. `http://`, `postgres://` ja `ipp://` ovat URI:n erikoistapauksia. Avahi-palvelun mDNS-löytö palauttaa CUPS-tulostimen URI:n, jonka `lpadmin -v` hyväksyy suoraan konfiguraatioon.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-linux-avahi-browse-services.md",
+        "questionId": "b03-linux-avahi-browse-services",
+        "excerpt": "resolvaa hostname ja portin. Tulos kertoo URI:n, esim. . listaa mDNS-pa…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-avahi-browse-services.md",
+        "questionId": "b03-linux-avahi-browse-services",
+        "excerpt": "Lisää tulostin CUPS:iin löydetyllä URI:lla:"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "Application framework (JDBC, pgx, SQLAlchemy) mapittaa -parametrin conn…"
+      }
+    ]
+  },
+  "VIP": {
+    "description": "**Virtual IP address** — virtuaalinen IP-osoite, jota useampi palvelin tai prosessi voi jakaa kuormantasauksessa tai failoverissa. Linuxissa VIP lisätään `ip addr add`-komennolla rajapintaan toissijaisena osoitteena; cloud-ympäristöissä VIP hallitaan usein load balancerin tai orchestraattorin kautta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-linux-network-ip-addr.md",
+        "questionId": "b04-linux-network-ip-addr",
+        "excerpt": "Cloud-ympäristöissä secondary IP:t ja VIP:t lisätään usein erikseen — e…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-network-ip-addr-secondary.md",
+        "questionId": "b12-linux-network-ip-addr-secondary",
+        "excerpt": "# Palvelimelle tarvitaan toinen IPv4 samaan rajapintaan (VIP). Linux-ko…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-network-ip-addr-secondary.md",
+        "questionId": "b12-linux-network-ip-addr-secondary",
+        "excerpt": "ei lisää osoitetta verkkopinnoille — se vain nimeää isäntän. Pysyvään k…"
+      }
+    ]
+  },
+  "VXLAN": {
+    "description": "**Virtual Extensible LAN** — verkkoprotokolla, joka tunneloi Ethernet-kehykset UDP:n yli (portti 4789). Docker Swarm overlay-verkko käyttää VXLAN-tunneleja konttien yhdistämiseen eri isäntien välillä; jokainen palveluverkko saa oman VNI-tunnuksensa (VXLAN Network Identifier). VXLAN vaatii klusterin — yksittäinen host käyttää bridge-verkkoa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/docker-overlay.md",
+        "questionId": "docker-overlay",
+        "excerpt": "**Overlay (VXLAN) -verkko** kytkee kontit eri hostien välillä klusteris…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-overlay.md",
+        "questionId": "docker-overlay",
+        "excerpt": "Liikenne kulkee VXLAN-tunnelien kautta hostien välillä; embedded DNS to…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-overlay.md",
+        "questionId": "docker-overlay",
+        "excerpt": "Overlay vaatii klusterin (Swarm mode tai vastaava orchestrator). Tuotan…"
+      }
+    ]
+  },
+  "YAML": {
+    "description": "**YAML Ain't Markup Language** — ihmisluettava datan sarjallistamisformaatti, joka perustuu sisennöintiin. Käytetään laajalti CI/CD-putkien (GitHub Actions, GitLab CI), Docker Compose -tiedostojen ja Kubernetes-resurssien konfiguroimiseen. Robot Framework tukee YAML-muotoisia keyword-tiedostoja.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/robot-framework.json",
+        "questionId": "rf-keyword-structure",
+        "excerpt": "keyword: -lohko YAML-muodossa testin sisällä erillisenä sektiona"
+      },
+      {
+        "file": "content/question-banks/robot-framework.json",
+        "questionId": "rf-resource-files",
+        "excerpt": "Tallenna avainsanat YAML-tiedostoon ja lataa ne --include-lipulla ajossa"
+      }
+    ]
+  },
+  "ACL": {
+    "description": "**Access Control List** — käyttöoikeusluettelo, joka määrittelee kuka saa tehdä mitä tietylle resurssille. Verkossa ACL rajaa liikennettä IP-osoitteiden tai porttien perusteella; Linuxissa POSIX ACL laajentaa tiedosto-oikeuksia `setfacl`-komennolla. macvlan-verkkoa käytettäessä legacy-laitteiden ACL-säännöt edellyttävät usein laitekohtaisen MAC-osoitteen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "Useita palvelinkontteja pitää näkyä tehdas-LANissa erillisinä laitteina…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "Valitse macvlan kun laitteet vaativat erillisen MAC:in (legacy SNMP, AC…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-linux-net-firewall-cmd.md",
+        "questionId": "b09-linux-net-firewall-cmd",
+        "excerpt": "Ilman aukko katoaa rebootissa. Rich rule voi rajoittaa lähde-IP:hen tur…"
+      }
+    ]
+  },
+  "APN": {
+    "description": "**Access Point Name** — operaattorin yhdyskäytävänimi, jota modeemi käyttää mobiiliyhteyden muodostamiseen (esim. `internet` tai `data.operator.fi`). APN-asetukset konfiguroidaan `mmcli`-komennolla ModemManager-palveluun tai NetworkManagerin kautta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-dbus-modemmanager-signal.md",
+        "questionId": "b12-linux-dbus-modemmanager-signal",
+        "excerpt": "**mmcli lukee signaalin, operaattorin ja APN-asetukset** ModemManagerin…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-dbus-modemmanager-signal.md",
+        "questionId": "b12-linux-dbus-modemmanager-signal",
+        "excerpt": "Modemin indeksi () löytyy :stä. NetworkManager voi hallita samaa modemi…"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b12-linux-dbus-modemmanager-signal",
+        "excerpt": "mmcli puhuu org.freedesktop.ModemManager1 D-Bus-palvelulle — signaali, …"
+      }
+    ]
+  },
+  "CIDR": {
+    "description": "**Classless Inter-Domain Routing** — IP-osoitenotaatio, jossa verkon laajuus ilmaistaan prefiksipituudella (esim. `192.168.1.0/24`, `10.0.0.0/8`). `ip route add`-komennossa ja WireGuardin `AllowedIPs`-kentässä CIDR-notaatiolla määritetään reititetyt aliverkot; puuttuva CIDR-reitti on yleinen syy siihen, että VPN-tunneli toimii mutta sisäverkot eivät tavoita.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-linux-network-ip-route-table.md",
+        "questionId": "b03-linux-network-ip-route-table",
+        "excerpt": "WireGuardissa määrittää mitkä prefixit reititetään tunneliin — puuttuva…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-network-ip-route.md",
+        "questionId": "b05-linux-network-ip-route",
+        "excerpt": "\"VPN connected\" ≠ kaikki sisäverkot routattu. Dokumentoi jokainen tarvi…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-linux-network-route-missing.md",
+        "questionId": "exp-linux-network-route-missing",
+        "excerpt": "VPN-clientit pushaavat reittejä eri tavoin; varmista että split-tunnel …"
+      }
+    ]
+  },
+  "CNI": {
+    "description": "**Container Network Interface** — standardi liitännäisrajapinta konttien verkottamiseen Kubernetes- ja Docker Swarm -ympäristöissä. CNI-plugin (esim. Flannel, Calico, Cilium) luo overlay-verkon ja liittää podien verkkorajapinnat; Docker Swarm käyttää sisäistä VXLAN-pohjaista CNI-toteutusta overlay-verkkoihin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/docker-overlay.md",
+        "questionId": "docker-overlay",
+        "excerpt": "**Overlay (VXLAN) -verkko** kytkee kontit eri hostien välillä klusteris…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-overlay.md",
+        "questionId": "docker-overlay",
+        "excerpt": "Overlay vaatii klusterin (Swarm mode tai vastaava orchestrator). Tuotan…"
+      },
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "docker-overlay",
+        "excerpt": "Overlay rakentaa monen hostin verkon (esim. Swarm/K8s CNI)."
+      }
+    ]
+  },
+  "CONFLICT": {
+    "description": "Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Syntyy kun kaksi haaraa muuttaa samaa kohtaa. Ratkaisu: muokkaa konfliktimerkinnät manuaalisesti tai käytä `git mergetool`-välinettä, sitten `git add` ja `git merge --continue`.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/git-merge-conflict-resolve.md",
+        "questionId": "git-merge-conflict-resolve",
+        "excerpt": "# git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnk…"
+      },
+      {
+        "file": "content/question-banks/git-ci.json",
+        "questionId": "git-merge-conflict-resolve",
+        "excerpt": "git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnkul…"
+      }
+    ]
+  },
+  "CSP": {
+    "description": "**Content Security Policy** — HTTP-vastausheder (`Content-Security-Policy`), joka rajoittaa selaimen skriptien, tyylien ja median lähteitä. XSS-hyökkäysten torjuntakeino: kieltää inline-skriptit ja ulkoiset resurssit, joita ei ole lueteltu politiikassa. `DOMParser` ei sanitoi — CSP täydentää sanitointia, mutta ei korvaa sitä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-dynamic-08.md",
+        "questionId": "b02-js-modules-dynamic-08",
+        "excerpt": "Kääri kutsu try/catchiin — verkko- tai CSP-virhe ei kaada koko appia. F…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-runtime-domparser.md",
+        "questionId": "b12-js-runtime-domparser",
+        "excerpt": "DOMParser ei sanitoi — se vain parsii. DOMPurify tai Trusted Types pako…"
+      },
+      {
+        "file": "opiskelu/lessons/prod-sec-xss.md",
+        "questionId": "prod-sec-xss",
+        "excerpt": "3. **Content-Security-Policy (CSP)** — rajoittaa inline-skriptejä ja ul…"
+      }
+    ]
+  },
+  "DML": {
+    "description": "**Data Manipulation Language** — SQL-komentoryhmä tietojen muokkaamiseen: `INSERT`, `UPDATE`, `DELETE` ja `MERGE`. `VACUUM FULL` pitää taulun eksklusiivisessa lukossa koko operaation ajan, jolloin kaikki DML-operaatiot blokkaantuvat; `CREATE INDEX CONCURRENTLY` välttää DML-blokkauksen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-pg-indexes-concurrent-create.md",
+        "questionId": "b04-pg-indexes-concurrent-create",
+        "excerpt": "CONCURRENTLY skannaa taulun kahteen kertaan ja rakentaa indeksin ilman …"
+      },
+      {
+        "file": "opiskelu/lessons/b05-pg-vacuum-full-lock.md",
+        "questionId": "b05-pg-vacuum-full-lock",
+        "excerpt": "- Kaikki DML blokkaantuu"
+      },
+      {
+        "file": "opiskelu/lessons/b09-pg-index-unused-drop.md",
+        "questionId": "b09-pg-index-unused-drop",
+        "excerpt": "\"Never used\" tarkoittaa instanssin stats-elinajan aikana (tai resetin j…"
+      }
+    ]
+  },
+  "DOWN": {
+    "description": "Verkkorajapinnan administratiivinen tila, jossa rajapinta on kytketty pois päältä (`ip link set eth0 down`). DOWN-tilassa rajapinta ei lähetä eikä vastaanota liikennettä eikä vastaa ARP-kyselyihin. Vasta `ip link set eth0 up` palauttaa yhteyden.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-network-ip-link-admin.md",
+        "questionId": "b12-linux-network-ip-link-admin",
+        "excerpt": "# Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein …"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-network-ip-link-admin.md",
+        "questionId": "b12-linux-network-ip-link-admin",
+        "excerpt": "Rajapinta on administratiivisesti alas — ei IP-osoitetta, ei ARP:ia, ei…"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b12-linux-network-ip-link-admin",
+        "excerpt": "Rajapinta on DOWN admin-tilassa — et saa edes ARP-vastauksia. Nopein pa…"
+      }
+    ]
+  },
+  "EI": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-cpp-smart-ptr-make-shared.md",
+        "questionId": "b04-cpp-smart-ptr-make-shared",
+        "excerpt": "# Code review: . Milloin make_shared EI ole oikea vaihtoehto?"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b04-cpp-consteval-compile-time",
+        "excerpt": "consteval funktioita EI voi kutsua runtime — pakottaa constexpr-konteks…"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b04-cpp-smart-ptr-make-shared",
+        "excerpt": "Code review: . Milloin make_shared EI ole oikea vaihtoehto?"
+      }
+    ]
+  },
+  "FPI": {
+    "description": "**Full Page Image** — WAL-merkintä, jossa PostgreSQL kirjoittaa koko 8 kt levyblokin lokiin ensimmäisen muutoksen yhteydessä jokaisen checkpointin jälkeen. FPI suojaa osittaisilta kirjoitusvirheiltä kaatumisessa, mutta kasvattaa WAL-volyymiä erityisesti kirjoitusintensiiviissä työkuormissa. `full_page_writes`-parametrilla ohjataan FPI-kirjoitusten käyttäytymistä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-pg-explain-wal-fpi.md",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "**FPI (Full Page Image)** WAL-merkinnässä tarkoittaa, että PostgreSQL k…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-explain-wal-fpi.md",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "Korkea EXPLAINissa viittaa siihen, että data ei ollut cachessa — cold r…"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "FPI ei vaikuta I/O-kuormaan koska WAL kirjoitetaan erilliseen muistipus…"
+      }
+    ]
+  },
+  "GDPR": {
+    "description": "**General Data Protection Regulation** — EU:n yleinen tietosuoja-asetus (2016/679), joka säätelee henkilötietojen käsittelyä. Sovelluskoodissa GDPR vaikuttaa lokitukseen (pcap ei saa tallentaa henkilötietoja), tietokantakyselyihin (pseudonymisointi, sarakemaskit) ja tietojen säilytysaikoihin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "Sovelluspalvelin ja PostgreSQL ovat eri verkossa — yhteys kulkee intern…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-linux-net-tcpdump-incident.md",
+        "questionId": "b09-linux-net-tcpdump-incident",
+        "excerpt": "Tuotannossa kaappaa lyhyesti ja varmista GDPR/compliance — pcap voi sis…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-view-column-mask.md",
+        "questionId": "sqd-view-column-mask",
+        "excerpt": "Dokumentoi, mikä maskaus on riittävä (osittainen vs. poisto). GDPR: pse…"
+      }
+    ]
+  },
+  "GIL": {
+    "description": "**Global Interpreter Lock** — Pythonin CPython-tulkin sisäinen lukko, joka estää useita säikeitä ajamasta Python-bytekoodia samanaikaisesti. GIL tekee yksittäisistä Python-säikeistä turvallisia muistinhallinnan kannalta, mutta rajoittaa CPU-rinnakkaisuutta moniydinympäristöissä. Rustin borrow checker korvaa GIL-tyyppisen lukkomekanismin kääntöaikaisella tarkistuksella.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rust-borrow-mut.md",
+        "questionId": "rust-borrow-mut",
+        "excerpt": "Java-kehittäjälle: ajattele kuin -lukko, mutta kääntäjä pakottaa sen st…"
+      },
+      {
+        "file": "content/question-banks/rust.json",
+        "questionId": "rust-safety-borrow-checker",
+        "excerpt": "Kaikki säikeet ajetaan yhdessä prosessissa GIL-lukon alla"
+      }
+    ]
+  },
+  "GSL": {
+    "description": "**Guidelines Support Library** — Microsoftin C++ Core Guidelines -suositusten tukikirjasto (`microsoft/GSL`). Tarjoaa mm. `gsl::not_null<T>`, `gsl::span<T>` ja `gsl::narrow_cast<T>`, joka heittää poikkeuksen kapenevan konversion yhteydessä. GSL:n `final_action` toteuttaa scope guard -kuvion RAII-tyylisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-cpp-raii-scope-guard.md",
+        "questionId": "b06-cpp-raii-scope-guard",
+        "excerpt": "Custom guard: (GSL) tai deleterillä."
+      },
+      {
+        "file": "opiskelu/lessons/b09-cpp-narrowing-conversion.md",
+        "questionId": "b09-cpp-narrowing-conversion",
+        "excerpt": "Vaihtoehdot: GSL (heittää), oma helper, tai kääntäjävaroitukset / . Tav…"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b08-cpp-span-bounds",
+        "excerpt": "std::span::operator[] ei tarkista rajoja — tarkista size() tai käytä GS…"
+      }
+    ]
+  },
+  "HR": {
+    "description": "**Human Resources** — henkilöstöhallinto. Scrumissa velocity on tiimin sisäinen suunnittelutyökalu, ei HR-mittari kehittäjien tuottavuuden vertailuun tiimien välillä tai johdolle raportoitavaksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-scrum-velocity-forecast.md",
+        "questionId": "b03-scrum-velocity-forecast",
+        "excerpt": "HR ja linjajohto pyytävät kuukausiraporttia: kuka kehittäjä \"tuottaa\" e…"
+      },
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b08-scrum-velocity-trend",
+        "excerpt": "Velocity on virallinen HR-mittari tuottavuuden vertailuun tiimien välil…"
+      }
+    ]
+  },
+  "JA": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "**sslmode=verify-full (tai require minimum) connection stringissä** on …"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-window-vs-group-by.md",
+        "questionId": "sqd-window-vs-group-by",
+        "excerpt": "# Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-window-vs-group-by",
+        "excerpt": "Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman s…"
+      }
+    ]
+  },
+  "JDBC": {
+    "description": "**Java Database Connectivity** — Java-standardirajapinta tietokantayhteyksille. JDBC-ajuri muuntaa yhteysstring-parametrit (esim. `sslmode=verify-full`) TLS-asetuksiksi yhteydenottovaiheessa. Prepared statement -kyselyt välitetään JDBC:ssä `PreparedStatement`-rajapinnan kautta, jolloin parametrit ovat automaattisesti SQL-injektiosuojattuja.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "Application framework (JDBC, pgx, SQLAlchemy) mapittaa -parametrin conn…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-pg-explain-prepare.md",
+        "questionId": "b07-pg-explain-prepare",
+        "excerpt": "Sovelluskerroksessa (JDBC , pg parametreilla, SQLAlchemy + bind) sama p…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-prepared-statement-plan.md",
+        "questionId": "sqd-prepared-statement-plan",
+        "excerpt": "Sovelluskerroksessa (JDBC, pgx, node-pg) prepared statement on oletus t…"
+      }
+    ]
+  },
+  "LB": {
+    "description": "**Load Balancer** — kuormantasain, joka jakaa saapuvan liikenteen usealle palvelimelle tai kontille. Docker Swarm ja Kubernetes käyttävät sisäistä LB:tä palvelupyyntöjen jakamiseen; `HEALTHCHECK`-tarkistus poistaa epäkunnossa olevat kontit kierrosta ja palauttaa ne takaisin vasta kun tarkistus läpäisee.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-firewall-nft.md",
+        "questionId": "b07-linux-network-firewall-nft",
+        "excerpt": "Cloud load balancer voi myös julkaista portin eri kuin palvelin luulee.…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-docker-prod-healthcheck.md",
+        "questionId": "exp-docker-prod-healthcheck",
+        "excerpt": "Load balancer ohjaa liikennettä kolmelle API-kontille. Yksi kontti on j…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-docker-prod-healthcheck.md",
+        "questionId": "exp-docker-prod-healthcheck",
+        "excerpt": "Orkestraattorit (Swarm, Compose, K8s) käyttävät eri readiness-malleja —…"
+      }
+    ]
+  },
+  "LCP": {
+    "description": "**Largest Contentful Paint** — Web Vitals -suorituskykymetriikka, joka mittaa suurimman näkyvän elementin (kuva, tekstilohko) latausajan. LCP alle 2,5 sekuntia on hyvä; top-level await moduuleissa tai kuvien eager-lataus hidastavat LCP-arvoa merkittävästi. Mitataan Lighthouse- tai Chrome DevTools -työkaluilla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-tla-10.md",
+        "questionId": "b02-js-modules-tla-10",
+        "excerpt": "Top-level await blokkaa kaikki riippuvaiset importit. Mittaa LCP ennen …"
+      },
+      {
+        "file": "opiskelu/lessons/b03-scrum-dor-testable.md",
+        "questionId": "b03-scrum-dor-testable",
+        "excerpt": "Hyväksymiskriteerit on kirjoitettava mitattavasti: esimerkiksi \"API-end…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-runtime-intersection-observer.md",
+        "questionId": "b12-js-runtime-intersection-observer",
+        "excerpt": "Tuotesivulla 200 tuotekuvaa. Kaikki latautuvat heti — LCP huononee ja m…"
+      }
+    ]
+  },
+  "LOCKED": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-vacuum-skip-locked",
+        "excerpt": "SKIP LOCKED — PostgreSQL docs SELECT SKIP LOCKED."
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-vacuum-skip-locked",
+        "excerpt": "DELETE ... LIMIT batch + FOR UPDATE SKIP LOCKED -kuvio eräpoistoon"
+      }
+    ]
+  },
+  "LTE": {
+    "description": "**Long-Term Evolution** — neljännen sukupolven (4G) mobiiliteknologia. `mmcli -m 0` näyttää modemille kytketyn LTE-verkon signaalivoimakkuuden (RSSI, RSRP), radiokanavataajuuden ja operaattoritiedot ModemManagerin D-Bus-rajapinnan kautta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-dbus-modemmanager-signal.md",
+        "questionId": "b12-linux-dbus-modemmanager-signal",
+        "excerpt": "# LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus…"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b12-linux-dbus-modemmanager-signal",
+        "excerpt": "LTE-modemi hidastuu — epäilet heikkoa signaalia. ModemManagerin D-Bus-C…"
+      }
+    ]
+  },
+  "MIME": {
+    "description": "**Multipurpose Internet Mail Extensions** — standardi tiedostotyyppien tunnistamiseen (esim. `text/plain`, `application/json`, `image/png`). Qt:n drag-and-drop -mekanismissa `QMimeData` sisältää siirrettävän datan MIME-tyyppiavaimilla; ulkoisiin sovelluksiin vetäminen edellyttää oikean MIME-tyypin rekisteröintiä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-qt-models-mime-drag.md",
+        "questionId": "b06-qt-models-mime-drag",
+        "excerpt": "tukee sisäistä drag-dropia, mutta kun käyttäjä vetää solun toiseen sove…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-qt-models-mime-drag.md",
+        "questionId": "b06-qt-models-mime-drag",
+        "excerpt": "Ulkoiseen drag-dropiin tarvitaan mallin MIME-toteutus."
+      },
+      {
+        "file": "opiskelu/lessons/b06-qt-models-mime-drag.md",
+        "questionId": "b06-qt-models-mime-drag",
+        "excerpt": "Ota käyttöön ja rekisteröi custom MIME-tyypit. Ulkoisiin sovelluksiin l…"
+      }
+    ]
+  },
+  "NAS": {
+    "description": "**Network Attached Storage** — verkkoon liitetty tallennuslaite, joka tarjoaa tiedostojärjestelmän (NFS, SMB/CIFS) usean koneen käyttöön. systemd-unitissa `ConditionPathExists`-ehdolla varmistetaan, että NAS-mount on kytketty ennen varmuuskopiopalvelun käynnistystä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-linux-avahi-browse.md",
+        "questionId": "b05-linux-avahi-browse",
+        "excerpt": "Toimistossa on useita verkkolaitteita: tulostimia, NAS-palvelimia ja ke…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-linux-systemd-ConditionPath.md",
+        "questionId": "b06-linux-systemd-ConditionPath",
+        "excerpt": "Backup kopioi tiedostot NAS-mountille . Jos mount epäonnistuu (verkko-o…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-linux-avahi-daemon-check.md",
+        "questionId": "b07-linux-avahi-daemon-check",
+        "excerpt": "Kehityskoneella mikään -palvelu ei toimi. Tulostin, NAS ja kollegan keh…"
+      }
+    ]
+  },
+  "NUL": {
+    "description": "NUL-merkki (`\\0`, tavuarvo 0) C/C++:n merkkijonojen päätteenä. `std::string_view` ei oleta NUL-päätettä ja voi kuvata binääridataa; perinteiset `char*`-funktiot kuten `strlen()` olettavat NUL-päätteen. Binääristen puskurien välittäminen legacy-rajapinnoille ilman NUL-päätettä on yleinen bugilähde.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-cpp-span-bounds-check.md",
+        "questionId": "b09-cpp-span-bounds-check",
+        "excerpt": "Legacy-funktio olettaa NUL-päättyvän merkkijonon. Kutsuja välittää binä…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-cpp-span-bounds-check.md",
+        "questionId": "b09-cpp-span-bounds-check",
+        "excerpt": "on non-owning näkymä tunnettuun alueeseen. Se ei oleta NUL-päätettä. Te…"
+      },
+      {
+        "file": "opiskelu/lessons/maintain-string-view.md",
+        "questionId": "maintain-string-view",
+        "excerpt": "Älä tallenna jäsenmuuttujaksi tai palauta sitä paikallisesta :stä — näk…"
+      }
+    ]
+  },
+  "PL": {
+    "description": "Viittaa PostgreSQLin kontekstissa **PL/pgSQL**-proseduurikieleen, joka mahdollistaa muuttujat, silmukat ja poikkeustenkäsittelyn SQL-lohkoissa. Dynaaminen pivot-kysely vaatii usein PL/pgSQL-funktiota, koska sarakkeiden nimiä ei tunneta etukäteen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-parameterized-query.md",
+        "questionId": "sqd-parameterized-query",
+        "excerpt": "Prepared statementit tarjoavat myös suunnitelman cachetuksen. PL/pgSQL:…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-pivot-conditional-agg.md",
+        "questionId": "sqd-pivot-conditional-agg",
+        "excerpt": "Pivot vaatii GROUP BY pivot-sarakkeen (product) yli. Dynaaminen pivot (…"
+      },
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b05-scrum-dev-ownership",
+        "excerpt": "Kyllä — PL delegoi jokaisen tehtävän dailyssa kehittäjille"
+      }
+    ]
+  },
+  "PPA": {
+    "description": "**Personal Package Archive** — Ubuntun Launchpad-alustalla isännöity kolmannen osapuolen pakettilähde. `add-apt-repository ppa:nimi/repo` lisää PPA:n ja hakee GPG-avaimen automaattisesti. Tuotantopalvelimilla PPA:n sijaan suositaan virallisia deb-paketteja tai allekirjoitettuja vendor-repoja turvallisuussyistä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/apt-repository-add.md",
+        "questionId": "apt-repository-add",
+        "excerpt": "# Tarvitset kolmannen osapuolen PPA:n tai repon lisäämistä Ubuntuun. Mi…"
+      },
+      {
+        "file": "opiskelu/lessons/apt-repository-add.md",
+        "questionId": "apt-repository-add",
+        "excerpt": "Ubuntu PPA:issa hoitaa avaimen ja listan automaattisesti, mutta tuotann…"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "apt-repository-add",
+        "excerpt": "Tarvitset kolmannen osapuolen PPA:n tai repon lisäämistä Ubuntuun. Mikä…"
+      }
+    ]
+  },
+  "READY": {
+    "description": "systemd-notify-protokollan viesti `READY=1`, jonka palvelu lähettää `sd_notify()`-kutsulla ilmoittaakseen olevansa valmis vastaanottamaan pyyntöjä. `Type=notify` -uniteissa systemd odottaa tätä viestiä ennen kuin käynnistää riippuvaiset palvelut; `TimeoutStartSec` rajoittaa odotusajan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-linux-systemd-type-notify.md",
+        "questionId": "b03-linux-systemd-type-notify",
+        "excerpt": "**Notify odottaa valmiusilmoitusta — estää liian aikaisen riippuvuuden.…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-systemd-type-notify.md",
+        "questionId": "b03-linux-systemd-type-notify",
+        "excerpt": "Aseta riittäväksi — hitas käynnistys ei saa kaatua timeoutiin. Dokument…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-systemd-type-notify.md",
+        "questionId": "b05-linux-systemd-type-notify",
+        "excerpt": "**Notify odottaa palvelun valmiussignaalia** — riippuvaiset unitit () j…"
+      }
+    ]
+  },
+  "SF": {
+    "description": "C++ Core Guidelines -oppaan **SF (Source Files)** -osio, joka kattaa header-tiedostojen ja käännösyksiköiden organisoinnin. SF.7 kieltää `using namespace` -direktiivin headereissa, koska se vuotaa kaikkiin includereihin ja voi estää ADL:n toimimisen oikein.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b11-cpp-forward-declare-header.md",
+        "questionId": "b11-cpp-forward-declare-header",
+        "excerpt": "Oppiva sääntö: referenssi/pointer parametrissa → forward declare. Retur…"
+      },
+      {
+        "file": "opiskelu/lessons/b11-cpp-iwyu-cleanup.md",
+        "questionId": "b11-cpp-iwyu-cleanup",
+        "excerpt": "IWYU CI-varoituksina. Yhdistä forward declarations. CppCoreGuidelines S…"
+      },
+      {
+        "file": "opiskelu/lessons/b11-cpp-using-namespace-header.md",
+        "questionId": "b11-cpp-using-namespace-header",
+        "excerpt": "CppCoreGuidelines SF.7: \"Don't write in a header.\" Review: hylkää heade…"
+      }
+    ]
+  },
+  "SFINAE": {
+    "description": "**Substitution Failure Is Not An Error** — C++:n template-mekanismi, jossa epäonnistunut tyypinkorvaus ei johda käännösvirheeseen vaan kyseisen overloadin hylkäämiseen. C++20 concepts korvaa useimmat SFINAE-kuviot selkeämmällä `requires`-syntaksilla; `if constexpr` korvaa SFINAE:n monissa haarakonteksteissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-cpp-tools-concepts-02.md",
+        "questionId": "b02-cpp-tools-concepts-02",
+        "excerpt": "Aloita std-konsepteista (, , ). Omiin tyyppeihin: määrittele ja käytä .…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-cpp-tools-if-constexpr.md",
+        "questionId": "b03-cpp-tools-if-constexpr",
+        "excerpt": "Vanha template-funktiossa: **molemmat haarat** täytyy kääntää kaikille …"
+      },
+      {
+        "file": "opiskelu/lessons/b03-cpp-tools-if-constexpr.md",
+        "questionId": "b03-cpp-tools-if-constexpr",
+        "excerpt": "Korvaa SFINAE/ monissa tapauksissa. C++20 concepts vielä selkeämpää raj…"
+      }
+    ]
+  },
+  "SKIP": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-vacuum-skip-locked",
+        "excerpt": "SKIP LOCKED — PostgreSQL docs SELECT SKIP LOCKED."
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-vacuum-skip-locked",
+        "excerpt": "DELETE ... LIMIT batch + FOR UPDATE SKIP LOCKED -kuvio eräpoistoon"
+      }
+    ]
+  },
+  "SNMP": {
+    "description": "**Simple Network Management Protocol** — verkkolaitteiden hallintaprotokolla (UDP/161). SNMP-poller tunnistaa laitteet MAC-osoitteiden perusteella; macvlan-verkko antaa konteille oman MAC-osoitteen, jolloin legacy-laitteiden SNMP-valvonta toimii ilman erikoisjärjestelyjä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "Useita palvelinkontteja pitää näkyä tehdas-LANissa erillisinä laitteina…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "Valitse macvlan kun laitteet vaativat erillisen MAC:in (legacy SNMP, AC…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-macvlan.md",
+        "questionId": "docker-macvlan",
+        "excerpt": "Tehdasverkossa legacy-laite odottaa SNMP-pollauksia tietyltä MAC-osoitt…"
+      }
+    ]
+  },
+  "VERBOSE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-pg-vacuum-bloat-table.md",
+        "questionId": "b09-pg-vacuum-bloat-table",
+        "excerpt": "50 GB taulussa manuaalinen VACUUM voi kestää — suunnittele maintenance-…"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-buffers-hit",
+        "excerpt": "EXPLAIN VERBOSE only"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b04-pg-explain-buffers-io",
+        "excerpt": "EXPLAIN VERBOSE riittää aina"
+      }
+    ]
+  },
+  "WAL/FPI": {
+    "description": "**Write-Ahead Log / Full Page Image** — PostgreSQLin `EXPLAIN (ANALYZE, BUFFERS, WAL)` -tulosteen kenttä, joka kertoo kuinka monta täyttä levyblokkia kirjoitettiin WAL:iin. WAL/FPI-luku on korkea cold-start-tilanteissa tai massiivisten kirjoitusten yhteydessä; se kuvaa klusteritason loki-infrastruktuuria, ei yksittäisen kyselyn I/O-käyttöä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-pg-explain-wal-fpi.md",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "# EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-explain-wal-fpi.md",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "BUFFERS näyttää queryn omat buffer-käytöt. WAL/FPI on klusteritason kir…"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-explain-wal-fpi",
+        "excerpt": "EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/F…"
+      }
+    ]
+  },
+  "ADL": {
+    "description": "**Argument-Dependent Lookup** — C++:n nimihaun mekanismi, jossa funktion argumenttien tyypit laajentavat hakua niiden nimiavaruuksiin. `using namespace std` headerissa voi estää ADL:n toimimasta oikein, koska kaikki `std`-nimet tuodaan suoraan näkyvyyteen. ADL mahdollistaa mm. `std::swap`-kutsun erikoistamisen omille tyypeille.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b11-cpp-using-namespace-header.md",
+        "questionId": "b11-cpp-using-namespace-header",
+        "excerpt": "Headerin **vuotaa** kaikkiin includereihin. , , — nimiristiriidat oman …"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b11-cpp-using-namespace-header",
+        "excerpt": "using namespace std headerissa estää ADL:n toimimasta oikein"
+      }
+    ]
+  },
+  "AUTOMOC": {
+    "description": "Qt CMake -buildin automaattinen MOC-ajuri (`set_target_properties(... AUTOMOC ON)` tai `qt_add_executable`). CMake ajaa `moc`-kääntäjän automaattisesti kaikille `Q_OBJECT`-makroa sisältäville headereille. Ilman AUTOMOC:ia tai qmake:n vastaavaa asetusta Qt-signaalit ja -slotit eivät toimi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-qt-meta-object-moc.md",
+        "questionId": "b04-qt-meta-object-moc",
+        "excerpt": "MOC ei ajettu — varmista Q_OBJECT, headers CMake AUTOMOC:ssa tai qmake …"
+      },
+      {
+        "file": "content/question-banks/qt-dev.json",
+        "questionId": "b04-qt-meta-object-moc",
+        "excerpt": "MOC ei ajettu — varmista Q_OBJECT, headers CMake AUTOMOC:ssa tai qmake …"
+      }
+    ]
+  },
+  "CA": {
+    "description": "**Certificate Authority** — varmenneviranomainen, joka allekirjoittaa TLS-sertifikaatit. PostgreSQL-yhteyden `sslmode=verify-full` vaatii, että client asentaa palvelimen CA-sertifikaatin `sslrootcert`-parametrilla. Self-signed CA:ta käytetään sisäverkkopalveluissa; tuotannossa suositaan tunnettuja CA:ita tai yrityksen omaa PKI-infrastruktuuria.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "Asenna clientille CA-sertifikaatti (esim. ) kun käytät / ."
+      },
+      {
+        "file": "opiskelu/lessons/b07-linux-network-curl-debug.md",
+        "questionId": "b07-linux-network-curl-debug",
+        "excerpt": "Tuotannossa vuotaa headerit logiin — älä käytä production-trafficissa i…"
+      }
+    ]
+  },
+  "CACHE": {
+    "description": "Välimuisti, johon aiemmin laskettu tai haettu data tallennetaan nopean uudelleenkäytön vuoksi. Docker BuildKit ylläpitää build-cacheä kerrosten perusteella (`docker buildx prune` tyhjentää sen). PostgreSQLin `shared_buffers` toimii tietokantablokkien cachena; `EXPLAIN (ANALYZE, BUFFERS)` paljastaa, kuinka moni luku tuli cachesta (`shared_blks_hit`) vs. levyltä (`shared_blks_read`).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-docker-prune-build-cache.md",
+        "questionId": "b08-docker-prune-build-cache",
+        "excerpt": "Build-serverin levy täynnä BuildKit-kerroksia — näyttää BUILD CACHE gig…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-explain-before-tune",
+        "excerpt": "Lisää CACHE keyword SELECTiin"
+      }
+    ]
+  },
+  "CDN": {
+    "description": "**Content Delivery Network** — maantieteellisesti hajautettu verkko staattisen sisällön (kuvat, JS, CSS) jakelua varten. CDN lyhentää latausviivettä ohjaamalla pyynnöt lähimmälle edge-nodelle. Kun CDN on alhaalla, `fetch`-kutsu ei timeouttaa natiivisti — `Promise.race()` AbortController-signaalin kanssa rajoittaa odotusajan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-js-async-promise-race-timeout.md",
+        "questionId": "b03-js-async-promise-race-timeout",
+        "excerpt": "Tuotantoon mennyt fetch-kutsu ei timeouttaa natiivisti. Kun CDN on alha…"
+      },
+      {
+        "file": "opiskelu/lessons/b13-qt-quick-image-async.md",
+        "questionId": "b13-qt-quick-image-async",
+        "excerpt": "Galleria näyttää thumbnailit CDN:stä. Suuret kuvat hidastavat scrollaus…"
+      }
+    ]
+  },
+  "CMD/ENTRYPOINT": {
+    "description": "Dockerfile-direktiivit kontin käynnistyskomennon määrittämiseen. `ENTRYPOINT` asettaa prosessin, `CMD` sen oletusargumentit. `docker exec` käynnistää uuden prosessin kontissa; `--user`-lippu ohittaa Dockerfile-`USER`:in, mutta `USER`-direktiivi vaikuttaa ainoastaan `CMD`/`ENTRYPOINT`-käynnistykseen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-docker-exec-user.md",
+        "questionId": "b08-docker-exec-user",
+        "excerpt": "**exec oletus root ellei --user — USER vaikuttaa vain CMD/ENTRYPOINT-kä…"
+      },
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "b08-docker-exec-user",
+        "excerpt": "exec oletus root ellei --user — USER vaikuttaa vain CMD/ENTRYPOINT-käyn…"
+      }
+    ]
+  },
+  "COMMITTED": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-isolation-level",
+        "excerpt": "PostgreSQL default READ COMMITTED — transaction isolation docs."
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-explain-isolation-level",
+        "excerpt": "READ COMMITTED sallii non-repeatable read — tarvitset REPEATABLE READ j…"
+      }
+    ]
+  },
+  "DHCP/NM": {
+    "description": "**DHCP / NetworkManager** — yhdistelmäviittaus DHCP-protokollaan (Dynamic Host Configuration Protocol) ja NetworkManager-palveluun. NetworkManager hakee IP-osoitteen, reitit ja DNS-hakuosoitelistan DHCP:llä; `resolv.conf`-tiedoston `search`-lista tulee tyypillisesti DHCP/NM-konfiguraatiosta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-linux-network-resolv-search.md",
+        "questionId": "b05-linux-network-resolv-search",
+        "excerpt": "Search-listan pituus ja järjestys vaikuttavat sekä onnistumiseen että v…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-linux-network-resolv-search.md",
+        "questionId": "exp-linux-network-resolv-search",
+        "excerpt": "Search-lista aiheuttaa yllättäviä viiveitä, jos ensimmäiset domainit ei…"
+      }
+    ]
+  },
+  "ESM/CJS": {
+    "description": "**ECMAScript Modules / CommonJS** — kaksi kilpailevaa Node.js-moduulijärjestelmää. `package.json`:n `exports`-kentässä voidaan erottaa ESM (`import`/`export`) ja CJS (`require`) erillisinä entry pointeina `\"import\"`- ja `\"require\"`-ehdoilla. Yhteentoimivuusongelmat ovat yleisiä kirjastopaketeissa, jotka tukevat molempia.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-js-modules-package-exports.md",
+        "questionId": "b12-js-modules-package-exports",
+        "excerpt": "Voit erottaa ESM/CJS: / -ehdot exports-objektissa."
+      },
+      {
+        "file": "content/question-banks/javascript-web.json",
+        "questionId": "b09-js-modules-esm-cjs-interop",
+        "excerpt": "ESM/CJS interop — Node.js ESM docs."
+      }
+    ]
+  },
+  "EUR": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-js-types-intl-numberformat.md",
+        "questionId": "b12-js-types-intl-numberformat",
+        "excerpt": "**new Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR' }…"
+      },
+      {
+        "file": "content/question-banks/javascript-web.json",
+        "questionId": "b12-js-types-intl-numberformat",
+        "excerpt": "new Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR' })"
+      }
+    ]
+  },
+  "FBO": {
+    "description": "**Framebuffer Object** — OpenGL-laajennos off-screen-renderöintiin omalle tekstuurille tai renderbufferille (ei oletusnäytölle). Qt:n `QOpenGLWidget` tarvitsee `makeCurrent()`-kutsun ennen raakoja OpenGL-kutsuja; FBO:lle piirrettäessä `bindFramebuffer()` asettaa kohteen. FBO:t ovat keskeisiä post-processing-efektien toteutuksessa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-qt-opengl-makecurrent.md",
+        "questionId": "b05-qt-opengl-makecurrent",
+        "excerpt": "aktivoi widgetin kontekstin ja FBO:n piirtopinnalle."
+      },
+      {
+        "file": "opiskelu/lessons/b07-qt-opengl-context.md",
+        "questionId": "b07-qt-opengl-context",
+        "excerpt": "kutsutaan Qt:n renderöintiputkeesta — on pakollinen jos käytät raakoja …"
+      }
+    ]
+  },
+  "FIN": {
+    "description": "TCP-yhteyden sulkemissignaali (FIN-lippu). Kun etäpää lähettää FIN:n, paikallinen yhteys siirtyy `CLOSE_WAIT`-tilaan — sovelluksen pitää kutsua `close()` saattaakseen sulkemisen loppuun. Paljon `CLOSE_WAIT`-yhteyksiä `ss`-komennon listassa viittaa sovellusbuggiin, jossa socket jätetään sulkematta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-linux-network-ss-timers.md",
+        "questionId": "b03-linux-network-ss-timers",
+        "excerpt": "Paljon CLOSE_WAIT tarkoittaa yleensä sovellusbugia — palvelin sai FIN:n…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-tcp-close-wait-leak.md",
+        "questionId": "b12-linux-tcp-close-wait-leak",
+        "excerpt": "**CLOSE-WAIT** = remote lähetti FIN, paikallinen sovellus ei kutsunut —…"
+      }
+    ]
+  },
+  "FS": {
+    "description": "**File System** — tiedostojärjestelmä; C++:n kontekstissa lyhenne `std::filesystem`-nimiavaruudelle (`<filesystem>`, C++17). `std::filesystem::path` korvaa manuaalisen merkkijonoyhdistelyn ja POSIX-spesifiset tiedosto-operaatiot kannettavalla tavalla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b11-cpp-std-filesystem",
+        "excerpt": "std::string path concat — korvaa kaikki FS-operaatiot"
+      }
+    ]
+  },
+  "GCS": {
+    "description": "**Google Cloud Storage** — Googlen objektitallennuspalvelu pilvessä. Docker-volumejen varmuuskopiot (tar-arkistot) voidaan siirtää GCS:ään `gsutil cp`-komennolla tai CI-askeleella; säilytyspolitiikka (retention) konfiguroidaan bucket-tasolla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-docker-vol-named-backup.md",
+        "questionId": "b05-docker-vol-named-backup",
+        "excerpt": "Aja backup säännöllisesti cronilla tai Kubernetes CronJobilla. Säilytä …"
+      },
+      {
+        "file": "opiskelu/lessons/b10-docker-volumes-backup-01.md",
+        "questionId": "b10-docker-volumes-backup-01",
+        "excerpt": "Automatisoi cronilla tai CI-pipelineen. Säilytä varmuuskopiot off-site …"
+      }
+    ]
+  },
+  "HTTP/HTTPS": {
+    "description": "**Hypertext Transfer Protocol / HTTP Secure** — web-liikenteen perusprotokolla ja sen TLS-salattu versio. Yritysverkossa kaikki HTTP/HTTPS-liikenne voi kulkea välityspalvelimen kautta; Docker-daemonille asetetaan `HTTP_PROXY`/`HTTPS_PROXY`-ympäristömuuttujat `daemon.json`-tiedostossa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-docker-network-proxy.md",
+        "questionId": "b06-docker-network-proxy",
+        "excerpt": "Yritysverkossa kaikki ulospäin menevä HTTP/HTTPS kulkee proxy:n kautta.…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-tcp-udp-handshake.md",
+        "questionId": "b12-linux-tcp-udp-handshake",
+        "excerpt": "DNS, DHCP ja NTP käyttävät UDP:ta; HTTP/HTTPS ja SSH TCP:tä. Palomuurin…"
+      }
+    ]
+  },
+  "INCOMPLETE": {
+    "description": "ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei ole vielä saanut vastausta. `ip neigh`-komennon `INCOMPLETE`-merkintä tarkoittaa, että kohde-IP on tavoittamaton tai MAC-osoite ei ole ratkaistu. `FAILED`-tila tarkoittaa, että kaikki ARP-yritykset ovat loppuneet tuloksetta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-linux-network-ip-neigh.md",
+        "questionId": "b06-linux-network-ip-neigh",
+        "excerpt": "INCOMPLETE tarkoittaa että kernel ei saanut ARP-vastausta. Tarkista kaa…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-arp-failed-state.md",
+        "questionId": "b12-linux-arp-failed-state",
+        "excerpt": "INCOMPLETE tarkoittaa odottavaa ARP:ia; FAILED tarkoittaa että yritykse…"
+      }
+    ]
+  },
+  "INSERT/UPDATE/DELETE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-pg-indexes-concurrent-create.md",
+        "questionId": "b05-pg-indexes-concurrent-create",
+        "excerpt": "DBA ajaa tuotannossa. Muutama minuutti later Slack täyttyy timeout-virh…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-readonly-role",
+        "excerpt": "CREATE ROLE bi_reader; GRANT SELECT ...; älä anna INSERT/UPDATE/DELETE"
+      }
+    ]
+  },
+  "ISP": {
+    "description": "**Internet Service Provider** — internet-palveluntarjoaja. Reititysongelmat ISP:n verkon puolella näkyvät `traceroute`-tulosteessa katkoksena tai suurina viiveinä ISP:n solmuissa. ICMP-vastauksen puuttuminen ei aina tarkoita ISP-ongelmaa — monet reitittimet hylkäävät ICMP:n palomuurisäännöillä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-linux-network-traceroute.md",
+        "questionId": "b08-linux-network-traceroute",
+        "excerpt": "Monet palvelimet eivät vastaa ICMP:hen — ei aina tarkoita ongelmaa. Ver…"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b04-linux-resolv-stub",
+        "excerpt": "127.0.0.53 on aina virheellinen konfiguraatio joka pitää korjata osoitt…"
+      }
+    ]
+  },
+  "LABEL": {
+    "description": "Dockerfile-direktiivi metatiedon lisäämiseksi image-kerroksiin (esim. `LABEL version=\"1.0\" maintainer=\"dev@example.com\"`). LABEL-kentät näkyvät `docker inspect`-tulosteessa eivätkä suurenna image-kokoa merkittävästi. Multistage-buildissä LABELit kannattaa lisätä vain lopulliseen vaiheeseen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "b05-dockerfile-multistage-size",
+        "excerpt": "Poista kaikki LABEL-kentät"
+      }
+    ]
+  },
+  "LDAP": {
+    "description": "**Lightweight Directory Access Protocol** — hakemistopalveluprotokolla käyttäjätietojen ja oikeuksien keskitettyyn hallintaan (esim. Active Directory, OpenLDAP). mDNS/Avahi sopii paikallisverkon palvelujen löytämiseen ilman DNS-palvelinta, mutta käyttäjäautentikoinnissa tarvitaan edelleen LDAP tai vastaava hakemistopalvelu.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "avahi-mdns",
+        "excerpt": "LDAP-autentikointi keskitetysti ilman paikallista DNS:ää"
+      }
+    ]
+  },
+  "LOKI": {
+    "description": "Grafana Loki — lokien aggregaatiopalvelu, joka indeksoi ainoastaan labelit (ei lokisisältöä). Lokeja työnnetään Lokiin Promtail- tai Alloy-agentilla; `journald`-lokit voidaan ohjata Lokiin `journald`-inputin kautta. Loki on kevyempi vaihtoehto Elasticsearchille puhtaassa lokihakuratkaisussa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b09-linux-journald-forward-syslog",
+        "excerpt": "Kopioi /var/log/journal manuaalisesti keskus-LOKI-palvelimelle"
+      }
+    ]
+  },
+  "LRU": {
+    "description": "**Least Recently Used** — välimuistin poistoalgoritmi, joka hylkää vähiten äskettäin käytetyn alkion tilan täyttyessä. `WeakMap` on selaimessa luonnollinen LRU-vaihtoehto DOM-node-metadatalle — GC poistaa merkinnät automaattisesti, kun node poistetaan dokumentista. Eksplisiittistä LRU-toteutusta tarvitaan suurille kiinteäkokoisille välimuisteille.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-js-runtime-weakmap-cache.md",
+        "questionId": "b09-js-runtime-weakmap-cache",
+        "excerpt": "WeakMap on ideaalinen kun metadata elää vain niin kauan kuin DOM-node. …"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-runtime-weakref-cache.md",
+        "questionId": "b12-js-runtime-weakref-cache",
+        "excerpt": "WeakRef.deref() voi palauttaa undefined milloin tahansa GC:n jälkeen. F…"
+      }
+    ]
+  },
+  "MASQUERADE": {
+    "description": "iptables/nftables NAT-toiminto, joka korvaa lähtevän paketin lähde-IP:n automaattisesti ulosmenevän rajapinnan osoitteella. `MASQUERADE` eroaa `SNAT`:sta siinä, että se sopii dynaamisille IP-osoitteille; Docker asettaa `MASQUERADE`-säännön `docker0`-sillalle automaattisesti. `iptables -t nat -L POSTROUTING` paljastaa konttiliikenteen NAT-säännöt.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-linux-net-nat-troubleshoot.md",
+        "questionId": "b09-linux-net-nat-troubleshoot",
+        "excerpt": "Etsi MASQUERADE docker0:lle:"
+      },
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b09-linux-net-nat-troubleshoot",
+        "excerpt": "IP forwarding + MASQUERADE — Linux networking."
+      }
+    ]
+  },
+  "MOD": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-ntile-buckets",
+        "excerpt": "MOD(customer_id, 4) — satunnainen kvartiili"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-percent-rank-report",
+        "excerpt": "MOD(sales, 100)"
+      }
+    ]
+  },
+  "MSL": {
+    "description": "**Metal Shading Language** — Applen Metal-grafiikka-API:n varjostinkieli. Qt 6 RHI kääntää GLSL-varjostimet MSL:ksi macOS/iOS-alustoilla `qsb`-työkalulla. Shader-lähde tallennetaan GLSL:nä versionhallintaan; `qsb` generoi MSL-, SPIR-V- ja HLSL-variantit buildissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-rhi-fallback.md",
+        "questionId": "b03-qt-shaders-rhi-fallback",
+        "excerpt": "CI-pipeline ajaa testit vähintään Windows + macOS -alustoilla. Älä olet…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-qt-shader-qsb.md",
+        "questionId": "b07-qt-shader-qsb",
+        "excerpt": "Lähde-GLSL (, ) versionhallintaan; generoidaan buildissa. Älä commitoi …"
+      }
+    ]
+  },
+  "OKR": {
+    "description": "**Objectives and Key Results** — tavoitteenhallintakehys, jossa organisaatio asettaa korkeatasoiset tavoitteet (Objectives) ja mitattavat avaintulokset (Key Results). OKR toimii strategisella tasolla; Scrumin sprint goal on taktinen tiimitason tavoite, joka voi tukea OKR:ää mutta ei korvaa sitä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b02-scrum-sprint-goal-10",
+        "excerpt": "Henkilökohtaiset OKR:t riittävät korvaamaan sprint goalin tiimissä"
+      }
+    ]
+  },
+  "OUTPUT": {
+    "description": "iptables/nftables-palomuurin ketju, joka käsittelee paikallisesta koneesta lähtevän liikenteen. `FORWARD`-ketju käsittelee reititetyn liikenteen (esim. konttien NAT), `OUTPUT` paikallisten prosessien pyynnöt. VPN-clientin reitit ja palomuurisäännöt pitää tarkistaa sekä `FORWARD`- että `OUTPUT`-ketjuista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-route-09.md",
+        "questionId": "b02-linux-network-route-09",
+        "excerpt": "Tarkista myös VPN-clientin pushatut reitit ja firewall (/) FORWARD/OUTP…"
+      },
+      {
+        "file": "opiskelu/lessons/linux-ip-route.md",
+        "questionId": "linux-ip-route",
+        "excerpt": "Pysyvä reitti: netplan, NetworkManager, tai cloud-init — riippuen distr…"
+      }
+    ]
+  },
+  "OWASP/MDN": {
+    "description": "**OWASP / Mozilla Developer Network** — kaksi keskeistä web-tietoturvan ja webkehityksen viitelähdettä. OWASP (Open Web Application Security Project) julkaisee mm. Top 10 -haavoittuvuuslistan; MDN tarjoaa selainrajapintojen viralliset dokumentaatiot. Prototype pollution -haavoittuvuuksien torjunnassa molempia lähteitä käytetään rinnakkain.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/javascript-web.json",
+        "questionId": "b02-js-runtime-pollution-14",
+        "excerpt": "Prototype pollution via __proto__ — OWASP/MDN Object."
+      },
+      {
+        "file": "content/question-banks/javascript-web.json",
+        "questionId": "b05-js-runtime-prototype-pollution",
+        "excerpt": "Prototype pollution via __proto__ — OWASP/MDN Object.create."
+      }
+    ]
+  },
+  "PCH/IWYU": {
+    "description": "**Precompiled Header / Include What You Use** — kaksi C++-buildin optimointitekniikkaa. PCH nopeuttaa käännöstä esikäännettämällä usein muuttumattomat headerit; IWYU-työkalu analysoi, mitkä `#include`-direktiivit ovat tarpeettomia. C++20 modules on pitkän aikavälin ratkaisu, joka korvaa sekä PCH:n että IWYU-tarpeen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-cpp-modules-headers.md",
+        "questionId": "b08-cpp-modules-headers",
+        "excerpt": "Toolchain-tuki (GCC 13+, Clang 16+, MSVC) vaaditaan. Siirtymä asteittai…"
+      },
+      {
+        "file": "opiskelu/lessons/b11-cpp-ccache-ci.md",
+        "questionId": "b11-cpp-ccache-ci",
+        "excerpt": "CI cache key: compiler version + flags + source hash. Yhdistä increment…"
+      }
+    ]
+  },
+  "PIN": {
+    "description": "**Personal Identification Number** — henkilökohtainen tunnusnumero laiteautentikoinnissa. Bluetooth-parittamisessa headless-palvelin tarvitsee D-Bus-agentin (`bluetoothctl agent on`) vastaamaan PIN-kyselyihin automaattisesti. polkit-käytännöillä rajataan, mitkä D-Bus-toiminnot vaativat PIN-vahvistuksen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-dbus-bluez-pair.md",
+        "questionId": "b12-linux-dbus-bluez-pair",
+        "excerpt": "Headless-palvelimella tarvitset usein agentin () PIN-kyselyihin. D-Bus-…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-dbus-polkit-deny.md",
+        "questionId": "b12-linux-dbus-polkit-deny",
+        "excerpt": "Tuotantopalvelimilla rajaa D-Bus-oikeudet tarkoituksella. Dokumentoi mi…"
+      }
+    ]
+  },
+  "PM": {
+    "description": "**Project Manager** — projektipäällikkö. Scrumissa tiimi on itseohjautuva eikä tarvitse ulkoista PM:ää tehtävien delegointiin — PO vastaa backlogista ja priorisoinnista, SM fasilitoi prosessia. Ulkoinen PM Scrum-tiimissä on antimalli, joka häiritsee itseohjautuvuutta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-scrum-dev-ownership.md",
+        "questionId": "b05-scrum-dev-ownership",
+        "excerpt": "Selkeytä roolit: poista task-delegointi dailysta, siirrä \"PM\" joko PO:n…"
+      },
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b08-scrum-team-self-organizing",
+        "excerpt": "Ulkoisen PM:n ohjaus on pakollinen Scrum-tiimissä enterprise:ssä"
+      }
+    ]
+  },
+  "PORTS": {
+    "description": "`docker ps` -tulosteen PORTS-sarake, joka näyttää kontin porttimappaukset (esim. `0.0.0.0:8080->80/tcp`). PORTS-sarake paljastaa heti, onko `--publish`-direktiivi kunnossa. Tuotannossa kannattaa bindaa vain tarvittavat portit ja käyttää `127.0.0.1:8080:80`-muotoa julkisen IP:n sijaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-docker-network-publish.md",
+        "questionId": "b07-docker-network-publish",
+        "excerpt": "PORTS-sarake kertoo heti, onko publish kunnossa. Tuotannossa bindaa vai…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-docker-net-publish-range.md",
+        "questionId": "b09-docker-net-publish-range",
+        "excerpt": "Laajat porttialueet voivat törmätä muihin dev-palveluihin hostilla — do…"
+      }
+    ]
+  },
+  "PREPARE": {
+    "description": "PostgreSQL `PREPARE`-komento, joka jäsentää ja suunnittelee SQL-kyselyn kerran ja sallii sen uudelleenkäytön eri parametreilla. Viidennestä suorituksesta alkaen PostgreSQL voi vaihtaa generic-planiin (`EXPLAIN (ANALYZE, GENERIC_PLAN)`). JDBC, pgx ja node-pg käyttävät prepared statementteja automaattisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-explain-generic-plan",
+        "excerpt": "Prepared statements planning — PostgreSQL docs PREPARE."
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b07-pg-explain-prepare",
+        "excerpt": "Prepared statements cache plan — PostgreSQL PREPARE."
+      }
+    ]
+  },
+  "RED": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "tools-enum-class",
+        "excerpt": "#define RED 1 välttää nimiristiriidat header-tiedostoissa"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b09-cpp-enum-class-type",
+        "excerpt": "#define RED 0 korvaa enumin ja ratkaisee namespace-sotkun"
+      }
+    ]
+  },
+  "ROLLUP": {
+    "description": "SQL `ROLLUP`-laajennus `GROUP BY`:lle, joka luo hierarkkiset välisummat automaattisesti. `GROUP BY ROLLUP(vuosi, kuukausi)` tuottaa rivit per kuukausi, per vuosi ja grand total yhdellä kyselyllä. `ROLLUP` on `GROUPING SETS`-syntaksin erikoistapaus.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-grouping-sets",
+        "excerpt": "ROLLUP aina tuottaa kaikki yhdistelmät automaattisesti oikein"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-grouping-sets",
+        "excerpt": "WITH ROLLUP on natiivi PostgreSQL-syntaksi"
+      }
+    ]
+  },
+  "RPC": {
+    "description": "**Remote Procedure Call** — mekanismi, jolla prosessi kutsuu toimintoa toisessa prosessissa tai koneessa kuin suoraa funktiokutsua. gRPC on modernein RPC-toteutus HTTP/2:lla ja Protocol Buffers -sarjallistamisella. Rust-projekteissa `tokio::sync::mpsc` sopii prosessinsisäiseen viestinvälitykseen RPC-tyylisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-cpp-structured-bindings-map.md",
+        "questionId": "b04-cpp-structured-bindings-map",
+        "excerpt": "ja eivät kerro domain-semantiikkaa — lukija tarkistaa aina pairin järje…"
+      },
+      {
+        "file": "opiskelu/lessons/rust-async-tokio-mpsc.md",
+        "questionId": "rust-async-tokio-mpsc",
+        "excerpt": "sopii yhden lähettäjän ja usean vastaanottajan malliin (tai usealle klo…"
+      }
+    ]
+  },
+  "S/M/L": {
+    "description": "T-shirt sizing -estimointikokojen lyhenteet (Small / Medium / Large) Scrum-refinementissa. Karkea suhteellinen arvio, jolla tiimi tunnistaa nopeasti suuruusluokan ennen tarkempaa story point -arviointia. XL tai XXL -arvio voi merkitä tarpeen hajottaa tarina pienemmiksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-scrum-tshirt-sizing.md",
+        "questionId": "b09-scrum-tshirt-sizing",
+        "excerpt": "**T-shirt sizing (S/M/L) — karkea suhteellinen estimointi refinementiss…"
+      },
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b09-scrum-tshirt-sizing",
+        "excerpt": "T-shirt sizing (S/M/L) — karkea suhteellinen estimointi refinementissa"
+      }
+    ]
+  },
+  "SHM": {
+    "description": "**Shared Memory** — jaettu muistialue prosessien väliseen viestintään. Linuxissa `/dev/shm` on tmpfs-muistissa oleva hakemisto; Docker-kontilla on oletuksena 64 Mt `/dev/shm`-alue, joka voi olla liian pieni joillekin sovelluksille. `--shm-size`-parametrilla kasvatetaan kokoa tarpeen mukaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "docker-compose-network",
+        "excerpt": "Liian pieni SHM-jako rikkoo palveluiden välisen DNS-resoluution compose…"
+      }
+    ]
+  },
+  "SIGTERM": {
+    "description": "Unix-signaali 15, joka pyytää prosessia lopettamaan siististi (graceful shutdown). Dockerin `docker stop` lähettää ensin SIGTERMin ja odottaa `--stop-timeout` (oletus 10 s) ennen SIGKILLiä. Palvelun pitää käsitellä SIGTERM kaappaamalla se pääprosessissa; entrypoint-skripteissä käytetään `exec`-muotoa viimeisessä komennossa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-linux-systemd-kill-mode.md",
+        "questionId": "b09-linux-systemd-kill-mode",
+        "excerpt": "Jos sovellus tarvitsee graceful shutdown, käsittele SIGTERM pääprosessi…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-exit-code.md",
+        "questionId": "docker-exit-code",
+        "excerpt": "Tarkista aina ja . Entrypoint-skripteissä käytä exec-muotoa viimeisessä…"
+      }
+    ]
+  },
+  "SOPS": {
+    "description": "**Secrets OPerationS** — Mozilla SOPS on salaustyökalu salaisten arvojen tallentamiseen versionhallintaan. SOPS salaa YAML/JSON-tiedostojen arvot (ei avaimia) AWS KMS:llä, GCP KMS:llä tai age-avaimella. `sops -d secrets.yaml` purkaa salauksen deploymentissa; `.sops.yaml` konfiguroi salauskäytännöt.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-systemd-env-04.md",
+        "questionId": "b02-linux-systemd-env-04",
+        "excerpt": "Salaisuustiedostot eivät koskaan versionhallintaan. Käytä config manage…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-secrets-compose.md",
+        "questionId": "b03-docker-secrets-compose",
+        "excerpt": "Tuotannossa Vault, AWS Secrets Manager tai SOPS. gitignoreen — käytä ma…"
+      }
+    ]
+  },
+  "SPIR": {
+    "description": "**Standard Portable Intermediate Representation** — Khronos-konsortion määrittämä varjostinten välimuoto Vulkan-API:lle (SPIR-V). Qt 6:n `qsb`-työkalu kääntää GLSL-lähdekoodin SPIR-V-muotoon Vulkan-backendille. SPIR-V mahdollistaa varjostinoptimointeja ajoaikana GPU-ajurissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-qt-shader-qsb.md",
+        "questionId": "b07-qt-shader-qsb",
+        "excerpt": "Lähde-GLSL (, ) versionhallintaan; generoidaan buildissa. Älä commitoi …"
+      },
+      {
+        "file": "opiskelu/lessons/exp-qt-shaders-glsl-version.md",
+        "questionId": "exp-qt-shaders-glsl-version",
+        "excerpt": "Qt 6 RHI:lla valitse GLSL-versio backendin mukaan (OpenGL 330, Vulkan S…"
+      }
+    ]
+  },
+  "SRE": {
+    "description": "**Site Reliability Engineering** — Googlen kehittämä käytännön lähestymistapa tuotantojärjestelmien luotettavuuden hallintaan, jossa software engineering -käytäntöjä sovelletaan ops-ongelmiin. SRE-tiimi ylläpitää SLO:ita (Service Level Objectives) ja virhebudjetteja; observability (metrics, traces, logs) on SRE-työn perusta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/prod-ops-observability.md",
+        "questionId": "prod-ops-observability",
+        "excerpt": "Lisää jokaiseen pyyntöön ja taustatyöhön trace-id (esim. OpenTelemetry …"
+      },
+      {
+        "file": "content/question-banks/backend-ops.json",
+        "questionId": "prod-ops-observability",
+        "excerpt": "Structured logging + trace id yhdistää tapahtumat — OpenTelemetry/Googl…"
+      }
+    ]
+  },
+  "SUPERUSER": {
+    "description": "PostgreSQL:n korkein käyttöoikeustaso — `SUPERUSER` ohittaa kaikki käyttöoikeustarkistukset. Sovellukselle ei pidä antaa SUPERUSER-oikeuksia; käytetään vain tietokantaadmin-tehtäviin. Least privilege -periaatteen mukaan sovelluskäyttäjälle myönnetään vain tarvitut `GRANT SELECT/INSERT/UPDATE/DELETE` -oikeudet.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-least-privilege-grant",
+        "excerpt": "GRANT SELECT vain tarvittuun näkymään/tauluun — ei SUPERUSER"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-readonly-role",
+        "excerpt": "SUPERUSER helpottaa oikeuksia"
+      }
+    ]
+  }
+}

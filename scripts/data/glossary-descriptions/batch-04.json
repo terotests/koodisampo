@@ -1,0 +1,977 @@
+{
+  "TAI": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rust-borrow-mut.md",
+        "questionId": "rust-borrow-mut",
+        "excerpt": "Borrow checkerin sääntö: **yksi muokkaava lainaus () TAI useita jaettuj…"
+      },
+      {
+        "file": "content/question-banks/rust.json",
+        "questionId": "rust-borrow-mut",
+        "excerpt": "Borrow checker: yksi writer TAI useita readers — ei molempia yhtä aikaa."
+      }
+    ]
+  },
+  "UDP/TCP": {
+    "description": "**UDP/TCP** — kaksi keskeistä verkkoprotokollaa rinnakkain. **UDP** (User Datagram Protocol) on yhteydetön ja nopea mutta epäluotettava; **TCP** (Transmission Control Protocol) takaa järjestyksen ja toimituksen kolmisuuntaisella kättelyllä. Palomuurisäännöt, Docker-verkkoasetukset ja sovelluksen porttivalinta eroavat protokollan mukaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "HFT-tyyppinen tai reaaliaikainen palvelu kuuntelee UDP/TCP-porttia 9000…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-linux-journald-forward-syslog.md",
+        "questionId": "b09-linux-journald-forward-syslog",
+        "excerpt": "Organisaation keskus-LOKIp-palvelin (Splunk, Graylog, ELK) kerää lokit …"
+      }
+    ]
+  },
+  "UNBOUNDED": {
+    "description": "**UNBOUNDED** — SQL-ikkunafunktioiden kehysmäärittelyssä käytetty avainsana. `UNBOUNDED PRECEDING` ulottaa kehyksen partitioin alkuun, `UNBOUNDED FOLLOWING` loppuun. Esimerkiksi `SUM(amount) OVER (ORDER BY day ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)` laskee kumulatiivisen summan koko ositusten alusta nykyiselle riville.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-running-total",
+        "excerpt": "SUM(amount) OVER (ORDER BY day ROWS BETWEEN UNBOUNDED PRECEDING AND CUR…"
+      },
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-window-frame-rows",
+        "excerpt": "UNBOUNDED FOLLOWING — 7 päivää taaksepäin"
+      }
+    ]
+  },
+  "UNIQUE": {
+    "description": "**UNIQUE** — SQL-rajoite, joka estää saman arvon toistumisen sarakkeessa tai sarakekombinaatiossa. `UNIQUE`-rajoite luo automaattisesti indeksin, joka nopeuttaa hakuja ja estää duplikaattirivit, esimerkiksi bridge-taulun (`student_id, course_id`) -yhdistelmässä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-many-to-many-bridge.md",
+        "questionId": "sqd-many-to-many-bridge",
+        "excerpt": "Lisää bridge-tauluun UNIQUE estämään tuplailmoittautumiset. Indeksi nop…"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b04-pg-indexes-partial-active",
+        "excerpt": "UNIQUE constraint archived"
+      }
+    ]
+  },
+  "VAO/VBO": {
+    "description": "**VAO/VBO** — OpenGL:n modernin renderöintiputken perusrakenteet. **Vertex Array Object (VAO)** tallentaa vertex-attribuuttimäärittelyt; **Vertex Buffer Object (VBO)** sisältää itse vertex-datan GPU:n muistissa (VRAM). Qt OpenGL -sovelluksissa VAO/VBO luodaan kerran alussa eikä framella uudelleen, jos layout ei muutu.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-opengl-vao-12.md",
+        "questionId": "b02-qt-opengl-vao-12",
+        "excerpt": "Luo VAO/VBO :ssä — älä bindaa joka framella uudelleen jos layout ei muu…"
+      },
+      {
+        "file": "content/question-banks/qt-dev.json",
+        "questionId": "b02-qt-opengl-vao-12",
+        "excerpt": "VAO/VBO on moderni pipeline — Qt OpenGL docs."
+      }
+    ]
+  },
+  "VBO/VAO": {
+    "description": "**VBO/VAO** — ks. VAO/VBO. **Vertex Buffer Object (VBO)** tallentaa geometriadatan GPU:lle; **Vertex Array Object (VAO)** tallentaa attribuuttimäärittelyt ja eliminoi toistuvan bindauksen. Pari vähentää driver-overheadia ja on suorituskykyoptimoinnin lähtökohta ennen instancingia tai LOD-tekniikoita.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/exp-qt-opengl-vao-vbo.md",
+        "questionId": "exp-qt-opengl-vao-vbo",
+        "excerpt": "Tee optimointi ennen instancingia, occlusion cullingia tai LOD:ia — VBO…"
+      },
+      {
+        "file": "content/question-banks/qt-dev.json",
+        "questionId": "exp-qt-opengl-vao-vbo",
+        "excerpt": "VBO/VAO vähentää driver overheadia — Qt OpenGL esimerkit."
+      }
+    ]
+  },
+  "VLA": {
+    "description": "**VLA** (Variable-Length Array) — C99:n piirre, jossa taulukon koko määritetään ajon aikana stackissa. C++:ssa VLA ei kuulu standardiin ja sen käyttö on turvaton; `std::vector` tai `std::array` ovat suositeltavia vaihtoehtoja. Rust ei salli VLA:n kaltaisia tuntemattoman kokoisia arvoja stackissa, mikä pakottaa käyttämään heap-allokointia (`Box`, `Vec`).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rust-ownership-box-heap.md",
+        "questionId": "rust-ownership-box-heap",
+        "excerpt": "Rust ei salli tietämättömän kokoisia arvoja stackissa samalla tavalla k…"
+      },
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "safety-vector",
+        "excerpt": "C-style VLA"
+      }
+    ]
+  },
+  "VRAM": {
+    "description": "**VRAM** (Video RAM) — näytönohjaimen oma muisti, johon tallennetaan tekstuurit, framebuffer ja shader-resurssit. Qt OpenGL -kontekstijaossa (`QOpenGLContext::setShareContext`) useat widgetit voivat jakaa saman VRAM-datan ilman moninkertaista latausta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-qt-opengl-context-share.md",
+        "questionId": "b08-qt-opengl-context-share",
+        "excerpt": "Minimap ja pää-näkymä ovat erillisiä :eja. Molemmat kutsuvat -luontia s…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-qt-opengl-context-share.md",
+        "questionId": "b09-qt-opengl-context-share",
+        "excerpt": "Refaktorointi erotti 3D-näkymän ja materiaali-esikatselun omiksi widget…"
+      }
+    ]
+  },
+  "A/B": {
+    "description": "**A/B-testaus** — menetelmä, jossa käyttäjät jaetaan kahteen ryhmään erilaisten varianttien vertailua varten. Dynaaminen `import()` mahdollistaa A/B-varianttien lazy-latauksen JavaScript-sovelluksissa: vain aktivoitu variantti ladataan, ja kutsu kannattaa kääriä `try/catch`-lohkoon verkko- tai CSP-virheiden varalta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-dynamic-08.md",
+        "questionId": "b02-js-modules-dynamic-08",
+        "excerpt": "Kääri kutsu try/catchiin — verkko- tai CSP-virhe ei kaada koko appia. F…"
+      }
+    ]
+  },
+  "AC": {
+    "description": "**AC** (Acceptance Criteria) — hyväksymiskriteerit, jotka määrittelevät milloin käyttäjätarina täyttää vaatimukset. Scrumin DoR (Definition of Ready) edellyttää, että jokaisella sprinttiin otettavalla tarinalla on selkeät AC:t kirjoitettuna ennen sprinttisuunnittelua.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b09-scrum-dor-size-limit",
+        "excerpt": "Story pointit eivät vaikuta DoR:ään — vain AC ja prioriteetti"
+      }
+    ]
+  },
+  "ACK/ACK": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b12-linux-udp-stateless-firewall",
+        "excerpt": "UDP käyttää aina kolmen suun kättelyä (SYN/SYN-ACK/ACK) kuten TCP ennen…"
+      }
+    ]
+  },
+  "AMD": {
+    "description": "**AMD** (Advanced Micro Devices) — suoritin- ja näytönohjainvalmistaja. Shaderiohjelmat saattavat käyttäytyä eri tavoin AMD- ja NVIDIA-ajureilla; Qt RHI -kerroksella kirjoitettu koodi on ajurineutraalimpaa kuin suora GLSL, ja ristiintestaus eri GPU-valmistajien laitteilla on suositeltavaa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-uniform-14.md",
+        "questionId": "b02-qt-shaders-uniform-14",
+        "excerpt": "Kehityskoneella (NVIDIA) toimii. Testaajan AMD-koneella geometria on vä…"
+      }
+    ]
+  },
+  "AWS/GCP": {
+    "description": "**AWS/GCP** — johtavat pilvipalvelualustat: **Amazon Web Services** ja **Google Cloud Platform**. CI/CD-pipelinen salaisuuksia hallitaan OIDC-federaatiolla suoraan AWS/GCP:hin, jolloin pitkäikäisiä staattisia avaimia ei tarvita; least-privilege -periaate rajoittaa deploy-avaimen oikeudet minimiin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/ci-secret-management.md",
+        "questionId": "ci-secret-management",
+        "excerpt": "Least privilege — deploy-key vain tarvittavaan. Älä print . OIDC cloud-…"
+      }
+    ]
+  },
+  "BFS/DFS": {
+    "description": "**BFS/DFS** — graafin tai puun kaksi perustraversaalistrategiaa. **Breadth-First Search** (leveyssuuntainen, käyttää jonoa) ja **Depth-First Search** (syvyyssuuntainen, rekursio tai pino). Syvä rekursiivinen DFS voi ylittää JavaScriptin call stack -rajan (~10 000–50 000 tasoa); iteratiivinen toteutus tai BFS välttää `RangeError: Maximum call stack size exceeded` -virheen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-js-runtime-error-stack-limit.md",
+        "questionId": "b12-js-runtime-error-stack-limit",
+        "excerpt": "JavaScript-engineillä stack depth on rajallinen (~10k–50k riippuen engi…"
+      }
+    ]
+  },
+  "BOM": {
+    "description": "**BOM** (Bill of Materials) — osaluettelo, joka kuvaa tuotteen tai projektin komponenttihierarkian puurakenteena. SQL:n rekursiivinen CTE on standardi tapa BOM-puiden, org-kaavioiden ja kategoriahierarkioiden hakuun ilman sovelluskerroksen silmukointia.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-recursive-cte-hierarchy.md",
+        "questionId": "sqd-recursive-cte-hierarchy",
+        "excerpt": "Recursive CTE on standardi tapa hierarkioihin (org chart, BOM, kategori…"
+      }
+    ]
+  },
+  "BY/JOIN": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-json-vs-normalize.md",
+        "questionId": "sqd-json-vs-normalize",
+        "excerpt": "Säilytä JSONB, kun rakenne vaihtelee partnerien välillä tai kenttää lue…"
+      }
+    ]
+  },
+  "CALLBACK": {
+    "description": "**Callback** — funktio, joka välitetään toiselle funktiolle tai makrolle kutsuttavaksi myöhemmin. C++:ssa `std::bind` on käytännössä korvattu lambdoilla; alustakohtaiset makrot kuten `CALLBACK(handle)` toimivat adapter-abstraktioina esimerkiksi WinAPI-rajapinnoissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "b11-cpp-bind-vs-lambda",
+        "excerpt": "Macro CALLBACK(handle) korvaa bindin turvallisesti"
+      }
+    ]
+  },
+  "CEIL": {
+    "description": "**CEIL** (ceiling) — matemaattinen pyöristys ylöspäin lähimpään kokonaislukuun. SQL:ssä `CEIL(COUNT(*) / 4.0)` laskee esimerkiksi `NTILE`-bucketien koon tasajakoa varten; huomaa desimaaliliteraali `4.0`, sillä kokonaislukujako katkaisee desimaaliosan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-ntile-buckets",
+        "excerpt": "CEIL(COUNT(*) / 4)"
+      }
+    ]
+  },
+  "CEO": {
+    "description": "**CEO** (Chief Executive Officer) — toimitusjohtaja, organisaation ylin johtaja. Scrumissa CEO:nkaan pyyntö ei ohita Product Ownerille kuuluvaa backlog-priorisointia; kaikki pyynnöt menevät backlogiin PO:n arvioitavaksi ja priorisoitavaksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b06-scrum-po-stakeholder",
+        "excerpt": "CEO:n pyyntö menee suoraan sprintille ohittaen backlog-prosessin"
+      }
+    ]
+  },
+  "CERT": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "b09-docker-secrets-mount",
+        "excerpt": "ENV CERT=$(cat cert.pem) injektoi sertin turvallisesti ilman image-laye…"
+      }
+    ]
+  },
+  "CHECKPOINT": {
+    "description": "**CHECKPOINT** — PostgreSQL-komento, joka pakottaa kaikki dirty-sivut levylle ja kirjaa WAL-lokiin tarkistuspisteen. `CHECKPOINT` ei päivitä suunnittelijastatistiikkaa; bulk loadin jälkeen tarvitaan erikseen `ANALYZE` tai `VACUUM ANALYZE` ajantasaisten tilastojen saamiseksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b07-pg-vacuum-analyze",
+        "excerpt": "CHECKPOINT only päivittää planner-statistiikan bulk loadin jälkeen"
+      }
+    ]
+  },
+  "CN/SAN": {
+    "description": "**CN/SAN** — TLS-sertifikaatin tunnistekentät: **Common Name (CN)** (vanha käytäntö, yksi nimi) ja **Subject Alternative Names (SAN)** (moderni standardi, useita nimiä tai IP-osoitteita). PostgreSQL-yhteydessä `sslmode=verify-full` tarkistaa, että palvelimen sertifikaatin CN tai SAN vastaa yhteysosoitetta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-config-ssl-mode.md",
+        "questionId": "b03-pg-config-ssl-mode",
+        "excerpt": "**sslmode=verify-full (tai require minimum) connection stringissä** on …"
+      }
+    ]
+  },
+  "COALESCE": {
+    "description": "**COALESCE** — SQL-funktio, joka palauttaa ensimmäisen ei-NULL-arvon argumenttilistastaan. Joinissa `COALESCE(id, 0)` voi muuttaa NULL-semantiikkaa arvaamattomasti ja rikkoa indeksikäytön; olemassaolon tarkistukseen `NOT EXISTS` tai `LEFT JOIN … IS NULL` on semanttisesti selkeämpää.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-null-safe-join",
+        "excerpt": "COALESCE(id,0) joinissa — ei muuta semantiikkaa"
+      }
+    ]
+  },
+  "CPU/I/O": {
+    "description": "**CPU/I/O** — kaksi keskeistä suorituskykyresurssia. CPU-sidonnaiset tehtävät kuluttavat prosessoriaikaa; I/O-sidonnaiset odottavat levy- tai verkkooperaatioita. PostgreSQLin `CREATE INDEX CONCURRENTLY` kuluttaa molempia: se skannaa taulun kahdesti ja rakentaa indeksin ilman lukkoa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-pg-indexes-concurrent-create.md",
+        "questionId": "b04-pg-indexes-concurrent-create",
+        "excerpt": "CONCURRENTLY skannaa taulun kahteen kertaan ja rakentaa indeksin ilman …"
+      }
+    ]
+  },
+  "CRC": {
+    "description": "**CRC** (Cyclic Redundancy Check) — tarkistussumma-algoritmi tiedon eheyden varmistamiseen. C++20:n `consteval` sopii CRC-taulukoiden ja muiden vakiorakenteiden laskemiseen käännösaikana, mikä eliminoi ajoaikaisen alustuksen ja tuottaa täysin käännösaikaiset vakiot.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-cpp-style-consteval-04.md",
+        "questionId": "b02-cpp-style-consteval-04",
+        "excerpt": "Lookup-taulukot, CRC-taulut, vakiokonfig. C++20 vs — consteval on tiuke…"
+      }
+    ]
+  },
+  "CRM": {
+    "description": "**CRM** (Customer Relationship Management) — asiakkuudenhallintajärjestelmä, joka ylläpitää asiakastietoja, kontakteja ja myyntiputkia. Sivutettujen CRM-API-kutsujen läpikäyntiin JavaScript async-generaattori (`async function*`) on tehokas rakenne: se tuottaa jokaisen sivun tulokset `yield`-lausekkeella ilman kaikkien sivujen lataamista muistiin kerralla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-js-async-generator.md",
+        "questionId": "b08-js-async-generator",
+        "excerpt": "CRM-järjestelmä hakee asiakkaita sivutetusta API:sta. Jokaisessa näkymä…"
+      }
+    ]
+  },
+  "CRUD": {
+    "description": "**CRUD** (Create, Read, Update, Delete) — neljä perusoperaatiota tietokantadatan käsittelyyn. Optimistic locking sopii tyypillisiin CRUD-näkymiin, joissa samanaikaiset konfliktit ovat harvinaisia: sovellus lukee version-numeron, kirjoittaa ja tarkistaa, ettei versio muuttunut välissä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/prod-backend-optimistic-lock.md",
+        "questionId": "prod-backend-optimistic-lock",
+        "excerpt": "Optimistic lock sopii kun konfliktit ovat harvinaisia (useimmat CRUD-nä…"
+      }
+    ]
+  },
+  "CSI": {
+    "description": "**CSI** (Container Storage Interface) — standardirajapinta, jonka avulla konttiorkestraattorit (Kubernetes, Docker Swarm) käyttävät eri tallennusjärjestelmiä. Swarm-ympäristössä staattiset palvelut tarvitsevat CSI-yhteensopivan jaetun storagen tai sticky placement -ratkaisun datan pysyvyyden varmistamiseksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-docker-vol-driver-local.md",
+        "questionId": "b09-docker-vol-driver-local",
+        "excerpt": "Swarmissa stateful-palvelut vaativat jaetun storagen tai sticky placeme…"
+      }
+    ]
+  },
+  "CSV/JSON": {
+    "description": "**CSV/JSON** — kaksi yleisintä tiedostomuotoa datan siirtoon: **Comma-Separated Values** (rivipohjainen tekstitaulukko) ja **JavaScript Object Notation** (hierarkkinen rakenne). Suurten CSV/JSON-tiedostojen parsiminen synkronisesti JavaScriptissä blokkaa event loopin; työ kannattaa pilkkoa osiin tai siirtää Web Workerille.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-js-async-event-loop-blocking.md",
+        "questionId": "b04-js-async-event-loop-blocking",
+        "excerpt": "Async/await ei tee synkronisesta työstä non-blocking. Jos silmukka kest…"
+      }
+    ]
+  },
+  "CURSOR": {
+    "description": "**CURSOR** — SQL-mekanismi rivi kerrallaan -etenemiseen tulosjoukossa. Sovellustason tai stored-proceduuren CURSOR-silmukka on yleensä hitaampaa kuin set-pohjainen SQL; rekursiivinen CTE tai ikkunafunktio korvaa sen useimmiten tehokkaammin ilman rivikäyntiä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-recursive-cte-hierarchy",
+        "excerpt": "CURSOR loop sovelluksessa"
+      }
+    ]
+  },
+  "D3D11/HLSL": {
+    "description": "**D3D11/HLSL** — Microsoftin **Direct3D 11** -grafiikka-API ja sen shader-kieli **High-Level Shading Language**. Qt RHI kääntää GLSL-lähdekoodit automaattisesti HLSL:ksi Windows/D3D11-alustalla; CI-pipeline kannattaa kattaa sekä Windows (D3D11) että macOS (Metal) -buildit yhteensopivuuden varmistamiseksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-rhi-fallback.md",
+        "questionId": "b03-qt-shaders-rhi-fallback",
+        "excerpt": "CI-pipeline ajaa testit vähintään Windows + macOS -alustoilla. Älä olet…"
+      }
+    ]
+  },
+  "DAG": {
+    "description": "**DAG** (Directed Acyclic Graph) — suunnattu syklitön verkko, jossa ei ole silmukoita. C++:n `shared_ptr`-omistusmalleissa DAG-rakenteet eivät aiheuta muistivuotoja, mutta syklisissä rakenteissa (esim. parent↔child) `weak_ptr` katkaisee viittaussyklin ja estää vuodon.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-cpp-weak-ptr-cycle.md",
+        "questionId": "b06-cpp-weak-ptr-cycle",
+        "excerpt": "Parent→child strong, child→parent weak. Tree/DAG omistusmallit."
+      }
+    ]
+  },
+  "DATA": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "exp-docker-vol-db-persist",
+        "excerpt": "ENV DATA=/tmp riittää"
+      }
+    ]
+  },
+  "DATE": {
+    "description": "**DATE** — SQL:n päivämäärätyyppi ja -funktio. `DATE(created_at)` sarakkeessa tekee ehdosta ei-sargablen (indeksiä ei käytetä); sargable-muoto on `created_at >= '2024-01-01' AND created_at < '2024-01-02'`, jolloin indeksi voidaan hyödyntää.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-sargable-where",
+        "excerpt": "WHERE DATE(created_at) = CURRENT_DATE — funktio sarakkeella rikkoo sarg…"
+      }
+    ]
+  },
+  "DDL": {
+    "description": "**DDL** (Data Definition Language) — SQL-lauseet, jotka muuttavat tietokannan rakennetta: `CREATE`, `ALTER`, `DROP`. PostgreSQLissä DDL-operaatiot ottavat `ACCESS EXCLUSIVE` -lukon, joka blokkaa kaikki samanaikaiset kyselyt; siksi ne suoritetaan huoltoikkunassa tai `CONCURRENTLY`-vaihtoehtoa hyödyntäen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-locks-blocking-query.md",
+        "questionId": "b03-pg-locks-blocking-query",
+        "excerpt": "Näet estäjän PID:n → etsi sen kysely :sta. Ratkaisu voi olla commit/rol…"
+      }
+    ]
+  },
+  "DEALLOCATE": {
+    "description": "**DEALLOCATE** — PostgreSQL-komento, joka vapauttaa aiemmin `PREPARE`-komennolla luodun prepared statement -suunnitelman. `DEALLOCATE ALL` poistaa kaikki istunnon valmiit suunnitelmat, mikä pakottaa uuden suunnitelman valinnan ja korjaa generic plan -ongelmia.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b06-pg-explain-generic-plan",
+        "excerpt": "DEALLOCATE kaikki prepared statementit korjaa generic plan -ongelman py…"
+      }
+    ]
+  },
+  "DEEP": {
+    "description": "**DEEP** (Detailed enough, Emergent, Estimated, Prioritized) — Mike Cohnin muistisana hyvälle product backlogille. DEEP-backlog on riittävästi kuvattu, elää tarpeiden mukaan, sisältää arviot ja on priorisoitu arvon mukaan — ei FIFO-järjestyksessä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-scrum-backlog-order.md",
+        "questionId": "b05-scrum-backlog-order",
+        "excerpt": "PO pitää backlogin \"DEEP\": Detailed enough, Emergent, Estimated, Priori…"
+      }
+    ]
+  },
+  "DI": {
+    "description": "**DI** (Dependency Injection) — suunnittelumalli, jossa riippuvuudet syötetään ulkoa konstruktorin tai funktion parametrina eikä luoda sisällä. Rustissa traitin ja DI:n yhdistelmä mahdollistaa `mockall`-kirjaston automock-generaattorin tai manuaalisen fake-toteutuksen yksikkötestausta varten.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/rust.json",
+        "questionId": "rust-testing-mock-trait",
+        "excerpt": "Trait + DI mahdollistaa mockall-automock tai manual fake."
+      }
+    ]
+  },
+  "DLL/SO": {
+    "description": "**DLL/SO** — alustariippuvaiset jaetut kirjastot: **Dynamic Link Library** (Windows, `.dll`) ja **Shared Object** (Linux, `.so`). C++:n PIMPL-idiomi suojaa ABI-yhteensopivuutta: toteutusmuutokset eivät riko kirjaston julkista rajapintaa eivätkä pakota asiakaskoodin uudelleenkääntämistä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-cpp-pimpl-abi.md",
+        "questionId": "b07-cpp-pimpl-abi",
+        "excerpt": "Tradeoff: extra indirektio + allokaatio. Jaetut kirjastot (DLL/SO): Pim…"
+      }
+    ]
+  },
+  "EPSILON": {
+    "description": "**EPSILON** (`Number.EPSILON`) — pienin erotus luvun 1 ja seuraavan IEEE 754 -liukuluvun välillä JavaScriptissä (~2,22 × 10⁻¹⁶). Liukulukujen yhtäsuuruutta ei pidä tarkistaa `===`-operaattorilla; `Math.abs(a - b) < Number.EPSILON` tai erillinen kirjasto on tarpeen esimerkiksi rahoituslaskennassa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/javascript-web.json",
+        "questionId": "b04-js-types-number-precision",
+        "excerpt": "JavaScript Number on IEEE 754 — MDN Number.EPSILON ja rahoituslaskennan…"
+      }
+    ]
+  },
+  "ERP": {
+    "description": "**ERP** (Enterprise Resource Planning) — toiminnanohjausjärjestelmä, joka yhdistää tuotannon, varaston, talouden ja muut liiketoimintaprosessit yhteen tietokantaan. SQL-kyselyissä ERP-järjestelmistä kannattaa valita vain tarvittavat sarakkeet (`SELECT col1, col2`) eikä `SELECT *`, erityisesti laajoissa vientiraporteissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-select-columns-only.md",
+        "questionId": "sqd-select-columns-only",
+        "excerpt": "Logistiikkatiimi pyytää CSV-vientiä tilauksista ERP-järjestelmästä. Tau…"
+      }
+    ]
+  },
+  "ESTABLISHED": {
+    "description": "**ESTABLISHED** — TCP-yhteyden tila, jossa kolmisuuntainen kättely on valmis ja data voi kulkea molempiin suuntiin. Palomuurisäännöissä `state ESTABLISHED,RELATED` sallii vastauspakettien paluun automaattisesti ilman erillistä lähtevää sääntöä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-tcp-udp-handshake.md",
+        "questionId": "b12-linux-tcp-udp-handshake",
+        "excerpt": "DNS, DHCP ja NTP käyttävät UDP:ta; HTTP/HTTPS ja SSH TCP:tä. Palomuurin…"
+      }
+    ]
+  },
+  "EXISTS/IN": {
+    "description": "**EXISTS/IN** — SQL:n alikyselyoperaattorit. `EXISTS` palauttaa `TRUE` heti kun alikyselyssä löytyy yksikin rivi (semi-join, tehokas); `IN` vertaa arvoa listaan tai alikyselyyn. Suuria joukkoja vastaan `EXISTS` on usein nopeampi, erityisesti kun alikyselytaululla on indeksi join-sarakkeelle.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-semi-join-distinct.md",
+        "questionId": "sqd-semi-join-distinct",
+        "excerpt": "Kysy aina: \"Tarvitsenko oikean puolen sarakkeita SELECT-listaan?\" Jos e…"
+      }
+    ]
+  },
+  "EXISTS/NOT": {
+    "description": "**EXISTS / NOT EXISTS** — SQL:n alikyselykonstruktit olemassaolon ja puuttumisen tarkistamiseen. `NOT EXISTS` on anti-join: se palauttaa rivit, joille alikyselystä ei löydy vastaavuutta. Toimii oikein myös NULL-arvojen kanssa toisin kuin `NOT IN`, joka palauttaa tyhjän joukon jos alikyselyssä on yhtään NULL-riviä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-not-exists-anti.md",
+        "questionId": "sqd-not-exists-anti",
+        "excerpt": "varmista, ettei -taulussa ole duplikaattirivejä samalle asiakkaalle ilm…"
+      }
+    ]
+  },
+  "EXTENSION": {
+    "description": "**EXTENSION** — PostgreSQL:n laajennusmekanismi, jolla aktivoidaan lisämoduuleja (`CREATE EXTENSION`). `pg_stat_statements` vaatii `shared_preload_libraries`-parametrin asettamisen `postgresql.conf`:iin ennen palvelimen käynnistystä, minkä jälkeen `CREATE EXTENSION pg_stat_statements` aktivoi SQL-tilastoinnin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b03-pg-config-statements-ext",
+        "excerpt": "pg_stat_statements — shared_preload_libraries + CREATE EXTENSION"
+      }
+    ]
+  },
+  "FIFO": {
+    "description": "**FIFO** (First In, First Out) — järjestysperiaate, jossa vanhin kohde käsitellään ensin. Scrumin product backlog ei toimi FIFO-periaatteella; tarinat järjestetään liikearvon, riskin ja riippuvuuksien mukaan saapumisjärjestyksestä riippumatta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/scrum-best-practices.json",
+        "questionId": "b05-scrum-backlog-order",
+        "excerpt": "Prioriteetti on aina FIFO — vanhin ensin"
+      }
+    ]
+  },
+  "FOLLOWING": {
+    "description": "**FOLLOWING** — SQL-ikkunafunktioiden kehysmäärittelyssä käytetty suuntaavainsana. `ROWS BETWEEN CURRENT ROW AND N FOLLOWING` laskee N seuraavan rivin sisältävän ikkunan; `UNBOUNDED FOLLOWING` ulottaa kehyksen partitioin loppuun asti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-window-frame-rows",
+        "excerpt": "UNBOUNDED FOLLOWING — 7 päivää taaksepäin"
+      }
+    ]
+  },
+  "FORWARD/OUTPUT": {
+    "description": "**FORWARD/OUTPUT** — Linux-palomuurin (iptables/nftables) ketjunimet. `INPUT` käsittelee paikalliselle prosessille saapuvat paketit, `OUTPUT` lähtevät ja `FORWARD` reititetyt paketit. VPN-clientin pushed routes ja cloud load balancerin portit voivat vaikuttaa FORWARD-ketjun sääntöihin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-route-09.md",
+        "questionId": "b02-linux-network-route-09",
+        "excerpt": "Tarkista myös VPN-clientin pushatut reitit ja firewall (/) FORWARD/OUTP…"
+      }
+    ]
+  },
+  "FRAME": {
+    "description": "**FRAME** (window frame) — SQL-ikkunafunktion määritelmä siitä, mitkä rivit ovat mukana laskussa. `ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` on yleisin kehys juoksevalle summalle; `RANGE`-pohjainen kehys perustuu arvoihin eikä rivimäärään.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-running-total.md",
+        "questionId": "sqd-running-total",
+        "excerpt": "Running sum, running count ja running average ovat ikkunafunktioiden pe…"
+      }
+    ]
+  },
+  "FROM/JOIN": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-avoid-cartesian",
+        "excerpt": "Tarkista FROM/JOIN ON -ehdot kun rivimäärä räjähtää."
+      }
+    ]
+  },
+  "FTP": {
+    "description": "**FTP** (File Transfer Protocol) — perinteinen tiedostonsiirtoprotokolla (portit 20/21). Verkkolähitulostimet julkistetaan nykyisin mDNS/DNS-SD-protokollilla (Avahi/Bonjour), ei FTP:llä; `avahi-browse _ipp._tcp` löytää IPP-tulostimet lähiverkosta.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "exp-linux-avahi-printer-discovery",
+        "excerpt": "FTP broadcast ilmoittaa tulostimen lähiverkossa automaattisesti"
+      }
+    ]
+  },
+  "FUNKTIO": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-pivot-conditional-agg",
+        "excerpt": "WINDOW FUNKTIO pivotoi automaattisesti"
+      }
+    ]
+  },
+  "GARP": {
+    "description": "**GARP** (Gratuitous ARP) — ARP-viesti, jonka lähettäjä lähettää omasta IP-osoitteestaan ilman ulkoista pyyntöä. Käytetään IP-osoitteen muutosten, HA-failoverin ja VM-migraation jälkeen naapurien ARP-välimuistin päivittämiseen uudella MAC-osoitteen sidonnalla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-arp-flush-migration.md",
+        "questionId": "b12-linux-arp-flush-migration",
+        "excerpt": "tyhjentää kaikki naapurit kaikilla rajapinnoilla — voi aiheuttaa lyhyen…"
+      }
+    ]
+  },
+  "GH": {
+    "description": "**GH** (GitHub / GitHub CLI) — Microsoftin Git-hostingpalvelu ja sen komentorivityökalu `gh`. CI-pipelinen salaisuudet tallennetaan GitHub Secrets -ominaisuuteen, joka peittää arvojen näkymisen lokitulosteessa; `gh secret set` hallinnoi avaimia komentorivillä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/git-ci.json",
+        "questionId": "ci-secret-management",
+        "excerpt": "CI secrets (Jenkins Credentials, GH Secrets) piilottavat avaimen lokeis…"
+      }
+    ]
+  },
+  "GSO": {
+    "description": "**GSO** (Generic Segmentation Offload) — Linux-verkkopinon optimointi, joka siirtää TCP/UDP-segmentoinnin verkkokortin (NIC) tehtäväksi. `ethtool -K eth0 gso off` poistaa GSO:n käytöstä diagnostiikkaa varten; tuotannossa offload parantaa suorituskykyä vähentämällä CPU-kuormaa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-linux-network-ethtool-offload.md",
+        "questionId": "b06-linux-network-ethtool-offload",
+        "excerpt": "Offloadin poisto laskee suorituskykyä — käytä vain diagnostiikkaan tai …"
+      }
+    ]
+  },
+  "HA": {
+    "description": "**HA** (High Availability) — korkea käytettävyys, järjestelmän kyky jatkaa toimintaa laiterikkojen tai failoverin aikana. HA-konfiguraatioissa virtuaalinen IP-osoite siirtyy aktiiviselta solmulta toiselle (VRRP, keepalived), mikä edellyttää ARP-välimuistin päivitystä GARP-viestillä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-linux-arp-static-neigh.md",
+        "questionId": "b12-linux-arp-static-neigh",
+        "excerpt": "Palvelin käyttää staattista reittiä gatewayn kautta. Jossain tapauksiss…"
+      }
+    ]
+  },
+  "HASH": {
+    "description": "**HASH** — PostgreSQL-indeksityyppi, joka tukee vain yhtäsuuruusvertailua (`=`). JSONB-sarakkeille GIN-indeksi (operaattorit `@>`, `?`) on yleensä tehokkaampi kuin HASH-indeksi; HASH sopii vain yksinkertaiseen avain=arvo-hakuun ilman operaattoriperehteisyyttä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-jsonb-gin-index",
+        "excerpt": "HASH index jsonb:lle"
+      }
+    ]
+  },
+  "HFT": {
+    "description": "**HFT** (High-Frequency Trading) — korkean taajuuden algoritminen kaupankäynti, joka vaatii microsekuntitason latenssit. HFT-tyyppiset reaaliaikasovellukset suosivat UDP:ta TCP:n sijaan ja Docker `--network host` -tilaa, jolloin NAT-overhead ja virtuaalinen verkkokerros poistetaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "HFT-tyyppinen tai reaaliaikainen palvelu kuuntelee UDP/TCP-porttia 9000…"
+      }
+    ]
+  },
+  "HLSL": {
+    "description": "**HLSL** (High-Level Shading Language) — Microsoftin shader-ohjelmointikieli Direct3D-grafiikkaputkelle. Qt:n `qsb`-työkalu kääntää GLSL-lähdekoodit automaattisesti HLSL:ksi Windows/D3D11-alustalla ja SPIR-V:ksi Vulkanille; generoidut binäärit kannattaa jättää commitoimatta ja generoida buildissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-qt-shader-qsb.md",
+        "questionId": "b07-qt-shader-qsb",
+        "excerpt": "Lähde-GLSL (, ) versionhallintaan; generoidaan buildissa. Älä commitoi …"
+      }
+    ]
+  },
+  "HMAC": {
+    "description": "**HMAC** (Hash-based Message Authentication Code) — kryptografinen viesti-autentikointikoodi, joka yhdistää hash-funktion ja salaisen avaimen. Robot Frameworkin Python-avainsanoilla voi laskea HMAC-allekirjoituksen API-testeissä, joissa palvelin vaatii jokaisen pyynnön allekirjoittamista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rf-custom-python-keyword.md",
+        "questionId": "rf-custom-python-keyword",
+        "excerpt": "Testissä pitää laskea HMAC-allekirjoitus, parsia monimutkainen JSON-rak…"
+      }
+    ]
+  },
+  "IDS": {
+    "description": "**IDS** (Intrusion Detection System) — tunkeutumisen havaitsemisjärjestelmä, joka seuraa verkkoliikennettä tai järjestelmätapahtumia hyökkäysten varalta. IDS voi lähettää TCP RST -paketteja havaitessaan epäilyttävää liikennettä; `tcpdump` ja paketin lähde-IP paljastavat, tulivatko RST-paketit palvelimelta vai IDS:ltä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-tcpdump.md",
+        "questionId": "b07-linux-network-tcpdump",
+        "excerpt": "Epäilet palomuurin tai IDS:n lähettävän RST-paketteja."
+      }
+    ]
+  },
+  "INPUT": {
+    "description": "**INPUT** — Linux-palomuurin (iptables/nftables) ketju, joka käsittelee paikalliselle koneelle saapuvat paketit. `nft list ruleset` tai `iptables -L INPUT -n -v` näyttää aktiiviset säännöt; cloud load balancerin julkaisema portti voi poiketa palvelimen `INPUT`-ketjun portista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-firewall-nft.md",
+        "questionId": "b07-linux-network-firewall-nft",
+        "excerpt": "Cloud load balancer voi myös julkaista portin eri kuin palvelin luulee.…"
+      }
+    ]
+  },
+  "INSERT/UPDATE/DELETE/SELECT": {
+    "description": "**INSERT / UPDATE / DELETE / SELECT** — SQL:n neljä perus-DML-lausetta (Data Manipulation Language): lisäys, päivitys, poisto ja haku. PostgreSQLin `VACUUM FULL` lukitsee taulun koko operaation ajaksi ja blokkaa kaikki DML-lauseet; `VACUUM` ilman FULL-vaihtoehtoa toimii samanaikaisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-vacuum-full-12.md",
+        "questionId": "b02-pg-vacuum-full-12",
+        "excerpt": "- Taulu on **lukittu** koko operaation (INSERT/UPDATE/DELETE/SELECT blo…"
+      }
+    ]
+  },
+  "IPP": {
+    "description": "**IPP** (Internet Printing Protocol) — standardiprotokolla verkkotulostimille (portti 631). Linux julkistaa IPP-tulostimet lähiverkossa Avahi/mDNS:n kautta; `avahi-browse _ipp._tcp` tai `avahi-browse -at | grep IPP` löytää ne automaattisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-avahi-browse-12.md",
+        "questionId": "b02-linux-avahi-browse-12",
+        "excerpt": "Tai suodata tulostimet IPP-protokollalla:"
+      }
+    ]
+  },
+  "ISOILLA": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-semicolon-style.md",
+        "questionId": "sqd-semicolon-style",
+        "excerpt": "- Avainsanat ISOILLA (, , )"
+      }
+    ]
+  },
+  "JDK": {
+    "description": "**JDK** (Java Development Kit) — Java-kehitysympäristö, joka sisältää kääntäjän (`javac`), ajoympäristön ja kehitystyökalut. Docker multistage -buildissa JDK tarvitaan vain build-stagessa; runtime-stageen riittää kevyempi JRE tai `eclipse-temurin:XX-jre` -pohjakuva, mikä pienentää tuotantoimage-kokoa merkittävästi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-dockerfile-multistage-size.md",
+        "questionId": "b05-dockerfile-multistage-size",
+        "excerpt": "Tuotantoimage 2 GB — mukana Maven, JDK ja testiraportit runtime-stagess…"
+      }
+    ]
+  },
+  "JOIN/EXISTS": {
+    "description": "**JOIN / EXISTS** — SQL:n tapoja yhdistää taulujen tietoja. Palauttaessa vain pääkyselytaulun rivejä EXISTS-semi-joinin avulla vältetään N+1-ongelma API-kerroksessa: yhdessä kyselyssä haetaan kaikki tarvittava data eikä kutsuta EXISTS-kyselyä erikseen jokaiselle riville.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-exists-vs-count.md",
+        "questionId": "sqd-exists-vs-count",
+        "excerpt": "API-kerroksessa vältä N+1: älä kutsu EXISTS-kyselyä jokaiselle asiakkaa…"
+      }
+    ]
+  },
+  "KPI": {
+    "description": "**KPI** (Key Performance Indicator) — avainsuoritusmittari liiketoiminnan tavoitteiden seurannalle. Scrum velocity on tiimin sisäinen kapasiteettimittari sprinttisuunnitteluun, ei KPI johdolle; velocity-vertailu tiimien välillä on harhaanjohtavaa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-scrum-velocity-forecast.md",
+        "questionId": "b03-scrum-velocity-forecast",
+        "excerpt": "Selitä johtoryhmälle: velocity = **tiimin kapasiteettimittari**, ei KPI…"
+      }
+    ]
+  },
+  "KRIITTINEN": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-qt-widgets-size-hint.md",
+        "questionId": "b05-qt-widgets-size-hint",
+        "excerpt": "Pitkä tagi \"KRIITTINEN-VIRHE-QA\" leikkaantuu widgetin reunoihin."
+      }
+    ]
+  },
+  "L2/VLAN/IP": {
+    "description": "**L2/VLAN/IP** — verkkoarkkitehtuurin kerrokset: **Layer 2** (MAC-osoitteet, kytkentä), **VLAN** (virtuaalinen lähiverkko L2-tasolla) ja **IP** (Layer 3, reititys). ARP FAILED -tila kertoo, ettei kernel saanut vastausta ARP-kyselyyn; juurisyy on usein L2- tai VLAN-konfigurointivirhe tai IP-osoitekonflikt.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/linux-ops.json",
+        "questionId": "b12-linux-arp-failed-state",
+        "excerpt": "FAILED = kernel luovutti ARP-yrityksistä — juurisyy on L2/VLAN/IP-konfl…"
+      }
+    ]
+  },
+  "LE": {
+    "description": "**LE** (Little Endian) — tavujärjestys, jossa vähiten merkitsevä tavu tallennetaan ensin pienempään osoitteeseen. x86/x64-arkkitehtuurit käyttävät LE:tä; verkkoprotokollit ovat perinteisesti big-endian (BE). Kannettavat C++-toteutukset käyttävät `htonl`/`ntohl`-funktioita tai C++23:n `std::byteswap`-funktiota.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-cpp-endian-portable.md",
+        "questionId": "b07-cpp-endian-portable",
+        "excerpt": "Protokolla määrittelee kentät big-endian -järjestyksessä (verkko-byte o…"
+      }
+    ]
+  },
+  "LEVEL": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-rls-policy",
+        "excerpt": "ROW LEVEL SECURITY + policy (esim. team_id = current_setting(...))"
+      }
+    ]
+  },
+  "LLM/IDE": {
+    "description": "**LLM/IDE** — **Large Language Model** (tekoälymallipohjainen koodiavustaja) ja **Integrated Development Environment** (kehitysympäristö, esim. VS Code, CLion). `compile_commands.json` antaa sekä LLM:lle että IDE:lle tarkan tiedon kääntäjälipuista ja include-poluista jokaiselle `.cpp`-tiedostolle.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b11-cpp-compile-commands.md",
+        "questionId": "b11-cpp-compile-commands",
+        "excerpt": "listaa jokaisen :n täyden kääntäjäkomennon. LLM/IDE/clang-tidy käyttää …"
+      }
+    ]
+  },
+  "LOD": {
+    "description": "**LOD** (Level of Detail) — 3D-grafiikan optimointitekniikka, jossa kauempana olevista objekteista käytetään yksinkertaisempaa mallia renderöintikuorman vähentämiseksi. VBO/VAO-pohjainen optimointi kannattaa tehdä ennen edistyneempiä tekniikoita kuten instancing, occlusion culling tai LOD.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/exp-qt-opengl-vao-vbo.md",
+        "questionId": "exp-qt-opengl-vao-vbo",
+        "excerpt": "Tee optimointi ennen instancingia, occlusion cullingia tai LOD:ia — VBO…"
+      }
+    ]
+  },
+  "LOWER": {
+    "description": "**LOWER** — SQL-funktio, joka muuntaa merkkijonon pieniksi kirjaimiksi. Käytetään kirjainkoosta riippumattomaan vertailuun; `LOWER(input)` parametrisoidussa kyselyssä auttaa normalisoimaan syötteen, mutta parametrisoidut kyselyt ovat ensisijainen suoja SQL-injektiota vastaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-parameterized-query",
+        "excerpt": "LOWER(input) estää injektion"
+      }
+    ]
+  },
+  "LTO": {
+    "description": "**LTO** (Link-Time Optimization) — kääntäjäoptimointitekniikka, jossa koodia optimoidaan linkitysvaiheessa moduulirajojen yli. Rustin release-profiilissa `lto = true` (`Cargo.toml`:ssa) vähentää binäärin kokoa ja parantaa suorituskykyä cross-module inliningillä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rust-tooling-release-profile.md",
+        "questionId": "rust-tooling-release-profile",
+        "excerpt": "Release-profiili ( Cargo.toml:ssa) ottaa käyttöön optimoinnit (), poist…"
+      }
+    ]
+  },
+  "LTV": {
+    "description": "**LTV** (Lifetime Value, asiakkaan elinkaari-arvo) — metriikka, joka kuvaa yksittäisen asiakkaan tuomaa kokonaisarvoa koko asiakkuuden aikana. SQL-kyselyissä LTV lasketaan yleensä aggregaatteina (`SUM`, `AVG`) asiakaskohtaisista tilauksista; `LIMIT`-lauseke on tärkeä suuren tietomassan esikatseilussa ennen raskaan kyselyn optimointia.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-limit-preview.md",
+        "questionId": "sqd-limit-preview",
+        "excerpt": "Data-analyytikko rakentaa uutta kyselyä, joka laskee asiakkaiden elinka…"
+      }
+    ]
+  },
+  "MIN": {
+    "description": "**MIN** — SQL-aggregaattifunktio, joka palauttaa pienimmän arvon ryhmässä tai partitiossa. Ikkunafunktiona `MIN(...) OVER (PARTITION BY ...)` laskee ositusten minimin ilman `GROUP BY` -rajoitteita; käytetään myös ensimmäisen arvon hakuun tietyn järjestyksen mukaan vaihtoehtona `FIRST_VALUE`-funktiolle.",
+    "skip": false,
+    "context": [
+      {
+        "file": "content/question-banks/sql-query-design.json",
+        "questionId": "sqd-first-value-partition",
+        "excerpt": "MIN(customer_name) nopeampi"
+      }
+    ]
+  },
+  "MITM": {
+    "description": "**MITM** (Man-in-the-Middle) — hyökkäystyyppi, jossa hyökkääjä asettautuu kahden osapuolen viestinnän väliin salakuuntelemaan tai muokkaamaan liikennettä. `curl -v` ja `--trace` paljastavat HTTP-headerit debuggauksessa, mutta tuotantoliikenteessä headerien loggaus voi helpottaa MITM-analyysiä tai paljastaa salaisuuksia.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-curl-debug.md",
+        "questionId": "b07-linux-network-curl-debug",
+        "excerpt": "Tuotannossa vuotaa headerit logiin — älä käytä production-trafficissa i…"
+      }
+    ]
+  },
+  "MQTT": {
+    "description": "**MQTT** (Message Queuing Telemetry Transport) — kevyt julkaisija-tilaaja-viestintäprotokolla IoT-laitteille ja reaaliaikasovelluksille (portit 1883/8883). Qt-sovelluksissa MQTT-client pyörii worker-säikeessä; signaali-slotti-mekanismi välittää viestit UI-säikeeseen thread-turvallisesti.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-qt-thread-affinity.md",
+        "questionId": "b04-qt-thread-affinity",
+        "excerpt": "MQTT-clientti worker-säikeessä vastaanottaa viestejä ja päivittää näytö…"
+      }
+    ]
+  },
+  "MTR": {
+    "description": "**MTR** (My Traceroute) — verkkodiagnostiikkatyökalu, joka yhdistää `ping`- ja `traceroute`-toiminnallisuuden jatkuvaan seurantaan. `mtr --report host` näyttää jokaisen hypyn pakettihäviön ja latenssit; ICMP-vastauksettomuus ei aina tarkoita ongelmaa, sillä monet reitittimet hylkäävät ICMP-paketit.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-linux-network-traceroute.md",
+        "questionId": "b08-linux-network-traceroute",
+        "excerpt": "Monet palvelimet eivät vastaa ICMP:hen — ei aina tarkoita ongelmaa. Ver…"
+      }
+    ]
+  },
+  "MTTR": {
+    "description": "**MTTR** (Mean Time To Recovery) — keskimääräinen palautumisaika viasta normaalitilaan. Docker healthcheck -interval ja `start_period` vaikuttavat MTTR:ään: liian harva tarkistus pidentää havaintoaikaa, liian tiheä kuormittaa palvelua turhaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-docker-health-interval.md",
+        "questionId": "b04-docker-health-interval",
+        "excerpt": "Liian tiheä check kuormittaa sovellusta — tasapainota interval vs. MTTR…"
+      }
+    ]
+  },
+  "MTU/MSS": {
+    "description": "**MTU/MSS** — verkon paketin kokomääritykset: **Maximum Transmission Unit** (MTU, suurin L2-kehyksen koko, yleensä 1500 tavua Ethernetissä) ja **Maximum Segment Size** (MSS, suurin TCP-datan koko yhdessä segmentissä). MTU/MSS-yhteensopimattomuus voi aiheuttaa hiljaisia yhteysongelmia; `tcpdump` ja `ip link show` auttavat diagnosoinnissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-tcpdump.md",
+        "questionId": "b07-linux-network-tcpdump",
+        "excerpt": "RST palomuurista vs palvelimesta erottuu lähde-IP:llä tcpdumpissa. Deep…"
+      }
+    ]
+  },
+  "MUST": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/cpp-best-practices.json",
+        "questionId": "exp-cpp-incident-nodiscard",
+        "excerpt": "Kommentti // MUST CHECK"
+      }
+    ]
+  },
+  "NDP": {
+    "description": "**NDP** (Neighbor Discovery Protocol) — IPv6:n protokolla, joka korvaa IPv4:n ARP:n. NDP hoitaa osoiteresoluution (MAC↔IPv6), reitittimen löydön ja duplicate address detection (DAD). Palomuurisäännöt ja Docker-managed iptables-säännöt voivat tahattomasti blokata NDP-liikennettä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-linux-net-nat-troubleshoot.md",
+        "questionId": "b09-linux-net-nat-troubleshoot",
+        "excerpt": "Custom firewall voi poistaa Dockerin -säännön. zone vaatii oikean konfi…"
+      }
+    ]
+  }
+}

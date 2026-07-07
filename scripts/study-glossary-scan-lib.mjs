@@ -18,7 +18,7 @@ export const SCAN_OUTPUT_DIR = path.join(root, ".tmp");
 export const SCAN_JSON = path.join(SCAN_OUTPUT_DIR, "glossary-scan.json");
 export const SCAN_MD = path.join(SCAN_OUTPUT_DIR, "glossary-scan.md");
 
-/** @typedef {{ file: string, line: number, excerpt: string }} GlossaryRef */
+/** @typedef {{ file: string, line: number, excerpt: string, questionId?: string }} GlossaryRef */
 /** @typedef {{ term: string, anchor: string, inGlossary: boolean, manualLinkCount: number, refs: GlossaryRef[], filtered?: boolean, filterReason?: string }} ScannedTerm */
 
 /** Lyhenteet: GUC, CI/CD, CVE (CVE-korjaukset), CVE:t */
@@ -124,8 +124,8 @@ export function* iterScannableLines(text) {
   }
 }
 
-/** @param {string} text @param {string} relPath */
-export function scanTextForAbbreviations(text, relPath) {
+/** @param {string} text @param {string} relPath @param {string} [questionId] */
+export function scanTextForAbbreviations(text, relPath, questionId) {
   /** @type {Map<string, GlossaryRef[]>} */
   const refs = new Map();
 
@@ -134,8 +134,8 @@ export function scanTextForAbbreviations(text, relPath) {
       const term = normalizeAbbrevTerm(raw);
       if (!refs.has(term)) refs.set(term, []);
       const list = refs.get(term);
-      if (list.some((r) => r.file === relPath && r.line === lineNum)) continue;
-      list.push({ file: relPath, line: lineNum, excerpt: excerptAround(line) });
+      if (list.some((r) => r.file === relPath && r.line === lineNum && r.questionId === questionId)) continue;
+      list.push({ file: relPath, line: lineNum, excerpt: excerptAround(line), questionId });
     }
   }
 
@@ -150,7 +150,8 @@ export function countManualGlossaryLinks(text) {
 /** @param {string} relPath @param {string} absPath */
 export function scanMarkdownFile(relPath, absPath) {
   const text = fs.readFileSync(absPath, "utf8");
-  const refs = scanTextForAbbreviations(text, relPath);
+  const questionId = path.basename(relPath, ".md");
+  const refs = scanTextForAbbreviations(text, relPath, questionId);
   const manualLinkCount = countManualGlossaryLinks(text);
   return { refs, manualLinkCount };
 }
@@ -164,6 +165,7 @@ export function scanQuestionBankFile(relPath, absPath) {
   const questions = bank.questions || [];
 
   for (const q of questions) {
+    const questionId = q.id;
     const chunks = [
       q.prompt,
       q.correctFeedback,
@@ -181,6 +183,7 @@ export function scanQuestionBankFile(relPath, absPath) {
             file: relPath,
             line: lineNum,
             excerpt: excerptAround(text),
+            questionId,
           });
         }
       }
@@ -298,7 +301,7 @@ function dedupeRefs(refs) {
   /** @type {GlossaryRef[]} */
   const out = [];
   for (const r of refs) {
-    const key = `${r.file}:${r.line}:${r.excerpt}`;
+    const key = `${r.file}:${r.line}:${r.questionId || ""}:${r.excerpt}`;
     if (seen.has(key)) continue;
     seen.add(key);
     out.push(r);
