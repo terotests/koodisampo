@@ -7152,7 +7152,15 @@ class GameSession  extends RangerProcessBase {
       }
     }
     if ( correct ) {
+      this.fruitSalaryBonus = this.fruitSalaryBonus + 10;
+      this.recordSalaryPickupEffect(10, "€");
       this._map.spawnQuizRewardFruits(this.worldClock.gameMinutes);
+    } else {
+      if ( this.fruitSalaryBonus > 5 ) {
+        this.fruitSalaryBonus = this.fruitSalaryBonus - 5;
+      } else {
+        this.fruitSalaryBonus = 0;
+      }
     }
     this.clearEncounter();
     this.screen = "map";
@@ -9478,7 +9486,7 @@ class GameSession  extends RangerProcessBase {
   };
   playerSalary () {
     if ( this.isEmployed() == false ) {
-      return 0;
+      return this.fruitSalaryBonus;
     }
     const base = 2500;
     const floor = this._map.currentFloor;
@@ -10145,6 +10153,7 @@ class GameSession  extends RangerProcessBase {
   applyDeathReset () {
     this._map.restoreMapTiles();
     this._map.clearPoliceSquad();
+    this.fruitSalaryBonus = 0;
     this.resetEmploymentProgress();
   };
   onEpilogueKey (key) {
