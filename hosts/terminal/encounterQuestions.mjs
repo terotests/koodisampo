@@ -945,6 +945,17 @@ const KIDS_JOKES = [
   "Mitä numero nolla sanoi kahdeksalle? Hieno vyö!",
   "Miksi tähti ei eksynyt? Se seurasi omaa loistoaan.",
   "Mikä on tietokoneen lempivälipala? Mikrosipsit.",
+  "Mikä on maailman suurin riisi? Pariisi.",
+  "Kaksi tomaattia meni tien yli. Toinen jäi auton alle, toinen huusi: \"Tulehan ketsuppiin!\"",
+  "Kaksi mummoa meni mustikkaan, mutta toinen ei mahtunut.",
+  "Mikä on keltainen ja veden alla? Sitruuna sukellusveneessä.",
+  "Mies meni rautakauppaan ja kysyi: \"Onko teillä moottorisahoja?\" Myyjä vastasi: \"Onn, onnnn, onn onnnnn, onnnnnnnn.\"",
+  "Miksi porkkana itki junassa? Se istui sipulin vieressä.",
+  "Miksi banaani meni kosmetologille? Se halusi kuorinnan.",
+  "Mikä on vihreä ja roikkuu puussa? Raaka apina.",
+  "Mikä on hitauden huippu? Kun etana jarruttaa kaarteessa.",
+  "Mitä yhteistä on kalalla ja Peter Panilla? Molemmat pelkäävät koukkua.",
+  "Miksi dalmatialaisella on pilkut? Koska eikö näyttäisi tyhmältä jos sillä olisi kysymysmerkit?",
 ];
 
 function jokesForQuestion(question) {
