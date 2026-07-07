@@ -6,9 +6,9 @@ title: Johdanto
 
 # Opiskelumateriaali
 
-Tämä sivusto on pelistä erillinen opiskelumateriaali. Oppitunnit keskittyvät suoraan tekniseen sisältöön ilman pelihahmoja tai toimistotarinaa.
+Tälle sivustolle on koottu Koodisammon oppitunnit selkeänä opiskelumateriaalina. Sisältö keskittyy teknisiin aiheisiin ilman pelihahmoja tai toimistotarinaa.
 
-Jos pelaat Koodisampoa, löydät saman oppitunnin kysymyksen palautteen jälkeen linkistä **Lue oppitunti**.
+Jos pelaat Koodisampoa, voit avata saman aiheen suoraan pelistä kysymyksen palautteen jälkeen linkistä **Lue oppitunti**.
 
 ## Rakenne
 
