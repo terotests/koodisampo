@@ -19,6 +19,7 @@ const EXPECTED_CHAPTERS = [
   "git-workflow", "git-ci",
   "backend-data", "backend-api", "ops-incident",
   "web-security",
+  "sec-api", "sec-auth", "sec-data", "sec-input", "sec-design",
 ];
 
 const asJson = process.argv.includes("--json");
