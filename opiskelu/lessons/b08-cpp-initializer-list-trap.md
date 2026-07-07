@@ -10,7 +10,7 @@ auto x = {1, 2, 3};     // std::initializer_list<int>
 f(x);                   // EI käännä
 ```
 
-**`auto x = {1,2,3}`** deduktoidaan **`std::initializer_list<int>`**:ksi — ei `array`:ksi. Brace-init `auto`:n kanssa on erityissääntö.
+**`auto x = {1,2,3}`** deduktoidaan **`std::initializer_list<int>`**:ksi copy-list-initializationissa — ei `array`:ksi. `auto x{1}` on eri tapaus.
 
 ## Ratkaisu
 

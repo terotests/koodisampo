@@ -24,7 +24,7 @@ struct Point {
 };
 ```
 
-Generoi `<=>` ja derived `==`, `<`, jne. (strong/partial ordering tyypistä riippuen). `std::sort` ja kontit toimivat.
+Generoi `<=>` ja derived `==`, `<`, jne. (strong/partial ordering tyypistä riippuen). `std::ranges::sort` käyttää generoitua vertailua — comparatorissa palauta `bool`, ei suoraan `<=>`-tulosta.
 
 ## Käytännössä
 

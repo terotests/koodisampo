@@ -11,7 +11,7 @@ if (offset < buffer_size) {
 }
 ```
 
-Vertailu `offset < buffer_size` muuntaa `offset` unsignediksi. Negatiivinen `offset` (esim. -1) muuttuu suureksi `size_t`:ksi → ehto on **todellisuudessa tosi** → kopiointi väärästä kohdasta, buffer overflow.
+Vertailu `offset < buffer_size` muuntaa `offset` unsignediksi (usual arithmetic conversions). Negatiivinen `offset` (esim. -1) muuttuu suureksi `size_t`:ksi — tyypillisesti ehto `offset < buffer_size` on silloin **false**, ei true. Ongelma on silti vakava: validointi puuttuu, ja myöhempi käyttö vääristyneenä unsigned-arvona voi johtaa ylivuotoon tai väärään indeksiin.
 
 ## Ratkaisu
 
@@ -21,9 +21,15 @@ Validoi ennen vertailua tai käytä samaa signednessiä:
 if (offset < 0 || static_cast<size_t>(offset) >= buffer_size)
     throw std::out_of_range("offset");
 
-// tai pidä molemmat signed:
+copy(buffer, static_cast<size_t>(offset));
+```
+
+Tai pidä molemmat signed:
+
+```cpp
 std::ptrdiff_t offset = ...;
 if (offset >= 0 && offset < static_cast<std::ptrdiff_t>(buffer_size))
+    copy(buffer, static_cast<size_t>(offset));
 ```
 
 Älä koskaan vertaile signed ja unsigned ilman eksplisiittistä tarkoitusta.

@@ -21,7 +21,7 @@ void parse(std::span<const char> data) {
 ## Ero muihin span-tunteihin
 
 - `b06-cpp-span-heap-buffer`: yleinen `(ptr, len)` → `span` -modernisointi.
-- `b08-cpp-span-bounds`: kun `span` on jo API:ssa, indeksoinnin turvallisuus (`at` vs `[]`).
+- `b08-cpp-span-bounds`: kun `span` on jo API:ssa, indeksoinnin turvallisuus (eksplisiittinen `size()`-tarkistus vs `operator[]`).
 
 Tässä kysymyksessä keskiössä on **rajattoman osoittimen korvaaminen**, ei indeksointitarkistus spanin sisällä.
 

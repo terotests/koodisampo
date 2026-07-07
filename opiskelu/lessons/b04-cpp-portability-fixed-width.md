@@ -28,6 +28,6 @@ struct WireHeader {
 - **Sisäinen laskenta:** tavallinen `int`/`size_t` on usein ok, kun arvoa ei serialisoida sellaisenaan.
 - **Älä oleta:** `sizeof(int) == 4` tai `sizeof(long) == 8` — tarkista protokolladokumentaatiossa ja testaa cross-compile.
 
-Endian-kysymys on erillinen: kiinteä leveys ei takaa oikeaa tavujärjestystä. Verkkoprotokollassa tarvitaan usein eksplisiittinen big-endian tai `std::endian` + `std::byteswap` (ks. `b07-cpp-endian-portable`).
+Endian-kysymys on erillinen: kiinteä leveys ei takaa oikeaa tavujärjestystä. Verkkoprotokollassa tarvitaan usein eksplisiittinen big-endian tai `std::endian` (C++20) + `std::byteswap` (C++23) (ks. `b07-cpp-endian-portable`).
 
 [Lue lisää](https://en.cppreference.com/w/cpp/types/integer)

@@ -1,4 +1,4 @@
-# assert() katoaa release-buildissa mutta invariantti on kriittinen tuotannossa. Mitä käytät?
+# assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää tarkistaa runtime. Mitä käytät?
 
 ## Tilanne
 
@@ -9,7 +9,7 @@ void process(Widget* w) {
 }
 ```
 
-`assert` on debug-työkalu: `NDEBUG` määriteltynä se katoaa kokonaan. Tuotannossa invariantti pitää tarkistaa **runtime** ja käsitellä virhe.
+`assert` on debug-työkalu: `NDEBUG` määriteltynä se katoaa kokonaan. Käyttäjäsyöte, verkko ja tiedostot vaativat **runtime-validoinnin** — ei pelkkää assertia.
 
 ## Ratkaisu
 
@@ -30,5 +30,7 @@ Tai palauta `std::expected` / error code. `assert` vain kehityksen sisäisiin ol
 | Sisäinen bugi, ei koskaan tuotannossa | `assert` |
 | Käyttäjäsyöte, verkko, tiedosto | throw / error code / log |
 | Turvallisuuskriittinen | ei pelkkä assert |
+
+Ero `b08-cpp-assert-ndebug`: tässä kysymyksessä painotus on **assert vs runtime input validation** — ei CI/release-testauksesta.
 
 [Lue lisää](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#en7)

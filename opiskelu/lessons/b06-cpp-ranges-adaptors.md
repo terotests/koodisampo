@@ -28,6 +28,6 @@ Tai `std::ranges::count_if` jos vain laskenta. Lazy views — ei välikopiota en
 
 ## Käytännössä
 
-`ranges::to<std::vector>` (C++23) materialisoi. CppCoreGuidelines: express intent with algorithms.
+C++23: `ranges::to<std::vector>` materialisoi. C++20: kopioi silmukalla tai `std::vector<int> out; for (int v : values) out.push_back(v);`. CppCoreGuidelines: express intent with algorithms.
 
 [Lue lisää](https://en.cppreference.com/w/cpp/ranges/filter_view)

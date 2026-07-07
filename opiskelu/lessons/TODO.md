@@ -40,9 +40,9 @@
 | ✅ | 4 | `b05-cpp-signed-compare-bug` | Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. … |
 | ✅ | 4 | `b06-cpp-signed-compare-bug` | Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väär… |
 | ✅ | 2 | `b06-cpp-static-cast-review` | Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi? |
-| ✅ | 3 | `b07-cpp-assert-vs-expect` | assert() katoaa release-buildissa mutta invariantti on kriittinen tuota… |
+| ✅ | 3 | `b07-cpp-assert-vs-expect` | assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää… |
 | ✅ | 4 | `b07-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructori… |
-| ✅ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. M… |
+| ✅ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert poistuu — miten varmistat testit tuotantokonf… |
 | ✅ | 4 | `b09-cpp-narrowing-conversion` | Laskenta `int64_t` → `int32_t` hiljaa truncaa arvon. Miten estät käännö… |
 | ✅ | 3 | `b09-cpp-switch-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuo… |
 | ✅ | 4 | `correct-overflow` | Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo? |

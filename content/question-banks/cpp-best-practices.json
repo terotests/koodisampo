@@ -1630,7 +1630,7 @@
           "correct": false
         },
         {
-          "text": "operator<=> tai std::strong_ordering comparatorissa",
+          "text": "default operator<=> structissa + ranges::sort (tai bool-predikaatti comparatorissa)",
           "correct": true
         },
         {
@@ -1642,8 +1642,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Three-way comparison antaa oikean ordering-semantiikan — correctness-parannus.",
-      "wrongFeedback": "Virheellinen comparator rikkoo std::sort oletukset. <=> auttaa.",
+      "correctFeedback": "Default operator<=> + ranges::sort — comparator palauttaa bool, ei strong_ordering.",
+      "wrongFeedback": "return a <=> b ei kelpaa sort-comparatoriksi. Käytä < tai (a <=> b) < 0.",
       "sourceRef": "en.cppreference.com/operator<= ",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_comparison",
       "featureId": "cpp:three-way-compare",
@@ -2532,7 +2532,7 @@
       "prompt": "Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?",
       "choices": [
         {
-          "text": "<=> (spaceship) tai std::strong_ordering — totaalinen järjestys",
+          "text": "default operator<=> + ranges::sort — tai bool-comparator (a < b)",
           "correct": true
         },
         {
@@ -2548,8 +2548,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Three-way comparison antaa johdonmukaisen ordering — correctness-parannus.",
-      "wrongFeedback": "stable_sort vaatii silti pätevän strict weak ordering -comparatorin. Virheellinen yhtäsuuruuden käsittely rikkoo minkä tahansa sort-algoritmin.",
+      "correctFeedback": "Default operator<=> jäsenissä + ranges::sort — comparator palauttaa bool.",
+      "wrongFeedback": "Palauta false kun a==b bool-comparatorissa. Älä palauta suoraan <=>-tulosta sorttiin.",
       "sourceRef": "cppreference/operator_spaceship",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_comparison",
       "featureId": "cpp:spaceship",
@@ -4164,7 +4164,7 @@
         }
       ],
       "correctFeedback": "Integral promotion — cppreference usual arithmetic conversions.",
-      "wrongFeedback": "Mixed signed compare on klassinen bugi. Normalisoi tyypit ennen vertailua.",
+      "wrongFeedback": "Mixed signed compare on klassinen bugi. Negatiivinen int muuttuu suureksi unsigned-arvoksi — validoi ennen vertailua.",
       "sourceRef": "en.cppreference.com/operator_arithmetic",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_arithmetic#Additive_operators",
       "featureId": "cpp:signed-compare",
@@ -4808,7 +4808,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "assert() katoaa release-buildissa mutta invariantti on kriittinen tuotannossa. Mitä käytät?",
+      "prompt": "assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää tarkistaa runtime. Mitä käytät?",
       "choices": [
         {
           "text": "Runtime check + throw/log tuotannossa — assert vain debug-invarianteille",
@@ -4827,8 +4827,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "assert on debug-työkalu — CppCoreGuidelines En.7 erottaa debug vs release.",
-      "wrongFeedback": "Tuotantoinvariantit tarvitsevat runtime-tarkistuksen. assert ei riitä.",
+      "correctFeedback": "assert on debug-työkalu — ulkoinen syöte vaatii throw/log/error code.",
+      "wrongFeedback": "Käyttäjäsyöte ja verkko eivät kuulu assertin varaan. Runtime-tarkistus tuotannossa.",
       "sourceRef": "CppCoreGuidelines#En7",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#en7",
       "featureId": "cpp:assert",
@@ -5299,10 +5299,10 @@
         "coworker",
         "security"
       ],
-      "prompt": "Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. Mitä teet tuotantovalvontaan?",
+      "prompt": "Release-buildissa assert poistuu — miten varmistat että testit löytävät virheet myös tuotantokonfiguraatiossa?",
       "choices": [
         {
-          "text": "assert vain kehitykseen — tuotannossa explicit check ja error handling",
+          "text": "Aja testit myös release-buildissa — assert ei korvaa runtime-tarkistuksia",
           "correct": true
         },
         {
@@ -5318,8 +5318,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "assert disabled when NDEBUG defined — cppreference assert.",
-      "wrongFeedback": "Assert ei korvaa virheenkäsittelyä release:ssä. Tarkista ja käsittele virheet.",
+      "correctFeedback": "Testaa release-konfiguraatiossa — assert disabled when NDEBUG defined.",
+      "wrongFeedback": "Vain debug-testaus jättää assert-poiston huomaamatta. Aja CI:ssä myös release.",
       "sourceRef": "en.cppreference.com/error/assert",
       "sourceUrl": "https://en.cppreference.com/w/cpp/error/assert",
       "featureId": "cpp:assert-release",
