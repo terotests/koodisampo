@@ -851,54 +851,120 @@ export function buildQuizReactionWithEmotion(entity, correct, session = null) {
   return `${social} ${name} ${emotion}`;
 }
 
-const OFFICE_JOKES = [
+const ADULT_JOKES = [
   "Miksi dev meni standuppiin? Unohdin missä sprintti päättyy.",
   "Montako Scrum Masteria tarvitaan lamppuun? Ei yhtään — se on tiimin vastuu.",
   "Eräs dev ja tuotepäällikkö astuvat baariin. Baari sanoo: 404.",
-];
-const SCRUM_JOKES = [
+  "Miksi kahvikone sai tiketin? Se ei osannut vastata ilman papuja.",
+  "Toimiston kasvi pyysi etätöihin. Sillä oli juuret täällä, mutta latva pilvessä.",
+  "Miksi kalenteri oli stressaantunut? Kaikki päivät olivat täynnä.",
+  "Palaveri alkoi ajoissa. Se olikin päivän villein user story.",
+  "Miksi hissi ei mennyt demoihin? Se jäi aina välikerrokseen.",
+  "Tulostin sanoi: paper jam. Minä sanoin: soita bändille.",
+  "Miksi bugi viihtyi toimistolla? Sillä oli hyvä repro-ympäristö.",
+  "Kaksi ticketiä meni baariin. Toinen oli blocker, joten kukaan ei päässyt eteenpäin.",
   "Miksi retro kesti kolme tuntia? Koska action itemit olivat WIP-limitti 9000.",
   "Mikä on Scrumin lempieläin? Kanban-kani joka hyppii takaisin Doingiin.",
   "Sprint review: \"99 % valmis\" — kuten mun lounastunti.",
-];
-const CPP_JOKES = [
+  "Miksi backlog ei koskaan palele? Sillä on aina monta kerrosta prioriteetteja.",
+  "Dailyssä kysyttiin blockerit. Hiljaisuus oli ainoa joka valmistui ajallaan.",
+  "Definition of done: se kohta jossa vitsi on valmis mutta kukaan ei uskalla deployata.",
+  "Miksi story pointit menivät kuntosalille? Ne halusivat kasvaa arvioinnissa.",
+  "Sprintti lupasi olla lyhyt. Sitten scope venytteli.",
+  "Product Owner sanoi 'pieni muutos'. Tiimi kuuli boss musicin.",
   "Miksi C++ dev itki? unique_ptr meni shared_ptr:n kanssa treffeille.",
   "auto x = 42; — kääntäjä sanoi: selvä juttu. Minä sanoin: MIKÄ juttu?",
-];
-const LINUX_JOKES = [
+  "auto x = \"Tesla\"; — vihdoin auto, joka kulkee ilman includea.",
+  "Miksi perintöriita kesti kauan? Luokalla oli multiple inheritance.",
+  "Miksi C++-koodaaja ei jätä kahvikuppia pöydälle? Destruktori siivoaa sen scopen lopussa.",
+  "Miksi template ei kertonut vitsiä? Se instansioitiin väärässä kontekstissa.",
+  "Segfault käveli huoneeseen. Kukaan ei muistanut omistajuutta.",
+  "Miksi const lupasi olla muuttumatta? Sillä oli mutable poikkeus.",
+  "Miksi RAII vei roskat ulos? Garbage collector tuli paikalle myöhässä.",
+  "Miksi pointeri oli yksinäinen? Se osoitti koko ajan väärään suuntaan.",
+  "C++ sanoi: tämä on yksinkertaista. Sitten tuli overload resolution.",
   "systemd: se toimii. Paitsi kun ei toimi. Silloin se on feature.",
   "Docker-kontti ja minä ollaan parhaat kaverit — kunnes se exit 0.",
-];
-const DOCKER_JOKES = [
+  "Miksi ping lähti lomalle? Se sai liikaa echo-vastauksia.",
+  "chmod 777 kuulostaa onnenluvulta, kunnes security tulee kylään.",
+  "Kernel panic ei ole tunne — paitsi perjantaina tuotannossa.",
+  "Miksi loki oli hiljainen? Se oli rotateattu pois keskustelusta.",
+  "sudo tee — kun haluat sekä luvan että teetä.",
+  "Miksi cron heräsi yöllä? Se oli kirjattu tehtäväksi.",
   "Miksi kontti on tyhjä? Koska se on distroless — ja henkinen tila.",
   "docker network ls — verkko on se joka yhdistää meidät. Tai ei.",
-];
-const QT_JOKES = [
+  "Miksi image laihdutti? Se vaihtoi multi-stage buildiin.",
+  "Kontti sanoi: minulla on kaikki mukana. Volume kysyi: entä muistot?",
+  "Dockerfile meni treffeille. Ensimmäinen rivi oli FROM.",
+  "Miksi compose oli hyvä kuoro? Kaikki palvelut tulivat samaan sävellajiin.",
+  "latest-tag lupasi olla tuore. Se oli kierrätetty vitsi.",
+  "Miksi healthcheck oli optimisti? Se yritti uudelleen kolmen sekunnin päästä.",
   "connect(sender, &Sender::signal, …) — ja sitten mietit miksi slot ei koskaan laukea.",
   "QObject::findChild — löysin bugin. Se oli parentin parentin parent.",
-];
-const JS_JOKES = [
+  "Miksi widget punastui? Se sai focuksen.",
+  "Qt-kehittäjä kysyi suunnan. Layout vastasi: riippuu parentista.",
+  "Miksi signal ei ollut yksinäinen? Sillä oli monta slottia kuuntelemassa.",
+  "QTimer lupasi tulla heti. Event loop sanoi: jonoon vain.",
+  "Miksi dialogi ei lähtenyt pois? Se oli modalisti kiintynyt.",
   "typeof null === 'object' — JavaScript sanoo terveisiä logiikasta.",
   "async function standup() { await coffee; return undefined; }",
-];
-const PG_JOKES = [
+  "0 == false on small talkia. 0 === false on vakava keskustelu.",
+  "Promise meni lääkäriin. Se oli pending liian pitkään.",
+  "Miksi callback ei päässyt kotiin? Se jäi helvettiin.",
+  "NaN meni peilin eteen ja kysyi: olenko minä minä?",
+  "JavaScriptin lempiruoka on hoisting — kaikki nousee pöydälle ennen aikojaan.",
+  "Miksi event loop oli kohtelias? Se antoi aina vuoron seuraavalle.",
+  "npm install vei minuutin. node_modules muutti pysyvästi asumaan.",
   "EXPLAIN ANALYZE — kun SELECT * oli 'väliaikainen' ratkaisu vuonna 2019.",
   "Autovacuum: se tekee taustalla hommat. Paitsi kun ei tee.",
+  "Miksi indeksi meni kuntosalille? Se halusi parantaa hakukuntoa.",
+  "SELECT * meni juhliin ja toi mukanaan koko suvun.",
+  "Transaktio sanoi commit. DBA kysyi: oletko aivan varma?",
+  "Miksi query oli hidas? Se teki table scanin maailmankiertueen.",
+  "VACUUM ei siivoa työpöytää, vaikka kuinka toivoisi.",
+  "Miksi JOIN oli suosittu? Se toi kaikki taulut samaan pöytään.",
+];
+const KIDS_JOKES = [
+  "Miksi banaani meni lääkäriin? Siltä kuoriutui huono olo.",
+  "Mikä on lumiukon lempiruoka? Jää-salaatti.",
+  "Miksi kissa istui tietokoneen päällä? Se jahtasi hiirtä.",
+  "Mitä kala sanoi törmätessään seinään? Dam!",
+  "Miksi kirja meni kouluun? Se halusi avata uuden luvun.",
+  "Mikä on koiran lempisoitin? Hau-lu.",
+  "Miksi porkkana punastui? Se näki salaattikastikkeen.",
+  "Miksi kana ylitti tien? Se halusi toiselle puolelle.",
+  "Mitä yksi seinä sanoi toiselle? Tavataan kulmassa.",
+  "Miksi robotti meni kouluun? Se halusi oppia bittikielellä.",
+  "Mikä on avaruusolion lempikarkki? Mars-patukka.",
+  "Miksi luuranko ei valehdellut? Kaikki näkyi läpi.",
+  "Miksi leipä meni lääkäriin? Sillä oli murheita.",
+  "Mitä sateenvarjo sanoi sateelle? Tippaakaan en pelkää.",
+  "Miksi nalle ei syönyt jälkiruokaa? Se oli jo täynnä pehmeyttä.",
+  "Mikä on pieni ja vihreä ja hyppii? Sammakko, jolla on kiire.",
+  "Miksi kynä oli iloinen? Sillä oli hyvä pointti.",
+  "Mitä numero nolla sanoi kahdeksalle? Hieno vyö!",
+  "Miksi tähti ei eksynyt? Se seurasi omaa loistoaan.",
+  "Mikä on tietokoneen lempivälipala? Mikrosipsit.",
+  "Mikä on maailman suurin riisi? Pariisi.",
+  "Kaksi tomaattia meni tien yli. Toinen jäi auton alle, toinen huusi: \"Tulehan ketsuppiin!\"",
+  "Kaksi mummoa meni mustikkaan, mutta toinen ei mahtunut.",
+  "Mikä on keltainen ja veden alla? Sitruuna sukellusveneessä.",
+  "Mies meni rautakauppaan ja kysyi: \"Onko teillä moottorisahoja?\" Myyjä vastasi: \"Onn, onnnn, onn onnnnn, onnnnnnnn.\"",
+  "Miksi porkkana itki junassa? Se istui sipulin vieressä.",
+  "Miksi banaani meni kosmetologille? Se halusi kuorinnan.",
+  "Mikä on vihreä ja roikkuu puussa? Raaka apina.",
+  "Mikä on hitauden huippu? Kun etana jarruttaa kaarteessa.",
+  "Mitä yhteistä on kalalla ja Peter Panilla? Molemmat pelkäävät koukkua.",
+  "Miksi dalmatialaisella on pilkut? Koska eikö näyttäisi tyhmältä jos sillä olisi kysymysmerkit?",
 ];
 
 function jokesForQuestion(question) {
   const domain = question?.domain || "";
   const chapter = question?.chapter || "";
-  if (domain === "scrum" || String(chapter).startsWith("scrum")) return SCRUM_JOKES;
-  if (domain === "docker" || String(chapter).startsWith("docker")) return DOCKER_JOKES;
-  if (domain === "linux" || ["systemd", "journald", "avahi", "linux-network"].includes(chapter)) {
-    return LINUX_JOKES;
+  if (domain === "kids" || question?.bankId === "kids-easy" || String(chapter).startsWith("kids")) {
+    return KIDS_JOKES;
   }
-  if (domain === "cpp") return CPP_JOKES;
-  if (domain === "qt") return QT_JOKES;
-  if (domain === "javascript") return JS_JOKES;
-  if (domain === "postgres") return PG_JOKES;
-  return OFFICE_JOKES;
+  return ADULT_JOKES;
 }
 
 export function pickOfficeJoke(entity, question) {
