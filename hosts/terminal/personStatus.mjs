@@ -368,6 +368,10 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
         roleKey: appearance.roleKey,
         topic: appearance.topic,
       };
+      const salaryBonus = salaryPickupBonusForEntity(ent);
+      if (salaryBonus > 0) {
+        cell.salaryPickupBonus = salaryBonus;
+      }
       if (ent.id?.startsWith("reward-fruit-")) {
         cell.rewardFruit = true;
         cell.fruitSpawnMinute = ent.behaviorStartedAt ?? 0;
@@ -392,6 +396,18 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     });
   }
   return { lines: out, recommendedCells, entityCells };
+}
+
+/** Palkkabonus kun esine poimitaan (peilaa GameSession.afterPlayerAction). */
+export function salaryPickupBonusForEntity(ent) {
+  const id = String(ent?.id ?? "");
+  const tool = String(ent?.itemTool ?? "");
+  const ch = String(ent?.char ?? "");
+  if (id.startsWith("reward-fruit-")) return 50;
+  if (tool === "coworker_card") return 200;
+  if (tool === "crowbar" || tool === "shovel") return 10;
+  if (ch === "☕" || id.includes("emoji-coffee")) return 5;
+  return 0;
 }
 
 export function formatPersonStatusLine(registry, entity) {
