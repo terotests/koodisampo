@@ -3237,13 +3237,6 @@ class WorldMap  {
       }
       fi = fi + 1;
     };
-    if ( spawned > 0 ) {
-      if ( spawned == 1 ) {
-        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmä kartalle!";
-      } else {
-        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmiä kartalle!";
-      }
-    }
   };
   tickRewardFruits (gameMinutes) {
     const floor = this.activeFloor();
@@ -8793,6 +8786,20 @@ class GameSession  extends RangerProcessBase {
         const itemName = this.tools.pickupLabel(toolPick);
         this._map.lastStatus = ("Poimit: " + itemName) + "  (i = inventaario)";
       }
+      let pickBonus = 0;
+      if ( toolPick == "coworker_card" ) {
+        pickBonus = 200;
+      }
+      if ( toolPick == "crowbar" ) {
+        pickBonus = 10;
+      }
+      if ( toolPick == "shovel" ) {
+        pickBonus = 10;
+      }
+      if ( pickBonus > 0 ) {
+        this.fruitSalaryBonus = this.fruitSalaryBonus + pickBonus;
+        this._map.lastStatus = ((this._map.lastStatus + " +") + ((pickBonus.toString()))) + " € palkkaa!";
+      }
       return;
     }
     const ent = this._map.entityAt(this._map.playerX, this._map.playerY);
@@ -8808,6 +8815,10 @@ class GameSession  extends RangerProcessBase {
       if ( rewardFruit ) {
         this.fruitSalaryBonus = this.fruitSalaryBonus + 50;
         this._map.lastStatus = this._map.lastStatus + " +50 € palkkaa!";
+      }
+      if ( ent.char == "☕" ) {
+        this.fruitSalaryBonus = this.fruitSalaryBonus + 5;
+        this._map.lastStatus = this._map.lastStatus + " +5 € palkkaa!";
       }
       if ( (ent.char.length) > 0 ) {
         this.playerNeeds.applyEmojiChar(ent.char);
