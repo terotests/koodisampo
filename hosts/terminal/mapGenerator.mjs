@@ -494,6 +494,7 @@ const DEV_TOPICS = [
   "pg-indexes", "pg-explain", "pg-vacuum", "pg-config",
   "pg-query-design", "pg-cte-window", "pg-joins", "pg-json", "pg-sql-security",
   "cpp-production", "backend-data", "backend-api", "web-security",
+  "sec-api", "sec-auth", "sec-data", "sec-input", "sec-design",
 ];
 const ROOM_TOPIC_BIAS = {
   cubicle: [...CPP_TOPICS, "cpp-production"],

@@ -129,6 +129,11 @@ const TOPIC_DOMAINS = {
   "backend-api": "backend",
   "ops-incident": "backend",
   "web-security": "security",
+  "sec-api": "security",
+  "sec-auth": "security",
+  "sec-data": "security",
+  "sec-input": "security",
+  "sec-design": "security",
   "rf-basics": "robotframework",
   "rf-web": "robotframework",
   "rf-execution": "robotframework",
@@ -193,7 +198,7 @@ function audienceTags(entity, playerSpecialty = "") {
       voice: "security",
       preferDomain: "security",
       preferDomains: ["security", "linux", "docker", "backend"],
-      preferChapters: ["web-security", "linux-network", "journald", "docker-network", "docker-production", "avahi"],
+      preferChapters: ["web-security", "sec-api", "sec-auth", "sec-data", "sec-input", "sec-design", "linux-network", "journald", "docker-network", "docker-production", "avahi"],
     };
   }
   if (entity.kind === "guru") {
@@ -355,6 +360,11 @@ const TOPIC_LABELS = {
   "backend-api": "backend-API",
   "ops-incident": "incident-hallinta",
   "web-security": "web-turvallisuus",
+  "sec-api": "API-turvallisuus",
+  "sec-auth": "autentikaatio ja valtuutus",
+  "sec-data": "data ja salaisuudet",
+  "sec-input": "input ja tiedostot",
+  "sec-design": "secure design",
   "rf-basics": "Robot Framework",
   "rf-web": "RF web-testaus",
   "rf-execution": "RF suoritus/CI",

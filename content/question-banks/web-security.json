@@ -77,7 +77,7 @@
     },
     {
       "id": "prod-sec-password-hash",
-      "chapter": "web-security",
+      "chapter": "sec-data",
       "domain": "security",
       "difficulty": 4,
       "audiences": [
@@ -113,7 +113,7 @@
     },
     {
       "id": "prod-sec-jwt-claims",
-      "chapter": "web-security",
+      "chapter": "sec-auth",
       "domain": "security",
       "difficulty": 4,
       "audiences": [
@@ -185,7 +185,7 @@
     },
     {
       "id": "prod-sec-shell-injection",
-      "chapter": "web-security",
+      "chapter": "sec-input",
       "domain": "security",
       "difficulty": 4,
       "audiences": [
@@ -218,6 +218,904 @@
       "sourceUrl": "https://owasp.org/www-community/attacks/Command_Injection",
       "featureId": "security:shell-injection",
       "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-idor-bola",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "GET /api/invoices/12345 — käyttäjä vaihtaa URL:ssa ID:n 12346 ja näkee toisen asiakkaan laskun. Kirjautuminen tarkistetaan, omistajuutta ei. Mikä haavoittuvuus?",
+      "choices": [
+        {
+          "text": "IDOR / BOLA — objektikohtainen valtuutus puuttuu; tarkista omistajuus jokaisessa endpointissa",
+          "correct": true
+        },
+        {
+          "text": "CSRF — selain lähetti evästeen väärään pyyntöön ilman tokenia",
+          "correct": false
+        },
+        {
+          "text": "SQL injection — invoice_id interpoloidaan kyselyyn ilman parametreja",
+          "correct": false
+        },
+        {
+          "text": "JWT exp puuttuu — token on vanhentunut mutta hyväksytään silti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Broken access control / BOLA — älä luota ID:hen käyttöoikeutena. WHERE id = $1 AND tenant_id = $2.",
+      "wrongFeedback": "Kirjautuminen ≠ oikeus dataan. Tarkista resurssikohtainen omistajuus palvelimella.",
+      "sourceRef": "owasp/api/bola",
+      "sourceUrl": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/",
+      "featureId": "security:idor-bola",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-tenant-isolation",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 5,
+      "audiences": [
+        "security",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "POST /api/reports ottaa tenant_id:n request bodysta. Admin kuuluu organisaatioon acme, mutta voi pyytää raportin tenant_id: other-company. Mikä meni pieleen?",
+      "choices": [
+        {
+          "text": "Tenant ei saa tulla luotettuna käyttäjän syötteestä — johda sessiosta/tokenista ja tarkista jäsenyys",
+          "correct": true
+        },
+        {
+          "text": "Raportti pitää generoida asynkronisesti — synkroninen endpoint on DoS-riski",
+          "correct": false
+        },
+        {
+          "text": "POST pitää olla GET — idempotentti metodi estää väärän tenantin",
+          "correct": false
+        },
+        {
+          "text": "Admin-rooli riittää — globaali admin saa lukea kaikkien tenantien datan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multi-tenant-eristys: tenant_id requestista on BOLA:n tuotantoversio. OWASP API Security.",
+      "wrongFeedback": "Asiakasyritys A ei saa nähdä B:n dataa. Tenant johdetaan autentikoidusta kontekstista.",
+      "sourceRef": "owasp/api/tenant",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Multitenant_Security_Cheat_Sheet.html",
+      "featureId": "security:tenant-isolation",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-sec-mass-assignment",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "PATCH /api/users/me — backend tekee Object.assign(user, req.body) ja save(). Body sisältää displayName, role: admin ja isEmailVerified: true. Mikä riski?",
+      "choices": [
+        {
+          "text": "Mass assignment / overposting — hyväksy vain whitelistatut kentät, erota input-DTO domain-mallista",
+          "correct": true
+        },
+        {
+          "text": "CSRF — PATCH ei vaadi CSRF-tokenia kun käytetään Bearer-tokenia",
+          "correct": false
+        },
+        {
+          "text": "Race condition — kaksi PATCH-pyyntöä ylikirjoittaa toisensa ilman lukitusta",
+          "correct": false
+        },
+        {
+          "text": "JSON parsing error — liian suuri body kaataa parserin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Älä bindaa koko request bodyä domain-objektiin — OWASP Mass Assignment.",
+      "wrongFeedback": "Käyttäjä voi nostaa itsensä adminiksi. Whitelistaa sallitut kentät.",
+      "sourceRef": "owasp/mass-assignment",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html",
+      "featureId": "security:mass-assignment",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-sql-sort-injection",
+      "chapter": "sec-input",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "GET /api/users?sort=name — koodi: db.query(`SELECT * FROM users ORDER BY ${req.query.sort}`). Miksi prepared statement ei yksin auta?",
+      "choices": [
+        {
+          "text": "Sarakkeen nimeä tai SQL-avainsanaa ei voi parametrisoida — käytä whitelistaa sallituille sort-kentille",
+          "correct": true
+        },
+        {
+          "text": "Prepared statement toimii vain INSERT-kyselyissä, ei SELECT ORDER BY:ssä",
+          "correct": false
+        },
+        {
+          "text": "sort-parametri pitää URL-enkoodata — se estää injectionin automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "ORDER BY pitää poistaa — pagination riittää turvallisuuteen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Injection ei rajoitu arvoihin — identifierit (sarakkeet) vaativat whitelistan. OWASP SQL Injection.",
+      "wrongFeedback": "Parametrisoitu ? toimii arvoille, ei sarakkeiden nimille. allowedSorts[req.query.sort].",
+      "sourceRef": "owasp/sql-injection",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+      "featureId": "security:sql-sort-injection",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-ssrf",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "POST /api/fetch-preview hakee käyttäjän antaman URL:n. Hyökkääjä antaa http://169.254.169.254/latest/meta-data/. Mikä riski?",
+      "choices": [
+        {
+          "text": "SSRF — palvelin tekee pyynnön sisäverkkoon; estä private IP:t, metadata ja käytä allowlistaa",
+          "correct": true
+        },
+        {
+          "text": "XSS — metadata-vastaus renderöidään escapetoimattomana selaimessa",
+          "correct": false
+        },
+        {
+          "text": "DNS rebinding on ainoa riski — HTTP-redirect riittää estämään hyökkäyksen",
+          "correct": false
+        },
+        {
+          "text": "CORS estää selaimen lukemasta metadata-vastausta — SSRF ei ole mahdollinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Server-Side Request Forgery — OWASP Top 10. Resolve DNS ja tarkista IP ennen yhteyttä.",
+      "wrongFeedback": "Palvelin ei ole selain — CORS ei suojaa. Estä sisäiset osoitteet ja link-local.",
+      "sourceRef": "owasp/ssrf",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+      "featureId": "security:ssrf",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-file-upload",
+      "chapter": "sec-input",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Profiilikuvan upload tarkistaa vain if filename.endswith('.jpg'). Mikä riski?",
+      "choices": [
+        {
+          "text": "Pääte ei todista sisältöä — tarkista magic bytes, rajoita koko, uudelleenkoodaa kuva, älä suorita tiedostoa",
+          "correct": true
+        },
+        {
+          "text": "JPEG on aina turvallinen — binäärimuoto ei voi sisältää koodia",
+          "correct": false
+        },
+        {
+          "text": "Riittää tallentaa uploads/-kansioon — webrootin ulkopuolella ei ole riskiä",
+          "correct": false
+        },
+        {
+          "text": "Base64-enkoodaus ennen tallennusta poistaa haittaohjelman",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "File upload — validoi sisältö, generoi uusi nimi, tallenna webrootin ulkopuolelle. SVG vaatii erityiskohtelun.",
+      "wrongFeedback": "evil.php.jpg tai polyglot voi ohittaa päätteen. Tarkista MIME/sisältö ja uudelleenkoodaa.",
+      "sourceRef": "owasp/file-upload",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+      "featureId": "security:file-upload",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-path-traversal",
+      "chapter": "sec-input",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "GET /download?file=report.pdf — backend: sendFile('/var/app/files/' + req.query.file). Hyökkääjä antaa ../../../../etc/passwd. Mikä riski?",
+      "choices": [
+        {
+          "text": "Path traversal — käytä tiedosto-ID:tä, normalisoi polku ja varmista että se pysyy base-hakemistossa",
+          "correct": true
+        },
+        {
+          "text": "Directory listing — palvelin listaa kansion sisällön automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Symlink attack vaatii root-oikeudet — ei koske tavallista käyttäjää",
+          "correct": false
+        },
+        {
+          "text": "URL-encoding riittää — %2e%2e estää pisteet automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Älä anna käyttäjän valita raakaa polkua — path.resolve + startsWith(base) tarkistus.",
+      "wrongFeedback": "../ kiertää hakemistorajan. Hae oikea polku tietokannasta ID:llä.",
+      "sourceRef": "owasp/path-traversal",
+      "sourceUrl": "https://owasp.org/www-community/attacks/Path_Traversal",
+      "featureId": "security:path-traversal",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-rate-limiting",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Login käyttää Argon2id:tä, mutta hyökkääjä yrittää miljoonia salasanoja eri IP:istä. Mitä hashingin lisäksi tarvitaan?",
+      "choices": [
+        {
+          "text": "Rate limit IP:llä ja käyttäjätunnuksella, lockout, MFA, credential stuffing -havainto ja yhtenäinen virheilmoitus",
+          "correct": true
+        },
+        {
+          "text": "Vaihda MD5:een — nopeampi hash nopeuttaa kirjautumista",
+          "correct": false
+        },
+        {
+          "text": "Poista salasanakenttä — OAuth2 on ainoa turvallinen tapa",
+          "correct": false
+        },
+        {
+          "text": "Captcha jokaisella sivulatauksella riittää — ei tarvita kirjautumiskohtaista rajaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sovellustason abuse-suoja täydentää password hashingia — OWASP Authentication.",
+      "wrongFeedback": "Hyvä hash ei estä brute forcea hajautetusta botnetistä. Rajoita yrityksiä ja havaitse stuffing.",
+      "sourceRef": "owasp/authentication",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+      "featureId": "security:rate-limiting",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-authn-authz",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "DELETE /api/users/:id — endpoint tarkistaa JWT:n ja löytää käyttäjän, mutta ei tarkista saako tämä käyttäjä poistaa kohdetta. Miksi JWT ei riitä?",
+      "choices": [
+        {
+          "text": "Autentikaatio kertoo kuka — valtuutus kertoo mitä saa tehdä; tarkista rooli, omistajuus tai policy",
+          "correct": true
+        },
+        {
+          "text": "JWT pitää vaihtaa opaque session-tokeniin — JWT ei tue DELETE-metodia",
+          "correct": false
+        },
+        {
+          "text": "DELETE vaatii aina admin-roolin globaalisti — muut metodit eivät",
+          "correct": false
+        },
+        {
+          "text": "CORS estää DELETE:n selaimesta — palvelin ei tarvitse authz-tarkistusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Authn ≠ authz — kirjautunut käyttäjä ei automaattisesti saa poistaa ketä tahansa.",
+      "wrongFeedback": "Token todistaa identiteetin. Endpointin pitää tarkistaa oikeus kyseiseen resurssiin.",
+      "sourceRef": "owasp/authorization",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "featureId": "security:authn-authz",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-rbac-abac",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 5,
+      "audiences": [
+        "security",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Globaali role == admin ei skaalaudu: projektin omistaja saa poistaa projektinsa, org-admin vain oman organisaationsa projektit. Mikä lähestymistapa?",
+      "choices": [
+        {
+          "text": "Resurssikohtainen policy — canDeleteProject(user, project) riippuu käyttäjästä, resurssista ja tenantista",
+          "correct": true
+        },
+        {
+          "text": "Lisää rooli super-admin joka voi kaiken — yksinkertaisin ratkaisu",
+          "correct": false
+        },
+        {
+          "text": "Tallenna rooli JWT:hen — se riittää kaikkiin päätöksiin",
+          "correct": false
+        },
+        {
+          "text": "Poista poisto-oikeus kaikilta — soft delete riittää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RBAC + ABAC/policy — päätös riippuu kontekstista, ei pelkästä globaalista roolista.",
+      "wrongFeedback": "Globaali admin-rooli ei erota org-rajoja. Tarvitaan resurssikohtainen valtuutuslogiikka.",
+      "sourceRef": "owasp/authorization/rbac",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "featureId": "security:rbac-abac",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-sec-cors",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?",
+      "choices": [
+        {
+          "text": "CORS ei ole palvelinpuolen authz — credentials + villi origin on vaarallinen; salli vain tunnetut originit",
+          "correct": true
+        },
+        {
+          "text": "CORS estää curl-pyynnöt — API on turvallinen vain selaimesta",
+          "correct": false
+        },
+        {
+          "text": "Wildcard origin nopeuttaa kehitystä — tuotannossa sama on ok",
+          "correct": false
+        },
+        {
+          "text": "CSRF-token korvaa CORS-headerit kokonaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CORS on selainrajoite, ei authorization. Credentials vaatii eksplisiittisen originin — MDN CORS.",
+      "wrongFeedback": "CORS ei suojaa API:a curlilta. Älä sekoita CORS:ia ja CSRF:ää.",
+      "sourceRef": "mdn/cors",
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS",
+      "featureId": "security:cors",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-security-headers",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Kirjautuneille käyttäjille palautetaan HTML-sivuja ilman turva-headereita. Mitä lisäisit ensimmäisenä?",
+      "choices": [
+        {
+          "text": "CSP, X-Content-Type-Options: nosniff, Referrer-Policy, Permissions-Policy ja HSTS tuotannon HTTPS:ään",
+          "correct": true
+        },
+        {
+          "text": "X-Powered-By: Express — kertoo käytetyn frameworkin debuggausta varten",
+          "correct": false
+        },
+        {
+          "text": "Cache-Control: public — nopeuttaa sivujen latausta",
+          "correct": false
+        },
+        {
+          "text": "Access-Control-Allow-Origin: * — sallii kaikki originit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Security headers täydentävät XSS-suojaa — OWASP Secure Headers. HSTS vain HTTPS-tuotantoon.",
+      "wrongFeedback": "CSP rajoittaa skriptien lähteitä. nosniff estää MIME-sniffauksen.",
+      "sourceRef": "owasp/secure-headers",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html",
+      "featureId": "security:security-headers",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-secret-management",
+      "chapter": "sec-data",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tuotannon Stripe-avain on kovakoodattu: const stripeKey = 'sk_live_...'. Mitä teet?",
+      "choices": [
+        {
+          "text": "Poista reposta, kierrätä avain heti, käytä secret manageria ja rajaa avaimen oikeudet",
+          "correct": true
+        },
+        {
+          "text": "Siirrä .env-tiedostoon ja commitoi .env.example — avain on turvassa",
+          "correct": false
+        },
+        {
+          "text": "Base64-koodaa avain — se ei näy grepissä",
+          "correct": false
+        },
+        {
+          "text": "Odota seuraavaan sprinttiin — kierto voidaan tehdä myöhemmin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Git-historiaan jäänyt secret on vuotanut — kierrätä ja käytä keskitettyä secret hallintaa. OWASP Secrets Management.",
+      "wrongFeedback": "Kovakoodattu avain repossa = kompromissi. Kierräys ja secret manager ovat pakollisia.",
+      "sourceRef": "owasp/secrets-management",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+      "featureId": "security:secret-management",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-sensitive-logging",
+      "chapter": "sec-data",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Virhetilanteessa logger.error({ body: req.body, headers: req.headers }). Mikä riski?",
+      "choices": [
+        {
+          "text": "Lokeihin voi päätyä Authorization, cookiet, salasanat ja henkilötiedot — redaktoi ja älä loggaa raakaa bodyä",
+          "correct": true
+        },
+        {
+          "text": "Structured logging on aina turvallista — JSON-muoto suojaa arkaluonteiset kentät",
+          "correct": false
+        },
+        {
+          "text": "Vain tuotannon lokit ovat riski — dev-ympäristön lokit voi jättää täyteen",
+          "correct": false
+        },
+        {
+          "text": "Log level error riittää — debug-lokit eivät sisällä arkaluonteista dataa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sovellustason lokitus — OWASP Logging Cheat Sheet. Käytä correlation ID:tä raakadatan sijaan.",
+      "wrongFeedback": "Headers sisältävät usein Bearer-tokenin. Redaktoi tunnetut kentät automaattisesti.",
+      "sourceRef": "owasp/logging",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+      "featureId": "security:sensitive-logging",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-password-reset",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Reset-linkki: /reset?token=123456 — 6-numeroinen token, voimassa 24 h. Mikä ongelma?",
+      "choices": [
+        {
+          "text": "Liian pieni token-avaruus, liian pitkä voimassaolo — käytä kryptografista tokenia, hash tallennuksessa, kertakäyttö",
+          "correct": true
+        },
+        {
+          "text": "Token URL:ssa on ok — HTTPS salaa query-parametrin",
+          "correct": false
+        },
+        {
+          "text": "24 h on liian lyhyt — käyttäjät eivät ehdi resetoida",
+          "correct": false
+        },
+        {
+          "text": "6 numeroa riittää kun rate limit on päällä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Password reset — OWASP Forgot Password. Älä paljasta löytyikö sähköposti; mitätöi vanhat sessiot.",
+      "wrongFeedback": "10^6 yhdistelmää on brute force -kelpoinen. Token hashattuna, lyhyt voimassaolo, kertakäyttö.",
+      "sourceRef": "owasp/forgot-password",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html",
+      "featureId": "security:password-reset",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-account-enumeration",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Login palauttaa 'User not found' mutta väärällä salasanalla 'Invalid password'. Mikä riski?",
+      "choices": [
+        {
+          "text": "Account enumeration — käytä samaa ulkoista virheilmoitusta: sähköposti tai salasana virheellinen",
+          "correct": true
+        },
+        {
+          "text": "Ei riskiä — käyttäjätunnus on julkista tietoa joka tapauksessa",
+          "correct": false
+        },
+        {
+          "text": "Captcha login-sivulla estää enumerationin täysin",
+          "correct": false
+        },
+        {
+          "text": "Palauta HTTP 404 vain olemattomille käyttäjille — selkeämpi UX",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Enumeration auttaa kohdistetussa hyökkäyksessä — OWASP Authentication.",
+      "wrongFeedback": "Eri viestit paljastavat rekisteröityneet tilit. Sisäiseen lokiin voi kirjata tarkan syyn.",
+      "sourceRef": "owasp/authentication/enumeration",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+      "featureId": "security:account-enumeration",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-mfa-recovery",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru"
+      ],
+      "prompt": "MFA: TOTP-secret tallennetaan plaintextinä ja recovery-koodit näytetään uudelleen asetuksissa. Mitä korjaat?",
+      "choices": [
+        {
+          "text": "Salaa TOTP levossa, näytä recovery-koodit kerran, tallenna hashattuina ja vaadi re-auth herkkiin muutoksiin",
+          "correct": true
+        },
+        {
+          "text": "Poista MFA — liian monimutkainen ylläpitää turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "Lähetä TOTP SMS:llä — helpompi kuin authenticator-sovellus",
+          "correct": false
+        },
+        {
+          "text": "Tallenna secret base64:na — se on salattu muoto",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "MFA recovery — suojaa secretit, kertakäyttöiset backup-koodit hashattuna.",
+      "wrongFeedback": "Plaintext TOTP + uudelleennäytettävät recovery-koodit = täysi MFA-bypass vuodon jälkeen.",
+      "sourceRef": "owasp/mfa",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html",
+      "featureId": "security:mfa-recovery",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-webhook-signature",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "POST /webhooks/payment — backend luottaa bodyyn { invoiceId, paid: true } ilman allekirjoituksen tarkistusta. Mikä puuttuu?",
+      "choices": [
+        {
+          "text": "Webhookin aitous allekirjoituksella — raw body, timestamp/replay-ikkuna ja idempotentti käsittely",
+          "correct": true
+        },
+        {
+          "text": "IP-allowlist maksupalvelun osoitteista riittää — body on aina luotettava",
+          "correct": false
+        },
+        {
+          "text": "HTTPS riittää — TLS salaa ja todentaa lähettäjän",
+          "correct": false
+        },
+        {
+          "text": "JSON schema validointi korvaa allekirjoituksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kuka tahansa voi POSTata endpointtiin — tarkista HMAC/signature providerin dokumentaation mukaan.",
+      "wrongFeedback": "IP ei riitä (spoofing, välityspalvelin). Allekirjoitus raw bodysta + replay-suoja.",
+      "sourceRef": "owasp/webhook",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Webhook_Security_Cheat_Sheet.html",
+      "featureId": "security:webhook-signature",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-idempotency",
+      "chapter": "sec-api",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "POST /api/charge Idempotency-Key: abc123 — sama pyyntö lähetetään kahdesti verkko-ongelman takia. Miksi avain on tärkeä?",
+      "choices": [
+        {
+          "text": "Estää saman toiminnon toistumisen — tallenna key tenant-kohtaisesti ja palauta sama tulos toistopyynnölle",
+          "correct": true
+        },
+        {
+          "text": "Idempotency key salaa maksukortin — PCI-vaatimus",
+          "correct": false
+        },
+        {
+          "text": "Key korvaa JWT:n — autentikointi tapahtuu headerissa",
+          "correct": false
+        },
+        {
+          "text": "Vain GET-pyynnöt voivat olla idempotentteja — POST ei",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Replay/idempotency — erityisen tärkeä maksuissa ja webhookeissa.",
+      "wrongFeedback": "Ilman idempotencyä kaksoisveloitus on mahdollinen. Tallenna key + vastaus.",
+      "sourceRef": "owasp/api/idempotency",
+      "sourceUrl": "https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/",
+      "featureId": "security:idempotency",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-unsafe-deserialization",
+      "chapter": "sec-input",
+      "domain": "security",
+      "difficulty": 5,
+      "audiences": [
+        "security",
+        "guru"
+      ],
+      "prompt": "API ottaa base64-kentän ja tekee pickle.loads(base64decode(input)). Miksi vaarallista?",
+      "choices": [
+        {
+          "text": "Epäluotettavaa dataa ei saa deserialisoida formaattiin joka voi suorittaa koodia — käytä JSON + skeemavalidointi",
+          "correct": true
+        },
+        {
+          "text": "Base64 on salausta — pickle purkaa sen turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "pickle on turvallinen kun input tulee HTTPS:n yli",
+          "correct": false
+        },
+        {
+          "text": "Vain XML-deserialisointi on riski — pickle on Pythonin sisäinen formaatti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Unsafe deserialization — OWASP Top 10. Vain odotetut kentät turvallisessa formaatissa.",
+      "wrongFeedback": "pickle voi suorittaa mielivaltaista koodia. JSON + schema, ei pickle/yaml.load.",
+      "sourceRef": "owasp/deserialization",
+      "sourceUrl": "https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization",
+      "featureId": "security:unsafe-deserialization",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-sec-supply-chain",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "package.json: \"some-lib\": \"^1.2.0\" — CI asentaa ilman lockfileä. Mikä riski?",
+      "choices": [
+        {
+          "text": "Build ei ole toistettava — uusi transitiivinen dependency voi tulla sisään; käytä lockfileä ja npm ci",
+          "correct": true
+        },
+        {
+          "text": "Caret (^) estää major-päivitykset — versio on aina turvallinen",
+          "correct": false
+        },
+        {
+          "text": "npm install on deterministinen — sama package.json tuottaa aina saman puun",
+          "correct": false
+        },
+        {
+          "text": "Supply chain riski on vain Docker-imagessa — npm ei liity",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Software supply chain — OWASP Top 10. Seuraa advisoreita ja päivitä hallitusti PR:llä.",
+      "wrongFeedback": "Ilman lockfileä CI voi asentaa eri version kuin kehitys. npm ci + lockfile.",
+      "sourceRef": "owasp/supply-chain",
+      "sourceUrl": "https://owasp.org/Top10/2021/A06_2021-Vulnerable_and_Outdated_Components/",
+      "featureId": "security:supply-chain",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-threat-modeling",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "project-lead",
+        "guru"
+      ],
+      "prompt": "Uusi ominaisuus: käyttäjä voi jakaa yksityisen raportin linkillä. Mitä uhkia mietit ennen toteutusta?",
+      "choices": [
+        {
+          "text": "Arvaamaton token, voimassaoloaika, peruutus, Referer/lokit, edelleenjako ja audit — insecure design",
+          "correct": true
+        },
+        {
+          "text": "Vain XSS — linkki renderöidään HTML:ssä",
+          "correct": false
+        },
+        {
+          "text": "Riittää tarkistaa että linkki on HTTPS — salausta ei voi murtaa",
+          "correct": false
+        },
+        {
+          "text": "Rate limit riittää — brute force estää tokenin arvaamisen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Threat modeling ennen koodausta — OWASP Insecure Design. Secure-by-design, ei jälkikorjaus.",
+      "wrongFeedback": "Jakolinkki on monimutkainen: token, vanheneminen, audit ja tietovuoto Refererissa.",
+      "sourceRef": "owasp/insecure-design",
+      "sourceUrl": "https://owasp.org/Top10/2021/A04_2021-Insecure_Design/",
+      "featureId": "security:threat-modeling",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-data-minimization",
+      "chapter": "sec-data",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "project-lead"
+      ],
+      "prompt": "Analytiikka lähettää email, fullName, page, IP ja userAgent. Mitä security/privacy-reviewissa kysyt?",
+      "choices": [
+        {
+          "text": "Tarvitaanko henkilötietoa, pseudonyymi userId, säilytysaika, pääsy, kolmannet osapuolet ja poistopyyntö",
+          "correct": true
+        },
+        {
+          "text": "Lisää kaikki mahdolliset kentät — enemmän dataa parempi analytiikka",
+          "correct": false
+        },
+        {
+          "text": "IP on anonymisoitu automaattisesti — ei tarvitse miettiä",
+          "correct": false
+        },
+        {
+          "text": "GDPR ei koske analytiikkaa — vain rekisteröityjä käyttäjiä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Data minimization ja privacy-by-design — kerää vain tarpeellinen.",
+      "wrongFeedback": "Email + nimi analytiikassa on usein turha. Pseudonyymi ja retention policy.",
+      "sourceRef": "owasp/privacy",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/User_Privacy_Protection_Cheat_Sheet.html",
+      "featureId": "security:data-minimization",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-cache-control",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Palkkakuitin PDF: Cache-Control: public, max-age=86400. Mikä riski?",
+      "choices": [
+        {
+          "text": "Yksityinen data voi päätyä jaettuun välimuistiin — käytä Cache-Control: no-store tai private tarpeen mukaan",
+          "correct": true
+        },
+        {
+          "text": "public nopeuttaa latausta — PDF on staattinen joten se on ok",
+          "correct": false
+        },
+        {
+          "text": "max-age=86400 on liian lyhyt — käyttäjä joutuu lataamaan uudelleen",
+          "correct": false
+        },
+        {
+          "text": "Vain selaimen cache — CDN ei koskaan tallenna public-responssia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Arkaluonteinen data ei kuulu public-cacheen — OWASP Session Management.",
+      "wrongFeedback": "public voi tallentua välityspalvelimen cacheen. no-store arkaluonteiselle datalle.",
+      "sourceRef": "owasp/session/cache",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+      "featureId": "security:cache-control",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-open-redirect",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Login ohjaa: /login?next=https://evil.example/phish. Mikä riski ja korjaus?",
+      "choices": [
+        {
+          "text": "Open redirect — salli vain suhteelliset sisäiset polut tai allowlistatut domainit",
+          "correct": true
+        },
+        {
+          "text": "HTTPS kohde on turvallinen — phishing ei toimi salatulla sivulla",
+          "correct": false
+        },
+        {
+          "text": "next-parametri on ok kun se on URL-enkoodattu",
+          "correct": false
+        },
+        {
+          "text": "CORS estää ulkoiseen domainiin ohjauksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Open redirect käytetään phishingissä — tarkista next.startsWith('/') ja ei //.",
+      "wrongFeedback": "Käyttäjä luottaa sinun domainiisi, sitten ohjataan evil.example. Sisäiset polut vain.",
+      "sourceRef": "owasp/unvalidated-redirects",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html",
+      "featureId": "security:open-redirect",
+      "featurePoints": 3
     }
   ]
 }
