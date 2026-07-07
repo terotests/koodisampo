@@ -6985,6 +6985,11 @@ class GameSession  extends RangerProcessBase {
     this.profileComplete = false;
     this.kidsMode = false;
     this.fruitSalaryBonus = 0;
+    this.salaryPickupEffectSeq = 0;
+    this.salaryPickupEffectAmount = 0;
+    this.salaryPickupEffectX = 0;
+    this.salaryPickupEffectY = 0;
+    this.salaryPickupEffectGlyph = "";
     this.pendingGreetNpcId = "";
     this.behaviorSeed = 0;
     this.arrestReason = "";
@@ -8775,6 +8780,31 @@ class GameSession  extends RangerProcessBase {
     this.simMinutesAccum = this.simMinutesAccum + 1;
     this.runAgentPass();
   };
+  salaryPickupGlyph (toolPick, fallback) {
+    if ( (((toolPick == "coworker_card") || (toolPick == "access_card")) || (toolPick == "promoted_card")) || (toolPick == "official_badge") ) {
+      return "💳";
+    }
+    if ( toolPick == "crowbar" ) {
+      return "🔧";
+    }
+    if ( toolPick == "shovel" ) {
+      return "🛠️";
+    }
+    if ( (fallback.length) > 0 ) {
+      return fallback;
+    }
+    return "€";
+  };
+  recordSalaryPickupEffect (amount, glyph) {
+    if ( amount <= 0 ) {
+      return;
+    }
+    this.salaryPickupEffectSeq = this.salaryPickupEffectSeq + 1;
+    this.salaryPickupEffectAmount = amount;
+    this.salaryPickupEffectX = this._map.playerX;
+    this.salaryPickupEffectY = this._map.playerY;
+    this.salaryPickupEffectGlyph = glyph;
+  };
   afterPlayerAction () {
     const toolPick = this._map.pickupItemAt(this._map.playerX, this._map.playerY);
     if ( (toolPick.length) > 0 ) {
@@ -8802,6 +8832,7 @@ class GameSession  extends RangerProcessBase {
       if ( pickBonus > 0 ) {
         this.fruitSalaryBonus = this.fruitSalaryBonus + pickBonus;
         this._map.lastStatus = ((this._map.lastStatus + " +") + ((pickBonus.toString()))) + " € palkkaa!";
+        this.recordSalaryPickupEffect(pickBonus, this.salaryPickupGlyph(toolPick, ""));
       }
       return;
     }
@@ -8818,10 +8849,12 @@ class GameSession  extends RangerProcessBase {
       if ( rewardFruit ) {
         this.fruitSalaryBonus = this.fruitSalaryBonus + 50;
         this._map.lastStatus = this._map.lastStatus + " +50 € palkkaa!";
+        this.recordSalaryPickupEffect(50, ent.char);
       }
       if ( ent.char == "☕" ) {
         this.fruitSalaryBonus = this.fruitSalaryBonus + 5;
         this._map.lastStatus = this._map.lastStatus + " +5 € palkkaa!";
+        this.recordSalaryPickupEffect(5, ent.char);
       }
       if ( (ent.char.length) > 0 ) {
         this.playerNeeds.applyEmojiChar(ent.char);

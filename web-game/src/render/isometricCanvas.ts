@@ -17,7 +17,7 @@ import {
   activeRewardFruitPops,
   drawRewardFruitPop,
   hasActiveRewardFruitEffects,
-  noteRewardFruits,
+  noteSalaryPickupEffect,
   rewardFruitOpacity,
   spawnSalaryFlyLabel,
   updateRewardFruitFlyLabels,
@@ -416,8 +416,9 @@ function paintIsometricMap(
     playerPos?.y ??
     (state.player?.y ?? 0) - (state.camera?.y ?? 0);
   const origin = playerCenteredOrigin(playerGridX, playerGridY, cssWidth, cssHeight, tileWidth, tileHeight);
-  const newPops = noteRewardFruits(entityCells);
-  for (const pop of newPops) {
+  const newPop = noteSalaryPickupEffect(state.salaryPickupEffect, state.camera);
+  if (newPop) {
+    const pop = newPop;
     const { x: sx, y: sy } = gridToScreen(pop.x, pop.y, origin.x, origin.y, tileWidth, tileHeight);
     const rect = canvas.getBoundingClientRect();
     spawnSalaryFlyLabel(
