@@ -7148,37 +7148,527 @@
     },
     {
       "id": "prod-cpp-cmake-target-includes",
-      "chapter": "cpp-build",
+      "chapter": "cmake",
       "domain": "cpp",
       "difficulty": 4,
       "audiences": [
         "coworker",
         "guru"
       ],
-      "prompt": "Miksi globaali `include_directories()` on huono verrattuna `target_include_directories()`?",
+      "prompt": "Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren CMakeListsissä on `add_compile_options(-Wall -Wextra)` ja `add_definitions(-DUSE_SSL)`. Mitä korjaat?",
       "choices": [
         {
-          "text": "Target-pohjainen CMake rajaa include-polut vain kyseiseen targetiin — vähentää vuotoja ja nopeuttaa buildia",
+          "text": "Siirrä asetukset target-kohtaisiksi (`target_compile_options`, `target_compile_definitions`) — älä levitä globaalisti",
           "correct": true
         },
         {
-          "text": "include_directories() on nopeampi — moderni CMake suosittelee sitä aina",
+          "text": "Poista kolmannen osapuolen lib kokonaan — globaalit flagit ovat aina oikein",
           "correct": false
         },
         {
-          "text": "Ei eroa — molemmat toimivat identtisesti CMake 3.x:ssä",
+          "text": "Lisää `-w` globaalisti hiljentääksesi kaikki varoitukset koko projektissa",
           "correct": false
         },
         {
-          "text": "target_include_directories toimii vain header-only kirjastoissa",
+          "text": "Käännä riippuvuus erillisessä CMake-projektissa ilman yhteisiä asetuksia manuaalisesti",
           "correct": false
         }
       ],
-      "correctFeedback": "Modern CMake: target_* -komennot määrittävät rajapinnan — ei globaaleja sivuvaikutuksia.",
-      "wrongFeedback": "Globaali include_directories vuotaa kaikille targeteille. target_include_directories on transitiivinen PUBLIC/INTERFACE:lla.",
-      "sourceRef": "cmake/target_include_directories",
-      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_include_directories.html",
+      "correctFeedback": "Modern CMake: target_* -komennot rajaavat asetukset — globaalit flagit vuotavat kaikille targeteille.",
+      "wrongFeedback": "Globaalit add_compile_options/add_definitions osuvat myös vendored-koodiin. Kiinnitä asetukset omaan targetiin.",
+      "sourceRef": "cmake/target_compile_options",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_compile_options.html",
       "featureId": "cpp:cmake-target",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-fmt-public-leak",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeListsissä on `target_link_libraries(core PUBLIC fmt::fmt)`. Miksi tämä on ongelma?",
+      "choices": [
+        {
+          "text": "PUBLIC vuotaa riippuvuuden kaikille `core`:n linkkaajille — PRIVATE riittää jos headerit eivät paljasta `fmt`:ää",
+          "correct": true
+        },
+        {
+          "text": "fmt pitää aina linkata INTERFACE — STATIC ei toimi kolmannen osapuolen libeille",
+          "correct": false
+        },
+        {
+          "text": "PUBLIC on pakollinen kaikille ulkoisille kirjastoille CMake 3.x:ssä",
+          "correct": false
+        },
+        {
+          "text": "Ongelma on vain Windowsilla — Linuxissa PUBLIC/PRIVATE on irrelevantti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Transitiivinen linkitys seuraa PUBLIC-riippuvuuksia. PRIVATE kun fmt ei ole public API:ssa.",
+      "wrongFeedback": "PUBLIC pakottaa downstream-targetit linkkaamaan fmt:n — turhaa jos headerit eivät käytä sitä.",
+      "sourceRef": "cmake/target_link_libraries",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_link_libraries.html",
+      "featureId": "cpp:cmake-public-private",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-install-interface",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa include-polun `/home/dev/proj/include`. CMakeListsissä: `target_include_directories(mylib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä puuttuu?",
+      "choices": [
+        {
+          "text": "BUILD_INTERFACE ja INSTALL_INTERFACE generator expressionit — älä vuoda absoluuttista source pathia installiin",
+          "correct": true
+        },
+        {
+          "text": "Kovakoodaa `/usr/local/include` kaikille alustoille",
+          "correct": false
+        },
+        {
+          "text": "Käytä aina `include_directories()` globaalisti installin jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Poista install-säännöt — headerit löytyvät automaattisesti find_package:lla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Build- ja install-ympäristö tarvitsevat eri polut — BUILD_INTERFACE/INSTALL_INTERFACE erottaa ne.",
+      "wrongFeedback": "Absoluuttinen CMAKE_SOURCE_DIR polku ei toimi toisen koneen buildissa tai asennetussa paketissa.",
+      "sourceRef": "cmake/build_interface",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:BUILD_INTERFACE",
+      "featureId": "cpp:cmake-install-interface",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-source-dir-subproject",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` isommassa projektissa antaa väärän include-polun. Libin CMakeLists: `target_include_directories(lib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "Käytä CMAKE_CURRENT_SOURCE_DIR — CMAKE_SOURCE_DIR viittaa ylimmän tason projektiin",
+          "correct": true
+        },
+        {
+          "text": "Korvaa include-polku aina CMAKE_BINARY_DIR:llä",
+          "correct": false
+        },
+        {
+          "text": "Poista add_subdirectory — vain find_package toimii aliprojekteissa",
+          "correct": false
+        },
+        {
+          "text": "Siirrä headerit projektin juureen jotta SOURCE_DIR on sama kaikille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Aliprojektin CMakeListsissä CURRENT_SOURCE_DIR on kirjaston oma hakemisto, SOURCE_DIR on parent.",
+      "wrongFeedback": "CMAKE_SOURCE_DIR osoittaa monorepon juureen — alikansiossa include-polut menevät väärään paikkaan.",
+      "sourceRef": "cmake/variables",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/variable/CMAKE_CURRENT_SOURCE_DIR.html",
+      "featureId": "cpp:cmake-current-source-dir",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-glob-missed-source",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cmake` uudelleen. CMakeLists: `file(GLOB SOURCES src/*.cpp)`. Mikä on ongelma?",
+      "choices": [
+        {
+          "text": "GLOB ei päivity automaattisesti — listaa lähteet eksplisiittisesti tai käytä CONFIGURE_DEPENDS",
+          "correct": true
+        },
+        {
+          "text": "GLOB toimii vain header-tiedostoille — .cpp vaatii add_executable",
+          "correct": false
+        },
+        {
+          "text": "Puuttuu `cmake --build . --target clean` jokaisen uuden tiedoston jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Ninja-generaattori ei tue GLOBia — vaihda Makefiles-generaattoriin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "file(GLOB) ei huomaa uusia tiedostoja ilman uudelleenkonfigurointia — eksplisiittinen lista on luotettavampi.",
+      "wrongFeedback": "Ilman CONFIGURE_DEPENDS tai eksplisiittistä listaa CMake ei tiedä uudesta lähteestä ennen configure-vaihetta.",
+      "sourceRef": "cmake/file",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/file.html#glob",
+      "featureId": "cpp:cmake-glob",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-missing-build-type",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build typea. Ohjelma on hidas eikä gdb näytä selkeitä rivejä. Mitä puuttuu?",
+      "choices": [
+        {
+          "text": "Single-config-generaattorilla (Ninja/Makefiles) pitää antaa `-DCMAKE_BUILD_TYPE=Debug` configure-vaiheessa",
+          "correct": true
+        },
+        {
+          "text": "Debug-symbolit tulevat automaattisesti kaikissa Linux-buildissa ilman asetusta",
+          "correct": false
+        },
+        {
+          "text": "Build type valitaan aina `cmake --build`:n `--config Debug` -lipulla Makefiles-generaattorilla",
+          "correct": false
+        },
+        {
+          "text": "Lisää `-g` globaalisti CMAKE_CXX_FLAGS:iin juureen — se korvaa build typen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Makefiles/Ninja ovat single-config — oletus usein Release tai tyhjä. Debug vaatii CMAKE_BUILD_TYPE=Debug.",
+      "wrongFeedback": "Ilman build typea et saa odotettua optimointi-/debug-tasoa. Multi-config (VS/Xcode) toimii eri tavalla.",
+      "sourceRef": "cmake/build_type",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html",
+      "featureId": "cpp:cmake-build-type",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-cxx-flags-global",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++20\")`. Miksi moderni CMake suosii toista tapaa?",
+      "choices": [
+        {
+          "text": "target_compile_features(target PUBLIC|PRIVATE cxx_std_20) — standardi kuuluu targetille, ei koko projektille",
+          "correct": true
+        },
+        {
+          "text": "CMAKE_CXX_FLAGS on ainoa tapa MSVC:llä — target_compile_features ei toimi",
+          "correct": false
+        },
+        {
+          "text": "Globaali -std=c++20 on parempi koska se pakottaa kaikki riippuvuudet samaan standardiin",
+          "correct": false
+        },
+        {
+          "text": "C++20 vaatii add_definitions(-DCXX20) erikseen jokaisessa targetissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "target_compile_features kantaa vaatimuksen transitiivisesti PUBLIC:lla — globaali flag vuotaa kaikille.",
+      "wrongFeedback": "Globaali -std=c++20 osuu myös vendored-koodiin. Kiinnitä standardi targetille PUBLIC/PRIVATE riippuen API:sta.",
+      "sourceRef": "cmake/target_compile_features",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_FEATURES.html",
+      "featureId": "cpp:cmake-cxx-standard",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-werror-third-party",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-koodin projektin globaalilla `-Werror`:lla. Mitä korjaat?",
+      "choices": [
+        {
+          "text": "Siirrä -Wall/-Werror omaan targetiin (PRIVATE) ja jätä -Werror optionin taakse — älä pakota vendor-koodille",
+          "correct": true
+        },
+        {
+          "text": "Poista kaikki warning-flagit koko projektista — CI:n pitää mennä läpi hiljaisuudessa",
+          "correct": false
+        },
+        {
+          "text": "Forkkaa somelib ja korjaa kaikki sen warningit ennen integraatiota",
+          "correct": false
+        },
+        {
+          "text": "Lisää -Wno-error globaalisti ennen add_subdirectory — se poistaa kaikki varoitukset",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Warning-politiikka kuuluu omille targeteille — globaali -Werror rikkoo kolmannen osapuolen buildin.",
+      "wrongFeedback": "Globaalit compile optionit osuvat myös vendored-koodiin. Käytä target_compile_options(PRIVATE) ja option(WERROR).",
+      "sourceRef": "cmake/target_compile_options",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_compile_options.html",
+      "featureId": "cpp:cmake-werror-target",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-header-only-interface",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen modernissa CMakessa?",
+      "choices": [
+        {
+          "text": "add_library(mylib INTERFACE) + target_include_directories ja target_compile_features INTERFACE-scopeilla",
+          "correct": true
+        },
+        {
+          "text": "add_library(mylib STATIC) ilman lähdetiedostoja — tyhjä .cpp pakollinen",
+          "correct": false
+        },
+        {
+          "text": "include_directories() globaalisti — header-only ei tarvitse targetia",
+          "correct": false
+        },
+        {
+          "text": "add_executable dummy.cpp vain jotta CMake hyväksyy projektin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "INTERFACE-target kantaa käyttövaatimukset (include, standardi) ilman buildattavaa artefaktia.",
+      "wrongFeedback": "Header-only kirjasto mallinnetaan INTERFACE-targetilla — ei tarvitse tyhjää STATIC-kirjastoa.",
+      "sourceRef": "cmake/interface_libraries",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/add_library.html#interface-libraries",
+      "featureId": "cpp:cmake-header-only",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-duplicate-sources",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetissa. Linkitys toimii, mutta ylläpito on kivulias. Parempi malli?",
+      "choices": [
+        {
+          "text": "Tee core erilliseksi kirjastoksi ja linkkaa se app:iin ja testeihin target_link_libraries(PRIVATE core)",
+          "correct": true
+        },
+        {
+          "text": "Kopioi core.cpp eri hakemistoon testejä varten — erilliset kopiot estävät duplikaattiongelmat",
+          "correct": false
+        },
+        {
+          "text": "Listaa core.cpp vain app:ssa ja #include testitiedostoon suoraan",
+          "correct": false
+        },
+        {
+          "text": "Käytä add_custom_command joka kääntää core.cpp kerran ja kopioi .o-tiedoston",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Yhteinen koodi kirjastona — yksi build-sääntö, testit linkkaavat samaan targetiin.",
+      "wrongFeedback": "Duplikoitu lähde kahdessa targetissa tuplaa ylläpidon. Erillinen core-kirjasto on standardiratkaisu.",
+      "sourceRef": "cmake/add_library",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/add_library.html",
+      "featureId": "cpp:cmake-shared-library",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-cmake-openssl-imported",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_INCLUDE_DIR})` ja `target_link_libraries(app ${OPENSSL_LIBRARIES})`. Mikä moderni korvaus?",
+      "choices": [
+        {
+          "text": "find_package(OpenSSL REQUIRED) + target_link_libraries(app PRIVATE OpenSSL::SSL OpenSSL::Crypto)",
+          "correct": true
+        },
+        {
+          "text": "Lataa OpenSSL FetchContentilla main-branchista joka buildissa",
+          "correct": false
+        },
+        {
+          "text": "Kopioi openssl/*.h projektin include/-kansioon ja linkkaa -lssl manuaalisesti",
+          "correct": false
+        },
+        {
+          "text": "pkg-config on ainoa tuettu tapa — find_package ei toimi OpenSSL:lle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Imported targetit (OpenSSL::SSL) kantavat include-polut ja linkkivaatimukset transitiivisesti.",
+      "wrongFeedback": "Raakamuuttujat (${OPENSSL_*}) eivät skaalaudu — imported target on modernin CMaken tapa.",
+      "sourceRef": "cmake/find_package",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/module/FindOpenSSL.html",
+      "featureId": "cpp:cmake-imported-target",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-fetchcontent-pin",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit alkavat epäonnistua satunnaisesti ilman koodimuutoksia. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "Pinnaa versio release tagilla tai commit hashilla — älä seuraa liikkuvaa main-branchia",
+          "correct": true
+        },
+        {
+          "text": "Aja FetchContent jokaisen buildin alussa ilman cachea — tuore main on aina turvallisin",
+          "correct": false
+        },
+        {
+          "text": "Poista FetchContent ja kopioi fmt lähdekoodi suoraan repoon ilman versionhallintaa",
+          "correct": false
+        },
+        {
+          "text": "Vaihda GIT_SHALLOW FALSE — syvä clone korjaa epävakaat buildit",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Toistettava build vaatii kiinnitetyn version — main voi muuttua milloin tahansa.",
+      "wrongFeedback": "Liikkuva upstream-branch rikkoo CI:n satunnaisesti. Käytä GIT_TAG versiolla tai commit SHA:lla.",
+      "sourceRef": "cmake/fetchcontent",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/module/FetchContent.html",
+      "featureId": "cpp:cmake-fetchcontent",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-subdir-options-leak",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä pääprojektiin ilmestyy uusia install-targetteja ja testejä. Miten rajaat vuodon?",
+      "choices": [
+        {
+          "text": "add_subdirectory(... EXCLUDE_FROM_ALL) ja pakota riippuvuuden optionit OFF:ksi ennen subdirectoryä",
+          "correct": true
+        },
+        {
+          "text": "Poista kaikki option()-kutsut pääprojektin CMakeListsistä",
+          "correct": false
+        },
+        {
+          "text": "Kopioi somelib:n lähdekoodi suoraan src/-kansioon ilman CMakeä",
+          "correct": false
+        },
+        {
+          "text": "EXCLUDE_FROM_ALL estää find_package:n toiminnan — älä käytä sitä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EXCLUDE_FROM_ALL + optionien pakotus estää vendored-projektin testit/installit pääbuildista.",
+      "wrongFeedback": "Vendored CMake-projektit tuovat omat optionsa ja targettinsa — rajaa ne ennen add_subdirectoryä.",
+      "sourceRef": "cmake/add_subdirectory",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/add_subdirectory.html",
+      "featureId": "cpp:cmake-subdir-options",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-rpath-install",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error while loading shared libraries: libfoo.so`. Ensimmäinen CMake-korjaus?",
+      "choices": [
+        {
+          "text": "Aseta CMAKE_INSTALL_RPATH esim. $ORIGIN/../lib jotta runtime linker löytää jaetut kirjastot",
+          "correct": true
+        },
+        {
+          "text": "Linkkaa aina staattisesti — shared libraryt eivät toimi installissa",
+          "correct": false
+        },
+        {
+          "text": "Kopioi libfoo.so manuaalisesti /usr/lib:ään jokaisella kehittäjällä",
+          "correct": false
+        },
+        {
+          "text": "Poista install-säännöt — aja ohjelma aina build-hakemistosta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Build tree ja install tree eroavat — RPATH/RUNPATH kertoo linkkerille missä .so:t ovat.",
+      "wrongFeedback": "Ilman asianmukaista RPATH:ia asennettu binary ei löydä libfoo.so:ta. Tarkista ldd/readelf debuggauksessa.",
+      "sourceRef": "cmake/install_rpath",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/prop_tgt/INSTALL_RPATH.html",
+      "featureId": "cpp:cmake-rpath",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cmake-transitive-zlib",
+      "chapter": "cmake",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "`core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain `core`:a ja saa linkkerivirheen `undefined reference to deflate`. `core` linkkaa `ZLIB::ZLIB` PRIVATElla. Korjaus?",
+      "choices": [
+        {
+          "text": "Vaihda core:n linkitys PUBLIC ZLIB::ZLIB — riippuvuus tarvitaan public API:n käyttäjille",
+          "correct": true
+        },
+        {
+          "text": "App:n pitää aina linkata kaikki riippuvuudet käsin — transitiivinen linkitys ei toimi",
+          "correct": false
+        },
+        {
+          "text": "Siirrä zlib #include vain .cpp-tiedostoon — PUBLIC headerit eivät vaikuta linkitykseen",
+          "correct": false
+        },
+        {
+          "text": "Käytä INTERFACE-only targetia core:lle ilman linkitystä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Public headerissa näkyvä riippuvuus on PUBLIC-linkitys — downstream saa sen transitiivisesti.",
+      "wrongFeedback": "PRIVATE piilottaa zlib:n app:lta vaikka headerit paljastavat sen. PUBLIC kantaa linkkivaatimuksen eteenpäin.",
+      "sourceRef": "cmake/target_link_libraries",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_link_libraries.html",
+      "featureId": "cpp:cmake-transitive-deps",
       "featurePoints": 4
     },
     {

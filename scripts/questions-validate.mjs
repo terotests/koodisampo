@@ -12,7 +12,7 @@ const warnings = [];
 
 const TOPIC_DOMAINS = {
   tools: "cpp", style: "cpp", safety: "cpp", maintainability: "cpp", performance: "cpp",
-  portability: "cpp", threadability: "cpp", correctness: "cpp",
+  portability: "cpp", threadability: "cpp", correctness: "cpp", cmake: "cpp",
   "scrum-dod": "scrum", "scrum-dor": "scrum", "scrum-estimation": "scrum",
   "scrum-sprint": "scrum", "scrum-team": "scrum",
   systemd: "linux", journald: "linux", "linux-network": "linux", avahi: "linux",

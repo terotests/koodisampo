@@ -481,7 +481,7 @@ function pickTile(tiles, used, rng) {
 }
 
 const CPP_TOPICS = [
-  "tools", "style", "safety", "maintainability", "performance", "correctness", "threadability", "portability",
+  "tools", "style", "safety", "maintainability", "performance", "correctness", "threadability", "portability", "cmake",
 ];
 const OPS_TOPICS = [
   "scrum-dod", "scrum-dor", "scrum-estimation", "scrum-sprint",
@@ -498,12 +498,12 @@ const DEV_TOPICS = [
 ];
 const ROOM_TOPIC_BIAS = {
   cubicle: [...CPP_TOPICS, "cpp-production"],
-  pair: ["safety", "style", "qt-signals", "qt-quick", "js-async", "cpp-production"],
+  pair: ["safety", "style", "cmake", "qt-signals", "qt-quick", "js-async", "cpp-production"],
   team: ["maintainability", "safety", "qt-widgets", "pg-indexes", "pg-query-design", "backend-data"],
   meeting: ["scrum-sprint", "scrum-dor", "scrum-estimation", "git-workflow"],
   executive: ["portability", "pg-explain", "pg-cte-window", "pg-config", "ops-incident"],
   utility: ["systemd", "docker", "docker-volumes", "pg-vacuum", "docker-production", "git-ci"],
-  nook: ["tools", "qt-shaders", "qt-opengl", "js-modules", "js-typescript"],
+  nook: ["tools", "cmake", "qt-shaders", "qt-opengl", "js-modules", "js-typescript"],
   open: ["maintainability", "performance", "js-types", "qt-threading", "backend-api"],
 };
 
