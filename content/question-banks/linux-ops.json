@@ -929,7 +929,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Haluat julkaista HTTP-palvelun portissa 8080 mDNS:llä. Mihin konfiguraatio kuuluu?",
+      "prompt": "Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portissa 8080. Mihin konfiguraatio kuuluu?",
       "choices": [
         {
           "text": "/etc/avahi/services/*.service XML DNS-SD-määrittely portille 8080",
@@ -948,8 +948,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Avahi service-tiedostot määrittelevät DNS-SD-tyypin ja portin.",
-      "wrongFeedback": "Palvelun julkaisu vaatii Avahi service XML — ei pelkkä bind.",
+      "correctFeedback": "Avahi service XML julkaisee DNS-SD-palvelun — hostname .local on erillinen asia.",
+      "wrongFeedback": "Service XML ei tee automaattisesti hostnimestä myapp.local — konfiguroi hostname erikseen.",
       "sourceRef": "avahi.service(5)",
       "sourceUrl": "https://www.avahi.org/manual.html",
       "featureId": "linux:avahi-service",
@@ -4503,8 +4503,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "network-online.target odottaa verkkoa — systemd.unit man.",
-      "wrongFeedback": "After ilman Wants ei aktivoi targetia. network-online varmistaa yhteyden.",
+      "correctFeedback": "network-online odottaa verkonhallintaa — ei takaa internetiä/DNS:ää ikuisesti.",
+      "wrongFeedback": "After ilman Wants ei aktivoi targetia. Sovelluksessa silti retry DNS/TCP-yhteyksille.",
       "sourceRef": "systemd.unit/After",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.unit.html#After=",
       "featureId": "linux:systemd-ordering",
@@ -4519,7 +4519,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Palvelu spawnnaa child-prosesseja — stop jättää zombie-prosesseja. KillMode-korjaus?",
+      "prompt": "Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään stopin jälkeen. Mikä on turvallisempi asetus?",
       "choices": [
         {
           "text": "KillMode=control-group — tappaa koko cgroupin prosessit stopissa",
@@ -4538,8 +4538,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "KillMode määrittää mitä prosesseja pysäytetään — systemd.kill man.",
-      "wrongFeedback": "process tappaa vain pääprosessin. control-group siivoaa koko puun.",
+      "correctFeedback": "Oletus on control-group — process tappaa vain pääprosessin. systemd.kill man.",
+      "wrongFeedback": "KillMode=process jättää child-prosessit roikkumaan. control-group tappaa koko cgroupin.",
       "sourceRef": "systemd.kill/KillMode",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=",
       "featureId": "linux:kill-mode",

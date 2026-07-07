@@ -1,4 +1,4 @@
-# Palvelu spawnnaa child-prosesseja — stop jättää zombie-prosesseja. KillMode-korjaus?
+# Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään stopin jälkeen. Mikä on turvallisempi asetus?
 
 ## Tilanne
 
@@ -10,11 +10,15 @@ PID 1001  /usr/bin/app worker
 PID 1002  /usr/bin/app worker
 ```
 
-`systemctl stop app` tappaa vain pääprosessin (oletus `KillMode=mixed` tai `control-group` riippuen versiosta). Workerit jäävät roikkumaan — portit varattuina, zombie-prosesseja `ps`-listassa.
+Unitissa on asetettu `KillMode=process`. `systemctl stop app` tappaa vain pääprosessin — workerit jäävät roikkumaan, portit varattuina.
+
+Huom: nämä eivät yleensä ole zombie-prosesseja (exitannut prosessi, jota parent ei reapannut), vaan orpoja child-prosesseja.
+
+systemd:n oletus on **`KillMode=control-group`**, jolloin unitin cgroupiin kuuluvat jäljellä olevat prosessit tapetaan stopissa. `KillMode=process` tappaa vain pääprosessin — sitä ei suositella useimpiin palveluihin.
 
 ## Ratkaisu
 
-Aseta **`KillMode=control-group`** — **tappaa koko cgroupin prosessit stopissa**.
+Poista `KillMode=process` tai aseta eksplisiittisesti **`KillMode=control-group`**:
 
 ```ini
 [Service]
@@ -36,8 +40,6 @@ ps aux | grep app   # ei orphan-prosesseja
 
 ## Käytännössä
 
-Jos sovellus tarvitsee graceful shutdown, käsittele SIGTERM pääprosessissa ja terminoi workerit siististi — KillMode=control-group on viimeinen varmistus.
-
-`KillMode=process` tappaa vain pääprosessin — sopii vain single-process-palveluille. Deploy-testi: stop → tarkista ei orphan → start uudelleen.
+Jos sovellus tarvitsee graceful shutdown, käsittele SIGTERM pääprosessissa ja terminoi workerit siististi — `KillMode=control-group` on viimeinen varmistus. Deploy-testi: stop → tarkista ei orphan → start uudelleen.
 
 [Lue lisää](https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=)

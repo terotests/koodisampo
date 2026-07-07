@@ -970,7 +970,7 @@
 | ✅ | 3 | `b09-linux-avahi-service-discovery` | Lähiverkon tulostin pitäisi löytyä ilman staattista IP:tä. Protokolla? |
 | ✅ | 3 | `exp-linux-avahi-conflict` | Kaksi laitetta claimaa saman hostname.local — verkko sekoaa. Miten Avah… |
 | ✅ | 2 | `exp-linux-avahi-printer-discovery` | Toimiston tulostin pitäisi löytyä automaattisesti LANissa ilman staatti… |
-| ✅ | 4 | `exp-linux-avahi-service-xml` | Haluat julkaista HTTP-palvelun portissa 8080 mDNS:llä. Mihin konfiguraa… |
+| ✅ | 4 | `exp-linux-avahi-service-xml` | Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portissa… |
 
 #### journald `journald` (31/31)
 
@@ -1124,7 +1124,7 @@
 | ✅ | 3 | `b08-linux-systemd-timer` | Cron-korvaus: backup ajastus systemd:llä. Mitä tarvitset? |
 | ✅ | 2 | `b08-linux-systemd-wantedby` | Uusi service-unit ei käynnisty bootissa vaikka enabled. Install-osiossa… |
 | ✅ | 3 | `b09-linux-systemd-after-before` | App käynnistyy ennen verkkoa — DNS lookup epäonnistuu bootissa. Unit-ri… |
-| ✅ | 4 | `b09-linux-systemd-kill-mode` | Palvelu spawnnaa child-prosesseja — stop jättää zombie-prosesseja. Kill… |
+| ✅ | 4 | `b09-linux-systemd-kill-mode` | Palvelun unitissa on KillMode=process — workerit jäävät pyörimään stopin… |
 | ✅ | 4 | `b09-linux-systemd-memory-limit` | Muistivuoto täyttää koko palvelimen — haluat rajoittaa yhden unitin RAM… |
 | ✅ | 3 | `b09-linux-systemd-restart-policy` | Palvelu kaatuu satunnaisesti yöllä — haluat automaattisen uudelleenkäyn… |
 | ✅ | 3 | `exp-linux-systemd-failed-service` | Tuotantopalvelu on failed-tilassa rebootin jälkeen. Mikä komento näyttä… |

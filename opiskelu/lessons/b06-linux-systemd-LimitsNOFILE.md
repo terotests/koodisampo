@@ -12,16 +12,16 @@ Login-shellissa `ulimit -n` näyttää 65535, mutta palvelu pyörii systemd-unit
 
 ## Ratkaisu
 
-Aseta **`LimitNOFILE=65535`** **[Service]-osassa** service unit -tiedostossa.
+Aseta **`LimitNOFILE=65535`** drop-in-tiedostossa — älä editoi vendor-unitia suoraan:
+
+```bash
+sudo systemctl edit api.service
+```
 
 ```ini
 [Service]
-ExecStart=/usr/bin/api
 LimitNOFILE=65535
-# vaihtoehtoisesti: LimitNOFILE=infinity
 ```
-
-Sovella:
 
 ```bash
 sudo systemctl daemon-reload
