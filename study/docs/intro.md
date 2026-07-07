@@ -6,9 +6,9 @@ title: Johdanto
 
 # Opiskelumateriaali
 
-Tämä sivusto on **erillinen pelistä**. Oppitunneissa ei viitata pelihahmoihin tai toimistotarinaan — vain tekninen sisältö.
+Tämä sivusto on pelistä erillinen opiskelumateriaali. Oppitunnit keskittyvät suoraan tekniseen sisältöön ilman pelihahmoja tai toimistotarinaa.
 
-Pelistä voit avata saman oppitunnin kysymyksen palautteen jälkeen linkistä **Lue oppitunti**.
+Jos pelaat Koodisampoa, löydät saman oppitunnin kysymyksen palautteen jälkeen linkistä **Lue oppitunti**.
 
 ## Rakenne
 
