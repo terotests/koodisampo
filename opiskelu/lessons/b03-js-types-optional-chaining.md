@@ -1,4 +1,4 @@
-# Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?
+# Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?
 
 ## Tilanne
 

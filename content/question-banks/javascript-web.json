@@ -1297,7 +1297,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?",
+      "prompt": "Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?",
       "choices": [
         {
           "text": "Optional chaining: user?.profile?.name estää TypeError null-polulla",
@@ -1854,10 +1854,10 @@
       "audiences": [
         "coworker"
       ],
-      "prompt": "API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?",
+      "prompt": "React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyttäjädata latautuu asynkronisesti, `user` on ensin null ja tuotannossa tulee TypeError. Mikä ES2020-operaattori korvaa pitkän if-ketjun?",
       "choices": [
         {
-          "text": "user?.profile?.name",
+          "text": "Optional chaining (?.) — property access palauttaa undefined null-polulla",
           "correct": true
         },
         {
@@ -3353,7 +3353,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?",
+      "prompt": "Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?",
       "choices": [
         {
           "text": "Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa",

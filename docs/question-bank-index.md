@@ -4903,7 +4903,7 @@ Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteistä.
 
 #### `b03-js-types-optional-chaining` · diff 2
 
-Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?
+Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?
 
 - **Optional chaining: user?.profile?.name estää TypeError null-polulla** ✓
 - try/catch jokaisella rivillä on kevyin tapa käsitellä puuttuvia kenttiä
@@ -4939,9 +4939,9 @@ Laskin: 0.1 + 0.2 === 0.3 palauttaa false tuotannossa. Miksi?
 
 #### `b04-js-types-optional-chaining` · diff 2
 
-API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?
+React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyttäjädata latautuu asynkronisesti, `user` on ensin null ja tuotannossa tulee TypeError. Mikä ES2020-operaattori korvaa pitkän if-ketjun?
 
-- **user?.profile?.name** ✓
+- **Optional chaining (?.) — property access palauttaa undefined null-polulla** ✓
 - user.profile.name || '' — riittää nullille
 - eval('user.profile.name')
 - with(user) { profile.name }
@@ -5020,7 +5020,7 @@ parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi?
 
 #### `b07-js-types-optional-chain` · diff 2
 
-API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?
+Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?
 
 - **Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa** ✓
 - user.profile.name toimii aina kun API palauttaa vähintään tyhjän objektin

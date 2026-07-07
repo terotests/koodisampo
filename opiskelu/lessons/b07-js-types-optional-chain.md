@@ -1,4 +1,4 @@
-# API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?
+# Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?
 
 ## Tilanne
 

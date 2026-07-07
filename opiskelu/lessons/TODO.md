@@ -463,11 +463,11 @@
 | ✅ | 2 | `b02-js-types-optional-05` | API palauttaa `{ name?: string }` — miten luet turvallisesti ilman unde… |
 | ✅ | 2 | `b02-js-types-strict-07` | Bugi: `if (count == '0')` menee läpi kun count on 0. Fix? |
 | ✅ | 3 | `b03-js-types-number-precision` | Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteis… |
-| ✅ | 2 | `b03-js-types-optional-chaining` | Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on und… |
+| ✅ | 2 | `b03-js-types-optional-chaining` | Dashboard asettaa `document.title = user.profile.name`, mutta vanhentun… |
 | ✅ | 4 | `b03-js-types-symbol-key` | Kirjasto haluaa piilottaa metadatan objektista ilman name collision -ri… |
 | ✅ | 2 | `b04-js-types-array-flat` | Nested array [[1,[2]],3] pitää litistää yhdeksi tasoksi. Moderni metodi? |
 | ✅ | 3 | `b04-js-types-number-precision` | Laskin: 0.1 + 0.2 === 0.3 palauttaa false tuotannossa. Miksi? |
-| ✅ | 2 | `b04-js-types-optional-chaining` | API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Hal… |
+| ✅ | 2 | `b04-js-types-optional-chaining` | React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyt… |
 | ✅ | 4 | `b04-js-types-symbol-iterator` | Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa … |
 | ✅ | 4 | `b05-js-types-bigint-json` | JSON.stringify(BigInt(42)) heittää TypeError. Miksi? |
 | ✅ | 2 | `b05-js-types-nullish-coalescing` | Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käy… |
@@ -476,7 +476,7 @@
 | ✅ | 3 | `b06-js-types-map-key-object` | Objekti avaimena Mapissa — sama key instance löytyy. Miksi ei Object av… |
 | ✅ | 3 | `b06-js-types-temporal-date` | Date.parse('01/02/2023') tulos vaihtelee locale:sta. Miten vältät? |
 | ✅ | 3 | `b07-js-types-nan` | parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi? |
-| ✅ | 2 | `b07-js-types-optional-chain` | API-vastaus sisältää syvän objektipolun, ja production crashaa kun väli… |
+| ✅ | 2 | `b07-js-types-optional-chain` | Konsolissa: `TypeError: Cannot read properties of undefined (reading 'n… |
 | ✅ | 2 | `b07-js-types-strict-equality` | Bug: `if (!userId)` hylkää validin arvon `0`. Mikä tarkistus on turvall… |
 | ✅ | 3 | `b08-js-types-bigint` | 64-bit ID ylittää Number.MAX_SAFE_INTEGER — JSON API palauttaa ison num… |
 | ✅ | 2 | `b08-js-types-strict-equals` | API hylkää vain `if (token == null) return unauthorized()`. Mikä arvo p… |

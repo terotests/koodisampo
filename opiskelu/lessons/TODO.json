@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T15:56:14.957Z",
+  "generatedAt": "2026-07-07T16:19:20.026Z",
   "summary": {
     "totalQuestions": 1301,
     "readyLessons": 1289,
@@ -2723,7 +2723,7 @@
             {
               "id": "b03-js-types-optional-chaining",
               "difficulty": 2,
-              "prompt": "Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?",
+              "prompt": "Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-types-optional-chaining.md"
             },
@@ -2751,7 +2751,7 @@
             {
               "id": "b04-js-types-optional-chaining",
               "difficulty": 2,
-              "prompt": "API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?",
+              "prompt": "React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyttäjädata latautuu asynkronisesti, `user` on ensin null ja tuotannossa tulee TypeError. Mikä ES2020-operaattori korvaa pitkän if-ketjun?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-optional-chaining.md"
             },
@@ -2814,7 +2814,7 @@
             {
               "id": "b07-js-types-optional-chain",
               "difficulty": 2,
-              "prompt": "API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?",
+              "prompt": "Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-optional-chain.md"
             },
