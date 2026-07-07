@@ -146,6 +146,78 @@
       "sourceUrl": "https://datatracker.ietf.org/doc/html/rfc7519",
       "featureId": "security:jwt-validation",
       "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-tls-verify-off",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Kehittäjä lisää `curl -k` tai `verify=False` korjatakseen TLS-virheen. Mikä riski?",
+      "choices": [
+        {
+          "text": "Man-in-the-middle voi siepata tai muuttaa liikennettä — sertifikaattia ei validoida",
+          "correct": true
+        },
+        {
+          "text": "TLS-salaus poistuu kokonaan — liikenne menee plaintextinä",
+          "correct": false
+        },
+        {
+          "text": "Vain self-signed sertifikaatit toimivat — CA-varmennetut eivät",
+          "correct": false
+        },
+        {
+          "text": "verify=False vaikuttaa vain kehitysympäristöön, ei tuotantoon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Sertifikaatin validointi estää MITM:n — korjaa CA/sertifikaatti, älä poista validointia.",
+      "wrongFeedback": "Liikenne voi olla salattua mutta väärälle palvelimelle. Poistettu verify = luota keneen tahansa.",
+      "sourceRef": "owasp/transport-layer-protection",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html",
+      "featureId": "security:tls-verify",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-shell-injection",
+      "chapter": "web-security",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Sovellus ajaa `os.system(\"convert \" + user_filename)` ilman validointia. Hyökkääjä syöttää `file.png; rm -rf /`. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "Älä käytä shelliä — subprocess argumenttilistana tai kirjasto joka ei interpoloi shelliin",
+          "correct": true
+        },
+        {
+          "text": "Escapaa lainausmerkit riittää — shell käsittelee puolipisteet turvallisesti",
+          "correct": false
+        },
+        {
+          "text": "Aja root-oikeuksin vain luotettaville käyttäjille",
+          "correct": false
+        },
+        {
+          "text": "Base64-koodaa filename ennen shell-komentoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Shell injection — OWASP: käytä parametri-listaa, ei string-concat shell-komentoon.",
+      "wrongFeedback": "Shell tulkitsee ; | & metamerkit. subprocess([\"convert\", filename]) ei käynnistä shelliä.",
+      "sourceRef": "owasp/command-injection",
+      "sourceUrl": "https://owasp.org/www-community/attacks/Command_Injection",
+      "featureId": "security:shell-injection",
+      "featurePoints": 4
     }
   ]
 }

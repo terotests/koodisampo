@@ -7145,6 +7145,182 @@
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread",
       "featureId": "cpp:std-thread-port",
       "featurePoints": 2
+    },
+    {
+      "id": "prod-cpp-cmake-target-includes",
+      "chapter": "cpp-build",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi globaali `include_directories()` on huono verrattuna `target_include_directories()`?",
+      "choices": [
+        {
+          "text": "Target-pohjainen CMake rajaa include-polut vain kyseiseen targetiin — vähentää vuotoja ja nopeuttaa buildia",
+          "correct": true
+        },
+        {
+          "text": "include_directories() on nopeampi — moderni CMake suosittelee sitä aina",
+          "correct": false
+        },
+        {
+          "text": "Ei eroa — molemmat toimivat identtisesti CMake 3.x:ssä",
+          "correct": false
+        },
+        {
+          "text": "target_include_directories toimii vain header-only kirjastoissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Modern CMake: target_* -komennot määrittävät rajapinnan — ei globaaleja sivuvaikutuksia.",
+      "wrongFeedback": "Globaali include_directories vuotaa kaikille targeteille. target_include_directories on transitiivinen PUBLIC/INTERFACE:lla.",
+      "sourceRef": "cmake/target_include_directories",
+      "sourceUrl": "https://cmake.org/cmake/help/latest/command/target_include_directories.html",
+      "featureId": "cpp:cmake-target",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cpp-sanitizer-tsan",
+      "chapter": "cpp-build",
+      "domain": "cpp",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Release-build toimii, mutta TSan löytää data racen kahden säikeen välillä. Miksi mutex tarvitaan?",
+      "choices": [
+        {
+          "text": "Data race on UB — säikeet eivät synkronoi samaa muuttujaa ilman mutexia/atomicsia vaikka \"toimii koneellani\"",
+          "correct": true
+        },
+        {
+          "text": "TSan on väärässä — release-optimointi korjaa racen automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "volatile riittää thread-safetyyn — TSan ei tunnista sitä",
+          "correct": false
+        },
+        {
+          "text": "Data race on vain varoitus — ohjelma on määritelty käyttäytymään satunnaisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "C++ memory model: unsynchronized access = UB. TSan löytää sen debug-buildissä.",
+      "wrongFeedback": "Toimiminen release-buildissä ei takaa defined behavioria. Korjaa synkronoinnilla tai atomicsilla.",
+      "sourceRef": "clang/ThreadSanitizer",
+      "sourceUrl": "https://clang.llvm.org/docs/ThreadSanitizer.html",
+      "featureId": "cpp:tsan",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-cpp-expected-vs-optional",
+      "chapter": "cpp-production",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Milloin `std::expected` on parempi kuin `std::optional`?",
+      "choices": [
+        {
+          "text": "Kun tarvitset sekä onnistumisen että virhekoodin/viestin ilman exceptionia — expected kantaa error-tyypin",
+          "correct": true
+        },
+        {
+          "text": "optional korvaa aina expectedin — error-tyyppi on turha",
+          "correct": false
+        },
+        {
+          "text": "Käytä aina exceptionia — expected on vain C-koodin jäänne",
+          "correct": false
+        },
+        {
+          "text": "optional<bool> riittää kaikkiin virhetilanteisiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "optional = arvo tai ei mitään; expected = arvo tai virhe; exception rajapinnan yli.",
+      "wrongFeedback": "optional ei kerro miksi epäonnistui. expected on C++23-tyylinen Result-tyyppi.",
+      "sourceRef": "cppreference/expected",
+      "sourceUrl": "https://en.cppreference.com/w/cpp/utility/expected",
+      "featureId": "cpp:expected",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cpp-volatile-not-thread-safe",
+      "chapter": "cpp-production",
+      "domain": "cpp",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa thread-safetyä?",
+      "choices": [
+        {
+          "text": "volatile estää vain optimoinnin — ei tarjoa atomisuutta eikä memory ordering -takuita",
+          "correct": true
+        },
+        {
+          "text": "volatile on deprecated — käytä aina mutexia boolille",
+          "correct": false
+        },
+        {
+          "text": "volatile bool on atomisesti thread-safe C++11:ssä",
+          "correct": false
+        },
+        {
+          "text": "std::atomic vaatii aina mutexin volatile-boolin päällä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "volatile ≠ atomic — käytä std::atomic tai mutex. volatile on laiterekistereille, ei synkronointiin.",
+      "wrongFeedback": "volatile ei takaa atomisia read-modify-write -operaatioita. std::atomic<bool> on oikea lippu.",
+      "sourceRef": "cppreference/atomic",
+      "sourceUrl": "https://en.cppreference.com/w/cpp/atomic/atomic",
+      "featureId": "cpp:volatile-vs-atomic",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-cpp-exception-safety-strong",
+      "chapter": "cpp-production",
+      "domain": "cpp",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa strong exception safety -takuun?",
+      "choices": [
+        {
+          "text": "Kopioi väliaikaiseen, swap vain onnistuneen kopion jälkeen — alkuperäinen säilyy jos kopio heittää",
+          "correct": true
+        },
+        {
+          "text": "swap heittää aina — strong guarantee ei ole mahdollinen vectorissa",
+          "correct": false
+        },
+        {
+          "text": "noexcept destructor riittää — kopioinnin ei tarvitse olla exception-safe",
+          "correct": false
+        },
+        {
+          "text": "catch (...) ja jatka — strong guarantee tarkoittaa samaa kuin basic",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Copy-and-swap: kopio voi heittää turvallisesti, swap on noexcept — strong guarantee assignissa.",
+      "wrongFeedback": "Strong = operaatio onnistuu tai tila ei muutu. Copy-and-swap on klassinen tekniikka.",
+      "sourceRef": "cppcoreguidelines/exception-safety",
+      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Re-raii",
+      "featureId": "cpp:exception-safety",
+      "featurePoints": 5
     }
   ]
 }
