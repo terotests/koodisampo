@@ -9,7 +9,7 @@ auto x = {1, 2, 3};
 // x on std::initializer_list<int>, ei std::vector<int>
 ```
 
-`x.size()` toimii, mutta `x.push_back(4)` ei käännä. Brace-init `auto`:n kanssa deduktoidaan aina `std::initializer_list<T>` — tämä on standardin sääntö, ei kääntäjäbugi.
+`x.size()` toimii, mutta `x.push_back(4)` ei käännä. `auto x = {1, 2, 3}` eli copy-list-initialization dedusoi `std::initializer_list<int>` — eri tapaus kuin esim. `auto x{1};`.
 
 ## Ratkaisu
 

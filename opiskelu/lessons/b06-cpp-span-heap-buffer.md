@@ -24,6 +24,6 @@ process(std::span<const std::byte>(buf, len));
 ## Ero läheisiin teemoihin
 
 - `b09-cpp-span-bounds-check`: painotus `char*`-API:n korvaamiseen binääri-/tekstidatassa.
-- `b08-cpp-span-bounds`: kun `span` on jo käytössä, turvallinen indeksointi (`at` vs `operator[]`).
+- `b08-cpp-span-bounds`: kun `span` on jo käytössä, turvallinen indeksointi (tarkista `i < data.size()` ennen `operator[]`).
 
 [Lue lisää](https://en.cppreference.com/w/cpp/container/span)

@@ -8,7 +8,7 @@ Vanha ratkaisu: palauta `-1/0/1` kolmesta arvosta — helppo sekoittaa `bool`-pa
 
 ## Ratkaisu
 
-C++20 **kolmisuuntainen vertailu** (`operator<=>`, spaceship):
+C++20 **kolmisuuntainen vertailu** jäsenfunktiona (`operator<=>`, spaceship):
 
 ```cpp
 struct Item {
@@ -17,20 +17,30 @@ struct Item {
 
     auto operator<=>(const Item&) const = default;
 };
+
+std::ranges::sort(items);
 ```
 
-`default` generoi `std::strong_ordering` — totaalinen järjestys, jossa yhtäsuuruus on määritelty. `std::sort` ja `std::set` toimivat oikein.
+`default` generoi `std::strong_ordering` — totaalinen järjestys, jossa yhtäsuuruus on määritelty.
 
-Eksplisiittinen comparator:
+Custom bool-comparator (tarvittaessa):
 
 ```cpp
 auto cmp = [](const Item& a, const Item& b) {
-    return a.key <=> b.key;  // strong_ordering
+    return a.key < b.key;
+};
+```
+
+Tai `<=>` comparatorin sisällä:
+
+```cpp
+auto cmp = [](const Item& a, const Item& b) {
+    return (a.key <=> b.key) < 0;
 };
 ```
 
 ## Huomio
 
-Jos käytät vanhaa `bool`-comparatoria `sort`:iin, palauta `false` kun `a == b` (ei `true`). Parempi: siirry `<=>` tai `std::compare_three_way`.
+`return a.key <=> b.key` ei kelpaa suoraan `std::sort`-comparatoriksi — paluuarvon pitää olla `bool`. Jos käytät vanhaa `bool`-comparatoria, palauta `false` kun `a == b` (ei `true`).
 
 [Lue lisää](https://en.cppreference.com/w/cpp/language/operator_comparison)

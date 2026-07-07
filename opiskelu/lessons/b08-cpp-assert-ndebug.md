@@ -1,10 +1,10 @@
-# Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. Mitä teet tuotantovalvontaan?
+# Release-buildissa assert poistuu — miten varmistat että testit löytävät virheet myös tuotantokonfiguraatiossa?
 
 ## Tilanne
 
 Kehityksessä `assert(ptr != nullptr)` löytää virheet. Release-build (`-DNDEBUG`) poistaa kaikki assertit — koodi jatkaa `nullptr`:lla ja kaatuu syvemmällä pinossa tai korruptoi dataa.
 
-Tiimi luottaa assertiin "turvallisuustarkistuksena" — väärä olettamus.
+Tiimi testaa vain debug-buildilla, vaikka tuotanto on release.
 
 ## Ratkaisu
 
@@ -21,6 +21,8 @@ if (ptr == nullptr) {
 
 ## CI
 
-Aja testit myös release-moodissa. Älä testaa vain debug-buildilla, jos tuotanto on release.
+**Aja testit myös release-moodissa.** Älä testaa vain debug-buildilla, jos tuotanto on release.
+
+Ero `b07-cpp-assert-vs-expect`: tässä kysymyksessä painotus on **testaus release-konfiguraatiossa** — ei assert vs throw -valinnassa.
 
 [Lue lisää](https://en.cppreference.com/w/cpp/error/assert)

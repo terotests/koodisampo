@@ -8,23 +8,24 @@ Huom: `span` ratkaisee osoitin+pituus -ongelman; se **ei** korvaa indeksin valid
 
 ## Ratkaisu
 
-Kaksi turvallista tapaa:
+C++20/C++23: tee eksplisiittinen tarkistus:
 
 ```cpp
 int get(std::span<int> data, size_t i) {
-    return data.at(i);  // heittää std::out_of_range
+    if (i >= data.size()) {
+        throw std::out_of_range("index");
+    }
+    return data[i];
 }
-
-// tai eksplisiittinen tarkistus
-if (i >= data.size()) throw std::out_of_range("index");
-return data[i];
 ```
 
-`at()` on selkein API:ssa, jossa virheellinen indeksi on odotettu virhetilanne. Hot pathissa, jossa indeksi on jo validoitu, `operator[]` on ok — mutta dokumentoi esiehto.
+Hot pathissa, jossa indeksi on jo validoitu, `operator[]` on ok — mutta dokumentoi esiehto.
+
+C++26:ssa `span::at()` tarjoaa rajatarkistetun pääsyn; C++20/C++23:ssa tarkista `i < data.size()` itse.
 
 ## Ero läheisiin teemoihin
 
 - `b06-cpp-span-heap-buffer` / `b09-cpp-span-bounds-check`: korvaa `(ptr, len)` tai `char*` → `span`.
 - Tämä oppitunti: `span` on jo käytössä — kysymys on **indeksoinnin** turvallisuudesta.
 
-[Lue lisää](https://en.cppreference.com/w/cpp/container/span/at)
+[Lue lisää](https://en.cppreference.com/w/cpp/container/span)

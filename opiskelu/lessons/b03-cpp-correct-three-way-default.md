@@ -14,9 +14,11 @@ auto cmp = [](const Item& a, const Item& b) {
 
 Kun `a == b`, palautus `true` rikkoo strict weak ordering -vaatimuksen. `std::sort` voi järjestää epävakaasti tai käyttäytyä odottamattomasti.
 
+Huom: sortin comparatorin pitää palauttaa totuusarvo (“onko a ennen b”), ei `std::strong_ordering`.
+
 ## Ratkaisu
 
-C++20 kolmisuuntainen vertailu antaa selkeän yhtäsuuruuden:
+C++20 kolmisuuntainen vertailu jäsenfunktiona + oletussortti:
 
 ```cpp
 struct Item {
@@ -24,10 +26,26 @@ struct Item {
     auto operator<=>(const Item&) const = default;
 };
 
-std::ranges::sort(items);  // käyttää <=>
+std::ranges::sort(items);  // käyttää generoitua vertailua
 ```
 
-Tai comparatorissa: `return a.rank <=> b.rank;` → `std::strong_ordering`. Kun arvot ovat yhtäsuuret, `<=>` palauttaa `equal` — ei epämääräistä `true`/`false`-sekoilua.
+Custom bool-comparator:
+
+```cpp
+auto cmp = [](const Item& a, const Item& b) {
+    return a.rank < b.rank;
+};
+```
+
+Jos haluat käyttää `<=>`:ää comparatorin sisällä:
+
+```cpp
+auto cmp = [](const Item& a, const Item& b) {
+    return (a.rank <=> b.rank) < 0;
+};
+```
+
+Älä palauta suoraan `a.rank <=> b.rank` — se on `std::strong_ordering`, ei `bool`.
 
 ## Vanha korjaus
 
