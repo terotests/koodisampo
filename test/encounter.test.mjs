@@ -233,8 +233,8 @@ export function runEncounterTests() {
     assert(avahiQ, "avahi question exists");
     const study = buildAiStudyText(avahiQ);
     assert(study.includes("mDNS"), "AI study text explains mDNS");
-    assert(study.includes("Perustelu"), "AI study has rationale section");
-    assert(study.includes("Oikea valinta"), "AI study lists correct answer");
+    assert(study.includes("Ratkaisu"), "AI study has solution section");
+    assert(study.includes("[") && study.includes("]"), "AI study lists numbered correct answer");
 
     dispatch(session3, () => {
       session3.loadMapFromText(mapJson);

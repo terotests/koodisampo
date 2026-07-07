@@ -656,10 +656,29 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
   return quiz;
 }
 
+/** Ratkaisu shufflatusta monivalinnasta (valintanumero + teksti). */
+export function getAiStudySolution(question) {
+  const choices = question?.choices ?? [];
+  const correctIdx = choices.findIndex((c) => c.correct);
+  if (correctIdx < 0) {
+    return {
+      choiceN: 0,
+      choiceText: "",
+      explanation: question?.studyNotes || question?.correctFeedback || "",
+    };
+  }
+  return {
+    choiceN: correctIdx + 1,
+    choiceText: choices[correctIdx]?.text ?? "",
+    explanation: question?.studyNotes || question?.correctFeedback || "",
+  };
+}
+
 /** Laajempi opetusnäkymä AI-vihjeeseen. */
 export function buildAiStudyText(question) {
   const correct = question.choices?.find((c) => c.correct);
   const wrong = question.choices?.filter((c) => !c.correct) || [];
+  const solution = getAiStudySolution(question);
   const parts = [];
 
   const tag = question.chapter || question.domain || "aihe";
@@ -667,29 +686,55 @@ export function buildAiStudyText(question) {
   parts.push("");
   parts.push(question.prompt);
   parts.push("");
-  parts.push("── Perustelu ──");
-  if (question.studyNotes) {
-    parts.push(question.studyNotes);
-  } else {
-    parts.push(question.correctFeedback);
+  parts.push("── Ratkaisu ──");
+  if (solution.choiceN > 0) {
+    parts.push(`[${solution.choiceN}] ${solution.choiceText}`);
+  } else if (correct?.text) {
+    parts.push(correct.text);
   }
-  if (correct?.text) {
-    parts.push(`\nOikea valinta: ${correct.text}`);
+  if (solution.explanation) {
+    parts.push("");
+    parts.push(solution.explanation);
   }
   if (wrong.length > 0) {
-    parts.push("\n── Miksi muut eivät kelpaa? ──");
+    parts.push("");
+    parts.push("── Miksi muut eivät kelpaa? ──");
     for (const w of wrong) {
       parts.push(`• ${w.text}`);
     }
   }
   if (question.wrongFeedback && question.studyNotes) {
-    parts.push(`\nYleinen virhe: ${question.wrongFeedback}`);
+    parts.push("");
+    parts.push(`Yleinen virhe: ${question.wrongFeedback}`);
   }
   const src = question.sourceUrl || question.bankSource;
   if (src) {
     parts.push(`\n── Lisätietoa ──\n${src}`);
   }
   parts.push(`\n── Oppitunti ──\n${lessonLinkLine(question)}`);
+  return parts.join("\n");
+}
+
+/** AI-näkymän lisäsisältö ratkaisun jälkeen (väärät vaihtoehdot, linkit). */
+export function buildAiStudySupplement(question) {
+  const wrong = question.choices?.filter((c) => !c.correct) || [];
+  const parts = [];
+  if (wrong.length > 0) {
+    parts.push("── Miksi muut eivät kelpaa? ──");
+    for (const w of wrong) {
+      parts.push(`• ${w.text}`);
+    }
+  }
+  if (question.wrongFeedback && question.studyNotes) {
+    parts.push("");
+    parts.push(`Yleinen virhe: ${question.wrongFeedback}`);
+  }
+  const src = question.sourceUrl || question.bankSource;
+  if (src) {
+    parts.push("");
+    parts.push(`── Lisätietoa ──`);
+    parts.push(src);
+  }
   return parts.join("\n");
 }
 

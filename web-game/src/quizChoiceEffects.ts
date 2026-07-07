@@ -114,6 +114,27 @@ export function scheduleQuizChoiceFeedback(
   return token;
 }
 
+export function spawnQuizMoneyFlyAtElement(
+  anchor: HTMLElement,
+  correct: boolean,
+  withParticles = true,
+): void {
+  const rect = anchor.getBoundingClientRect();
+  if (withParticles) spawnChoiceParticleBurst(anchor, correct);
+  spawnQuizFlyLabel(rect.left + rect.width * 0.12, rect.top + rect.height * 0.42, correct);
+}
+
+export function spawnQuizMoneyFlyAtKey(
+  mapEl: HTMLElement | null,
+  key: string,
+  correct: boolean,
+  withParticles = true,
+): void {
+  const row = mapEl?.querySelector<HTMLElement>(`[data-key="${key}"]`);
+  if (!row) return;
+  spawnQuizMoneyFlyAtElement(row, correct, withParticles);
+}
+
 export function cancelQuizChoiceFeedback(): void {
   activeToken += 1;
   clearQuizChoiceTimers();

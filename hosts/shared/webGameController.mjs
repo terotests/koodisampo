@@ -12,6 +12,8 @@ import {
   buildQuizReactionWithEmotion,
   buildAskColleagueReply,
   buildAiStudyText,
+  buildAiStudySupplement,
+  getAiStudySolution,
   buildNpcMehReply,
   pickOfficeJoke,
   AI_STUDY_KARMA_COST,
@@ -191,6 +193,7 @@ export function createWebGameController(deps) {
   let overlay = null;
   /** @type {null | { selectedN: number, correct: boolean, reaction: string, [key: string]: unknown }} */
   let quizFeedback = null;
+  let quizAiUsed = false;
   let quizRecordedKey = "";
   /** @type {null | Record<string, unknown>} */
   let activeStory = null;
@@ -484,6 +487,7 @@ function processEncounterAfterChoice() {
 function resetQuizSession() {
   quizRecordedKey = "";
   quizFeedback = null;
+  quizAiUsed = false;
   clearEncounterQuizCache();
 }
 
@@ -599,11 +603,17 @@ function buildEncounterSnapshot(base) {
 
   if (overlay) {
     payload.overlay = serializeOverlay(overlay);
+    if (quizAiUsed) {
+      payload.quizAiUsed = true;
+    }
     return payload;
   }
 
   if (quizFeedback) {
     payload.quizFeedback = serializeQuizFeedback(quizFeedback);
+  }
+  if (quizAiUsed) {
+    payload.quizAiUsed = true;
   }
 
   if (isQuiz) {
@@ -667,6 +677,9 @@ function serializeOverlay(ov) {
       entityName: ov.entityName,
       text: ov.text,
       lessonUrl: ov.lessonUrl || "",
+      solutionChoiceN: ov.solutionChoiceN ?? 0,
+      solutionText: ov.solutionText ?? "",
+      solutionExplanation: ov.solutionExplanation ?? "",
     };
   }
   if (ov.type === "banter") {
@@ -922,6 +935,10 @@ function dismissOverlay() {
         session.onEncounterChoice("joke");
       });
     }
+  } else if (overlay.type === "aiStudy") {
+    overlay = null;
+    persistWeb();
+    return;
   }
   overlay = null;
   resetQuizSession();
@@ -1081,12 +1098,18 @@ function handleQuizKey(key) {
       charged = session.askEncounterAiStudy(cost);
     });
     if (!charged) return;
+    quizAiUsed = true;
+    const solution = getAiStudySolution(quiz.question);
     overlay = {
       type: "aiStudy",
       entityName: quiz.entity?.name || session.pendingEntity?.name,
-      text: buildAiStudyText(quiz.question),
+      text: buildAiStudySupplement(quiz.question),
       lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
+      solutionChoiceN: solution.choiceN,
+      solutionText: solution.choiceText,
+      solutionExplanation: solution.explanation,
     };
+    persistWeb();
     return;
   }
 
