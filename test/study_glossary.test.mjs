@@ -15,30 +15,37 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sample = `
 ## Tilanne
 
-GUC ja OOM ovat yleisiä. \`GUC\` inline-koodissa ei linkity.
+SQL ja ACID ovat yleisiä. \`SQL\` inline-koodissa ei linkity.
 
 \`\`\`sql
--- OOM ei linkity koodissa
-SET work_mem = '1GB';
+-- ACID ei linkity koodissa
+BEGIN;
 \`\`\`
 
-Katso [GUC](/docs/lyhenteet#guc) valmiina linkkinä.
+Katso [SQL](/docs/lyhenteet#sql) valmiina linkkinä.
 `;
 
 const terms = parseGlossaryTerms(fs.readFileSync(GLOSSARY_SOURCE, "utf8"));
-assert.ok(terms.some((t) => t.term === "GUC" && t.anchor === "guc"));
-assert.ok(terms.length >= 30, `expected glossary entries, got ${terms.length}`);
+assert.ok(terms.some((t) => t.term === "SQL" && t.anchor === "sql"));
+assert.ok(terms.length >= 300, `expected glossary entries, got ${terms.length}`);
+
+for (let i = 1; i < terms.length; i++) {
+  assert.ok(
+    terms[i - 1].term.localeCompare(terms[i].term, "fi", { sensitivity: "base", numeric: true }) <= 0,
+    `glossary not sorted: ${terms[i - 1].term} before ${terms[i].term}`,
+  );
+}
 
 const linked = linkGlossaryTerms(sample, terms);
-assert.match(linked, /\[GUC\]\(\/docs\/lyhenteet#guc\)/);
-assert.match(linked, /\[OOM\]\(\/docs\/lyhenteet#oom\)/);
-assert.match(linked, /`GUC`/);
-assert.match(linked, /-- OOM ei linkity koodissa/);
-assert.match(linked, /Katso \[GUC\]\(\/docs\/lyhenteet#guc\) valmiina linkkinä/);
+assert.match(linked, /\[SQL\]\(\/docs\/lyhenteet#sql\)/);
+assert.match(linked, /\[ACID\]\(\/docs\/lyhenteet#acid\)/);
+assert.match(linked, /`SQL`/);
+assert.match(linked, /-- ACID ei linkity koodissa/);
+assert.match(linked, /Katso \[SQL\]\(\/docs\/lyhenteet#sql\) valmiina linkkinä/);
 assert.equal(
-  (linked.match(/\[GUC\]\(\/docs\/lyhenteet#guc\)/g) || []).length,
+  (linked.match(/\[SQL\]\(\/docs\/lyhenteet#sql\)/g) || []).length,
   2,
-  "one auto-linked GUC plus one pre-existing markdown link",
+  "one auto-linked SQL plus one pre-existing markdown link",
 );
 
 syncGlossaryDoc();

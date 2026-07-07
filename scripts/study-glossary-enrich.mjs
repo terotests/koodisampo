@@ -7,10 +7,9 @@ import { fileURLToPath } from "node:url";
 import { listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
 import {
   GLOSSARY_SOURCE,
-  HEADING_RE,
-  PENDING_SECTION,
   PENDING_STUB,
-  parseGlossaryTerms,
+  formatGlossaryDocument,
+  parseGlossaryDocument,
   termToAnchor,
 } from "./study-glossary.mjs";
 import { SCAN_JSON } from "./study-glossary-scan-lib.mjs";
@@ -121,15 +120,14 @@ export function loadAllDescriptions() {
 /** @param {string} markdown @param {Record<string, GlossaryDescriptionEntry>} descriptions @param {import('./study-glossary-scan-lib.mjs').ScannedTerm[]} scanned */
 export function applyGlossaryEnrichment(markdown, descriptions, scanned) {
   const scannedMap = new Map(scanned.map((t) => [t.term.toUpperCase(), t]));
-  let out = markdown;
+  const doc = parseGlossaryDocument(markdown);
+  const existing = new Map(doc.entries.map((e) => [e.term.toUpperCase(), e]));
   /** @type {string[]} */
   const added = [];
   /** @type {string[]} */
   const updated = [];
   /** @type {string[]} */
   const skipped = [];
-
-  const existing = new Set(parseGlossaryTerms(out).map((t) => t.term.toUpperCase()));
 
   for (const [upper, entry] of Object.entries(descriptions)) {
     const term = entry._term || upper;
@@ -141,63 +139,25 @@ export function applyGlossaryEnrichment(markdown, descriptions, scanned) {
 
     const scan = scannedMap.get(upper);
     const lessonIds = collectLessonIds(scan?.refs || []);
-    const body = formatGlossaryEntryBody(term, entry.description, lessonIds);
+    const body = formatGlossaryEntryBody(term, entry.description, lessonIds).trimEnd();
     const anchor = termToAnchor(term);
-    const block = `### ${term} {#${anchor}}\n\n${body}`;
+    const current = existing.get(upper);
 
-    if (existing.has(upper)) {
-      const replaced = replaceExistingEntry(out, term, anchor, body);
-      if (replaced.changed) {
-        out = replaced.markdown;
-        if (replaced.wasPlaceholder) updated.push(term);
-      }
+    if (current) {
+      const wasPlaceholder = current.body.includes(PENDING_STUB);
+      current.term = term;
+      current.anchor = anchor;
+      current.body = body;
+      if (wasPlaceholder) updated.push(term);
       continue;
     }
 
-    out = appendToPendingSection(out, block);
-    existing.add(upper);
+    doc.entries.push({ term, anchor, body });
+    existing.set(upper, doc.entries[doc.entries.length - 1]);
     added.push(term);
   }
 
-  return { markdown: out, added, updated, skipped };
-}
-
-/** @param {string} markdown @param {string} term @param {string} anchor @param {string} body */
-function replaceExistingEntry(markdown, term, anchor, body) {
-  const lines = markdown.split("\n");
-  /** @type {string[]} */
-  const out = [];
-  let i = 0;
-  let changed = false;
-  let wasPlaceholder = false;
-
-  while (i < lines.length) {
-    const line = lines[i];
-    const m = line.match(HEADING_RE);
-    if (m && m[1].trim().toUpperCase() === term.toUpperCase()) {
-      out.push(`### ${term} {#${anchor}}`, "", ...body.trimEnd().split("\n"), "");
-      i += 1;
-      while (i < lines.length) {
-        const next = lines[i];
-        if (next.match(HEADING_RE) || next.match(/^## /)) break;
-        if (lines[i].includes(PENDING_STUB)) wasPlaceholder = true;
-        i += 1;
-      }
-      changed = true;
-      continue;
-    }
-    out.push(line);
-    i += 1;
-  }
-
-  return { markdown: out.join("\n"), changed, wasPlaceholder };
-}
-
-/** @param {string} markdown @param {string} block */
-function appendToPendingSection(markdown, block) {
-  let out = markdown.replace(/\s+$/, "");
-  if (!out.includes(PENDING_SECTION)) out += `\n\n${PENDING_SECTION}\n`;
-  return `${out.trimEnd()}\n\n${block.trimEnd()}\n`;
+  return { markdown: formatGlossaryDocument(doc), added, updated, skipped };
 }
 
 /** @param {boolean} [dryRun] */

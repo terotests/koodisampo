@@ -4,9 +4,11 @@ import os from "node:os";
 import path from "node:path";
 import {
   appendMissingGlossaryEntries,
+  sortGlossaryMarkdown,
   linkGlossaryTerms,
   parseGlossaryTerms,
   termToAnchor,
+  PENDING_SECTION,
 } from "../scripts/study-glossary.mjs";
 import {
   loadGlossaryFilter,
@@ -56,6 +58,19 @@ assert.deepEqual(added, ["CVE"]);
 assert.match(updated, /Grand Unified Configuration — älä koske/);
 assert.match(updated, /### CVE \{#cve\}/);
 assert.match(updated, /Kuvaus puuttuu/);
+assert.doesNotMatch(updated, /Odottaa kuvausta/);
+assert.ok(
+  parseGlossaryTerms(updated).findIndex((t) => t.term === "CVE")
+  < parseGlossaryTerms(updated).findIndex((t) => t.term === "GUC"),
+  "new entries are inserted in alphabetical order",
+);
+
+const legacy = `# Lyhenteet\n\n## PostgreSQL\n\n### GUC {#guc}\n\nVanha käsin tehty.\n\n${PENDING_SECTION}\n\n### DNS {#dns}\n\nUusi kuvaus.\n`;
+const migrated = sortGlossaryMarkdown(legacy);
+assert.doesNotMatch(migrated, /Odottaa kuvausta/);
+assert.doesNotMatch(migrated, /Vanha käsin tehty/);
+assert.match(migrated, /### DNS \{#dns\}/);
+assert.equal(parseGlossaryTerms(migrated).length, 1);
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "glossary-scan-"));
 const lessonsDir = path.join(tmpDir, "opiskelu/lessons");

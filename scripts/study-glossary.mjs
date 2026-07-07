@@ -11,20 +11,121 @@ export const GLOSSARY_SOURCE = path.join(root, "opiskelu/lyhenteet.md");
 export const GLOSSARY_DOC = "/docs/lyhenteet";
 
 /** @typedef {{ term: string, anchor: string }} GlossaryTerm */
+/** @typedef {{ term: string, anchor: string, body: string }} GlossaryEntry */
 
 export const HEADING_RE = /^###\s+(.+?)\s+\{#([a-z0-9-]+)\}\s*$/;
+/** @deprecated Legacy section heading; removed from glossary layout. */
 export const PENDING_SECTION = "## Odottaa kuvausta";
 export const PENDING_STUB = "*(Kuvaus puuttuu — täydennä käsin.)*";
 
+/** @param {{ term: string }} a @param {{ term: string }} b */
+export function compareGlossaryTerms(a, b) {
+  return a.term.localeCompare(b.term, "fi", { sensitivity: "base", numeric: true });
+}
+
 /** @returns {GlossaryTerm[]} */
 export function parseGlossaryTerms(markdown) {
-  const terms = [];
-  for (const line of markdown.split("\n")) {
-    const m = line.match(HEADING_RE);
-    if (!m) continue;
-    terms.push({ term: m[1].trim(), anchor: m[2] });
+  return parseGlossaryDocument(markdown).entries.map(({ term, anchor }) => ({ term, anchor }));
+}
+
+/**
+ * @param {string} text
+ * @returns {GlossaryEntry[]}
+ */
+export function parseGlossaryEntryBlocks(text) {
+  const lines = text.split("\n");
+  /** @type {GlossaryEntry[]} */
+  const entries = [];
+  let i = 0;
+  while (i < lines.length) {
+    const m = lines[i].match(HEADING_RE);
+    if (!m) {
+      i += 1;
+      continue;
+    }
+    const term = m[1].trim();
+    const anchor = m[2];
+    i += 1;
+    const bodyLines = [];
+    while (i < lines.length) {
+      if (lines[i].match(HEADING_RE) || lines[i].match(/^## /)) break;
+      bodyLines.push(lines[i]);
+      i += 1;
+    }
+    while (bodyLines.length && bodyLines[bodyLines.length - 1] === "") bodyLines.pop();
+    entries.push({ term, anchor, body: bodyLines.join("\n").trim() });
   }
-  return terms;
+  return entries;
+}
+
+/** @param {GlossaryEntry[]} entries */
+function dedupeGlossaryEntries(entries) {
+  /** @type {Map<string, GlossaryEntry>} */
+  const byTerm = new Map();
+  for (const entry of entries) {
+    byTerm.set(entry.term.toUpperCase(), entry);
+  }
+  return [...byTerm.values()];
+}
+
+/**
+ * @param {string} markdown
+ * @returns {{ frontmatter: string, intro: string, entries: GlossaryEntry[] }}
+ */
+export function parseGlossaryDocument(markdown) {
+  let rest = markdown;
+  let frontmatter = "";
+  if (rest.startsWith("---")) {
+    const end = rest.indexOf("---", 3);
+    if (end >= 0) {
+      frontmatter = rest.slice(0, end + 3);
+      rest = rest.slice(end + 3).replace(/^\n+/, "");
+    }
+  }
+
+  const pendingIdx = rest.indexOf(PENDING_SECTION);
+  let intro;
+  let entrySource;
+
+  if (pendingIdx >= 0) {
+    const firstSection = rest.search(/^## /m);
+    intro = (firstSection >= 0 ? rest.slice(0, firstSection) : rest.slice(0, pendingIdx)).trimEnd();
+    entrySource = rest.slice(pendingIdx + PENDING_SECTION.length);
+  } else {
+    const firstEntry = rest.search(/^### /m);
+    intro = (firstEntry >= 0 ? rest.slice(0, firstEntry) : rest).trimEnd();
+    entrySource = rest;
+  }
+
+  return {
+    frontmatter,
+    intro,
+    entries: dedupeGlossaryEntries(parseGlossaryEntryBlocks(entrySource)),
+  };
+}
+
+/**
+ * @param {{ frontmatter?: string, intro: string, entries: GlossaryEntry[] }} doc
+ * @returns {string}
+ */
+export function formatGlossaryDocument({ frontmatter = "", intro, entries }) {
+  const sorted = [...entries].sort(compareGlossaryTerms);
+  /** @type {string[]} */
+  const parts = [];
+  if (frontmatter) {
+    parts.push(frontmatter, "");
+  }
+  parts.push(intro.trimEnd(), "");
+  for (const entry of sorted) {
+    parts.push(`### ${entry.term} {#${entry.anchor}}`, "");
+    if (entry.body) parts.push(entry.body, "");
+  }
+  return `${parts.join("\n").trimEnd()}\n`;
+}
+
+/** @param {string} markdown */
+export function sortGlossaryMarkdown(markdown) {
+  return formatGlossaryDocument(parseGlossaryDocument(markdown));
 }
 
 /** @returns {GlossaryTerm[]} */
@@ -147,22 +248,20 @@ function findNextSpecial(text, from) {
  * @returns {{ markdown: string, added: string[] }}
  */
 export function appendMissingGlossaryEntries(markdown, terms) {
-  const existing = new Set(parseGlossaryTerms(markdown).map((t) => t.term.toUpperCase()));
+  const doc = parseGlossaryDocument(markdown);
+  const existing = new Set(doc.entries.map((t) => t.term.toUpperCase()));
   const toAdd = terms.filter((t) => !existing.has(t.term.toUpperCase()));
   if (!toAdd.length) return { markdown, added: [] };
 
-  let out = markdown.replace(/\s+$/, "");
-  if (!out.includes(PENDING_SECTION)) {
-    out += `\n\n${PENDING_SECTION}\n`;
+  for (const t of toAdd) {
+    doc.entries.push({
+      term: t.term,
+      anchor: t.anchor || termToAnchor(t.term),
+      body: PENDING_STUB,
+    });
   }
 
-  const blocks = toAdd.map((t) => {
-    const anchor = t.anchor || termToAnchor(t.term);
-    return `\n### ${t.term} {#${anchor}}\n\n${PENDING_STUB}\n`;
-  });
-  out += blocks.join("");
-  out += "\n";
-  return { markdown: out, added: toAdd.map((t) => t.term) };
+  return { markdown: formatGlossaryDocument(doc), added: toAdd.map((t) => t.term) };
 }
 
 export function syncGlossaryDoc() {

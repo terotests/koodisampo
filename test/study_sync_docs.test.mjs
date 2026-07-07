@@ -19,11 +19,11 @@ assert.doesNotMatch(intro, /\]\(\/docs\/progress\)/, "intro must not link to rem
 assert.match(intro, /\]\(\/docs\/lyhenteet\)/, "intro links to glossary");
 
 const lyhenteet = fs.readFileSync(path.join(root, "study/docs/lyhenteet.md"), "utf8");
-assert.match(lyhenteet, /### GUC \{#guc\}/, "glossary page synced from opiskelu/lyhenteet.md");
+assert.match(lyhenteet, /### SQL \{#sql\}/, "glossary page synced from opiskelu/lyhenteet.md");
 
 const topicsDir = path.join(root, "study/docs/topics");
 const postgres = fs.readFileSync(path.join(topicsDir, "postgres.md"), "utf8");
-assert.match(postgres, /\[OOM\]\(\/docs\/lyhenteet#oom\)/, "manual lessons link OOM to glossary");
+assert.match(postgres, /\[SQL\]\(\/docs\/lyhenteet#sql\)/, "lessons link SQL to glossary");
 
 const rust = fs.readFileSync(path.join(topicsDir, "rust.md"), "utf8");
 assert.match(
