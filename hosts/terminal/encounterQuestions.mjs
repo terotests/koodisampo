@@ -876,7 +876,7 @@ const ADULT_JOKES = [
   "auto x = 42; — kääntäjä sanoi: selvä juttu. Minä sanoin: MIKÄ juttu?",
   "auto x = \"Tesla\"; — vihdoin auto, joka kulkee ilman includea.",
   "Miksi perintöriita kesti kauan? Luokalla oli multiple inheritance.",
-  "C++-koodaaja meni kahville: ensin konstruktorissa, sitten destruktorissa.",
+  "Miksi C++-koodaaja ei jätä kahvikuppia pöydälle? Destruktori siivoaa sen scopen lopussa.",
   "Miksi template ei kertonut vitsiä? Se instansioitiin väärässä kontekstissa.",
   "Segfault käveli huoneeseen. Kukaan ei muistanut omistajuutta.",
   "Miksi const lupasi olla muuttumatta? Sillä oli mutable poikkeus.",
