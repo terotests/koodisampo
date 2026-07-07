@@ -5881,6 +5881,361 @@
       "sourceUrl": "https://man7.org/linux/man-pages/man8/ss.8.html",
       "featureId": "linux:tcp-established",
       "featurePoints": 3
+    },
+    {
+      "id": "prod-linux-systemd-protect-system",
+      "chapter": "systemd-hardening",
+      "domain": "linux",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `/var/lib/myapp`iin. Turvallisin korjaus?",
+      "choices": [
+        {
+          "text": "Lisää `ReadWritePaths=/var/lib/myapp` — salli vain tarvittava kirjoituspolku",
+          "correct": true
+        },
+        {
+          "text": "Poista ProtectSystem kokonaan — palvelu tarvitsee täyden root-fs:n kirjoitusoikeuden",
+          "correct": false
+        },
+        {
+          "text": "Aja palvelu root-käyttäjänä — sandbox-asetukset eivät koske rootia",
+          "correct": false
+        },
+        {
+          "text": "chmod 777 /var/lib/myapp korjaa systemd-sandboxauksen rajoituksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ProtectSystem=strict tekee /usr, /boot ja /etc read-only — ReadWritePaths avaa vain tarvittavat polut.",
+      "wrongFeedback": "ProtectSystem=strict estää kirjoituksen /var/lib:iin ilman poikkeusta. ReadWritePaths on tarkoitettu tähän.",
+      "sourceRef": "systemd.exec/ProtectSystem",
+      "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.exec.html#ProtectSystem=",
+      "featureId": "linux:systemd-sandbox",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-linux-systemd-analyze-security",
+      "chapter": "systemd-hardening",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. Mikä työkalu auttaa?",
+      "choices": [
+        {
+          "text": "systemd-analyze security unit.service — näyttää exposure scoren ja puuttuvat hardening-asetukset",
+          "correct": true
+        },
+        {
+          "text": "systemctl cat unit.service — tulostaa automaattisesti turvallisuusraportin",
+          "correct": false
+        },
+        {
+          "text": "journalctl -p err — näyttää vain sandbox-virheet käynnistyksessä",
+          "correct": false
+        },
+        {
+          "text": "strace systemd — se analysoi unit-tiedoston sandbox-asetukset",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "systemd-analyze security vertaa unitin asetuksia suositeltuihin sandbox-ominaisuuksiin.",
+      "wrongFeedback": "Unit-tiedoston lukeminen ei anna exposure-scorea. systemd-analyze security on tarkoitettu tähän.",
+      "sourceRef": "systemd-analyze/security",
+      "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd-analyze.html#security%20UNITFILE%E2%80%A6",
+      "featureId": "linux:systemd-analyze-security",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-capabilities-port80",
+      "chapter": "systemd-hardening",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä vaihtoehto on tuotannossa yleisin?",
+      "choices": [
+        {
+          "text": "Reverse proxy (nginx/Caddy) portissa 80 ja sovellus kuuntelee korkeaa porttia non-rootina",
+          "correct": true
+        },
+        {
+          "text": "setcap cap_sys_admin=+ep — antaa kaikki admin-oikeudet ilman root-käyttäjää",
+          "correct": false
+        },
+        {
+          "text": "chmod 4755 binääriin — setuid riittää aina turvallisesti privileged-portteihin",
+          "correct": false
+        },
+        {
+          "text": "Aja palvelu rootina mutta piilota se process listasta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Reverse proxy tai socket activation on yleisin — setcap/AmbientCapabilities ovat vaihtoehtoja.",
+      "wrongFeedback": "Privileged portit vaativat capabilityn tai proxyn. Reverse proxy erottaa verkko- ja sovelluskerroksen.",
+      "sourceRef": "capabilities/cap_net_bind_service",
+      "sourceUrl": "https://man7.org/linux/man-pages/man7/capabilities.7.html",
+      "featureId": "linux:capabilities-port80",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-incident-slow-no-cpu",
+      "chapter": "linux-incident",
+      "domain": "linux",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullonkaula levy-IO:ssa?",
+      "choices": [
+        {
+          "text": "iostat -xz 1 tai pidstat -d 1 — levy-IO ja odotusajat prosessikohtaisesti",
+          "correct": true
+        },
+        {
+          "text": "top riittää — se näyttää aina levy-IO:n pullonkaulana",
+          "correct": false
+        },
+        {
+          "text": "free -h paljastaa levy-IO-ruuhkan muistin kautta",
+          "correct": false
+        },
+        {
+          "text": "ss -tulpn näyttää levy-latenssin per yhteys",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "iostat/pidstat erottavat CPU:n ja IO:n — vmstat 1 näyttää myös run queue + swap.",
+      "wrongFeedback": "Matala CPU ei sulje pois IO- tai verkko-odotusta. iostat ja pidstat ovat ensimmäinen askel.",
+      "sourceRef": "man1/iostat",
+      "sourceUrl": "https://man7.org/linux/man-pages/man1/iostat.1.html",
+      "featureId": "linux:incident-io",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-linux-lsof-deleted-log",
+      "chapter": "linux-incident",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Poistettu mutta auki pidetty lokitiedosto — `lsof +L1` tai `lsof | grep deleted`",
+          "correct": true
+        },
+        {
+          "text": "du laskee väärin sparse-tiedostot aina — käytä ls -la sen sijaan",
+          "correct": false
+        },
+        {
+          "text": "Journald käyttää RAM-levyä jota du ei näe — reboot korjaa tilan",
+          "correct": false
+        },
+        {
+          "text": "Tiedostojärjestelmä on korruptoitunut — ainoa korjaus on mkfs",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Avoin file descriptor pitää tilan varattuna vaikka unlink on tehty — klassinen loki-incident.",
+      "wrongFeedback": "deleted (deleted) lsof-listauksessa = tila varattu kunnes prosessi sulkee fd:n. Signaloi USR1/SIGHUP tai restart.",
+      "sourceRef": "man8/lsof",
+      "sourceUrl": "https://man7.org/linux/man-pages/man8/lsof.8.html",
+      "featureId": "linux:lsof-deleted",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-strace-hung-process",
+      "chapter": "linux-incident",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. Miten näet mihin syscalliin se odottaa?",
+      "choices": [
+        {
+          "text": "strace -p <pid> — näyttää reaaliaikaiset syscallit ja odotukset",
+          "correct": true
+        },
+        {
+          "text": "kill -9 <pid> ja analysoi core dump myöhemmin",
+          "correct": false
+        },
+        {
+          "text": "gdb attach vaatii aina prosessin pysäyttämisen tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "lsof -p riittää näyttämään syscall-jonon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "strace -p paljastaa connect/read/futex-odotukset — käytä varoen tuotannossa (overhead).",
+      "wrongFeedback": "strace seuraa syscall-kutsuja live-prosessissa. lsof näyttää avoimet resurssit, ei odotuksen syytä.",
+      "sourceRef": "man1/strace",
+      "sourceUrl": "https://man7.org/linux/man-pages/man1/strace.1.html",
+      "featureId": "linux:strace",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-logrotate-copytruncate",
+      "chapter": "linux-incident",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lokimerkintöjä rotaation jälkeen. Parempi tapa?",
+      "choices": [
+        {
+          "text": "Käytä `create` + `postrotate` signaali (esim. USR1/SIGHUP) jos sovellus tukee lokin uudelleenavausta",
+          "correct": true
+        },
+        {
+          "text": "Lisää copytruncate ja compress — se korjaa race conditionin automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Poista logrotate ja anna lokit kasvaa rajattomasti",
+          "correct": false
+        },
+        {
+          "text": "truncate -s 0 on aina turvallisempi kuin mikään signaali",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "copytruncate kopioi ja typistää — avoin fd voi kirjoittaa vanhaan inodeen. Signaali + create on turvallisempi.",
+      "wrongFeedback": "copytruncate voi hukata rivejä jos sovellus pitää fd:tä auki. Suosi reopen-signaalia tai copy+logrotate ilman truncatea.",
+      "sourceRef": "logrotate/copytruncate",
+      "sourceUrl": "https://manpages.debian.org/stable/logrotate/logrotate.conf.5.en.html",
+      "featureId": "linux:logrotate",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-ssh-bastion-forward",
+      "chapter": "linux-ssh",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin 5432 tietokantaan. SSH-komennot?",
+      "choices": [
+        {
+          "text": "ssh -J bastion prod ja ssh -L 5432:db.internal:5432 prod (tai ProxyJump + LocalForward ssh_configissa)",
+          "correct": true
+        },
+        {
+          "text": "ssh -A prod — agent forwarding riittää tietokantayhteyteen",
+          "correct": false
+        },
+        {
+          "text": "scp db.internal:/data . — kopioi koko tietokannan paikallisesti",
+          "correct": false
+        },
+        {
+          "text": "telnet bastion 22 avaa tunnelin automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ProxyJump (-J) bastionin kautta; LocalForward (-L) tunneloi portin. Agent forwarding on eri käyttötapaus.",
+      "wrongFeedback": "Bastion vaatii jump hostin. Port forwarding tehdään -L:llä tai ssh_config LocalForward/ProxyJump-asetuksilla.",
+      "sourceRef": "openssh/ProxyJump",
+      "sourceUrl": "https://man.openbsd.org/ssh.1#J",
+      "featureId": "linux:ssh-bastion",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-cgroups-v2-memory",
+      "chapter": "linux-cgroups",
+      "domain": "linux",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -tasolla hostilla. Mistä lukema?",
+      "choices": [
+        {
+          "text": "systemd-cgtop tai cat /sys/fs/cgroup/.../memory.current — cgroup v2 muistinkäyttö",
+          "correct": true
+        },
+        {
+          "text": "free -h näyttää konttikohtaisen muistin cgroup-polun kautta",
+          "correct": false
+        },
+        {
+          "text": "docker stats on ainoa tapa — host ei näe cgroup v2 -rajoja",
+          "correct": false
+        },
+        {
+          "text": "ps aux RSS summa vastaa cgroup memory.current arvoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "cgroup v2 memory.current ja systemd-cgtop yhdistävät systemd-, Docker- ja Linux-rajoitukset.",
+      "wrongFeedback": "Docker käyttää cgroupsia — memory.current sysfs:ssä tai systemd-cgtop näyttää saman rajapinnan.",
+      "sourceRef": "systemd/resource-control",
+      "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html",
+      "featureId": "linux:cgroups-v2",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-linux-bind-localhost",
+      "chapter": "linux-network",
+      "domain": "linux",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys timeouttaa. Todennäköisin syy?",
+      "choices": [
+        {
+          "text": "Sovellus kuuntelee vain 127.0.0.1:8080 — bindaa 0.0.0.0 tai oikea interface-IP",
+          "correct": true
+        },
+        {
+          "text": "DNS ei resolvaa localhost-nimeä kontissa",
+          "correct": false
+        },
+        {
+          "text": "TCP backlog on liian pieni — ss ei näytä LISTEN-tilaa",
+          "correct": false
+        },
+        {
+          "text": "IPv6 estää IPv4-yhteydet automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "127.0.0.1 on vain loopback — ulkoinen liikenne vaatii 0.0.0.0 tai interface-IP:n. Tarkista ss -tlnp.",
+      "wrongFeedback": "Localhost toimii mutta ei ulkoa → kuuntelu rajattu loopbackiin. ss -tlnp paljastaa bind-osoitteen.",
+      "sourceRef": "man7/ip",
+      "sourceUrl": "https://man7.org/linux/man-pages/man7/ip.7.html",
+      "featureId": "linux:bind-address",
+      "featurePoints": 3
     }
   ]
 }

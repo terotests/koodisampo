@@ -4965,6 +4965,149 @@
       "sourceUrl": "https://docs.docker.com/build/building/secrets/",
       "featureId": "docker:env-secrets",
       "featurePoints": 4
+    },
+    {
+      "id": "prod-docker-build-secret-arg",
+      "chapter": "docker-production",
+      "domain": "docker",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packageja buildissä?",
+      "choices": [
+        {
+          "text": "ARG voi jäädä image-historiaan/layeriin — käytä RUN --mount=type=secret ilman build-argia",
+          "correct": true
+        },
+        {
+          "text": "ARG ei ole käytettävissä RUN-vaiheessa — vain ENV toimii buildissa",
+          "correct": false
+        },
+        {
+          "text": "NPM_TOKEN ARG:na on turvallinen kun image pushataan private registryyn",
+          "correct": false
+        },
+        {
+          "text": "BuildKit estää automaattisesti ARG-salaisuudet päätymästä cacheen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Build secrets eivät tallennu image-layeriin — Docker build secrets docs.",
+      "wrongFeedback": "ARG/ENV salaisuudet voivat vuotaa docker historyyn. secret mount on oikea build-aikainen tapa.",
+      "sourceRef": "docker/build/secrets",
+      "sourceUrl": "https://docs.docker.com/build/building/secrets/",
+      "featureId": "docker:build-secrets",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-docker-healthcheck-db-down",
+      "chapter": "docker-production",
+      "domain": "docker",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla. Mitä healthcheckin pitäisi tehdä?",
+      "choices": [
+        {
+          "text": "Erottele: prosessi elossa (liveness) vs valmis palvelemaan (readiness) — älä restartaa jos vain riippuvuus on alhaalla",
+          "correct": true
+        },
+        {
+          "text": "HEALTHCHECK pitää aina kaataa kontti kun DB on alhaalla — restart korjaa tilanteen",
+          "correct": false
+        },
+        {
+          "text": "Poista HEALTHCHECK — Docker hoitaa riippuvuuksien tilan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "HEALTHCHECK=NONE ja luota restart: always -politiikkaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Liian tiukka DB-check livenessissä aiheuttaa restart-loopin — readiness erottaa liikenteen ohjauksen.",
+      "wrongFeedback": "DB-katko ei välttämättä tarkoita että sovellusprosessi on kuollut. Erottele liveness ja readiness.",
+      "sourceRef": "docker/HEALTHCHECK",
+      "sourceUrl": "https://docs.docker.com/reference/dockerfile/#healthcheck",
+      "featureId": "docker:healthcheck-deps",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-docker-nonroot-bind-mount",
+      "chapter": "docker-production",
+      "domain": "docker",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjoittaa. Mikä on yleisin syy?",
+      "choices": [
+        {
+          "text": "Host-hakemiston UID/GID ei vastaa kontin appuseria — chown tai matching uid buildissa",
+          "correct": true
+        },
+        {
+          "text": "USER direktiivi ei toimi bind mountin kanssa — poista USER",
+          "correct": false
+        },
+        {
+          "text": "Bind mount ohittaa aina file permissionit — chmod 777 on ainoa korjaus",
+          "correct": false
+        },
+        {
+          "text": "Non-root kontti ei voi koskaan kirjoittaa volumeen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Bind mount käyttää hostin omistajuutta — COPY --chown tai uid 10001 molemmilla puolilla.",
+      "wrongFeedback": "USER node ei riitä jos host-tiedostot ovat root:lla. Sovita uid/gid tai chown buildissa.",
+      "sourceRef": "docker/storage/bind-mounts",
+      "sourceUrl": "https://docs.docker.com/storage/bind-mounts/",
+      "featureId": "docker:nonroot-bind",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-docker-rootless-vs-root",
+      "chapter": "docker-production",
+      "domain": "docker",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru"
+      ],
+      "prompt": "Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless Docker -ympäristössä?",
+      "choices": [
+        {
+          "text": "Kontin root on namespace-rajattu — ei ole host-rootia ilman capability-vuotoa",
+          "correct": true
+        },
+        {
+          "text": "Ne ovat identtiset — kontin root = täysi host-root aina",
+          "correct": false
+        },
+        {
+          "text": "Rootless Docker estää USER root -rivin Dockerfilessa kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Host root tarvitaan aina bind mount -kirjoitukseen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "User namespace ja capabilities rajaavat kontin rootia — rootless lisää kerroksen host-oikeuksille.",
+      "wrongFeedback": "Kontin root on eri namespace. Rootless Docker ajaa daemonin ilman host-rootia.",
+      "sourceRef": "docker/security/rootless",
+      "sourceUrl": "https://docs.docker.com/engine/security/rootless/",
+      "featureId": "docker:rootless-namespace",
+      "featurePoints": 4
     }
   ]
 }

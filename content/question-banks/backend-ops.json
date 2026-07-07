@@ -183,6 +183,42 @@
       "featureId": "backend:observability",
       "featurePoints": 5,
       "studyNotes": "Ennen refaktorointia lisää mitattavuus: request/correlation id jokaiseen pyyntöön, strukturoidut lokit (JSON), metriikat kriittisistä poluista ja assertit/invariantit datan eheydelle. Näin seuraava incident on diagnosoitavissa."
+    },
+    {
+      "id": "prod-ops-healthy-but-down",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?",
+      "choices": [
+        {
+          "text": "RED/USE: error rate, latency, throughput + riippuvuudet (DB, DNS) — healthcheck voi testata vain prosessia",
+          "correct": true
+        },
+        {
+          "text": "Käynnistä container uudelleen — healthcheck on aina oikeassa",
+          "correct": false
+        },
+        {
+          "text": "Poista readiness-probe jotta liikenne ohjautuu nopeammin",
+          "correct": false
+        },
+        {
+          "text": "Oleta käyttäjävirhe — älä tutki infrastruktuuria",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Healthy ≠ käyttäjäkokemus ok. Mittaa liikenne, virheet ja riippuvuudet — SRE observability.",
+      "wrongFeedback": "Healthcheck voi olla liian kevyt. Seuraavaksi metriikat, trace-id ja endpoint-tason virheet.",
+      "sourceRef": "opentelemetry/metrics",
+      "sourceUrl": "https://opentelemetry.io/docs/concepts/signals/metrics/",
+      "featureId": "backend:healthy-vs-slo",
+      "featurePoints": 5
     }
   ]
 }
