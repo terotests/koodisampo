@@ -3,6 +3,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
+import { buildLessonSolutionsIndex } from "../hosts/shared/lessonSolution.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -57,6 +59,12 @@ fs.mkdirSync(path.join(out, "worlds"), { recursive: true });
 fs.copyFileSync(
   path.join(root, "content/worlds/corporate-hq-intro.json"),
   path.join(out, "worlds/corporate-hq-intro.json"),
+);
+
+const lessonSolutions = buildLessonSolutionsIndex(listAllQuestions());
+fs.writeFileSync(
+  path.join(out, "lesson-solutions.json"),
+  `${JSON.stringify(lessonSolutions, null, 2)}\n`,
 );
 
 console.log("Synced web-game assets → web-game/public/");

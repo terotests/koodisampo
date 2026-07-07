@@ -3102,6 +3102,66 @@ class WorldMap  {
     }
     return "🍎";
   };
+  absInt (n) {
+    if ( n < 0 ) {
+      return 0 - n;
+    }
+    return n;
+  };
+  chebyshevDist (ax, ay, bx, by) {
+    const dx = this.absInt((ax - bx));
+    const dy = this.absInt((ay - by));
+    if ( dx > dy ) {
+      return dx;
+    }
+    return dy;
+  };
+  isOpenRewardFruitSpot (x, y) {
+    if ( this.canPlaceDroppedItem(x, y) == false ) {
+      return false;
+    }
+    const leftX = x - 1;
+    const rightX = x + 1;
+    const upY = y - 1;
+    const downY = y + 1;
+    const leftTile = this.tileAt(leftX, y);
+    const rightTile = this.tileAt(rightX, y);
+    const upTile = this.tileAt(x, upY);
+    const downTile = this.tileAt(x, downY);
+    if ( this.isBlockedTile(leftTile) ) {
+      return false;
+    }
+    if ( this.isBlockedTile(rightTile) ) {
+      return false;
+    }
+    if ( this.isBlockedTile(upTile) ) {
+      return false;
+    }
+    if ( this.isBlockedTile(downTile) ) {
+      return false;
+    }
+    return true;
+  };
+  trySpawnRewardFruitAtOpen (x, y, fruitIndex, spawnMinute, expireMinute) {
+    if ( this.isOpenRewardFruitSpot(x, y) == false ) {
+      return false;
+    }
+    const floor = this.activeFloor();
+    const item = new MapEntity();
+    item.id = (((((("reward-fruit-" + ((fruitIndex.toString()))) + "-") + ((x.toString()))) + "-") + ((y.toString()))) + "-") + ((spawnMinute.toString()));
+    item.char = this.rewardFruitGlyph(fruitIndex);
+    item.name = "Hedelmäpalkinto";
+    item.kind = "item";
+    item.itemTool = "";
+    item.x = x;
+    item.y = y;
+    item.behaviorStartedAt = spawnMinute;
+    item.behaviorParam = expireMinute;
+    let ents = floor.entities;
+    ents.push(item);
+    floor.entities = ents;
+    return true;
+  };
   trySpawnRewardFruitAt (x, y, fruitIndex, spawnMinute, expireMinute) {
     if ( this.canPlaceDroppedItem(x, y) == false ) {
       return false;
@@ -3129,34 +3189,47 @@ class WorldMap  {
     if ( countRoll == 1 ) {
       fruitCount = 2;
     }
-    let dirs = [];
-    dirs.push(this.facingX);
-    dirs.push(1);
-    dirs.push(-1);
-    dirs.push(0);
-    dirs.push(0);
-    let dy = [];
-    dy.push(this.facingY);
-    dy.push(0);
-    dy.push(0);
-    dy.push(1);
-    dy.push(-1);
     let spawned = 0;
     let fi = 0;
     while (fi < fruitCount) {
       const fruitIndex = Math.floor(Math.random()*(3 - 0 + 1) + 0);
-      let di = 0;
       let placed = false;
-      while (di < 5) {
-        const nx = this.playerX + (dirs[di]);
-        const ny = this.playerY + (dy[di]);
-        if ( this.trySpawnRewardFruitAt(nx, ny, fruitIndex, gameMinutes, expireMinute) ) {
-          placed = true;
-          spawned = spawned + 1;
-          di = 99;
+      let attempt = 0;
+      while (attempt < 32) {
+        const dx = (Math.floor(Math.random()*(20 - 0 + 1) + 0)) - 10;
+        const dy = (Math.floor(Math.random()*(20 - 0 + 1) + 0)) - 10;
+        const nx = this.playerX + dx;
+        const ny = this.playerY + dy;
+        const dist = this.chebyshevDist(this.playerX, this.playerY, nx, ny);
+        if ( dist >= 3 ) {
+          if ( dist <= 10 ) {
+            if ( this.trySpawnRewardFruitAtOpen(nx, ny, fruitIndex, gameMinutes, expireMinute) ) {
+              placed = true;
+              spawned = spawned + 1;
+              attempt = 99;
+            }
+          }
         }
-        di = di + 1;
+        attempt = attempt + 1;
       };
+      if ( placed == false ) {
+        let fallback = 0;
+        while (fallback < 24) {
+          const fdx = (Math.floor(Math.random()*(16 - 0 + 1) + 0)) - 8;
+          const fdy = (Math.floor(Math.random()*(16 - 0 + 1) + 0)) - 8;
+          const fx = this.playerX + fdx;
+          const fy = this.playerY + fdy;
+          const fdist = this.chebyshevDist(this.playerX, this.playerY, fx, fy);
+          if ( fdist >= 2 ) {
+            if ( this.trySpawnRewardFruitAtOpen(fx, fy, fruitIndex, gameMinutes, expireMinute) ) {
+              placed = true;
+              spawned = spawned + 1;
+              fallback = 99;
+            }
+          }
+          fallback = fallback + 1;
+        };
+      }
       if ( placed == false ) {
         if ( this.trySpawnRewardFruitAt(this.playerX, this.playerY, fruitIndex, gameMinutes, expireMinute) ) {
           spawned = spawned + 1;
@@ -3166,9 +3239,9 @@ class WorldMap  {
     };
     if ( spawned > 0 ) {
       if ( spawned == 1 ) {
-        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmä lähelle!";
+        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmä kartalle!";
       } else {
-        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmiä lähelle!";
+        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmiä kartalle!";
       }
     }
   };
