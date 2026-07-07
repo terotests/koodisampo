@@ -1,8 +1,10 @@
-# Haluat julkaista HTTP-palvelun portissa 8080 mDNS:llä. Mihin konfiguraatio kuuluu?
+# Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn. Mihin konfiguraatio kuuluu?
 
 ## Tilanne
 
-Paikallisverkossa palvelu pyörii portissa 8080. Käyttäjät eivät halua muistaa IP:tä — haluat ilmoittaa palvelun nimellä (`myapp.local`) mDNS:llä (Bonjour/Avahi). Pelkkä palvelun käynnistys ei julkaise sitä automaattisesti verkossa.
+Paikallisverkossa palvelu pyörii portissa 8080. Haluat julkaista sen DNS-SD-palveluna `_http._tcp`, jotta selaimet ja discovery-työkalut löytävät sen ilman staattista IP:tä — ei pelkkänä porttina IP-osoitteen takana.
+
+Huom: service XML ei automaattisesti tee hostnimestä `myapp.local`. `.local`-hostname tulee koneen hostnamesta / mDNS-nimijulkaisusta; XML ilmoittaa palveluinstanssin.
 
 ## Ratkaisu
 
@@ -26,7 +28,15 @@ Tallenna esim. `/etc/avahi/services/myapp.service` ja käynnistä Avahi uudellee
 sudo systemctl restart avahi-daemon
 ```
 
-Palvelu ilmoitetaan verkossa `_http._tcp.local` — selaimet ja discovery-työkalut löytävät sen.
+Palvelu ilmoitetaan verkossa `_http._tcp` DNS-SD-palveluna — selaimet ja discovery-työkalut löytävät sen.
+
+Jos hostnimen pitää olla `myapp.local`, konfiguroi hostname erikseen:
+
+```bash
+sudo hostnamectl set-hostname myapp
+sudo systemctl restart avahi-daemon
+avahi-resolve -n myapp.local
+```
 
 ## Käytännössä
 

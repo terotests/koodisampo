@@ -21,13 +21,16 @@ Manuaalinen `apt remove` jokaiselle epäilyttävälle paketille on riskialtista 
 APT tunnistaa orvot riippuvuudet automaattisesti:
 
 ```bash
-sudo apt autoremove
+sudo apt autoremove --purge
 ```
 
 Tai yhdistettynä päivityskierrokseen:
 
 ```bash
-sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+sudo apt update
+apt list --upgradable
+sudo apt upgrade
+sudo apt autoremove
 ```
 
 `autoremove` poistaa vain paketit, joita mikään asennettu paketti ei enää tarvitse — se on turvallisempi kuin arvaileva manuaalinen poisto. Konfiguraatiotiedostot (`rc`-tila) vaativat erikseen:
@@ -39,6 +42,6 @@ sudo dpkg --purge $(dpkg -l | awk '/^rc/{print $2}')
 
 ## Käytännössä
 
-Aja `autoremove` säännöllisesti ylläpitokierroksen lopussa — se pitää levytilan ja pakettilistan siistinä ilman manuaalista työtä. CI/CD-imagen rakentamisessa käytä `--no-install-recommends` ja `autoremove` build-vaiheessa, jotta lopputulos on kevyempi. Tuotannossa älä luota pelkkään autoremoveen vanhentuneiden kernelien poistoon; vanhat kernelit vaativat usein erillisen `apt purge`-käsittelyn.
+Aja `autoremove` säännöllisesti ylläpitokierroksen lopussa. Vanhojen kernelien kohdalla tarkista aina mitä poistuu — `apt autoremove --purge` poistaa usein vanhoja automaattisesti asennettuja kernelipaketteja, kunhan niitä ei ole merkitty manuaalisiksi tai holdatuiksi. Älä poista käynnissä olevaa kerneliä; tarkista ensin `uname -r`.
 
 [Lue lisää](https://manpages.debian.org/bookworm/apt/apt.8.en.html)

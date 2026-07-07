@@ -23,7 +23,8 @@ Oikea järjestys on kaksi vaihetta:
 
 ```bash
 sudo apt update
-sudo apt upgrade -y
+apt list --upgradable
+sudo apt upgrade
 ```
 
 - **`apt update`** hakee repojen metatiedot ja päivittää paikallisen pakettilistauksen (`/var/lib/apt/lists/`).
@@ -33,6 +34,6 @@ Molemmat tarvitaan: `update` kertoo *mitä* on saatavilla, `upgrade` *asentaa* s
 
 ## Käytännössä
 
-Automatisoi järjestys skriptissä tai Ansible-tehtävässä: aina `update` ennen `upgrade`. Tuotannossa aja ensin staging-ympäristössä ja tarkista, ettei palvelu-uudelleenkäynnistys katkaise liikennettä kesken päivityksen. `unattended-upgrades` hoitaa saman logiikan automaattisesti, mutta manuaalisessa ylläpidossa järjestys on perusta kaikelle muulle.
+Automatisoi järjestys skriptissä tai Ansible-tehtävässä: aina `update` ennen `upgrade`. Tuotannossa tarkista `apt list --upgradable` ennen asennusta; käytä `-y` vasta automaatiossa, kun muutokset on perusteltu. `unattended-upgrades` hoitaa saman logiikan automaattisesti, mutta manuaalisessa ylläpidossa järjestys on perusta kaikelle muulle.
 
 [Lue lisää](https://manpages.debian.org/bookworm/apt/apt.8.en.html)

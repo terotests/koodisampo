@@ -24,6 +24,7 @@ Wants=network-online.target
 [Service]
 ExecStart=/usr/bin/app
 Restart=on-failure
+RestartSec=5s
 ```
 
 Varmista wait-online -palvelu:
@@ -33,12 +34,12 @@ systemctl enable systemd-networkd-wait-online.service
 # tai NetworkManager-wait-online
 ```
 
-**network-online.target odottaa verkkoa** — Wants aktivoi targetin, After järjestää käynnistyksen.
+**network-online.target** on aktiivisesti odottava target: sen "online"-määritelmän antaa verkonhallintakerros (NetworkManager, systemd-networkd). Se **ei** tarkoita "internet toimii ikuisesti" tai "DNS vastaa varmasti kaikille nimille".
 
 ## Käytännössä
 
 Testaa hidas DHCP ja offline-boot. `Requires=network-online.target` on liian kova jos verkko voi puuttua — prefer `Wants`.
 
-Sovelluksen retry-logiikka DNS:lle on silti hyvä varmuusverkko. Erottele boot-riippuvuus (systemd) vs. runtime-verkkokatko (sovellus).
+**Älä luota pelkkään systemd-järjestykseen.** Sovelluksessa pitää silti olla retry DNS- ja TCP-yhteyksille, koska verkko voi katketa myös bootin jälkeen. Erottele boot-riippuvuus (systemd) vs. runtime-verkkokatko (sovellus).
 
 [Lue lisää](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#After=)
