@@ -741,7 +741,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Mitä `constexpr` funktio mahdollistaa C++11:ssä?",
+      "prompt": "Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-avainsanaa käytät?",
       "choices": [
         {
           "text": "constexpr funktio voi laskea arvon käännösaikana const-argumenteilla",
@@ -776,7 +776,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Miksi käyttää `override` periytyvässä metodissa?",
+      "prompt": "Johdettu luokka ylikirjoittaa virtual-metodin, mutta kirjoitusvirhe signatuurissa ei kaada käännöstä. Mitä C++11-avainsanaa lisäät?",
       "choices": [
         {
           "text": "override varmistaa kääntäjällä että virtual-metodi ylikirjoitetaan",
@@ -1413,7 +1413,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?",
+      "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida eikä siirtää. Mikä C++11-merkintä kieltää copy-operaation selkeästi kääntäjälle?",
       "choices": [
         {
           "text": "= delete copy-operaatioille — intentti näkyy kääntäjälle",
@@ -1798,7 +1798,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?",
+      "prompt": "Mikä merkintä pakottaa kääntäjän varmistamaan, että aliluokan metodi todella ylikirjoittaa base-metodin?",
       "choices": [
         {
           "text": "virtual avainsana riittää — override on redundantti",
@@ -3022,7 +3022,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu — override ei kaadu. Miten estät?",
+      "prompt": "Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu hiljaisesti — kääntäjä ei varoita. Mitä lisäät aliluokan metodiin?",
       "choices": [
         {
           "text": "override-avainsana — kääntäjä varoittaa jos signatuuri ei matchaa basea",

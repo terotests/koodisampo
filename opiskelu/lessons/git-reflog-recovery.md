@@ -1,4 +1,4 @@
-# Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat ne?
+# Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tiedät että työtä on kadonnut vasta äskettäin. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?
 
 ## Tilanne
 

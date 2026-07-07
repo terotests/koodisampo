@@ -1,4 +1,4 @@
-# Paginoitu API — haluat for-await silmukan joka hakee sivut automaattisesti. Pattern?
+# Paginoitu API palauttaa nextPage-osoittimen. Haluat kuluttaa kaikki sivut ilman callback-ketjua ja ilman manuaalista while-silmukkaa. Mikä JavaScript-pattern yhdistää iteration ja awaitin?
 
 ## Tilanne
 

@@ -1,4 +1,4 @@
-# Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi?
+# Haluat rakentaa tervehdyksen muuttujasta `name` ilman `+`-ketjua. Mikä syntaksi?
 
 ## Tilanne
 
@@ -15,7 +15,7 @@ Merkkijonojen yhdistäminen `+`-operaattorilla on virhealtista pitkissä lausekk
 
 ## Ratkaisu
 
-**Template literal backtick-merkeillä: `Hei ${name}`** upottaa lausekkeet suoraan merkkijonoon:
+**Template literal backtick-merkeillä** upottaa lausekkeet suoraan merkkijonoon:
 
 ```javascript
 const name = 'Maija';

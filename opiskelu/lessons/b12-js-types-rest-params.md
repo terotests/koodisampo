@@ -1,4 +1,4 @@
-# Funktio `sum(...nums)` — mitä ...nums tarkoittaa?
+# Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkona. Mikä parametrimuoto kerää ylimääräiset argumentit?
 
 ## Tilanne
 

@@ -1,4 +1,4 @@
-# Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?
+# `Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa match-haaraa `None`:lle. Mikä pattern syntax on idiomaattisin?
 
 ## Taustaa
 

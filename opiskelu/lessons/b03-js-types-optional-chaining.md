@@ -1,4 +1,4 @@
-# API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?
+# Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?
 
 ## Tilanne
 

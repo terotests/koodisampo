@@ -1,4 +1,4 @@
-# Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?
+# Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?
 
 ## Tilanne
 

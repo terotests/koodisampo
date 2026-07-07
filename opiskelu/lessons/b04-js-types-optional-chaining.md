@@ -1,4 +1,4 @@
-# API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?
+# React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyttäjädata latautuu asynkronisesti, `user` on ensin null ja tuotannossa tulee TypeError. Mikä ES2020-operaattori korvaa pitkän if-ketjun?
 
 ## Tilanne
 

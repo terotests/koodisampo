@@ -1,4 +1,4 @@
-# index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?
+# Monorepon barrel-tiedosto kokoaa julkisen API:n kahdesta moduulista ilman import+export -kahdetta askelta. Mikä export-lauseke?
 
 ## Tilanne
 

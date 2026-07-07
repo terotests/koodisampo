@@ -1,4 +1,4 @@
-# Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?
+# Kaksi riippumatonta peruutuslähdettä (esim. käyttäjän navigointi ja timeout) — fetch pitää keskeytyä jos kumpi tahansa laukeaa. Mikä standardi-API yhdistää signaalit?
 
 ## Tilanne
 

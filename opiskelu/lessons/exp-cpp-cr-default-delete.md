@@ -1,4 +1,4 @@
-# Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?
+# Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida eikä siirtää. Mikä C++11-merkintä kieltää copy-operaation selkeästi kääntäjälle?
 
 ## Tilanne
 

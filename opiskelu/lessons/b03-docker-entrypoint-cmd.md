@@ -1,4 +1,4 @@
-# Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa oletuskomentoa. Miksi?
+# `docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?
 
 ## Tilanne
 Tiimi ajaa `docker run myimage bash` odottaen pääsevänsä debug-shelliin, mutta sovellus käynnistyy silti. ENTRYPOINT ja CMD sekoittuvat.

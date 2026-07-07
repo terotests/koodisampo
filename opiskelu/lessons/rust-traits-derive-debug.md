@@ -1,4 +1,4 @@
-# Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?
+# Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät struct-määrittelyyn automaattisen Debug-toteutuksen saamiseksi?
 
 ## Taustaa
 

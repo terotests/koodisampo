@@ -363,7 +363,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`. Korjaus?",
+      "prompt": "Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraatiolukija korvaa sen oletuksella 5000. Mikä oletusarvo-operaattori säilyttää nollan mutta korvaa puuttuvan arvon?",
       "choices": [
         {
           "text": "?? korvaa vain null/undefined — säilyttää arvon 0 oletuksena",
@@ -883,7 +883,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaattori?",
+      "prompt": "Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraatio puuttuu kokonaan. Mikä ES2020-operaattori eroaa `||`:sta tässä tapauksessa?",
       "choices": [
         {
           "text": "Nullish coalescing: port ?? 3000 säilyttää arvon 0 sellaisenaan",
@@ -1054,7 +1054,7 @@
       "audiences": [
         "coworker"
       ],
-      "prompt": "Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista. Syntax?",
+      "prompt": "Barrel-tiedosto index.js julkaisee utils.js:n funktiot ilman että ne importataan ensin paikallisiin bindingeihin. Mikä export-lauseke?",
       "choices": [
         {
           "text": "export { foo, bar } from './utils.js' — re-export ilman importia",
@@ -1297,7 +1297,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?",
+      "prompt": "Dashboard asettaa `document.title = user.profile.name`, mutta vanhentuneella sessiolla API palauttaa `user: null`. Sentry täyttyy TypeError-virheistä. Mikä operaattori tekee syvästä polusta turvallisen ilman if-ketjua?",
       "choices": [
         {
           "text": "Optional chaining: user?.profile?.name estää TypeError null-polulla",
@@ -1854,10 +1854,10 @@
       "audiences": [
         "coworker"
       ],
-      "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?",
+      "prompt": "React-komponentti renderöi `user.profile.name` heti mountissa. Kun käyttäjädata latautuu asynkronisesti, `user` on ensin null ja tuotannossa tulee TypeError. Mikä ES2020-operaattori korvaa pitkän if-ketjun?",
       "choices": [
         {
-          "text": "user?.profile?.name",
+          "text": "Optional chaining (?.) — property access palauttaa undefined null-polulla",
           "correct": true
         },
         {
@@ -2095,7 +2095,7 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Paginoitu API — haluat for-await silmukan joka hakee sivut automaattisesti. Pattern?",
+      "prompt": "Paginoitu API palauttaa nextPage-osoittimen. Haluat kuluttaa kaikki sivut ilman callback-ketjua ja ilman manuaalista while-silmukkaa. Mikä JavaScript-pattern yhdistää iteration ja awaitin?",
       "choices": [
         {
           "text": "Async generator function* joka yieldaa sivut — for await (const page of fetchPages())",
@@ -2129,7 +2129,7 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Custom collection-luokka pitää saada toimimaan for...of ja spread-operaattorilla. Mitä implementoit?",
+      "prompt": "Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa ja spreadissa. Mitä well-known symbolia luokka tarvitsee?",
       "choices": [
         {
           "text": "Symbol.iterator metodi joka palauttaa iterator-objektin",
@@ -2304,7 +2304,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vain null/undefined?",
+      "prompt": "Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?",
       "choices": [
         {
           "text": "value ?? 10 — nullish coalescing",
@@ -3353,7 +3353,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?",
+      "prompt": "Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?",
       "choices": [
         {
           "text": "Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa",
@@ -3668,7 +3668,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?",
+      "prompt": "Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?",
       "choices": [
         {
           "text": "async function* generator — for await...of paginoituun API-iteraatioon",
@@ -4753,10 +4753,10 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Haluat yhdistää `Hei ${name}` ilman + -ketjua. Mikä syntaksi?",
+      "prompt": "Haluat rakentaa tervehdyksen muuttujasta `name` ilman `+`-ketjua (`'Hei ' + name + '!'`). Mikä syntaksi upottaa arvon merkkijonoon?",
       "choices": [
         {
-          "text": "Template literal backtick-merkeillä: `Hei ${name}`",
+          "text": "Template literal backtick-merkeillä ja ${}-interpoloinnilla",
           "correct": true
         },
         {
@@ -4992,7 +4992,7 @@
       "audiences": [
         "coworker"
       ],
-      "prompt": "Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?",
+      "prompt": "Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien nimet vastaavat avaimia?",
       "choices": [
         {
           "text": "{ id, name } — property shorthand",
@@ -5233,7 +5233,7 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?",
+      "prompt": "Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä silmukkaa, jossa jokainen iteraatio odottaa seuraavaa sivua. Minkä funktiomuodon täytyy tuottaa data?",
       "choices": [
         {
           "text": "async function* — async generator",
@@ -5407,7 +5407,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?",
+      "prompt": "Monorepon barrel-tiedosto kokoaa julkisen API:n kahdesta moduulista ilman import+export -kahdetta askelta. Mikä export-lauseke?",
       "choices": [
         {
           "text": "export * from './utils.js' ja export { x } from './api.js'",
@@ -5924,7 +5924,7 @@
       "id": "b12-js-types-rest-params",
       "chapter": "js-types",
       "difficulty": 2,
-      "prompt": "Funktio `sum(...nums)` — mitä ...nums tarkoittaa?",
+      "prompt": "Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkona. Mikä parametrimuoto kerää ylimääräiset argumentit?",
       "choices": [
         {
           "text": "Rest parameter kerää loput argumentit taulukoksi",
@@ -6379,7 +6379,7 @@
       "id": "b12-js-async-signal-combine",
       "chapter": "js-async",
       "difficulty": 4,
-      "prompt": "Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?",
+      "prompt": "Kaksi riippumatonta peruutuslähdettä (esim. käyttäjän navigointi ja timeout) — fetch pitää keskeytyä jos kumpi tahansa laukeaa. Mikä standardi-API yhdistää signaalit?",
       "choices": [
         {
           "text": "AbortSignal.any([signal1, signal2])",

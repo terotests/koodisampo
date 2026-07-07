@@ -1,4 +1,4 @@
-# Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?
+# Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien nimet vastaavat avaimia?
 
 ## Tilanne
 

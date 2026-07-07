@@ -1,4 +1,4 @@
-# Mitä `constexpr` funktio mahdollistaa C++11:ssä?
+# Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-avainsanaa käytät?
 
 ## Tilanne
 

@@ -1,4 +1,4 @@
-# Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`. Korjaus?
+# Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraatiolukija korvaa sen oletuksella 5000. Mikä oletusarvo-operaattori säilyttää nollan mutta korvaa puuttuvan arvon?
 
 ## Tilanne
 

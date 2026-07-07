@@ -1,4 +1,4 @@
-# Haluat wrapper-skriptin joka ajaa migraatiot ennen appia — mutta CMD pitää ylikirjoittaa helposti. Ero?
+# Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylikirjoittaa vain sovelluksen argumentit (ei migraatiovaihetta). Miten jaat Dockerfile-komennot?
 
 ## Tilanne
 Haluat wrapper-skriptin joka ajaa DB-migraatiot ennen appia, mutta dev haluaa ylikirjoittaa komennon helposti (`docker run ... bash`).
