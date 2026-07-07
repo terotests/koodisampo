@@ -2,7 +2,7 @@
 <html lang="fi">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <script>
     (function () {
       var params = new URLSearchParams(location.search);
@@ -527,7 +527,12 @@
 
     /* ── Mobile: pelkistetty pelinäkymä ── */
     @media (max-width: 768px) {
+      html, body { touch-action: manipulation; }
       body { padding: 0; overflow: hidden; }
+      .profile-setup-field input,
+      .profile-setup-field select {
+        font-size: 16px;
+      }
       #app {
         display: grid;
         grid-template-rows: auto auto minmax(0, 1fr) minmax(150px, 26dvh);
@@ -846,7 +851,12 @@
     }
 
     /* Kun JS asettaa mobile-layout-luokan (@media ei osu DevToolsissa) */
+    html.mobile-layout { touch-action: manipulation; }
     html.mobile-layout body { padding: 0; overflow: hidden; }
+    html.mobile-layout .profile-setup-field input,
+    html.mobile-layout .profile-setup-field select {
+      font-size: 16px;
+    }
     html.mobile-layout #app {
       display: grid;
       grid-template-rows: auto auto minmax(0, 1fr) minmax(150px, 26dvh);
