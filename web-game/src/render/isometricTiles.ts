@@ -115,6 +115,9 @@ export type EntityCellInfo = {
   gender?: string;
   roleKey?: string;
   topic?: string;
+  rewardFruit?: boolean;
+  fruitSpawnMinute?: number;
+  fruitExpireMinute?: number;
 };
 
 export type ItemSprite = {
@@ -131,7 +134,7 @@ export type CellSprite =
   | TileSprite
   | EntitySprite
   | ItemSprite
-  | { kind: "emoji"; glyph: string; highlight?: boolean }
+  | { kind: "emoji"; glyph: string; highlight?: boolean; opacity?: number; rewardFruit?: boolean }
   | { kind: "legoProp"; prop: "dog" | "tv"; glyph: string; highlight?: boolean };
 
 function entityAtCell(
@@ -206,6 +209,9 @@ export function resolveCellSprite(
   if (entity) {
     if (entity.kind === "item") {
       const glyph = entity.glyph;
+      if (entity.rewardFruit) {
+        return { kind: "emoji", glyph, highlight: true, rewardFruit: true };
+      }
       if (glyph === "🖥️" || glyph === "📺") {
         return { kind: "legoProp", prop: "tv", glyph, highlight: opts.recommended };
       }

@@ -329,6 +329,15 @@
       color: var(--text);
       font-size: 13px;
     }
+    .profile-setup-checkbox {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .profile-setup-checkbox input {
+      margin-top: 3px;
+      width: auto;
+    }
     .profile-setup-field input,
     .profile-setup-field select {
       font: inherit;
@@ -910,7 +919,11 @@
         <span>Erikoisosaaminen</span>
         <select id="profile-specialty" name="specialty" required></select>
       </label>
-      <p class="profile-setup-hint">Kysymykset painottuvat valitsemaasi osaamiseen.</p>
+      <label class="profile-setup-field profile-setup-checkbox">
+        <input id="profile-kids-mode" name="kidsMode" type="checkbox" />
+        <span>Lapsi-/helppomoodi — helppoja kysymyksiä ja puheella luettu kysymys (jos selain tukee)</span>
+      </label>
+      <p class="profile-setup-hint">Kysymykset painottuvat valitsemaasi osaamiseen. Helpommodessa käytetään omaa kysymyslistaa.</p>
       <p id="profile-setup-error" class="profile-setup-error" hidden></p>
       <button type="button" id="profile-start-btn" class="profile-setup-submit">Aloita peli</button>
     </form>

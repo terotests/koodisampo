@@ -1593,6 +1593,18 @@ class WorldMap {
     if (ch == "🍱") {
       return "Vatsa asettuu hetkeksi."
     }
+    if (ch == "🍎") {
+      return "Omena maistuu makealta — pieni palkkibonus!"
+    }
+    if (ch == "🍌") {
+      return "Banaani piristää ja tuo lisäpalkkaa."
+    }
+    if (ch == "🍊") {
+      return "Appelsiini virkistää ja tuo lisäpalkkaa."
+    }
+    if (ch == "🍇") {
+      return "Rypäleet maistuvat hyvältä — palkkibonus!"
+    }
     if (ch == "📠") {
       return "Faksi muistuttaa menneitä aikoja."
     }
@@ -1652,7 +1664,138 @@ class WorldMap {
     if (ch == "🍱") {
       return true
     }
+    if ((strlen id) >= 12) {
+      def fruitTag:string (substring id 0 12)
+      if (fruitTag == "reward-fruit") {
+        return true
+      }
+    }
     return false
+  }
+
+  fn isRewardFruitEntity:boolean (e:MapEntity) {
+    if (this.isConsumableItemEntity(e) == false) {
+      return false
+    }
+    def id:string e.id
+    if ((strlen id) >= 12) {
+      def fruitTag:string (substring id 0 12)
+      if (fruitTag == "reward-fruit") {
+        return true
+      }
+    }
+    return false
+  }
+
+  fn rewardFruitGlyph:string (fruitIndex:int) {
+    if (fruitIndex == 1) {
+      return "🍌"
+    }
+    if (fruitIndex == 2) {
+      return "🍊"
+    }
+    if (fruitIndex == 3) {
+      return "🍇"
+    }
+    return "🍎"
+  }
+
+  fn trySpawnRewardFruitAt:boolean (x:int y:int fruitIndex:int spawnMinute:int expireMinute:int) {
+    if (this.canPlaceDroppedItem(x y) == false) {
+      return false
+    }
+    def floor:MapFloor (this.activeFloor())
+    def item:MapEntity (new MapEntity)
+    item.id = ("reward-fruit-" + (to_string fruitIndex) + "-" + (to_string x) + "-" + (to_string y) + "-" + (to_string spawnMinute))
+    item.char = (this.rewardFruitGlyph(fruitIndex))
+    item.name = "Hedelmäpalkinto"
+    item.kind = "item"
+    item.itemTool = ""
+    item.x = x
+    item.y = y
+    item.behaviorStartedAt = spawnMinute
+    item.behaviorParam = expireMinute
+    def ents:[MapEntity] (floor.entities)
+    push ents item
+    floor.entities = ents
+    return true
+  }
+
+  fn spawnQuizRewardFruits:void (gameMinutes:int) {
+    def expireMinute:int (gameMinutes + 20)
+    def fruitCount:int 1
+    def countRoll:int (random 0 1)
+    if (countRoll == 1) {
+      fruitCount = 2
+    }
+    def dirs:[int]
+    push dirs facingX
+    push dirs 1
+    push dirs -1
+    push dirs 0
+    push dirs 0
+    def dy:[int]
+    push dy facingY
+    push dy 0
+    push dy 0
+    push dy 1
+    push dy -1
+    def spawned:int 0
+    def fi:int 0
+    while (fi < fruitCount) {
+      def fruitIndex:int (random 0 3)
+      def di:int 0
+      def placed:boolean false
+      while (di < 5) {
+        def nx:int (playerX + (at dirs di))
+        def ny:int (playerY + (at dy di))
+        if (this.trySpawnRewardFruitAt(nx ny fruitIndex gameMinutes expireMinute)) {
+          placed = true
+          spawned = spawned + 1
+          di = 99
+        }
+        di = di + 1
+      }
+      if (placed == false) {
+        if (this.trySpawnRewardFruitAt(playerX playerY fruitIndex gameMinutes expireMinute)) {
+          spawned = spawned + 1
+        }
+      }
+      fi = fi + 1
+    }
+    if (spawned > 0) {
+      if (spawned == 1) {
+        lastStatus = (lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmä lähelle!")
+      } {
+        lastStatus = (lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmiä lähelle!")
+      }
+    }
+  }
+
+  fn tickRewardFruits:void (gameMinutes:int) {
+    def floor:MapFloor (this.activeFloor())
+    def ents:[MapEntity] (floor.entities)
+    def kept:[MapEntity]
+    def removed:int 0
+    def i:int 0
+    def n:int (array_length ents)
+    while (i < n) {
+      def e:MapEntity (at ents i)
+      if (this.isRewardFruitEntity(e)) {
+        if (e.behaviorParam > 0) {
+          if (gameMinutes >= e.behaviorParam) {
+            removed = removed + 1
+            i = i + 1
+            continue
+          }
+        }
+      }
+      push kept e
+      i = i + 1
+    }
+    if (removed > 0) {
+      floor.entities = kept
+    }
   }
 
   fn consumeItemAt:boolean (x:int y:int) {

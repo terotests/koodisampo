@@ -102,20 +102,26 @@ function clearPlayerProfileOnSession(session) {
   session.markStateDirty?.();
 }
 
-function applyPlayerProfileOnSession(session, map, name, specialty) {
+function applyPlayerProfileOnSession(session, map, name, specialty, kidsMode = false) {
   const trimmedName = String(name || "").trim();
   const trimmedSpecialty = String(specialty || "cpp").trim();
   if (!trimmedName) return false;
   if (typeof session.applyPlayerProfile === "function") {
     session.applyPlayerProfile(trimmedName, trimmedSpecialty);
-    return true;
+  } else {
+    session.playerDisplayName = trimmedName;
+    session.playerSpecialty = trimmedSpecialty;
+    session.profileComplete = true;
+    session.screen = "map";
+    if (map) map.playerAlias = trimmedName;
+    session.markStateDirty?.();
   }
-  session.playerDisplayName = trimmedName;
-  session.playerSpecialty = trimmedSpecialty;
-  session.profileComplete = true;
-  session.screen = "map";
-  if (map) map.playerAlias = trimmedName;
-  session.markStateDirty?.();
+  if (typeof session.setKidsMode === "function") {
+    session.setKidsMode(!!kidsMode);
+  } else {
+    session.kidsMode = !!kidsMode;
+    session.markStateDirty?.();
+  }
   return true;
 }
 
@@ -193,6 +199,12 @@ export function createWebGameController(deps) {
     if (getMapJson) mapJson = getMapJson();
   }
 
+function restoreSessionProgress(session) {
+  if (typeof save?.progress?.fruitSalaryBonus === "number" && save.progress.fruitSalaryBonus > 0) {
+    session.fruitSalaryBonus = save.progress.fruitSalaryBonus;
+  }
+}
+
   dispatch(session, () => {
     refreshMapJson();
     session.loadMapFromText(mapJson);
@@ -205,6 +217,7 @@ export function createWebGameController(deps) {
         sessionMap(session),
         save.progress.playerName,
         save.progress.playerSpecialty ?? "cpp",
+        !!save.progress?.kidsMode,
       );
     } else {
       clearPlayerProfileOnSession(session);
@@ -214,6 +227,7 @@ export function createWebGameController(deps) {
     } else {
       session.karma.add("debug:boot", 50);
     }
+    restoreSessionProgress(session);
     sessionMap(session).ensurePlayerOnWalkable();
   });
 
@@ -271,12 +285,14 @@ export function createWebGameController(deps) {
         sessionMap(session),
         save.progress.playerName,
         save.progress.playerSpecialty ?? "cpp",
+        !!save.progress?.kidsMode,
       );
     } else {
       clearPlayerProfileOnSession(session);
     }
     if (keepProgress && save?.features?.ids) {
       session.applySave(save.features.ids, save.features.amounts ?? [], save.deaths ?? 0);
+      restoreSessionProgress(session);
       session.applyGuruProgress(
         !!save.progress?.guruIntroPassed,
         !!save.progress?.guruStoryAttempted,
@@ -317,6 +333,8 @@ function updateLocalSave() {
     profileComplete: !!session.profileComplete,
     playerName: session.playerDisplayName ?? "",
     playerSpecialty: session.playerSpecialty ?? "",
+    kidsMode: !!session.kidsMode,
+    fruitSalaryBonus: session.fruitSalaryBonus ?? 0,
   };
   save.quizHistory = quizHistoryState;
   save.studyBacklog = studyBacklogState;
@@ -548,6 +566,7 @@ function buildEncounterSnapshot(base) {
       const side = buildQuizSideMenu(quiz.entity, session);
       payload.quiz = {
         greeting: quiz.greeting,
+        prompt: quiz.question.prompt ?? "",
         choices: quiz.question.choices.map((c, i) => ({
           n: i + 1,
           text: c.text,
@@ -671,6 +690,7 @@ function snapshot() {
     deaths: session.exportDeaths(),
     karma: session.karma.total(),
     salary: session.playerSalary(),
+    clockMinutes: session.worldClock?.gameMinutes ?? 0,
     generation: session.__rangerStateGeneration,
     encounterCooldown: session.encounterCooldown ?? 0,
     policeChase: map?.policeChaseActive ?? false,
@@ -703,6 +723,7 @@ function snapshot() {
     needsProfileSetup: sessionNeedsProfileSetup(session),
     playerDisplayName: session.playerDisplayName ?? "",
     playerSpecialty: session.playerSpecialty ?? "",
+    kidsMode: !!session.kidsMode,
     gameOverReason: session.gameOverReason ?? "",
     memorial: serializeMemorial(session),
   };
@@ -1229,10 +1250,10 @@ function handleKey(key) {
       elevatorUi.expand();
     },
     getRelationsDebugText: () => formatRelationsDebugText(session, session.pendingEntity?.id || ""),
-    setPlayerProfile: (name, specialty) => {
+    setPlayerProfile: (name, specialty, kidsMode = false) => {
       let ok = false;
       dispatch(session, () => {
-        ok = applyPlayerProfileOnSession(session, sessionMap(session), name, specialty);
+        ok = applyPlayerProfileOnSession(session, sessionMap(session), name, specialty, kidsMode);
       });
       if (!ok) return false;
       persistWeb();

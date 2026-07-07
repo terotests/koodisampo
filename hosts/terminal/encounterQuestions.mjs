@@ -360,6 +360,9 @@ function scoreQuestion(q, profile, scoreOptions = null) {
   const audienceMatch = q.audiences.some((a) => profile.tags.includes(a));
   if (!audienceMatch) return -1;
 
+  const maxDiff = scoreOptions?.maxDifficulty;
+  if (maxDiff != null && (q.difficulty ?? 5) > maxDiff) return -1;
+
   let score = 50;
   const globalAsked = scoreOptions?.globalAsked;
   if (globalAsked && !globalAsked.has(q.id)) score += 16;
@@ -499,7 +502,11 @@ function pickIndexFromPool(pool, salt) {
 }
 
 export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOptions = null) {
-  const questions = loadAllQuestions();
+  const allQuestions = loadAllQuestions();
+  const kidsMode = !!pickOptions?.kidsMode;
+  const questions = kidsMode
+    ? allQuestions.filter((q) => q.bankId === "kids-easy")
+    : allQuestions;
   const playerSpecialty = pickOptions?.playerSpecialty ?? "";
   const profile = audienceTags(entity, playerSpecialty);
   const entityId = entity.id || "";
@@ -511,7 +518,10 @@ export function pickQuestion(entity, karmaTotal = 0, quizHistory = null, pickOpt
   const entityAsked = getAskedQuestionIds(quizHistory, entityId);
   const recent = getRecentQuestionIds(quizHistory, 32);
   const globalAskedSet = new Set(globalAsked);
-  const scoreOptions = { globalAsked: globalAskedSet };
+  const scoreOptions = {
+    globalAsked: globalAskedSet,
+    maxDifficulty: kidsMode ? 2 : null,
+  };
 
   const domainChapters = chaptersForDomain(profile.preferDomain || profile.playerSpecialty || "cpp");
 
@@ -625,6 +635,7 @@ export function getEncounterQuiz(session, quizHistory = null, pickOptions = null
     deaths: session.exportDeaths?.() ?? 0,
     playerSpecialty: session.playerSpecialty ?? "",
     sessionPickSeed: pickOptions?.sessionPickSeed ?? 0,
+    kidsMode: !!session.kidsMode,
   });
   if (!picked?.question?.id) {
     clearEncounterQuizCache();

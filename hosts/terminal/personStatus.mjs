@@ -357,7 +357,7 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
     const cellKey = `${dx},${dy}`;
     const appearance = entityAppearanceMeta(registry, ent);
     if (ent.kind === "item" || ent.kind === "pet") {
-      entityCells.push({
+      const cell = {
         x: dx,
         y: dy,
         glyph: ent.char || "?",
@@ -367,7 +367,13 @@ export function applyMapPersonDisplay(lines, map, registry, camera = null) {
         gender: appearance.gender,
         roleKey: appearance.roleKey,
         topic: appearance.topic,
-      });
+      };
+      if (ent.id?.startsWith("reward-fruit-")) {
+        cell.rewardFruit = true;
+        cell.fruitSpawnMinute = ent.behaviorStartedAt ?? 0;
+        cell.fruitExpireMinute = ent.behaviorParam ?? 0;
+      }
+      entityCells.push(cell);
       continue;
     }
     if (painted.has(cellKey)) continue;

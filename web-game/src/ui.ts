@@ -27,6 +27,7 @@ import {
 } from "./mobileLayout";
 import { setText } from "./render/domPatch";
 import { patchIsometricGrid } from "./render/isometricCanvas";
+import { speakQuizPrompt, stopSpeech } from "./tts";
 import { mountMapZoomControls, syncMapZoomControls } from "./render/mapZoomControls";
 import { clearMapView, ensureMapShell, setScrollContent } from "./render/viewRoot";
 
@@ -48,6 +49,7 @@ export function mountGameUI(game: WebGame) {
   const profileSetupEl = document.getElementById("profile-setup");
   const profileNameEl = document.getElementById("profile-name") as HTMLInputElement | null;
   const profileSpecialtyEl = document.getElementById("profile-specialty") as HTMLSelectElement | null;
+  const profileKidsModeEl = document.getElementById("profile-kids-mode") as HTMLInputElement | null;
   const profileFormEl = document.getElementById("profile-setup-form");
   const profileStartBtn = document.getElementById("profile-start-btn");
   const profileErrorEl = document.getElementById("profile-setup-error");
@@ -149,6 +151,7 @@ export function mountGameUI(game: WebGame) {
       if (!profileFormEl || !profileNameEl) return false;
       const name = profileNameEl.value.trim();
       const specialty = profileSpecialtyEl?.value ?? "cpp";
+      const kidsMode = !!profileKidsModeEl?.checked;
       if (!name) {
         showProfileSetupError("Anna nimesi.");
         profileNameEl.focus();
@@ -160,7 +163,7 @@ export function mountGameUI(game: WebGame) {
       }
       let ok = false;
       try {
-        ok = game.setPlayerProfile(name, specialty) === true;
+        ok = game.setPlayerProfile(name, specialty, kidsMode) === true;
       } catch (err) {
         console.error("Profiilin tallennus epäonnistui:", err);
         ok = false;
@@ -185,6 +188,7 @@ export function mountGameUI(game: WebGame) {
 
     let profileFormSeeded = false;
     let profileFormDirty = false;
+    let lastQuizSpeechKey = "";
 
     function syncProfileSetupVisible(state: State) {
       if (!profileSetupEl) return;
@@ -214,6 +218,9 @@ export function mountGameUI(game: WebGame) {
         } else if (!profileSpecialtyEl.value) {
           profileSpecialtyEl.value = "cpp";
         }
+      }
+      if (profileKidsModeEl && !profileFormDirty) {
+        profileKidsModeEl.checked = !!state.kidsMode;
       }
       profileFormSeeded = true;
     }
@@ -270,6 +277,7 @@ export function mountGameUI(game: WebGame) {
       profileFormDirty = false;
       if (profileNameEl) profileNameEl.value = "";
       if (profileSpecialtyEl) profileSpecialtyEl.value = "cpp";
+      if (profileKidsModeEl) profileKidsModeEl.checked = false;
       lastRenderKey = "";
       render(game.snapshot());
     }
@@ -622,6 +630,13 @@ export function mountGameUI(game: WebGame) {
       } else if (enc.mode === "quiz" && state.quiz) {
         const q = state.quiz;
         const side = q.sideMenu;
+        if (state.kidsMode && q.prompt) {
+          const speechKey = `${state.encounter?.name ?? ""}:${q.prompt}`;
+          if (speechKey !== lastQuizSpeechKey) {
+            lastQuizSpeechKey = speechKey;
+            speakQuizPrompt(q.prompt, state.encounter?.name ?? "quiz", q.prompt);
+          }
+        }
         html += `<div class="greeting">${esc(q.greeting)}</div>`;
         for (const c of q.choices) {
           html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`);
@@ -1405,6 +1420,9 @@ export function mountGameUI(game: WebGame) {
       clearProfileSetupError();
     });
     profileSpecialtyEl?.addEventListener("change", () => {
+      profileFormDirty = true;
+    });
+    profileKidsModeEl?.addEventListener("change", () => {
       profileFormDirty = true;
     });
     profileFormEl?.addEventListener("submit", (e) => {
