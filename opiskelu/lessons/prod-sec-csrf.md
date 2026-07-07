@@ -26,6 +26,6 @@ Set-Cookie: session=abc; Secure; HttpOnly; SameSite=Lax
 
 ## Käytännössä
 
-API:t, jotka käyttävät pelkkää Bearer-tokenia headerissa (ei cookiea), eivät ole alttiita klassiselle CSRF:lle samalla tavalla. Cookie-pohjaiset sessiot vaativat tokenin tai SameSite:n. OWASP CSRF Prevention Cheat Sheet on hyvä tarkistuslista.
+API:t, jotka käyttävät pelkkää Bearer-tokenia headerissa (ei cookiea), eivät ole alttiita klassiselle CSRF:lle samalla tavalla. Cookie-pohjaisissa sessioissa käytä ensisijaisesti frameworkin CSRF-suojausta / CSRF-tokenia. SameSite-cookie on hyvä lisäsuoja, mutta sitä ei kannata pitää ainoana suojana kaikissa sovelluksissa. Älä tee tilaa muuttavia toimintoja GET-pyynnöllä. OWASP CSRF Prevention Cheat Sheet on hyvä tarkistuslista.
 
 [Lue lisää](https://owasp.org/www-community/attacks/csrf)
