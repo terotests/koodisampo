@@ -9,10 +9,15 @@ Tiimi ajaa `docker run myimage bash` odottaen pääsevänsä debug-shelliin, mut
 ```dockerfile
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["server"]
-# docker run myimage bash → entrypoint.sh server bash (shell-form riippuu)
 
-# Debug override:
-# docker run --entrypoint bash myimage -c 'echo debug'
+# docker run myimage bash
+# → /docker-entrypoint.sh bash
+```
+
+`docker run`-komennon argumentit korvaavat `CMD`:n, ei `ENTRYPOINT`:ia. Debug override:
+
+```bash
+docker run --entrypoint bash myimage -c 'echo debug'
 ```
 
 Exec-form:

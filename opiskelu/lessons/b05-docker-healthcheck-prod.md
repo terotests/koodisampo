@@ -14,6 +14,11 @@ HEALTHCHECK --interval=15s --timeout=5s --retries=3 \
 HEALTHCHECK määrittää konttiterveyden — Dockerfile reference.
 
 ## Käytännössä
-/health tarkistaa DB-yhteyden. Älä käytä pelkkää `pidof node` — se ei havaitse jumiutumista.
+Älä käytä pelkkää `pidof node` — se ei havaitse jumiutumista. Erottele endpointit:
+
+- `/healthz` — prosessi elossa (liveness)
+- `/readyz` — valmis palvelemaan, voi sisältää riippuvuuksia kuten DB (readiness)
+
+Liian tiukka DB-tarkistus liveness-healthcheckissä voi aiheuttaa turhia restartteja hetkellisissä häiriöissä. Readiness-check sopii paremmin riippuvuustarkistuksille.
 
 [Lue lisää](https://docs.docker.com/reference/dockerfile/#healthcheck)

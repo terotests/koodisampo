@@ -769,7 +769,7 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 4 | `b02-docker-build-copy-03` | Docker build on hidas — jokainen pieni koodimuutos invalidoi koko depen… |
+| ✅ | 4 | `b02-docker-build-copy-03` | Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. Fix? |
 | ✅ | 2 | `b02-docker-exec-debug-04` | Containerissa shell puuttuu mutta prosessi elää — miten debuggaat sisäl… |
 | ✅ | 2 | `b02-docker-prune-05` | Levy täynnä vanhoja imageja ja stopped containereita. Turvallinen siivo… |
 | ✅ | 3 | `b02-docker-run-limit-02` | Yksi container syö koko hostin RAM:in — OOM killaa muita. Rajoitus? |
@@ -822,7 +822,7 @@
 | ✅ | 2 | `b08-docker-compose-override` | Paikallinen dev ylikirjoittaa portit ilman muutosta git-trackattuun com… |
 | ✅ | 2 | `b08-docker-compose-profiles` | Compose-tiedostossa debug-työkalut halutaan vain kehityksessä — ei tuot… |
 | ✅ | 3 | `b08-docker-compose-watch` | Dev: lähdekoodimuutos pitäisi synkata konttiin ilman rebuildia joka ker… |
-| ✅ | 3 | `b08-docker-exec-user` | Debuggaat konttia — docker exec -it ajaa rootina vaikka Dockerfile USER… |
+| ✅ | 3 | `b08-docker-exec-user` | Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä o… |
 | ✅ | 2 | `b08-docker-prune-build-cache` | Build-serverin levy täynnä vanhoja kerroksia. Turvallinen siivous? |
 | ✅ | 3 | `b08-docker-scan-image` | CI putki — haluat skannata imagen CVE:t ennen deploya. Työkalu ekosyste… |
 | ✅ | 3 | `b08-docker-secrets-env` | Code review: API-avain Dockerfile ENV:ssä. Turvallisempi Compose/Swarm … |

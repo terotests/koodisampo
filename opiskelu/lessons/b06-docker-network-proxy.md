@@ -12,20 +12,7 @@ Yritysverkossa kaikki ulospäin menevä HTTP/HTTPS kulkee proxy:n kautta. Build-
 
 ## Ratkaisu
 
-**HTTP_PROXY ja HTTPS_PROXY build-argit** välittävät proxyn Dockerfile-buildiin. Configure proxy for build — Docker docs proxy.
-
-Dockerfile:
-
-```dockerfile
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG NO_PROXY
-ENV HTTP_PROXY=$HTTP_PROXY HTTPS_PROXY=$HTTPS_PROXY NO_PROXY=$NO_PROXY
-
-RUN npm ci
-```
-
-Build-komento:
+**Välitä proxy build-argit build-komennossa** — Docker välittää `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` build-vaiheeseen ilman että niitä tarvitsee jättää runtime-imageen.
 
 ```bash
 docker build \
@@ -34,6 +21,17 @@ docker build \
   --build-arg NO_PROXY=localhost,127.0.0.1,.corp \
   -t myapp:latest .
 ```
+
+Dockerfile (vain jos build-stepit tarvitsevat proxy-muuttujia eksplisiittisesti):
+
+```dockerfile
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG NO_PROXY
+RUN npm ci
+```
+
+Älä käytä `ENV HTTP_PROXY=...` ellei runtime oikeasti tarvitse proxyä — `ENV` jää imageen ja voi vuotaa konfiguraatiota tuotantoon.
 
 Compose build:
 
@@ -51,6 +49,6 @@ Daemon-taso (`/etc/systemd/system/docker.service.d/proxy.conf`) kattaa myös ima
 
 ## Käytännössä
 
-Älä jätä proxy-env muuttujia runtime-imageen — käytä multi-stage buildia ja nollaa ENV viimeisessä stagessa. `NO_PROXY` pitää sisältää sisäiset registryt (Harbor, Artifactory), jotta pull ei mene turhaan proxyn kautta.
+`NO_PROXY` pitää sisältää sisäiset registryt (Harbor, Artifactory), jotta pull ei mene turhaan proxyn kautta. Multi-stage buildissa proxy-argit tarvitaan vain build-stagessa.
 
 [Lue lisää](https://docs.docker.com/engine/cli/proxy/)

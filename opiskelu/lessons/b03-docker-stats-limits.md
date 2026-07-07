@@ -23,6 +23,6 @@ deploy:
 Resource constraints — Docker run reference / compose deploy.
 
 ## Käytännössä
-Aseta myös `reservations` scheduler-tasolla Swarmissa. Testaa rajat kuormitustestillä ennen tuotantoa.
+Compose-specissä `deploy`-osion tuki on platform-riippuvainen — jos toteutus ei tue sitä, kenttä voidaan jättää huomiotta. Varmista, että käyttämäsi `docker compose` / deploy-ympäristö todella soveltaa `deploy.resources.limits`-rajoja (`docker inspect`, kuormitustesti). Swarmissa aseta myös `reservations` scheduler-tasolla.
 
 [Lue lisää](https://docs.docker.com/config/containers/resource_constraints/)

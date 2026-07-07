@@ -10,7 +10,7 @@ ADD https://example.com/app.tar.gz /app/
 ADD lataa, purkaa ja voi tehdä yllättäviä asioita automaattisesti — vaikea auditoida.
 
 ## Ratkaisu
-**COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia.**
+**Suosi `COPY`:a paikallisille tiedostoille. Ulkoisille artefakteille pinnaa versio ja varmista checksum.**
 
 ```dockerfile
 # Suositus: erilliset vaiheet
@@ -22,9 +22,9 @@ COPY app.tar.gz /tmp/
 RUN tar xzf /tmp/app.tar.gz -C /app
 ```
 
-Docker docs: käytä COPY paitsi tar/URL tarpeissa.
+`ADD` URL:sta voi olla ok vain tietoisena valintana (esim. checksumilla), ei oletuksena. `COPY` on suoraviivaisempi ja yleensä turvallisempi.
 
 ## Käytännössä
-ADD on ok local `.tar` + automaattinen purku, mutta URL-lataus tekee buildistä ei-deterministisen. Pin checksumit ulkoisille artefakteille.
+ADD on ok local `.tar` + automaattinen purku. URL-lataus ilman checksumia tekee buildistä ei-deterministisen.
 
 [Lue lisää](https://docs.docker.com/reference/dockerfile/#copy)
