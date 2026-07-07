@@ -880,7 +880,7 @@ const ADULT_JOKES = [
   "Miksi template ei kertonut vitsiä? Se instansioitiin väärässä kontekstissa.",
   "Segfault käveli huoneeseen. Kukaan ei muistanut omistajuutta.",
   "Miksi const lupasi olla muuttumatta? Sillä oli mutable poikkeus.",
-  "RAII vei roskat ulos. Garbage collector tuli paikalle myöhässä.",
+  "Miksi RAII vei roskat ulos? Garbage collector tuli paikalle myöhässä.",
   "Miksi pointeri oli yksinäinen? Se osoitti koko ajan väärään suuntaan.",
   "C++ sanoi: tämä on yksinkertaista. Sitten tuli overload resolution.",
   "systemd: se toimii. Paitsi kun ei toimi. Silloin se on feature.",
