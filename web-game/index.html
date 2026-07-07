@@ -135,6 +135,30 @@
     #hud-stats .salary { color: var(--accent-green); font-weight: bold; }
     #hud-stats .hud-warn { color: var(--accent-red); font-weight: bold; }
     #hud-stats .hud-floor { color: var(--accent-cyan); }
+    .reward-fly-label {
+      position: fixed;
+      z-index: 12000;
+      pointer-events: none;
+      font: 900 28px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--accent-green);
+      -webkit-text-stroke: 3px #fff;
+      paint-order: stroke fill;
+      text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.95),
+        0 0 18px rgba(255, 210, 80, 0.55),
+        0 2px 8px rgba(0, 0, 0, 0.45);
+      transform: translate(-50%, -50%);
+      will-change: transform, left, top, opacity;
+    }
+    @keyframes salary-reward-pulse {
+      0% { transform: scale(1); filter: brightness(1); }
+      35% { transform: scale(1.22); filter: brightness(1.35); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+    .salary-reward-pulse {
+      animation: salary-reward-pulse 0.48s ease-out;
+      display: inline-block;
+    }
     #message-bar {
       display: none;
       color: var(--text-bright);

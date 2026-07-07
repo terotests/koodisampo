@@ -16,8 +16,11 @@ import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
 import {
   activeRewardFruitPops,
   drawRewardFruitPop,
+  hasActiveRewardFruitEffects,
   noteRewardFruits,
   rewardFruitOpacity,
+  spawnSalaryFlyLabel,
+  updateRewardFruitFlyLabels,
 } from "../rewardFruitEffects";
 import { getMapZoomMultiplier } from "../mapZoom";
 import { readStoredRenderTheme } from "../renderTheme";
@@ -41,6 +44,7 @@ const WALK_ANIM_MS = 320;
 const WALK_STRIDE_MS = 140;
 
 let animRaf = 0;
+let effectRaf = 0;
 let lastPlayerGrid: { x: number; y: number } | null = null;
 let lastMoveAt = 0;
 let lastFacing: PlayerFacing = "S";
@@ -119,6 +123,29 @@ function scheduleWalkRepaint(container: HTMLElement, lines: string[], state: Map
     container.dataset.isoSig = renderSignature(lines, state);
     scheduleWalkRepaint(container, lines, state);
   });
+}
+
+function scheduleRewardFruitRepaint(container: HTMLElement, lines: string[], state: MapState) {
+  if (!hasActiveRewardFruitEffects()) return;
+  if (effectRaf) cancelAnimationFrame(effectRaf);
+  effectRaf = requestAnimationFrame(() => {
+    effectRaf = 0;
+    updateRewardFruitFlyLabels();
+    if (!hasActiveRewardFruitEffects()) return;
+    if (activeRewardFruitPops().length > 0) {
+      const canvas = container.querySelector<HTMLCanvasElement>("[data-iso-canvas]");
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        if (ctx) paintIsometricMap(ctx, canvas, lines, state);
+      }
+    }
+    scheduleRewardFruitRepaint(container, lines, state);
+  });
+}
+
+function scheduleMapEffectsRepaint(container: HTMLElement, lines: string[], state: MapState) {
+  scheduleWalkRepaint(container, lines, state);
+  scheduleRewardFruitRepaint(container, lines, state);
 }
 
 function bitmapSize(img: CanvasImageSource): { w: number; h: number } {
@@ -368,7 +395,6 @@ function paintIsometricMap(
 ) {
   const recommended = recommendedSet(state);
   const entityCells = state.entityCells ?? [];
-  noteRewardFruits(entityCells);
   const clockMinutes = state.clockMinutes ?? 0;
   const fruitOpacityAt = (x: number, y: number) => {
     const ent = entityCells.find((c: { x: number; y: number }) => c.x === x && c.y === y);
@@ -390,6 +416,16 @@ function paintIsometricMap(
     playerPos?.y ??
     (state.player?.y ?? 0) - (state.camera?.y ?? 0);
   const origin = playerCenteredOrigin(playerGridX, playerGridY, cssWidth, cssHeight, tileWidth, tileHeight);
+  const newPops = noteRewardFruits(entityCells);
+  for (const pop of newPops) {
+    const { x: sx, y: sy } = gridToScreen(pop.x, pop.y, origin.x, origin.y, tileWidth, tileHeight);
+    const rect = canvas.getBoundingClientRect();
+    spawnSalaryFlyLabel(
+      rect.left + sx + tileWidth / 2,
+      rect.top + sy + tileHeight * 0.22,
+      pop.amount,
+    );
+  }
 
   ctx.clearRect(0, 0, cssWidth, cssHeight);
   ctx.fillStyle = themeBackgroundColor();
@@ -523,7 +559,7 @@ export async function patchIsometricGrid(
   const size = plannedCanvasSize(container);
   const sizeKey = `${size.pixelWidth}x${size.pixelHeight}`;
   if (container.dataset.isoSig === sig && container.dataset.isoSized === sizeKey) {
-    scheduleWalkRepaint(container, lines, state);
+    scheduleMapEffectsRepaint(container, lines, state);
     return;
   }
   resizeCanvasToContainer(canvas, size);
@@ -533,7 +569,7 @@ export async function patchIsometricGrid(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   paintIsometricMap(ctx, canvas, lines, state);
-  scheduleWalkRepaint(container, lines, state);
+  scheduleMapEffectsRepaint(container, lines, state);
 }
 
 export function clearIsoMapHost(container: HTMLElement) {
