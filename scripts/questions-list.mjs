@@ -7,7 +7,7 @@ import { listAllQuestions } from "../hosts/terminal/encounterQuestions.mjs";
 
 const EXPECTED_CHAPTERS = [
   "tools", "style", "safety", "maintainability", "performance", "portability",
-  "threadability", "correctness",
+  "threadability", "correctness", "cmake",
   "scrum-dod", "scrum-dor", "scrum-estimation", "scrum-sprint", "scrum-team",
   "systemd", "journald", "linux-network", "avahi",
   "docker", "docker-network", "docker-volumes",
