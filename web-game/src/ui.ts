@@ -30,6 +30,10 @@ import { patchIsometricGrid } from "./render/isometricCanvas";
 import { speakQuizPrompt, stopSpeech } from "./tts";
 import { mountMapZoomControls, syncMapZoomControls } from "./render/mapZoomControls";
 import { clearMapView, ensureMapShell, setScrollContent } from "./render/viewRoot";
+import {
+  cancelQuizChoiceFeedback,
+  scheduleQuizChoiceFeedback,
+} from "./quizChoiceEffects";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
  type State = any;
@@ -118,6 +122,8 @@ export function mountGameUI(game: WebGame) {
     let copyStatusTimeout = 0;
     let lastRenderKey = "";
     let currentStudyListText = "";
+    let quizFeedbackToken = "";
+    let quizFeedbackRevealed = false;
 
     function needsProfileSetup(state: State): boolean {
       if (typeof state.needsProfileSetup === "boolean") return state.needsProfileSetup;
@@ -368,10 +374,11 @@ export function mountGameUI(game: WebGame) {
     }
 
     function choiceRow(key: string, inner: string, extraClass = "") {
+      const dataKey = ` data-key="${esc(key)}"`;
       if (!isMobileLayout()) {
-        return `<div class="choice ${extraClass}">${inner}</div>`;
+        return `<div class="choice ${extraClass}"${dataKey}>${inner}</div>`;
       }
-      return `<div class="choice touch-choice ${extraClass}" data-key="${esc(key)}" role="button" tabindex="0">${inner}</div>`;
+      return `<div class="choice touch-choice ${extraClass}"${dataKey} role="button" tabindex="0">${inner}</div>`;
     }
 
     function sideOptRow(key: string, inner: string) {
@@ -638,21 +645,36 @@ export function mountGameUI(game: WebGame) {
           }
         }
         html += `<div class="greeting">${esc(q.greeting)}</div>`;
+        const fb = state.quizFeedback as { selectedN?: number; correct?: boolean; reaction?: string } | undefined;
         for (const c of q.choices) {
-          html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`);
+          let extra = "";
+          if (fb?.selectedN === c.n) {
+            extra = "quiz-choice-selected";
+            if (quizFeedbackRevealed) {
+              extra += fb.correct ? " quiz-choice-correct" : " quiz-choice-wrong";
+            }
+          } else if (fb && quizFeedbackRevealed) {
+            extra = "quiz-choice-dimmed";
+          }
+          html += choiceRow(String(c.n), `<span class="choice-num">[${c.n}]</span> ${esc(c.text)}`, extra);
         }
-        html += `<div class="divider">── tai ──</div>`;
-        html += sideOptRow("a", `<span class="side-key ai">[a]</span> Kysy AI:lta`);
-        html += sideOptRow("j", `<span class="side-key joke">[j]</span> ${esc(side.jokeLabel)}`);
-        if (side.askColleagueLabel) {
-          html += sideOptRow("n", `<span class="side-key joke">[n]</span> ${esc(side.askColleagueLabel)}`);
+        if (fb?.reaction && quizFeedbackRevealed) {
+          html += `<div class="quiz-feedback-reaction">${esc(fb.reaction)}</div>`;
         }
-        html += sideOptRow("i", `<span class="side-key meh">[i]</span> ${esc(side.mehLabel)}`);
-        html += sideOptRow("p", `<span class="side-key leave">[p]</span> ${esc(side.leaveLabel)}`);
+        if (!fb) {
+          html += `<div class="divider">── tai ──</div>`;
+          html += sideOptRow("a", `<span class="side-key ai">[a]</span> Kysy AI:lta`);
+          html += sideOptRow("j", `<span class="side-key joke">[j]</span> ${esc(side.jokeLabel)}`);
+          if (side.askColleagueLabel) {
+            html += sideOptRow("n", `<span class="side-key joke">[n]</span> ${esc(side.askColleagueLabel)}`);
+          }
+          html += sideOptRow("i", `<span class="side-key meh">[i]</span> ${esc(side.mehLabel)}`);
+          html += sideOptRow("p", `<span class="side-key leave">[p]</span> ${esc(side.leaveLabel)}`);
+        }
 
         if (isMobileLayout()) {
           hideMobileChoiceToolbar();
-        } else {
+        } else if (!fb) {
           setToolbar([
             ...q.choices.map((c) => ({ key: String(c.n), label: String(c.n) })),
             ...(side.askColleagueLabel ? [{ key: "n", label: "n kollega" }] : []),
@@ -661,8 +683,14 @@ export function mountGameUI(game: WebGame) {
             { key: "i", label: "i sama", cls: "muted" },
             { key: "p", label: "p poistu", cls: "muted" },
           ]);
+        } else {
+          setToolbar([]);
         }
-        if (hintEl) hintEl.textContent = isMobileLayout() ? "" : enc.hintLine + "  |  q = lopeta";
+        if (hintEl) {
+          hintEl.textContent = fb
+            ? (isMobileLayout() ? "" : "Palataan kartalle…")
+            : (isMobileLayout() ? "" : enc.hintLine + "  |  q = lopeta");
+        }
       } else {
         html += `<div class="greeting">${esc(enc.greeting)}</div>`;
         for (const opt of state.dialogOptions || []) {
@@ -851,6 +879,9 @@ export function mountGameUI(game: WebGame) {
         state.needsProfileSetup ? "needProf1" : "needProf0",
         state.profileComplete ? "prof1" : "prof0",
         state.overlay?.type ?? "",
+        state.quizFeedback?.selectedN ?? "",
+        state.quizFeedback?.correct ? "1" : "0",
+        quizFeedbackRevealed ? "rev1" : "rev0",
         state.actionPanel?.mode ?? "",
         state.encounter?.mode ?? "",
         state.story?.screen ?? "",
@@ -860,6 +891,39 @@ export function mountGameUI(game: WebGame) {
         state.status ?? "",
         state.ambient ?? "",
       ].join("|");
+    }
+
+    function maybeStartQuizFeedbackAnimation(state: State): void {
+      const fb = state.quizFeedback as { selectedN?: number; correct?: boolean } | undefined;
+      if (!fb?.selectedN) {
+        if (quizFeedbackToken) {
+          cancelQuizChoiceFeedback();
+          quizFeedbackToken = "";
+          quizFeedbackRevealed = false;
+        }
+        return;
+      }
+      const token = `${fb.selectedN}:${fb.correct ? 1 : 0}`;
+      if (quizFeedbackToken === token) return;
+      quizFeedbackToken = token;
+      quizFeedbackRevealed = false;
+      scheduleQuizChoiceFeedback(
+        mapEl,
+        String(fb.selectedN),
+        fb.correct === true,
+        () => {
+          quizFeedbackRevealed = true;
+          lastRenderKey = "";
+          render(game.snapshot());
+        },
+        () => {
+          quizFeedbackToken = "";
+          quizFeedbackRevealed = false;
+          game.completeQuizFeedback?.();
+          lastRenderKey = "";
+          render(game.snapshot());
+        },
+      );
     }
 
     function render(state) {
@@ -1093,6 +1157,7 @@ export function mountGameUI(game: WebGame) {
 
       if (state.screen === "encounter") {
         renderEncounter(state);
+        maybeStartQuizFeedbackAnimation(state);
         return;
       }
 

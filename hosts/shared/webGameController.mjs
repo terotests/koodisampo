@@ -189,6 +189,8 @@ export function createWebGameController(deps) {
   }
   /** @type {null | { type: string, [key: string]: unknown }} */
   let overlay = null;
+  /** @type {null | { selectedN: number, correct: boolean, reaction: string, [key: string]: unknown }} */
+  let quizFeedback = null;
   let quizRecordedKey = "";
   /** @type {null | Record<string, unknown>} */
   let activeStory = null;
@@ -481,7 +483,48 @@ function processEncounterAfterChoice() {
 
 function resetQuizSession() {
   quizRecordedKey = "";
+  quizFeedback = null;
   clearEncounterQuizCache();
+}
+
+function serializeQuizFeedback(fb) {
+  if (!fb) return null;
+  return {
+    selectedN: fb.selectedN,
+    correct: fb.correct,
+    reaction: fb.reaction,
+  };
+}
+
+function completeQuizFeedback() {
+  if (!quizFeedback) return;
+  const fb = quizFeedback;
+  quizFeedback = null;
+  const entity = pendingEncounterEntity();
+  recordPersonEncounter(personRegistryState, entity, { correct: fb.correct });
+  dispatch(session, () => {
+    session.finishEncounterQuiz(
+      fb.correct,
+      fb.featureId,
+      fb.points,
+      fb.socialReaction ?? fb.reaction,
+    );
+    const promoMsg = tryGrantPromotionFromFloorApproval(session, personRegistryState);
+    if (promoMsg) {
+      const map = sessionMap(session);
+      if (map) {
+        map.lastStatus = `${map.lastStatus} ${promoMsg}`;
+      }
+    }
+  });
+  quizHistoryState = recordQuizAnswer(
+    quizHistoryState,
+    fb.entityId,
+    fb.questionId,
+    fb.correct,
+  );
+  resetQuizSession();
+  persistWeb();
 }
 
 function ensureQuizRecorded(quiz) {
@@ -557,6 +600,10 @@ function buildEncounterSnapshot(base) {
   if (overlay) {
     payload.overlay = serializeOverlay(overlay);
     return payload;
+  }
+
+  if (quizFeedback) {
+    payload.quizFeedback = serializeQuizFeedback(quizFeedback);
   }
 
   if (isQuiz) {
@@ -954,6 +1001,10 @@ function handleOverlayKey(key) {
 }
 
 function handleQuizKey(key) {
+  if (quizFeedback) {
+    return;
+  }
+
   const quiz = getEncounterQuiz(session, quizHistoryState, makeQuizPickOptions());
   if (!quiz) {
     dispatch(session, () => {
@@ -1056,8 +1107,8 @@ function handleQuizKey(key) {
       questionMetaFromQuiz(quiz, false, teaching),
     );
   }
-  overlay = {
-    type: "outcome",
+  quizFeedback = {
+    selectedN: idx + 1,
     correct,
     reaction: buildQuizReactionWithEmotion(quiz.entity, correct, session),
     socialReaction: buildQuizReaction(quiz.entity, correct, session),
@@ -1067,7 +1118,6 @@ function handleQuizKey(key) {
     entityId: quiz.entity.id,
     questionId: quiz.question.id,
     quizMeta: questionMetaFromQuiz(quiz, correct, teaching),
-    marked: false,
     lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
   };
 }
@@ -1135,6 +1185,10 @@ function handleKey(key) {
 
   if (castListEnabled() && key === "o" && session.screen === "map") {
     castListOpen = true;
+    return;
+  }
+
+  if (quizFeedback) {
     return;
   }
 
@@ -1245,6 +1299,7 @@ function handleKey(key) {
     session,
     snapshot,
     handleKey,
+    completeQuizFeedback,
     handleStoryCode,
     expandElevatorPicker: () => {
       elevatorUi.expand();
