@@ -2020,6 +2020,20 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
         def itemName:string (tools.pickupLabel(toolPick))
         map.lastStatus = ("Poimit: " + itemName + "  (i = inventaario)")
       }
+      def pickBonus:int 0
+      if (toolPick == "coworker_card") {
+        pickBonus = 200
+      }
+      if (toolPick == "crowbar") {
+        pickBonus = 10
+      }
+      if (toolPick == "shovel") {
+        pickBonus = 10
+      }
+      if (pickBonus > 0) {
+        fruitSalaryBonus = fruitSalaryBonus + pickBonus
+        map.lastStatus = (map.lastStatus + " +" + (to_string pickBonus) + " € palkkaa!")
+      }
       return
     }
     def ent:MapEntity (map.entityAt(map.playerX map.playerY))
@@ -2035,6 +2049,10 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (rewardFruit) {
         fruitSalaryBonus = fruitSalaryBonus + 50
         map.lastStatus = (map.lastStatus + " +50 € palkkaa!")
+      }
+      if (ent.char == "☕") {
+        fruitSalaryBonus = fruitSalaryBonus + 5
+        map.lastStatus = (map.lastStatus + " +5 € palkkaa!")
       }
       if ((strlen ent.char) > 0) {
         playerNeeds.applyEmojiChar(ent.char)
