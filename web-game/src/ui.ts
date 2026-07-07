@@ -35,6 +35,7 @@ import {
   scheduleQuizChoiceFeedback,
   spawnQuizMoneyFlyAtKey,
 } from "./quizChoiceEffects";
+import { setSalaryHudRefreshHandler } from "./rewardFruitEffects";
 import { md2html } from "../../hosts/shared/md2html.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,6 +109,15 @@ export function mountGameUI(game: WebGame) {
 
   initMobileLayoutOptions();
   syncMobileClass();
+
+  setSalaryHudRefreshHandler(() => {
+    const state = game.snapshot();
+    renderHudStats(hudStatsEl, state, esc);
+    const statsSalary = document.querySelector<HTMLElement>(".stats .salary");
+    if (statsSalary) {
+      statsSalary.textContent = formatSalary(state.salary);
+    }
+  });
 
     const BANNER = `╔══════════════════════════════════════════════════╗
 ║  KOODISAMPO — Corporate NetHack (terminaali)   ║
@@ -898,6 +908,7 @@ export function mountGameUI(game: WebGame) {
         showRelationsDebug ? "relDbg1" : "relDbg0",
         Math.floor(viewportWidth() / 40),
         state.generation,
+        state.salary ?? "",
         state.player?.x ?? "",
         state.player?.y ?? "",
         state.entityCount ?? "",

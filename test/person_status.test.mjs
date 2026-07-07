@@ -14,6 +14,7 @@ import {
   collectFloorRecommendationStaff,
   applyMapPersonDisplay,
   floorRecommendationRequired,
+  salaryPickupBonusForEntity,
   tryGrantPromotionFromFloorApproval,
 } from "../hosts/terminal/personStatus.mjs";
 
@@ -112,6 +113,12 @@ export function runPersonStatusTests() {
     assert(display.recommendedCells.length === 1, "only player tile highlighted on map");
     assert(display.recommendedCells[0] === playerCell, "player highlight follows player position");
   });
+
+  assert(salaryPickupBonusForEntity({ id: "reward-fruit-1", char: "🍎" }) === 50, "reward fruit bonus");
+  assert(salaryPickupBonusForEntity({ id: "x", itemTool: "coworker_card", char: "💳" }) === 200, "card bonus");
+  assert(salaryPickupBonusForEntity({ id: "x", itemTool: "crowbar", char: "🔧" }) === 10, "crowbar bonus");
+  assert(salaryPickupBonusForEntity({ id: "floor-emoji-coffee-1", char: "☕" }) === 5, "coffee bonus");
+  assert(salaryPickupBonusForEntity({ id: "x", itemTool: "usb_drive", char: "💾" }) === 0, "usb no bonus");
 
   stopGameSession(root, session);
 }

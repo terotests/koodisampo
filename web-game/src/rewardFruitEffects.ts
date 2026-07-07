@@ -1,4 +1,4 @@
-type FruitPos = { x: number; y: number; glyph: string };
+type FruitPos = { x: number; y: number; glyph: string; amount: number };
 
 type SparkParticle = {
   vx: number;
@@ -28,14 +28,29 @@ type FlyLabel = {
   startedAt: number;
 };
 
+export function setSalaryHudRefreshHandler(handler: (() => void) | null): void {
+  onSalaryHudRefresh = handler;
+}
+
 const FRUIT_SALARY_BONUS = 50;
-const knownFruits = new Map<string, FruitPos>();
+const knownSalaryPickups = new Map<string, FruitPos>();
 const pops: PopBurst[] = [];
 const flyLabels: FlyLabel[] = [];
+let onSalaryHudRefresh: (() => void) | null = null;
 
 const POP_MS = 720;
 const FLY_MS = 920;
 const MAX_POPS = 8;
+
+function salaryPickupBonus(
+  ent: { rewardFruit?: boolean; salaryPickupBonus?: number },
+): number {
+  if (typeof ent.salaryPickupBonus === "number" && ent.salaryPickupBonus > 0) {
+    return ent.salaryPickupBonus;
+  }
+  if (ent.rewardFruit) return FRUIT_SALARY_BONUS;
+  return 0;
+}
 
 function createSparkParticles(): SparkParticle[] {
   const particles: SparkParticle[] = [];
@@ -69,11 +84,15 @@ function pulseSalaryHud(): void {
   const el =
     document.querySelector<HTMLElement>("#hud-stats .hud-item.salary") ??
     document.querySelector<HTMLElement>(".stats .salary");
-  if (!el) return;
+  if (!el) {
+    onSalaryHudRefresh?.();
+    return;
+  }
   el.classList.remove("salary-reward-pulse");
   void el.offsetWidth;
   el.classList.add("salary-reward-pulse");
   window.setTimeout(() => el.classList.remove("salary-reward-pulse"), 520);
+  onSalaryHudRefresh?.();
 }
 
 export function spawnSalaryFlyLabel(
@@ -145,21 +164,22 @@ export function updateRewardFruitFlyLabels(now = performance.now()): boolean {
 }
 
 export function noteRewardFruits(
-  entityCells: Array<{ id?: string; rewardFruit?: boolean; x: number; y: number; glyph?: string }> | undefined,
+  entityCells: Array<{ id?: string; rewardFruit?: boolean; salaryPickupBonus?: number; x: number; y: number; glyph?: string }> | undefined,
 ): PopBurst[] {
   const created: PopBurst[] = [];
   const current = new Map<string, FruitPos>();
   for (const ent of entityCells ?? []) {
-    if (!ent.rewardFruit || !ent.id) continue;
-    current.set(ent.id, { x: ent.x, y: ent.y, glyph: ent.glyph ?? "🍎" });
+    const bonus = salaryPickupBonus(ent);
+    if (!ent.id || bonus <= 0) continue;
+    current.set(ent.id, { x: ent.x, y: ent.y, glyph: ent.glyph ?? "🍎", amount: bonus });
   }
-  for (const [id, pos] of knownFruits) {
+  for (const [id, pos] of knownSalaryPickups) {
     if (current.has(id)) continue;
     const pop: PopBurst = {
       x: pos.x,
       y: pos.y,
       glyph: pos.glyph,
-      amount: FRUIT_SALARY_BONUS,
+      amount: pos.amount,
       startedAt: performance.now(),
       particles: createSparkParticles(),
     };
@@ -167,9 +187,12 @@ export function noteRewardFruits(
     created.push(pop);
     while (pops.length > MAX_POPS) pops.shift();
   }
-  knownFruits.clear();
+  knownSalaryPickups.clear();
   for (const [id, pos] of current) {
-    knownFruits.set(id, pos);
+    knownSalaryPickups.set(id, pos);
+  }
+  if (created.length > 0) {
+    onSalaryHudRefresh?.();
   }
   return created;
 }
