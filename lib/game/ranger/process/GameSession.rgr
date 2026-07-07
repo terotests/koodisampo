@@ -102,6 +102,11 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def profileComplete:boolean false
   def kidsMode:boolean false
   def fruitSalaryBonus:int 0
+  def salaryPickupEffectSeq:int 0
+  def salaryPickupEffectAmount:int 0
+  def salaryPickupEffectX:int 0
+  def salaryPickupEffectY:int 0
+  def salaryPickupEffectGlyph:string ""
   def proximityGreeting:ProximityGreeting
   def pendingGreetNpcId:string ""
   def npcBehaviors:NpcBehaviorRegistry
@@ -2009,6 +2014,33 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.runAgentPass()
   }
 
+  fn salaryPickupGlyph:string (toolPick:string fallback:string) {
+    if (toolPick == "coworker_card" || toolPick == "access_card" || toolPick == "promoted_card" || toolPick == "official_badge") {
+      return "💳"
+    }
+    if (toolPick == "crowbar") {
+      return "🔧"
+    }
+    if (toolPick == "shovel") {
+      return "🛠️"
+    }
+    if ((strlen fallback) > 0) {
+      return fallback
+    }
+    return "€"
+  }
+
+  fn recordSalaryPickupEffect:void (amount:int glyph:string) {
+    if (amount <= 0) {
+      return
+    }
+    salaryPickupEffectSeq = salaryPickupEffectSeq + 1
+    salaryPickupEffectAmount = amount
+    salaryPickupEffectX = map.playerX
+    salaryPickupEffectY = map.playerY
+    salaryPickupEffectGlyph = glyph
+  }
+
   fn afterPlayerAction:void () {
     def toolPick:string (map.pickupItemAt(map.playerX map.playerY))
     if ((strlen toolPick) > 0) {
@@ -2036,6 +2068,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (pickBonus > 0) {
         fruitSalaryBonus = fruitSalaryBonus + pickBonus
         map.lastStatus = (map.lastStatus + " +" + (to_string pickBonus) + " € palkkaa!")
+        this.recordSalaryPickupEffect(pickBonus (this.salaryPickupGlyph(toolPick "")))
       }
       return
     }
@@ -2052,10 +2085,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (rewardFruit) {
         fruitSalaryBonus = fruitSalaryBonus + 50
         map.lastStatus = (map.lastStatus + " +50 € palkkaa!")
+        this.recordSalaryPickupEffect(50 ent.char)
       }
       if (ent.char == "☕") {
         fruitSalaryBonus = fruitSalaryBonus + 5
         map.lastStatus = (map.lastStatus + " +5 € palkkaa!")
+        this.recordSalaryPickupEffect(5 ent.char)
       }
       if ((strlen ent.char) > 0) {
         playerNeeds.applyEmojiChar(ent.char)

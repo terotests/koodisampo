@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const require = createRequire(import.meta.url);
+const { MapEntity } = require(resolve(projectRoot, "generated/es6/koodisampo.cjs"));
 
 export function runRewardFruitTests() {
   const ctrl = createTestController();
@@ -45,9 +46,34 @@ export function runRewardFruitTests() {
     });
     assert.ok(session.fruitSalaryBonus >= 50, `fruit pickup adds salary bonus (${session.fruitSalaryBonus})`);
     assert.ok(session.playerSalary() >= beforeSalary + 50, "playerSalary includes fruit bonus");
+    assert.equal(session.salaryPickupEffectAmount, 50, "fruit pickup publishes salary effect amount");
+    assert.equal(session.salaryPickupEffectX, fruit.x, "fruit salary effect x follows pickup");
+    assert.equal(session.salaryPickupEffectY, fruit.y, "fruit salary effect y follows pickup");
+    assert.ok(session.salaryPickupEffectSeq > 0, "fruit pickup increments salary effect seq");
 
     const after = (map.activeFloor()?.entities ?? []).filter((e) => e.id === fruit.id);
     assert.equal(after.length, 0, "fruit removed after pickup");
+
+    const card = new MapEntity();
+    card.id = "test-coworker-card";
+    card.char = "k";
+    card.name = "Kulkukortti";
+    card.kind = "item";
+    card.itemTool = "coworker_card";
+    card.x = fruit.x;
+    card.y = fruit.y;
+    map.activeFloor().entities.push(card);
+    const seqBeforeCard = session.salaryPickupEffectSeq;
+    dispatch(session, () => {
+      map.playerX = card.x;
+      map.playerY = card.y;
+      session.afterPlayerAction();
+    });
+    assert.equal(session.salaryPickupEffectAmount, 200, "coworker card publishes salary effect amount");
+    assert.equal(session.salaryPickupEffectX, card.x, "card salary effect x follows pickup");
+    assert.equal(session.salaryPickupEffectY, card.y, "card salary effect y follows pickup");
+    assert.ok(session.salaryPickupEffectSeq > seqBeforeCard, "card pickup increments salary effect seq");
+    assert.ok(session.fruitSalaryBonus >= 250, "card pickup adds salary bonus");
 
     dispatch(session, () => {
       map.spawnQuizRewardFruits(520);

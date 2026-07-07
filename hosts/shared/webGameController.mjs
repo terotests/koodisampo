@@ -753,6 +753,13 @@ function snapshot() {
     deaths: session.exportDeaths(),
     karma: session.karma.total(),
     salary: session.playerSalary(),
+    salaryPickupEffect: {
+      seq: session.salaryPickupEffectSeq ?? 0,
+      amount: session.salaryPickupEffectAmount ?? 0,
+      x: session.salaryPickupEffectX ?? 0,
+      y: session.salaryPickupEffectY ?? 0,
+      glyph: session.salaryPickupEffectGlyph ?? "",
+    },
     clockMinutes: session.worldClock?.gameMinutes ?? 0,
     generation: session.__rangerStateGeneration,
     encounterCooldown: session.encounterCooldown ?? 0,

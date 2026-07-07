@@ -1,5 +1,13 @@
 type FruitPos = { x: number; y: number; glyph: string; amount: number };
 
+type SalaryPickupEffect = {
+  seq?: number;
+  amount?: number;
+  x?: number;
+  y?: number;
+  glyph?: string;
+};
+
 type SparkParticle = {
   vx: number;
   vy: number;
@@ -37,9 +45,10 @@ const knownSalaryPickups = new Map<string, FruitPos>();
 const pops: PopBurst[] = [];
 const flyLabels: FlyLabel[] = [];
 let onSalaryHudRefresh: (() => void) | null = null;
+let lastSalaryPickupEffectSeq = 0;
 
-const POP_MS = 720;
-const FLY_MS = 920;
+const POP_MS = 1100;
+const FLY_MS = 1350;
 const MAX_POPS = 8;
 
 function salaryPickupBonus(
@@ -118,6 +127,34 @@ export function spawnSalaryFlyLabel(
     targetY: target.y,
     startedAt: performance.now(),
   });
+}
+
+export function noteSalaryPickupEffect(
+  effect: SalaryPickupEffect | null | undefined,
+  camera: { x?: number; y?: number } | null | undefined,
+): PopBurst | null {
+  const seq = Number(effect?.seq ?? 0);
+  const amount = Number(effect?.amount ?? 0);
+  if (!Number.isFinite(seq) || !Number.isFinite(amount) || seq <= 0 || amount <= 0) {
+    return null;
+  }
+  if (seq <= lastSalaryPickupEffectSeq) {
+    return null;
+  }
+  lastSalaryPickupEffectSeq = seq;
+
+  const pop: PopBurst = {
+    x: Number(effect?.x ?? 0) - Number(camera?.x ?? 0),
+    y: Number(effect?.y ?? 0) - Number(camera?.y ?? 0),
+    glyph: String(effect?.glyph || "€"),
+    amount,
+    startedAt: performance.now(),
+    particles: createSparkParticles(),
+  };
+  pops.push(pop);
+  while (pops.length > MAX_POPS) pops.shift();
+  onSalaryHudRefresh?.();
+  return pop;
 }
 
 function pruneFlyLabels(now = performance.now()): void {
@@ -210,7 +247,6 @@ export function activeRewardFruitPops(now = performance.now()): PopBurst[] {
 
 export function hasActiveRewardFruitEffects(now = performance.now()): boolean {
   pruneRewardFruitPops(now);
-  pruneFlyLabels(now);
   return pops.length > 0 || flyLabels.length > 0;
 }
 
@@ -355,9 +391,9 @@ export function drawRewardFruitPop(
   ctx.fillText(pop.glyph, centerX, centerY - t * tileHeight * 0.28);
   ctx.restore();
 
-  if (t < 0.42) {
-    const labelT = t / 0.42;
-    const labelAlpha = 1 - labelT * 0.35;
+  if (t < 0.68) {
+    const labelT = t / 0.68;
+    const labelAlpha = labelT > 0.72 ? 1 - (labelT - 0.72) / 0.28 : 1;
     const labelSize = Math.max(16, tileWidth * (0.34 + labelT * 0.12));
     drawOutlinedText(
       ctx,
