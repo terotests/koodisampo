@@ -666,7 +666,6 @@ export { getAiStudySolution, resolveAiStudySolution } from "../shared/lessonSolu
 
 /** Laajempi opetusnäkymä AI-vihjeeseen. */
 export function buildAiStudyText(question, readLessonFile = null) {
-  const wrong = question.choices?.filter((c) => !c.correct) || [];
   const solution = getAiStudySolution(question);
   const lesson = lessonSolutionMarkdown(question, readLessonFile);
   const parts = [];
@@ -686,42 +685,13 @@ export function buildAiStudyText(question, readLessonFile = null) {
     parts.push("");
     parts.push(lesson.markdown);
   }
-  if (wrong.length > 0) {
-    parts.push("");
-    parts.push("── Miksi muut eivät kelpaa? ──");
-    for (const w of wrong) {
-      parts.push(`• ${w.text}`);
-    }
-  }
-  if (question.wrongFeedback && question.studyNotes) {
-    parts.push("");
-    parts.push(`Yleinen virhe: ${question.wrongFeedback}`);
-  }
   parts.push(`\n── Oppitunti ──\n${lessonLinkLine(question)}`);
   return parts.join("\n");
 }
 
-/** AI-näkymän lisäsisältö ratkaisun jälkeen (väärät vaihtoehdot, linkit). */
-export function buildAiStudySupplement(question) {
-  const wrong = question.choices?.filter((c) => !c.correct) || [];
-  const parts = [];
-  if (wrong.length > 0) {
-    parts.push("── Miksi muut eivät kelpaa? ──");
-    for (const w of wrong) {
-      parts.push(`• ${w.text}`);
-    }
-  }
-  if (question.wrongFeedback && question.studyNotes) {
-    parts.push("");
-    parts.push(`Yleinen virhe: ${question.wrongFeedback}`);
-  }
-  const src = question.sourceUrl || question.bankSource;
-  if (src) {
-    parts.push("");
-    parts.push(`── Lisätietoa ──`);
-    parts.push(src);
-  }
-  return parts.join("\n");
+/** AI-näkymän lisäsisältö ratkaisun jälkeen (tyhjä — väärät vaihtoehdot ja linkit kuuluvat peliin). */
+export function buildAiStudySupplement(_question) {
+  return "";
 }
 
 export const AI_STUDY_KARMA_COST = 5;
