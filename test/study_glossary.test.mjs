@@ -27,6 +27,7 @@ Katso [SQL](/docs/lyhenteet#sql) valmiina linkkinä.
 
 const terms = parseGlossaryTerms(fs.readFileSync(GLOSSARY_SOURCE, "utf8"));
 assert.ok(terms.some((t) => t.term === "SQL" && t.anchor === "sql"));
+assert.ok(terms.some((t) => t.term === "C++" && t.anchor === "cpp"));
 assert.ok(terms.length >= 300, `expected glossary entries, got ${terms.length}`);
 
 for (let i = 1; i < terms.length; i++) {

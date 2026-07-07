@@ -122,7 +122,7 @@ Qt CMake -buildin automaattinen MOC-ajuri (`set_target_properties(... AUTOMOC ON
 
 **Oppitunnit:** [`b02-pg-indexes-btree-02`](/docs/topics/postgres#b02-pg-indexes-btree-02), [`b06-pg-indexes-brin-timeseries`](/docs/topics/postgres#b06-pg-indexes-brin-timeseries), [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial)
 
-### C/C {#c-c}
+### C++ {#cpp}
 
 C ja C++ — järjestelmäohjelmointikielet, joita käytetään rinnakkain erityisesti legacy-koodissa. C tarjoaa yksinkertaisen ABI:n ja C++ oliopohjaisuuden; Rust on moderni vaihtoehto, joka yhdistää C/C++:n suorituskyvyn muistiturvallisuuteen ilman GC:tä.
 
@@ -1812,13 +1812,7 @@ PostgreSQL:n korkein käyttöoikeustaso — `SUPERUSER` ohittaa kaikki käyttöo
 
 TCP **Synchronize** -lippu (SYN) aloittaa kolmivaiheisen kättelyn (SYN → SYN-ACK → ACK). Jos `tcpdump` näyttää lähtevät SYN-paketit mutta ei SYN-ACK-vastausta, palomuuri todennäköisesti pudottaa paketit.
 
-**Oppitunnit:** [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b12-linux-tcp-syn-backlog`](/docs/topics/linux#b12-linux-tcp-syn-backlog), [`b12-linux-tcp-udp-handshake`](/docs/topics/linux#b12-linux-tcp-udp-handshake)
-
-### SYN/SYN {#syn-syn}
-
-TCP-yhteyden kolmivaiheisen kättelyn paketit: `SYN` (client→server), `SYN-ACK` (server→client) ja `ACK` (client→server). UDP on yhteydeton protokolla eikä käytä SYN/SYN-ACK-kättelyä — väite "UDP käyttää kolmivaiheista kättelyä" on virheellinen.
-
-**Oppitunnit:** [`b12-linux-udp-stateless-firewall`](/docs/topics/linux#b12-linux-udp-stateless-firewall)
+**Oppitunnit:** [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b12-linux-tcp-syn-backlog`](/docs/topics/linux#b12-linux-tcp-syn-backlog), [`b12-linux-tcp-udp-handshake`](/docs/topics/linux#b12-linux-tcp-udp-handshake), [`b12-linux-udp-stateless-firewall`](/docs/topics/linux#b12-linux-udp-stateless-firewall)
 
 ### TBB {#tbb}
 

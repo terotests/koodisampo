@@ -18,6 +18,7 @@ import {
 
 assert.equal(termToAnchor("CI/CD"), "ci-cd");
 assert.equal(termToAnchor("CVE"), "cve");
+assert.equal(termToAnchor("C++"), "cpp");
 
 const sample = `
 ## Tilanne
@@ -90,5 +91,30 @@ const demoRefs = scanTextForAbbreviations(
 );
 assert.ok(demoRefs.has("CI/CD"));
 assert.ok(demoRefs.has("CVE"));
+
+const cppRefs = scanTextForAbbreviations(
+  "Muistinhallinta C/C++-ohjelmoinnissa ja C++17-moduuleissa.",
+  "rust.md",
+);
+assert.ok(cppRefs.has("C++"), "C++ detected from C/C++ and C++17");
+assert.ok(!cppRefs.has("C/C"), "C/C false positive rejected");
+
+const synRefs = scanTextForAbbreviations(
+  "UDP käyttää kolmen suun kättelyä (SYN/SYN-ACK/ACK) kuten TCP.",
+  "linux.json",
+);
+assert.ok(!synRefs.has("SYN/SYN"), "SYN/SYN false positive rejected");
+assert.ok(!synRefs.has("ACK/ACK"), "ACK/ACK false positive rejected");
+
+const linkedCpp = linkGlossaryTerms("Rust vs C/C++ ja C++20.", [
+  { term: "C++", anchor: "cpp" },
+]);
+assert.match(linkedCpp, /\[C\+\+\]\(\/docs\/lyhenteet#cpp\)/);
+assert.equal(
+  (linkedCpp.match(/\[C\+\+\]\(\/docs\/lyhenteet#cpp\)/g) || []).length,
+  1,
+  "only first C++ occurrence linked",
+);
+assert.doesNotMatch(linkedCpp, /(?<!\[)C\/C\+\+/);
 
 console.log("study_glossary_scan tests OK");

@@ -22,9 +22,32 @@ export const SCAN_MD = path.join(SCAN_OUTPUT_DIR, "glossary-scan.md");
 /** @typedef {{ term: string, anchor: string, inGlossary: boolean, manualLinkCount: number, refs: GlossaryRef[], filtered?: boolean, filterReason?: string }} ScannedTerm */
 
 /** Lyhenteet: GUC, CI/CD, CVE (CVE-korjaukset), CVE:t */
-const ABBREV_RE = /\b([A-Z][A-Z0-9]*(?:\/[A-Z][A-Z0-9]*)+)\b|\b([A-Z]{2,}(?:\/[A-Z]{2,})?)\b/g;
+const SLASH_ABBREV_RE = /\b([A-Z][A-Z0-9]*(?:\/[A-Z][A-Z0-9]*)+)\b/g;
+const SIMPLE_ABBREV_RE = /\b([A-Z]{2,}(?:\/[A-Z]{2,})?)\b/g;
+const CPP_RE = /\bC\+\+(?:\d{2})?\b/g;
+const C_SLASH_CPP_RE = /\bC\/C\+\+\b/g;
 const HYPHEN_PREFIX_RE = /\b([A-Z]{2,})(?=-[a-zäöå])/g;
 const POSSESSIVE_RE = /\b([A-Z]{2,}):t\b/g;
+
+/** @param {string} line @param {number} end */
+function hasAbbrevTail(line, end) {
+  const ch = line[end];
+  if (ch === undefined) return true;
+  if (/[\s,.)]/.test(ch)) return true;
+  if (ch === "-") {
+    const next = line[end + 1] ?? "";
+    if (/[a-zäöå]/.test(next)) return true;
+    if (/\s/.test(next)) return true;
+    return false;
+  }
+  return false;
+}
+
+/** @param {string} term */
+function isValidSlashAbbrev(term) {
+  if (term === "C/C" || term === "SYN/SYN" || term === "ACK/ACK") return false;
+  return term.split("/").every((part) => /^[A-Z][A-Z0-9]*$/.test(part));
+}
 
 const MANUAL_LINK_RE = /\[([^\]]+)\]\(\/docs\/lyhenteet#([a-z0-9-]+)\)/gi;
 
@@ -88,13 +111,28 @@ export function shouldFilterTerm(term, filter) {
 function extractAbbrevCandidates(line) {
   /** @type {string[]} */
   const found = [];
-  for (const re of [ABBREV_RE, POSSESSIVE_RE]) {
+
+  for (const re of [C_SLASH_CPP_RE, CPP_RE]) {
+    re.lastIndex = 0;
+    if ([...line.matchAll(re)].length) {
+      found.push("C++");
+      break;
+    }
+  }
+
+  for (const re of [SLASH_ABBREV_RE, SIMPLE_ABBREV_RE, POSSESSIVE_RE]) {
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(line))) {
-      found.push(m[1] || m[2]);
+      const term = m[1] || m[2];
+      if (term.includes("/")) {
+        if (!isValidSlashAbbrev(term)) continue;
+        if (!hasAbbrevTail(line, m.index + m[0].length)) continue;
+      }
+      found.push(term);
     }
   }
+
   const hyphen = [...line.matchAll(HYPHEN_PREFIX_RE)].map((m) => m[1]);
   found.push(...hyphen);
   return found;

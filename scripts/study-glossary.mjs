@@ -138,6 +138,14 @@ function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** @param {string} term */
+function glossaryLinkPattern(term) {
+  if (term === "C++") {
+    return String.raw`(?<!\[)\b(?:C\/C\+\+|C\+\+(?:\d{2})?)(?![+0-9A-Za-z])`;
+  }
+  return `(?<!\\[)\\b${escapeRegExp(term)}\\b(?!\\])`;
+}
+
 /**
  * Linkitä lyhenteet hakemistoon (ensimmäinen esiintymä per termi).
  * Ohittaa koodilohkot, inline-koodin ja olemassa olevat markdown-linkit.
@@ -154,7 +162,7 @@ export function linkGlossaryTerms(text, terms = loadGlossaryTerms()) {
       let out = seg.text;
       for (const { term, anchor } of terms) {
         if (linked.has(term)) continue;
-        const re = new RegExp(`(?<!\\[)\\b${escapeRegExp(term)}\\b(?!\\])`, "i");
+        const re = new RegExp(glossaryLinkPattern(term), "i");
         if (!re.test(out)) continue;
         out = out.replace(re, `[${term}](${GLOSSARY_DOC}#${anchor})`);
         linked.add(term);
@@ -166,8 +174,9 @@ export function linkGlossaryTerms(text, terms = loadGlossaryTerms()) {
 
 /** @param {string} term */
 export function termToAnchor(term) {
-  return term
-    .trim()
+  const trimmed = term.trim();
+  if (trimmed === "C++") return "cpp";
+  return trimmed
     .toLowerCase()
     .replace(/\//g, "-")
     .replace(/[^a-z0-9-]+/g, "")
