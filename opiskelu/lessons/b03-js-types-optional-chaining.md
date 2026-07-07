@@ -1,4 +1,4 @@
-# API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?
+# Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?
 
 ## Tilanne
 

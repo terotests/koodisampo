@@ -1,4 +1,4 @@
-# Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?
+# Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä silmukkaa, jossa jokainen iteraatio odottaa seuraavaa sivua. Minkä funktiomuodon täytyy tuottaa data?
 
 ## Tilanne
 

@@ -1516,7 +1516,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet COPY:tä?",
+      "prompt": "Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerfile-buildissa. Mikä ongelma tässä on, ja mitä Dockerfile-komentoa käytät sen sijaan?",
       "choices": [
         {
           "text": "COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia",
@@ -1551,7 +1551,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa oletuskomentoa. Miksi?",
+      "prompt": "`docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?",
       "choices": [
         {
           "text": "ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyttää",
@@ -4413,7 +4413,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Haluat wrapper-skriptin joka ajaa migraatiot ennen appia — mutta CMD pitää ylikirjoittaa helposti. Ero?",
+      "prompt": "Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylikirjoittaa vain sovelluksen argumentit (ei migraatiovaihetta). Miten jaat Dockerfile-komennot?",
       "choices": [
         {
           "text": "ENTRYPOINT wrapper-skripti + CMD app-args — CMD on oletusparametrit entrypointille",

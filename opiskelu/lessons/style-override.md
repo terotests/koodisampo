@@ -1,4 +1,4 @@
-# Miksi käyttää `override` periytyvässä metodissa?
+# Johdettu luokka ylikirjoittaa virtual-metodin, mutta kirjoitusvirhe signatuurissa ei kaada käännöstä. Mitä C++11-avainsanaa lisäät?
 
 ## Tilanne
 

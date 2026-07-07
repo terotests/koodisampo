@@ -1,4 +1,4 @@
-# API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?
+# API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?
 
 ## Tilanne
 

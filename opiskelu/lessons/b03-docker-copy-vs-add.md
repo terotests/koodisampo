@@ -1,4 +1,4 @@
-# Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet COPY:tä?
+# Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerfile-buildissa. Mikä ongelma tässä on, ja mitä Dockerfile-komentoa käytät sen sijaan?
 
 ## Tilanne
 Code review ehdottaa:

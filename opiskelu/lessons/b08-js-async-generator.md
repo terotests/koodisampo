@@ -1,4 +1,4 @@
-# Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?
+# Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?
 
 ## Tilanne
 

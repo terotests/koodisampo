@@ -1,4 +1,4 @@
-# API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vain null/undefined?
+# Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?
 
 ## Tilanne
 

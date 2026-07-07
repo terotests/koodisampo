@@ -1,4 +1,4 @@
-# Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaattori?
+# Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraatio puuttuu kokonaan. Mikä ES2020-operaattori eroaa `||`:sta tässä tapauksessa?
 
 ## Tilanne
 

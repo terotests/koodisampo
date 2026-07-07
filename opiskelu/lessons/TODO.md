@@ -182,7 +182,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 4 | `b02-cpp-style-consteval-04` | Konfiguraatiovakio pitää laskea compile-time — runtime-laskenta hidasta… |
-| ✅ | 2 | `b02-cpp-style-override-03` | Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei var… |
+| ✅ | 2 | `b02-cpp-style-override-03` | Mikä merkintä pakottaa kääntäjän varmistamaan, että aliluokan metodi to… |
 | ✅ | 2 | `b03-cpp-cr-override-keyword` | Johdettu luokka ylikirjoittaa `virtual void draw()` mutta kirjoittaa `v… |
 | ✅ | 2 | `b03-cpp-style-explicit-ctor` | Luokka `Meters(int v)` aiheuttaa vahingossa `double d = 3.5; Meters m =… |
 | ✅ | 3 | `b04-cpp-explicit-constructor` | Bugi: `void foo(Bytes b); foo(1024);` kääntyy — 1024 muuntuu Bytes:ksi … |
@@ -204,11 +204,11 @@
 | ✅ | 2 | `b11-cpp-out-of-source-build` | CMake generoi object-tiedostot samaan hakemistoon kuin lähdekoodi. Mitä… |
 | ✅ | 2 | `b11-cpp-underscore-identifier` | Uusi globaali funktio nimetään `_init_app()`. Miksi cpp-best-practices … |
 | ✅ | 2 | `b11-cpp-using-namespace-header` | Uusi header alkaa `using namespace std;` ja includataan kymmenessä modu… |
-| ✅ | 3 | `exp-cpp-cr-default-delete` | Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdot… |
+| ✅ | 3 | `exp-cpp-cr-default-delete` | Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida eikä siirtää. Mikä… |
 | ✅ | 2 | `exp-cpp-cr-enum-class-switch` | Code review: switch-case käyttää `enum Status { OK, FAIL }` ilman scope… |
 | ✅ | 1 | `style-const-ref` | Miten vältät turhan `std::string`-kopioinnin funktioparametrissa? |
 | ✅ | 3 | `style-final-override` | Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja.… |
-| ✅ | 2 | `style-override` | Miksi käyttää `override` periytyvässä metodissa? |
+| ✅ | 2 | `style-override` | Johdettu luokka ylikirjoittaa virtual-metodin, mutta kirjoitusvirhe sig… |
 | ✅ | 2 | `style-pass-int` | Miten yksinkertainen `int` kannattaa välittää konstruktorille? |
 | ✅ | 2 | `tools-enum-class` | Miksi `enum class` on parempi kuin vanha C-tyylinen `enum`? |
 
@@ -270,7 +270,7 @@
 | ✅ | 3 | `exp-cpp-prod-chrono-timeout` | API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti il… |
 | ✅ | 2 | `exp-cpp-tools-format-logging` | Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa … |
 | ✅ | 1 | `tools-auto` | Mitä `auto` tekee modernissa C++:ssa? |
-| ✅ | 3 | `tools-constexpr` | Mitä `constexpr` funktio mahdollistaa C++11:ssä? |
+| ✅ | 3 | `tools-constexpr` | Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-a… |
 | ✅ | 1 | `tools-nullptr` | Mikä on turvallisin tapa nollata osoitin C++11:ssä? |
 | ✅ | 3 | `tools-structured-bindings` | C++17: miten purat `std::map`-iteratorin avain/arvo-pairin siististi? |
 | ✅ | 2 | `tools-using-alias` | Miksi `using StringMap = std::map<std::string, int>` on usein parempi k… |
@@ -291,7 +291,7 @@
 | ✅ | 4 | `b03-js-async-promise-race-timeout` | fetch ei timeouttaa natiivisti — käyttäjä jää odottamaan ikuisesti. Mod… |
 | ✅ | 3 | `b04-js-async-debounce` | Hakukenttä laukaisee API-kutsun joka näppäimellä — palvelin ylikuormitt… |
 | ✅ | 3 | `b04-js-async-event-loop-blocking` | UI jäätyy kun käsittelet 100k rivin CSV:tä for-silmukalla fetchin jälke… |
-| ✅ | 4 | `b04-js-async-generator` | Paginoitu API — haluat for-await silmukan joka hakee sivut automaattise… |
+| ✅ | 4 | `b04-js-async-generator` | Paginoitu API palauttaa nextPage-osoittimen. Haluat kuluttaa kaikki siv… |
 | ✅ | 3 | `b04-js-async-race-fetch` | Hidas API — haluat timeoutin 5s jälkeen AbortError. Oikea yhdistelmä? |
 | ✅ | 3 | `b05-js-async-debounce` | Hakukenttä laukaisee API-kutsun jokaisella näppäimellä — palvelin yliku… |
 | ✅ | 3 | `b05-js-event-loop-order` | console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolv… |
@@ -305,7 +305,7 @@
 | ✅ | 3 | `b07-js-async-await-error` | async funktio heittää — unhandled rejection tuotannossa. Miten käsittel… |
 | ✅ | 4 | `b07-js-async-debounce` | Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset … |
 | ✅ | 4 | `b07-js-async-microtask` | console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu to… |
-| ✅ | 4 | `b08-js-async-generator` | Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan asyn… |
+| ✅ | 4 | `b08-js-async-generator` | Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silm… |
 | ✅ | 5 | `b08-js-async-microtask-starvation` | while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. … |
 | ✅ | 3 | `b08-js-async-parallel` | Lataat kolme riippumatonta API:a — await peräkkäin kestää 3×. Nopeampi … |
 | ✅ | 3 | `b08-js-async-race-timeout` | fetch ei saa roikkua yli 5 sekuntia — timeout ilman manuaalista flagia? |
@@ -319,7 +319,7 @@
 | ✅ | 2 | `b12-js-async-callback-to-promise` | Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käär… |
 | ✅ | 4 | `b12-js-async-eventemitter-memory` | Node EventEmitter 'data' listenerit kasaantuvat — MaxListenersExceededW… |
 | ✅ | 3 | `b12-js-async-fetch-keepalive` | Analytics beacon sivun unloadissa — fetch katkeaa. Vaihtoehto? |
-| ✅ | 4 | `b12-js-async-generator-async` | Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyp… |
+| ✅ | 4 | `b12-js-async-generator-async` | Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylist… |
 | ✅ | 4 | `b12-js-async-iterator-for-await` | ReadableStream data async iterable. Silmukka? |
 | ✅ | 5 | `b12-js-async-microtask-starvation` | while(true) { queueMicrotask(() => {}) } — UI jäätyy vaikka ei ole synk… |
 | ✅ | 3 | `b12-js-async-promise-all-error` | Promise.all — yksi reject. Mitä tapahtuu? |
@@ -330,7 +330,7 @@
 | ✅ | 3 | `b12-js-async-queue-microtask` | Haluat ajaa funktion heti synkronisen koodin jälkeen mutta ennen setTim… |
 | ✅ | 4 | `b12-js-async-retry-backoff` | API palauttaa 503 — haluat uudelleenyrityksen eksponentiaalisella viive… |
 | ✅ | 3 | `b12-js-async-settled-vs-resolve` | finally-blokissa tarvitset tietää onnistuiko promise. Miten saat tuloks… |
-| ✅ | 4 | `b12-js-async-signal-combine` | Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API? |
+| ✅ | 4 | `b12-js-async-signal-combine` | Kaksi riippumatonta peruutuslähdettä (esim. käyttäjän navigointi ja tim… |
 | ✅ | 2 | `b12-js-async-sleep-pattern` | Testissä haluat odottaa 100ms ilman busy-waitiä. Pattern? |
 | ✅ | 5 | `b12-js-async-stream-backpressure` | Node transform stream tulvii muistia — kirjoittaja nopeampi kuin lukija… |
 | ✅ | 3 | `exp-js-async-await-parallel` | Code review: kaksi await fetchiä peräkkäin — sivu latautuu hitaasti. Mi… |
@@ -347,7 +347,7 @@
 |---|------|-----|---------|
 | ✅ | 4 | `b02-js-modules-cycle-09` | Kaksi moduulia importtaa toisensa — toinen export undefined init aikana… |
 | ✅ | 3 | `b02-js-modules-dynamic-08` | Feature flag lataa analytics-moduulin vain tarvittaessa. ES module tapa? |
-| ✅ | 2 | `b02-js-modules-export-11` | Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista… |
+| ✅ | 2 | `b02-js-modules-export-11` | Barrel-tiedosto index.js julkaisee utils.js:n funktiot ilman että ne im… |
 | ✅ | 4 | `b02-js-modules-tla-10` | Moduulin top-level await hidastaa koko appin latausta — milloin käyttää? |
 | ✅ | 2 | `b03-js-modules-export-default-named` | Code review: tiedosto export default User ja export const helper — impo… |
 | ✅ | 3 | `b03-js-modules-import-meta` | Bundleri tarvitsee nykyisen moduulin URL:n runtime asset-polkuun. ES-mo… |
@@ -383,7 +383,7 @@
 | ✅ | 2 | `b12-js-modules-mjs-cjs-ext` | Node ESM-tiedosto ilman type module? |
 | ✅ | 3 | `b12-js-modules-namespace-import` | import * as utils from './utils.js' — utils on? |
 | ✅ | 4 | `b12-js-modules-package-exports` | package.json exports kenttä — miksi? |
-| ✅ | 3 | `b12-js-modules-reexport` | index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`.… |
+| ✅ | 3 | `b12-js-modules-reexport` | Monorepon barrel-tiedosto kokoaa julkisen API:n kahdesta moduulista ilm… |
 | ✅ | 3 | `b12-js-modules-resolve-alias` | Monorepossa `@app/utils` pitää resolvautua `packages/utils/src`. Missä … |
 | ✅ | 3 | `b12-js-modules-side-effects` | Bundleri poistaa `import './polyfill.js'` tree-shakingissa ja polyfill … |
 | ✅ | 2 | `b12-js-modules-specifier-must-relative` | import from 'lodash' vs './lodash.js' — ero? |
@@ -459,24 +459,24 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `b02-js-types-coalesce-06` | Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaat… |
+| ✅ | 2 | `b02-js-types-coalesce-06` | Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraa… |
 | ✅ | 2 | `b02-js-types-optional-05` | API palauttaa `{ name?: string }` — miten luet turvallisesti ilman unde… |
 | ✅ | 2 | `b02-js-types-strict-07` | Bugi: `if (count == '0')` menee läpi kun count on 0. Fix? |
 | ✅ | 3 | `b03-js-types-number-precision` | Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteis… |
-| ✅ | 2 | `b03-js-types-optional-chaining` | API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Mod… |
+| ✅ | 2 | `b03-js-types-optional-chaining` | Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on und… |
 | ✅ | 4 | `b03-js-types-symbol-key` | Kirjasto haluaa piilottaa metadatan objektista ilman name collision -ri… |
 | ✅ | 2 | `b04-js-types-array-flat` | Nested array [[1,[2]],3] pitää litistää yhdeksi tasoksi. Moderni metodi? |
 | ✅ | 3 | `b04-js-types-number-precision` | Laskin: 0.1 + 0.2 === 0.3 palauttaa false tuotannossa. Miksi? |
-| ✅ | 2 | `b04-js-types-optional-chaining` | API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvall… |
-| ✅ | 4 | `b04-js-types-symbol-iterator` | Custom collection-luokka pitää saada toimimaan for...of ja spread-opera… |
+| ✅ | 2 | `b04-js-types-optional-chaining` | API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Hal… |
+| ✅ | 4 | `b04-js-types-symbol-iterator` | Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa … |
 | ✅ | 4 | `b05-js-types-bigint-json` | JSON.stringify(BigInt(42)) heittää TypeError. Miksi? |
-| ✅ | 2 | `b05-js-types-nullish-coalescing` | API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vai… |
+| ✅ | 2 | `b05-js-types-nullish-coalescing` | Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käy… |
 | ✅ | 2 | `b05-js-types-strict-equality` | Code review: `if (status == '200')` — miksi pyydetään muutosta? |
 | ✅ | 2 | `b06-js-types-in-operator` | Code review: 'key' in obj vs obj.hasOwnProperty(key). Milloin in on oik… |
 | ✅ | 3 | `b06-js-types-map-key-object` | Objekti avaimena Mapissa — sama key instance löytyy. Miksi ei Object av… |
 | ✅ | 3 | `b06-js-types-temporal-date` | Date.parse('01/02/2023') tulos vaihtelee locale:sta. Miten vältät? |
 | ✅ | 3 | `b07-js-types-nan` | parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi? |
-| ✅ | 2 | `b07-js-types-optional-chain` | Cannot read property name of undefined — syvä objektipolku API-vastauks… |
+| ✅ | 2 | `b07-js-types-optional-chain` | API-vastaus sisältää syvän objektipolun, ja production crashaa kun väli… |
 | ✅ | 2 | `b07-js-types-strict-equality` | Bug: `if (!userId)` hylkää validin arvon `0`. Mikä tarkistus on turvall… |
 | ✅ | 3 | `b08-js-types-bigint` | 64-bit ID ylittää Number.MAX_SAFE_INTEGER — JSON API palauttaa ison num… |
 | ✅ | 2 | `b08-js-types-strict-equals` | API hylkää vain `if (token == null) return unauthorized()`. Mikä arvo p… |
@@ -494,9 +494,9 @@
 | ✅ | 1 | `b12-js-types-let-block` | for-silmukassa `var i` vuotaa loopin ulkopuolelle. Turvallisempi vaihto… |
 | ✅ | 2 | `b12-js-types-nan-check` | Laskenta palauttaa NaN — `value === NaN` on aina false. Miten tarkistat? |
 | ✅ | 3 | `b12-js-types-object-keys-values` | Haluat iteroida objektin arvot ilman for...in prototyypin perintää. Met… |
-| ✅ | 2 | `b12-js-types-object-shorthand` | Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin … |
+| ✅ | 2 | `b12-js-types-object-shorthand` | Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien ni… |
 | ✅ | 3 | `b12-js-types-parseint-radix` | parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen? |
-| ✅ | 2 | `b12-js-types-rest-params` | Funktio `sum(...nums)` — mitä ...nums tarkoittaa? |
+| ✅ | 2 | `b12-js-types-rest-params` | Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkon… |
 | ✅ | 2 | `b12-js-types-spread-copy` | Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nope… |
 | ✅ | 3 | `b12-js-types-structured-equality` | Kaksi eri objektia {a:1} ja {a:1} — {} === {} on false. Miksi? |
 | ✅ | 4 | `b12-js-types-symbol-tostring` | Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne? |
@@ -505,7 +505,7 @@
 | ✅ | 2 | `b12-js-types-truthy-falsy` | Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus … |
 | ✅ | 1 | `b12-js-types-typeof-string` | Mikä `typeof 'hello'` palauttaa? |
 | ✅ | 4 | `exp-js-types-bigint-json` | API palauttaa 64-bit ID:n — JSON.parse menettää tarkkuuden. Miten käsit… |
-| ✅ | 2 | `exp-js-types-nullish-coalescing` | Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`… |
+| ✅ | 2 | `exp-js-types-nullish-coalescing` | Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraa… |
 | ✅ | 2 | `exp-js-types-strict-equality` | Auth-bugi: `if (!token)` hylkää validin tyhjän merkkijonon `''` ja sall… |
 | ✅ | 3 | `js-types-null-object` | Miksi `typeof null === 'object'` on historiallinen ansa? |
 | ✅ | 2 | `js-types-strict-eq` | Miksi `===` on turvallisempi kuin `==` vertailussa? |
@@ -775,9 +775,9 @@
 | ✅ | 3 | `b02-docker-run-limit-02` | Yksi container syö koko hostin RAM:in — OOM killaa muita. Rajoitus? |
 | ✅ | 3 | `b02-docker-run-user-01` | Containeri ajaa rootina tuotannossa — audit finding. Ensimmäinen harden… |
 | ✅ | 4 | `b03-docker-buildkit-cache-mount` | npm ci kestää 5 min jokaisessa buildissa vaikka package-lock ei muutu. … |
-| ✅ | 2 | `b03-docker-copy-vs-add` | Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet… |
+| ✅ | 2 | `b03-docker-copy-vs-add` | Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerf… |
 | ✅ | 2 | `b03-docker-dockerignore-build` | Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen o… |
-| ✅ | 3 | `b03-docker-entrypoint-cmd` | Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa o… |
+| ✅ | 3 | `b03-docker-entrypoint-cmd` | `docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Do… |
 | ✅ | 2 | `b03-docker-prune-disk` | CI-runnerin levy täyttyy 'no space left' — satoja dangling imageja. Tur… |
 | ✅ | 4 | `b03-docker-secrets-compose` | DB-salasana on compose-tiedoston environment-osiossa gitissä. Parempi t… |
 | ✅ | 3 | `b03-docker-stats-limits` | Yksi kontti syö koko hostin RAM:in — muut palvelut kaatuvat. docker sta… |
@@ -829,7 +829,7 @@
 | ✅ | 3 | `b08-dockerfile-arg-env` | Build-time versio build-argilla — runtime config erikseen. Ero ARG vs E… |
 | ✅ | 3 | `b08-dockerfile-copy-chown` | Non-root USER ei voi kirjoittaa COPY:llä tuotua hakemistoa. Dockerfile-… |
 | ✅ | 4 | `b09-docker-buildkit-cache-mount` | Go-moduulien lataus hidastaa CI-buildia vaikka go.mod ei muutu. BuildKi… |
-| ✅ | 3 | `b09-docker-cmd-entrypoint` | Haluat wrapper-skriptin joka ajaa migraatiot ennen appia — mutta CMD pi… |
+| ✅ | 3 | `b09-docker-cmd-entrypoint` | Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylik… |
 | ✅ | 2 | `b09-docker-dockerignore-build` | Docker build lähettää 500 MB node_modules kontekstina vaikka ne asennet… |
 | ✅ | 4 | `b09-docker-env-secrets-smell` | Code review: DATABASE_PASSWORD Dockerfile ENV:ssä. Miksi tämä on ongelm… |
 | ✅ | 2 | `b09-docker-exec-debug` | Kontti pyörii mutta shelliä ei ole imageessa — tarvitset interaktiivise… |
@@ -1306,7 +1306,7 @@
 | ✅ | 4 | `b02-qt-signals-queued-04` | Worker-thread emit updateUI() — crash GUI-threadissa. Connection type? |
 | ✅ | 3 | `b03-qt-signals-block-signals` | Lataat modelin UI:hin — jokainen setValue laukaisee signaalin ja aiheut… |
 | ✅ | 3 | `b03-qt-signals-unique-connection` | Sama connect() kutsutaan initissä ja refreshissä — slot ajetaan kaksi k… |
-| ✅ | 4 | `b04-qt-meta-object-moc` | Build epäonnistuu: 'staticMetaObject undefined' luokalle jossa on Q_OBJ… |
+| ✅ | 4 | `b04-qt-meta-object-moc` | Luokka käyttää signaaleja ja slotteja, mutta linkitys valittaa staticMe… |
 | ✅ | 3 | `b04-qt-signals-block` | Bulk-päivitys laukaisee satoja valueChanged-signaaleja — UI jäätyy. Mit… |
 | ✅ | 3 | `b04-qt-signals-sender` | Yksi slot käsittelee usean napin clicked-signaalin — miten tunnistat kl… |
 | ✅ | 3 | `b05-qt-signals-disconnect-lambda` | Lambda-slotti connectissa — disconnect ei toimi osoitteella. Miksi? |
@@ -1524,7 +1524,7 @@
 | ✅ | 3 | `git-log-filtering` | Haluat nähdä vain yhden tiedoston muutoshistorian viimeisen kuukauden a… |
 | ✅ | 3 | `git-merge-conflict-resolve` | git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnkul… |
 | ✅ | 4 | `git-rebase-interactive` | Feature-branchissa on 5 pientä committia jotka pitäisi yhdistää siistik… |
-| ✅ | 4 | `git-reflog-recovery` | Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat… |
+| ✅ | 4 | `git-reflog-recovery` | Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tie… |
 | ✅ | 3 | `git-reset-vs-revert` | Viimeisin commit mainiin on buginen ja kollegat ovat jo pullanneet sen.… |
 | ✅ | 3 | `git-stash-workflow` | Keskeneräinen työ pitää siirtää sivuun nopeasti ilman committia esim. b… |
 | ✅ | 3 | `git-tag-release` | Release pitää merkitä niin että CI voi triggata deployment tietystä ver… |
@@ -1699,7 +1699,7 @@
 | ✅ | 2 | `rust-traits-default-impl` | Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa… |
 | ✅ | 2 | `rust-traits-definition` | Mikä Rustin trait vastaa käytännössä Java-interfacen roolia? |
 | ✅ | 3 | `rust-traits-deref-coercion` | Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy? |
-| ✅ | 1 | `rust-traits-derive-debug` | Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia… |
+| ✅ | 1 | `rust-traits-derive-debug` | Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät… |
 | ✅ | 3 | `rust-traits-dyn-trait-object` | Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä… |
 | ✅ | 3 | `rust-traits-impl-trait-return` | Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä pa… |
 | ✅ | 2 | `rust-traits-iterator` | Mikä trait mahdollistaa `for item in collection` -silmukan? |
@@ -1709,7 +1709,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `rust-types-enum-variants` | Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä… |
-| ✅ | 1 | `rust-types-if-let` | Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siiste… |
+| ✅ | 1 | `rust-types-if-let` | `Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa … |
 | ✅ | 2 | `rust-types-match-exhaustive` | Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi? |
 | ✅ | 2 | `rust-types-method-receiver` | Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&… |
 | ✅ | 1 | `rust-types-option` | Funktio voi palauttaa arvon tai ei mitään. Mikä tyyppi korvaa null-poin… |

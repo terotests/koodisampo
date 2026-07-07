@@ -1,4 +1,4 @@
-# Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?
+# Mikä merkintä pakottaa kääntäjän varmistamaan, että aliluokan metodi todella ylikirjoittaa base-metodin?
 
 ## Tilanne
 

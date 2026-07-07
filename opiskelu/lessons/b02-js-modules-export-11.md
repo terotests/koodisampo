@@ -1,4 +1,4 @@
-# Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista. Syntax?
+# Barrel-tiedosto index.js julkaisee utils.js:n funktiot ilman että ne importataan ensin paikallisiin bindingeihin. Mikä export-lauseke?
 
 ## Tilanne
 

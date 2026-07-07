@@ -1,4 +1,4 @@
-# Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu — override ei kaadu. Miten estät?
+# Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu hiljaisesti — kääntäjä ei varoita. Mitä lisäät aliluokan metodiin?
 
 ## Tilanne
 

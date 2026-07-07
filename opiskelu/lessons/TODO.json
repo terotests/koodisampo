@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T15:46:43.899Z",
+  "generatedAt": "2026-07-07T15:56:14.957Z",
   "summary": {
     "totalQuestions": 1301,
     "readyLessons": 1289,
@@ -57,7 +57,7 @@
             {
               "id": "b04-cpp-final-override-virtual",
               "difficulty": 3,
-              "prompt": "Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu — override ei kaadu. Miten estät?",
+              "prompt": "Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu hiljaisesti — kääntäjä ei varoita. Mitä lisäät aliluokan metodiin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-final-override-virtual.md"
             },
@@ -924,7 +924,7 @@
             {
               "id": "b02-cpp-style-override-03",
               "difficulty": 2,
-              "prompt": "Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?",
+              "prompt": "Mikä merkintä pakottaa kääntäjän varmistamaan, että aliluokan metodi todella ylikirjoittaa base-metodin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-style-override-03.md"
             },
@@ -1078,7 +1078,7 @@
             {
               "id": "exp-cpp-cr-default-delete",
               "difficulty": 3,
-              "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?",
+              "prompt": "Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida eikä siirtää. Mikä C++11-merkintä kieltää copy-operaation selkeästi kääntäjälle?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-cr-default-delete.md"
             },
@@ -1106,7 +1106,7 @@
             {
               "id": "style-override",
               "difficulty": 2,
-              "prompt": "Miksi käyttää `override` periytyvässä metodissa?",
+              "prompt": "Johdettu luokka ylikirjoittaa virtual-metodin, mutta kirjoitusvirhe signatuurissa ei kaada käännöstä. Mitä C++11-avainsanaa lisäät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/style-override.md"
             },
@@ -1486,7 +1486,7 @@
             {
               "id": "tools-constexpr",
               "difficulty": 3,
-              "prompt": "Mitä `constexpr` funktio mahdollistaa C++11:ssä?",
+              "prompt": "Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-avainsanaa käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/tools-constexpr.md"
             },
@@ -1600,7 +1600,7 @@
             {
               "id": "b04-js-async-generator",
               "difficulty": 4,
-              "prompt": "Paginoitu API — haluat for-await silmukan joka hakee sivut automaattisesti. Pattern?",
+              "prompt": "Paginoitu API palauttaa nextPage-osoittimen. Haluat kuluttaa kaikki sivut ilman callback-ketjua ja ilman manuaalista while-silmukkaa. Mikä JavaScript-pattern yhdistää iteration ja awaitin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-async-generator.md"
             },
@@ -1698,7 +1698,7 @@
             {
               "id": "b08-js-async-generator",
               "difficulty": 4,
-              "prompt": "Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?",
+              "prompt": "Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-generator.md"
             },
@@ -1796,7 +1796,7 @@
             {
               "id": "b12-js-async-generator-async",
               "difficulty": 4,
-              "prompt": "Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?",
+              "prompt": "Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä silmukkaa, jossa jokainen iteraatio odottaa seuraavaa sivua. Minkä funktiomuodon täytyy tuottaa data?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-generator-async.md"
             },
@@ -1873,7 +1873,7 @@
             {
               "id": "b12-js-async-signal-combine",
               "difficulty": 4,
-              "prompt": "Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?",
+              "prompt": "Kaksi riippumatonta peruutuslähdettä (esim. käyttäjän navigointi ja timeout) — fetch pitää keskeytyä jos kumpi tahansa laukeaa. Mikä standardi-API yhdistää signaalit?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-signal-combine.md"
             },
@@ -1965,7 +1965,7 @@
             {
               "id": "b02-js-modules-export-11",
               "difficulty": 2,
-              "prompt": "Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista. Syntax?",
+              "prompt": "Barrel-tiedosto index.js julkaisee utils.js:n funktiot ilman että ne importataan ensin paikallisiin bindingeihin. Mikä export-lauseke?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-modules-export-11.md"
             },
@@ -2217,7 +2217,7 @@
             {
               "id": "b12-js-modules-reexport",
               "difficulty": 3,
-              "prompt": "index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?",
+              "prompt": "Monorepon barrel-tiedosto kokoaa julkisen API:n kahdesta moduulista ilman import+export -kahdetta askelta. Mikä export-lauseke?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-reexport.md"
             },
@@ -2695,7 +2695,7 @@
             {
               "id": "b02-js-types-coalesce-06",
               "difficulty": 2,
-              "prompt": "Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaattori?",
+              "prompt": "Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraatio puuttuu kokonaan. Mikä ES2020-operaattori eroaa `||`:sta tässä tapauksessa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-coalesce-06.md"
             },
@@ -2723,7 +2723,7 @@
             {
               "id": "b03-js-types-optional-chaining",
               "difficulty": 2,
-              "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?",
+              "prompt": "Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-js-types-optional-chaining.md"
             },
@@ -2751,14 +2751,14 @@
             {
               "id": "b04-js-types-optional-chaining",
               "difficulty": 2,
-              "prompt": "API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?",
+              "prompt": "API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-optional-chaining.md"
             },
             {
               "id": "b04-js-types-symbol-iterator",
               "difficulty": 4,
-              "prompt": "Custom collection-luokka pitää saada toimimaan for...of ja spread-operaattorilla. Mitä implementoit?",
+              "prompt": "Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa ja spreadissa. Mitä well-known symbolia luokka tarvitsee?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-js-types-symbol-iterator.md"
             },
@@ -2772,7 +2772,7 @@
             {
               "id": "b05-js-types-nullish-coalescing",
               "difficulty": 2,
-              "prompt": "API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vain null/undefined?",
+              "prompt": "Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-types-nullish-coalescing.md"
             },
@@ -2814,7 +2814,7 @@
             {
               "id": "b07-js-types-optional-chain",
               "difficulty": 2,
-              "prompt": "Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?",
+              "prompt": "API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-optional-chain.md"
             },
@@ -2940,7 +2940,7 @@
             {
               "id": "b12-js-types-object-shorthand",
               "difficulty": 2,
-              "prompt": "Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?",
+              "prompt": "Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien nimet vastaavat avaimia?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-object-shorthand.md"
             },
@@ -2954,7 +2954,7 @@
             {
               "id": "b12-js-types-rest-params",
               "difficulty": 2,
-              "prompt": "Funktio `sum(...nums)` — mitä ...nums tarkoittaa?",
+              "prompt": "Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkona. Mikä parametrimuoto kerää ylimääräiset argumentit?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-rest-params.md"
             },
@@ -3017,7 +3017,7 @@
             {
               "id": "exp-js-types-nullish-coalescing",
               "difficulty": 2,
-              "prompt": "Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`. Korjaus?",
+              "prompt": "Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraatiolukija korvaa sen oletuksella 5000. Mikä oletusarvo-operaattori säilyttää nollan mutta korvaa puuttuvan arvon?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-types-nullish-coalescing.md"
             },
@@ -4598,7 +4598,7 @@
             {
               "id": "b03-docker-copy-vs-add",
               "difficulty": 2,
-              "prompt": "Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet COPY:tä?",
+              "prompt": "Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerfile-buildissa. Mikä ongelma tässä on, ja mitä Dockerfile-komentoa käytät sen sijaan?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-copy-vs-add.md"
             },
@@ -4612,7 +4612,7 @@
             {
               "id": "b03-docker-entrypoint-cmd",
               "difficulty": 3,
-              "prompt": "Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa oletuskomentoa. Miksi?",
+              "prompt": "`docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-entrypoint-cmd.md"
             },
@@ -4976,7 +4976,7 @@
             {
               "id": "b09-docker-cmd-entrypoint",
               "difficulty": 3,
-              "prompt": "Haluat wrapper-skriptin joka ajaa migraatiot ennen appia — mutta CMD pitää ylikirjoittaa helposti. Ero?",
+              "prompt": "Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylikirjoittaa vain sovelluksen argumentit (ei migraatiovaihetta). Miten jaat Dockerfile-komennot?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-docker-cmd-entrypoint.md"
             },
@@ -7628,7 +7628,7 @@
             {
               "id": "b04-qt-meta-object-moc",
               "difficulty": 4,
-              "prompt": "Build epäonnistuu: 'staticMetaObject undefined' luokalle jossa on Q_OBJECT. Puuttuva askel?",
+              "prompt": "Luokka käyttää signaaleja ja slotteja, mutta linkitys valittaa staticMetaObject:sta. Mikä build-vaihe puuttuu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-qt-meta-object-moc.md"
             },
@@ -8899,7 +8899,7 @@
             {
               "id": "git-reflog-recovery",
               "difficulty": 4,
-              "prompt": "Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat ne?",
+              "prompt": "Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tiedät että työtä on kadonnut vasta äskettäin. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/git-reflog-recovery.md"
             },
@@ -9641,7 +9641,7 @@
             {
               "id": "rust-traits-derive-debug",
               "difficulty": 1,
-              "prompt": "Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?",
+              "prompt": "Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät struct-määrittelyyn automaattisen Debug-toteutuksen saamiseksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-traits-derive-debug.md"
             },
@@ -9684,7 +9684,7 @@
             {
               "id": "rust-types-if-let",
               "difficulty": 1,
-              "prompt": "Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?",
+              "prompt": "`Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa match-haaraa `None`:lle. Mikä pattern syntax on idiomaattisin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-types-if-let.md"
             },

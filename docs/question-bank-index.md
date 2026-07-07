@@ -108,7 +108,7 @@ Koodikatselmassa ehdotetaan tiimin coding-standardiin sääntöä: merkitse joka
 
 #### `b04-cpp-final-override-virtual` · diff 3
 
-Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu — override ei kaadu. Miten estät?
+Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muuttuu hiljaisesti — kääntäjä ei varoita. Mitä lisäät aliluokan metodiin?
 
 - **override-avainsana — kääntäjä varoittaa jos signatuuri ei matchaa basea** ✓
 - Kommentti // overrides Base::draw riittää dokumentoimaan ylikirjoituksen
@@ -1173,7 +1173,7 @@ Konfiguraatiovakio pitää laskea compile-time — runtime-laskenta hidastaa kä
 
 #### `b02-cpp-style-override-03` · diff 2
 
-Perusluokan `virtual void draw()` ylikirjoitetaan mutta kääntäjä ei varoita jos funktion nimi on `draw()` vs `Draw()`. Mitä avainsanaa pyydät?
+Mikä merkintä pakottaa kääntäjän varmistamaan, että aliluokan metodi todella ylikirjoittaa base-metodin?
 
 - virtual avainsana riittää — override on redundantti
 - **override — kääntäjä varmistaa base-funktion olemassaolon** ✓
@@ -1372,7 +1372,7 @@ Uusi header alkaa `using namespace std;` ja includataan kymmenessä moduulissa. 
 
 #### `exp-cpp-cr-default-delete` · diff 3
 
-Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida. Code review ehdottaa `= delete` copy-operaatioille. Miksi?
+Luokka hallitsee tiedostonkuvaajaa eikä saa kopioida eikä siirtää. Mikä C++11-merkintä kieltää copy-operaation selkeästi kääntäjälle?
 
 - **= delete copy-operaatioille — intentti näkyy kääntäjälle** ✓
 - = delete tekee luokasta automaattisesti nopeamman
@@ -1408,7 +1408,7 @@ Luokka ei ole tarkoitettu perittäväksi mutta sisältää virtual-metodeja. Mit
 
 #### `style-override` · diff 2
 
-Miksi käyttää `override` periytyvässä metodissa?
+Johdettu luokka ylikirjoittaa virtual-metodin, mutta kirjoitusvirhe signatuurissa ei kaada käännöstä. Mitä C++11-avainsanaa lisäät?
 
 - **override varmistaa kääntäjällä että virtual-metodi ylikirjoitetaan** ✓
 - virtual avainsana metodin alussa riittää — override on redundantti
@@ -1880,7 +1880,7 @@ Mitä `auto` tekee modernissa C++:ssa?
 
 #### `tools-constexpr` · diff 3
 
-Mitä `constexpr` funktio mahdollistaa C++11:ssä?
+Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-avainsanaa käytät?
 
 - **constexpr funktio voi laskea arvon käännösaikana const-argumenteilla** ✓
 - constexpr pakottaa funktion inline assembly -muotoon
@@ -1974,7 +1974,7 @@ npm ci kestää 5 min jokaisessa buildissa vaikka package-lock ei muutu. BuildKi
 
 #### `b03-docker-copy-vs-add` · diff 2
 
-Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittelet COPY:tä?
+Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerfile-buildissa. Mikä ongelma tässä on, ja mitä Dockerfile-komentoa käytät sen sijaan?
 
 - **COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia** ✓
 - ADD on aina nopeampi
@@ -1992,7 +1992,7 @@ Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen optimo
 
 #### `b03-docker-entrypoint-cmd` · diff 3
 
-Tiimi sekoittaa ENTRYPOINT ja CMD — `docker run image bash` ei korvaa oletuskomentoa. Miksi?
+`docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?
 
 - **ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyttää** ✓
 - CMD korvaa aina ENTRYPOINTin
@@ -2460,7 +2460,7 @@ Go-moduulien lataus hidastaa CI-buildia vaikka go.mod ei muutu. BuildKit-optimoi
 
 #### `b09-docker-cmd-entrypoint` · diff 3
 
-Haluat wrapper-skriptin joka ajaa migraatiot ennen appia — mutta CMD pitää ylikirjoittaa helposti. Ero?
+Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylikirjoittaa vain sovelluksen argumentit (ei migraatiovaihetta). Miten jaat Dockerfile-komennot?
 
 - **ENTRYPOINT wrapper-skripti + CMD app-args — CMD on oletusparametrit entrypointille** ✓
 - CMD ja ENTRYPOINT ovat identtiset — molemmat korvataan helposti docker run:lla
@@ -3327,7 +3327,7 @@ Feature-branchissa on 5 pientä committia jotka pitäisi yhdistää siistiksi en
 
 #### `git-reflog-recovery` · diff 4
 
-Vahingossa ajoit git reset --hard ja menetit committeja. Miten palautat ne?
+Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tiedät että työtä on kadonnut vasta äskettäin. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?
 
 - **git reflog näyttää HEAD-historian — löydä sha ja git checkout/reset siihen** ✓
 - git log --all näyttää aina kaikki commitit mukaan lukien resetoidut
@@ -3484,7 +3484,7 @@ UI jäätyy kun käsittelet 100k rivin CSV:tä for-silmukalla fetchin jälkeen. 
 
 #### `b04-js-async-generator` · diff 4
 
-Paginoitu API — haluat for-await silmukan joka hakee sivut automaattisesti. Pattern?
+Paginoitu API palauttaa nextPage-osoittimen. Haluat kuluttaa kaikki sivut ilman callback-ketjua ja ilman manuaalista while-silmukkaa. Mikä JavaScript-pattern yhdistää iteration ja awaitin?
 
 - **Async generator function* joka yieldaa sivut — for await (const page of fetchPages())** ✓
 - while(true) sync fetch — ei jäädy
@@ -3610,7 +3610,7 @@ console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?
 
 #### `b08-js-async-generator` · diff 4
 
-Paginoitu API — haluat for-loopin joka hakee sivut yksi kerrallaan async-iteraattorina. Ominaisuus?
+Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?
 
 - **async function* generator — for await...of paginoituun API-iteraatioon** ✓
 - while(true) sync fetch — async generator ei tue awaitia yield-kutsujen välissä
@@ -3736,7 +3736,7 @@ Analytics beacon sivun unloadissa — fetch katkeaa. Vaihtoehto?
 
 #### `b12-js-async-generator-async` · diff 4
 
-Streamaat paginoitua API:a — haluat `for await` silmukan. Funktion tyyppi?
+Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä silmukkaa, jossa jokainen iteraatio odottaa seuraavaa sivua. Minkä funktiomuodon täytyy tuottaa data?
 
 - **async function* — async generator** ✓
 - function* riittää awaitille sisällä
@@ -3835,7 +3835,7 @@ finally-blokissa tarvitset tietää onnistuiko promise. Miten saat tuloksen ilma
 
 #### `b12-js-async-signal-combine` · diff 4
 
-Kaksi AbortControlleria — fetch peruuttuu jos jompikumpi aborttaa. API?
+Kaksi riippumatonta peruutuslähdettä (esim. käyttäjän navigointi ja timeout) — fetch pitää keskeytyä jos kumpi tahansa laukeaa. Mikä standardi-API yhdistää signaalit?
 
 - **AbortSignal.any([signal1, signal2])** ✓
 - signal1 + signal2 merge
@@ -3945,7 +3945,7 @@ Feature flag lataa analytics-moduulin vain tarvittaessa. ES module tapa?
 
 #### `b02-js-modules-export-11` · diff 2
 
-Haluat uudelleenexportata useita util-funktioita yhdestä entrypointista. Syntax?
+Barrel-tiedosto index.js julkaisee utils.js:n funktiot ilman että ne importataan ensin paikallisiin bindingeihin. Mikä export-lauseke?
 
 - **export { foo, bar } from './utils.js' — re-export ilman importia** ✓
 - import * sitten window.foo — julkaisee utilit globaalisti entrypointista
@@ -4269,7 +4269,7 @@ package.json exports kenttä — miksi?
 
 #### `b12-js-modules-reexport` · diff 3
 
-index.js barrel tiedosto uudelleenexporttaa `./utils.js` ja `./api.js`. Syntaksi?
+Monorepon barrel-tiedosto kokoaa julkisen API:n kahdesta moduulista ilman import+export -kahdetta askelta. Mikä export-lauseke?
 
 - **export * from './utils.js' ja export { x } from './api.js'** ✓
 - import then window.exports
@@ -4867,7 +4867,7 @@ for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 0); } — mitä t
 
 #### `b02-js-types-coalesce-06` · diff 2
 
-Config `port` voi olla 0 — oletus 3000 vain jos null/undefined. Operaattori?
+Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraatio puuttuu kokonaan. Mikä ES2020-operaattori eroaa `||`:sta tässä tapauksessa?
 
 - **Nullish coalescing: port ?? 3000 säilyttää arvon 0 sellaisenaan** ✓
 - port || 3000 toimii identtisesti ??-operaattorin kanssa kaikissa tapauksissa
@@ -4903,7 +4903,7 @@ Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteistä.
 
 #### `b03-js-types-optional-chaining` · diff 2
 
-API-vastaus voi olla null — `user.profile.name` kaataa tuotannossa. Moderni suoja?
+Tuotannossa kaadutaan lukiessa nested API-kenttiä, kun välivaihe on undefined. Mikä operaattori katkaisee property accessin turvallisesti?
 
 - **Optional chaining: user?.profile?.name estää TypeError null-polulla** ✓
 - try/catch jokaisella rivillä on kevyin tapa käsitellä puuttuvia kenttiä
@@ -4939,7 +4939,7 @@ Laskin: 0.1 + 0.2 === 0.3 palauttaa false tuotannossa. Miksi?
 
 #### `b04-js-types-optional-chaining` · diff 2
 
-API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen pääsy?
+API palauttaa käyttäjäobjektin, jossa profile voi puuttua kokonaan. Haluat lukea displayName-nimen ilman TypeErroria, mutta ilman viiden rivin if-ketjua. Mikä ES2020-operaattori auttaa?
 
 - **user?.profile?.name** ✓
 - user.profile.name || '' — riittää nullille
@@ -4948,7 +4948,7 @@ API-vastaus voi olla null — `user.profile.name` kaataa. Moderni turvallinen p�
 
 #### `b04-js-types-symbol-iterator` · diff 4
 
-Custom collection-luokka pitää saada toimimaan for...of ja spread-operaattorilla. Mitä implementoit?
+Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa ja spreadissa. Mitä well-known symbolia luokka tarvitsee?
 
 - **Symbol.iterator metodi joka palauttaa iterator-objektin** ✓
 - toString() riittää
@@ -4966,7 +4966,7 @@ JSON.stringify(BigInt(42)) heittää TypeError. Miksi?
 
 #### `b05-js-types-nullish-coalescing` · diff 2
 
-API palauttaa `{ count: 0 }` — `value || 10` antaa 10. Oikea oletus vain null/undefined?
+Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?
 
 - **value ?? 10 — nullish coalescing** ✓
 - value || 10 on oikein nollalle
@@ -5020,7 +5020,7 @@ parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi?
 
 #### `b07-js-types-optional-chain` · diff 2
 
-Cannot read property name of undefined — syvä objektipolku API-vastauksessa. Moderni syntaksi?
+API-vastaus sisältää syvän objektipolun, ja production crashaa kun välivaihe on undefined. Mikä ES2020-operaattori lyhentää null check -ketjun property accessissa?
 
 - **Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa** ✓
 - user.profile.name toimii aina kun API palauttaa vähintään tyhjän objektin
@@ -5182,7 +5182,7 @@ Haluat iteroida objektin arvot ilman for...in prototyypin perintää. Metodi?
 
 #### `b12-js-types-object-shorthand` · diff 2
 
-Rakennat API-payloadin: muuttujat `id` ja `name` ovat valmiina. Lyhyin ES6-syntaksi?
+Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien nimet vastaavat avaimia?
 
 - **{ id, name } — property shorthand** ✓
 - { id: id, name: name } on ainoa tapa
@@ -5200,7 +5200,7 @@ parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen?
 
 #### `b12-js-types-rest-params` · diff 2
 
-Funktio `sum(...nums)` — mitä ...nums tarkoittaa?
+Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkona. Mikä parametrimuoto kerää ylimääräiset argumentit?
 
 - **Rest parameter kerää loput argumentit taulukoksi** ✓
 - Spread kopioi taulukon
@@ -5281,7 +5281,7 @@ API palauttaa 64-bit ID:n — JSON.parse menettää tarkkuuden. Miten käsittele
 
 #### `exp-js-types-nullish-coalescing` · diff 2
 
-Config `timeout: 0` korvautuu oletuksella 5000 koska koodi käyttää `||`. Korjaus?
+Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraatiolukija korvaa sen oletuksella 5000. Mikä oletusarvo-operaattori säilyttää nollan mutta korvaa puuttuvan arvon?
 
 - **?? korvaa vain null/undefined — säilyttää arvon 0 oletuksena** ✓
 - == false -tarkistus erottaa nollan ja tyhjän arvon toisistaan
@@ -9718,7 +9718,7 @@ Sama connect() kutsutaan initissä ja refreshissä — slot ajetaan kaksi kertaa
 
 #### `b04-qt-meta-object-moc` · diff 4
 
-Build epäonnistuu: 'staticMetaObject undefined' luokalle jossa on Q_OBJECT. Puuttuva askel?
+Luokka käyttää signaaleja ja slotteja, mutta linkitys valittaa staticMetaObject:sta. Mikä build-vaihe puuttuu?
 
 - **MOC ei ajettu — varmista Q_OBJECT, headers CMake AUTOMOC:ssa tai qmake moc** ✓
 - Poista Q_OBJECT — ei tarvita
@@ -10940,7 +10940,7 @@ Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy?
 
 #### `rust-traits-derive-debug` · diff 1
 
-Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?
+Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät struct-määrittelyyn automaattisen Debug-toteutuksen saamiseksi?
 
 - **#[derive(Debug)] struct Foo { ... } — automaattinen Debug-toteutus** ✓
 - impl Debug käsin aina pakollinen
@@ -10987,7 +10987,7 @@ Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypis
 
 #### `rust-types-if-let` · diff 1
 
-Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?
+`Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa match-haaraa `None`:lle. Mikä pattern syntax on idiomaattisin?
 
 - **if let Some(x) = opt { ... }** ✓
 - match opt { Some(x) => ..., None => {} } aina pakollinen

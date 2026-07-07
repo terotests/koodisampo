@@ -1,4 +1,4 @@
-# Custom collection-luokka pitää saada toimimaan for...of ja spread-operaattorilla. Mitä implementoit?
+# Oma luokka pitää käyttäytyä kuten natiivi taulukko for...of-silmukassa ja spreadissa. Mitä well-known symbolia luokka tarvitsee?
 
 ## Tilanne
 

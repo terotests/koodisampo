@@ -742,7 +742,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Haluat käsitellä vain `Option`:n `Some`-haaran. Mikä syntaksi on siistein?",
+      "prompt": "`Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa match-haaraa `None`:lle. Mikä pattern syntax on idiomaattisin?",
       "choices": [
         {
           "text": "if let Some(x) = opt { ... }",
@@ -1286,7 +1286,7 @@
         "secretary",
         "guru"
       ],
-      "prompt": "Haluat tulostaa structin debug-lokitukseen ilman manuaalista fmt-koodia. Mikä on nopein tapa?",
+      "prompt": "Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät struct-määrittelyyn automaattisen Debug-toteutuksen saamiseksi?",
       "choices": [
         {
           "text": "#[derive(Debug)] struct Foo { ... } — automaattinen Debug-toteutus",
