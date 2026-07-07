@@ -1033,7 +1033,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Docker build on hidas — jokainen pieni koodimuutos invalidoi koko dependency layerin. Fix?",
+      "prompt": "Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. Fix?",
       "choices": [
         {
           "text": "COPY package.json ensin, sitten lähdekoodi — layer cache säilyy",
@@ -1052,10 +1052,10 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Layer ordering optimoi cache — Dockerfile best practices.",
-      "wrongFeedback": "Aikainen COPY . rikkoo cache. Riippuvuudet erikseen.",
+      "correctFeedback": "Layer ordering optimoi cache — COPY manifestit ennen lähdekoodia.",
+      "wrongFeedback": "COPY . . ennen npm ci invalidoi layerin ja pakottaa asennuksen uudelleen.",
       "sourceRef": "docker/build/cache",
-      "sourceUrl": "https://docs.docker.com/build/cache/",
+      "sourceUrl": "https://docs.docker.com/build/cache/optimize/",
       "featureId": "docker:layer-cache-order",
       "featurePoints": 4
     },
@@ -1535,8 +1535,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Docker docs: käytä COPY paitsi tar/URL tarpeissa.",
-      "wrongFeedback": "ADD piilotettu magia tekee buildeista vaikeammin auditoitavia.",
+      "correctFeedback": "Suosi COPY paikallisille tiedostoille — pinnaa versio ja checksum ulkoisille artefakteille.",
+      "wrongFeedback": "ADD URL:sta voi olla ok vain tietoisena valintana, ei oletuksena.",
       "sourceRef": "docker/docs/reference/dockerfile",
       "sourceUrl": "https://docs.docker.com/reference/dockerfile/#copy",
       "featureId": "docker:copy-vs-add",
@@ -1570,8 +1570,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "ENTRYPOINT+CMD yhdistelmä — Docker reference.",
-      "wrongFeedback": "shell-form ENTRYPOINT estää argumenttien korvauksen odotetusti.",
+      "correctFeedback": "ENTRYPOINT on pääkomento, CMD oletusargumentit — docker run korvaa CMD:n.",
+      "wrongFeedback": "docker run myimage bash → entrypoint.sh bash, ei entrypoint.sh server bash.",
       "sourceRef": "docker/docs/reference/dockerfile",
       "sourceUrl": "https://docs.docker.com/reference/dockerfile/#entrypoint",
       "featureId": "docker:entrypoint-cmd",
@@ -2544,8 +2544,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "HEALTHCHECK määrittää konttiterveyden — Dockerfile reference.",
-      "wrongFeedback": "Running ≠ healthy. HEALTHCHECK raportoi todellisen tilan.",
+      "correctFeedback": "HEALTHCHECK määrittää konttiterveyden — erottele liveness ja readiness.",
+      "wrongFeedback": "Running ≠ healthy. Liian tiukka DB-check livenessissä voi aiheuttaa turhia restartteja.",
       "sourceRef": "dockerfile/HEALTHCHECK",
       "sourceUrl": "https://docs.docker.com/reference/dockerfile/#healthcheck",
       "featureId": "docker:healthcheck",
@@ -3243,8 +3243,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Configure proxy for build — Docker docs proxy.",
-      "wrongFeedback": "Build tarvitsee proxy erikseen. Build args tai daemon config.",
+      "correctFeedback": "Välitä proxy build-argit build-komennossa — älä jätä ENV HTTP_PROXY runtime-imageen.",
+      "wrongFeedback": "Build tarvitsee proxy erikseen. Build args tai daemon config, ei ENV imageen.",
       "sourceRef": "docker/build/proxy",
       "sourceUrl": "https://docs.docker.com/engine/cli/proxy/",
       "featureId": "docker:proxy",
@@ -4098,27 +4098,27 @@
         "coworker",
         "security"
       ],
-      "prompt": "Debuggaat konttia — docker exec -it ajaa rootina vaikka Dockerfile USER app. Miksi?",
+      "prompt": "Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä optiota käytät?",
       "choices": [
         {
-          "text": "exec oletus root ellei --user — USER vaikuttaa vain CMD/ENTRYPOINT-käynnistykseen",
+          "text": "docker exec -it --user app myapp sh (tai --user root tarvittaessa)",
           "correct": true
         },
         {
-          "text": "Dockerfile USER estää docker exec -komennon kokonaan root-käyttäjänä",
+          "text": "Dockerfile USER riittää — exec noudattaa sitä automaattisesti aina",
           "correct": false
         },
         {
-          "text": "docker exec ignore Dockerfile USER -asetuksen aina debug-sessioissa",
+          "text": "--privileged vaihtaa exec-käyttäjän Dockerfile USER -asetukseen",
           "correct": false
         },
         {
-          "text": "Vain docker run kunnioittaa USER-riviä — exec ajaa aina Dockerfile-käyttäjänä",
+          "text": "docker run --user app korvaa exec-debugin käynnissä olevassa kontissa",
           "correct": false
         }
       ],
-      "correctFeedback": "exec defaults to root — specify --user — docker exec docs.",
-      "wrongFeedback": "Debug exec rootina on riski. Käytä --user app tai nsenter varovasti.",
+      "correctFeedback": "Määritä käyttäjä --user-optiolla — docker exec docs.",
+      "wrongFeedback": "Valitse käyttäjä eksplisiittisesti: --user app tai --user root.",
       "sourceRef": "docker/exec",
       "sourceUrl": "https://docs.docker.com/reference/cli/docker/container/exec/",
       "featureId": "docker:exec-user",

@@ -19,6 +19,6 @@ deploy:
 Resource constraints — Docker run/compose docs.
 
 ## Käytännössä
-Swarm/K8s käyttää reservations schedulingiin. Load test rajojen alle ja yli — varmista OOM-käyttäytyminen.
+`deploy`-osion tuki on Compose-specissä optional — varmista että ympäristösi soveltaa rajoja. Swarm/K8s käyttää reservations schedulingiin. Load test rajojen alle ja yli — varmista OOM-käyttäytyminen.
 
 [Lue lisää](https://docs.docker.com/reference/compose-file/deploy/#resources)

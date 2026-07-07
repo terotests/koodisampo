@@ -13,6 +13,6 @@ docker run --memory 512m --cpus 1.5 --memory-swap 512m app
 Resource limits käyttävät cgroups — docker run docs.
 
 ## Käytännössä
- `--memory-swap` = `--memory` estää swapin käytön rajojen kiertämiseen. Dokumentoi limitit per palvelu.
+`--memory-swap` = `--memory` estää swapin käytön rajojen kiertämiseen. Compose `deploy.resources.limits` on platform-riippuvainen — testaa että rajat oikeasti voimaan. Dokumentoi limitit per palvelu.
 
 [Lue lisää](https://docs.docker.com/engine/containers/resource_constraints/)
