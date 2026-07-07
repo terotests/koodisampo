@@ -301,7 +301,7 @@ function dedupeRefs(refs) {
   /** @type {GlossaryRef[]} */
   const out = [];
   for (const r of refs) {
-    const key = `${r.file}:${r.line}:${r.excerpt}`;
+    const key = `${r.file}:${r.line}:${r.questionId || ""}:${r.excerpt}`;
     if (seen.has(key)) continue;
     seen.add(key);
     out.push(r);
