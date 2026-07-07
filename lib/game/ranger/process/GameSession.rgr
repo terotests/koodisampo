@@ -1316,6 +1316,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   }
 
   fn shouldUseEmotionalDialogue:boolean (ent:MapEntity rel:NpcRelation) {
+    if (kidsMode) {
+      return false
+    }
     if (this.isCoworkerEncounter() == false) {
       return false
     }
