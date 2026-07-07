@@ -1,0 +1,1787 @@
+{
+  "DNS": {
+    "description": "**Domain Name System** — nimipalvelujärjestelmä, joka muuntaa isäntänimet (esim. `example.com`) IP-osoitteiksi. Lähiverkossa Avahi toteuttaa mDNS-pohjaisen hajautetun nimeämisen ilman keskitettyä DNS-palvelinta (RFC 6762).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "# Mitä Avahi tarjoaa lähiverkossa ilman keskitettyä DNS:ää?"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Kehitystiimi asentaa Raspberry Pi -laitteita toimistoon. Jokaisella lai…"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Avahi tarjoaa **mDNS/DNS-SD-palvelujen löytämisen** -verkossa — Zerocon…"
+      }
+    ]
+  },
+  "GUI": {
+    "description": "**Graphical User Interface** — graafinen käyttöliittymä. Qt-sovelluksissa GUI-threadi omistaa widgetit ja OpenGL-kontekstin; raskaat operaatiot on delegoitava worker-threadiin, jotta käyttöliittymä pysyy responsiivisena.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-nmcli-11.md",
+        "questionId": "b02-linux-network-nmcli-11",
+        "excerpt": "Kahvilassa yhteys on hidas. Toimistoverkon profiili on tallennettu Netw…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-opengl-context-11.md",
+        "questionId": "b02-qt-opengl-context-11",
+        "excerpt": "GUI-threadin widget-konteksti ja worker-konteksti voivat jakaa resurssi…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-signals-queued-04.md",
+        "questionId": "b02-qt-signals-queued-04",
+        "excerpt": "# Worker-thread emit updateUI() — crash GUI-threadissa. Connection type?"
+      }
+    ]
+  },
+  "UI": {
+    "description": "**User Interface** — käyttöliittymä; voi olla graafinen (GUI) tai tekstipohjainen (CLI). Qt Quick- ja QML-projekteissa UI-threadi vastaa renderöinnistä ja käyttäjätapahtumien käsittelystä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-tla-10.md",
+        "questionId": "b02-js-modules-tla-10",
+        "excerpt": "TLA sopii esim. CLI-työkaluun, jossa koko prosessi odottaa configia — e…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-js-modules-tla-10.md",
+        "questionId": "b02-js-modules-tla-10",
+        "excerpt": "Top-level await blokkaa kaikki riippuvaiset importit. Mittaa LCP ennen …"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-models-sort-09.md",
+        "questionId": "b02-qt-models-sort-09",
+        "excerpt": "näyttää 100 000 riviä. Käyttäjä klikkaa sarakeotsikkoa ja lajittelu kes…"
+      }
+    ]
+  },
+  "IP": {
+    "description": "**Internet Protocol** — verkkokerroksen protokolla, joka määrittää laitteiden osoitteistuksen (IPv4/IPv6) ja pakettien reitityksen. IP-osoite vaihtuu DHCP-leasen tai rebootin myötä; `ip addr show` ja `ip route` näyttävät koneen nykyiset osoitteet ja reittitaulun.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Kehitystiimi asentaa Raspberry Pi -laitteita toimistoon. Jokaisella lai…"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "IP vaihtuu rebootin jälkeen, ja pitäisi päivittää käsin jokaisella kone…"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-service-xml.md",
+        "questionId": "avahi-service-xml",
+        "excerpt": "Sisäinen dokumentaatiopalvelin pyörii nginxillä portissa 8080. Sovellus…"
+      }
+    ]
+  },
+  "PO": {
+    "description": "**Product Owner** — Scrumin tuoteomistaja, joka vastaa Product Backlogin priorisoinnista ja arvon maksimoinnista. PO hyväksyy tarinat Sprint Reviewssa ja on kehitystiimin pääasiallinen sidosryhmäyhdyshenkilö.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-scrum-dor-size-06.md",
+        "questionId": "b02-scrum-dor-size-06",
+        "excerpt": "PO haluaa pitää sen yhtenä backlog-iteminä, koska \"asiakas haluaa koko …"
+      },
+      {
+        "file": "opiskelu/lessons/b02-scrum-sprint-daily-11.md",
+        "questionId": "b02-scrum-sprint-daily-11",
+        "excerpt": "Scrum Guide määrittelee Daily Scrumin Developersin tapahtumaksi: tiimi …"
+      },
+      {
+        "file": "opiskelu/lessons/b02-scrum-sprint-review-12.md",
+        "questionId": "b02-scrum-sprint-review-12",
+        "excerpt": "Varaa Reviewssa aika ensin demoon — slidet vain taustaksi. Valmistele d…"
+      }
+    ]
+  },
+  "QML": {
+    "description": "**Qt Modeling Language** — Qt Quick -käyttöliittymien deklaratiivinen kuvauskieli. QML-tiedostot määrittelevät komponenttihierarkian, animaatiot ja sidokset; sovelluslogiikka toteutetaan C++:ssa tai JavaScript-lohkoissa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-qt-shaders-qml-graph-effect.md",
+        "questionId": "b09-qt-shaders-qml-graph-effect",
+        "excerpt": "# QML-käyttöliittymässä tarvitset blur-efektin itemille. Qt Quick -komp…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-qt-shaders-qml-graph-effect.md",
+        "questionId": "b09-qt-shaders-qml-graph-effect",
+        "excerpt": "QML-käyttöliittymässä haluat sumentaa taustan tietyn -komponentin takan…"
+      },
+      {
+        "file": "opiskelu/lessons/b13-qt-quick-anchors-layout.md",
+        "questionId": "b13-qt-quick-anchors-layout",
+        "excerpt": "# Nappi pitää keskittää ikkunaan ja venyttää leveys 80 % parentista. QM…"
+      }
+    ]
+  },
+  "TCP": {
+    "description": "**Transmission Control Protocol** — yhteyssuuntautunut verkkoprotokolla, joka takaa pakettijärjestyksen ja uudelleenlähetyksen. `tcpdump` suodattaa TCP-paketteja lippujen (SYN, RST, ACK) mukaan; `ss -t` näyttää yhteyksien tilan (ESTABLISHED, TIME_WAIT jne.).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "HFT-tyyppinen tai reaaliaikainen palvelu kuuntelee UDP/TCP-porttia 9000…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-network-ss-timers.md",
+        "questionId": "b03-linux-network-ss-timers",
+        "excerpt": "Node.js-palvelimen muistikäyttö kasvaa hitaasti. Uudet yhteydet hidastu…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-network-tcpdump-filter.md",
+        "questionId": "b03-linux-network-tcpdump-filter",
+        "excerpt": "TCP-yhteys jää jumiin SYN-vaiheeseen — epäilet että palomuuri tiputtaa …"
+      }
+    ]
+  },
+  "SQL": {
+    "description": "**Structured Query Language** — ISO-standardoitu kyselykieli relaatiotietokannoille. PostgreSQLissä kyselysuorituksia analysoidaan `EXPLAIN (ANALYZE, BUFFERS)` -komennolla; indeksit ja tilastot vaikuttavat planner-valintoihin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-explain-nested-07.md",
+        "questionId": "b02-pg-explain-nested-07",
+        "excerpt": "Nested loop on oikein, kun ulkokehä on pieni ja sisäpuolella on indeksi…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-models-sort-09.md",
+        "questionId": "b02-qt-models-sort-09",
+        "excerpt": "Siirrä lajittelu proxy-malliin tai datalähteeseen (SQL, indeksoitu vekt…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-models-sort-09.md",
+        "questionId": "b02-qt-models-sort-09",
+        "excerpt": "100k rivillä SQL-tason indeksoidulla sarakkeella on nopein. cachettaa l…"
+      }
+    ]
+  },
+  "ANALYZE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-explain-analyze-05.md",
+        "questionId": "b02-pg-explain-analyze-05",
+        "excerpt": "**ANALYZE** suorittaa kyselyn ja tulostaa ja jokaiselle solmulle. **BUF…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-pg-explain-analyze-05.md",
+        "questionId": "b02-pg-explain-analyze-05",
+        "excerpt": "Pelkkä ilman ANALYZE:a ei koskaan näytä todellisia aikoja — se on vain …"
+      },
+      {
+        "file": "opiskelu/lessons/b02-pg-explain-stats-08.md",
+        "questionId": "b02-pg-explain-stats-08",
+        "excerpt": "Tämä ei ole planner-bugi vaan **vanhentuneet tilastot**. Bulk load, mas…"
+      }
+    ]
+  },
+  "JSONB": {
+    "description": "**JSON Binary** — PostgreSQLin binäärimuotoinen JSON-tallennustyyppi (`jsonb`). Toisin kuin tekstimuotoinen `json`, `jsonb` hajottaa rakenteen indeksoitaviin komponentteihin; GIN-indeksi tarvitaan tehokkaaseen containment- (`@>`) ja avainkyselyihin (`?`).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-btree-02.md",
+        "questionId": "b02-pg-indexes-btree-02",
+        "excerpt": "PostgreSQLin oletusindeksityyppi kattaa useimmat vertailu- ja range-kys…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md",
+        "questionId": "b03-pg-indexes-gin-jsonb",
+        "excerpt": "# JSONB metadata-kenttä query hidas seq scan. Indeksi?"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md",
+        "questionId": "b03-pg-indexes-gin-jsonb",
+        "excerpt": "Sovellus tallentaa metadataa JSONB-sarakkeeseen ja hakee containment-op…"
+      }
+    ]
+  },
+  "VPN": {
+    "description": "**Virtual Private Network** — salattu virtuaalitunneli julkisen verkon yli yrityksen sisäverkkoon. Split-tunnel-VPN reitittää vain yritysverkon osoitteet tunnelin kautta; `ip route show table all` paljastaa VPN-asiakkaan lisäämät reitit.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-route-09.md",
+        "questionId": "b02-linux-network-route-09",
+        "excerpt": "# VPN-yhteys toimii mutta vain internal IP:t eivät routtaudu. Diagnosti…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-route-09.md",
+        "questionId": "b02-linux-network-route-09",
+        "excerpt": "Perus näyttää vain oletusreitin — VPN:n split-reitit voivat olla toises…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-route-09.md",
+        "questionId": "b02-linux-network-route-09",
+        "excerpt": "Tarkista myös VPN-clientin pushatut reitit ja firewall (/) FORWARD/OUTP…"
+      }
+    ]
+  },
+  "ARP": {
+    "description": "**Address Resolution Protocol** — protokolla, joka selvittää IP-osoitetta vastaavan MAC-osoitteen lähiverkossa (RFC 826). `ip neigh show` näyttää ARP-välimuistin; `INCOMPLETE`-merkintä tarkoittaa, että vastausta kohdelaitteelta ei ole vielä saatu.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-linux-network-ip-neigh.md",
+        "questionId": "b06-linux-network-ip-neigh",
+        "excerpt": "# Yhteys toimii pingillä mutta ARP-taulu näyttää incomplete. Mitä komen…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-linux-network-ip-neigh.md",
+        "questionId": "b06-linux-network-ip-neigh",
+        "excerpt": "Palvelin pingaa gatewayn onnistuneesti, mutta naapuriverkon laitteeseen…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-linux-network-ip-neigh.md",
+        "questionId": "b06-linux-network-ip-neigh",
+        "excerpt": "**ip neigh show — näyttää ARP- ja neighbor cache -taulun** (IPv4 ja IPv…"
+      }
+    ]
+  },
+  "MAC": {
+    "description": "**Media Access Control** -osoite — verkkosovittimen uniikki laitteistoosoite (esim. `aa:bb:cc:dd:ee:ff`). `macvlan`-Docker-driver antaa kontille oman MAC-osoitteen, jolloin kontti näkyy fyysisessä LAN-segmentissä erillisenä laitteena.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-linux-avahi-hostname-conflict.md",
+        "questionId": "b05-linux-avahi-hostname-conflict",
+        "excerpt": "Provisioning-skripteissä generoi uniikki hostname (MAC-osoite, UUID). Ä…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "# Kontit tarvitsevat omat MAC-osoitteet LAN-segmentissä. Mikä driver?"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "Useita palvelinkontteja pitää näkyä tehdas-LANissa erillisinä laitteina…"
+      }
+    ]
+  },
+  "GB": {
+    "description": "**Gigabyte** — 1 024 megatavua. Docker build context voi kasvaa gigatavuihin `.dockerignore`-tiedoston puuttuessa — esimerkiksi `node_modules` voi helposti ylittää 2 GB ja hidastaa buildia merkittävästi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-config-shared-14.md",
+        "questionId": "b02-pg-config-shared-14",
+        "excerpt": "Nosta maltillisesti (esim. 128 MB → 4 GB 16 GB RAM -koneella), restart,…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-dockerignore-build.md",
+        "questionId": "b03-docker-dockerignore-build",
+        "excerpt": "# Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-dockerignore-build.md",
+        "questionId": "b03-docker-dockerignore-build",
+        "excerpt": "lähettää 2 GB build contextia — mukana , ja vanhat build-artifaktit. Co…"
+      }
+    ]
+  },
+  "GL": {
+    "description": "**Graphics Library** — OpenGL-rajapinnan funktioprefiksi (`gl*`, kuten `glBindBuffer`, `glDrawArrays`). Kaikki GL-kutsut on tehtävä säikeessä, jolle OpenGL-konteksti on aktivoitu; Qt:n `QOpenGLFunctions`-periytyminen kapsuloi alustakohtaiset funktio-osoittimet.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-opengl-context-11.md",
+        "questionId": "b02-qt-opengl-context-11",
+        "excerpt": "Konteksti luodaan render-säikeessä, aktivoi sen ennen jokaista GL-kutsu…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-opengl-core-profile.md",
+        "questionId": "b03-qt-opengl-core-profile",
+        "excerpt": "# Legacy fixed-function GL-kutsu kaataa macOS:llä — toimii Linuxilla. K…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-rhi-fallback.md",
+        "questionId": "b03-qt-shaders-rhi-fallback",
+        "excerpt": "Kehittäjän MacBook renderöi Qt 6 -sovelluksen oikein (Metal-backend). W…"
+      }
+    ]
+  },
+  "COPY": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-build-copy-03.md",
+        "questionId": "b02-docker-build-copy-03",
+        "excerpt": "**COPY package.json ensin, sitten lähdekoodi — layer cache säilyy.**"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-copy-vs-add.md",
+        "questionId": "b03-docker-copy-vs-add",
+        "excerpt": "# Code review ehdottaa ADD tarball-url:ia Dockerfileen. Miksi suosittel…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-copy-vs-add.md",
+        "questionId": "b03-docker-copy-vs-add",
+        "excerpt": "**COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia.**"
+      }
+    ]
+  },
+  "NAT": {
+    "description": "**Network Address Translation** — verkkoosoitteiden muuntaminen reitittimessä tai palomuurissa. Docker bridge -verkko käyttää NAT:ia porttikartoituksessa (`-p host:container`); `--network host` ohittaa NAT:in kokonaan Linuxilla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "# Low-latency palvelu tarvitsee suoran host-portin ilman NAT:ia. Verkko…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "Palvelu tarvitsee suoran pääsyn hostin verkkopinoon ilman NAT:ia."
+      },
+      {
+        "file": "opiskelu/lessons/b02-docker-net-host-08.md",
+        "questionId": "b02-docker-net-host-08",
+        "excerpt": "**** jakaa kontin verkkopinon hostin kanssa Linuxissa. host network poi…"
+      }
+    ]
+  },
+  "GLSL": {
+    "description": "**OpenGL Shading Language** — C-tyyppinen shaderien ohjelmointikieli GPU:lle (`.vert`, `.frag`-tiedostot). Qt 6:ssa GLSL-tiedostot käännetään `qsb`-työkalulla `.qsb`-paketiksi, jonka RHI lataa runtime-alustan (OpenGL, Vulkan, Metal) mukaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-qsb-13.md",
+        "questionId": "b02-qt-shaders-qsb-13",
+        "excerpt": "Qt 6 -projektissa yrität ladata ja -tiedostoja suoraan runtime-käännöks…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-qsb-13.md",
+        "questionId": "b02-qt-shaders-qsb-13",
+        "excerpt": "Aja build-vaiheessa, ei käyttäjän koneella — nopeuttaa käynnistystä ja …"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-attribute-location.md",
+        "questionId": "b03-qt-shaders-attribute-location",
+        "excerpt": "Sama shader ja VBO toimii kehityskoneella, mutta toisella GPU:lla värit…"
+      }
+    ]
+  },
+  "ENV": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-docker-build-arg.md",
+        "questionId": "b04-docker-build-arg",
+        "excerpt": "ARG ei jää runtimeen (ellei kopioi ENV:ään). Pin base-image digest CI:s…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-docker-secrets-env.md",
+        "questionId": "b04-docker-secrets-env",
+        "excerpt": "# Tuotanto: salasanat ENV-muuttujina Dockerfile:ssa. Turvallisempi Comp…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-proxy.md",
+        "questionId": "b06-docker-network-proxy",
+        "excerpt": "Älä jätä proxy-env muuttujia runtime-imageen — käytä multi-stage buildi…"
+      }
+    ]
+  },
+  "REINDEX": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-pg-config-maintenance-work-mem.md",
+        "questionId": "b04-pg-config-maintenance-work-mem",
+        "excerpt": "**maintenance_work_mem — indeksin rakennus ja VACUUM** on oikea paramet…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-indexes-reindex-concurrently.md",
+        "questionId": "b06-pg-indexes-reindex-concurrently",
+        "excerpt": "# Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downt…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-indexes-reindex-concurrently.md",
+        "questionId": "b06-pg-indexes-reindex-concurrently",
+        "excerpt": "REINDEX korjaa indeksin rakenteen, ei korvaa puuttuvaa autovacuumia. Bl…"
+      }
+    ]
+  },
+  "RHI": {
+    "description": "**Rendering Hardware Interface** — Qt 6:n abstraktiokerros eri grafiikka-alustojen (OpenGL, Vulkan, Metal, D3D11) päälle. Shader-ohjelmat esikäännetään `qsb`-työkalulla `.qsb`-tiedostoiksi, jotka RHI lataa automaattisesti alustan mukaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-qsb-13.md",
+        "questionId": "b02-qt-shaders-qsb-13",
+        "excerpt": "# Qt 6 RHI backend — shaderit pitää esikääntää. Työkalu?"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-qsb-13.md",
+        "questionId": "b02-qt-shaders-qsb-13",
+        "excerpt": "Qt 6 -projektissa yrität ladata ja -tiedostoja suoraan runtime-käännöks…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-qsb-13.md",
+        "questionId": "b02-qt-shaders-qsb-13",
+        "excerpt": "Tulos on -tiedosto, jonka RHI lataa tai resurssijärjestelmän kautta."
+      }
+    ]
+  },
+  "USER": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-run-user-01.md",
+        "questionId": "b02-docker-run-user-01",
+        "excerpt": "**docker run --user nonroot tai USER-Dockerfilessa non-rootille.**"
+      },
+      {
+        "file": "opiskelu/lessons/b02-docker-run-user-01.md",
+        "questionId": "b02-docker-run-user-01",
+        "excerpt": "Varmista ja oikeudet volumeille. Rootless Docker host-tasolla on lisäke…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-user-nonroot.md",
+        "questionId": "b03-docker-user-nonroot",
+        "excerpt": "# Security review: Dockerfile ei määritä USER:ia — kontti ajaa rootina.…"
+      }
+    ]
+  },
+  "CTE": {
+    "description": "**Common Table Expression** — SQL:n `WITH`-lauseke, joka nimeää alikyselyn pääkyselyä varten. PostgreSQL 12:sta alkaen CTE inlinataan oletuksena pääkyselyyn; `MATERIALIZED`-vihje pakottaa erilliseen materialisoituun välitulokseen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-pg-explain-parallel.md",
+        "questionId": "b04-pg-explain-parallel",
+        "excerpt": "1. **Onko kysely parallel safe?** kertoo tai jos funktiot, CTE:t tai cu…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-cte-materialized-hint.md",
+        "questionId": "sqd-cte-materialized-hint",
+        "excerpt": "# PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääk…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-cte-materialized-hint.md",
+        "questionId": "sqd-cte-materialized-hint",
+        "excerpt": "PostgreSQL 12:een asti CTE () toimi implisiittisesti optimointiesteenä …"
+      }
+    ]
+  },
+  "QA": {
+    "description": "**Quality Assurance** — ohjelmiston laadunvarmistus; prosessit ja testaukset, joilla varmistetaan vaatimusten täyttyminen. QA-tiimi raportoi bugeista ja löydöksistä, jotka kirjataan Product Backlogiin tarinoina tai vikoina.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-js-types-number-precision.md",
+        "questionId": "b04-js-types-number-precision",
+        "excerpt": "QA-raportti kertoo, että verkkokaupan \"Ilmainen toimitus yli 0,30 €\" -b…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-qt-widgets-size-hint.md",
+        "questionId": "b05-qt-widgets-size-hint",
+        "excerpt": "Pitkä tagi \"KRIITTINEN-VIRHE-QA\" leikkaantuu widgetin reunoihin."
+      },
+      {
+        "file": "opiskelu/lessons/b07-js-async-abort.md",
+        "questionId": "b07-js-async-abort",
+        "excerpt": "QA merkitsee bugin kriittiseksi."
+      }
+    ]
+  },
+  "GIN": {
+    "description": "**Generalized Inverted Index** — PostgreSQLin indeksityyppi moniarvoisia rakenteita varten (arrays, `jsonb`, full-text). GIN hajottaa arvon avaimiin ja rakentaa käänteisindeksin; erityisen tehokas `@>` (containment) ja `?` (key exists) -operaattoreille.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-btree-02.md",
+        "questionId": "b02-pg-indexes-btree-02",
+        "excerpt": "PostgreSQLin oletusindeksityyppi kattaa useimmat vertailu- ja range-kys…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md",
+        "questionId": "b03-pg-indexes-gin-jsonb",
+        "excerpt": "**GIN-indeksi** JSONB-sarakkeelle:"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-gin-jsonb.md",
+        "questionId": "b03-pg-indexes-gin-jsonb",
+        "excerpt": "GIN (Generalized Inverted Index) on suunniteltu composite-arvojen ja co…"
+      }
+    ]
+  },
+  "GPU": {
+    "description": "**Graphics Processing Unit** — rinnakkaiseen laskentaan optimoitu grafiikkasuoritin. Shader-ohjelmat suoritetaan GPU:lla; attribuuttisidosten sijainti (`layout(location = ...)`) on kiinnitettävä eksplisiittisesti, koska eri GPU-ajurit voivat järjestää ne eri tavoin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-shaders-uniform-14.md",
+        "questionId": "b02-qt-shaders-uniform-14",
+        "excerpt": "# Shader uniform — location vaihtuu eri GPU:lla. Turvallinen tapa?"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-attribute-location.md",
+        "questionId": "b03-qt-shaders-attribute-location",
+        "excerpt": "# Vertex attribuutit sekoittuvat eri GPU:illa — layout ei täsmää. Vakau…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-attribute-location.md",
+        "questionId": "b03-qt-shaders-attribute-location",
+        "excerpt": "Sama shader ja VBO toimii kehityskoneella, mutta toisella GPU:lla värit…"
+      }
+    ]
+  },
+  "PG": {
+    "description": "**PostgreSQL**-lyhenne; esiintyy komentojen ja parametrien nimissä (`pg_stat_activity`, `pgBouncer`, `PG 11`). Viittaa PostgreSQL-tietokantapalvelimeen tai sen versioon.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-covering-04.md",
+        "questionId": "b02-pg-indexes-covering-04",
+        "excerpt": "Ennen PG 11:ä covering-indeksi vaati kaikki sarakkeet avaimen osaksi. I…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-config-effective-cache.md",
+        "questionId": "b03-pg-config-effective-cache",
+        "excerpt": "Planner ei tiedä fyysistä RAM-määrää suoraan. Se käyttää parametria : a…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-config-maintenance-work-mem.md",
+        "questionId": "b04-pg-config-maintenance-work-mem",
+        "excerpt": "CONCURRENTLY-indeksi rakennetaan useassa vaiheessa; muistin lisäys autt…"
+      }
+    ]
+  },
+  "CLI": {
+    "description": "**Command-Line Interface** — komentoriviympäristön tekstipohjainen käyttöliittymä. `nmcli` on NetworkManagerin CLI-työkalu; monet järjestelmätyökalut ovat saatavilla vain CLI:nä tai tarjoavat skriptattavamman hallinnan kuin graafinen vaihtoehto.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-modules-tla-10.md",
+        "questionId": "b02-js-modules-tla-10",
+        "excerpt": "TLA sopii esim. CLI-työkaluun, jossa koko prosessi odottaa configia — e…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-js-modules-tla-10.md",
+        "questionId": "b02-js-modules-tla-10",
+        "excerpt": "Top-level await blokkaa kaikki riippuvaiset importit. Mittaa LCP ennen …"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-nmcli-11.md",
+        "questionId": "b02-linux-network-nmcli-11",
+        "excerpt": "# Wi-Fi katkeilee — haluat vaihtaa verkko profiilin CLI:stä. Komento?"
+      }
+    ]
+  },
+  "PR": {
+    "description": "**Pull Request** — pyyntö yhdistää koodimuutos päähaaraan (GitHub) tai merge request (GitLab). CI-pipeline ajaa testit ja lint-tarkistukset PR:n avautuessa; hyväksyntäkierros varmistaa laadun ennen mergeä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-cpp-incident-sanitize-ubsan.md",
+        "questionId": "b03-cpp-incident-sanitize-ubsan",
+        "excerpt": "Yhdistä **ASan** muistivirheisiin. Aja test suite sanitizer-buildilla j…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-build-target.md",
+        "questionId": "b06-docker-build-target",
+        "excerpt": "Nimeä staget selkeästi. CI: test-stage PR:issä, production-stage vain m…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-cpp-clang-tidy-ci.md",
+        "questionId": "b07-cpp-clang-tidy-ci",
+        "excerpt": "Fail PR jos uusia rikkomuksia. Aja paikallisesti ennen pushia."
+      }
+    ]
+  },
+  "URL": {
+    "description": "**Uniform Resource Locator** — osoite, joka yksilöi resurssin verkossa (esim. `https://example.com/api/v1`). Dockerin `ADD`-komento voi hakea URL:ista, mutta `COPY` on suositeltavampi eksplisiittisyytensä vuoksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/apt-repository-add.md",
+        "questionId": "apt-repository-add",
+        "excerpt": "Ilman GPG-avainta APT varoittaa: *The following signatures couldn't be …"
+      },
+      {
+        "file": "opiskelu/lessons/apt-repository-add.md",
+        "questionId": "apt-repository-add",
+        "excerpt": "Luota vain tunnettuihin lähteisiin — kolmannen osapuolen repo on supply…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-copy-vs-add.md",
+        "questionId": "b03-docker-copy-vs-add",
+        "excerpt": "**COPY on eksplisiittinen — ADD tekee automaattista purkua/URL:ia.**"
+      }
+    ]
+  },
+  "CONCURRENTLY": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md",
+        "questionId": "b03-pg-indexes-concurrent-create",
+        "excerpt": "**CONCURRENTLY** rakentaa indeksin kahdessa vaiheessa ilman pitkää excl…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md",
+        "questionId": "b03-pg-indexes-concurrent-create",
+        "excerpt": "Huom: CONCURRENTLY ei voi ajaa transaktion sisällä. Epäonnistuessa inde…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md",
+        "questionId": "b03-pg-indexes-concurrent-create",
+        "excerpt": "CONCURRENTLY on standardi tuotantokäytäntö isojen taulujen indeksointii…"
+      }
+    ]
+  },
+  "RUN": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-docker-buildkit-cache.md",
+        "questionId": "b04-docker-buildkit-cache",
+        "excerpt": "**COPY package.json ensin, RUN npm ci, sitten loput — layer cache hyöty…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-docker-buildkit-cache.md",
+        "questionId": "b07-docker-buildkit-cache",
+        "excerpt": "**RUN --mount=type=cache säilyttää npm/go mod -cachen buildien välillä …"
+      },
+      {
+        "file": "opiskelu/lessons/b08-dockerfile-copy-chown.md",
+        "questionId": "b08-dockerfile-copy-chown",
+        "excerpt": "**COPY --chown=app:app tai RUN chown ennen USER-vaihtoa korjaa kirjoitu…"
+      }
+    ]
+  },
+  "XML": {
+    "description": "**Extensible Markup Language** — hierarkkinen tekstimuotoinen merkintäkieli. Avahi lukee palvelumäärittelyt `.service`-XML-tiedostoista hakemistosta `/etc/avahi/services/`; formaatti kuvaa palvelutypin, protokollan ja portin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/avahi-service-xml.md",
+        "questionId": "avahi-service-xml",
+        "excerpt": "Staattinen palvelumäärittely kuuluu tiedostoon **** — XML-muotoinen ser…"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-service-xml.md",
+        "questionId": "avahi-service-xml",
+        "excerpt": "Avahi lukee XML service definitionit -hakemistosta automaattisesti — ko…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-avahi-publish-14.md",
+        "questionId": "b02-linux-avahi-publish-14",
+        "excerpt": "Rekisteröi palvelu Avahilla joko **service XML -tiedostolla** tai ** -k…"
+      }
+    ]
+  },
+  "HTML": {
+    "description": "**HyperText Markup Language** — verkkosivujen rakennekuvauskieli. ESM-moduulit vaativat `type=\"module\"`-attribuutin `<script>`-elementille; ilman sitä `import`/`export`-syntaksi ei toimi selaimessa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-js-modules-esm-import.md",
+        "questionId": "b05-js-modules-esm-import",
+        "excerpt": "# HTML:ssä — import/export ei toimi. Korjaus?"
+      },
+      {
+        "file": "opiskelu/lessons/b07-js-runtime-closure-loop.md",
+        "questionId": "b07-js-runtime-closure-loop",
+        "excerpt": "Kaikki tulostavat 5. Opettaja kysyy fixiä ilman että saat vaihtaa HTML:…"
+      },
+      {
+        "file": "opiskelu/lessons/b08-js-runtime-dom-ready.md",
+        "questionId": "b08-js-runtime-dom-ready",
+        "excerpt": "Skripti on HTML:n :ssä ilman :"
+      }
+    ]
+  },
+  "CMD": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "# Tiimi sekoittaa ENTRYPOINT ja CMD — ei korvaa oletuskomentoa. Miksi?"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "Tiimi ajaa odottaen pääsevänsä debug-shelliin, mutta sovellus käynnisty…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "**ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyt…"
+      }
+    ]
+  },
+  "INCLUDE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-covering-04.md",
+        "questionId": "b02-pg-indexes-covering-04",
+        "excerpt": "on search key (WHERE), ja ovat leaf-sivuilla INCLUDE:na — indeksi \"katt…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-covering-04.md",
+        "questionId": "b02-pg-indexes-covering-04",
+        "excerpt": "Ennen PG 11:ä covering-indeksi vaati kaikki sarakkeet avaimen osaksi. I…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-explain-index-only-scan.md",
+        "questionId": "b03-pg-explain-index-only-scan",
+        "excerpt": "1. **Indeksi sisältää kaikki tarvittavat sarakkeet** (avain + INCLUDE t…"
+      }
+    ]
+  },
+  "CSV": {
+    "description": "**Comma-Separated Values** — pilkuilla eroteltu taulukkomuoto (`.csv`). Suuren CSV-tiedoston synkroninen käsittely pääsäikeellä jäädyttää selaimen UI:n; käsittely kannattaa siirtää Web Workeriin tai pilkkoa eriin tapahtumakierrosten välillä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-scrum-dor-size-06.md",
+        "questionId": "b02-scrum-dor-size-06",
+        "excerpt": "Definition of Ready vaatii, että työ mahtuu sprinttiin tai on pilkottu.…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-cpp-perf-string-reserve.md",
+        "questionId": "b03-cpp-perf-string-reserve",
+        "excerpt": "CSV-raportti rakennetaan silmukassa:"
+      },
+      {
+        "file": "opiskelu/lessons/b04-js-async-event-loop-blocking.md",
+        "questionId": "b04-js-async-event-loop-blocking",
+        "excerpt": "# UI jäätyy kun käsittelet 100k rivin CSV:tä for-silmukalla fetchin jäl…"
+      }
+    ]
+  },
+  "HEALTHCHECK": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-docker-health-interval.md",
+        "questionId": "b04-docker-health-interval",
+        "excerpt": "**HEALTHCHECK --interval ja --timeout — tiheämpi tarkistus.**"
+      },
+      {
+        "file": "opiskelu/lessons/b04-docker-health-interval.md",
+        "questionId": "b04-docker-health-interval",
+        "excerpt": "interval/timeout/retries määrittävät healthcheck-käyttäytymisen — Docke…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-docker-healthcheck-prod.md",
+        "questionId": "b05-docker-healthcheck-prod",
+        "excerpt": "**HEALTHCHECK curl localhost /health endpointiin.**"
+      }
+    ]
+  },
+  "JS": {
+    "description": "**JavaScript** — web-selainten ja Node.js:n dynaaminen ohjelmointikieli. Modernit JS-moduulit käyttävät `import`/`export` (ESM); bundler (Vite, Webpack) yhdistää moduulit optimoiduksi tuotantobuildiksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-js-modules-import-assertions.md",
+        "questionId": "b06-js-modules-import-assertions",
+        "excerpt": "Attribuutti kertoo loaderille, että tiedosto on JSON — ei suoritettavaa…"
+      },
+      {
+        "file": "opiskelu/lessons/b08-js-modules-dynamic-import.md",
+        "questionId": "b08-js-modules-dynamic-import",
+        "excerpt": "Tuotanto-buildin initial JS on 1.2 MB. Suurin syyllinen on Chart.js adm…"
+      },
+      {
+        "file": "opiskelu/lessons/b09-js-modules-dynamic-import.md",
+        "questionId": "b09-js-modules-dynamic-import",
+        "excerpt": "Performance-budget rikkoutuu: initial JS yli 500 KB. Suurin chunk sisäl…"
+      }
+    ]
+  },
+  "RF": {
+    "description": "**Robot Framework** — Pythonilla toteutettu hyväksymistestaus- ja RPA-automaatiokehys. RF-avainsanoja laajennetaan Python-kirjastoilla; `.py`-tiedoston julkiset funktiot rekisteröityvät automaattisesti RF-avainsanoiksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/rf-custom-python-keyword.md",
+        "questionId": "rf-custom-python-keyword",
+        "excerpt": "# Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla.…"
+      },
+      {
+        "file": "opiskelu/lessons/rf-custom-python-keyword.md",
+        "questionId": "rf-custom-python-keyword",
+        "excerpt": "Robot Framework on alun perin rakennettu laajennettavaksi Pythonilla (t…"
+      },
+      {
+        "file": "opiskelu/lessons/rf-custom-python-keyword.md",
+        "questionId": "rf-custom-python-keyword",
+        "excerpt": "**Kirjoita Python-kirjasto (.py) jossa funktiot ovat suoraan RF-avainsa…"
+      }
+    ]
+  },
+  "SSH": {
+    "description": "**Secure Shell** — salattu etäyhteysprotokolla palvelimen hallintaan (RFC 4251). `ssh user@hostname.local` toimii Avahi-mDNS-nimillä lähiverkossa; avainpohjainen tunnistautuminen on turvallisempi kuin salasana.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-avahi-conflict-13.md",
+        "questionId": "b02-linux-avahi-conflict-13",
+        "excerpt": "SSH-yhteys :iin katkeaa kesken työn. Load balancer -tyyppinen käyttäyty…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-journalctl-unit-06.md",
+        "questionId": "b02-linux-journalctl-unit-06",
+        "excerpt": "Nginx vastaa hitaasti ja monitoring näyttää 502-virheitä. Sinulla on SS…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-systemd-analyze-blame.md",
+        "questionId": "b03-linux-systemd-analyze-blame",
+        "excerpt": "Uusi tuotantopalvelin on valmis, mutta boot kestää yli kaksi minuuttia.…"
+      }
+    ]
+  },
+  "ARG": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-docker-build-arg.md",
+        "questionId": "b04-docker-build-arg",
+        "excerpt": "**ARG BASE_IMAGE + docker build --build-arg BASE_IMAGE=....**"
+      },
+      {
+        "file": "opiskelu/lessons/b04-docker-build-arg.md",
+        "questionId": "b04-docker-build-arg",
+        "excerpt": "ARG on build-time parametri — Dockerfile ARG docs."
+      },
+      {
+        "file": "opiskelu/lessons/b04-docker-build-arg.md",
+        "questionId": "b04-docker-build-arg",
+        "excerpt": "ARG ei jää runtimeen (ellei kopioi ENV:ään). Pin base-image digest CI:s…"
+      }
+    ]
+  },
+  "TS": {
+    "description": "**TypeScript** — Microsoftin kehittämä JavaScriptin tyypitetty ylijoukko. `tsc`-kääntäjä tarkistaa tyypit käännösaikana; interfacet ja mapped typet kuvaavat API-vastausten rakenteen, ja string union -tyypit korvaavat stringly-typed arvot.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b12-ts-basic-enum-string.md",
+        "questionId": "b12-ts-basic-enum-string",
+        "excerpt": "-taulukko + union () pitää arvot yhdessä paikassa. Vertaa — enum on ok …"
+      },
+      {
+        "file": "opiskelu/lessons/b12-ts-basic-interface-shape.md",
+        "questionId": "b12-ts-basic-interface-shape",
+        "excerpt": "# API-vastauksella on kentät ja . Miten kuvailet muodon TS:ssä?"
+      },
+      {
+        "file": "opiskelu/lessons/b12-ts-mapped-type.md",
+        "questionId": "b12-ts-mapped-type",
+        "excerpt": "Modifierit mapped typeissa: , optional , poistaa. on mapped type erikoi…"
+      }
+    ]
+  },
+  "VBO": {
+    "description": "**Vertex Buffer Object** — GPU-muistipuskuri vertex-datalle (koordinaatit, normaalit, UV-koordinaatit). VAO kapseloi VBO-sidoksen ja attribuuttiasettelun; attribuuttilokaalit kannattaa kiinnittää `layout(location = ...)` -direktiivillä eri GPU-ajureiden yhteensopivuuden varmistamiseksi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-qt-opengl-vao-12.md",
+        "questionId": "b02-qt-opengl-vao-12",
+        "excerpt": "Bindaa + (VBO) + shader program:"
+      },
+      {
+        "file": "opiskelu/lessons/b02-qt-opengl-vao-12.md",
+        "questionId": "b02-qt-opengl-vao-12",
+        "excerpt": "VAO kapseloi vertex-asettelun, VBO pitää kulmat, shader program määritt…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-qt-shaders-attribute-location.md",
+        "questionId": "b03-qt-shaders-attribute-location",
+        "excerpt": "Sama shader ja VBO toimii kehityskoneella, mutta toisella GPU:lla värit…"
+      }
+    ]
+  },
+  "BUFFERS": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-explain-analyze-05.md",
+        "questionId": "b02-pg-explain-analyze-05",
+        "excerpt": "**ANALYZE** suorittaa kyselyn ja tulostaa ja jokaiselle solmulle. **BUF…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-explain-buffers-hit.md",
+        "questionId": "b03-pg-explain-buffers-hit",
+        "excerpt": "Lisää **BUFFERS**-lippu EXPLAIN-komentoon:"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-explain-buffers-io.md",
+        "questionId": "b04-pg-explain-buffers-io",
+        "excerpt": "Lisää **BUFFERS**-lippu:"
+      }
+    ]
+  },
+  "CSS": {
+    "description": "**Cascading Style Sheets** — web-sivujen ulkoasun tyylittelykieli. Vite ja muut bundlerit käsittelevät CSS-importit komponenteissa; Qt Widgets -sovelluksissa QSS on Qt:n vastaava CSS-innoittama tyylimäärittely.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-js-runtime-raf-animation.md",
+        "questionId": "b09-js-runtime-raf-animation",
+        "excerpt": "rAF pysähtyy piilotetulla välilehdellä. CSS + on usein tehokkaampi kuin…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-modules-assert-type-css.md",
+        "questionId": "b12-js-modules-assert-type-css",
+        "excerpt": "# Vite/CSS import komponentissa?"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-modules-assert-type-css.md",
+        "questionId": "b12-js-modules-assert-type-css",
+        "excerpt": "**CSS import** moduulina — bundleri käsittelee:"
+      }
+    ]
+  },
+  "MVCC": {
+    "description": "**Multi-Version Concurrency Control** — PostgreSQLin rinnakkaisuusmalli, jossa jokainen transaktio näkee konsistentin snapshot-mukaisen version taulusta ilman lukukuormia lukoilla. Poistetut ja päivitetyt rivit jättävät dead tuple -bloatia, jonka VACUUM siivoaa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-vacuum-bloat-09.md",
+        "questionId": "b02-pg-vacuum-bloat-09",
+        "excerpt": "Tuotantotaulussa rivimäärä pysyy vakaana (~5M), mutta levykäyttö kasvaa…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-pg-vacuum-bloat-09.md",
+        "questionId": "b02-pg-vacuum-bloat-09",
+        "excerpt": "Bloat on normaali MVCC-sivutuote. Ratkaisu alkaa autovacuumin toimivuud…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-vacuum-long-xact.md",
+        "questionId": "b04-pg-vacuum-long-xact",
+        "excerpt": "MVCC-sääntö: mikään transaktio ei saa kadottaa näkyvyyttään. Yksi avoin…"
+      }
+    ]
+  },
+  "XID": {
+    "description": "**Transaction ID** — PostgreSQLin 32-bittinen transaktiontunniste. XID-avaruus on rajallinen (~4 miljardia); anti-wraparound VACUUM käyttää `freeze`-operaatiota merkitsemään vanhat rivit niin, ettei XID:n kierros aiheuttaisi tietojen katoamista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-vacuum-wrap-10.md",
+        "questionId": "b02-pg-vacuum-wrap-10",
+        "excerpt": "Wraparound liittyy 32-bit transaction ID -kiertoon. Freeze merkitsee ri…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-pg-vacuum-wraparound-warning.md",
+        "questionId": "b03-pg-vacuum-wraparound-warning",
+        "excerpt": "Wraparound ei liity levytilaan vaan XID-kiertoon. Se on harvinaisempi k…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-vacuum-freeze-age.md",
+        "questionId": "b04-pg-vacuum-freeze-age",
+        "excerpt": "PostgreSQL varoittaa anti-wraparound vacuum -velasta. 200 miljoonaa tra…"
+      }
+    ]
+  },
+  "DEBUG": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-journalctl-unit-06.md",
+        "questionId": "b02-linux-journalctl-unit-06",
+        "excerpt": "Tarvitset vain viimeisimmät **virheet** nginx-unitilta — ei INFO-, ei D…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-linux-journalctl-priority-err.md",
+        "questionId": "b04-linux-journalctl-priority-err",
+        "excerpt": "INFO- ja DEBUG-rivit eivät kiinnosta — tarvitset err, crit, alert ja em…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-journald-priority-filter.md",
+        "questionId": "b05-linux-journald-priority-filter",
+        "excerpt": "# Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain…"
+      }
+    ]
+  },
+  "ENTRYPOINT": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "# Tiimi sekoittaa ENTRYPOINT ja CMD — ei korvaa oletuskomentoa. Miksi?"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "Tiimi ajaa odottaen pääsevänsä debug-shelliin, mutta sovellus käynnisty…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-docker-entrypoint-cmd.md",
+        "questionId": "b03-docker-entrypoint-cmd",
+        "excerpt": "**ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyt…"
+      }
+    ]
+  },
+  "FQDN": {
+    "description": "**Fully Qualified Domain Name** — täydellinen toimialuenimi, joka sisältää kaikki domeeniosat ja loppupisteen (esim. `server.example.com.`). `/etc/resolv.conf`:in `search`-asetus täydentää lyhyet nimet FQDN:ksi; DHCP tai NetworkManager voi ylikirjoittaa sen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-resolv-10.md",
+        "questionId": "b02-linux-network-resolv-10",
+        "excerpt": "# Lyhyet hostnamet eivät resolvdu — FQDN toimii. Mikä tiedosto?"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-resolv-10.md",
+        "questionId": "b02-linux-network-resolv-10",
+        "excerpt": "Skripti kutsuu ja saa DNS-virheen. Sama endpoint FQDN:llä toimii:"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-resolv-10.md",
+        "questionId": "b02-linux-network-resolv-10",
+        "excerpt": "NetworkManager ja DHCP voivat ylikirjoittaa resolv.conf:in — pysyvä fix…"
+      }
+    ]
+  },
+  "NM": {
+    "description": "**NetworkManager** — Linuxin verkkoyhteyksien hallintadaemon. `nmcli`-komentorivityökalulla hallitaan yhteyksiä, aktivoidaan profiileja ja tarkistetaan DNS-asetuksia; `nmcli connection up <profiili>` vaihtaa aktiivisen verkkoprofiilin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-nmcli-11.md",
+        "questionId": "b02-linux-network-nmcli-11",
+        "excerpt": "Profiili aktivoidaan ja NM yhdistää oikeaan SSID:hen tallennetuilla tun…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-resolv-10.md",
+        "questionId": "b02-linux-network-resolv-10",
+        "excerpt": "NetworkManager ja DHCP voivat ylikirjoittaa resolv.conf:in — pysyvä fix…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-linux-network-route-metric.md",
+        "questionId": "b04-linux-network-route-metric",
+        "excerpt": "Metric-arvoja voi säätää NM-profiilissa () tai VPN-clientin asetuksissa…"
+      }
+    ]
+  },
+  "SD": {
+    "description": "**Service Discovery** — DNS-SD:ssä (DNS-based Service Discovery, RFC 6763) palvelut ilmoitetaan ja löydetään `_service._proto.local`-nimien avulla. Avahi toteuttaa DNS-SD:n lähiverkossa; `avahi-browse -a` listaa kaikki julkaistut palvelut.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Avahi tarjoaa **mDNS/DNS-SD-palvelujen löytämisen** -verkossa — Zerocon…"
+      },
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Avahi = Linux-toteutus mDNS:lle (RFC 6762) ja DNS-SD:lle (RFC 6763). Se…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-linux-avahi-service-type.md",
+        "questionId": "b06-linux-avahi-service-type",
+        "excerpt": "HTTPS:lle: . Muut protokollat: , jne. — IANA DNS-SD registry määrittele…"
+      }
+    ]
+  },
+  "CVE": {
+    "description": "**Common Vulnerabilities and Exposures** — julkinen haavoittuvuustietokanta (NVD/MITRE). CVE-tunniste (esim. `CVE-2021-44228`) yksilöi haavoittuvuuden; `unattended-upgrades` asentaa tietoturvapäivitykset automaattisesti CVE-korjaukset mukaan lukien.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/apt-unattended-upgrades.md",
+        "questionId": "apt-unattended-upgrades",
+        "excerpt": "Kymmenen Debian-palvelimen ylläpito on hoidettu ad hoc -tyylillä: joku …"
+      },
+      {
+        "file": "opiskelu/lessons/apt-update-vs-upgrade.md",
+        "questionId": "apt-update-vs-upgrade",
+        "excerpt": "Juuri provisioitu Debian-palvelin odottaa ensimmäistä ylläpitokierrosta…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-scrum-tech-debt-backlog.md",
+        "questionId": "b03-scrum-tech-debt-backlog",
+        "excerpt": "Tekninen velka tuodaan Product Backlogiin samoina tarinoina kuin ominai…"
+      }
+    ]
+  },
+  "IO": {
+    "description": "**Input/Output** — levy- tai verkko-operaatiot (luku/kirjoitus). PostgreSQLissä `track_io_timing = on` mahdollistaa IO-aikojen seurannan `EXPLAIN (ANALYZE, BUFFERS)` -tulosteessa; IO-piikkejä voi tutkia `checkpoint_completion_target`-asetuksen avulla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-pg-config-checkpoint.md",
+        "questionId": "b08-pg-config-checkpoint",
+        "excerpt": "# IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_time…"
+      },
+      {
+        "file": "opiskelu/lessons/qt-native-deploy.md",
+        "questionId": "qt-native-deploy",
+        "excerpt": "Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötte…"
+      },
+      {
+        "file": "opiskelu/lessons/qt-native-event-filter.md",
+        "questionId": "qt-native-event-filter",
+        "excerpt": "Tee päätös ensin vastuunjaon kautta: UI renderöi ja vastaanottaa syötte…"
+      }
+    ]
+  },
+  "LAN": {
+    "description": "**Local Area Network** — lähiverkko, joka kattaa yleensä rakennuksen tai kampuksen. `macvlan`- ja `ipvlan`-Docker-driverit antavat konteille suoran pääsyn fyysiseen LAN-segmenttiin omalla MAC-osoitteella.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "# Kontit tarvitsevat omat MAC-osoitteet LAN-segmentissä. Mikä driver?"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-network-ipvlan.md",
+        "questionId": "b06-docker-network-ipvlan",
+        "excerpt": "**macvlan tai ipvlan** antaa kontille oman MAC-osoitteen fyysisessä LAN…"
+      },
+      {
+        "file": "opiskelu/lessons/docker-macvlan.md",
+        "questionId": "docker-macvlan",
+        "excerpt": "# Kontti tarvitsee oman MAC-osoitteen ja LAN-IP:n reitittimeltä. Mikä d…"
+      }
+    ]
+  },
+  "DHCP": {
+    "description": "**Dynamic Host Configuration Protocol** — protokolla, joka jakaa IP-osoitteet, yhdyskäytävän ja nimipalvelimen automaattisesti verkkolaitteille. DHCP-lease voi ylikirjoittaa `/etc/resolv.conf`:in; NetworkManager-ylikäytäntö `dns=none` estää tämän.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/avahi-mdns.md",
+        "questionId": "avahi-mdns",
+        "excerpt": "Kehitystiimi asentaa Raspberry Pi -laitteita toimistoon. Jokaisella lai…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-network-resolv-10.md",
+        "questionId": "b02-linux-network-resolv-10",
+        "excerpt": "NetworkManager ja DHCP voivat ylikirjoittaa resolv.conf:in — pysyvä fix…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-avahi-publish-service.md",
+        "questionId": "b03-linux-avahi-publish-service",
+        "excerpt": "Raspberry Pi toimii IoT-gatewayna kotiverkossa. Se hostaa hallintapanee…"
+      }
+    ]
+  },
+  "MB": {
+    "description": "**Megabyte** — 1 024 kilotavua. PostgreSQLin `shared_buffers`-oletusarvo on usein 128 MB; tuotantopalvelimella suositellaan noin 25 % käytettävissä olevasta RAM-muistista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-config-shared-14.md",
+        "questionId": "b02-pg-config-shared-14",
+        "excerpt": "Nosta maltillisesti (esim. 128 MB → 4 GB 16 GB RAM -koneella), restart,…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-js-modules-worker-postmessage.md",
+        "questionId": "b03-js-modules-worker-postmessage",
+        "excerpt": "Dashboard parsii 50 MB API-vastausta pääsäikeellä:"
+      },
+      {
+        "file": "opiskelu/lessons/b05-pg-config-shared-buffers.md",
+        "questionId": "b05-pg-config-shared-buffers",
+        "excerpt": "Tuore PostgreSQL-asennus käyttää usein konservatiivista -oletusta (128 …"
+      }
+    ]
+  },
+  "RST": {
+    "description": "TCP **Reset** -lippu (RST) katkaisee yhteyden välittömästi ilman normaalia sulkemiskättelyä. `tcpdump 'tcp[tcpflags] & tcp-rst != 0'` suodattaa RST-paketit; palomuuri tai IDS voi lähettää RST:n estäessään yhteyden.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-linux-network-tcpdump.md",
+        "questionId": "b07-linux-network-tcpdump",
+        "excerpt": "# API-kutsu epäonnistuu TLS:n jälkeen — epäilet palomuurin RST-pakettej…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-linux-network-tcpdump.md",
+        "questionId": "b07-linux-network-tcpdump",
+        "excerpt": "Epäilet palomuurin tai IDS:n lähettävän RST-paketteja."
+      },
+      {
+        "file": "opiskelu/lessons/b07-linux-network-tcpdump.md",
+        "questionId": "b07-linux-network-tcpdump",
+        "excerpt": "Etsi (RST) paketteja:"
+      }
+    ]
+  },
+  "SYN": {
+    "description": "TCP **Synchronize** -lippu (SYN) aloittaa kolmivaiheisen kättelyn (SYN → SYN-ACK → ACK). Jos `tcpdump` näyttää lähtevät SYN-paketit mutta ei SYN-ACK-vastausta, palomuuri todennäköisesti pudottaa paketit.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-linux-network-tcpdump-filter.md",
+        "questionId": "b03-linux-network-tcpdump-filter",
+        "excerpt": "# API-kutsut timeouttaavat — epäilet palomuuria. Nopein tapa nähdä SYN-…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-network-tcpdump-filter.md",
+        "questionId": "b03-linux-network-tcpdump-filter",
+        "excerpt": "TCP-yhteys jää jumiin SYN-vaiheeseen — epäilet että palomuuri tiputtaa …"
+      },
+      {
+        "file": "opiskelu/lessons/b03-linux-network-tcpdump-filter.md",
+        "questionId": "b03-linux-network-tcpdump-filter",
+        "excerpt": "Näet SYN-paketit lähtevän mutta ei SYN-ACK:ia, jos palomuuri estää:"
+      }
+    ]
+  },
+  "BI": {
+    "description": "**Business Intelligence** — liiketoimintatiedon hallinta, analysointi ja raportointi. BI-työkalut (Metabase, Tableau, Power BI) voivat käyttää PostgreSQL-kantaa suoraan; ennen indeksin poistoa täytyy varmistaa, ettei BI-työkalu tai -kysely käytä sitä.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-vacuum-long-xact-11.md",
+        "questionId": "b02-pg-vacuum-long-xact-11",
+        "excerpt": "kasvaa, mutta autovacuum ei vapauta tilaa. paljastaa istunnon: , kysely…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-pg-indexes-unused-drop.md",
+        "questionId": "exp-pg-indexes-unused-drop",
+        "excerpt": "Varmista ennen poistoa: ei käyttöä :ssa, ei ulkoisia BI-työkaluja, ei t…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-pg-vacuum-long-xact.md",
+        "questionId": "exp-pg-vacuum-long-xact",
+        "excerpt": "12h on extreme esimerkki — 5 min riittää ongelmaan aktiivisessa UPDATE-…"
+      }
+    ]
+  },
+  "DPI": {
+    "description": "**Dots Per Inch** — näytön resoluution yksikkö (pisteitä tuumaa kohden). Qt Widgetsissä korkea DPI (HiDPI-skaalaus) vaatii `sizeHint()`-ylikirjoituksen, joka käyttää `QFontMetrics`-arvoja — muuten teksti leikkautuu tai widget on liian pieni.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/exp-qt-widgets-size-hint.md",
+        "questionId": "exp-qt-widgets-size-hint",
+        "excerpt": "# Custom widget leikkaa tekstiä eri DPI:llä. Mikä metodi pitää overrida…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-qt-widgets-size-hint.md",
+        "questionId": "exp-qt-widgets-size-hint",
+        "excerpt": "Kehityskoneella (96 DPI) badge näyttää hyvältä. QA-testaajan 150 % skaa…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-qt-widgets-size-hint.md",
+        "questionId": "exp-qt-widgets-size-hint",
+        "excerpt": "Layout kysyy :ia ennen sijoittamista — Qt Widgets sizing doc. huomioi D…"
+      }
+    ]
+  },
+  "FILE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-cpp-unique-ptr-deleter.md",
+        "questionId": "b07-cpp-unique-ptr-deleter",
+        "excerpt": "# RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_pt…"
+      },
+      {
+        "file": "opiskelu/lessons/b08-cpp-unique-ptr-deleter.md",
+        "questionId": "b08-cpp-unique-ptr-deleter",
+        "excerpt": "# FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mall…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-cpp-cr-raii-file.md",
+        "questionId": "exp-cpp-cr-raii-file",
+        "excerpt": "# Funktio avaa FILE*:n mutta early return ennen fclose:a. Mitä ehdotat …"
+      }
+    ]
+  },
+  "EXPOSE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-docker-network-publish.md",
+        "questionId": "b07-docker-network-publish",
+        "excerpt": "**** mapaa kontin portin hostille — publish port mapping. EXPOSE dokume…"
+      },
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "docker-healthcheck",
+        "excerpt": "EXPOSE varmistaa terveyden ennen load balancerin liikenteen ohjausta ko…"
+      },
+      {
+        "file": "content/question-banks/docker-ops.json",
+        "questionId": "docker-dns-custom",
+        "excerpt": "EXPOSE 53 Dockerfilessa avaa DNS-resoluution kontin sisällä automaattis…"
+      }
+    ]
+  },
+  "IIFE": {
+    "description": "**Immediately Invoked Function Expression** — heti suoritettava JavaScript-funktioilmaisu: `(function() { ... })()`. Vanhassa ES5-koodissa IIFE loi silmukan jokaiselle iteraatiolle erillisen sulkeuman; modernissa JS:ssä `let` silmukamuuttujana korvaa tarpeen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-js-runtime-closure-12.md",
+        "questionId": "b02-js-runtime-closure-12",
+        "excerpt": "Korjaus: **let i loopissa tai IIFE joka luo erillisen closuren jokaisel…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-js-runtime-closure-stale.md",
+        "questionId": "b05-js-runtime-closure-stale",
+        "excerpt": "Korjaus: **let i silmukassa tai IIFE/closure joka kaappaa arvon per ite…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-js-runtime-closure-loop.md",
+        "questionId": "b07-js-runtime-closure-loop",
+        "excerpt": "**let i loopissa tai IIFE — var jakaa saman sidonnan kaikille callbacke…"
+      }
+    ]
+  },
+  "LISTEN": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-linux-ss-tuln.md",
+        "questionId": "b04-linux-ss-tuln",
+        "excerpt": "# Portti 8080 pitäisi kuunnella mutta palvelu ei vastaa. Mikä komento l…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-linux-ss-tuln.md",
+        "questionId": "b04-linux-ss-tuln",
+        "excerpt": "vs selittää usein miksi ulkopuolelta ei saada yhteyttä. Kontissa hostil…"
+      },
+      {
+        "file": "opiskelu/lessons/b12-linux-tcp-established-filter.md",
+        "questionId": "b12-linux-tcp-established-filter",
+        "excerpt": "Palvelin palvelee HTTPS:ää portissa 443. Haluat nähdä vain **aktiiviset…"
+      }
+    ]
+  },
+  "CP": {
+    "description": "**C++ Core Guidelines** — Bjarne Stroustrupin ja Herb Sutterin ylläpitämä parhaiden käytäntöjen kokoelma C++:lle. `CP`-etuliitteellä alkavat säännöt (esim. CP.1–CP.9) käsittelevät samanaikaisuutta ja rinnakkaisuutta (`std::atomic`, `std::mutex`).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-cpp-thread-atomic-order-13.md",
+        "questionId": "b02-cpp-thread-atomic-order-13",
+        "excerpt": "Älä optimoi memory_orderia ilman mittausta ja ymmärrystä. CppCoreGuidel…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-cpp-thread-atomic-flag.md",
+        "questionId": "b03-cpp-thread-atomic-flag",
+        "excerpt": "C++20: + korvaa manuaalisen flagin. TSan löytää bool-racet testeissä. C…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-cpp-lock-guard-deadlock.md",
+        "questionId": "b04-cpp-lock-guard-deadlock",
+        "excerpt": "Prefer uudessa koodissa. Vaihtoehto: kiinteä globaali järjestys (aina p…"
+      }
+    ]
+  },
+  "INSERT/UPDATE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-indexes-concurrent-create.md",
+        "questionId": "b03-pg-indexes-concurrent-create",
+        "excerpt": "Tuotantotaulussa on jatkuva INSERT/UPDATE-kuorma. Normaali ottaa **Shar…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-indexes-expression.md",
+        "questionId": "b04-pg-indexes-expression",
+        "excerpt": "Expression index toimii myös , cast-operaatioille ja computed-kentille.…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-pg-indexes-partial-active.md",
+        "questionId": "b04-pg-indexes-partial-active",
+        "excerpt": "Kirjoitus hidastuu — jokainen INSERT/UPDATE päivittää turhaa indeksipin…"
+      }
+    ]
+  },
+  "OWASP": {
+    "description": "**Open Web Application Security Project** — voittoa tavoittelematon organisaatio web-tietoturvan edistämiseksi. OWASP Top 10 listaa yleisimmät web-haavoittuvuudet (injektio, broken access control, prototype pollution); DoD voi edellyttää OWASP-katselmoinnin ennen tarinan hyväksyntää.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-js-runtime-prototype-pollution.md",
+        "questionId": "b05-js-runtime-prototype-pollution",
+        "excerpt": "Käytä (ES2022) inherited vs own -erotteluun. npm-paketit kuten vanhoiss…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-js-runtime-prototype-pollution.md",
+        "questionId": "exp-js-runtime-prototype-pollution",
+        "excerpt": "Käytä sanakirja-objekteille. Validoi avaimet allowlistilla. OWASP maini…"
+      },
+      {
+        "file": "opiskelu/lessons/exp-scrum-dod-security-review.md",
+        "questionId": "exp-scrum-dod-security-review",
+        "excerpt": "# Turvallisuustiimi löysi OWASP-aukko sprintin jälkeen. Miten DoD estää…"
+      }
+    ]
+  },
+  "BRIN": {
+    "description": "**Block Range INdex** — PostgreSQLin tilatehokas indeksityyppi, joka tallentaa min/max-arvot sivualueryhmille. BRIN sopii suurille fyysisesti järjestetyille tauluille, kuten aikasarjoille; ei sovi yksittäisrivien pistehakuun.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-pg-indexes-btree-02.md",
+        "questionId": "b02-pg-indexes-btree-02",
+        "excerpt": "PostgreSQLin oletusindeksityyppi kattaa useimmat vertailu- ja range-kys…"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-indexes-brin-timeseries.md",
+        "questionId": "b06-pg-indexes-brin-timeseries",
+        "excerpt": "**BRIN-indeksi** (Block Range INdex):"
+      },
+      {
+        "file": "opiskelu/lessons/b06-pg-indexes-brin-timeseries.md",
+        "questionId": "b06-pg-indexes-brin-timeseries",
+        "excerpt": "BRIN tallentaa min/max-arvot sivualueille — indeksi on pieni, sopii hyv…"
+      }
+    ]
+  },
+  "HEAD": {
+    "description": "Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedosto). `git reflog` säilyttää HEAD-siirtymähistorian noin 90 päivää; kadonneen commitin voi palauttaa `git checkout <hash>` -komennolla reflogista.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/git-reflog-recovery.md",
+        "questionId": "git-reflog-recovery",
+        "excerpt": "Commitit eivät näy :issa — mutta Git **ei poista heti** objekteja. Refl…"
+      },
+      {
+        "file": "opiskelu/lessons/git-reflog-recovery.md",
+        "questionId": "git-reflog-recovery",
+        "excerpt": "Reflog säilyttää HEAD-liikkeet ~90 päivää oletuksena. Löydä commit enne…"
+      },
+      {
+        "file": "content/question-banks/git-ci.json",
+        "questionId": "git-stash-workflow",
+        "excerpt": "git reset --soft HEAD~1 piilottaa muutokset väliaikaisesti staging-alue…"
+      }
+    ]
+  },
+  "VM": {
+    "description": "**Virtual Machine** — ohjelmallisesti emuloitu tietokone (VirtualBox, VMware, cloud-instanssi). Docker Desktop ajaa kontteja Linux-VM:ssä macOS/Windows-hosteilla; kloonatut VM:t voivat periyttää saman hostnamen ja aiheuttaa Avahi-nimiristiriitoja.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-docker-vol-bind-12.md",
+        "questionId": "b02-docker-vol-bind-12",
+        "excerpt": "Tiedostoja muokataan hostilla, mutta kontissa webpack ei huomaa muutoks…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-docker-vol-bind-12.md",
+        "questionId": "b02-docker-vol-bind-12",
+        "excerpt": "**Cached/delegated mount tai docker sync korjaa host/VM-tiedostojärjest…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-avahi-conflict-13.md",
+        "questionId": "b02-linux-avahi-conflict-13",
+        "excerpt": "Kloonatut VM:t ja container-hostit ovat yleisin syy. Automatisoi hostna…"
+      }
+    ]
+  },
+  "DATABASE": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "pg-explain-seq-scan",
+        "excerpt": "Indeksi on aina rikki bulk loadin jälkeen ja vaatii REINDEX DATABASE"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "exp-pg-explain-stats-stale",
+        "excerpt": "REINDEX DATABASE korjaa row estimate -virheet bulk loadin jälkeen"
+      },
+      {
+        "file": "content/question-banks/postgresql-tuning.json",
+        "questionId": "b02-pg-explain-stats-08",
+        "excerpt": "REINDEX DATABASE korjaa plannerin arvion kun todelliset rivit poikkeavat"
+      }
+    ]
+  },
+  "PID": {
+    "description": "**Process ID** — käyttöjärjestelmän prosessille antama yksilöivä kokonaisluku. `ss -tulpn` näyttää kuuntelevat portit PID:eineen; PostgreSQLin `pg_stat_activity` paljastaa backend-prosessien PID:t; kontti ajaa PID 1:nä, joten `--init` tarvitaan zombie-prosessien hallintaan.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-pg-locks-blocking-query.md",
+        "questionId": "b03-pg-locks-blocking-query",
+        "excerpt": "Näet estäjän PID:n → etsi sen kysely :sta. Ratkaisu voi olla commit/rol…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-network-ss-listen.md",
+        "questionId": "b05-linux-network-ss-listen",
+        "excerpt": "Tuloste kertoo PID:n ja ohjelman nimen. Sammuta oikea prosessi:"
+      },
+      {
+        "file": "opiskelu/lessons/b06-docker-run-init.md",
+        "questionId": "b06-docker-run-init",
+        "excerpt": "Pitkään ajettu kontti kerää zombie-prosesseja (). Parent-prosessi (PID …"
+      }
+    ]
+  },
+  "POST": {
+    "description": "HTTP **POST** — pyyntömetodi, jolla lähetetään dataa palvelimelle (lomake, REST API -kirjoitusoperaatio). CORS-preflight lähettää ensin OPTIONS-pyynnön, kun mukana on `Content-Type: application/json` tai muu ei-yksinkertainen otsikko.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b05-js-async-debounce.md",
+        "questionId": "b05-js-async-debounce",
+        "excerpt": "Autocomplete-komponentti lähettää POST-pyynnön jokaisella näppäimellä. …"
+      },
+      {
+        "file": "opiskelu/lessons/b05-js-fetch-cors-preflight.md",
+        "questionId": "b05-js-fetch-cors-preflight",
+        "excerpt": "# POST JSON toiselle domainille — selain lähettää OPTIONS ensin. Miksi?"
+      },
+      {
+        "file": "opiskelu/lessons/b05-js-fetch-cors-preflight.md",
+        "questionId": "b05-js-fetch-cors-preflight",
+        "excerpt": "Frontend lähettää POST-pyynnön toiseen domainiin JSON-bodylla ja custom…"
+      }
+    ]
+  },
+  "QSS": {
+    "description": "**Qt Style Sheets** — Qt Widgets -sovelluksien CSS-innoittama tyylimäärittely. `setStyleSheet()`-kutsulla tai `.qss`-resurssitiedostolla asetetaan widgettien värit, fontit ja reunukset; QSS ylikirjoittaa natiivin alustakohtaisen tyylin ja vaatii testauksen kaikilla kohdealustoilla.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b04-qt-resource-qrc.md",
+        "questionId": "b04-qt-resource-qrc",
+        "excerpt": "Käytä -prefiksiä aina shipped-resursseille (ikonit, fontit, pienet QSS-…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-qt-widgets-qss.md",
+        "questionId": "b04-qt-widgets-qss",
+        "excerpt": "QSS ylikirjoittaa natiivin tyylin — testaa kaikilla alustoilla. Spesifi…"
+      },
+      {
+        "file": "opiskelu/lessons/b07-qt-widget-stylesheet.md",
+        "questionId": "b07-qt-widget-stylesheet",
+        "excerpt": "QSS stylesheet tai QStyle — yhtenäinen ulkoasu platform-riippumattomast…"
+      }
+    ]
+  },
+  "UUID": {
+    "description": "**Universally Unique Identifier** — 128-bittinen standardimuotoinen yksilöivä tunniste (RFC 4122, esim. `550e8400-e29b-41d4-a716-446655440000`). Provisioning-skripteissä UUID-pohjainen hostname estää Avahi-nimiristiriidat kloonatuilla laitteilla; `nmcli`-automaatiossa UUID on luotettavampi profiiliviite kuin nimi.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-linux-network-nmcli-11.md",
+        "questionId": "b02-linux-network-nmcli-11",
+        "excerpt": "Profiilinimissä välilyönnit vaativat lainausmerkit. Automaatiossa voit …"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-avahi-hostname-conflict.md",
+        "questionId": "b05-linux-avahi-hostname-conflict",
+        "excerpt": "Provisioning-skripteissä generoi uniikki hostname (MAC-osoite, UUID). Ä…"
+      },
+      {
+        "file": "opiskelu/lessons/b05-linux-network-nmcli-connect.md",
+        "questionId": "b05-linux-network-nmcli-connect",
+        "excerpt": "Automaatiossa käytä UUID:ta jos profiilinimi muuttuu. voi epäonnistua j…"
+      }
+    ]
+  },
+  "ABI": {
+    "description": "**Application Binary Interface** — käännetyn koodin binääritason rajapinta kirjaston ja käyttöjärjestelmän välillä. STL-tyypit (`std::string`, `std::vector`) jaetun kirjaston julkisessa rajapinnassa voivat rikkoa ABI:n eri kääntäjä- tai standardikirjastoversioilla; C-tyylinen rajapinta on vakaampi vaihtoehto.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b07-cpp-pimpl-abi.md",
+        "questionId": "b07-cpp-pimpl-abi",
+        "excerpt": "Jokainen impl-muutos → kaikki includerit rebuild. ABI murtoja jos jäsen…"
+      },
+      {
+        "file": "opiskelu/lessons/b10-cpp-portability-abi-01.md",
+        "questionId": "b10-cpp-portability-abi-01",
+        "excerpt": "# Jaetaan kirjasto Windowsin ja Linuxin välillä. Mikä rajapintavalinta …"
+      },
+      {
+        "file": "opiskelu/lessons/b10-cpp-portability-abi-01.md",
+        "questionId": "b10-cpp-portability-abi-01",
+        "excerpt": "STL-tyypit rajapinnassa — **ABI rikkoutuu** eri kääntäjillä/versioilla."
+      }
+    ]
+  },
+  "CI/CD": {
+    "description": "**Continuous Integration / Continuous Delivery (tai Deployment)** — automaattinen build-, testaus- ja julkaisuputki. CI varmistaa jokaisen commit/PR:n laadun (testit, lint, sanitizerit); CD automatisoi hyväksyttyjen muutosten julkaisun staging- tai tuotantoympäristöön.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/apt-autoremove.md",
+        "questionId": "apt-autoremove",
+        "excerpt": "Aja säännöllisesti ylläpitokierroksen lopussa — se pitää levytilan ja p…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-systemd-unit-01.md",
+        "questionId": "b02-linux-systemd-unit-01",
+        "excerpt": "Asennusohjeissa erottele selkeästi: = nyt, = bootissa. CI/CD-artefaktis…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-scrum-team-cross-14.md",
+        "questionId": "b02-scrum-team-cross-14",
+        "excerpt": "Varaa sprintistä kapasiteettia \"deploy-osaamisen jakamiseen\": guru pari…"
+      }
+    ]
+  },
+  "IEEE": {
+    "description": "**Institute of Electrical and Electronics Engineers** — kansainvälinen tekniikan standardointiorganisaatio. IEEE 754 määrittelee liukulukuaritmetiikan; JavaScriptin `number`-tyyppi on IEEE 754 -double, joka ei pysty tarkasti esittämään kaikkia desimaaleja (esim. `0.1 + 0.2 !== 0.3`).",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b03-js-types-number-precision.md",
+        "questionId": "b03-js-types-number-precision",
+        "excerpt": "JavaScriptin on IEEE 754 -double, joka ei esitä kaikkia desimaalilukuja…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-js-types-number-precision.md",
+        "questionId": "b04-js-types-number-precision",
+        "excerpt": "Ongelma ei ole logiikkavirhe vaan JavaScriptin lukuaritmetiikan luonne.…"
+      },
+      {
+        "file": "opiskelu/lessons/b04-js-types-number-precision.md",
+        "questionId": "b04-js-types-number-precision",
+        "excerpt": "**IEEE 754 double — desimaalit eivät aina tarkkoja; käytä integer sentt…"
+      }
+    ]
+  },
+  "RANK": {
+    "description": "",
+    "skip": true,
+    "context": [
+      {
+        "file": "opiskelu/lessons/sqd-percent-rank-report.md",
+        "questionId": "sqd-percent-rank-report",
+        "excerpt": "Raportissa jokaisella myyjällä: absoluuttinen myynti ja suhteellinen si…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-percent-rank-report.md",
+        "questionId": "sqd-percent-rank-report",
+        "excerpt": "Vaihtoehdot: **CUME_DIST()** (kumulatiivinen jakauma), **RANK()** / **D…"
+      },
+      {
+        "file": "opiskelu/lessons/sqd-percent-rank-report.md",
+        "questionId": "sqd-percent-rank-report",
+        "excerpt": "Ikkunafunktioiden ranking-perhe (RANK, DENSE_RANK, PERCENT_RANK, CUME_D…"
+      }
+    ]
+  },
+  "RHEL": {
+    "description": "**Red Hat Enterprise Linux** — Red Hatin kaupallinen Linux-jakelu, jota käytetään laajasti yrityspalvelimilla. RHEL aktivoi SELinuxin oletuksena; Docker bind mount voi epäonnistua `permission denied` -virheellä Unix-oikeuksista huolimatta — SELinux vaatii `:z`-suffiksin tai `chcon`-kutsun.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b08-docker-volume-bind-selinux.md",
+        "questionId": "b08-docker-volume-bind-selinux",
+        "excerpt": "# RHEL-host: bind mount permission denied vaikka chmod 777. Todennäköis…"
+      },
+      {
+        "file": "opiskelu/lessons/b08-docker-volume-bind-selinux.md",
+        "questionId": "b08-docker-volume-bind-selinux",
+        "excerpt": "RHEL-palvelimella mounttaat sovellusdatan:"
+      },
+      {
+        "file": "opiskelu/lessons/b08-docker-volume-bind-selinux.md",
+        "questionId": "b08-docker-volume-bind-selinux",
+        "excerpt": "Unix-oikeudet eivät auta — ongelma ei ole chmod, vaan RHEL:n SELinux-ko…"
+      }
+    ]
+  },
+  "RVO": {
+    "description": "**Return Value Optimization** — C++-kääntäjän optimointi, joka rakentaa paluuarvon suoraan kutsujan muistipaikassa kopion välttämiseksi. C++17 teki NRVO:n (Named RVO) pakolliseksi monissa tilanteissa; `std::move` paluulausekkeessa estää RVO:n eikä ole suositeltavaa.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b02-cpp-correct-dangling-15.md",
+        "questionId": "b02-cpp-correct-dangling-15",
+        "excerpt": "Kääntäjä usein eliminoi kopion (RVO). Jos kutsuja tarvitsee vain väliai…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-cpp-perf-move-09.md",
+        "questionId": "b02-cpp-perf-move-09",
+        "excerpt": "C++17: pronominiaalinen palautus (RVO) on **pakollinen** monissa tapauk…"
+      },
+      {
+        "file": "opiskelu/lessons/b03-cpp-cr-move-semantics.md",
+        "questionId": "b03-cpp-cr-move-semantics",
+        "excerpt": "**Palauta ilman move:a** — luota RVO:hon:"
+      }
+    ]
+  },
+  "UX": {
+    "description": "**User Experience** — käyttökokemus; kaikki se, miten käyttäjä kokee tuotteen käytön. Scrumin DoR voi vaatia UX-mockupin tai wireframen ennen kuin tarina voidaan ottaa sprinttiin.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/b09-scrum-dor-ux-mockup.md",
+        "questionId": "b09-scrum-dor-ux-mockup",
+        "excerpt": "**Mockup, wireframe tai selkeä UX-kuvaus hyväksymiskriteereineen.**"
+      },
+      {
+        "file": "opiskelu/lessons/b09-scrum-dor-ux-mockup.md",
+        "questionId": "b09-scrum-dor-ux-mockup",
+        "excerpt": "Puuttuva DoR-elementti on visuaalinen spesifikaatio: mockup, wireframe …"
+      },
+      {
+        "file": "opiskelu/lessons/b12-js-modules-dynamic-conditional.md",
+        "questionId": "b12-js-modules-dynamic-conditional",
+        "excerpt": "Tarkista rooli serverillä ennen admin-chunkin palauttamista (API + rout…"
+      }
+    ]
+  },
+  "CD": {
+    "description": "**Continuous Delivery/Deployment** — CI/CD-putken julkaisupuolisko: hyväksytyt muutokset viedään automaattisesti staging- tai tuotantoympäristöön. `systemctl enable` varmistaa palvelun käynnistymisen uudelleen CD-deployauksen jälkeen.",
+    "skip": false,
+    "context": [
+      {
+        "file": "opiskelu/lessons/apt-autoremove.md",
+        "questionId": "apt-autoremove",
+        "excerpt": "Aja säännöllisesti ylläpitokierroksen lopussa — se pitää levytilan ja p…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-linux-systemd-unit-01.md",
+        "questionId": "b02-linux-systemd-unit-01",
+        "excerpt": "Asennusohjeissa erottele selkeästi: = nyt, = bootissa. CI/CD-artefaktis…"
+      },
+      {
+        "file": "opiskelu/lessons/b02-scrum-team-cross-14.md",
+        "questionId": "b02-scrum-team-cross-14",
+        "excerpt": "Varaa sprintistä kapasiteettia \"deploy-osaamisen jakamiseen\": guru pari…"
+      }
+    ]
+  }
+}
