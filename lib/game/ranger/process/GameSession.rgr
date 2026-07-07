@@ -100,6 +100,8 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def playerDisplayName:string ""
   def playerSpecialty:string ""
   def profileComplete:boolean false
+  def kidsMode:boolean false
+  def fruitSalaryBonus:int 0
   def proximityGreeting:ProximityGreeting
   def pendingGreetNpcId:string ""
   def npcBehaviors:NpcBehaviorRegistry
@@ -271,6 +273,9 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if ((strlen emotionReaction) > 0) {
         map.lastStatus = (map.lastStatus + " " + pendingEntity.name + " " + emotionReaction)
       }
+    }
+    if (correct) {
+      map.spawnQuizRewardFruits(worldClock.gameMinutes)
     }
     this.clearEncounter()
     screen = "map"
@@ -883,9 +888,15 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     this.markStateDirty()
   }
 
+  fn setKidsMode:void (enabled:boolean) {
+    kidsMode = enabled
+    this.markStateDirty()
+  }
+
   fn clearPlayerProfile:void () {
     playerDisplayName = ""
     playerSpecialty = ""
+    kidsMode = false
     profileComplete = false
     screen = "setup"
     this.markStateDirty()
@@ -1912,6 +1923,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     worldClock.spendTime(minutes)
     playerNeeds.tickMinutes(minutes)
     map.tickSchedules(worldClock.gameMinutes)
+    map.tickRewardFruits(worldClock.gameMinutes)
     simMinutesAccum = simMinutesAccum + minutes
     relationTickAccum = relationTickAccum + minutes
     while (relationTickAccum >= 5) {
@@ -1989,6 +2001,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     worldClock.advance(1)
     map.tickSchedules(worldClock.gameMinutes)
+    map.tickRewardFruits(worldClock.gameMinutes)
     simMinutesAccum = simMinutesAccum + 1
     this.runAgentPass()
   }
@@ -2015,8 +2028,13 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     if (map.isConsumableItemEntity(ent)) {
       def feeling:string (map.emojiFeelingForEntity(ent))
+      def rewardFruit:boolean (map.isRewardFruitEntity(ent))
       if ((strlen feeling) > 0) {
         map.lastStatus = feeling
+      }
+      if (rewardFruit) {
+        fruitSalaryBonus = fruitSalaryBonus + 50
+        map.lastStatus = (map.lastStatus + " +50 € palkkaa!")
       }
       if ((strlen ent.char) > 0) {
         playerNeeds.applyEmojiChar(ent.char)
@@ -2674,7 +2692,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (floor > 1) {
       bonus = (floor - 1) * 500
     }
-    return (base + bonus)
+    return (base + bonus + fruitSalaryBonus)
   }
 
   fn elevatorDeniedMessage:string (floorIndex:int) {

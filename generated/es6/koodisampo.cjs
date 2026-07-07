@@ -3000,6 +3000,18 @@ class WorldMap  {
     if ( ch == "🍱" ) {
       return "Vatsa asettuu hetkeksi.";
     }
+    if ( ch == "🍎" ) {
+      return "Omena maistuu makealta — pieni palkkibonus!";
+    }
+    if ( ch == "🍌" ) {
+      return "Banaani piristää ja tuo lisäpalkkaa.";
+    }
+    if ( ch == "🍊" ) {
+      return "Appelsiini virkistää ja tuo lisäpalkkaa.";
+    }
+    if ( ch == "🍇" ) {
+      return "Rypäleet maistuvat hyvältä — palkkibonus!";
+    }
     if ( ch == "📠" ) {
       return "Faksi muistuttaa menneitä aikoja.";
     }
@@ -3057,7 +3069,133 @@ class WorldMap  {
     if ( ch == "🍱" ) {
       return true;
     }
+    if ( (id.length) >= 12 ) {
+      const fruitTag = id.substring(0, 12 );
+      if ( fruitTag == "reward-fruit" ) {
+        return true;
+      }
+    }
     return false;
+  };
+  isRewardFruitEntity (e) {
+    if ( this.isConsumableItemEntity(e) == false ) {
+      return false;
+    }
+    const id = e.id;
+    if ( (id.length) >= 12 ) {
+      const fruitTag = id.substring(0, 12 );
+      if ( fruitTag == "reward-fruit" ) {
+        return true;
+      }
+    }
+    return false;
+  };
+  rewardFruitGlyph (fruitIndex) {
+    if ( fruitIndex == 1 ) {
+      return "🍌";
+    }
+    if ( fruitIndex == 2 ) {
+      return "🍊";
+    }
+    if ( fruitIndex == 3 ) {
+      return "🍇";
+    }
+    return "🍎";
+  };
+  trySpawnRewardFruitAt (x, y, fruitIndex, spawnMinute, expireMinute) {
+    if ( this.canPlaceDroppedItem(x, y) == false ) {
+      return false;
+    }
+    const floor = this.activeFloor();
+    const item = new MapEntity();
+    item.id = (((((("reward-fruit-" + ((fruitIndex.toString()))) + "-") + ((x.toString()))) + "-") + ((y.toString()))) + "-") + ((spawnMinute.toString()));
+    item.char = this.rewardFruitGlyph(fruitIndex);
+    item.name = "Hedelmäpalkinto";
+    item.kind = "item";
+    item.itemTool = "";
+    item.x = x;
+    item.y = y;
+    item.behaviorStartedAt = spawnMinute;
+    item.behaviorParam = expireMinute;
+    let ents = floor.entities;
+    ents.push(item);
+    floor.entities = ents;
+    return true;
+  };
+  spawnQuizRewardFruits (gameMinutes) {
+    const expireMinute = gameMinutes + 20;
+    let fruitCount = 1;
+    const countRoll = Math.floor(Math.random()*(1 - 0 + 1) + 0);
+    if ( countRoll == 1 ) {
+      fruitCount = 2;
+    }
+    let dirs = [];
+    dirs.push(this.facingX);
+    dirs.push(1);
+    dirs.push(-1);
+    dirs.push(0);
+    dirs.push(0);
+    let dy = [];
+    dy.push(this.facingY);
+    dy.push(0);
+    dy.push(0);
+    dy.push(1);
+    dy.push(-1);
+    let spawned = 0;
+    let fi = 0;
+    while (fi < fruitCount) {
+      const fruitIndex = Math.floor(Math.random()*(3 - 0 + 1) + 0);
+      let di = 0;
+      let placed = false;
+      while (di < 5) {
+        const nx = this.playerX + (dirs[di]);
+        const ny = this.playerY + (dy[di]);
+        if ( this.trySpawnRewardFruitAt(nx, ny, fruitIndex, gameMinutes, expireMinute) ) {
+          placed = true;
+          spawned = spawned + 1;
+          di = 99;
+        }
+        di = di + 1;
+      };
+      if ( placed == false ) {
+        if ( this.trySpawnRewardFruitAt(this.playerX, this.playerY, fruitIndex, gameMinutes, expireMinute) ) {
+          spawned = spawned + 1;
+        }
+      }
+      fi = fi + 1;
+    };
+    if ( spawned > 0 ) {
+      if ( spawned == 1 ) {
+        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmä lähelle!";
+      } else {
+        this.lastStatus = this.lastStatus + " 🍎 Oikeasta vastauksesta putosi hedelmiä lähelle!";
+      }
+    }
+  };
+  tickRewardFruits (gameMinutes) {
+    const floor = this.activeFloor();
+    const ents = floor.entities;
+    let kept = [];
+    let removed = 0;
+    let i = 0;
+    const n = ents.length;
+    while (i < n) {
+      const e = ents[i];
+      if ( this.isRewardFruitEntity(e) ) {
+        if ( e.behaviorParam > 0 ) {
+          if ( gameMinutes >= e.behaviorParam ) {
+            removed = removed + 1;
+            i = i + 1;
+            continue;
+          }
+        }
+      }
+      kept.push(e);
+      i = i + 1;
+    };
+    if ( removed > 0 ) {
+      floor.entities = kept;
+    }
   };
   consumeItemAt (x, y) {
     const e = this.entityAt(x, y);
@@ -5167,6 +5305,19 @@ class PlayerNeeds  {
     if ( ch == "🍱" ) {
       this.satiety = this.satiety + 5;
     }
+    if ( ch == "🍎" ) {
+      this.satiety = this.satiety + 3;
+    }
+    if ( ch == "🍌" ) {
+      this.alertness = this.alertness + 2;
+    }
+    if ( ch == "🍊" ) {
+      this.thirst = this.thirst + 3;
+    }
+    if ( ch == "🍇" ) {
+      this.satiety = this.satiety + 2;
+      this.thirst = this.thirst + 2;
+    }
     if ( ch == "🚽" ) {
       this.gas = this.gas - 4;
     }
@@ -6766,6 +6917,8 @@ class GameSession  extends RangerProcessBase {
     this.playerDisplayName = "";
     this.playerSpecialty = "";
     this.profileComplete = false;
+    this.kidsMode = false;
+    this.fruitSalaryBonus = 0;
     this.pendingGreetNpcId = "";
     this.behaviorSeed = 0;
     this.arrestReason = "";
@@ -6926,6 +7079,9 @@ class GameSession  extends RangerProcessBase {
       if ( (emotionReaction.length) > 0 ) {
         this._map.lastStatus = (((this._map.lastStatus + " ") + this.pendingEntity.name) + " ") + emotionReaction;
       }
+    }
+    if ( correct ) {
+      this._map.spawnQuizRewardFruits(this.worldClock.gameMinutes);
     }
     this.clearEncounter();
     this.screen = "map";
@@ -7495,9 +7651,14 @@ class GameSession  extends RangerProcessBase {
     this.screen = "map";
     this.markStateDirty();
   };
+  setKidsMode (enabled) {
+    this.kidsMode = enabled;
+    this.markStateDirty();
+  };
   clearPlayerProfile () {
     this.playerDisplayName = "";
     this.playerSpecialty = "";
+    this.kidsMode = false;
     this.profileComplete = false;
     this.screen = "setup";
     this.markStateDirty();
@@ -8468,6 +8629,7 @@ class GameSession  extends RangerProcessBase {
     this.worldClock.spendTime(minutes);
     this.playerNeeds.tickMinutes(minutes);
     this._map.tickSchedules(this.worldClock.gameMinutes);
+    this._map.tickRewardFruits(this.worldClock.gameMinutes);
     this.simMinutesAccum = this.simMinutesAccum + minutes;
     this.relationTickAccum = this.relationTickAccum + minutes;
     while (this.relationTickAccum >= 5) {
@@ -8540,6 +8702,7 @@ class GameSession  extends RangerProcessBase {
     }
     this.worldClock.advance(1);
     this._map.tickSchedules(this.worldClock.gameMinutes);
+    this._map.tickRewardFruits(this.worldClock.gameMinutes);
     this.simMinutesAccum = this.simMinutesAccum + 1;
     this.runAgentPass();
   };
@@ -8565,8 +8728,13 @@ class GameSession  extends RangerProcessBase {
     }
     if ( this._map.isConsumableItemEntity(ent) ) {
       const feeling = this._map.emojiFeelingForEntity(ent);
+      const rewardFruit = this._map.isRewardFruitEntity(ent);
       if ( (feeling.length) > 0 ) {
         this._map.lastStatus = feeling;
+      }
+      if ( rewardFruit ) {
+        this.fruitSalaryBonus = this.fruitSalaryBonus + 50;
+        this._map.lastStatus = this._map.lastStatus + " +50 € palkkaa!";
       }
       if ( (ent.char.length) > 0 ) {
         this.playerNeeds.applyEmojiChar(ent.char);
@@ -9198,7 +9366,7 @@ class GameSession  extends RangerProcessBase {
     if ( floor > 1 ) {
       bonus = (floor - 1) * 500;
     }
-    return base + bonus;
+    return (base + bonus) + this.fruitSalaryBonus;
   };
   elevatorDeniedMessage (floorIndex) {
     if ( floorIndex >= 9 ) {

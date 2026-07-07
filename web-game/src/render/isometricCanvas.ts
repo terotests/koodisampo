@@ -13,6 +13,12 @@ import {
 } from "./isometricAssets";
 import { resolveCellSprite, type CellSprite } from "./isometricTiles";
 import { splitMapGraphemes } from "../../../hosts/shared/mapGlyphs.mjs";
+import {
+  activeRewardFruitPops,
+  drawRewardFruitPop,
+  noteRewardFruits,
+  rewardFruitOpacity,
+} from "../rewardFruitEffects";
 import { getMapZoomMultiplier } from "../mapZoom";
 import { readStoredRenderTheme } from "../renderTheme";
 import { themeBackgroundColor } from "../theme";
@@ -72,6 +78,7 @@ function renderSignature(lines: string[], state: MapState): string {
     walkFrame,
     readStoredRenderTheme(),
     getMapZoomMultiplier(),
+    state.clockMinutes ?? "",
   ].join("\0");
 }
 
@@ -231,8 +238,10 @@ function drawEmoji(
   screenY: number,
   tileWidth: number,
   tileHeight: number,
+  opacity = 1,
 ) {
   ctx.save();
+  ctx.globalAlpha = opacity;
   ctx.font = `${Math.max(18, tileWidth * 0.55)}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", emoji, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -339,7 +348,8 @@ function drawSprite(
   }
 
   if (sprite.kind === "emoji") {
-    drawEmoji(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight);
+    if (sprite.rewardFruit) drawItemGlow(ctx, screenX, screenY, tileWidth, tileHeight);
+    drawEmoji(ctx, sprite.glyph, screenX, screenY, tileWidth, tileHeight, sprite.opacity ?? 1);
   }
 }
 
@@ -358,6 +368,12 @@ function paintIsometricMap(
 ) {
   const recommended = recommendedSet(state);
   const entityCells = state.entityCells ?? [];
+  noteRewardFruits(entityCells);
+  const clockMinutes = state.clockMinutes ?? 0;
+  const fruitOpacityAt = (x: number, y: number) => {
+    const ent = entityCells.find((c: { x: number; y: number }) => c.x === x && c.y === y);
+    return ent ? rewardFruitOpacity(ent, clockMinutes) : 1;
+  };
   const rows = lines.length;
   const cssWidth = canvas.width / (window.devicePixelRatio || 1);
   const cssHeight = canvas.height / (window.devicePixelRatio || 1);
@@ -406,9 +422,14 @@ function paintIsometricMap(
         entityCells,
       });
       if (sprite.kind === "tile" && (sprite.base === "floor" || sprite.base === "slab")) continue;
+      let drawSpriteCell = sprite;
+      if (sprite.kind === "emoji" && sprite.rewardFruit) {
+        const opacity = fruitOpacityAt(x, y);
+        if (opacity < 1) drawSpriteCell = { ...sprite, opacity };
+      }
       const layer =
-        sprite.kind === "entity" || sprite.kind === "emoji" || sprite.kind === "item" || sprite.kind === "legoProp" ? 0.5 : 0;
-      overlays.push({ x, y, depth: x + y + layer, sprite });
+        drawSpriteCell.kind === "entity" || drawSpriteCell.kind === "emoji" || drawSpriteCell.kind === "item" || drawSpriteCell.kind === "legoProp" ? 0.5 : 0;
+      overlays.push({ x, y, depth: x + y + layer, sprite: drawSpriteCell });
       overlayKeys.add(cellKey);
     }
   }
@@ -422,7 +443,12 @@ function paintIsometricMap(
       entityCells,
     });
     if (sprite.kind === "tile" && sprite.base === "floor") continue;
-    overlays.push({ x: ent.x, y: ent.y, depth: ent.x + ent.y + 0.5, sprite });
+    let entSprite = sprite;
+    if (sprite.kind === "emoji" && sprite.rewardFruit) {
+      const opacity = fruitOpacityAt(ent.x, ent.y);
+      if (opacity < 1) entSprite = { ...sprite, opacity };
+    }
+    overlays.push({ x: ent.x, y: ent.y, depth: ent.x + ent.y + 0.5, sprite: entSprite });
   }
   overlays.sort((a, b) => a.depth - b.depth || a.y - b.y || a.x - b.x);
 
@@ -430,6 +456,12 @@ function paintIsometricMap(
     const { x, y, sprite } = cell;
     const { x: sx, y: sy } = gridToScreen(x, y, origin.x, origin.y, tileWidth, tileHeight);
     drawSprite(ctx, sprite, sx, sy, tileWidth, tileHeight, recommended, x, y, drawOpts);
+  }
+
+  const now = performance.now();
+  for (const pop of activeRewardFruitPops(now)) {
+    const { x: sx, y: sy } = gridToScreen(pop.x, pop.y, origin.x, origin.y, tileWidth, tileHeight);
+    drawRewardFruitPop(ctx, pop, sx, sy, tileWidth, tileHeight, now);
   }
 }
 
