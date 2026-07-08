@@ -88,6 +88,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
   def actionResultMessage:string ""
   def actionPendingStoryId:string ""
   def blockedTalk:MapEntity
+  def blockedPrompt:boolean false
   def simJson:StoryJson
   def simSeed:int 0
   def simRngState:int 1
@@ -2155,6 +2156,17 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     blockedTalk.storyId = ""
   }
 
+  fn clearBlockedPrompt:void () {
+    blockedPrompt = false
+    this.clearBlockedTalk()
+  }
+
+  fn confirmBlockedPrompt:void () {
+    blockedPrompt = false
+    actionPhase = ""
+    screen = "blocked"
+  }
+
   fn setBlockedTalk:void (ent:MapEntity) {
     blockedTalk.id = ent.id
     blockedTalk.char = ent.char
@@ -2517,6 +2529,12 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if (toolCount < 1) {
         return false
       }
+      blockedPrompt = true
+      def targetScratch:ActionView (new ActionView)
+      this.resolveTargetAt(actionTargetX actionTargetY targetScratch)
+      map.lastStatus = ("Este: " + targetScratch.targetName)
+      this.markStateDirty()
+      return true
     }
     actionPhase = ""
     screen = "blocked"
@@ -2611,7 +2629,7 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     if (key == cancelCh || key == "4") {
       screen = "map"
       map.lastStatus = "Peruutit."
-      this.clearBlockedTalk()
+      this.clearBlockedPrompt()
       this.markStateDirty()
       return
     }
@@ -2906,6 +2924,22 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
     }
     if (screen != "map") {
       return
+    }
+    if (blockedPrompt) {
+      if (key == "1" || key == "e") {
+        this.confirmBlockedPrompt()
+        this.markStateDirty()
+        return
+      }
+      if (key == "2" || key == "4") {
+        blockedPrompt = false
+        this.clearBlockedTalk()
+        map.lastStatus = "Peruutit."
+        this.markStateDirty()
+        return
+      }
+      blockedPrompt = false
+      this.clearBlockedTalk()
     }
     if (key == "q" || key == "esc" || key == "ctrl-x" || key == "ctrl-c" || key == "ctrl-d") {
       shouldQuit = true
@@ -3609,6 +3643,14 @@ class GameSession @process(true) @name("app.koodisampo") extends RangerProcessBa
       if ((strlen map.lastStatus) < 1) {
         view.statusLine = "Peli päättyi."
       }
+    }
+    if (blockedPrompt) {
+      def scratch:ActionView (new ActionView)
+      this.resolveTargetAt(actionTargetX actionTargetY scratch)
+      if ((strlen view.statusLine) < 1) {
+        view.statusLine = ("Este: " + scratch.targetName)
+      }
+      view.hintLine = "1=käytä työkalua  2=peruuta"
     }
     return view
   }

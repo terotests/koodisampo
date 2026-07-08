@@ -6972,6 +6972,7 @@ class GameSession  extends RangerProcessBase {
     this.actionResultOk = false;
     this.actionResultMessage = "";
     this.actionPendingStoryId = "";
+    this.blockedPrompt = false;
     this.simSeed = 0;
     this.simRngState = 1;
     this.simScenarioId = "";
@@ -8916,6 +8917,15 @@ class GameSession  extends RangerProcessBase {
     this.blockedTalk.kind = "";
     this.blockedTalk.storyId = "";
   };
+  clearBlockedPrompt () {
+    this.blockedPrompt = false;
+    this.clearBlockedTalk();
+  };
+  confirmBlockedPrompt () {
+    this.blockedPrompt = false;
+    this.actionPhase = "";
+    this.screen = "blocked";
+  };
   setBlockedTalk (ent) {
     this.blockedTalk.id = ent.id;
     this.blockedTalk.char = ent.char;
@@ -9263,6 +9273,12 @@ class GameSession  extends RangerProcessBase {
       if ( toolCount < 1 ) {
         return false;
       }
+      this.blockedPrompt = true;
+      const targetScratch = new ActionView();
+      this.resolveTargetAt(this.actionTargetX, this.actionTargetY, targetScratch);
+      this._map.lastStatus = "Este: " + targetScratch.targetName;
+      this.markStateDirty();
+      return true;
     }
     this.actionPhase = "";
     this.screen = "blocked";
@@ -9353,7 +9369,7 @@ class GameSession  extends RangerProcessBase {
     if ( (key == cancelCh) || (key == "4") ) {
       this.screen = "map";
       this._map.lastStatus = "Peruutit.";
-      this.clearBlockedTalk();
+      this.clearBlockedPrompt();
       this.markStateDirty();
       return;
     }
@@ -9637,6 +9653,22 @@ class GameSession  extends RangerProcessBase {
     }
     if ( this.screen != "map" ) {
       return;
+    }
+    if ( this.blockedPrompt ) {
+      if ( (key == "1") || (key == "e") ) {
+        this.confirmBlockedPrompt();
+        this.markStateDirty();
+        return;
+      }
+      if ( (key == "2") || (key == "4") ) {
+        this.blockedPrompt = false;
+        this.clearBlockedTalk();
+        this._map.lastStatus = "Peruutit.";
+        this.markStateDirty();
+        return;
+      }
+      this.blockedPrompt = false;
+      this.clearBlockedTalk();
     }
     if ( ((((key == "q") || (key == "esc")) || (key == "ctrl-x")) || (key == "ctrl-c")) || (key == "ctrl-d") ) {
       this.shouldQuit = true;
@@ -10316,6 +10348,14 @@ class GameSession  extends RangerProcessBase {
       if ( (this._map.lastStatus.length) < 1 ) {
         view.statusLine = "Peli päättyi.";
       }
+    }
+    if ( this.blockedPrompt ) {
+      const scratch = new ActionView();
+      this.resolveTargetAt(this.actionTargetX, this.actionTargetY, scratch);
+      if ( (view.statusLine.length) < 1 ) {
+        view.statusLine = "Este: " + scratch.targetName;
+      }
+      view.hintLine = "1=käytä työkalua  2=peruuta";
     }
     return view;
   };
