@@ -823,6 +823,7 @@ function snapshot() {
       elevatorFloors: elevator.floors,
       elevatorPickerCollapsed: elevatorUi.pickerCollapsed,
       floorRecommendation: floorRec,
+      blockedPrompt: !!session.blockedPrompt,
       ...(overlay ? { overlay: serializeOverlay(overlay) } : {}),
     };
   }

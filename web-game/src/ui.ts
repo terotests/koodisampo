@@ -794,34 +794,44 @@ export function mountGameUI(game: WebGame) {
     function renderMapToolbar(state?: State) {
       const onElevator = Boolean(state?.onElevator);
       const elevatorPickerCollapsed = Boolean(state?.elevatorPickerCollapsed);
+      const blockedPrompt = Boolean(state?.blockedPrompt);
 
       if (isMobileLayout()) {
-        const toolbarKey = `${state?.screen ?? "map"}-${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}`;
+        const toolbarKey = `${state?.screen ?? "map"}-${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}-${blockedPrompt ? "1" : "0"}`;
         const onMapScreen = isMobileMapPlayScreen(state);
         setMobilePlayView(onMapScreen);
         setMobileDpadVisible(mobileDpadEl, onMapScreen);
         if (onMapScreen && toolbarEl && mobileDpadEl) {
           showMobilePlayToolbar();
           setMobileToolbarVisible(toolbarEl, true);
-          mountMobileControls(toolbarEl, mobileDpadEl, sendKey, resetGame);
-          const elevatorUiKey = `${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}-${state?.elevatorFloors?.length ?? 0}`;
-          if (toolbarKey !== lastToolbarKey || elevatorUiKey !== lastElevatorToolbarKey) {
+          if (blockedPrompt) {
+            setMobileTextChoiceMode(true);
+            setMobileToolbar(toolbarEl, [
+              { key: "1", label: "1 käytä työkalua" },
+              { key: "2", label: "2 peruuta", cls: "muted" },
+            ], sendKey, resetGame);
             lastToolbarKey = toolbarKey;
-            lastElevatorToolbarKey = elevatorUiKey;
-            updateMobileMapToolbar(toolbarEl, {
-              onElevator,
-              floors: state?.elevatorFloors,
-              pickerCollapsed: elevatorPickerCollapsed,
-            }, () => {
-              game.expandElevatorPicker?.();
-              lastRenderKey = "";
-              render(game.snapshot());
-            });
-            if (lastMobileMapLines.length > 0 && mapEl) {
-              requestAnimationFrame(() => {
+          } else {
+            mountMobileControls(toolbarEl, mobileDpadEl, sendKey, resetGame);
+            const elevatorUiKey = `${onElevator ? "1" : "0"}-${elevatorPickerCollapsed ? "1" : "0"}-${state?.elevatorFloors?.length ?? 0}`;
+            if (toolbarKey !== lastToolbarKey || elevatorUiKey !== lastElevatorToolbarKey) {
+              lastToolbarKey = toolbarKey;
+              lastElevatorToolbarKey = elevatorUiKey;
+              updateMobileMapToolbar(toolbarEl, {
+                onElevator,
+                floors: state?.elevatorFloors,
+                pickerCollapsed: elevatorPickerCollapsed,
+              }, () => {
+                game.expandElevatorPicker?.();
                 lastRenderKey = "";
                 render(game.snapshot());
               });
+              if (lastMobileMapLines.length > 0 && mapEl) {
+                requestAnimationFrame(() => {
+                  lastRenderKey = "";
+                  render(game.snapshot());
+                });
+              }
             }
           }
         } else {
@@ -833,6 +843,24 @@ export function mountGameUI(game: WebGame) {
       if (!toolbarEl) return;
       toolbarEl.className = "toolbar toolbar-desktop";
       toolbarEl.innerHTML = "";
+      if (blockedPrompt) {
+        const promptButtons = [
+          { key: "1", label: "1 käytä työkalua" },
+          { key: "2", label: "2 peruuta", cls: "muted" },
+        ];
+        for (const b of promptButtons) {
+          const btn = document.createElement("button");
+          btn.textContent = b.label;
+          btn.dataset.key = b.key;
+          if (b.cls) btn.className = b.cls;
+          btn.addEventListener("click", () => sendKey(b.key));
+          toolbarEl.appendChild(btn);
+        }
+        if (hintEl) {
+          hintEl.textContent = state?.hint || "1=käytä työkalua  2=peruuta";
+        }
+        return;
+      }
       const movementButtons = [
         { key: "w", label: "↑" },
         { key: "a", label: "←" },
@@ -928,6 +956,7 @@ export function mountGameUI(game: WebGame) {
         state.elevatorPickerCollapsed ? "1" : "0",
         state.status ?? "",
         state.ambient ?? "",
+        state.blockedPrompt ? "1" : "0",
       ].join("|");
     }
 

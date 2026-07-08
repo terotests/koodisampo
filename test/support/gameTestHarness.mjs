@@ -105,7 +105,7 @@ export function bumpIntoEntity(ctrl, floorIndex, entityId) {
       map.ensurePlayerOnWalkable?.();
     });
     const snap = ctrl.handleKey(step.key);
-    if (snap.screen === "encounter" || snap.screen === "blocked") {
+    if (snap.screen === "encounter" || snap.screen === "blocked" || snap.blockedPrompt) {
       return snap;
     }
   }
@@ -117,6 +117,9 @@ export function startEncounterViaBump(ctrl, floorIndex, entityId) {
   const snap = bumpIntoEntity(ctrl, floorIndex, entityId);
   if (snap.screen === "encounter") {
     return snap;
+  }
+  if (snap.blockedPrompt) {
+    return ctrl.handleKey("1");
   }
   if (snap.screen === "blocked") {
     return ctrl.handleKey("1");

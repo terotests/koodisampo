@@ -124,6 +124,7 @@ export function createGameController(deps) {
         onElevator: elevator.onElevator,
         elevatorFloors: elevator.floors,
         elevatorPickerCollapsed: elevatorUi.pickerCollapsed,
+        blockedPrompt: !!session.blockedPrompt,
       };
     }
 
