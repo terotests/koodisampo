@@ -176,7 +176,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Sertifikaatin validointi estää MITM:n — korjaa CA/sertifikaatti, älä poista validointia.",
+      "correctFeedback": "verify=False poistaa identiteetin varmistuksen — yhteys voi olla salattu väärälle palvelimelle. Korjaa CA/sertifikaatti, älä poista validointia.",
       "wrongFeedback": "Liikenne voi olla salattua mutta väärälle palvelimelle. Poistettu verify = luota keneen tahansa.",
       "sourceRef": "owasp/transport-layer-protection",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html",
@@ -212,8 +212,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Shell injection — OWASP: käytä parametri-listaa, ei string-concat shell-komentoon.",
-      "wrongFeedback": "Shell tulkitsee ; | & metamerkit. subprocess([\"convert\", filename]) ei käynnistä shelliä.",
+      "correctFeedback": "Shell injection — älä rakenna shell-komentoa stringinä. Käytä subprocess argumenttilistana (shell=False) tai kirjastoa.",
+      "wrongFeedback": "Shell tulkitsee ; | & metamerkit. subprocess([\"convert\", input_path, output_path], shell=False) ei käynnistä shelliä.",
       "sourceRef": "owasp/command-injection",
       "sourceUrl": "https://owasp.org/www-community/attacks/Command_Injection",
       "featureId": "security:shell-injection",
@@ -265,7 +265,7 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "POST /api/reports ottaa tenant_id:n request bodysta. Admin kuuluu organisaatioon acme, mutta voi pyytää raportin tenant_id: other-company. Mikä meni pieleen?",
+      "prompt": "POST /api/reports ottaa tenant_id:n request bodysta. Raportti cachetetaan avaimella `report:last-month`. Admin (acme) pyytää tenant_id: other-company. Mikä meni pieleen?",
       "choices": [
         {
           "text": "Tenant ei saa tulla luotettuna käyttäjän syötteestä — johda sessiosta/tokenista ja tarkista jäsenyys",
@@ -284,8 +284,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Multi-tenant-eristys: tenant_id requestista on BOLA:n tuotantoversio. OWASP API Security.",
-      "wrongFeedback": "Asiakasyritys A ei saa nähdä B:n dataa. Tenant johdetaan autentikoidusta kontekstista.",
+      "correctFeedback": "Tenant isolation -bugi: tenant on turvaraja, ei filtteri. Johda sessiosta, rajaa kyselyissä ja cache/exporteissa.",
+      "wrongFeedback": "Asiakasyritys A ei saa nähdä B:n dataa. Tenant johdetaan autentikoidusta kontekstista — myös cache-avaimet tenant-kohtaisiksi.",
       "sourceRef": "owasp/api/tenant",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Multitenant_Security_Cheat_Sheet.html",
       "featureId": "security:tenant-isolation",
@@ -392,8 +392,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Server-Side Request Forgery — OWASP Top 10. Resolve DNS ja tarkista IP ennen yhteyttä.",
-      "wrongFeedback": "Palvelin ei ole selain — CORS ei suojaa. Estä sisäiset osoitteet ja link-local.",
+      "correctFeedback": "SSRF — resolve DNS, tarkista IP ennen yhteyttä ja jokaisen redirectin jälkeen. Suojaudu DNS rebindingiltä.",
+      "wrongFeedback": "Palvelin ei ole selain — CORS ei suojaa. Estä sisäiset osoitteet, metadata ja localhost-muodot.",
       "sourceRef": "owasp/ssrf",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
       "featureId": "security:ssrf",
@@ -464,8 +464,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Älä anna käyttäjän valita raakaa polkua — path.resolve + startsWith(base) tarkistus.",
-      "wrongFeedback": "../ kiertää hakemistorajan. Hae oikea polku tietokannasta ID:llä.",
+      "correctFeedback": "Path traversal — ensisijaisesti tiedosto-ID + polku tietokannasta. Huomioi symlinkit ja startsWith-reunat.",
+      "wrongFeedback": "../ kiertää hakemistorajan. Älä luota käyttäjän raakaan polkuun — hae sallittu polku ID:llä.",
       "sourceRef": "owasp/path-traversal",
       "sourceUrl": "https://owasp.org/www-community/attacks/Path_Traversal",
       "featureId": "security:path-traversal",
@@ -572,8 +572,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "RBAC + ABAC/policy — päätös riippuu kontekstista, ei pelkästä globaalista roolista.",
-      "wrongFeedback": "Globaali admin-rooli ei erota org-rajoja. Tarvitaan resurssikohtainen valtuutuslogiikka.",
+      "correctFeedback": "RBAC + ABAC/policy — deny-by-default, resurssikohtainen canX(user, resource).",
+      "wrongFeedback": "Globaali admin-rooli ei erota org-rajoja. Policy palauttaa oletuksena false.",
       "sourceRef": "owasp/authorization/rbac",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
       "featureId": "security:rbac-abac",
@@ -644,8 +644,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Security headers täydentävät XSS-suojaa — OWASP Secure Headers. HSTS vain HTTPS-tuotantoon.",
-      "wrongFeedback": "CSP rajoittaa skriptien lähteitä. nosniff estää MIME-sniffauksen.",
+      "correctFeedback": "Security headers ovat defense-in-depth — CSP, nosniff, Referrer-Policy, Permissions-Policy, HSTS (HTTPS-tuotanto).",
+      "wrongFeedback": "Headerit eivät korvaa authz:ta. CSP report-only ensin; HSTS includeSubDomains vain kun subdomainit ovat valmiita.",
       "sourceRef": "owasp/secure-headers",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html",
       "featureId": "security:security-headers",
@@ -788,8 +788,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Enumeration auttaa kohdistetussa hyökkäyksessä — OWASP Authentication.",
-      "wrongFeedback": "Eri viestit paljastavat rekisteröityneet tilit. Sisäiseen lokiin voi kirjata tarkan syyn.",
+      "correctFeedback": "Account enumeration — sama ulkoinen viesti, status ja vastausaika. Tarkempi syy audit-lokiin.",
+      "wrongFeedback": "Eri viestit tai status paljastavat rekisteröityneet tilit. Pidä myös reset-flow yhtenäisenä.",
       "sourceRef": "owasp/authentication/enumeration",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
       "featureId": "security:account-enumeration",
@@ -859,8 +859,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Kuka tahansa voi POSTata endpointtiin — tarkista HMAC/signature providerin dokumentaation mukaan.",
-      "wrongFeedback": "IP ei riitä (spoofing, välityspalvelin). Allekirjoitus raw bodysta + replay-suoja.",
+      "correctFeedback": "Webhook-signature raw bodysta, constant-time compare, replay-ikkuna, event ID idempotenssi ja secret rotation.",
+      "wrongFeedback": "IP ei riitä. Älä parsi JSONia ennen allekirjoituksen tarkistusta — raw bodyn tavut ratkaisevat.",
       "sourceRef": "owasp/webhook",
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Webhook_Security_Cheat_Sheet.html",
       "featureId": "security:webhook-signature",
@@ -895,8 +895,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Replay/idempotency — erityisen tärkeä maksuissa ja webhookeissa.",
-      "wrongFeedback": "Ilman idempotencyä kaksoisveloitus on mahdollinen. Tallenna key + vastaus.",
+      "correctFeedback": "Idempotency: sama key + sama payload → sama tulos; eri payload → 409. Tallenna hash, status, TTL tenant-kohtaisesti.",
+      "wrongFeedback": "Ilman idempotencyä kaksoisveloitus on mahdollinen. Sama key eri payloadilla pitää hylätä.",
       "sourceRef": "owasp/api/idempotency",
       "sourceUrl": "https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/",
       "featureId": "security:idempotency",
@@ -966,8 +966,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Software supply chain — OWASP Top 10. Seuraa advisoreita ja päivitä hallitusti PR:llä.",
-      "wrongFeedback": "Ilman lockfileä CI voi asentaa eri version kuin kehitys. npm ci + lockfile.",
+      "correctFeedback": "Supply chain -riski: ilman lockfileä sama commit voi asentaa eri puun. Commitoi lockfile, käytä npm ci CI:ssä, päivitä PR:llä.",
+      "wrongFeedback": "Ilman lockfileä CI voi asentaa eri version kuin kehitys. Pelkkä pinnaaminen package.jsonissa ei lukitse transitiiveja.",
       "sourceRef": "owasp/supply-chain",
       "sourceUrl": "https://owasp.org/Top10/2021/A06_2021-Vulnerable_and_Outdated_Components/",
       "featureId": "security:supply-chain",
@@ -1002,8 +1002,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Threat modeling ennen koodausta — OWASP Insecure Design. Secure-by-design, ei jälkikorjaus.",
-      "wrongFeedback": "Jakolinkki on monimutkainen: token, vanheneminen, audit ja tietovuoto Refererissa.",
+      "correctFeedback": "Threat model: mitä suojataan, kuka hyökkää, miten linkki vuotaa — sitten token, TTL, peruutus, audit, Referrer-Policy.",
+      "wrongFeedback": "Jakolinkki on bearer-token: arvaamaton token, vanheneminen, peruutus, audit ja Referer/lokit pitää suunnitella.",
       "sourceRef": "owasp/insecure-design",
       "sourceUrl": "https://owasp.org/Top10/2021/A04_2021-Insecure_Design/",
       "featureId": "security:threat-modeling",
@@ -1116,6 +1116,150 @@
       "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html",
       "featureId": "security:open-redirect",
       "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-fail-closed",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Policy service timeouttaa. API ei saa vastausta siitä, onko käyttäjällä oikeus nähdä raportti. Päästetäänkö pyyntö läpi?",
+      "choices": [
+        {
+          "text": "Fail closed — jos oikeutta ei voida varmistaa, pyyntö estetään",
+          "correct": true
+        },
+        {
+          "text": "Fail open — käyttökokemus on tärkeämpi, päästetään läpi ja logitetaan",
+          "correct": false
+        },
+        {
+          "text": "Cachetaan viimeisin tunnettu päätös ikuisesti — nopeuttaa vastausta",
+          "correct": false
+        },
+        {
+          "text": "Palautetaan 200 tyhjällä raportilla — ei paljasteta oikeuksia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Turvakriittisessä authz:ssa fail closed. Epävarmuus ei saa antaa pääsyä — retry ja selkeä virhe.",
+      "wrongFeedback": "Fail open antaa pääsyn ilman varmistettua oikeutta. Cache voi myös vanhentua väärin.",
+      "sourceRef": "owasp/insecure-design/fail-closed",
+      "sourceUrl": "https://owasp.org/Top10/2021/A04_2021-Insecure_Design/",
+      "featureId": "security:fail-closed",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-least-privilege-db",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Backend käyttää tietokantaan superuser-tunnusta. Mikä riski?",
+      "choices": [
+        {
+          "text": "Sovellusmurtuma antaa liian laajat DB-oikeudet — käytä rajattua runtime-käyttäjää",
+          "correct": true
+        },
+        {
+          "text": "Superuser on ok, koska vain backend yhdistää tietokantaan",
+          "correct": false
+        },
+        {
+          "text": "Salataan connection string — se riittää suojaamaan tietokannan",
+          "correct": false
+        },
+        {
+          "text": "Riittää käyttää read-only superuseria kaikissa endpointeissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Least privilege: runtime-käyttäjällä vain tarvittavat oikeudet. Murtuma = rajatut oikeudet.",
+      "wrongFeedback": "Backend on hyökkäyspinta. Superuser antaa hyökkääjälle koko DB:n hallinnan murtuman jälkeen.",
+      "sourceRef": "owasp/database/least-privilege",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Database_Security_Cheat_Sheet.html",
+      "featureId": "security:least-privilege-db",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-sec-frontend-authz",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Admin-nappi piilotetaan frontendissä, mutta API ei tarkista admin-oikeutta. Mikä meni pieleen?",
+      "choices": [
+        {
+          "text": "Frontend ei ole turvaraja — kaikki valtuutus pitää tarkistaa palvelimella",
+          "correct": true
+        },
+        {
+          "text": "CSS display:none riittää estämään admin-toiminnon",
+          "correct": false
+        },
+        {
+          "text": "Riittää tarkistaa rooli frontend-routerissa ennen sivun renderöintiä",
+          "correct": false
+        },
+        {
+          "text": "API voi luottaa siihen, että vain admin näkee napin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UI-piilotus on UX, ei security control. Testaa authz suoraan API:ssa.",
+      "wrongFeedback": "Hyökkääjä ohittaa UI:n curlilla tai devtoolsilla. Server-side authz puuttuu.",
+      "sourceRef": "owasp/authorization/frontend",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "featureId": "security:frontend-authz",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-sec-dev-config-leak",
+      "chapter": "sec-design",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Stagingissä on DEBUG=true, CORS=* ja testikäyttäjä admin/admin. Mikä riski?",
+      "choices": [
+        {
+          "text": "Dev-oletukset jaetussa ympäristössä — turvalliset oletukset, erillinen config ja deploy-tarkistukset",
+          "correct": true
+        },
+        {
+          "text": "Staging on vain testiä, joten debug ja CORS=* eivät haittaa",
+          "correct": false
+        },
+        {
+          "text": "HTTPS riittää suojaamaan stagingin vaikka DEBUG olisi päällä",
+          "correct": false
+        },
+        {
+          "text": "Testitunnus on ok, kunhan salasana vaihdetaan kerran kuussa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Secure defaults: DEBUG, CORS ja testitunnukset eivät saa vuotaa jaettuihin ympäristöihin.",
+      "wrongFeedback": "Staging voi sisältää oikeaa dataa tai olla verkossa. Dev-config on insecure design -riski.",
+      "sourceRef": "owasp/insecure-design/defaults",
+      "sourceUrl": "https://owasp.org/Top10/2021/A04_2021-Insecure_Design/",
+      "featureId": "security:dev-config-leak",
+      "featurePoints": 4
     }
   ]
 }

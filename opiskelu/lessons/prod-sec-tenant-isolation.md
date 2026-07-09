@@ -1,4 +1,4 @@
-# POST /api/reports ottaa tenant_id:n request bodysta. Admin kuuluu organisaatioon acme, mutta voi pyytää raportin tenant_id: other-company. Mikä meni pieleen?
+# POST /api/reports ottaa tenant_id:n request bodysta. Raportti cachetetaan avaimella `report:last-month`. Admin (acme) pyytää tenant_id: other-company. Mikä meni pieleen?
 
 ## Tilanne
 
@@ -9,10 +9,44 @@ POST /api/reports
 { "tenant_id": "other-company", "range": "last-month" }
 ```
 
-## Ratkaisu
+Raportti generoidaan ja cachetetaan avaimella `report:last-month` — ilman tenant-etuliitettä.
 
-**tenant_id ei saa tulla luotettuna käyttäjän syötteestä.**
+## Riski
 
-Oikea tenant johdetaan autentikoidusta sessiosta/tokenista ja käyttäjän jäsenyyksistä. Requestissa tulevaa tenant_id:tä saa käyttää korkeintaan valinnan kohteena, jonka oikeus tarkistetaan erikseen.
+Tämä on tenant isolation -bugi. Multi-tenant-sovelluksessa tenant on turvaraja, ei tavallinen filtteriparametri.
+
+## Miksi tämä on vaarallista
+
+`tenant_id` ei saa tulla luotettuna käyttäjän syötteestä. Oikea tenant johdetaan autentikoidusta sessiosta/tokenista ja käyttäjän jäsenyyksistä.
+
+`WHERE tenant_id = currentTenantId` pitää olla kaikkialla: lukemisessa, kirjoittamisessa, raporteissa, exporteissa, background jobeissa ja admin-työkaluissa. Cache-avaimet ilman tenant-etuliitettä vuotavat dataa tenantien välillä:
+
+```txt
+# vaarallinen
+cache key: report:last-month
+
+# turvallisempi
+cache key: tenant:acme:report:last-month
+```
+
+## Väärä korjaus
+
+"Validoidaan vain, että `tenant_id` on olemassa tietokannassa" — ei riitä. Käyttäjä voi pyytää olemassa olevan toisen tenantin dataa.
+
+"Globaali admin saa lukea kaikkien tenantien datan" — vain jos tämä on eksplisiittinen, auditoitu ja erillinen super-admin-malli. Tavallinen org-admin ei saa nähdä muiden asiakkaiden dataa.
+
+## Parempi korjaus
+
+- Johda tenant käyttäjän autentikoidusta kontekstista
+- Tarkista, että käyttäjällä on jäsenyys/rooli kyseisessä tenantissa
+- Tee tenant-rajaus tietokantakyselyssä, ei vain controllerissa
+- Älä ota `tenant_id`:tä suoraan bodysta luotettuna arvona
+- Varmista myös background jobit, raportit, exportit ja cache-avaimet tenant-kohtaisiksi
+
+## Testit
+
+- acme-admin ei saa lukea, luoda, muuttaa eikä exportata other-companyn dataa
+- Sama käyttäjä kahdessa tenantissa näkee vain oikean tenantin cachetun raportin
+- Background job ei käsittele tenant A:n dataa tenant B:n kontekstissa
 
 [Lue lisää](https://cheatsheetseries.owasp.org/cheatsheets/Multitenant_Security_Cheat_Sheet.html)
