@@ -10,8 +10,6 @@ Robot Frameworkissa testit koostuvat avainsanoista (keywords), jotka voivat olla
 
 *** Keywords *** -otsikon alla: nimi, [Arguments] ja askeleet sisennettynä.
 
-Robot Framework käyttää taulukkomuotoista syntaksia *** Keywords *** -osiossa:
-
 ```robot
 *** Keywords ***
 Kirjaudu sisään
@@ -23,14 +21,21 @@ Kirjaudu sisään
 
 *** Test Cases ***
 Onnistunut kirjautuminen
-    Kirjaudu sisään    admin    salasana123
+    Kirjaudu sisään    admin    ${PASSWORD}
     Page Should Contain    Tervetuloa
 ```
-
-Avainsanan nimi, valinnaiset argumentit `[Arguments]`-rivillä ja askeleet sisennettynä (vähintään kaksi välilyöntiä tai tab). Robot Framework käyttää taulukkomuotoista syntaksia *** Keywords *** -osiossa.
 
 ## Käytännössä
 
 Pidä avainsanat yhdessä tasossa abstraktiossa — testi kertoo *mitä* testataan, avainsana *miten*. Nimeä selkeästi (`Kirjaudu sisään`, ei `Do Login Stuff`). Kun sama sekvenssi toistuu kolmessa testissä, refaktoroi se avainsanaksi resource-tiedostoon.
+
+Vältä sekoittamasta abstraktiotasoja samassa testissä:
+
+```robot
+# Huono: domain ja tekninen UI sekaisin
+Kirjaudu sisään    user    pass
+Click    css=.btn-primary
+${text}=    Get Text    xpath=//div[4]/span
+```
 
 [Lue lisää](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-user-keywords)

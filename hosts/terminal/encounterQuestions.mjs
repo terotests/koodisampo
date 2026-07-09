@@ -136,9 +136,9 @@ const TOPIC_DOMAINS = {
   "sec-input": "security",
   "sec-design": "security",
   "rf-basics": "robotframework",
+  "rf-design": "robotframework",
   "rf-web": "robotframework",
   "rf-execution": "robotframework",
-  "rf-advanced": "robotframework",
   "rust-ownership": "rust",
   "rust-borrowing": "rust",
   "rust-types": "rust",
@@ -367,10 +367,10 @@ const TOPIC_LABELS = {
   "sec-data": "data ja salaisuudet",
   "sec-input": "input ja tiedostot",
   "sec-design": "secure design",
-  "rf-basics": "Robot Framework",
+  "rf-basics": "RF perusteet käytännössä",
+  "rf-design": "RF testisuunnittelu",
   "rf-web": "RF web-testaus",
-  "rf-execution": "RF suoritus/CI",
-  "rf-advanced": "RF-laajennukset",
+  "rf-execution": "RF CI ja tuotanto",
 };
 
 function scoreQuestion(q, profile, scoreOptions = null) {

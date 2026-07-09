@@ -2,29 +2,49 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1289 / 1301** valmis (**99.1 %**).
+**1347 / 1394** valmis (**96.6 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 204 | 204 | 100 |
+| C++ | 204 | 223 | 91.5 |
 | JavaScript | 234 | 234 | 100 |
 | PostgreSQL | 180 | 180 | 100 |
-| Docker | 142 | 142 | 100 |
-| Linux | 168 | 168 | 100 |
+| Docker | 142 | 146 | 97.3 |
+| Linux | 168 | 178 | 94.4 |
 | Qt | 164 | 164 | 100 |
 | Scrum | 90 | 90 | 100 |
-| Git | 20 | 20 | 100 |
-| Backend | 5 | 5 | 100 |
-| Turvallisuus | 4 | 4 | 100 |
-| Robot Framework | 12 | 12 | 100 |
-| Rust | 66 | 66 | 100 |
+| Git | 20 | 22 | 90.9 |
+| Backend | 15 | 15 | 100 |
+| Turvallisuus | 35 | 35 | 100 |
+| Robot Framework | 21 | 21 | 100 |
+| Rust | 74 | 74 | 100 |
 | kids | 0 | 12 | 0 |
 
 ## Kaikki aiheet
 
-### C++ (204/204)
+### C++ (204/223)
+
+#### cmake `cmake` (0/15)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 3 | `prod-cmake-cxx-flags-global` | Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FL… |
+| ⬜ | 3 | `prod-cmake-duplicate-sources` | Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetis… |
+| ⬜ | 4 | `prod-cmake-fetchcontent-pin` | FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit… |
+| ⬜ | 4 | `prod-cmake-fmt-public-leak` | Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeLi… |
+| ⬜ | 3 | `prod-cmake-glob-missed-source` | Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cm… |
+| ⬜ | 3 | `prod-cmake-header-only-interface` | Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen m… |
+| ⬜ | 4 | `prod-cmake-install-interface` | Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa inclu… |
+| ⬜ | 3 | `prod-cmake-missing-build-type` | Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build… |
+| ⬜ | 4 | `prod-cmake-openssl-imported` | OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_I… |
+| ⬜ | 4 | `prod-cmake-rpath-install` | Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error whil… |
+| ⬜ | 3 | `prod-cmake-source-dir-subproject` | Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` iso… |
+| ⬜ | 4 | `prod-cmake-subdir-options-leak` | Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä… |
+| ⬜ | 4 | `prod-cmake-transitive-zlib` | `core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain… |
+| ⬜ | 4 | `prod-cmake-werror-third-party` | CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-ko… |
+| ⬜ | 4 | `prod-cpp-cmake-target-includes` | Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren C… |
 
 #### oikeellisuus `correctness` (20/20)
 
@@ -42,7 +62,7 @@
 | ✅ | 2 | `b06-cpp-static-cast-review` | Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi? |
 | ✅ | 3 | `b07-cpp-assert-vs-expect` | assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää… |
 | ✅ | 4 | `b07-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructori… |
-| ✅ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert poistuu — miten varmistat testit tuotantokonf… |
+| ✅ | 3 | `b08-cpp-assert-ndebug` | Release-buildissa assert poistuu — miten varmistat että testit löytävät… |
 | ✅ | 4 | `b09-cpp-narrowing-conversion` | Laskenta `int64_t` → `int32_t` hiljaa truncaa arvon. Miten estät käännö… |
 | ✅ | 3 | `b09-cpp-switch-fallthrough` | Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuo… |
 | ✅ | 4 | `correct-overflow` | Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo? |
@@ -51,11 +71,19 @@
 | ✅ | 4 | `exp-cpp-correct-compare-three-way` | Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — … |
 | ✅ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
 
-#### C++ tuotanto `cpp-production` (8/8)
+#### cpp-build `cpp-build` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 5 | `prod-cpp-sanitizer-tsan` | Release-build toimii, mutta TSan löytää data racen kahden säikeen välil… |
+
+#### C++ tuotanto `cpp-production` (8/11)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 5 | `prod-cpp-coroutine-lifetime` | Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen… |
+| ⬜ | 5 | `prod-cpp-exception-safety-strong` | assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa s… |
+| ⬜ | 4 | `prod-cpp-expected-vs-optional` | Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Millo… |
 | ✅ | 4 | `prod-cpp-false-sharing-struct` | Kaksi std::atomic-laskuria on vierekkäin structissa ja eri säikeet päiv… |
 | ✅ | 4 | `prod-cpp-jthread-stop` | Worker-säie pitää pysäyttää siististi olion tuhoutuessa. Mikä C++20-työ… |
 | ✅ | 3 | `prod-cpp-optional-deref` | Koodi tekee `return *findUser(id);` missä `findUser` palauttaa `std::op… |
@@ -63,6 +91,7 @@
 | ✅ | 4 | `prod-cpp-span-member` | Luokan API ottaa `std::span<int>` konstruktorissa ja tallentaa sen jäse… |
 | ✅ | 4 | `prod-cpp-string-view-member` | Luokka ottaa konstruktorissa `std::string_view name` ja tallentaa sen s… |
 | ✅ | 4 | `prod-cpp-variant-visit` | Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unoht… |
+| ⬜ | 4 | `prod-cpp-volatile-not-thread-safe` | Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa th… |
 
 #### ylläpidettävyys `maintainability` (21/21)
 
@@ -763,13 +792,13 @@
 | ✅ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
 | ✅ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
 
-### Docker (142/142)
+### Docker (142/146)
 
 #### Docker `docker` (79/79)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 4 | `b02-docker-build-copy-03` | Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. Fix? |
+| ✅ | 4 | `b02-docker-build-copy-03` | Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. F… |
 | ✅ | 2 | `b02-docker-exec-debug-04` | Containerissa shell puuttuu mutta prosessi elää — miten debuggaat sisäl… |
 | ✅ | 2 | `b02-docker-prune-05` | Levy täynnä vanhoja imageja ja stopped containereita. Turvallinen siivo… |
 | ✅ | 3 | `b02-docker-run-limit-02` | Yksi container syö koko hostin RAM:in — OOM killaa muita. Rajoitus? |
@@ -822,7 +851,7 @@
 | ✅ | 2 | `b08-docker-compose-override` | Paikallinen dev ylikirjoittaa portit ilman muutosta git-trackattuun com… |
 | ✅ | 2 | `b08-docker-compose-profiles` | Compose-tiedostossa debug-työkalut halutaan vain kehityksessä — ei tuot… |
 | ✅ | 3 | `b08-docker-compose-watch` | Dev: lähdekoodimuutos pitäisi synkata konttiin ilman rebuildia joka ker… |
-| ✅ | 3 | `b08-docker-exec-user` | Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä o… |
+| ✅ | 3 | `b08-docker-exec-user` | Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä opt… |
 | ✅ | 2 | `b08-docker-prune-build-cache` | Build-serverin levy täynnä vanhoja kerroksia. Turvallinen siivous? |
 | ✅ | 3 | `b08-docker-scan-image` | CI putki — haluat skannata imagen CVE:t ennen deploya. Työkalu ekosyste… |
 | ✅ | 3 | `b08-docker-secrets-env` | Code review: API-avain Dockerfile ENV:ssä. Turvallisempi Compose/Swarm … |
@@ -888,12 +917,16 @@
 | ✅ | 5 | `exp-docker-net-macvlan` | Legacy-laite vaatii kontille oman MAC-osoitteen LANissa. Mikä network d… |
 | ✅ | 3 | `exp-docker-net-publish-bind` | Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mi… |
 
-#### Docker tuotanto `docker-production` (2/2)
+#### Docker tuotanto `docker-production` (2/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ⬜ | 4 | `prod-docker-build-secret-arg` | Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packa… |
 | ✅ | 4 | `prod-docker-env-secrets` | Dockerfile sisältää rivin `ENV API_KEY=sk_live_...`. Mikä ongelma tuota… |
+| ⬜ | 5 | `prod-docker-healthcheck-db-down` | HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla.… |
 | ✅ | 4 | `prod-docker-k8s-probes` | Kubernetes-pod käynnistyy, mutta sovellus ei vielä vastaa HTTP-pyyntöih… |
+| ⬜ | 4 | `prod-docker-nonroot-bind-mount` | Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjo… |
+| ⬜ | 4 | `prod-docker-rootless-vs-root` | Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless D… |
 
 #### Docker-volumet `docker-volumes` (27/27)
 
@@ -927,7 +960,7 @@
 | ✅ | 3 | `exp-docker-vol-db-persist` | Postgres-kontti poistettiin `docker rm` — data katosi. Miten olisi pitä… |
 | ✅ | 3 | `exp-docker-vol-readonly` | Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio? |
 
-### Linux (168/168)
+### Linux (168/178)
 
 #### apt/dpkg `apt` (8/8)
 
@@ -970,7 +1003,7 @@
 | ✅ | 3 | `b09-linux-avahi-service-discovery` | Lähiverkon tulostin pitäisi löytyä ilman staattista IP:tä. Protokolla? |
 | ✅ | 3 | `exp-linux-avahi-conflict` | Kaksi laitetta claimaa saman hostname.local — verkko sekoaa. Miten Avah… |
 | ✅ | 2 | `exp-linux-avahi-printer-discovery` | Toimiston tulostin pitäisi löytyä automaattisesti LANissa ilman staatti… |
-| ✅ | 4 | `exp-linux-avahi-service-xml` | Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portissa… |
+| ✅ | 4 | `exp-linux-avahi-service-xml` | Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portiss… |
 
 #### journald `journald` (31/31)
 
@@ -1017,6 +1050,12 @@
 | ✅ | 4 | `b12-linux-arp-gratuitous-duplicate` | Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. … |
 | ✅ | 3 | `b12-linux-arp-static-neigh` | Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP… |
 
+#### linux-cgroups `linux-cgroups` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 4 | `prod-linux-cgroups-v2-memory` | Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -t… |
+
 #### D-Bus `linux-dbus` (5/5)
 
 | | diff | id | kysymys |
@@ -1027,7 +1066,16 @@
 | ✅ | 3 | `b12-linux-dbus-nm-wifi-scan` | NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on p… |
 | ✅ | 4 | `b12-linux-dbus-polkit-deny` | Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. T… |
 
-#### verkko `linux-network` (46/46)
+#### linux-incident `linux-incident` (0/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 5 | `prod-linux-incident-slow-no-cpu` | API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullon… |
+| ⬜ | 4 | `prod-linux-logrotate-copytruncate` | logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lok… |
+| ⬜ | 4 | `prod-linux-lsof-deleted-log` | Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on to… |
+| ⬜ | 4 | `prod-linux-strace-hung-process` | Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. M… |
+
+#### verkko `linux-network` (46/47)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1077,6 +1125,13 @@
 | ✅ | 5 | `linux-nmcli` | NetworkManager hallitsee interfacea. Miten aktivoit profiilin `corp-wif… |
 | ✅ | 4 | `linux-resolv-search` | Kontti/resolvoi `db` mutta ei `db.corp.local`. Mitä tiedostoa tarkistat… |
 | ✅ | 3 | `linux-ss-listen` | Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento? |
+| ⬜ | 3 | `prod-linux-bind-localhost` | Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys… |
+
+#### linux-ssh `linux-ssh` (0/1)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 4 | `prod-linux-ssh-bastion-forward` | Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin … |
 
 #### TCP/UDP `linux-tcp-udp` (6/6)
 
@@ -1124,7 +1179,7 @@
 | ✅ | 3 | `b08-linux-systemd-timer` | Cron-korvaus: backup ajastus systemd:llä. Mitä tarvitset? |
 | ✅ | 2 | `b08-linux-systemd-wantedby` | Uusi service-unit ei käynnisty bootissa vaikka enabled. Install-osiossa… |
 | ✅ | 3 | `b09-linux-systemd-after-before` | App käynnistyy ennen verkkoa — DNS lookup epäonnistuu bootissa. Unit-ri… |
-| ✅ | 4 | `b09-linux-systemd-kill-mode` | Palvelun unitissa on KillMode=process — workerit jäävät pyörimään stopin… |
+| ✅ | 4 | `b09-linux-systemd-kill-mode` | Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään sto… |
 | ✅ | 4 | `b09-linux-systemd-memory-limit` | Muistivuoto täyttää koko palvelimen — haluat rajoittaa yhden unitin RAM… |
 | ✅ | 3 | `b09-linux-systemd-restart-policy` | Palvelu kaatuu satunnaisesti yöllä — haluat automaattisen uudelleenkäyn… |
 | ✅ | 3 | `exp-linux-systemd-failed-service` | Tuotantopalvelu on failed-tilassa rebootin jälkeen. Mikä komento näyttä… |
@@ -1136,6 +1191,14 @@
 | ✅ | 4 | `systemd-restart-policy` | Palvelu kaatuu satunnaisesti prosessivirheeseen. Mikä `Restart=` arvo o… |
 | ✅ | 4 | `systemd-timer` | Haluat ajastaa yöllisen backup-skriptin ilman cronia. Mikä systemd-ratk… |
 | ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:ll… |
+
+#### systemd-hardening `systemd-hardening` (0/3)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ⬜ | 4 | `prod-linux-capabilities-port80` | Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä v… |
+| ⬜ | 4 | `prod-linux-systemd-analyze-security` | Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. M… |
+| ⬜ | 5 | `prod-linux-systemd-protect-system` | Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `… |
 
 ### Qt (164/164)
 
@@ -1500,9 +1563,9 @@
 | ✅ | 3 | `scrum-team-cross-functional` | Mitä tarkoittaa että Scrum-tiimi on cross-functional? |
 | ✅ | 3 | `scrum-team-size` | Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmi… |
 
-### Git (20/20)
+### Git (20/22)
 
-#### CI/CD `git-ci` (9/9)
+#### CI/CD `git-ci` (9/10)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1514,9 +1577,10 @@
 | ✅ | 4 | `jenkins-pipeline-stages` | Jenkins Declarative Pipelinessa build, test ja deploy tulisi ajaa peräk… |
 | ✅ | 5 | `jenkins-shared-library` | Useassa Jenkins-projektissa toistetaan samaa pipeline-logiikkaa. Miten … |
 | ✅ | 4 | `prod-ci-cache-lockfile` | CI käyttää dependency-cachea mutta buildit saavat satunnaisesti väärät … |
+| ⬜ | 4 | `prod-ci-deploy-rollback` | Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvall… |
 | ✅ | 4 | `prod-ci-flaky-test` | Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel? |
 
-#### Git-työnkulku `git-workflow` (11/11)
+#### Git-työnkulku `git-workflow` (11/12)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1531,81 +1595,159 @@
 | ✅ | 4 | `git-worktree` | Haluat työstää kahta branchia samanaikaisesti ilman stashia tai committ… |
 | ✅ | 4 | `prod-git-bisect` | Regressio ilmestyi jossain 200 commitin välillä. Mikä Git-työkalu autta… |
 | ✅ | 4 | `prod-git-force-with-lease` | Rebase tehtiin ja branch pitää puskea uudestaan. Miten vältät että ylik… |
+| ⬜ | 5 | `prod-git-rebase-onto` | Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siir… |
 
-### Backend (5/5)
+### Backend (15/15)
 
-#### backend-API `backend-api` (1/1)
+#### backend-API `backend-api` (3/3)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 4 | `prod-backend-external-timeout` | Ulkoinen API hidastuu ja koko backend alkaa timeoutata. Mikä puuttuu? |
+| ✅ | 3 | `prod-backend-feature-flag` | Uusi suositusalgoritmi rikkoo checkoutin osalle käyttäjistä. Miten pien… |
 | ✅ | 4 | `prod-backend-webhook-idempotency` | Maksupalvelu lähettää saman webhookin kahdesti verkkohäiriön jälkeen. M… |
 
-#### backend-data `backend-data` (3/3)
+#### backend-data `backend-data` (4/4)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `prod-backend-n-plus-one` | Lista käyttäjistä haetaan yhdellä queryllä, mutta jokaiselle tehdään er… |
 | ✅ | 4 | `prod-backend-optimistic-lock` | Kaksi käyttäjää muokkaa samaa riviä ja viimeinen tallennus ylikirjoitta… |
+| ✅ | 5 | `prod-backend-schema-migration` | Tuotantoon lisätään NOT NULL -sarake isoon tauluun ja deploy jäätyy. Mi… |
 | ✅ | 4 | `prod-backend-transfer-transaction` | Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen p… |
 
-#### incident-hallinta `ops-incident` (1/1)
+#### incident-hallinta `ops-incident` (8/8)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 4 | `prod-backend-queue-dlq` | Taustajobi epäonnistuu aina samalla viestillä ja jono jumittuu. Mitä te… |
+| ✅ | 3 | `prod-ops-alert-fatigue` | Tiimi saa kymmeniä hälytyksiä päivässä eikä tiedä mikä on tärkeää. Mikä… |
+| ✅ | 3 | `prod-ops-config-env` | Staging toimii, tuotanto kaatuu: ympäristömuuttuja puuttuu. Miten estät… |
+| ✅ | 4 | `prod-ops-connection-pool` | API hidastuu ruuhkassa, mutta CPU on vain 30 %. Mitä tarkistat? |
+| ✅ | 4 | `prod-ops-deploy-rollback` | Deployn jälkeen virheprosentti nousee 0,1 % → 8 %. Mitä teet ensin? |
+| ✅ | 5 | `prod-ops-healthy-but-down` | Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vih… |
 | ✅ | 5 | `prod-ops-observability` | Tuotannossa satunnainen datan korruptio, mutta lokit eivät riitä juuris… |
+| ✅ | 3 | `prod-ops-runbook` | Hälytys soi yöllä: maksut epäonnistuvat. Mistä aloitat? |
 
-### Turvallisuus (4/4)
+### Turvallisuus (35/35)
 
-#### web-turvallisuus `web-security` (4/4)
+#### API-turvallisuus `sec-api` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 4 | `prod-sec-csrf` | Selain lähettää session-cookien automaattisesti myös haitalliselta sivu… |
+| ✅ | 4 | `prod-sec-idempotency` | POST /api/charge Idempotency-Key: abc123 — sama pyyntö lähetetään kahde… |
+| ✅ | 4 | `prod-sec-idor-bola` | GET /api/invoices/12345 — käyttäjä vaihtaa URL:ssa ID:n 12346 ja näkee … |
+| ✅ | 4 | `prod-sec-mass-assignment` | PATCH /api/users/me — backend tekee Object.assign(user, req.body) ja sa… |
+| ✅ | 3 | `prod-sec-rate-limiting` | Login käyttää Argon2id:tä, mutta hyökkääjä yrittää miljoonia salasanoja… |
+| ✅ | 4 | `prod-sec-ssrf` | POST /api/fetch-preview hakee käyttäjän antaman URL:n. Hyökkääjä antaa … |
+| ✅ | 4 | `prod-sec-webhook-signature` | POST /webhooks/payment — backend luottaa bodyyn { invoiceId, paid: true… |
+
+#### autentikaatio ja valtuutus `sec-auth` (6/6)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `prod-sec-account-enumeration` | Login palauttaa 'User not found' mutta väärällä salasanalla 'Invalid pa… |
+| ✅ | 3 | `prod-sec-authn-authz` | DELETE /api/users/:id — endpoint tarkistaa JWT:n ja löytää käyttäjän, m… |
 | ✅ | 4 | `prod-sec-jwt-claims` | API hyväksyy JWT:n tarkistamatta `exp`- ja `aud`-kenttiä. Mikä riski? |
+| ✅ | 4 | `prod-sec-mfa-recovery` | MFA: TOTP-secret tallennetaan plaintextinä ja recovery-koodit näytetään… |
+| ✅ | 4 | `prod-sec-password-reset` | Reset-linkki: /reset?token=123456 — 6-numeroinen token, voimassa 24 h. … |
+| ✅ | 5 | `prod-sec-rbac-abac` | Globaali role == admin ei skaalaudu: projektin omistaja saa poistaa pro… |
+
+#### data ja salaisuudet `sec-data` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `prod-sec-data-minimization` | Analytiikka lähettää email, fullName, page, IP ja userAgent. Mitä secur… |
 | ✅ | 4 | `prod-sec-password-hash` | Salasanat tallennetaan SHA-256-hasheina ilman suolaa. Mikä parempi ratk… |
+| ✅ | 4 | `prod-sec-secret-management` | Tuotannon Stripe-avain on kovakoodattu: const stripeKey = 'sk_live_...'… |
+| ✅ | 4 | `prod-sec-sensitive-logging` | Virhetilanteessa logger.error({ body: req.body, headers: req.headers })… |
+
+#### secure design `sec-design` (7/7)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `prod-sec-dev-config-leak` | Stagingissä on DEBUG=true, CORS=* ja testikäyttäjä admin/admin. Mikä ri… |
+| ✅ | 4 | `prod-sec-fail-closed` | Policy service timeouttaa. API ei saa vastausta siitä, onko käyttäjällä… |
+| ✅ | 3 | `prod-sec-frontend-authz` | Admin-nappi piilotetaan frontendissä, mutta API ei tarkista admin-oikeu… |
+| ✅ | 4 | `prod-sec-least-privilege-db` | Backend käyttää tietokantaan superuser-tunnusta. Mikä riski? |
+| ✅ | 4 | `prod-sec-supply-chain` | package.json: "some-lib": "^1.2.0" — CI asentaa ilman lockfileä. Mikä r… |
+| ✅ | 5 | `prod-sec-tenant-isolation` | POST /api/reports ottaa tenant_id:n request bodysta. Raportti cacheteta… |
+| ✅ | 4 | `prod-sec-threat-modeling` | Uusi ominaisuus: käyttäjä voi jakaa yksityisen raportin linkillä. Mitä … |
+
+#### input ja tiedostot `sec-input` (5/5)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `prod-sec-file-upload` | Profiilikuvan upload tarkistaa vain if filename.endswith('.jpg'). Mikä … |
+| ✅ | 3 | `prod-sec-path-traversal` | GET /download?file=report.pdf — backend: sendFile('/var/app/files/' + r… |
+| ✅ | 4 | `prod-sec-shell-injection` | Sovellus ajaa `os.system("convert " + user_filename)` ilman validointia… |
+| ✅ | 4 | `prod-sec-sql-sort-injection` | GET /api/users?sort=name — koodi: db.query(`SELECT * FROM users ORDER B… |
+| ✅ | 5 | `prod-sec-unsafe-deserialization` | API ottaa base64-kentän ja tekee pickle.loads(base64decode(input)). Mik… |
+
+#### web-turvallisuus `web-security` (7/7)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `prod-sec-cache-control` | Palkkakuitin PDF: Cache-Control: public, max-age=86400. Mikä riski? |
+| ✅ | 4 | `prod-sec-cors` | API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Cr… |
+| ✅ | 4 | `prod-sec-csrf` | Selain lähettää session-cookien automaattisesti myös haitalliselta sivu… |
+| ✅ | 3 | `prod-sec-open-redirect` | Login ohjaa: /login?next=https://evil.example/phish. Mikä riski ja korj… |
+| ✅ | 3 | `prod-sec-security-headers` | Kirjautuneille käyttäjille palautetaan HTML-sivuja ilman turva-headerei… |
+| ✅ | 3 | `prod-sec-tls-verify-off` | Kehittäjä lisää `curl -k` tai `verify=False` korjatakseen TLS-virheen. … |
 | ✅ | 3 | `prod-sec-xss` | Käyttäjän kommentti renderöidään HTML:ään ilman escapetusta. Mikä riski? |
 
-### Robot Framework (12/12)
+### Robot Framework (21/21)
 
-#### RF-laajennukset `rf-advanced` (1/1)
-
-| | diff | id | kysymys |
-|---|------|-----|---------|
-| ✅ | 4 | `rf-custom-python-keyword` | Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. M… |
-
-#### Robot Framework `rf-basics` (6/6)
+#### RF perusteet käytännössä `rf-basics` (7/7)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 4 | `rf-data-driven` | Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot … |
+| ✅ | 4 | `rf-env-variables` | Testit ajetaan devissä, stagingissä ja tuotannossa. Miten ympäristökoht… |
 | ✅ | 3 | `rf-keyword-structure` | Robot Frameworkissa testi koostuu avainsanoista. Miten oma avainsana (k… |
 | ✅ | 3 | `rf-library-import` | Testissä tarvitset käyttöjärjestelmäkomentoja (ls, mkdir). Mikä kirjast… |
 | ✅ | 3 | `rf-resource-files` | Useat .robot-testitiedostot tarvitsevat samoja avainsanoja. Miten jaat … |
+| ✅ | 4 | `rf-secrets-logging` | Salasana näkyy Robotin log.html-raportissa CI-artefakteissa. Mikä meni … |
 | ✅ | 3 | `rf-setup-teardown` | Jokainen testi tarvitsee selaimen avauksen alussa ja sulkemisen lopussa… |
 | ✅ | 3 | `rf-variables` | Robot Frameworkissa on lista URL-osoitteita joita käytetään testissä. M… |
 
-#### RF suoritus/CI `rf-execution` (3/3)
+#### RF testisuunnittelu `rf-design` (5/5)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
+| ✅ | 4 | `rf-abstraction-level` | Checkout-testi sisältää 80 riviä Click/Input Text -askeleita. UI-muutos… |
+| ✅ | 4 | `rf-api-vs-ui` | Tiimi ajaa kaiken checkout-flow'n selaimella. Testit kestävät 45 min ja… |
+| ✅ | 4 | `rf-custom-python-keyword` | Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. M… |
+| ✅ | 4 | `rf-data-driven` | Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot … |
+| ✅ | 4 | `rf-test-data` | Testi luo käyttäjän test@example.com. Ensimmäinen ajo onnistuu, toinen … |
+
+#### RF CI ja tuotanto `rf-execution` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `rf-ci-exit-code` | CI ajaa Robot-testit, mutta build menee vihreäksi vaikka testit epäonni… |
 | ✅ | 4 | `rf-ci-integration` | Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tul… |
-| ✅ | 4 | `rf-run-on-failure` | Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-te… |
+| ✅ | 4 | `rf-pabot-parallel` | Robot-testit kestävät 45 minuuttia. Voiko ne ajaa rinnakkain turvallise… |
 | ✅ | 3 | `rf-tags-include-exclude` | Testisuitessa on 200 testiä mutta haluat ajaa vain smoke-testit CI:ssä.… |
 
-#### RF web-testaus `rf-web` (2/2)
+#### RF web-testaus `rf-web` (5/5)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 4 | `rf-browser-library` | Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjast… |
+| ✅ | 4 | `rf-flaky-tests` | Testi epäonnistuu kerran viikossa CI:ssä mutta menee aina rerunilla läp… |
+| ✅ | 4 | `rf-run-on-failure` | Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-te… |
+| ✅ | 4 | `rf-selector-strategy` | Web-testit hajoavat aina kun CSS-luokkia refaktoroidaan. Mitä muutat se… |
 | ✅ | 3 | `rf-wait-until` | Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lata… |
 
-### Rust (66/66)
+### Rust (74/74)
 
-#### Rust async `rust-async` (10/10)
+#### Rust async `rust-async` (12/12)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `rust-async-future-await` | Mitä `async fn` palauttaa Rustissa? |
+| ✅ | 3 | `rust-async-http-timeout` | Rust-palvelu kutsuu ulkoista API:a ilman timeoutia. Mikä riski? |
+| ✅ | 3 | `rust-async-spawn-lost-errors` | Taustatehtävä panikoi, mutta kukaan ei huomaa. Mikä meni pieleen? |
 | ✅ | 2 | `rust-async-tokio-join-handle` | tokio::spawn palauttaa JoinHandle<T>. Miten saat tehtävän tuloksen tai … |
 | ✅ | 3 | `rust-async-tokio-mpsc` | Async-tehtävät viestivät toisilleen tokio-runtime:ssa. Mikä kanava on a… |
 | ✅ | 3 | `rust-async-tokio-mutex` | Jaettu tila async-tehtävissä — `std::sync::Mutex` aiheuttaa blokkausta … |
@@ -1638,7 +1780,7 @@
 | ✅ | 3 | `rust-concurrency-send-sync-def` | Mikä ero `Send`- ja `Sync`-traitien välillä? |
 | ✅ | 2 | `rust-concurrency-thread-spawn` | Miten käynnistät uuden OS-säikeen std-kirjastolla? |
 
-#### Rust virheenkäsittely `rust-error` (5/5)
+#### Rust virheenkäsittely `rust-error` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1646,6 +1788,7 @@
 | ✅ | 2 | `rust-error-option-result-convert` | Funktio palauttaa `Option<T>` mutta kutsuja tarvitsee `Result<T, MyErro… |
 | ✅ | 2 | `rust-error-panic-unrecoverable` | Milloin `panic!` on perusteltu recoverable-virheen sijaan? |
 | ✅ | 2 | `rust-error-question-mark` | Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haaras… |
+| ✅ | 3 | `rust-error-thiserror-anyhow` | Kirjastossa palautetaan `anyhow::Result`. Miksi code review vastustaa? |
 | ✅ | 2 | `rust-error-unwrap-vs-expect` | Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suos… |
 
 #### Rust omistajuus `rust-ownership` (7/7)
@@ -1660,14 +1803,16 @@
 | ✅ | 1 | `rust-ownership-string-str` | Funktio ottaa merkkijonon parametriksi mutta ei tarvitse omistaa sitä. … |
 | ✅ | 3 | `rust-ownership-vec-push-invalidate` | Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe? |
 
-#### Rust turvallisuus `rust-safety` (2/2)
+#### Rust turvallisuus `rust-safety` (4/4)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `rust-safety-borrow-checker` | Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman ros… |
+| ✅ | 3 | `rust-safety-secret-debug` | Struct sisältää API-avaimen ja sille deriveataan Debug. Mikä riski? |
+| ✅ | 3 | `rust-safety-supply-chain` | Rust-projekti käyttää 120 cratea. Miten pienennät dependency-riskiä? |
 | ✅ | 3 | `rust-safety-unsafe-block` | Milloin `unsafe`-lohko on perusteltu? |
 
-#### Rust testaus `rust-testing` (8/8)
+#### Rust testaus `rust-testing` (9/9)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1678,20 +1823,22 @@
 | ✅ | 3 | `rust-testing-mock-trait` | Haluat korvata HTTP-clientin testissä ilman oikeaa verkkoa. Mikä patter… |
 | ✅ | 4 | `rust-testing-proptest` | Haluat generoida satoja satunnaisia syötteitä parserille. Mikä crate so… |
 | ✅ | 2 | `rust-testing-should-panic` | Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutt… |
+| ✅ | 2 | `rust-testing-slow-sleep` | Testi käyttää oikeaa sleepiä ja kestää 30 sekuntia. Miten nopeutat? |
 | ✅ | 2 | `rust-testing-tokio-test` | Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen… |
 
-#### Rust työkalut `rust-tooling` (6/6)
+#### Rust työkalut `rust-tooling` (7/7)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 1 | `rust-tooling-cargo` | Uusi Rust-projekti aloitetaan terminaalissa. Mikä komento luo `Cargo.to… |
 | ✅ | 3 | `rust-tooling-cargo-features` | Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille.… |
 | ✅ | 1 | `rust-tooling-cargo-test` | Miten ajat yksikkötestit Rust-projektissa? |
+| ✅ | 2 | `rust-tooling-ci-baseline` | Mikä on järkevä minimiputki Rust-projektin CI:ssä? |
 | ✅ | 2 | `rust-tooling-clippy` | Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu? |
 | ✅ | 2 | `rust-tooling-derive-macro` | Mitä `#[derive(Clone, PartialEq)]` tekee käännöksen aikana? |
 | ✅ | 2 | `rust-tooling-release-profile` | Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento? |
 
-#### Rust traitit `rust-traits` (8/8)
+#### Rust traitit `rust-traits` (9/9)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1700,6 +1847,7 @@
 | ✅ | 2 | `rust-traits-definition` | Mikä Rustin trait vastaa käytännössä Java-interfacen roolia? |
 | ✅ | 3 | `rust-traits-deref-coercion` | Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy? |
 | ✅ | 1 | `rust-traits-derive-debug` | Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät… |
+| ✅ | 3 | `rust-traits-dispatch-choice` | Valitset `impl Trait`, geneerisen parametrin ja `Box<dyn Trait>` välill… |
 | ✅ | 3 | `rust-traits-dyn-trait-object` | Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä… |
 | ✅ | 3 | `rust-traits-impl-trait-return` | Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä pa… |
 | ✅ | 2 | `rust-traits-iterator` | Mikä trait mahdollistaa `for item in collection` -silmukan? |

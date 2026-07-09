@@ -10,8 +10,6 @@ Robot Frameworkissa testit voidaan merkitä tageilla ja suodattaa ajon yhteydess
 
 **Merkitse testit [Tags] smoke ja aja robot --include smoke — ajaa vain merkityt.**
 
-Testitapauksessa:
-
 ```robot
 *** Test Cases ***
 Kirjautuminen toimii
@@ -27,13 +25,20 @@ Tilauksen historia
 CI-komento:
 
 ```bash
-robot --include smoke tests/
+robot --include smoke --exclude wip tests/
 ```
-
-Vain `smoke`-tagilla merkityt testit ajetaan. Voit yhdistää: `--include smoke --exclude slow`. Tagit ovat RF:n ensisijainen mekanismi testien valintaan — --include/--exclude.
 
 ## Käytännössä
 
-Sovi tiimin kanssa tagien merkitykset: `smoke` (CI jokaisella pushilla), `regression` (yöajo), `wip` (keskeneräinen). Vältä liian monia päällekkäisiä tageja — selkeä hierarkia helpottaa pipeline-konfiguraatiota. `--exclude wip` CI:ssä estää keskeneräisten testien ajon.
+Sovi tagien merkitys etukäteen:
+
+- `smoke`: nopea kriittinen polku, jokaisella commitilla
+- `regression`: laajempi yöajo / ennen releaseä
+- `slow`: pitkäkestoinen, ei tavalliseen PR-putkeen
+- `destructive`: muuttaa dataa tai vaatii erillisen ympäristön
+- `flaky`: väliaikainen karanteeni, ei pysyvä ratkaisu
+- `wip`: ei CI:hin
+
+Älä anna tagien kasvaa vapaaksi taksonomiaksi. Jos jokainen tiimi keksii omat taginsa, CI-valinta muuttuu epäselväksi.
 
 [Lue lisää](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#tagging-test-cases)

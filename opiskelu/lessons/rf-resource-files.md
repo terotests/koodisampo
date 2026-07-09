@@ -10,37 +10,45 @@ Robot Frameworkin arkkitehtuuri erottaa testitapaukset ja jaetun logiikan. Resou
 
 **Luo resource-tiedosto (.resource/.robot) ja tuo se Resource-asetuksella *** Settings ***-osiossa.**
 
-Jaettu `common.resource`:
+Suositeltu projektirakenne:
+
+```text
+tests/
+  smoke/
+    login.robot
+    checkout.robot
+  regression/
+    orders.robot
+
+resources/
+  common.resource
+  pages/
+    login_page.resource
+    checkout_page.resource
+  keywords/
+    auth.resource
+    orders.resource
+
+variables/
+  dev.yaml
+  staging.yaml
+  prod.yaml
+
+libraries/
+  ApiClient.py
+  TestData.py
+```
+
+Testitiedosto tuo resurssin:
 
 ```robot
 *** Settings ***
-Library    Browser
-
-*** Variables ***
-${BASE_URL}    https://staging.example.com
-
-*** Keywords ***
-Kirjaudu sisään
-    [Arguments]    ${user}    ${pass}
-    Go To    ${BASE_URL}/login
-    ...
+Resource    ../resources/keywords/auth.resource
+Resource    ../resources/pages/login_page.resource
 ```
-
-Testitiedosto tuo sen:
-
-```robot
-*** Settings ***
-Resource    ../resources/common.resource
-
-*** Test Cases ***
-Admin näkee dashboardin
-    Kirjaudu sisään    admin    secret
-```
-
-Resource-tiedostot jakavat avainsanoja ja muuttujia testisuittien välillä.
 
 ## Käytännössä
 
-Järjestä resurssit domainin mukaan (`login.resource`, `checkout.resource`) ja yhteinen `common.resource` pohjalle. `.resource`-pääte on suositeltu uusissa projekteissa — se erottaa selkeästi testeistä. Vältä syviä import-ketjuja; yksi `common` + domain-kohtaiset resurssit riittää useimmiten.
+Pidä testitapaukset ohuina. Pidä domain-keywordit `resources/keywords/`-hakemistossa ja tekniset page/screen-keywordit `resources/pages/`-hakemistossa. Monimutkainen logiikka kuuluu Python-kirjastoihin, ympäristökohtaiset arvot `variables/`-hakemistoon. Vältä syviä import-ketjuja.
 
 [Lue lisää](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#resource-files)
