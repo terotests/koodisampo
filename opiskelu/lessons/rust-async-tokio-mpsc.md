@@ -36,7 +36,15 @@ Kapasiteetti (32) rajaa puskurointia: jos bufferi on täynnä, `send().await` od
 
 ## Käytännössä
 
-`tokio::sync::mpsc` sopii yhden lähettäjän ja usean vastaanottajan malliin (tai usealle kloonatulle `Sender`-käsineelle). **Broadcast** (`broadcast::channel`) toimii yhdestä lähettäjästä monelle subscriberille — hyvä tapahtumien fan-outiin. **Oneshot** (`oneshot::channel`) on kertaluonteinen vastaus: yksi viesti, yksi vastaanottaja — esim. RPC-tyyppinen pyyntö-vastaus.
+`tokio::sync::mpsc` on **multi-producer, single-consumer** -kanava:
+
+- `Sender` voidaan kloonata monelle producer-tehtävälle
+- `Receiver` on yksi consumer
+- jos tarvitset fan-outin monelle vastaanottajalle, käytä `broadcast`
+- jos tarvitset watch-tyyppisen "uusin arvo" -mallin, käytä `watch`
+- jos tarvitset MPMC-työjonon, harkitse erillistä cratea kuten `async-channel` tai `flume`
+
+**Broadcast** (`broadcast::channel`) toimii yhdestä lähettäjästä monelle subscriberille — hyvä tapahtumien fan-outiin. **Oneshot** (`oneshot::channel`) on kertaluonteinen vastaus: yksi viesti, yksi vastaanottaja — esim. RPC-tyyppinen pyyntö-vastaus.
 
 Valitse kanava viestin elinkaaren mukaan: jatkuva työjono → mpsc, tapahtumajako → broadcast, yksittäinen vastaus → oneshot.
 

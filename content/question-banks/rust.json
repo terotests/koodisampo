@@ -1889,8 +1889,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "select! on async vastine epoll/select-kutsulle — race + peruutus.",
-      "wrongFeedback": "join odottaa kaikkia. select! palauttaa kun yksi haara valmistuu.",
+      "correctFeedback": "select! on async vastine epoll/select-kutsulle — race + peruutus. Oletuksena fair (satunnaistettu järjestys), ei biased.",
+      "wrongFeedback": "join odottaa kaikkia. select! palauttaa kun yksi haara valmistuu. biased; tekee järjestyksestä eksplisiittisen.",
       "featureId": "rust:tokio-select",
       "featurePoints": 4,
       "lessonRef": "rust/async/rust-async-tokio-select",
@@ -2107,8 +2107,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "tokio mpsc integroituu awaitiin — backpressure async-tyylillä.",
-      "wrongFeedback": "std::sync::mpsc blokkaa. tokio::sync::mpsc on async-idiomi.",
+      "correctFeedback": "tokio mpsc on multi-producer, single-consumer — Sender kloonataan, yksi Receiver.",
+      "wrongFeedback": "std::sync::mpsc blokkaa. tokio::sync::mpsc on async-idiomi (MPMC → broadcast/watch/flume).",
       "featureId": "rust:tokio-mpsc",
       "featurePoints": 4,
       "lessonRef": "rust/async/rust-async-tokio-mpsc",
@@ -2405,6 +2405,302 @@
       "lessonRef": "rust/testing/rust-testing-catch-unwind",
       "sourceUrl": "https://doc.rust-lang.org/std/panic/fn.catch_unwind.html",
       "sourceRef": "rust-book/rust-testing-catch-unwind"
+    },
+    {
+      "id": "rust-safety-supply-chain",
+      "chapter": "rust-safety",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security",
+        "project-lead"
+      ],
+      "prompt": "Rust-projekti käyttää 120 cratea. Miten pienennät dependency-riskiä?",
+      "choices": [
+        {
+          "text": "Commitoi Cargo.lock, minimoi riippuvuudet, cargo audit/deny CI:ssä",
+          "correct": true
+        },
+        {
+          "text": "Rust poistaa supply chain -riskin — crateja ei tarvitse seurata",
+          "correct": false
+        },
+        {
+          "text": "Poista Cargo.lock — aina uusimmat versiot tuotannossa",
+          "correct": false
+        },
+        {
+          "text": "Lisää default-features kaikkiin crateihin nopeuteen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Supply chain: lockfile, vähäiset deps, audit/deny, feature-hygienia.",
+      "wrongFeedback": "Rust ei poista supply chain -riskiä. Sovellusprojekteissa commitoi Cargo.lock.",
+      "featureId": "rust:supply-chain",
+      "featurePoints": 4,
+      "lessonRef": "rust/safety/rust-safety-supply-chain",
+      "sourceUrl": "https://rustsec.org/",
+      "sourceRef": "rust-book/rust-safety-supply-chain"
+    },
+    {
+      "id": "rust-safety-secret-debug",
+      "chapter": "rust-safety",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Struct sisältää API-avaimen ja sille deriveataan Debug. Mikä riski?",
+      "choices": [
+        {
+          "text": "Debug tulostaa kentät lokeihin — salaisuudet voivat vuotaa tuotannossa",
+          "correct": true
+        },
+        {
+          "text": "Debug on compile-time pois release-buildissa automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "derive(Debug) redaktoi automaattisesti salaiset kentät",
+          "correct": false
+        },
+        {
+          "text": "Riski vain jos käytät nightly-Rustia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "derive(Debug) tulostaa kaiken — käytä Secret-wrapperia tai custom Debug.",
+      "wrongFeedback": "Debug ei poistu release-buildissa. Redaktoi salaisuudet itse.",
+      "featureId": "rust:secret-debug",
+      "featurePoints": 4,
+      "lessonRef": "rust/safety/rust-safety-secret-debug",
+      "sourceUrl": "https://docs.rs/secrecy/latest/secrecy/",
+      "sourceRef": "rust-book/rust-safety-secret-debug"
+    },
+    {
+      "id": "rust-async-http-timeout",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Rust-palvelu kutsuu ulkoista API:a ilman timeoutia. Mikä riski?",
+      "choices": [
+        {
+          "text": "Future odottaa liian kauan — taskit ja connection poolit kasautuvat",
+          "correct": true
+        },
+        {
+          "text": "Rust kaatuu automaattisesti 30 s jälkeen",
+          "correct": false
+        },
+        {
+          "text": "Ei riskiä — async on aina non-blocking",
+          "correct": false
+        },
+        {
+          "text": "Vain synkroninen koodi voi jumittua",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ilman timeoutia resurssit kasautuvat. Käytä tokio::time::timeout ja HTTP-client timeouteja.",
+      "wrongFeedback": "Async ei kaadu — se odottaa. Timeout ja backoff ovat pakollisia tuotannossa.",
+      "featureId": "rust:async-timeout",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-http-timeout",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/time/fn.timeout.html",
+      "sourceRef": "rust-book/rust-async-http-timeout"
+    },
+    {
+      "id": "rust-async-spawn-lost-errors",
+      "chapter": "rust-async",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Taustatehtävä panikoi, mutta kukaan ei huomaa. Mikä meni pieleen?",
+      "choices": [
+        {
+          "text": "JoinHandle pudotettiin — panic/virhe jäi näkymättömäksi fire-and-forgetissä",
+          "correct": true
+        },
+        {
+          "text": "tokio::spawn propagoi panicin automaattisesti HTTP-vastaukseen",
+          "correct": false
+        },
+        {
+          "text": "Async-tehtävä ei voi panikoida",
+          "correct": false
+        },
+        {
+          "text": "Virhe näkyy aina stderrissä tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Spawn palauttaa JoinHandle — await tai logita virheet spawnin sisällä.",
+      "wrongFeedback": "Fire-and-forget kadottaa virheet jos handlea ei odoteta eikä logiteta.",
+      "featureId": "rust:spawn-errors",
+      "featurePoints": 4,
+      "lessonRef": "rust/async/rust-async-spawn-lost-errors",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/task/struct.JoinHandle.html",
+      "sourceRef": "rust-book/rust-async-spawn-lost-errors"
+    },
+    {
+      "id": "rust-error-thiserror-anyhow",
+      "chapter": "rust-error",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Kirjastossa palautetaan `anyhow::Result`. Miksi code review vastustaa?",
+      "choices": [
+        {
+          "text": "anyhow sopii app-kerrokseen — kirjaston API:ssa kutsuja ei voi matchata virhetyyppejä",
+          "correct": true
+        },
+        {
+          "text": "anyhow on aina kielletty Rustissa",
+          "correct": false
+        },
+        {
+          "text": "thiserror on vain testeihin",
+          "correct": false
+        },
+        {
+          "text": "Box<dyn Error> on ainoa oikea kirjasto-API",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Binääri: anyhow. Kirjasto/domain: thiserror + oma enum.",
+      "wrongFeedback": "anyhow on ok sovelluksissa. Kirjasto-API tarvitsee tyypitetyt virheet.",
+      "featureId": "rust:thiserror-anyhow",
+      "featurePoints": 4,
+      "lessonRef": "rust/error/rust-error-thiserror-anyhow",
+      "sourceUrl": "https://docs.rs/thiserror/latest/thiserror/",
+      "sourceRef": "rust-book/rust-error-thiserror-anyhow"
+    },
+    {
+      "id": "rust-testing-slow-sleep",
+      "chapter": "rust-testing",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Testi käyttää oikeaa sleepiä ja kestää 30 sekuntia. Miten nopeutat?",
+      "choices": [
+        {
+          "text": "#[tokio::test(start_paused = true)] + tokio::time::advance — ei oikeaa odotusta",
+          "correct": true
+        },
+        {
+          "text": "Lisää thread::sleep testiin tarkkuuden vuoksi",
+          "correct": false
+        },
+        {
+          "text": "Poista testi — hitaat testit eivät kuulu CI:hin",
+          "correct": false
+        },
+        {
+          "text": "cargo test --release nopeuttaa sleep-testejä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tokion testiaika: paused clock + advance. Älä odota oikeaa aikaa.",
+      "wrongFeedback": "Oikea sleep hidastaa CI:tä. Käytä start_paused ja advance.",
+      "featureId": "rust:test-time",
+      "featurePoints": 3,
+      "lessonRef": "rust/testing/rust-testing-slow-sleep",
+      "sourceUrl": "https://docs.rs/tokio/latest/tokio/attr.test.html",
+      "sourceRef": "rust-book/rust-testing-slow-sleep"
+    },
+    {
+      "id": "rust-tooling-ci-baseline",
+      "chapter": "rust-tooling",
+      "domain": "rust",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Mikä on järkevä minimiputki Rust-projektin CI:ssä?",
+      "choices": [
+        {
+          "text": "fmt --check, clippy -D warnings, test, doc, audit/deny",
+          "correct": true
+        },
+        {
+          "text": "cargo build riittää — testit valinnaisia",
+          "correct": false
+        },
+        {
+          "text": "Vain cargo test ilman fmt/clippy",
+          "correct": false
+        },
+        {
+          "text": "rustc suoraan ilman Cargoa tuotannossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "CI baseline: fmt, clippy, test, doc, audit. -D warnings tietoisesti.",
+      "wrongFeedback": "Build ei riitä. fmt + clippy + test + doc + audit on minimi.",
+      "featureId": "rust:ci-baseline",
+      "featurePoints": 3,
+      "lessonRef": "rust/tooling/rust-tooling-ci-baseline",
+      "sourceUrl": "https://doc.rust-lang.org/clippy/continuous_integration/index.html",
+      "sourceRef": "rust-book/rust-tooling-ci-baseline"
+    },
+    {
+      "id": "rust-traits-dispatch-choice",
+      "chapter": "rust-traits",
+      "domain": "rust",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Valitset `impl Trait`, geneerisen parametrin ja `Box<dyn Trait>` välillä. Miten päätät?",
+      "choices": [
+        {
+          "text": "impl Trait/geneerinen = staattinen dispatch; Box<dyn Trait> = heterogeeninen runtime-lista",
+          "correct": true
+        },
+        {
+          "text": "Box<dyn Trait> on aina nopein — käytä sitä kaikkialla",
+          "correct": false
+        },
+        {
+          "text": "impl Trait ja geneerinen T: Trait ovat aina identtisiä",
+          "correct": false
+        },
+        {
+          "text": "dyn Trait ei vaadi object safety -tarkistusta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "impl Trait/geneerinen monomorfisoi; dyn Trait heterogeeniseen kokoelmaan.",
+      "wrongFeedback": "dyn Trait on hitaampi mutta joustava. Valitse dispatch-malli tarpeen mukaan.",
+      "featureId": "rust:dispatch-choice",
+      "featurePoints": 4,
+      "lessonRef": "rust/traits/rust-traits-dispatch-choice",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch17-02-trait-objects.html",
+      "sourceRef": "rust-book/rust-traits-dispatch-choice"
     }
   ]
 }

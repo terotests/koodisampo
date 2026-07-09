@@ -44,4 +44,6 @@ Jos tarvitset synkronista lukkoa lyhyeen CPU-operaatioon, harkitse `spawn_blocki
 
 Huomaa ero `std::sync::Mutex` ja `tokio::sync::Mutex` välillä: synkroninen lukko on ok **lyhyessä** kriittisessä osiossa ilman awaitia (esim. laskurin inkrementointi). Ongelma syntyy vasta, kun lukon alla kutsutaan `.await`.
 
+Vaikka käytät `tokio::sync::Mutex`ia, älä tee hidasta I/O:ta lukon sisällä. Async Mutex ei blokkaa worker-säiettä samalla tavalla kuin `std::sync::Mutex`, mutta se voi silti serialisoida koko sovelluksen logiikan — kaikki tehtävät odottavat lukkoa, vaikka runtime pyörittäisi muita tehtäviä.
+
 [Lue lisää](https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html)

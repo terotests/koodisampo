@@ -38,6 +38,8 @@ fn legacy_api(/* ... */) { }
 
 Yhdistä CI-putkessa: `cargo fmt --check` (muotoilu) + `cargo clippy` (lint) + `cargo test`. Pre-commit-hookki nopeuttaa palautetta ennen pushia.
 
+`-D warnings` on hyvä tiimiprojekteissa, mutta ota se käyttöön tietoisesti — toolchain-päivitys voi tuoda uusia Clippy-varoituksia ja rikkoa CI:n.
+
 `clippy::pedantic` ja `clippy::nursery` ovat tiukempia — ota käyttöön vähitellen. Clippy ei korvaa code reviewta kokonaan, mutta poistaa mekaanisen toiston. Päivitä Clippy toolchainin mukana säännöllisesti — uusia linttejä tulee jokaisessa Rust-julkaisussa.
 
 Esimerkkejä hyödyllisistä Clippy-linteistä: `clippy::unnecessary_to_owned` (turha `.to_string()`), `clippy::needless_borrow` (turha `&`), `clippy::match_wild_err_arm` (liian laaja virheenkäsittely). Korjaukset parantavat usein sekä luettavuutta että suorituskykyä.

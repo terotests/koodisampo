@@ -49,6 +49,10 @@ assert.equal(
   "one auto-linked SQL plus one pre-existing markdown link",
 );
 
+const pidSample = "Pidä lukko lyhyenä. Älä pidä std::Mutex-lukkoa await-yli.";
+const pidLinked = linkGlossaryTerms(pidSample, terms);
+assert.equal(pidLinked, pidSample, "PID must not link inside Finnish pidä");
+
 syncGlossaryDoc();
 assert.ok(fs.existsSync(path.join(root, "study/docs/lyhenteet.md")));
 assert.equal(loadGlossaryTerms().length, terms.length);

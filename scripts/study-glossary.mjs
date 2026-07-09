@@ -138,12 +138,16 @@ function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** Finnish and other extended letters count as word chars — avoids e.g. PID matching inside "pidä". */
+const EXT_WORD_CHAR = String.raw`[A-Za-z0-9_\u00C0-\u024F]`;
+
 /** @param {string} term */
 function glossaryLinkPattern(term) {
   if (term === "C++") {
     return String.raw`(?<!\[)\b(?:C\/C\+\+|C\+\+(?:\d{2})?)(?![+0-9A-Za-z])`;
   }
-  return `(?<!\\[)\\b${escapeRegExp(term)}\\b(?!\\])`;
+  const escaped = escapeRegExp(term);
+  return `(?<!\\[)(?<!${EXT_WORD_CHAR})${escaped}(?!${EXT_WORD_CHAR})(?!\\])`;
 }
 
 /**

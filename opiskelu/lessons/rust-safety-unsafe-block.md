@@ -42,7 +42,17 @@ pub fn initialize() -> Result<Config, InitError> {
 
 ## Käytännössä
 
-**Periaate**: pidä unsafe mahdollisimman pienenä ja kapseloitu safe API:n taakse. Dokumentoi esiehdot (`// SAFETY: ptr valid until free()`). Työkalut: **Miri** (UB-testaus), **Clippy** (unsafe-käytön varoitukset), **cargo-geiger** (unsafe-määrän seuranta).
+Unsafe-lohkon tärkein kysymys ei ole "mihin kirjoitan unsafe?", vaan **"mikä invariantti tekee tästä turvallisen?"**
+
+Dokumentoi `// SAFETY:` -kommenteissa:
+
+- pointer ei ole null
+- pointer osoittaa validiin `T`-arvoon
+- elinaika on riittävä
+- omistajuus on selvä: kuka vapauttaa muistin?
+- dataa ei muuteta samanaikaisesti toisesta paikasta
+
+**Periaate**: pidä unsafe mahdollisimman pienenä ja kapseloitu safe API:n taakse. FFI-polussa palauta hallittu `Result` tai virhetyyppi — älä luota pelkkään `assert!(!ptr.is_null())` tuotantopolussa. Työkalut: **Miri** (UB-testaus), **Clippy** (unsafe-käytön varoitukset), **cargo-geiger** (unsafe-määrän seuranta).
 
 Älä käytä unsafe suorituskyvyn vuoksi ennen kuin olet profiloinut — usein `Iterator`-ketjut ja `-O` riittävät. FFI, custom allocatorit ja zero-cost abstraktioiden toteutus ovat tyypillisiä perusteltuja syitä.
 
