@@ -4,42 +4,6 @@
   "source": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
   "questions": [
     {
-      "id": "prod-backend-transfer-transaction",
-      "chapter": "backend-data",
-      "domain": "backend",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "guru",
-        "security"
-      ],
-      "prompt": "Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen päivitys epäonnistuu kesken. Mitä tarvitaan?",
-      "choices": [
-        {
-          "text": "Wrapaa molemmat tilipäivitykset yhteen transaktioon — COMMIT vain onnistuessa",
-          "correct": true
-        },
-        {
-          "text": "Suorita kaksi erillistä UPDATE:ia ja luota sovelluslogiikan rollbackiin",
-          "correct": false
-        },
-        {
-          "text": "sleep() kyselyjen välissä antaa tietokannan ehtiä synkronoitua ennen tarkistusta",
-          "correct": false
-        },
-        {
-          "text": "Lokita molemmat päivitykset — inkonsistenssi korjataan myöhäisessä batch-ajossa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "ACID-transaktio varmistaa atomisuuden — PostgreSQL transactions.",
-      "wrongFeedback": "Ilman transaktiota järjestelmä voi jäädä epäjohdonmukaiseen tilaan.",
-      "sourceRef": "postgresql/tutorial-transactions",
-      "sourceUrl": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
-      "featureId": "backend:transactions",
-      "featurePoints": 4
-    },
-    {
       "id": "prod-backend-webhook-idempotency",
       "chapter": "backend-api",
       "domain": "backend",
@@ -68,11 +32,119 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Idempotentti käsittely sallii turvallisen uudelleentoimituksen — Stripe/API best practices.",
-      "wrongFeedback": "Verkko voi toistaa pyyntöjä. Tallenna käsitelty avain ennen sivuvaikutuksia.",
+      "correctFeedback": "Idempotentti käsittely sallii turvallisen uudelleentoimituksen — tarkista myös sisältö ja tilasiirtymät.",
+      "wrongFeedback": "Verkko voi toistaa pyyntöjä. Tallenna käsitelty avain ennen sivuvaikutuksia ja käsittele duplikaatti 200 OK:lla.",
       "sourceRef": "stripe/idempotency",
       "sourceUrl": "https://docs.stripe.com/api/idempotent_requests",
       "featureId": "backend:idempotency",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-backend-external-timeout",
+      "chapter": "backend-api",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Ulkoinen API hidastuu ja koko backend alkaa timeoutata. Mikä puuttuu?",
+      "choices": [
+        {
+          "text": "Timeoutit, rajatut retryt ja hallittu virhekäyttäytyminen ulkoisille riippuvuuksille",
+          "correct": true
+        },
+        {
+          "text": "Pidempi HTTP-timeout jokaiseen ulkoiseen kutsuun ilman retry-rajaa",
+          "correct": false
+        },
+        {
+          "text": "Lisää worker-säikeitä jotta odottavat pyynnöt mahtuvat jonoon",
+          "correct": false
+        },
+        {
+          "text": "Poista ulkoiset API-kutsut synkronisesta polusta kokonaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ulkopuolisille riippuvuuksille tarvitaan timeoutit, backoff ja fallback — backendin pitää hajota hallitusti.",
+      "wrongFeedback": "Ilman timeoutia ja rajoja hidastuva riippuvuus täyttää workerit ja kaataa koko palvelun.",
+      "sourceRef": "aws/architecture-timeouts",
+      "sourceUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_timeouts.html",
+      "featureId": "backend:timeouts-retries",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-backend-feature-flag",
+      "chapter": "backend-api",
+      "domain": "backend",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Uusi suositusalgoritmi rikkoo checkoutin osalle käyttäjistä. Miten pienennät riskiä etukäteen?",
+      "choices": [
+        {
+          "text": "Feature flag tai kill switch: julkaise pienelle joukolle ja sammuta ilman uutta deployta",
+          "correct": true
+        },
+        {
+          "text": "Julkaise kaikille heti — bugit löytyvät nopeammin tuotannosta",
+          "correct": false
+        },
+        {
+          "text": "Pidä uusi algoritmi erillisessä branchissa kunnes seuraava sprintti",
+          "correct": false
+        },
+        {
+          "text": "Lisää vain enemmän yksikkötestejä ilman tuotantokontrollia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Feature flag tekee tuotantoriskistä hallittavamman — sammuta ominaisuus ilman rollback-deployta.",
+      "wrongFeedback": "Testit eivät korvaa hallittua julkaisua. Flagin tila pitää näkyä lokeissa ja metriikoissa.",
+      "sourceRef": "martinfowler/feature-toggles",
+      "sourceUrl": "https://martinfowler.com/articles/feature-toggles.html",
+      "featureId": "backend:feature-flags",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-backend-transfer-transaction",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "security"
+      ],
+      "prompt": "Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen päivitys epäonnistuu kesken. Mitä tarvitaan?",
+      "choices": [
+        {
+          "text": "Wrapaa molemmat tilipäivitykset yhteen transaktioon — COMMIT vain onnistuessa",
+          "correct": true
+        },
+        {
+          "text": "Suorita kaksi erillistä UPDATE:ia ja luota sovelluslogiikan rollbackiin",
+          "correct": false
+        },
+        {
+          "text": "sleep() kyselyjen välissä antaa tietokannan ehtiä synkronoitua ennen tarkistusta",
+          "correct": false
+        },
+        {
+          "text": "Lokita molemmat päivitykset — inkonsistenssi korjataan myöhäisessä batch-ajossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ACID-transaktio varmistaa atomisuuden — älä pidä transaktiota auki ulkoisen API-kutsun ajan.",
+      "wrongFeedback": "Ilman transaktiota järjestelmä voi jäädä epäjohdonmukaiseen tilaan.",
+      "sourceRef": "postgresql/tutorial-transactions",
+      "sourceUrl": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+      "featureId": "backend:transactions",
       "featurePoints": 4
     },
     {
@@ -139,12 +211,84 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Optimistic lock havaitsee konfliktin — palauta 409 tai merge-flow.",
+      "correctFeedback": "Optimistic lock havaitsee konfliktin — HTTP API:ssa sama idea ETag / If-Match -headereilla.",
       "wrongFeedback": "Viimeinen kirjoitus voittaa hiljaa ilman version-tarkistusta.",
       "sourceRef": "martinfowler/optimistic-offline-lock",
       "sourceUrl": "https://martinfowler.com/eaaCatalog/optimisticOfflineLock.html",
       "featureId": "backend:optimistic-locking",
       "featurePoints": 4
+    },
+    {
+      "id": "prod-backend-schema-migration",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Tuotantoon lisätään NOT NULL -sarake isoon tauluun ja deploy jäätyy. Mikä meni pieleen?",
+      "choices": [
+        {
+          "text": "Iso skeemamuutos yhdessä deployssa — käytä expand-and-contract -mallia erillisissä vaiheissa",
+          "correct": true
+        },
+        {
+          "text": "NOT NULL -sarake pitää aina lisätä ilman DEFAULT-arvoa datan eheyden vuoksi",
+          "correct": false
+        },
+        {
+          "text": "Suuri taulu pitää aina kopioida uuteen tauluun käsin ennen deployta",
+          "correct": false
+        },
+        {
+          "text": "Skeemamuutos on turvallinen jos se ajetaan yöllä kun liikennettä on vähän",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Turvallinen migraatio: nullable ensin, backfill, constraint vasta lopussa — rollback mahdollinen.",
+      "wrongFeedback": "Iso ALTER voi lukita taulun ja hidastaa kirjoituksia. Älä yhdistä migraatiota ja koodimuutosta yhdeksi peruuttamattomaksi deployksi.",
+      "sourceRef": "prisma/expand-and-contract",
+      "sourceUrl": "https://www.prisma.io/dataguide/types/relational/expand-and-contract-pattern",
+      "featureId": "backend:schema-migration",
+      "featurePoints": 5
+    },
+    {
+      "id": "prod-ops-healthy-but-down",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 5,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?",
+      "choices": [
+        {
+          "text": "RED/USE: error rate, latency, throughput, saturation + riippuvuudet — healthcheck voi testata vain prosessia",
+          "correct": true
+        },
+        {
+          "text": "Käynnistä container uudelleen — healthcheck on aina oikeassa",
+          "correct": false
+        },
+        {
+          "text": "Poista readiness-probe jotta liikenne ohjautuu nopeammin",
+          "correct": false
+        },
+        {
+          "text": "Oleta käyttäjävirhe — älä tutki infrastruktuuria",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Healthy ≠ käyttäjäkokemus ok. Mittaa liikenne, virheet, saturation ja riippuvuudet — SRE observability.",
+      "wrongFeedback": "Healthcheck voi olla liian kevyt. Erota liveness ja readiness; tarkista DB-pooli ja endpoint-tason virheet.",
+      "sourceRef": "opentelemetry/metrics",
+      "sourceUrl": "https://opentelemetry.io/docs/concepts/signals/metrics/",
+      "featureId": "backend:healthy-vs-slo",
+      "featurePoints": 5
     },
     {
       "id": "prod-ops-observability",
@@ -176,49 +320,228 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Structured logging + trace id yhdistää tapahtumat — OpenTelemetry/Google SRE.",
+      "correctFeedback": "Structured logging + trace id yhdistää tapahtumat — invariantit sovelluksessa ja tietokannassa.",
       "wrongFeedback": "Ilman korrelaatiota et näe ketjua. Invariantit havaitsevat korruption aikaisin.",
       "sourceRef": "opentelemetry.io/docs",
       "sourceUrl": "https://opentelemetry.io/docs/concepts/observability-primer/",
       "featureId": "backend:observability",
-      "featurePoints": 5,
-      "studyNotes": "Ennen refaktorointia lisää mitattavuus: request/correlation id jokaiseen pyyntöön, strukturoidut lokit (JSON), metriikat kriittisistä poluista ja assertit/invariantit datan eheydelle. Näin seuraava incident on diagnosoitavissa."
+      "featurePoints": 5
     },
     {
-      "id": "prod-ops-healthy-but-down",
+      "id": "prod-ops-deploy-rollback",
       "chapter": "ops-incident",
       "domain": "backend",
-      "difficulty": 5,
+      "difficulty": 4,
       "audiences": [
         "coworker",
         "guru",
         "project-lead"
       ],
-      "prompt": "Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?",
+      "prompt": "Deployn jälkeen virheprosentti nousee 0,1 % → 8 %. Mitä teet ensin?",
       "choices": [
         {
-          "text": "RED/USE: error rate, latency, throughput + riippuvuudet (DB, DNS) — healthcheck voi testata vain prosessia",
+          "text": "Pysäytä rollout ja rollbackaa edelliseen tunnetusti toimivaan versioon",
           "correct": true
         },
         {
-          "text": "Käynnistä container uudelleen — healthcheck on aina oikeassa",
+          "text": "Aloita heti live-debuggaus tuotannossa juurisyyn löytämiseksi",
           "correct": false
         },
         {
-          "text": "Poista readiness-probe jotta liikenne ohjautuu nopeammin",
+          "text": "Odota 24 h — virheet voivat olla tilapäisiä käyttäjävirheitä",
           "correct": false
         },
         {
-          "text": "Oleta käyttäjävirhe — älä tutki infrastruktuuria",
+          "text": "Lisää instansseja jotta virheet jakautuvat useammalle palvelimelle",
           "correct": false
         }
       ],
-      "correctFeedback": "Healthy ≠ käyttäjäkokemus ok. Mittaa liikenne, virheet ja riippuvuudet — SRE observability.",
-      "wrongFeedback": "Healthcheck voi olla liian kevyt. Seuraavaksi metriikat, trace-id ja endpoint-tason virheet.",
-      "sourceRef": "opentelemetry/metrics",
-      "sourceUrl": "https://opentelemetry.io/docs/concepts/signals/metrics/",
-      "featureId": "backend:healthy-vs-slo",
-      "featurePoints": 5
+      "correctFeedback": "Incidentissä ensin palauta palvelu — rollback, sitten juurisyyanalyysi erillisessä korjauksessa.",
+      "wrongFeedback": "Jos virhe alkoi deployn jälkeen, rollback on ensimmäinen operatiivinen päätös.",
+      "sourceRef": "google/sre-incident-response",
+      "sourceUrl": "https://sre.google/sre-book/managing-incidents/",
+      "featureId": "backend:deploy-rollback",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-ops-config-env",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Staging toimii, tuotanto kaatuu: ympäristömuuttuja puuttuu. Miten estät tämän?",
+      "choices": [
+        {
+          "text": "Validoi pakolliset env-muuttujat käynnistyksessä — fail fast jos kriittinen config puuttuu",
+          "correct": true
+        },
+        {
+          "text": "Käytä oletusarvoa tuotannossa jotta palvelu käynnistyy aina",
+          "correct": false
+        },
+        {
+          "text": "Tarkista config vasta ensimmäisessä API-pyynnössä virhetilanteessa",
+          "correct": false
+        },
+        {
+          "text": "Pidä kaikki konfiguraatio kovakoodattuna lähdekoodissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Konfiguraatio validoidaan startupissa — parempi kaatua käynnistyksessä kuin ottaa liikennettä rikkinäisellä configilla.",
+      "wrongFeedback": "Hiljaiset oletukset tuotantointegraatioille ovat vaarallisia. Logita configin nimet, ei salaisia arvoja.",
+      "sourceRef": "12factor/config",
+      "sourceUrl": "https://12factor.net/config",
+      "featureId": "backend:config-validation",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-backend-queue-dlq",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Taustajobi epäonnistuu aina samalla viestillä ja jono jumittuu. Mitä teet?",
+      "choices": [
+        {
+          "text": "Rajaa retryt, käytä backoffia ja siirrä pysyvästi epäonnistuva viesti dead-letter queueen",
+          "correct": true
+        },
+        {
+          "text": "Poista virheenkäsittely jotta viesti ohitetaan automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Käynnistä worker uudelleen — se poistaa jumittuneen viestin jonosta",
+          "correct": false
+        },
+        {
+          "text": "Lisää worker-instansseja jotta sama viesti käsitellään nopeammin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Poison message tarvitsee retry-rajan ja DLQ:n — käsittelyn pitää olla idempotentti.",
+      "wrongFeedback": "Ilman retry-rajaa yksi viesti voi kuluttaa workerit ja peittää alleen oikeat työt.",
+      "sourceRef": "aws/sqs-dlq",
+      "sourceUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+      "featureId": "backend:queue-dlq",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-ops-connection-pool",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "API hidastuu ruuhkassa, mutta CPU on vain 30 %. Mitä tarkistat?",
+      "choices": [
+        {
+          "text": "Saturation: DB connection pool, thread pool, jonot, lockit ja hitaat queryt",
+          "correct": true
+        },
+        {
+          "text": "Lisää CPU-resursseja — 30 % käyttö tarkoittaa että kone on liian pieni",
+          "correct": false
+        },
+        {
+          "text": "Kasvata connection poolia tuplaten ilman muita muutoksia",
+          "correct": false
+        },
+        {
+          "text": "Oleta että hidastuminen johtuu käyttäjien hitaista laitteista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pullonkaula ei aina ole CPU — tarkista poolien käyttö, odotusajat ja tietokannan lockit.",
+      "wrongFeedback": "Liian suuri pooli voi kaataa tietokannan. Selvitä ensin miksi yhteydet ovat pitkään varattuina.",
+      "sourceRef": "postgresql/connection-pooling",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+      "featureId": "backend:connection-pool",
+      "featurePoints": 4
+    },
+    {
+      "id": "prod-ops-alert-fatigue",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Tiimi saa kymmeniä hälytyksiä päivässä eikä tiedä mikä on tärkeää. Mikä on ongelma?",
+      "choices": [
+        {
+          "text": "Alertit eivät kuvaa käyttäjävaikutusta — hälytä vain asioista jotka vaativat toimenpiteen",
+          "correct": true
+        },
+        {
+          "text": "Liian vähän alertteja — lisää hälytyksiä kaikista metriikoista",
+          "correct": false
+        },
+        {
+          "text": "Poista kaikki alertit ja luota manuaaliseen tarkistukseen",
+          "correct": false
+        },
+        {
+          "text": "Lähetä alertit vain sähköpostilla jotta ne eivät häiritse",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Hyvä alert liittyy käyttäjävaikutukseen tai SLO:hon ja sisältää linkin runbookiin.",
+      "wrongFeedback": "Melu peittää oikeat ongelmat. Aloita error ratesta, latenssista ja kriittisistä liiketoimintametriikoista.",
+      "sourceRef": "google/sre-alerting",
+      "sourceUrl": "https://sre.google/workbook/alerting-on-slos/",
+      "featureId": "backend:alerting",
+      "featurePoints": 3
+    },
+    {
+      "id": "prod-ops-runbook",
+      "chapter": "ops-incident",
+      "domain": "backend",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Hälytys soi yöllä: maksut epäonnistuvat. Mistä aloitat?",
+      "choices": [
+        {
+          "text": "Runbook: lyhyt toimintalista — dashboard, riippuvuudet, rollback ja eskalointi",
+          "correct": true
+        },
+        {
+          "text": "Soita heti kaikille kehittäjille ja aloita vapaamuotoinen debuggaus",
+          "correct": false
+        },
+        {
+          "text": "Odota aamuun kun enemmän ihmisiä on paikalla",
+          "correct": false
+        },
+        {
+          "text": "Käynnistä kaikki palvelut uudelleen ja toivo parasta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Runbook on toimintalista stressitilanteeseen — ei pitkä dokumentaatio.",
+      "wrongFeedback": "Ilman runbookia on-call hukkuu muistinvaraiseen debuggaukseen kriittisessä hetkessä.",
+      "sourceRef": "google/sre-oncall",
+      "sourceUrl": "https://sre.google/workbook/on-call/",
+      "featureId": "backend:runbook",
+      "featurePoints": 3
     }
   ]
 }

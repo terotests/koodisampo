@@ -12,7 +12,27 @@ Ennen isoa arkkitehtuurimuutosta tarvitaan **näkyvyyttä**: mahdollisuus yhdist
 
 **Observability: trace-id, strukturoidut lokit ja invariantit kriittisiin kohtiin.**
 
-Lisää jokaiseen pyyntöön ja taustatyöhön trace-id (esim. OpenTelemetry `trace_id`), joka kulkee HTTP-headerista message queue -viestiin ja worker-lokiin. Strukturoidut lokit (JSON) mahdollistavat haun: `trace_id=abc123` paljastaa koko ketjun. Invariantit kriittisiin kohtiin — esim. `assert qty >= 0` ennen commitia — estävät korruption tai lokittavat poikkeaman heti. Structured logging + trace id yhdistää tapahtumat — OpenTelemetry/Google SRE.
+Lisää jokaiseen pyyntöön ja taustatyöhön trace-id (esim. OpenTelemetry `trace_id`), joka kulkee HTTP-headerista message queue -viestiin ja worker-lokiin. Strukturoidut lokit (JSON) mahdollistavat haun: `trace_id=abc123` paljastaa koko ketjun.
+
+Lisää eksplisiittinen invarianttitarkistus kriittiseen kohtaan:
+
+```javascript
+if (qty < 0) {
+  log.error({ sku, qty, trace_id, job_id }, "inventory invariant violated");
+  throw new Error("inventory invariant violated");
+}
+```
+
+Tärkeät invariantit kannattaa varmistaa myös tietokannassa:
+
+```sql
+CHECK (qty >= 0)
+NOT NULL
+FOREIGN KEY
+UNIQUE
+```
+
+Structured logging + trace id yhdistää tapahtumat — OpenTelemetry/Google SRE.
 
 ## Käytännössä
 
