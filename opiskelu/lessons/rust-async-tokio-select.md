@@ -49,7 +49,20 @@ tokio::select! {
 
 ## Käytännössä
 
-`select!` on biased oletuksena — jos useampi haara on valmis samaan aikaan, ensimmäinen voittaa. `select! { biased; ... }` tekee järjestyksestä eksplisiittisen.
+Tokio `select!` **ei ole oletuksena biased**. Se satunnaistaa haarojen tarkistusjärjestyksen fairness-syistä, jotta silmukassa aina valmiina oleva ensimmäinen haara ei nälkiinnytä muita.
+
+Jos prioriteetti on tarkoituksellinen — esimerkiksi shutdown-signaalin pitää mennä aina muun työn edelle — käytä `biased;`:
+
+```rust
+tokio::select! {
+    biased;
+
+    _ = shutdown.recv() => { /* graceful shutdown */ }
+    msg = socket.recv() => { handle_message(msg?)?; }
+}
+```
+
+`biased;` tekee järjestyksestä eksplisiittisen ylhäältä alas. Käytä sitä vain kun prioriteetti on tarkoituksellinen.
 
 Yksinkertaiseen timeoutiin riittää usein `tokio::time::timeout(duration, future).await`. `select!` on tehokkaampi, kun haaroilla on erilaisia sivuvaikutuksia tai peruutuslogiikkaa. Vältä `select!`-silmukassa muuttujien move-ongelmia — käytä `&mut` tai jaettua tilaa tarvittaessa.
 

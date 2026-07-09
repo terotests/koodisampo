@@ -49,7 +49,13 @@ fn normalize(input: &str) -> String {
 
 ## Käytännössä
 
-API-suunnittelusääntö: **parametreissa `&str`, paluuarvoissa `String`** kun luot uutta tekstiä. Poikkeus: omistajuuden siirto (`fn take(s: String)`) kun funktio kuluttaa merkkijonon.
+**API-suunnittelusääntö**: mieti ensin mitä funktio *tekee* kutsujan datalla, sitten valitse tyyppi:
+
+- tarvitset vain lukea tekstiä → `&str`
+- tarvitset omistaa tai säilyttää tekstin → `String`
+- tarvitset ehkä muokata kutsujan arvoa → `&mut String`
+
+Parametreissa `&str`, paluuarvoissa `String` kun luot uutta tekstiä. Poikkeus: omistajuuden siirto (`fn take(s: String)`) kun funktio kuluttaa merkkijonon.
 
 `&String` parametri on lähes aina huono valinta verrattuna `&str`:ään — se rajoittaa kutsuja (ei literal-suoraa kutsua ilman ylimääräistä `&`) eikä tarjoa etua. Sama logiikka koskee `&Vec<T>` vs `&[T]` erillisessä oppitunnissa.
 
