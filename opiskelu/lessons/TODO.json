@@ -1,18 +1,131 @@
 {
-  "generatedAt": "2026-07-07T16:19:20.026Z",
+  "generatedAt": "2026-07-09T11:36:16.202Z",
   "summary": {
-    "totalQuestions": 1301,
-    "readyLessons": 1289,
-    "pendingLessons": 12,
-    "percent": 99.1
+    "totalQuestions": 1394,
+    "readyLessons": 1347,
+    "pendingLessons": 47,
+    "percent": 96.6
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
       "ready": 204,
-      "total": 204,
+      "total": 223,
       "chapters": [
+        {
+          "id": "cmake",
+          "label": "cmake",
+          "ready": 0,
+          "total": 15,
+          "questions": [
+            {
+              "id": "prod-cmake-cxx-flags-global",
+              "difficulty": 3,
+              "prompt": "Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++20\")`. Miksi moderni CMake suosii toista tapaa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-cxx-flags-global.md"
+            },
+            {
+              "id": "prod-cmake-duplicate-sources",
+              "difficulty": 3,
+              "prompt": "Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetissa. Linkitys toimii, mutta ylläpito on kivulias. Parempi malli?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-duplicate-sources.md"
+            },
+            {
+              "id": "prod-cmake-fetchcontent-pin",
+              "difficulty": 4,
+              "prompt": "FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit alkavat epäonnistua satunnaisesti ilman koodimuutoksia. Mikä korjaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-fetchcontent-pin.md"
+            },
+            {
+              "id": "prod-cmake-fmt-public-leak",
+              "difficulty": 4,
+              "prompt": "Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeListsissä on `target_link_libraries(core PUBLIC fmt::fmt)`. Miksi tämä on ongelma?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-fmt-public-leak.md"
+            },
+            {
+              "id": "prod-cmake-glob-missed-source",
+              "difficulty": 3,
+              "prompt": "Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cmake` uudelleen. CMakeLists: `file(GLOB SOURCES src/*.cpp)`. Mikä on ongelma?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-glob-missed-source.md"
+            },
+            {
+              "id": "prod-cmake-header-only-interface",
+              "difficulty": 3,
+              "prompt": "Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen modernissa CMakessa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-header-only-interface.md"
+            },
+            {
+              "id": "prod-cmake-install-interface",
+              "difficulty": 4,
+              "prompt": "Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa include-polun `/home/dev/proj/include`. CMakeListsissä: `target_include_directories(mylib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä puuttuu?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-install-interface.md"
+            },
+            {
+              "id": "prod-cmake-missing-build-type",
+              "difficulty": 3,
+              "prompt": "Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build typea. Ohjelma on hidas eikä gdb näytä selkeitä rivejä. Mitä puuttuu?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-missing-build-type.md"
+            },
+            {
+              "id": "prod-cmake-openssl-imported",
+              "difficulty": 4,
+              "prompt": "OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_INCLUDE_DIR})` ja `target_link_libraries(app ${OPENSSL_LIBRARIES})`. Mikä moderni korvaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-openssl-imported.md"
+            },
+            {
+              "id": "prod-cmake-rpath-install",
+              "difficulty": 4,
+              "prompt": "Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error while loading shared libraries: libfoo.so`. Ensimmäinen CMake-korjaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-rpath-install.md"
+            },
+            {
+              "id": "prod-cmake-source-dir-subproject",
+              "difficulty": 3,
+              "prompt": "Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` isommassa projektissa antaa väärän include-polun. Libin CMakeLists: `target_include_directories(lib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä korjaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-source-dir-subproject.md"
+            },
+            {
+              "id": "prod-cmake-subdir-options-leak",
+              "difficulty": 4,
+              "prompt": "Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä pääprojektiin ilmestyy uusia install-targetteja ja testejä. Miten rajaat vuodon?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-subdir-options-leak.md"
+            },
+            {
+              "id": "prod-cmake-transitive-zlib",
+              "difficulty": 4,
+              "prompt": "`core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain `core`:a ja saa linkkerivirheen `undefined reference to deflate`. `core` linkkaa `ZLIB::ZLIB` PRIVATElla. Korjaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-transitive-zlib.md"
+            },
+            {
+              "id": "prod-cmake-werror-third-party",
+              "difficulty": 4,
+              "prompt": "CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-koodin projektin globaalilla `-Werror`:lla. Mitä korjaat?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cmake-werror-third-party.md"
+            },
+            {
+              "id": "prod-cpp-cmake-target-includes",
+              "difficulty": 4,
+              "prompt": "Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren CMakeListsissä on `add_compile_options(-Wall -Wextra)` ja `add_definitions(-DUSE_SSL)`. Mitä korjaat?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cpp-cmake-target-includes.md"
+            }
+          ]
+        },
         {
           "id": "correctness",
           "label": "oikeellisuus",
@@ -92,7 +205,7 @@
             {
               "id": "b07-cpp-assert-vs-expect",
               "difficulty": 3,
-              "prompt": "assert() katoaa release-buildissa mutta invariantti on kriittinen tuotannossa. Mitä käytät?",
+              "prompt": "assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää tarkistaa runtime. Mitä käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-assert-vs-expect.md"
             },
@@ -106,7 +219,7 @@
             {
               "id": "b08-cpp-assert-ndebug",
               "difficulty": 3,
-              "prompt": "Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. Mitä teet tuotantovalvontaan?",
+              "prompt": "Release-buildissa assert poistuu — miten varmistat että testit löytävät virheet myös tuotantokonfiguraatiossa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-assert-ndebug.md"
             },
@@ -162,10 +275,25 @@
           ]
         },
         {
+          "id": "cpp-build",
+          "label": "cpp-build",
+          "ready": 0,
+          "total": 1,
+          "questions": [
+            {
+              "id": "prod-cpp-sanitizer-tsan",
+              "difficulty": 5,
+              "prompt": "Release-build toimii, mutta TSan löytää data racen kahden säikeen välillä. Miksi mutex tarvitaan?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cpp-sanitizer-tsan.md"
+            }
+          ]
+        },
+        {
           "id": "cpp-production",
           "label": "C++ tuotanto",
           "ready": 8,
-          "total": 8,
+          "total": 11,
           "questions": [
             {
               "id": "prod-cpp-coroutine-lifetime",
@@ -173,6 +301,20 @@
               "prompt": "Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen. Mikä riski?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-coroutine-lifetime.md"
+            },
+            {
+              "id": "prod-cpp-exception-safety-strong",
+              "difficulty": 5,
+              "prompt": "assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa strong exception safety -takuun?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cpp-exception-safety-strong.md"
+            },
+            {
+              "id": "prod-cpp-expected-vs-optional",
+              "difficulty": 4,
+              "prompt": "Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Milloin `std::expected` on parempi kuin `std::optional`?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cpp-expected-vs-optional.md"
             },
             {
               "id": "prod-cpp-false-sharing-struct",
@@ -222,6 +364,13 @@
               "prompt": "Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unohtuu koodista. Miten saat kääntäjän auttamaan?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-variant-visit.md"
+            },
+            {
+              "id": "prod-cpp-volatile-not-thread-safe",
+              "difficulty": 4,
+              "prompt": "Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa thread-safetyä?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-cpp-volatile-not-thread-safe.md"
             }
           ]
         },
@@ -4545,7 +4694,7 @@
       "id": "docker",
       "label": "Docker",
       "ready": 142,
-      "total": 142,
+      "total": 146,
       "chapters": [
         {
           "id": "docker",
@@ -4556,7 +4705,7 @@
             {
               "id": "b02-docker-build-copy-03",
               "difficulty": 4,
-              "prompt": "Docker build on hidas — jokainen pieni koodimuutos invalidoi koko dependency layerin. Fix?",
+              "prompt": "Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. Fix?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-docker-build-copy-03.md"
             },
@@ -4927,7 +5076,7 @@
             {
               "id": "b08-docker-exec-user",
               "difficulty": 3,
-              "prompt": "Debuggaat konttia — docker exec -it ajaa rootina vaikka Dockerfile USER app. Miksi?",
+              "prompt": "Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä optiota käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-docker-exec-user.md"
             },
@@ -5358,8 +5507,15 @@
           "id": "docker-production",
           "label": "Docker tuotanto",
           "ready": 2,
-          "total": 2,
+          "total": 6,
           "questions": [
+            {
+              "id": "prod-docker-build-secret-arg",
+              "difficulty": 4,
+              "prompt": "Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packageja buildissä?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-docker-build-secret-arg.md"
+            },
             {
               "id": "prod-docker-env-secrets",
               "difficulty": 4,
@@ -5368,11 +5524,32 @@
               "lessonFile": "opiskelu/lessons/prod-docker-env-secrets.md"
             },
             {
+              "id": "prod-docker-healthcheck-db-down",
+              "difficulty": 5,
+              "prompt": "HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla. Mitä healthcheckin pitäisi tehdä?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-docker-healthcheck-db-down.md"
+            },
+            {
               "id": "prod-docker-k8s-probes",
               "difficulty": 4,
               "prompt": "Kubernetes-pod käynnistyy, mutta sovellus ei vielä vastaa HTTP-pyyntöihin. Orkestrointi lähettää liikenteen liian aikaisin. Mikä auttaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-docker-k8s-probes.md"
+            },
+            {
+              "id": "prod-docker-nonroot-bind-mount",
+              "difficulty": 4,
+              "prompt": "Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjoittaa. Mikä on yleisin syy?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-docker-nonroot-bind-mount.md"
+            },
+            {
+              "id": "prod-docker-rootless-vs-root",
+              "difficulty": 4,
+              "prompt": "Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless Docker -ympäristössä?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-docker-rootless-vs-root.md"
             }
           ]
         },
@@ -5579,7 +5756,7 @@
       "id": "linux",
       "label": "Linux",
       "ready": 168,
-      "total": 168,
+      "total": 178,
       "chapters": [
         {
           "id": "apt",
@@ -5822,7 +5999,7 @@
             {
               "id": "exp-linux-avahi-service-xml",
               "difficulty": 4,
-              "prompt": "Haluat julkaista HTTP-palvelun portissa 8080 mDNS:llä. Mihin konfiguraatio kuuluu?",
+              "prompt": "Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portissa 8080. Mihin konfiguraatio kuuluu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-linux-avahi-service-xml.md"
             }
@@ -6090,6 +6267,21 @@
           ]
         },
         {
+          "id": "linux-cgroups",
+          "label": "linux-cgroups",
+          "ready": 0,
+          "total": 1,
+          "questions": [
+            {
+              "id": "prod-linux-cgroups-v2-memory",
+              "difficulty": 4,
+              "prompt": "Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -tasolla hostilla. Mistä lukema?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-cgroups-v2-memory.md"
+            }
+          ]
+        },
+        {
           "id": "linux-dbus",
           "label": "D-Bus",
           "ready": 5,
@@ -6133,10 +6325,46 @@
           ]
         },
         {
+          "id": "linux-incident",
+          "label": "linux-incident",
+          "ready": 0,
+          "total": 4,
+          "questions": [
+            {
+              "id": "prod-linux-incident-slow-no-cpu",
+              "difficulty": 5,
+              "prompt": "API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullonkaula levy-IO:ssa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-incident-slow-no-cpu.md"
+            },
+            {
+              "id": "prod-linux-logrotate-copytruncate",
+              "difficulty": 4,
+              "prompt": "logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lokimerkintöjä rotaation jälkeen. Parempi tapa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-logrotate-copytruncate.md"
+            },
+            {
+              "id": "prod-linux-lsof-deleted-log",
+              "difficulty": 4,
+              "prompt": "Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on todennäköisin syy?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-lsof-deleted-log.md"
+            },
+            {
+              "id": "prod-linux-strace-hung-process",
+              "difficulty": 4,
+              "prompt": "Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. Miten näet mihin syscalliin se odottaa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-strace-hung-process.md"
+            }
+          ]
+        },
+        {
           "id": "linux-network",
           "label": "verkko",
           "ready": 46,
-          "total": 46,
+          "total": 47,
           "questions": [
             {
               "id": "b02-linux-network-nmcli-11",
@@ -6459,6 +6687,28 @@
               "prompt": "Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/linux-ss-listen.md"
+            },
+            {
+              "id": "prod-linux-bind-localhost",
+              "difficulty": 3,
+              "prompt": "Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys timeouttaa. Todennäköisin syy?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-bind-localhost.md"
+            }
+          ]
+        },
+        {
+          "id": "linux-ssh",
+          "label": "linux-ssh",
+          "ready": 0,
+          "total": 1,
+          "questions": [
+            {
+              "id": "prod-linux-ssh-bastion-forward",
+              "difficulty": 4,
+              "prompt": "Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin 5432 tietokantaan. SSH-komennot?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-ssh-bastion-forward.md"
             }
           ]
         },
@@ -6738,7 +6988,7 @@
             {
               "id": "b09-linux-systemd-kill-mode",
               "difficulty": 4,
-              "prompt": "Palvelu spawnnaa child-prosesseja — stop jättää zombie-prosesseja. KillMode-korjaus?",
+              "prompt": "Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään stopin jälkeen. Mikä on turvallisempi asetus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-linux-systemd-kill-mode.md"
             },
@@ -6818,6 +7068,35 @@
               "prompt": "Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:lle?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/systemd-wants-requires.md"
+            }
+          ]
+        },
+        {
+          "id": "systemd-hardening",
+          "label": "systemd-hardening",
+          "ready": 0,
+          "total": 3,
+          "questions": [
+            {
+              "id": "prod-linux-capabilities-port80",
+              "difficulty": 4,
+              "prompt": "Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä vaihtoehto on tuotannossa yleisin?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-capabilities-port80.md"
+            },
+            {
+              "id": "prod-linux-systemd-analyze-security",
+              "difficulty": 4,
+              "prompt": "Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. Mikä työkalu auttaa?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-systemd-analyze-security.md"
+            },
+            {
+              "id": "prod-linux-systemd-protect-system",
+              "difficulty": 5,
+              "prompt": "Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `/var/lib/myapp`iin. Turvallisin korjaus?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-linux-systemd-protect-system.md"
             }
           ]
         }
@@ -8789,13 +9068,13 @@
       "id": "git",
       "label": "Git",
       "ready": 20,
-      "total": 20,
+      "total": 22,
       "chapters": [
         {
           "id": "git-ci",
           "label": "CI/CD",
           "ready": 9,
-          "total": 9,
+          "total": 10,
           "questions": [
             {
               "id": "ci-artifact-retention",
@@ -8854,6 +9133,13 @@
               "lessonFile": "opiskelu/lessons/prod-ci-cache-lockfile.md"
             },
             {
+              "id": "prod-ci-deploy-rollback",
+              "difficulty": 4,
+              "prompt": "Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvallinen rollback CI/CD:ssä?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-ci-deploy-rollback.md"
+            },
+            {
               "id": "prod-ci-flaky-test",
               "difficulty": 4,
               "prompt": "Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel?",
@@ -8866,7 +9152,7 @@
           "id": "git-workflow",
           "label": "Git-työnkulku",
           "ready": 11,
-          "total": 11,
+          "total": 12,
           "questions": [
             {
               "id": "git-cherry-pick-conflict",
@@ -8944,6 +9230,13 @@
               "prompt": "Rebase tehtiin ja branch pitää puskea uudestaan. Miten vältät että ylikirjoitat kollegan commitit vahingossa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-git-force-with-lease.md"
+            },
+            {
+              "id": "prod-git-rebase-onto",
+              "difficulty": 5,
+              "prompt": "Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siirtää vain feature-commitit uuden mainin päälle. Komento?",
+              "ready": false,
+              "lessonFile": "opiskelu/lessons/prod-git-rebase-onto.md"
             }
           ]
         }
@@ -8952,15 +9245,29 @@
     {
       "id": "backend",
       "label": "Backend",
-      "ready": 5,
-      "total": 5,
+      "ready": 15,
+      "total": 15,
       "chapters": [
         {
           "id": "backend-api",
           "label": "backend-API",
-          "ready": 1,
-          "total": 1,
+          "ready": 3,
+          "total": 3,
           "questions": [
+            {
+              "id": "prod-backend-external-timeout",
+              "difficulty": 4,
+              "prompt": "Ulkoinen API hidastuu ja koko backend alkaa timeoutata. Mikä puuttuu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-backend-external-timeout.md"
+            },
+            {
+              "id": "prod-backend-feature-flag",
+              "difficulty": 3,
+              "prompt": "Uusi suositusalgoritmi rikkoo checkoutin osalle käyttäjistä. Miten pienennät riskiä etukäteen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-backend-feature-flag.md"
+            },
             {
               "id": "prod-backend-webhook-idempotency",
               "difficulty": 4,
@@ -8973,8 +9280,8 @@
         {
           "id": "backend-data",
           "label": "backend-data",
-          "ready": 3,
-          "total": 3,
+          "ready": 4,
+          "total": 4,
           "questions": [
             {
               "id": "prod-backend-n-plus-one",
@@ -8991,6 +9298,13 @@
               "lessonFile": "opiskelu/lessons/prod-backend-optimistic-lock.md"
             },
             {
+              "id": "prod-backend-schema-migration",
+              "difficulty": 5,
+              "prompt": "Tuotantoon lisätään NOT NULL -sarake isoon tauluun ja deploy jäätyy. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-backend-schema-migration.md"
+            },
+            {
               "id": "prod-backend-transfer-transaction",
               "difficulty": 4,
               "prompt": "Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen päivitys epäonnistuu kesken. Mitä tarvitaan?",
@@ -9002,15 +9316,64 @@
         {
           "id": "ops-incident",
           "label": "incident-hallinta",
-          "ready": 1,
-          "total": 1,
+          "ready": 8,
+          "total": 8,
           "questions": [
+            {
+              "id": "prod-backend-queue-dlq",
+              "difficulty": 4,
+              "prompt": "Taustajobi epäonnistuu aina samalla viestillä ja jono jumittuu. Mitä teet?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-backend-queue-dlq.md"
+            },
+            {
+              "id": "prod-ops-alert-fatigue",
+              "difficulty": 3,
+              "prompt": "Tiimi saa kymmeniä hälytyksiä päivässä eikä tiedä mikä on tärkeää. Mikä on ongelma?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-alert-fatigue.md"
+            },
+            {
+              "id": "prod-ops-config-env",
+              "difficulty": 3,
+              "prompt": "Staging toimii, tuotanto kaatuu: ympäristömuuttuja puuttuu. Miten estät tämän?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-config-env.md"
+            },
+            {
+              "id": "prod-ops-connection-pool",
+              "difficulty": 4,
+              "prompt": "API hidastuu ruuhkassa, mutta CPU on vain 30 %. Mitä tarkistat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-connection-pool.md"
+            },
+            {
+              "id": "prod-ops-deploy-rollback",
+              "difficulty": 4,
+              "prompt": "Deployn jälkeen virheprosentti nousee 0,1 % → 8 %. Mitä teet ensin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-deploy-rollback.md"
+            },
+            {
+              "id": "prod-ops-healthy-but-down",
+              "difficulty": 5,
+              "prompt": "Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-healthy-but-down.md"
+            },
             {
               "id": "prod-ops-observability",
               "difficulty": 5,
               "prompt": "Tuotannossa satunnainen datan korruptio, mutta lokit eivät riitä juurisyyn löytämiseen. Mikä ensimmäinen parannus ennen isoa refaktorointia?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-ops-observability.md"
+            },
+            {
+              "id": "prod-ops-runbook",
+              "difficulty": 3,
+              "prompt": "Hälytys soi yöllä: maksut epäonnistuvat. Mistä aloitat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-ops-runbook.md"
             }
           ]
         }
@@ -9019,21 +9382,78 @@
     {
       "id": "security",
       "label": "Turvallisuus",
-      "ready": 4,
-      "total": 4,
+      "ready": 35,
+      "total": 35,
       "chapters": [
         {
-          "id": "web-security",
-          "label": "web-turvallisuus",
-          "ready": 4,
-          "total": 4,
+          "id": "sec-api",
+          "label": "API-turvallisuus",
+          "ready": 6,
+          "total": 6,
           "questions": [
             {
-              "id": "prod-sec-csrf",
+              "id": "prod-sec-idempotency",
               "difficulty": 4,
-              "prompt": "Selain lähettää session-cookien automaattisesti myös haitalliselta sivulta tulevaan POST-pyyntöön. Mikä suoja?",
+              "prompt": "POST /api/charge Idempotency-Key: abc123 — sama pyyntö lähetetään kahdesti verkko-ongelman takia. Miksi avain on tärkeä?",
               "ready": true,
-              "lessonFile": "opiskelu/lessons/prod-sec-csrf.md"
+              "lessonFile": "opiskelu/lessons/prod-sec-idempotency.md"
+            },
+            {
+              "id": "prod-sec-idor-bola",
+              "difficulty": 4,
+              "prompt": "GET /api/invoices/12345 — käyttäjä vaihtaa URL:ssa ID:n 12346 ja näkee toisen asiakkaan laskun. Kirjautuminen tarkistetaan, omistajuutta ei. Mikä haavoittuvuus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-idor-bola.md"
+            },
+            {
+              "id": "prod-sec-mass-assignment",
+              "difficulty": 4,
+              "prompt": "PATCH /api/users/me — backend tekee Object.assign(user, req.body) ja save(). Body sisältää displayName, role: admin ja isEmailVerified: true. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-mass-assignment.md"
+            },
+            {
+              "id": "prod-sec-rate-limiting",
+              "difficulty": 3,
+              "prompt": "Login käyttää Argon2id:tä, mutta hyökkääjä yrittää miljoonia salasanoja eri IP:istä. Mitä hashingin lisäksi tarvitaan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-rate-limiting.md"
+            },
+            {
+              "id": "prod-sec-ssrf",
+              "difficulty": 4,
+              "prompt": "POST /api/fetch-preview hakee käyttäjän antaman URL:n. Hyökkääjä antaa http://169.254.169.254/latest/meta-data/. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-ssrf.md"
+            },
+            {
+              "id": "prod-sec-webhook-signature",
+              "difficulty": 4,
+              "prompt": "POST /webhooks/payment — backend luottaa bodyyn { invoiceId, paid: true } ilman allekirjoituksen tarkistusta. Mikä puuttuu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-webhook-signature.md"
+            }
+          ]
+        },
+        {
+          "id": "sec-auth",
+          "label": "autentikaatio ja valtuutus",
+          "ready": 6,
+          "total": 6,
+          "questions": [
+            {
+              "id": "prod-sec-account-enumeration",
+              "difficulty": 3,
+              "prompt": "Login palauttaa 'User not found' mutta väärällä salasanalla 'Invalid password'. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-account-enumeration.md"
+            },
+            {
+              "id": "prod-sec-authn-authz",
+              "difficulty": 3,
+              "prompt": "DELETE /api/users/:id — endpoint tarkistaa JWT:n ja löytää käyttäjän, mutta ei tarkista saako tämä käyttäjä poistaa kohdetta. Miksi JWT ei riitä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-authn-authz.md"
             },
             {
               "id": "prod-sec-jwt-claims",
@@ -9043,11 +9463,211 @@
               "lessonFile": "opiskelu/lessons/prod-sec-jwt-claims.md"
             },
             {
+              "id": "prod-sec-mfa-recovery",
+              "difficulty": 4,
+              "prompt": "MFA: TOTP-secret tallennetaan plaintextinä ja recovery-koodit näytetään uudelleen asetuksissa. Mitä korjaat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-mfa-recovery.md"
+            },
+            {
+              "id": "prod-sec-password-reset",
+              "difficulty": 4,
+              "prompt": "Reset-linkki: /reset?token=123456 — 6-numeroinen token, voimassa 24 h. Mikä ongelma?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-password-reset.md"
+            },
+            {
+              "id": "prod-sec-rbac-abac",
+              "difficulty": 5,
+              "prompt": "Globaali role == admin ei skaalaudu: projektin omistaja saa poistaa projektinsa, org-admin vain oman organisaationsa projektit. Mikä lähestymistapa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-rbac-abac.md"
+            }
+          ]
+        },
+        {
+          "id": "sec-data",
+          "label": "data ja salaisuudet",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "prod-sec-data-minimization",
+              "difficulty": 3,
+              "prompt": "Analytiikka lähettää email, fullName, page, IP ja userAgent. Mitä security/privacy-reviewissa kysyt?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-data-minimization.md"
+            },
+            {
               "id": "prod-sec-password-hash",
               "difficulty": 4,
               "prompt": "Salasanat tallennetaan SHA-256-hasheina ilman suolaa. Mikä parempi ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-sec-password-hash.md"
+            },
+            {
+              "id": "prod-sec-secret-management",
+              "difficulty": 4,
+              "prompt": "Tuotannon Stripe-avain on kovakoodattu: const stripeKey = 'sk_live_...'. Mitä teet?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-secret-management.md"
+            },
+            {
+              "id": "prod-sec-sensitive-logging",
+              "difficulty": 4,
+              "prompt": "Virhetilanteessa logger.error({ body: req.body, headers: req.headers }). Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-sensitive-logging.md"
+            }
+          ]
+        },
+        {
+          "id": "sec-design",
+          "label": "secure design",
+          "ready": 7,
+          "total": 7,
+          "questions": [
+            {
+              "id": "prod-sec-dev-config-leak",
+              "difficulty": 4,
+              "prompt": "Stagingissä on DEBUG=true, CORS=* ja testikäyttäjä admin/admin. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-dev-config-leak.md"
+            },
+            {
+              "id": "prod-sec-fail-closed",
+              "difficulty": 4,
+              "prompt": "Policy service timeouttaa. API ei saa vastausta siitä, onko käyttäjällä oikeus nähdä raportti. Päästetäänkö pyyntö läpi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-fail-closed.md"
+            },
+            {
+              "id": "prod-sec-frontend-authz",
+              "difficulty": 3,
+              "prompt": "Admin-nappi piilotetaan frontendissä, mutta API ei tarkista admin-oikeutta. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-frontend-authz.md"
+            },
+            {
+              "id": "prod-sec-least-privilege-db",
+              "difficulty": 4,
+              "prompt": "Backend käyttää tietokantaan superuser-tunnusta. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-least-privilege-db.md"
+            },
+            {
+              "id": "prod-sec-supply-chain",
+              "difficulty": 4,
+              "prompt": "package.json: \"some-lib\": \"^1.2.0\" — CI asentaa ilman lockfileä. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-supply-chain.md"
+            },
+            {
+              "id": "prod-sec-tenant-isolation",
+              "difficulty": 5,
+              "prompt": "POST /api/reports ottaa tenant_id:n request bodysta. Raportti cachetetaan avaimella `report:last-month`. Admin (acme) pyytää tenant_id: other-company. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-tenant-isolation.md"
+            },
+            {
+              "id": "prod-sec-threat-modeling",
+              "difficulty": 4,
+              "prompt": "Uusi ominaisuus: käyttäjä voi jakaa yksityisen raportin linkillä. Mitä uhkia mietit ennen toteutusta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-threat-modeling.md"
+            }
+          ]
+        },
+        {
+          "id": "sec-input",
+          "label": "input ja tiedostot",
+          "ready": 5,
+          "total": 5,
+          "questions": [
+            {
+              "id": "prod-sec-file-upload",
+              "difficulty": 4,
+              "prompt": "Profiilikuvan upload tarkistaa vain if filename.endswith('.jpg'). Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-file-upload.md"
+            },
+            {
+              "id": "prod-sec-path-traversal",
+              "difficulty": 3,
+              "prompt": "GET /download?file=report.pdf — backend: sendFile('/var/app/files/' + req.query.file). Hyökkääjä antaa ../../../../etc/passwd. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-path-traversal.md"
+            },
+            {
+              "id": "prod-sec-shell-injection",
+              "difficulty": 4,
+              "prompt": "Sovellus ajaa `os.system(\"convert \" + user_filename)` ilman validointia. Hyökkääjä syöttää `file.png; rm -rf /`. Mikä korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-shell-injection.md"
+            },
+            {
+              "id": "prod-sec-sql-sort-injection",
+              "difficulty": 4,
+              "prompt": "GET /api/users?sort=name — koodi: db.query(`SELECT * FROM users ORDER BY ${req.query.sort}`). Miksi prepared statement ei yksin auta?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-sql-sort-injection.md"
+            },
+            {
+              "id": "prod-sec-unsafe-deserialization",
+              "difficulty": 5,
+              "prompt": "API ottaa base64-kentän ja tekee pickle.loads(base64decode(input)). Miksi vaarallista?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-unsafe-deserialization.md"
+            }
+          ]
+        },
+        {
+          "id": "web-security",
+          "label": "web-turvallisuus",
+          "ready": 7,
+          "total": 7,
+          "questions": [
+            {
+              "id": "prod-sec-cache-control",
+              "difficulty": 3,
+              "prompt": "Palkkakuitin PDF: Cache-Control: public, max-age=86400. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-cache-control.md"
+            },
+            {
+              "id": "prod-sec-cors",
+              "difficulty": 4,
+              "prompt": "API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-cors.md"
+            },
+            {
+              "id": "prod-sec-csrf",
+              "difficulty": 4,
+              "prompt": "Selain lähettää session-cookien automaattisesti myös haitalliselta sivulta tulevaan POST-pyyntöön. Mikä suoja?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-csrf.md"
+            },
+            {
+              "id": "prod-sec-open-redirect",
+              "difficulty": 3,
+              "prompt": "Login ohjaa: /login?next=https://evil.example/phish. Mikä riski ja korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-open-redirect.md"
+            },
+            {
+              "id": "prod-sec-security-headers",
+              "difficulty": 3,
+              "prompt": "Kirjautuneille käyttäjille palautetaan HTML-sivuja ilman turva-headereita. Mitä lisäisit ensimmäisenä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-security-headers.md"
+            },
+            {
+              "id": "prod-sec-tls-verify-off",
+              "difficulty": 3,
+              "prompt": "Kehittäjä lisää `curl -k` tai `verify=False` korjatakseen TLS-virheen. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/prod-sec-tls-verify-off.md"
             },
             {
               "id": "prod-sec-xss",
@@ -9063,36 +9683,21 @@
     {
       "id": "robotframework",
       "label": "Robot Framework",
-      "ready": 12,
-      "total": 12,
+      "ready": 21,
+      "total": 21,
       "chapters": [
         {
-          "id": "rf-advanced",
-          "label": "RF-laajennukset",
-          "ready": 1,
-          "total": 1,
-          "questions": [
-            {
-              "id": "rf-custom-python-keyword",
-              "difficulty": 4,
-              "prompt": "Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/rf-custom-python-keyword.md"
-            }
-          ]
-        },
-        {
           "id": "rf-basics",
-          "label": "Robot Framework",
-          "ready": 6,
-          "total": 6,
+          "label": "RF perusteet käytännössä",
+          "ready": 7,
+          "total": 7,
           "questions": [
             {
-              "id": "rf-data-driven",
+              "id": "rf-env-variables",
               "difficulty": 4,
-              "prompt": "Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?",
+              "prompt": "Testit ajetaan devissä, stagingissä ja tuotannossa. Miten ympäristökohtaiset URLit ja salaisuudet hallitaan?",
               "ready": true,
-              "lessonFile": "opiskelu/lessons/rf-data-driven.md"
+              "lessonFile": "opiskelu/lessons/rf-env-variables.md"
             },
             {
               "id": "rf-keyword-structure",
@@ -9116,6 +9721,13 @@
               "lessonFile": "opiskelu/lessons/rf-resource-files.md"
             },
             {
+              "id": "rf-secrets-logging",
+              "difficulty": 4,
+              "prompt": "Salasana näkyy Robotin log.html-raportissa CI-artefakteissa. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-secrets-logging.md"
+            },
+            {
               "id": "rf-setup-teardown",
               "difficulty": 3,
               "prompt": "Jokainen testi tarvitsee selaimen avauksen alussa ja sulkemisen lopussa. Mikä Robot Framework -mekanismi?",
@@ -9132,11 +9744,61 @@
           ]
         },
         {
-          "id": "rf-execution",
-          "label": "RF suoritus/CI",
-          "ready": 3,
-          "total": 3,
+          "id": "rf-design",
+          "label": "RF testisuunnittelu",
+          "ready": 5,
+          "total": 5,
           "questions": [
+            {
+              "id": "rf-abstraction-level",
+              "difficulty": 4,
+              "prompt": "Checkout-testi sisältää 80 riviä Click/Input Text -askeleita. UI-muutos rikkoo kymmeniä testejä. Mikä rakenne on parempi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-abstraction-level.md"
+            },
+            {
+              "id": "rf-api-vs-ui",
+              "difficulty": 4,
+              "prompt": "Tiimi ajaa kaiken checkout-flow'n selaimella. Testit kestävät 45 min ja flakkaavat. Osa testeistä tarkistaa vain tilauksen luonnin. Mitä muutat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-api-vs-ui.md"
+            },
+            {
+              "id": "rf-custom-python-keyword",
+              "difficulty": 4,
+              "prompt": "Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-custom-python-keyword.md"
+            },
+            {
+              "id": "rf-data-driven",
+              "difficulty": 4,
+              "prompt": "Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-data-driven.md"
+            },
+            {
+              "id": "rf-test-data",
+              "difficulty": 4,
+              "prompt": "Testi luo käyttäjän test@example.com. Ensimmäinen ajo onnistuu, toinen kaatuu koska käyttäjä on jo olemassa. Miten hallitset testidatan?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-test-data.md"
+            }
+          ]
+        },
+        {
+          "id": "rf-execution",
+          "label": "RF CI ja tuotanto",
+          "ready": 4,
+          "total": 4,
+          "questions": [
+            {
+              "id": "rf-ci-exit-code",
+              "difficulty": 4,
+              "prompt": "CI ajaa Robot-testit, mutta build menee vihreäksi vaikka testit epäonnistuivat. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-ci-exit-code.md"
+            },
             {
               "id": "rf-ci-integration",
               "difficulty": 4,
@@ -9145,11 +9807,11 @@
               "lessonFile": "opiskelu/lessons/rf-ci-integration.md"
             },
             {
-              "id": "rf-run-on-failure",
+              "id": "rf-pabot-parallel",
               "difficulty": 4,
-              "prompt": "Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-testistä debuggausta varten. Miten?",
+              "prompt": "Robot-testit kestävät 45 minuuttia. Voiko ne ajaa rinnakkain turvallisesti?",
               "ready": true,
-              "lessonFile": "opiskelu/lessons/rf-run-on-failure.md"
+              "lessonFile": "opiskelu/lessons/rf-pabot-parallel.md"
             },
             {
               "id": "rf-tags-include-exclude",
@@ -9163,8 +9825,8 @@
         {
           "id": "rf-web",
           "label": "RF web-testaus",
-          "ready": 2,
-          "total": 2,
+          "ready": 5,
+          "total": 5,
           "questions": [
             {
               "id": "rf-browser-library",
@@ -9172,6 +9834,27 @@
               "prompt": "Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjasto soveltuu parhaiten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rf-browser-library.md"
+            },
+            {
+              "id": "rf-flaky-tests",
+              "difficulty": 4,
+              "prompt": "Testi epäonnistuu kerran viikossa CI:ssä mutta menee aina rerunilla läpi. Mitä teet?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-flaky-tests.md"
+            },
+            {
+              "id": "rf-run-on-failure",
+              "difficulty": 4,
+              "prompt": "Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-testistä debuggausta varten. Miten?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-run-on-failure.md"
+            },
+            {
+              "id": "rf-selector-strategy",
+              "difficulty": 4,
+              "prompt": "Web-testit hajoavat aina kun CSS-luokkia refaktoroidaan. Mitä muutat selectoreissa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rf-selector-strategy.md"
             },
             {
               "id": "rf-wait-until",
@@ -9187,14 +9870,14 @@
     {
       "id": "rust",
       "label": "Rust",
-      "ready": 66,
-      "total": 66,
+      "ready": 74,
+      "total": 74,
       "chapters": [
         {
           "id": "rust-async",
           "label": "Rust async",
-          "ready": 10,
-          "total": 10,
+          "ready": 12,
+          "total": 12,
           "questions": [
             {
               "id": "rust-async-future-await",
@@ -9202,6 +9885,20 @@
               "prompt": "Mitä `async fn` palauttaa Rustissa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-async-future-await.md"
+            },
+            {
+              "id": "rust-async-http-timeout",
+              "difficulty": 3,
+              "prompt": "Rust-palvelu kutsuu ulkoista API:a ilman timeoutia. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-http-timeout.md"
+            },
+            {
+              "id": "rust-async-spawn-lost-errors",
+              "difficulty": 3,
+              "prompt": "Taustatehtävä panikoi, mutta kukaan ei huomaa. Mikä meni pieleen?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-async-spawn-lost-errors.md"
             },
             {
               "id": "rust-async-tokio-join-handle",
@@ -9371,8 +10068,8 @@
         {
           "id": "rust-error",
           "label": "Rust virheenkäsittely",
-          "ready": 5,
-          "total": 5,
+          "ready": 6,
+          "total": 6,
           "questions": [
             {
               "id": "rust-error-from-into",
@@ -9401,6 +10098,13 @@
               "prompt": "Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-error-question-mark.md"
+            },
+            {
+              "id": "rust-error-thiserror-anyhow",
+              "difficulty": 3,
+              "prompt": "Kirjastossa palautetaan `anyhow::Result`. Miksi code review vastustaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-error-thiserror-anyhow.md"
             },
             {
               "id": "rust-error-unwrap-vs-expect",
@@ -9471,8 +10175,8 @@
         {
           "id": "rust-safety",
           "label": "Rust turvallisuus",
-          "ready": 2,
-          "total": 2,
+          "ready": 4,
+          "total": 4,
           "questions": [
             {
               "id": "rust-safety-borrow-checker",
@@ -9480,6 +10184,20 @@
               "prompt": "Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskienkeruuta?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-safety-borrow-checker.md"
+            },
+            {
+              "id": "rust-safety-secret-debug",
+              "difficulty": 3,
+              "prompt": "Struct sisältää API-avaimen ja sille deriveataan Debug. Mikä riski?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-safety-secret-debug.md"
+            },
+            {
+              "id": "rust-safety-supply-chain",
+              "difficulty": 3,
+              "prompt": "Rust-projekti käyttää 120 cratea. Miten pienennät dependency-riskiä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-safety-supply-chain.md"
             },
             {
               "id": "rust-safety-unsafe-block",
@@ -9493,8 +10211,8 @@
         {
           "id": "rust-testing",
           "label": "Rust testaus",
-          "ready": 8,
-          "total": 8,
+          "ready": 9,
+          "total": 9,
           "questions": [
             {
               "id": "rust-testing-catch-unwind",
@@ -9546,6 +10264,13 @@
               "lessonFile": "opiskelu/lessons/rust-testing-should-panic.md"
             },
             {
+              "id": "rust-testing-slow-sleep",
+              "difficulty": 2,
+              "prompt": "Testi käyttää oikeaa sleepiä ja kestää 30 sekuntia. Miten nopeutat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-testing-slow-sleep.md"
+            },
+            {
               "id": "rust-testing-tokio-test",
               "difficulty": 2,
               "prompt": "Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testissä?",
@@ -9557,8 +10282,8 @@
         {
           "id": "rust-tooling",
           "label": "Rust työkalut",
-          "ready": 6,
-          "total": 6,
+          "ready": 7,
+          "total": 7,
           "questions": [
             {
               "id": "rust-tooling-cargo",
@@ -9580,6 +10305,13 @@
               "prompt": "Miten ajat yksikkötestit Rust-projektissa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-tooling-cargo-test.md"
+            },
+            {
+              "id": "rust-tooling-ci-baseline",
+              "difficulty": 2,
+              "prompt": "Mikä on järkevä minimiputki Rust-projektin CI:ssä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-tooling-ci-baseline.md"
             },
             {
               "id": "rust-tooling-clippy",
@@ -9607,8 +10339,8 @@
         {
           "id": "rust-traits",
           "label": "Rust traitit",
-          "ready": 8,
-          "total": 8,
+          "ready": 9,
+          "total": 9,
           "questions": [
             {
               "id": "rust-traits-bounds-generic",
@@ -9644,6 +10376,13 @@
               "prompt": "Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät struct-määrittelyyn automaattisen Debug-toteutuksen saamiseksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-traits-derive-debug.md"
+            },
+            {
+              "id": "rust-traits-dispatch-choice",
+              "difficulty": 3,
+              "prompt": "Valitset `impl Trait`, geneerisen parametrin ja `Box<dyn Trait>` välillä. Miten päätät?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-traits-dispatch-choice.md"
             },
             {
               "id": "rust-traits-dyn-trait-object",

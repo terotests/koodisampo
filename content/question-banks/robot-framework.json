@@ -24,23 +24,23 @@
       "featurePoints": 3
     },
     {
-      "id": "rf-setup-teardown",
+      "id": "rf-resource-files",
       "chapter": "rf-basics",
       "domain": "robotframework",
       "difficulty": 3,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Jokainen testi tarvitsee selaimen avauksen alussa ja sulkemisen lopussa. Mikä Robot Framework -mekanismi?",
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Useat .robot-testitiedostot tarvitsevat samoja avainsanoja. Miten jaat ne ilman kopiointia?",
       "choices": [
-        { "text": "Test Setup ja Test Teardown *** Settings *** -osiossa tai testikohtaisesti [Setup]/[Teardown]", "correct": true },
-        { "text": "before_each/after_each Python-dekoraattorit testifunktiossa", "correct": false },
-        { "text": "*** Init *** ja *** Cleanup *** erikoisosiot .robot-tiedostossa", "correct": false },
-        { "text": "Kirjoita avaus/sulku ensimmäisenä/viimeisenä askeleena jokaiseen testiin manuaalisesti", "correct": false }
+        { "text": "Luo resource-tiedosto (.resource/.robot) ja tuo se Resource-asetuksella *** Settings ***-osiossa", "correct": true },
+        { "text": "Kopioi *** Keywords *** -osio jokaiseen tiedostoon import-lauseella automaattisesti", "correct": false },
+        { "text": "Käytä *** Global Keywords *** -osiota joka näkyy automaattisesti kaikissa testeissä", "correct": false },
+        { "text": "Tallenna avainsanat YAML-tiedostoon ja lataa ne --include-lipulla ajossa", "correct": false }
       ],
-      "correctFeedback": "Setup/Teardown suoritetaan automaattisesti ennen ja jälkeen testin — varmistavat siivouksen.",
-      "wrongFeedback": "Manuaaliset askeleet eivät aja teardownia jos testi kaatuu. [Teardown] ajetaan aina.",
-      "sourceRef": "robotframework.org/userguide/test-setup-and-teardown",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#test-setup-and-teardown",
-      "featureId": "robotframework:setup-teardown",
+      "correctFeedback": "Resource-tiedostot jakavat avainsanoja ja muuttujia testisuittien välillä.",
+      "wrongFeedback": "*** Global Keywords *** ei ole RF-syntaksia. Resource on oikea mekanismi.",
+      "sourceRef": "robotframework.org/userguide/resource-files",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#resource-files",
+      "featureId": "robotframework:resources",
       "featurePoints": 3
     },
     {
@@ -64,84 +64,44 @@
       "featurePoints": 3
     },
     {
-      "id": "rf-resource-files",
-      "chapter": "rf-basics",
-      "domain": "robotframework",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Useat .robot-testitiedostot tarvitsevat samoja avainsanoja. Miten jaat ne ilman kopiointia?",
-      "choices": [
-        { "text": "Luo resource-tiedosto (.resource/.robot) ja tuo se Resource-asetuksella *** Settings ***-osiossa", "correct": true },
-        { "text": "Kopioi *** Keywords *** -osio jokaiseen tiedostoon import-lauseella automaattisesti", "correct": false },
-        { "text": "Käytä *** Global Keywords *** -osiota joka näkyy automaattisesti kaikissa testeissä", "correct": false },
-        { "text": "Tallenna avainsanat YAML-tiedostoon ja lataa ne --include-lipulla ajossa", "correct": false }
-      ],
-      "correctFeedback": "Resource-tiedostot jakavat avainsanoja ja muuttujia testisuittien välillä.",
-      "wrongFeedback": "*** Global Keywords *** ei ole RF-syntaksia. Resource on oikea mekanismi.",
-      "sourceRef": "robotframework.org/userguide/resource-files",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#resource-files",
-      "featureId": "robotframework:resources",
-      "featurePoints": 3
-    },
-    {
-      "id": "rf-browser-library",
-      "chapter": "rf-web",
-      "domain": "robotframework",
-      "difficulty": 4,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjasto soveltuu parhaiten?",
-      "choices": [
-        { "text": "Browser-kirjasto (Playwright-pohjainen) — tukee auto-wait ja modernia JS:ää natiivisti", "correct": true },
-        { "text": "SeleniumLibrary on aina paras valinta koska se tukee kaikkia selaimia universaalisti", "correct": false },
-        { "text": "RequestsLibrary riittää SPA-testaukseen koska se testaa API-kutsut suoraan", "correct": false },
-        { "text": "RPA.Browser ajaa testit pelkästään headless-tilassa ilman todellista selainta", "correct": false }
-      ],
-      "correctFeedback": "Browser Library käyttää Playwrightia — natiivi auto-wait, network-mocking ja moderni API.",
-      "wrongFeedback": "SeleniumLibrary toimii mutta Browser Library tarjoaa paremman auto-waitin SPA:lle.",
-      "sourceRef": "robotframework-browser.org",
-      "sourceUrl": "https://robotframework-browser.org/",
-      "featureId": "robotframework:browser-lib",
-      "featurePoints": 4
-    },
-    {
-      "id": "rf-tags-include-exclude",
-      "chapter": "rf-execution",
-      "domain": "robotframework",
-      "difficulty": 3,
-      "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Testisuitessa on 200 testiä mutta haluat ajaa vain smoke-testit CI:ssä. Miten valitset?",
-      "choices": [
-        { "text": "Merkitse testit [Tags] smoke ja aja robot --include smoke — ajaa vain merkityt", "correct": true },
-        { "text": "Siirrä smoke-testit erilliseen hakemistoon ja aja vain se hakemisto CI:ssä", "correct": false },
-        { "text": "Lisää if-ehto jokaisen testin alkuun joka tarkistaa ympäristömuuttujan", "correct": false },
-        { "text": "Käytä --test 'Smoke*' glob-patternia joka suodattaa nimiperusteisesti", "correct": false }
-      ],
-      "correctFeedback": "Tagit ovat RF:n ensisijainen mekanismi testien valintaan — --include/--exclude.",
-      "wrongFeedback": "Hakemistorakenne ja nimeäminen auttavat mutta tagit ovat joustavampia.",
-      "sourceRef": "robotframework.org/userguide/tagging-test-cases",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#tagging-test-cases",
-      "featureId": "robotframework:tags",
-      "featurePoints": 3
-    },
-    {
-      "id": "rf-data-driven",
+      "id": "rf-env-variables",
       "chapter": "rf-basics",
       "domain": "robotframework",
       "difficulty": 4,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?",
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Testit ajetaan devissä, stagingissä ja tuotannossa. Miten ympäristökohtaiset URLit ja salaisuudet hallitaan?",
       "choices": [
-        { "text": "[Template] avainsana + test cases -taulukossa rivit ovat data-rivejä — data-driven tyyli", "correct": true },
-        { "text": "FOR-silmukka testin sisällä iteroi listan yli ja ajaa askeleet jokaiselle", "correct": false },
-        { "text": "Luo 10 erillistä testiä identtisillä askeleilla mutta eri muuttujilla", "correct": false },
-        { "text": "Käytä pytest-parametrize dekoraattoria .robot-tiedostossa suoraan", "correct": false }
+        { "text": "Muuttujatiedostot tai --variable/--variablefile ajossa; salaisuudet CI:n secret storesta", "correct": true },
+        { "text": "Kovakoodaa BASE_URL jokaiseen .robot-tiedostoon ja vaihda käsin ennen ajoa", "correct": false },
+        { "text": "Committaa salasanat variables/prod.yaml-tiedostoon versionhallintaan", "correct": false },
+        { "text": "Käytä aina samaa staging-URL:ia myös tuotantotesteissä", "correct": false }
       ],
-      "correctFeedback": "[Template] mahdollistaa data-driven testauksen — yksi avainsana, monta data-riviä.",
-      "wrongFeedback": "FOR toimii mutta [Template] on selkeämpi data-driven -testaukseen ja raportoi jokaisen rivin.",
-      "sourceRef": "robotframework.org/userguide/data-driven-style",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#data-driven-style",
-      "featureId": "robotframework:data-driven",
+      "correctFeedback": "Ympäristöarvo annetaan ulkopuolelta — ei kovakoodattuna testilogiikkaan.",
+      "wrongFeedback": "Kovakoodaus ja salasanojen committaus rikkovat tuotantokäytäntöjä.",
+      "sourceRef": "robotframework.org/userguide/variables",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#variable-files",
+      "featureId": "robotframework:env-variables",
       "featurePoints": 4
+    },
+    {
+      "id": "rf-setup-teardown",
+      "chapter": "rf-basics",
+      "domain": "robotframework",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Jokainen testi tarvitsee selaimen avauksen alussa ja sulkemisen lopussa. Mikä Robot Framework -mekanismi?",
+      "choices": [
+        { "text": "Test Setup ja Test Teardown *** Settings *** -osiossa tai testikohtaisesti [Setup]/[Teardown]", "correct": true },
+        { "text": "before_each/after_each Python-dekoraattorit testifunktiossa", "correct": false },
+        { "text": "*** Init *** ja *** Cleanup *** erikoisosiot .robot-tiedostossa", "correct": false },
+        { "text": "Kirjoita avaus/sulku ensimmäisenä/viimeisenä askeleena jokaiseen testiin manuaalisesti", "correct": false }
+      ],
+      "correctFeedback": "Setup/Teardown suoritetaan automaattisesti ennen ja jälkeen testin — varmistavat siivouksen.",
+      "wrongFeedback": "Manuaaliset askeleet eivät aja teardownia jos testi kaatuu. [Teardown] ajetaan aina.",
+      "sourceRef": "robotframework.org/userguide/test-setup-and-teardown",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#test-setup-and-teardown",
+      "featureId": "robotframework:setup-teardown",
+      "featurePoints": 3
     },
     {
       "id": "rf-library-import",
@@ -164,23 +124,163 @@
       "featurePoints": 3
     },
     {
-      "id": "rf-ci-integration",
-      "chapter": "rf-execution",
+      "id": "rf-secrets-logging",
+      "chapter": "rf-basics",
       "domain": "robotframework",
       "difficulty": 4,
       "audiences": ["coworker", "guru", "project-lead"],
-      "prompt": "Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tulosformaatti integroituu?",
+      "prompt": "Salasana näkyy Robotin log.html-raportissa CI-artefakteissa. Mikä meni pieleen?",
       "choices": [
-        { "text": "robot --xunit output.xml tuottaa JUnit-muotoisen raportin jonka Jenkins parsii natiivisti", "correct": true },
-        { "text": "Robot Frameworkin output.xml on suoraan Jenkins-yhteensopiva ilman konversiota", "correct": false },
-        { "text": "Käytä --format jenkins-lippua joka generoi Jenkins-pluginin vaatiman formaatin", "correct": false },
-        { "text": "Jenkins Robot Framework Plugin lukee vain log.html-tiedostoa selaimessa", "correct": false }
+        { "text": "Salasana välitettiin keyword-argumenttina tai logattiin — lue salaisuudet env/secret storesta ja rajoita loggausta", "correct": true },
+        { "text": "Robot Framework ei koskaan kirjaa argumentteja — vika on CI-palvelimen konfiguraatiossa", "correct": false },
+        { "text": "Salasanat pitää kovakoodata .robot-tiedostoon jotta ne eivät näy raporteissa", "correct": false },
+        { "text": "Poista log.html kokonaan CI:stä — se on ainoa tapa suojata salaisuudet", "correct": false }
       ],
-      "correctFeedback": "--xunit tuottaa standardin JUnit XML:n jota Jenkins, GitLab ja GitHub Actions ymmärtävät.",
-      "wrongFeedback": "output.xml on RF:n oma formaatti. --xunit konvertoi JUnit-yhteensopivaksi.",
-      "sourceRef": "robotframework.org/userguide/output-files",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#xunit-compatible-result-file",
-      "featureId": "robotframework:xunit",
+      "correctFeedback": "RF-raportit voivat paljastaa argumentit — salaisuudet ulkoisesta lähteestä ja rajoitettu loggaus.",
+      "wrongFeedback": "Robot kirjaa keyword-argumentit oletuksena. Kovakoodaus ei ratkaise ongelmaa.",
+      "sourceRef": "robotframework.org/userguide/variables",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#environment-variables",
+      "featureId": "robotframework:secrets-logging",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-abstraction-level",
+      "chapter": "rf-design",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Checkout-testi sisältää 80 riviä Click/Input Text -askeleita. UI-muutos rikkoo kymmeniä testejä. Mikä rakenne on parempi?",
+      "choices": [
+        { "text": "Nosta tekniset UI-askeleet domain-tason keywordeiksi — testi kertoo liiketoimintaflow'n", "correct": true },
+        { "text": "Pidä kaikki Click-rivit testissä mutta kopioi ne resource-tiedostoon", "correct": false },
+        { "text": "Lisää jokaisen Clickin eteen Sleep 2s jotta testit eivät hajoa", "correct": false },
+        { "text": "Siirrä koko 80-rivinen testi yhteen Python-funktioon ja kutsu sitä Robotista", "correct": false }
+      ],
+      "correctFeedback": "Testitapaus kertoo mitä testataan; resource-tiedostot kertovat miten UI:ta käytetään.",
+      "wrongFeedback": "Copy-paste resursseihin tai Python-piilottelu ei korjaa abstraktiotason ongelmaa.",
+      "sourceRef": "robotframework.org/userguide/creating-user-keywords",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-user-keywords",
+      "featureId": "robotframework:abstraction",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-data-driven",
+      "chapter": "rf-design",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?",
+      "choices": [
+        { "text": "[Template] avainsana + test cases -taulukossa rivit ovat data-rivejä — data-driven tyyli", "correct": true },
+        { "text": "FOR-silmukka testin sisällä iteroi listan yli ja ajaa askeleet jokaiselle", "correct": false },
+        { "text": "Luo 10 erillistä testiä identtisillä askeleilla mutta eri muuttujilla", "correct": false },
+        { "text": "Käytä pytest-parametrize dekoraattoria .robot-tiedostossa suoraan", "correct": false }
+      ],
+      "correctFeedback": "[Template] mahdollistaa data-driven testauksen — yksi avainsana, monta data-riviä.",
+      "wrongFeedback": "FOR toimii mutta [Template] on selkeämpi data-driven -testaukseen ja raportoi jokaisen rivin.",
+      "sourceRef": "robotframework.org/userguide/data-driven-style",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#data-driven-style",
+      "featureId": "robotframework:data-driven",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-test-data",
+      "chapter": "rf-design",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Testi luo käyttäjän test@example.com. Ensimmäinen ajo onnistuu, toinen kaatuu koska käyttäjä on jo olemassa. Miten hallitset testidatan?",
+      "choices": [
+        { "text": "Uniikki tunniste (timestamp/build id), teardown-siivous tai kertakäyttöinen testitenantti", "correct": true },
+        { "text": "Oleta että ympäristö on tyhjä ennen jokaista ajoa", "correct": false },
+        { "text": "Aja testi vain kerran päivässä jotta data ei törmää", "correct": false },
+        { "text": "Poista testi kokonaan jos se epäonnistuu toisella ajolla", "correct": false }
+      ],
+      "correctFeedback": "Testidatan pitää olla eristettyä ja toistettavaa — älä luota tyhjään ympäristöön.",
+      "wrongFeedback": "Jaetussa stagingissä kiinteä data aiheuttaa satunnaisia epäonnistumisia.",
+      "sourceRef": "robotframework.org/userguide/test-setup-and-teardown",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#test-setup-and-teardown",
+      "featureId": "robotframework:test-data",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-api-vs-ui",
+      "chapter": "rf-design",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Tiimi ajaa kaiken checkout-flow'n selaimella. Testit kestävät 45 min ja flakkaavat. Osa testeistä tarkistaa vain tilauksen luonnin. Mitä muutat?",
+      "choices": [
+        { "text": "Testaa backend-flow API-tasolla (RequestsLibrary/Python-client); käytä selainta vain kriittisiin UI-polkuihin", "correct": true },
+        { "text": "Lisää rinnakkaisuutta Pabotilla ilman testien eristystä", "correct": false },
+        { "text": "Korvaa kaikki testit yhdellä pitkällä end-to-end -testillä", "correct": false },
+        { "text": "Lisää Sleep 5s jokaisen askeleen väliin jotta testit vakaantuvat", "correct": false }
+      ],
+      "correctFeedback": "Selaintesti on kallis — käytä sitä kun UI tuo oikeaa lisäarvoa.",
+      "wrongFeedback": "Rinnakkaisuus tai Sleep ei korjaa väärää testaustasoa.",
+      "sourceRef": "robotframework.org/RequestsLibrary",
+      "sourceUrl": "https://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html",
+      "featureId": "robotframework:api-vs-ui",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-custom-python-keyword",
+      "chapter": "rf-design",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?",
+      "choices": [
+        { "text": "Kirjoita Python-kirjasto (.py) jossa funktiot ovat suoraan RF-avainsanoja — Library MyLib", "correct": true },
+        { "text": "Käytä Evaluate-avainsanaa kaikelle Python-logiikalle suoraan .robot-tiedostossa", "correct": false },
+        { "text": "Kutsu Python-skriptiä Process.Run Process komennolla ja parsaa stdout", "correct": false },
+        { "text": "Kirjoita logiikka Java-kirjastona koska RF on alun perin Java-pohjainen", "correct": false }
+      ],
+      "correctFeedback": "Python-kirjaston funktiot näkyvät automaattisesti RF-avainsanoina Library-importin jälkeen.",
+      "wrongFeedback": "Evaluate toimii yksinkertaisille lausekkeille. Kirjasto on parempi monimutkaiselle logiikalle.",
+      "sourceRef": "robotframework.org/userguide/creating-test-libraries",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-test-libraries",
+      "featureId": "robotframework:python-lib",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-browser-library",
+      "chapter": "rf-web",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru"],
+      "prompt": "Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjasto soveltuu parhaiten?",
+      "choices": [
+        { "text": "Browser-kirjasto (Playwright-pohjainen) — tukee auto-wait ja modernia JS:ää natiivisti", "correct": true },
+        { "text": "SeleniumLibrary on aina paras valinta koska se tukee kaikkia selaimia universaalisti", "correct": false },
+        { "text": "RequestsLibrary riittää SPA-testaukseen koska se testaa API-kutsut suoraan", "correct": false },
+        { "text": "RPA.Browser ajaa testit pelkästään headless-tilassa ilman todellista selainta", "correct": false }
+      ],
+      "correctFeedback": "Browser Library käyttää Playwrightia — natiivi auto-wait, network-mocking ja moderni API.",
+      "wrongFeedback": "SeleniumLibrary toimii mutta Browser Library tarjoaa paremman auto-waitin SPA:lle.",
+      "sourceRef": "robotframework-browser.org",
+      "sourceUrl": "https://robotframework-browser.org/",
+      "featureId": "robotframework:browser-lib",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-selector-strategy",
+      "chapter": "rf-web",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Web-testit hajoavat aina kun CSS-luokkia refaktoroidaan. Mitä muutat selectoreissa?",
+      "choices": [
+        { "text": "Käytä stabiileja testiselektoreita kuten data-testid — vältä tyyliluokkia ja pitkiä XPath-polkuja", "correct": true },
+        { "text": "Käytä pidempää XPath-polkuja jotta elementti on varmasti uniikki", "correct": false },
+        { "text": "Korvaa kaikki selectorit tekstisisällöllä kuten Click    Ostoskori", "correct": false },
+        { "text": "Käytä aina css=.btn.primary.mt-2 koska se on lyhyin kirjoittaa", "correct": false }
+      ],
+      "correctFeedback": "Hyvä selector kuvaa domain-elementtiä eikä riipu layoutista tai tyylirefaktoroinnista.",
+      "wrongFeedback": "CSS-luokat ja XPath-indeksit hajoavat helposti UI-muutoksissa.",
+      "sourceRef": "robotframework-browser.org",
+      "sourceUrl": "https://robotframework-browser.org/",
+      "featureId": "robotframework:selectors",
       "featurePoints": 4
     },
     {
@@ -204,28 +304,8 @@
       "featurePoints": 3
     },
     {
-      "id": "rf-custom-python-keyword",
-      "chapter": "rf-advanced",
-      "domain": "robotframework",
-      "difficulty": 4,
-      "audiences": ["coworker", "guru"],
-      "prompt": "Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?",
-      "choices": [
-        { "text": "Kirjoita Python-kirjasto (.py) jossa funktiot ovat suoraan RF-avainsanoja — Library MyLib", "correct": true },
-        { "text": "Käytä Evaluate-avainsanaa kaikelle Python-logiikalle suoraan .robot-tiedostossa", "correct": false },
-        { "text": "Kutsu Python-skriptiä Process.Run Process komennolla ja parsaa stdout", "correct": false },
-        { "text": "Kirjoita logiikka Java-kirjastona koska RF on alun perin Java-pohjainen", "correct": false }
-      ],
-      "correctFeedback": "Python-kirjaston funktiot näkyvät automaattisesti RF-avainsanoina Library-importin jälkeen.",
-      "wrongFeedback": "Evaluate toimii yksinkertaisille lausekkeille. Kirjasto on parempi monimutkaiselle logiikalle.",
-      "sourceRef": "robotframework.org/userguide/creating-test-libraries",
-      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-test-libraries",
-      "featureId": "robotframework:python-lib",
-      "featurePoints": 4
-    },
-    {
       "id": "rf-run-on-failure",
-      "chapter": "rf-execution",
+      "chapter": "rf-web",
       "domain": "robotframework",
       "difficulty": 4,
       "audiences": ["coworker", "guru"],
@@ -241,6 +321,106 @@
       "sourceRef": "robotframework.org/SeleniumLibrary/keywords",
       "sourceUrl": "https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html#Register%20Keyword%20To%20Run%20On%20Failure",
       "featureId": "robotframework:run-on-failure",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-flaky-tests",
+      "chapter": "rf-web",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Testi epäonnistuu kerran viikossa CI:ssä mutta menee aina rerunilla läpi. Mitä teet?",
+      "choices": [
+        { "text": "Kerää debug-artefaktit, selvitä juurisyy ja korjaa odotus/data/eristys — flaky-tag on väliaikainen", "correct": true },
+        { "text": "Lisää Sleep 10s ja aja testi aina kolme kertaa — ongelma ratkaistu", "correct": false },
+        { "text": "Poista testi ilman selvitystä koska se menee useimmiten läpi", "correct": false },
+        { "text": "Merkitse testi pysyvästi flaky-tagilla ja jätä se pois CI:stä ikuisesti", "correct": false }
+      ],
+      "correctFeedback": "Flaky-testi heikentää luottamusta koko pakettiin — rerun on väliaikainen suojaverkko.",
+      "wrongFeedback": "Sleep, blind retry ja pysyvä poisjättö eivät korjaa juurisyytä.",
+      "sourceRef": "robotframework.org/userguide/output-files",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#output-file",
+      "featureId": "robotframework:flaky",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-ci-integration",
+      "chapter": "rf-execution",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tulosformaatti integroituu?",
+      "choices": [
+        { "text": "robot --xunit output.xml tuottaa JUnit-muotoisen raportin jonka Jenkins parsii natiivisti", "correct": true },
+        { "text": "Robot Frameworkin output.xml on suoraan Jenkins-yhteensopiva ilman konversiota", "correct": false },
+        { "text": "Käytä --format jenkins-lippua joka generoi Jenkins-pluginin vaatiman formaatin", "correct": false },
+        { "text": "Jenkins Robot Framework Plugin lukee vain log.html-tiedostoa selaimessa", "correct": false }
+      ],
+      "correctFeedback": "--xunit tuottaa standardin JUnit XML:n jota Jenkins, GitLab ja GitHub Actions ymmärtävät.",
+      "wrongFeedback": "output.xml on RF:n oma formaatti. --xunit konvertoi JUnit-yhteensopivaksi.",
+      "sourceRef": "robotframework.org/userguide/output-files",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#xunit-compatible-result-file",
+      "featureId": "robotframework:xunit",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-ci-exit-code",
+      "chapter": "rf-execution",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "CI ajaa Robot-testit, mutta build menee vihreäksi vaikka testit epäonnistuivat. Mikä meni pieleen?",
+      "choices": [
+        { "text": "Pipeline nielee Robotin exit coden esim. || true -rakenteella — älä peitä epäonnistumista", "correct": true },
+        { "text": "Robot Framework ei palauta exit codea — CI ei voi tietää epäonnistumisesta", "correct": false },
+        { "text": "JUnit XML puuttuu, joten CI ei voi merkitä buildia punaiseksi", "correct": false },
+        { "text": "log.html pitää poistaa ennen CI-ajoa jotta exit code toimii", "correct": false }
+      ],
+      "correctFeedback": "Robot palauttaa ei-nollan exit coden epäonnistumisessa — CI:n pitää kunnioittaa sitä.",
+      "wrongFeedback": "Exit code on olemassa. Artefaktien keruu kuuluu post/always-vaiheeseen, ei exit coden peittämiseen.",
+      "sourceRef": "robotframework.org/userguide/starting-test-execution",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#return-codes",
+      "featureId": "robotframework:exit-code",
+      "featurePoints": 4
+    },
+    {
+      "id": "rf-tags-include-exclude",
+      "chapter": "rf-execution",
+      "domain": "robotframework",
+      "difficulty": 3,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Testisuitessa on 200 testiä mutta haluat ajaa vain smoke-testit CI:ssä. Miten valitset?",
+      "choices": [
+        { "text": "Merkitse testit [Tags] smoke ja aja robot --include smoke — ajaa vain merkityt", "correct": true },
+        { "text": "Siirrä smoke-testit erilliseen hakemistoon ja aja vain se hakemisto CI:ssä", "correct": false },
+        { "text": "Lisää if-ehto jokaisen testin alkuun joka tarkistaa ympäristömuuttujan", "correct": false },
+        { "text": "Käytä --test 'Smoke*' glob-patternia joka suodattaa nimiperusteisesti", "correct": false }
+      ],
+      "correctFeedback": "Tagit ovat RF:n ensisijainen mekanismi testien valintaan — --include/--exclude.",
+      "wrongFeedback": "Hakemistorakenne ja nimeäminen auttavat mutta tagit ovat joustavampia.",
+      "sourceRef": "robotframework.org/userguide/tagging-test-cases",
+      "sourceUrl": "https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#tagging-test-cases",
+      "featureId": "robotframework:tags",
+      "featurePoints": 3
+    },
+    {
+      "id": "rf-pabot-parallel",
+      "chapter": "rf-execution",
+      "domain": "robotframework",
+      "difficulty": 4,
+      "audiences": ["coworker", "guru", "project-lead"],
+      "prompt": "Robot-testit kestävät 45 minuuttia. Voiko ne ajaa rinnakkain turvallisesti?",
+      "choices": [
+        { "text": "Kyllä Pabotilla tai CI:n rinnakkaisilla jobeilla — mutta vain jos testit ovat eristettyjä (data, sessio, portit)", "correct": true },
+        { "text": "Kyllä — lisää rinnakkaisuus ensin, eristys korjataan myöhemmin", "correct": false },
+        { "text": "Ei — Robot Framework ei tue rinnakkaisuutta lainkaan", "correct": false },
+        { "text": "Kyllä — kaikki testit voivat jakaa saman kirjautuneen selainistunnon nopeuden vuoksi", "correct": false }
+      ],
+      "correctFeedback": "Rinnakkaistus nopeuttaa vain eristettyjä testejä — muuten flakiness pahenee.",
+      "wrongFeedback": "Jaettu sessio tai data aiheuttaa satunnaisia epäonnistumisia rinnakkaisajossa.",
+      "sourceRef": "pabot.org",
+      "sourceUrl": "https://pabot.org/",
+      "featureId": "robotframework:pabot",
       "featurePoints": 4
     }
   ]

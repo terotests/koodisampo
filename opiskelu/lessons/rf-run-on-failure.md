@@ -4,33 +4,35 @@
 
 CI:ssä web-testi epäonnistuu yöllä. Lokissa lukee "Element not found", mutta et tiedä oliko kyseessä login-virhe, tyhjä sivu vai overlay-dialogi. Kehittäjä lisää manuaalisesti `Capture Page Screenshot` jokaisen testin `[Teardown]`-osioon — se toimii, mutta unohtuu uusiin testeihin ja tuottaa turhia kuvia onnistuneista ajoista.
 
-SeleniumLibrary tarjoaa globaalin koukun joka ajaa valitun avainsanan automaattisesti vain kun testi epäonnistuu — ilman toistoa jokaisessa testissä.
+SeleniumLibrary ja Browser Library tarjoavat globaalin koukun joka ajaa valitun avainsanan automaattisesti vain kun testi epäonnistuu.
 
 ## Ratkaisu
 
 **Register Keyword To Run On Failure Capture Page Screenshot — ajetaan automaattisesti failissa.**
 
+SeleniumLibrary:
+
 ```robot
 *** Settings ***
 Library    SeleniumLibrary
 
-*** Keywords ***
-Suite Setup With Screenshot On Failure
+Suite Setup
     Register Keyword To Run On Failure    Capture Page Screenshot
     Open Browser    ${URL}    chrome
-
-*** Test Cases ***
-Ostoskori toimii
-    Click Element    id=add-to-cart
-    Page Should Contain    1 tuote
 ```
 
-Kun testi failaa, RF kutsuu `Capture Page Screenshot` ennen teardownia. Kuva liitetään `log.html`-raporttiin. Register Keyword To Run On Failure on automaattinen mekanismi joka suoritetaan vain virheissä.
+Browser Library:
 
-Browser Libraryssä vastaava: `Register Keyword To Run On Failure    Take Screenshot    filename=FAIL-{index}`.
+```robot
+Register Keyword To Run On Failure    Take Screenshot    filename=FAIL-{index}
+```
+
+Kun testi failaa, RF kutsuu rekisteröityä avainsanaa ennen teardownia. Kuva liitetään `log.html`-raporttiin.
 
 ## Käytännössä
 
-Aseta rekisteröinti `Suite Setup`issa kerran koko suiteelle. CI-artefakteina tallenna `log.html` ja screenshots-kansio — ne nopeuttavat debuggausta merkittävästi. Voit rekisteröidä oman avainsanan joka ottaa kuvan ja tallentaa sivun HTML:n.
+Screenshot yksin ei aina riitä. Modernissa web-testissä hyödyllisiä debug-artefakteja ovat screenshot, sivun HTML, browser console -logit, network-virheet ja Playwright trace/video. Tavoite: CI-failin syy pitää pystyä päättelemään ilman, että testi ajetaan heti uudelleen paikallisesti.
+
+Aseta rekisteröinti `Suite Setup`issa kerran koko suiteelle. Tallenna artefaktit CI:stä.
 
 [Lue lisää](https://robotframework.org/SeleniumLibrary/SeleniumLibrary.html#Register%20Keyword%20To%20Run%20On%20Failure)
