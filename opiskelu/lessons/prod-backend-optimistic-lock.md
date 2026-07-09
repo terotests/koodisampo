@@ -28,6 +28,8 @@ WHERE id = 7 AND version = 3;
 
 Jos `UPDATE` ei vaikuta yhteen riviin, joku muu on ehtinyt muuttaa riviä — palauta HTTP 409 Conflict ja tarjoa merge- tai uudelleenlataus-flow. Optimistic lock havaitsee konfliktin — palauta 409 tai merge-flow.
 
+HTTP API:ssa sama idea voidaan toteuttaa myös **ETag / If-Match** -headerilla.
+
 ## Käytännössä
 
 Optimistic lock sopii kun konfliktit ovat harvinaisia (useimmat CRUD-näkymät). Pessimistic lock (`SELECT FOR UPDATE`) on parempi tiheästi muokattaville resursseille kuten varastosaldolle. Code reviewissa varmista että `version`-kenttä tulee mukaan sekä SELECTiin että UPDATEen — pelkkä frontendin piilokenttä ei riitä ilman tietokantatason tarkistusta.

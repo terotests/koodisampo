@@ -31,6 +31,8 @@ Jos toinen `UPDATE` epäonnistuu, koko transaktio perutaan (`ROLLBACK`) ja ensim
 
 ## Käytännössä
 
-Rahansiirroissa käytä aina tietokantatransaktiota tai vastaavaa yksikköä (esim. `@Transactional` Springissä, `with conn.transaction()` Pythonissa). Lisää invarianttitarkistukset: `balance >= 0` ennen commitia ja tarvittaessa rivilukitus (`SELECT ... FOR UPDATE`), jotta kaksi samanaikaista siirtoa eivät ylikirjoita toisiaan. Code reviewissa kysy aina: "Mitä tapahtuu jos toinen askel epäonnistuu kesken?"
+Rahansiirroissa käytä aina tietokantatransaktiota tai vastaavaa yksikköä (esim. `@Transactional` Springissä, `with conn.transaction()` Pythonissa). Lisää invarianttitarkistukset: `balance >= 0` ennen commitia ja tarvittaessa rivilukitus (`SELECT ... FOR UPDATE`), jotta kaksi samanaikaista siirtoa eivät ylikirjoita toisiaan.
+
+Älä pidä transaktiota auki ulkoisen API-kutsun ajan. Tee DB-muutokset lyhyessä transaktiossa ja käytä tarvittaessa outbox-patternia tapahtumien lähettämiseen commitin jälkeen. Code reviewissa kysy aina: "Mitä tapahtuu jos toinen askel epäonnistuu kesken?"
 
 [Lue lisää](https://www.postgresql.org/docs/current/tutorial-transactions.html)

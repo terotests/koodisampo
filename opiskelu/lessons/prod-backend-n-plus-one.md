@@ -34,6 +34,8 @@ LIMIT 500;
 
 Vaihtoehtoja: batch-haku (`WHERE user_id IN (...)`), GraphQL DataLoader tai ORM:n `select_related` / `include`. N+1 on klassinen backend-bugi — korjaa joinilla, batchilla tai dataloaderilla.
 
+JOIN ei aina ole automaattisesti paras ratkaisu, jos data monistuu räjähdysmäisesti. Vaihtoehto voi olla batch-haku kahdella queryllä.
+
 ## Käytännössä
 
 Ota käyttöön query-laskuri kehityksessä (Django Debug Toolbar, Hibernate statistics, Prisma query log). Code reviewissa listauksissa kysy: "Tehdäänkö tälle loopissa erillinen query?" Tuotannossa seuraa `calls`-lukua `pg_stat_statements`-näkymässä — toistuva yksinkertainen pattern on usein N+1-merkki.

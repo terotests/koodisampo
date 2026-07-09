@@ -23,6 +23,12 @@ RETURNING event_id;
 
 Jos `INSERT` ei palauta riviä, webhook on jo käsitelty — vastaa 200 OK ilman uudelleenkäsittelyä. Idempotentti käsittely sallii turvallisen uudelleentoimituksen — Stripe/API best practices.
 
+Älä luota vain `event_id`:hen ilman sisällön tarkistusta:
+
+- varmista, että `payment_id`, summa, valuutta ja `order_id` täsmäävät
+- käsittele tilasiirtymät eksplisiittisesti: `pending → paid` on sallittu, `paid → paid` on no-op, `paid → failed` ei ehkä ole sallittu
+- tallenna käsittelyn lopputila, ei vain "nähty event"
+
 ## Käytännössä
 
 Tallenna idempotency key samassa transaktiossa kuin varsinaiset sivuvaikutukset, tai käytä unique constraintia taulussa joka estää duplikaatin atomisesti. Vastaa aina 2xx onnistuneesta duplikaatista, jotta lähettäjä ei jää retry-loopiin. Code reviewissa varmista: "Voiko tämä endpoint saada saman pyynnön kahdesti turvallisesti?"
