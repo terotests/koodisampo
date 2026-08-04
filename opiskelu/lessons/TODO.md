@@ -2,20 +2,20 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1347 / 1394** valmis (**96.6 %**).
+**1382 / 1394** valmis (**99.1 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 204 | 223 | 91.5 |
+| C++ | 223 | 223 | 100 |
 | JavaScript | 234 | 234 | 100 |
 | PostgreSQL | 180 | 180 | 100 |
-| Docker | 142 | 146 | 97.3 |
-| Linux | 168 | 178 | 94.4 |
+| Docker | 146 | 146 | 100 |
+| Linux | 178 | 178 | 100 |
 | Qt | 164 | 164 | 100 |
 | Scrum | 90 | 90 | 100 |
-| Git | 20 | 22 | 90.9 |
+| Git | 22 | 22 | 100 |
 | Backend | 15 | 15 | 100 |
 | Turvallisuus | 35 | 35 | 100 |
 | Robot Framework | 21 | 21 | 100 |
@@ -24,27 +24,27 @@
 
 ## Kaikki aiheet
 
-### C++ (204/223)
+### C++ (223/223)
 
-#### cmake `cmake` (0/15)
+#### cmake `cmake` (15/15)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 3 | `prod-cmake-cxx-flags-global` | Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FL… |
-| ⬜ | 3 | `prod-cmake-duplicate-sources` | Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetis… |
-| ⬜ | 4 | `prod-cmake-fetchcontent-pin` | FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit… |
-| ⬜ | 4 | `prod-cmake-fmt-public-leak` | Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeLi… |
-| ⬜ | 3 | `prod-cmake-glob-missed-source` | Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cm… |
-| ⬜ | 3 | `prod-cmake-header-only-interface` | Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen m… |
-| ⬜ | 4 | `prod-cmake-install-interface` | Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa inclu… |
-| ⬜ | 3 | `prod-cmake-missing-build-type` | Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build… |
-| ⬜ | 4 | `prod-cmake-openssl-imported` | OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_I… |
-| ⬜ | 4 | `prod-cmake-rpath-install` | Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error whil… |
-| ⬜ | 3 | `prod-cmake-source-dir-subproject` | Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` iso… |
-| ⬜ | 4 | `prod-cmake-subdir-options-leak` | Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä… |
-| ⬜ | 4 | `prod-cmake-transitive-zlib` | `core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain… |
-| ⬜ | 4 | `prod-cmake-werror-third-party` | CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-ko… |
-| ⬜ | 4 | `prod-cpp-cmake-target-includes` | Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren C… |
+| ✅ | 3 | `prod-cmake-cxx-flags-global` | Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FL… |
+| ✅ | 3 | `prod-cmake-duplicate-sources` | Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetis… |
+| ✅ | 4 | `prod-cmake-fetchcontent-pin` | FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit… |
+| ✅ | 4 | `prod-cmake-fmt-public-leak` | Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeLi… |
+| ✅ | 3 | `prod-cmake-glob-missed-source` | Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cm… |
+| ✅ | 3 | `prod-cmake-header-only-interface` | Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen m… |
+| ✅ | 4 | `prod-cmake-install-interface` | Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa inclu… |
+| ✅ | 3 | `prod-cmake-missing-build-type` | Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build… |
+| ✅ | 4 | `prod-cmake-openssl-imported` | OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_I… |
+| ✅ | 4 | `prod-cmake-rpath-install` | Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error whil… |
+| ✅ | 3 | `prod-cmake-source-dir-subproject` | Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` iso… |
+| ✅ | 4 | `prod-cmake-subdir-options-leak` | Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä… |
+| ✅ | 4 | `prod-cmake-transitive-zlib` | `core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain… |
+| ✅ | 4 | `prod-cmake-werror-third-party` | CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-ko… |
+| ✅ | 4 | `prod-cpp-cmake-target-includes` | Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren C… |
 
 #### oikeellisuus `correctness` (20/20)
 
@@ -71,19 +71,19 @@
 | ✅ | 4 | `exp-cpp-correct-compare-three-way` | Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — … |
 | ✅ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
 
-#### cpp-build `cpp-build` (0/1)
+#### cpp-build `cpp-build` (1/1)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 5 | `prod-cpp-sanitizer-tsan` | Release-build toimii, mutta TSan löytää data racen kahden säikeen välil… |
+| ✅ | 5 | `prod-cpp-sanitizer-tsan` | Release-build toimii, mutta TSan löytää data racen kahden säikeen välil… |
 
-#### C++ tuotanto `cpp-production` (8/11)
+#### C++ tuotanto `cpp-production` (11/11)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 5 | `prod-cpp-coroutine-lifetime` | Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen… |
-| ⬜ | 5 | `prod-cpp-exception-safety-strong` | assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa s… |
-| ⬜ | 4 | `prod-cpp-expected-vs-optional` | Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Millo… |
+| ✅ | 5 | `prod-cpp-exception-safety-strong` | assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa s… |
+| ✅ | 4 | `prod-cpp-expected-vs-optional` | Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Millo… |
 | ✅ | 4 | `prod-cpp-false-sharing-struct` | Kaksi std::atomic-laskuria on vierekkäin structissa ja eri säikeet päiv… |
 | ✅ | 4 | `prod-cpp-jthread-stop` | Worker-säie pitää pysäyttää siististi olion tuhoutuessa. Mikä C++20-työ… |
 | ✅ | 3 | `prod-cpp-optional-deref` | Koodi tekee `return *findUser(id);` missä `findUser` palauttaa `std::op… |
@@ -91,7 +91,7 @@
 | ✅ | 4 | `prod-cpp-span-member` | Luokan API ottaa `std::span<int>` konstruktorissa ja tallentaa sen jäse… |
 | ✅ | 4 | `prod-cpp-string-view-member` | Luokka ottaa konstruktorissa `std::string_view name` ja tallentaa sen s… |
 | ✅ | 4 | `prod-cpp-variant-visit` | Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unoht… |
-| ⬜ | 4 | `prod-cpp-volatile-not-thread-safe` | Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa th… |
+| ✅ | 4 | `prod-cpp-volatile-not-thread-safe` | Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa th… |
 
 #### ylläpidettävyys `maintainability` (21/21)
 
@@ -792,7 +792,7 @@
 | ✅ | 4 | `exp-pg-vacuum-long-xact` | pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples … |
 | ✅ | 4 | `pg-vacuum-bloat` | Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily? |
 
-### Docker (142/146)
+### Docker (146/146)
 
 #### Docker `docker` (79/79)
 
@@ -917,16 +917,16 @@
 | ✅ | 5 | `exp-docker-net-macvlan` | Legacy-laite vaatii kontille oman MAC-osoitteen LANissa. Mikä network d… |
 | ✅ | 3 | `exp-docker-net-publish-bind` | Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mi… |
 
-#### Docker tuotanto `docker-production` (2/6)
+#### Docker tuotanto `docker-production` (6/6)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `prod-docker-build-secret-arg` | Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packa… |
+| ✅ | 4 | `prod-docker-build-secret-arg` | Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packa… |
 | ✅ | 4 | `prod-docker-env-secrets` | Dockerfile sisältää rivin `ENV API_KEY=sk_live_...`. Mikä ongelma tuota… |
-| ⬜ | 5 | `prod-docker-healthcheck-db-down` | HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla.… |
+| ✅ | 5 | `prod-docker-healthcheck-db-down` | HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla.… |
 | ✅ | 4 | `prod-docker-k8s-probes` | Kubernetes-pod käynnistyy, mutta sovellus ei vielä vastaa HTTP-pyyntöih… |
-| ⬜ | 4 | `prod-docker-nonroot-bind-mount` | Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjo… |
-| ⬜ | 4 | `prod-docker-rootless-vs-root` | Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless D… |
+| ✅ | 4 | `prod-docker-nonroot-bind-mount` | Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjo… |
+| ✅ | 4 | `prod-docker-rootless-vs-root` | Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless D… |
 
 #### Docker-volumet `docker-volumes` (27/27)
 
@@ -960,7 +960,7 @@
 | ✅ | 3 | `exp-docker-vol-db-persist` | Postgres-kontti poistettiin `docker rm` — data katosi. Miten olisi pitä… |
 | ✅ | 3 | `exp-docker-vol-readonly` | Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio? |
 
-### Linux (168/178)
+### Linux (178/178)
 
 #### apt/dpkg `apt` (8/8)
 
@@ -1050,11 +1050,11 @@
 | ✅ | 4 | `b12-linux-arp-gratuitous-duplicate` | Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. … |
 | ✅ | 3 | `b12-linux-arp-static-neigh` | Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP… |
 
-#### linux-cgroups `linux-cgroups` (0/1)
+#### linux-cgroups `linux-cgroups` (1/1)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `prod-linux-cgroups-v2-memory` | Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -t… |
+| ✅ | 4 | `prod-linux-cgroups-v2-memory` | Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -t… |
 
 #### D-Bus `linux-dbus` (5/5)
 
@@ -1066,16 +1066,16 @@
 | ✅ | 3 | `b12-linux-dbus-nm-wifi-scan` | NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on p… |
 | ✅ | 4 | `b12-linux-dbus-polkit-deny` | Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. T… |
 
-#### linux-incident `linux-incident` (0/4)
+#### linux-incident `linux-incident` (4/4)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 5 | `prod-linux-incident-slow-no-cpu` | API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullon… |
-| ⬜ | 4 | `prod-linux-logrotate-copytruncate` | logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lok… |
-| ⬜ | 4 | `prod-linux-lsof-deleted-log` | Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on to… |
-| ⬜ | 4 | `prod-linux-strace-hung-process` | Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. M… |
+| ✅ | 5 | `prod-linux-incident-slow-no-cpu` | API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullon… |
+| ✅ | 4 | `prod-linux-logrotate-copytruncate` | logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lok… |
+| ✅ | 4 | `prod-linux-lsof-deleted-log` | Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on to… |
+| ✅ | 4 | `prod-linux-strace-hung-process` | Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. M… |
 
-#### verkko `linux-network` (46/47)
+#### verkko `linux-network` (47/47)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1125,13 +1125,13 @@
 | ✅ | 5 | `linux-nmcli` | NetworkManager hallitsee interfacea. Miten aktivoit profiilin `corp-wif… |
 | ✅ | 4 | `linux-resolv-search` | Kontti/resolvoi `db` mutta ei `db.corp.local`. Mitä tiedostoa tarkistat… |
 | ✅ | 3 | `linux-ss-listen` | Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento? |
-| ⬜ | 3 | `prod-linux-bind-localhost` | Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys… |
+| ✅ | 3 | `prod-linux-bind-localhost` | Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys… |
 
-#### linux-ssh `linux-ssh` (0/1)
+#### linux-ssh `linux-ssh` (1/1)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `prod-linux-ssh-bastion-forward` | Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin … |
+| ✅ | 4 | `prod-linux-ssh-bastion-forward` | Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin … |
 
 #### TCP/UDP `linux-tcp-udp` (6/6)
 
@@ -1192,13 +1192,13 @@
 | ✅ | 4 | `systemd-timer` | Haluat ajastaa yöllisen backup-skriptin ilman cronia. Mikä systemd-ratk… |
 | ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:ll… |
 
-#### systemd-hardening `systemd-hardening` (0/3)
+#### systemd-hardening `systemd-hardening` (3/3)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 4 | `prod-linux-capabilities-port80` | Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä v… |
-| ⬜ | 4 | `prod-linux-systemd-analyze-security` | Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. M… |
-| ⬜ | 5 | `prod-linux-systemd-protect-system` | Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `… |
+| ✅ | 4 | `prod-linux-capabilities-port80` | Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä v… |
+| ✅ | 4 | `prod-linux-systemd-analyze-security` | Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. M… |
+| ✅ | 5 | `prod-linux-systemd-protect-system` | Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `… |
 
 ### Qt (164/164)
 
@@ -1563,9 +1563,9 @@
 | ✅ | 3 | `scrum-team-cross-functional` | Mitä tarkoittaa että Scrum-tiimi on cross-functional? |
 | ✅ | 3 | `scrum-team-size` | Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmi… |
 
-### Git (20/22)
+### Git (22/22)
 
-#### CI/CD `git-ci` (9/10)
+#### CI/CD `git-ci` (10/10)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1577,10 +1577,10 @@
 | ✅ | 4 | `jenkins-pipeline-stages` | Jenkins Declarative Pipelinessa build, test ja deploy tulisi ajaa peräk… |
 | ✅ | 5 | `jenkins-shared-library` | Useassa Jenkins-projektissa toistetaan samaa pipeline-logiikkaa. Miten … |
 | ✅ | 4 | `prod-ci-cache-lockfile` | CI käyttää dependency-cachea mutta buildit saavat satunnaisesti väärät … |
-| ⬜ | 4 | `prod-ci-deploy-rollback` | Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvall… |
+| ✅ | 4 | `prod-ci-deploy-rollback` | Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvall… |
 | ✅ | 4 | `prod-ci-flaky-test` | Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel? |
 
-#### Git-työnkulku `git-workflow` (11/12)
+#### Git-työnkulku `git-workflow` (12/12)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -1595,7 +1595,7 @@
 | ✅ | 4 | `git-worktree` | Haluat työstää kahta branchia samanaikaisesti ilman stashia tai committ… |
 | ✅ | 4 | `prod-git-bisect` | Regressio ilmestyi jossain 200 commitin välillä. Mikä Git-työkalu autta… |
 | ✅ | 4 | `prod-git-force-with-lease` | Rebase tehtiin ja branch pitää puskea uudestaan. Miten vältät että ylik… |
-| ⬜ | 5 | `prod-git-rebase-onto` | Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siir… |
+| ✅ | 5 | `prod-git-rebase-onto` | Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siir… |
 
 ### Backend (15/15)
 
@@ -1871,7 +1871,7 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ⬜ | 1 | `kids-animal-cow` | Mikä eläin sanoo mää? |
+| ⬜ | 1 | `kids-animal-cow` | Mikä eläin sanoo muu? |
 
 #### kids-body `kids-body` (0/1)
 
