@@ -518,11 +518,172 @@
       font-weight: bold;
       width: 100%;
     }
+    .profile-setup-secondary {
+      margin-top: 0;
+      padding: 10px 14px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    .profile-setup-secondary:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(57, 197, 207, 0.08);
+    }
     .profile-setup-error {
       margin: 0;
       color: var(--accent-red);
       font-size: 13px;
       line-height: 1.4;
+    }
+
+    .question-trainer {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--overlay-bg);
+    }
+    .question-trainer[hidden] { display: none !important; }
+    .question-trainer-card {
+      width: 100%;
+      max-width: 560px;
+      margin: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .question-trainer-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .question-trainer-header h2 {
+      margin: 0;
+      color: var(--accent-cyan);
+      font-size: 1.05rem;
+    }
+    .question-trainer-close {
+      flex-shrink: 0;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    #question-trainer-meta {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    #question-trainer-meta .train-topic { color: var(--accent-purple); }
+    .train-filter {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .train-filter input { margin-top: 2px; width: auto; }
+    .train-q-meta {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .train-q-meta code { color: var(--accent-blue); }
+    .train-prompt {
+      color: var(--text-bright);
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .train-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .train-choice {
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font: inherit;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .train-choice:hover:not(:disabled) {
+      border-color: var(--accent-blue);
+    }
+    .train-choice-correct {
+      border-color: var(--accent-green);
+      background: rgba(63, 185, 80, 0.12);
+      color: var(--accent-green);
+    }
+    .train-choice-wrong {
+      border-color: var(--accent-red);
+      background: rgba(248, 81, 73, 0.12);
+      color: var(--accent-red);
+    }
+    .train-choice-dimmed { opacity: 0.45; }
+    .train-feedback {
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    .train-feedback.ok { color: var(--accent-green); }
+    .train-feedback.bad { color: var(--accent-red); }
+    .train-teaching {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
+      border-left: 3px solid var(--border);
+      padding-left: 10px;
+    }
+    .train-teaching h4 {
+      margin: 0 0 6px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .train-notes { margin-top: 6px; color: var(--text-muted); }
+    .train-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .train-links a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .train-links a:hover { text-decoration: underline; }
+    .train-next {
+      margin-top: 4px;
+      padding: 10px 14px;
+      background: var(--btn-primary-bg);
+      border-color: var(--btn-primary-border);
+      color: #fff;
+      font-weight: bold;
+      width: 100%;
+    }
+    .train-empty {
+      color: var(--text-muted);
+      margin: 8px 0;
+      line-height: 1.45;
     }
 
     /* ── Mobile: pelkistetty pelinäkymä ── */
@@ -1098,7 +1259,24 @@
       <p class="profile-setup-hint">Kysymykset painottuvat valitsemaasi osaamiseen. Helpommodessa käytetään omaa kysymyslistaa.</p>
       <p id="profile-setup-error" class="profile-setup-error" hidden></p>
       <button type="button" id="profile-start-btn" class="profile-setup-submit">Aloita peli</button>
+      <button type="button" id="profile-train-btn" class="profile-setup-secondary">Haluan vain treenata kysymyksiä</button>
     </form>
+  </div>
+  <div id="question-trainer" class="question-trainer" hidden>
+    <div class="question-trainer-card">
+      <div class="question-trainer-header">
+        <div>
+          <h2>Kysymystreeni</h2>
+          <div id="question-trainer-meta"></div>
+        </div>
+        <button type="button" id="question-trainer-close" class="question-trainer-close">← Takaisin</button>
+      </div>
+      <label class="train-filter">
+        <input id="question-trainer-all-topics" type="checkbox" />
+        <span>Kaikki aiheet (ei vain valittua erikoisosaamista)</span>
+      </label>
+      <div id="question-trainer-body"></div>
+    </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
