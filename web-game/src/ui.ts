@@ -37,6 +37,7 @@ import {
 } from "./quizChoiceEffects";
 import { setSalaryHudRefreshHandler } from "./rewardFruitEffects";
 import { md2html } from "../../hosts/shared/md2html.mjs";
+import { mountQuestionTrainer } from "./questionTrainer";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
  type State = any;
@@ -59,7 +60,9 @@ export function mountGameUI(game: WebGame) {
   const profileKidsModeEl = document.getElementById("profile-kids-mode") as HTMLInputElement | null;
   const profileFormEl = document.getElementById("profile-setup-form");
   const profileStartBtn = document.getElementById("profile-start-btn");
+  const profileTrainBtn = document.getElementById("profile-train-btn");
   const profileErrorEl = document.getElementById("profile-setup-error");
+  const trainerRootEl = document.getElementById("question-trainer");
   let lastMobileMapLines: string[] = [];
   let showDebugJson = new URLSearchParams(window.location.search).has("debug");
   let showRelationsDebug = false;
@@ -157,6 +160,9 @@ export function mountGameUI(game: WebGame) {
       if (!(target instanceof HTMLElement)) return false;
       if (target.id === "codeInput") return false;
       if (profileFormEl?.contains(target) && target.closest("input, textarea, select, button")) {
+        return true;
+      }
+      if (trainerRootEl?.contains(target) && target.closest("input, textarea, select, button, a")) {
         return true;
       }
       const tag = target.tagName;
@@ -1448,7 +1454,16 @@ export function mountGameUI(game: WebGame) {
       }
     });
 
+    const questionTrainer = mountQuestionTrainer({
+      getSpecialty: () => profileSpecialtyEl?.value || "cpp",
+      getKidsMode: () => !!profileKidsModeEl?.checked,
+      onClose: () => {
+        clearProfileSetupError();
+      },
+    });
+
     window.addEventListener("keydown", (e) => {
+      if (questionTrainer.isOpen()) return;
       if (isEditableGameTarget(e.target)) return;
 
       const k = normalizeKey(e);
@@ -1564,6 +1579,11 @@ export function mountGameUI(game: WebGame) {
     profileStartBtn?.addEventListener("click", (e) => {
       e.preventDefault();
       commitProfileSetup();
+    });
+    profileTrainBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearProfileSetupError();
+      questionTrainer.open();
     });
 
     function tick() {
