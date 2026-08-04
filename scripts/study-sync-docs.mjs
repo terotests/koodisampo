@@ -20,6 +20,9 @@ const DOMAIN_ORDER = [
   "git", "backend", "security", "robotframework", "rust",
 ];
 
+/** Ei julkaista opiskelusivustolle toistaiseksi (esim. lapsimoodin kysymykset). */
+const EXCLUDED_DOC_DOMAINS = new Set(["kids"]);
+
 function resolveSourceUrl(q) {
   const url = String(q.sourceUrl || "").trim();
   if (/^https?:\/\//i.test(url)) return url;
@@ -169,7 +172,7 @@ function sortDomains(domains) {
 }
 
 function main() {
-  const questions = listAllQuestions();
+  const questions = listAllQuestions().filter((q) => !EXCLUDED_DOC_DOMAINS.has(q.domain));
   if (fs.existsSync(docsRoot)) {
     fs.rmSync(docsRoot, { recursive: true, force: true });
   }
