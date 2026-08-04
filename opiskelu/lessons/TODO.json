@@ -1,127 +1,127 @@
 {
-  "generatedAt": "2026-07-09T11:36:16.202Z",
+  "generatedAt": "2026-08-04T08:44:52.968Z",
   "summary": {
     "totalQuestions": 1394,
-    "readyLessons": 1347,
-    "pendingLessons": 47,
-    "percent": 96.6
+    "readyLessons": 1382,
+    "pendingLessons": 12,
+    "percent": 99.1
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 204,
+      "ready": 223,
       "total": 223,
       "chapters": [
         {
           "id": "cmake",
           "label": "cmake",
-          "ready": 0,
+          "ready": 15,
           "total": 15,
           "questions": [
             {
               "id": "prod-cmake-cxx-flags-global",
               "difficulty": 3,
               "prompt": "Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++20\")`. Miksi moderni CMake suosii toista tapaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-cxx-flags-global.md"
             },
             {
               "id": "prod-cmake-duplicate-sources",
               "difficulty": 3,
               "prompt": "Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetissa. Linkitys toimii, mutta ylläpito on kivulias. Parempi malli?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-duplicate-sources.md"
             },
             {
               "id": "prod-cmake-fetchcontent-pin",
               "difficulty": 4,
               "prompt": "FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit alkavat epäonnistua satunnaisesti ilman koodimuutoksia. Mikä korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-fetchcontent-pin.md"
             },
             {
               "id": "prod-cmake-fmt-public-leak",
               "difficulty": 4,
               "prompt": "Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeListsissä on `target_link_libraries(core PUBLIC fmt::fmt)`. Miksi tämä on ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-fmt-public-leak.md"
             },
             {
               "id": "prod-cmake-glob-missed-source",
               "difficulty": 3,
               "prompt": "Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cmake` uudelleen. CMakeLists: `file(GLOB SOURCES src/*.cpp)`. Mikä on ongelma?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-glob-missed-source.md"
             },
             {
               "id": "prod-cmake-header-only-interface",
               "difficulty": 3,
               "prompt": "Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen modernissa CMakessa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-header-only-interface.md"
             },
             {
               "id": "prod-cmake-install-interface",
               "difficulty": 4,
               "prompt": "Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa include-polun `/home/dev/proj/include`. CMakeListsissä: `target_include_directories(mylib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä puuttuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-install-interface.md"
             },
             {
               "id": "prod-cmake-missing-build-type",
               "difficulty": 3,
               "prompt": "Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build typea. Ohjelma on hidas eikä gdb näytä selkeitä rivejä. Mitä puuttuu?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-missing-build-type.md"
             },
             {
               "id": "prod-cmake-openssl-imported",
               "difficulty": 4,
               "prompt": "OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_INCLUDE_DIR})` ja `target_link_libraries(app ${OPENSSL_LIBRARIES})`. Mikä moderni korvaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-openssl-imported.md"
             },
             {
               "id": "prod-cmake-rpath-install",
               "difficulty": 4,
               "prompt": "Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error while loading shared libraries: libfoo.so`. Ensimmäinen CMake-korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-rpath-install.md"
             },
             {
               "id": "prod-cmake-source-dir-subproject",
               "difficulty": 3,
               "prompt": "Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` isommassa projektissa antaa väärän include-polun. Libin CMakeLists: `target_include_directories(lib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-source-dir-subproject.md"
             },
             {
               "id": "prod-cmake-subdir-options-leak",
               "difficulty": 4,
               "prompt": "Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä pääprojektiin ilmestyy uusia install-targetteja ja testejä. Miten rajaat vuodon?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-subdir-options-leak.md"
             },
             {
               "id": "prod-cmake-transitive-zlib",
               "difficulty": 4,
               "prompt": "`core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain `core`:a ja saa linkkerivirheen `undefined reference to deflate`. `core` linkkaa `ZLIB::ZLIB` PRIVATElla. Korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-transitive-zlib.md"
             },
             {
               "id": "prod-cmake-werror-third-party",
               "difficulty": 4,
               "prompt": "CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-koodin projektin globaalilla `-Werror`:lla. Mitä korjaat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cmake-werror-third-party.md"
             },
             {
               "id": "prod-cpp-cmake-target-includes",
               "difficulty": 4,
               "prompt": "Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren CMakeListsissä on `add_compile_options(-Wall -Wextra)` ja `add_definitions(-DUSE_SSL)`. Mitä korjaat?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-cmake-target-includes.md"
             }
           ]
@@ -277,14 +277,14 @@
         {
           "id": "cpp-build",
           "label": "cpp-build",
-          "ready": 0,
+          "ready": 1,
           "total": 1,
           "questions": [
             {
               "id": "prod-cpp-sanitizer-tsan",
               "difficulty": 5,
               "prompt": "Release-build toimii, mutta TSan löytää data racen kahden säikeen välillä. Miksi mutex tarvitaan?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-sanitizer-tsan.md"
             }
           ]
@@ -292,7 +292,7 @@
         {
           "id": "cpp-production",
           "label": "C++ tuotanto",
-          "ready": 8,
+          "ready": 11,
           "total": 11,
           "questions": [
             {
@@ -306,14 +306,14 @@
               "id": "prod-cpp-exception-safety-strong",
               "difficulty": 5,
               "prompt": "assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa strong exception safety -takuun?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-exception-safety-strong.md"
             },
             {
               "id": "prod-cpp-expected-vs-optional",
               "difficulty": 4,
               "prompt": "Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Milloin `std::expected` on parempi kuin `std::optional`?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-expected-vs-optional.md"
             },
             {
@@ -369,7 +369,7 @@
               "id": "prod-cpp-volatile-not-thread-safe",
               "difficulty": 4,
               "prompt": "Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa thread-safetyä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-volatile-not-thread-safe.md"
             }
           ]
@@ -4693,7 +4693,7 @@
     {
       "id": "docker",
       "label": "Docker",
-      "ready": 142,
+      "ready": 146,
       "total": 146,
       "chapters": [
         {
@@ -5506,14 +5506,14 @@
         {
           "id": "docker-production",
           "label": "Docker tuotanto",
-          "ready": 2,
+          "ready": 6,
           "total": 6,
           "questions": [
             {
               "id": "prod-docker-build-secret-arg",
               "difficulty": 4,
               "prompt": "Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packageja buildissä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-docker-build-secret-arg.md"
             },
             {
@@ -5527,7 +5527,7 @@
               "id": "prod-docker-healthcheck-db-down",
               "difficulty": 5,
               "prompt": "HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla. Mitä healthcheckin pitäisi tehdä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-docker-healthcheck-db-down.md"
             },
             {
@@ -5541,14 +5541,14 @@
               "id": "prod-docker-nonroot-bind-mount",
               "difficulty": 4,
               "prompt": "Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjoittaa. Mikä on yleisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-docker-nonroot-bind-mount.md"
             },
             {
               "id": "prod-docker-rootless-vs-root",
               "difficulty": 4,
               "prompt": "Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless Docker -ympäristössä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-docker-rootless-vs-root.md"
             }
           ]
@@ -5755,7 +5755,7 @@
     {
       "id": "linux",
       "label": "Linux",
-      "ready": 168,
+      "ready": 178,
       "total": 178,
       "chapters": [
         {
@@ -6269,14 +6269,14 @@
         {
           "id": "linux-cgroups",
           "label": "linux-cgroups",
-          "ready": 0,
+          "ready": 1,
           "total": 1,
           "questions": [
             {
               "id": "prod-linux-cgroups-v2-memory",
               "difficulty": 4,
               "prompt": "Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -tasolla hostilla. Mistä lukema?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-cgroups-v2-memory.md"
             }
           ]
@@ -6327,35 +6327,35 @@
         {
           "id": "linux-incident",
           "label": "linux-incident",
-          "ready": 0,
+          "ready": 4,
           "total": 4,
           "questions": [
             {
               "id": "prod-linux-incident-slow-no-cpu",
               "difficulty": 5,
               "prompt": "API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullonkaula levy-IO:ssa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-incident-slow-no-cpu.md"
             },
             {
               "id": "prod-linux-logrotate-copytruncate",
               "difficulty": 4,
               "prompt": "logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lokimerkintöjä rotaation jälkeen. Parempi tapa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-logrotate-copytruncate.md"
             },
             {
               "id": "prod-linux-lsof-deleted-log",
               "difficulty": 4,
               "prompt": "Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on todennäköisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-lsof-deleted-log.md"
             },
             {
               "id": "prod-linux-strace-hung-process",
               "difficulty": 4,
               "prompt": "Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. Miten näet mihin syscalliin se odottaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-strace-hung-process.md"
             }
           ]
@@ -6363,7 +6363,7 @@
         {
           "id": "linux-network",
           "label": "verkko",
-          "ready": 46,
+          "ready": 47,
           "total": 47,
           "questions": [
             {
@@ -6692,7 +6692,7 @@
               "id": "prod-linux-bind-localhost",
               "difficulty": 3,
               "prompt": "Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys timeouttaa. Todennäköisin syy?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-bind-localhost.md"
             }
           ]
@@ -6700,14 +6700,14 @@
         {
           "id": "linux-ssh",
           "label": "linux-ssh",
-          "ready": 0,
+          "ready": 1,
           "total": 1,
           "questions": [
             {
               "id": "prod-linux-ssh-bastion-forward",
               "difficulty": 4,
               "prompt": "Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin 5432 tietokantaan. SSH-komennot?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-ssh-bastion-forward.md"
             }
           ]
@@ -7074,28 +7074,28 @@
         {
           "id": "systemd-hardening",
           "label": "systemd-hardening",
-          "ready": 0,
+          "ready": 3,
           "total": 3,
           "questions": [
             {
               "id": "prod-linux-capabilities-port80",
               "difficulty": 4,
               "prompt": "Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä vaihtoehto on tuotannossa yleisin?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-capabilities-port80.md"
             },
             {
               "id": "prod-linux-systemd-analyze-security",
               "difficulty": 4,
               "prompt": "Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. Mikä työkalu auttaa?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-systemd-analyze-security.md"
             },
             {
               "id": "prod-linux-systemd-protect-system",
               "difficulty": 5,
               "prompt": "Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `/var/lib/myapp`iin. Turvallisin korjaus?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-linux-systemd-protect-system.md"
             }
           ]
@@ -9067,13 +9067,13 @@
     {
       "id": "git",
       "label": "Git",
-      "ready": 20,
+      "ready": 22,
       "total": 22,
       "chapters": [
         {
           "id": "git-ci",
           "label": "CI/CD",
-          "ready": 9,
+          "ready": 10,
           "total": 10,
           "questions": [
             {
@@ -9136,7 +9136,7 @@
               "id": "prod-ci-deploy-rollback",
               "difficulty": 4,
               "prompt": "Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvallinen rollback CI/CD:ssä?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-ci-deploy-rollback.md"
             },
             {
@@ -9151,7 +9151,7 @@
         {
           "id": "git-workflow",
           "label": "Git-työnkulku",
-          "ready": 11,
+          "ready": 12,
           "total": 12,
           "questions": [
             {
@@ -9235,7 +9235,7 @@
               "id": "prod-git-rebase-onto",
               "difficulty": 5,
               "prompt": "Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siirtää vain feature-commitit uuden mainin päälle. Komento?",
-              "ready": false,
+              "ready": true,
               "lessonFile": "opiskelu/lessons/prod-git-rebase-onto.md"
             }
           ]
@@ -10488,7 +10488,7 @@
             {
               "id": "kids-animal-cow",
               "difficulty": 1,
-              "prompt": "Mikä eläin sanoo mää?",
+              "prompt": "Mikä eläin sanoo muu?",
               "ready": false,
               "lessonFile": "opiskelu/lessons/kids-animal-cow.md"
             }
