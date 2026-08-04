@@ -40,6 +40,27 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+  themes: [
+    [
+      "@easyops-cn/docusaurus-search-local",
+      /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+      {
+        // Staattinen Lunr-indeksi buildissa — toimii GitHub Pagesilla ilman backendia.
+        // "filename" välttämätön trailingSlash:true -setupissa: query-hash +
+        // docusaurus serve ohjaa search-index.json → search-index.json/ (404).
+        hashed: "filename",
+        language: ["fi", "en"],
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: true,
+        docsRouteBasePath: "docs",
+        highlightSearchTermsOnTargetPage: true,
+        searchBarPosition: "right",
+        searchBarShortcut: true,
+        searchBarShortcutKeymap: "mod+k",
+      },
+    ],
+  ],
   themeConfig: {
     navbar: {
       title: "Opiskelu",
