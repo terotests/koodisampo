@@ -22,6 +22,7 @@ const lyhenteet = fs.readFileSync(path.join(root, "study/docs/lyhenteet.md"), "u
 assert.match(lyhenteet, /### SQL \{#sql\}/, "glossary page synced from opiskelu/lyhenteet.md");
 
 const topicsDir = path.join(root, "study/docs/topics");
+assert.ok(!fs.existsSync(path.join(topicsDir, "kids.md")), "kids domain is excluded from study docs");
 const postgres = fs.readFileSync(path.join(topicsDir, "postgres.md"), "utf8");
 assert.match(postgres, /\[SQL\]\(\/docs\/lyhenteet#sql\)/, "lessons link SQL to glossary");
 
