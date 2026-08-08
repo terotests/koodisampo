@@ -149,6 +149,13 @@ const TOPIC_DOMAINS = {
   "rust-traits": "rust",
   "rust-async": "rust",
   "rust-testing": "rust",
+  "space-satellites": "space",
+  "space-gnss": "space",
+  "space-signals": "space",
+  "space-positioning": "space",
+  "space-datums": "space",
+  "space-maps": "space",
+  "space-applications": "space",
 };
 
 /** Luvut domainin mukaan (haastattelu/guru-kierros). */
