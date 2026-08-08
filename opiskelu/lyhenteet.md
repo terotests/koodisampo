@@ -356,6 +356,12 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Oppitunnit:** [`b05-scrum-backlog-order`](/docs/topics/scrum#b05-scrum-backlog-order)
 
+### DGPS {#dgps}
+
+**Differential GPS** — differentiaalinen paikannus, jossa tunnetulla tukiasemalla mitatut korjaukset lähetetään liikkuvalle vastaanottimelle. Vähentää yhteisiä virheitä (rata, kello, ionosfääri lyhyillä baselineilla) tyypillisesti sub-metri–metri -tarkkuuteen.
+
+**Oppitunnit:** [`space-pos-dgps`](/docs/topics/space#space-pos-dgps)
+
 ### DHCP {#dhcp}
 
 **Dynamic Host Configuration Protocol** — protokolla, joka jakaa IP-osoitteet, yhdyskäytävän ja nimipalvelimen automaattisesti verkkolaitteille. DHCP-lease voi ylikirjoittaa `/etc/resolv.conf`:in; NetworkManager-ylikäytäntö `dns=none` estää tämän.
@@ -404,6 +410,12 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b02-docker-net-alias-10`](/docs/topics/docker#b02-docker-net-alias-10), [`b02-docker-net-bridge-06`](/docs/topics/docker#b02-docker-net-bridge-06), [`b02-docker-net-compose-07`](/docs/topics/docker#b02-docker-net-compose-07), [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b03-docker-net-ipv6-disable`](/docs/topics/docker#b03-docker-net-ipv6-disable), [`b03-linux-avahi-hostname-local`](/docs/topics/linux#b03-linux-avahi-hostname-local), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b03-linux-network-ip-route-table`](/docs/topics/linux#b03-linux-network-ip-route-table), [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b04-docker-network-alias`](/docs/topics/docker#b04-docker-network-alias), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub) (+45 muuta)
 
+### DOP {#dop}
+
+**Dilution of Precision** — satelliittigeometrian kerroin, joka kertoo miten mittausvirheet vahvistuvat paikkavirheeksi. HDOP (vaaka), VDOP (pysty), PDOP (3D). Pienempi DOP on parempi.
+
+**Oppitunnit:** [`space-sig-dop`](/docs/topics/space#space-sig-dop)
+
 ### DOWN {#down}
 
 Verkkorajapinnan administratiivinen tila, jossa rajapinta on kytketty pois päältä (`ip link set eth0 down`). DOWN-tilassa rajapinta ei lähetä eikä vastaanota liikennettä eikä vastaa ARP-kyselyihin. Vasta `ip link set eth0 up` palauttaa yhteyden.
@@ -434,6 +446,24 @@ Verkkorajapinnan administratiivinen tila, jossa rajapinta on kytketty pois pää
 
 **Oppitunnit:** [`b03-docker-vol-named-vs-bind`](/docs/topics/docker#b03-docker-vol-named-vs-bind), [`b06-docker-volume-driver`](/docs/topics/docker#b06-docker-volume-driver), [`b09-docker-vol-driver-local`](/docs/topics/docker#b09-docker-vol-driver-local)
 
+### ECEF {#ecef}
+
+**Earth-Centered, Earth-Fixed** — maakeskinen, maan mukana pyörivä suorakulmainen X/Y/Z-koordinaatisto. GNSS-ratkaisut muodostuvat usein ECEF:ssä ennen muunnosta lat/lon/korkeus -muotoon.
+
+**Oppitunnit:** [`space-datum-ecef`](/docs/topics/space#space-datum-ecef)
+
+### EGNOS {#egnos}
+
+**European Geostationary Navigation Overlay Service** — Euroopan SBAS: GEO-satelliitit lähettävät GPS-korjauksia ja eheysinformaatiota ilmailuun ja muihin käyttäjiin.
+
+**Oppitunnit:** [`space-gnss-sbas-egnos`](/docs/topics/space#space-gnss-sbas-egnos)
+
+### EPSG {#epsg}
+
+**European Petroleum Survey Group** (nykyisin IOGP) -koodisto koordinaattijärjestelmille. Esim. EPSG:4326 = WGS84 lon/lat, EPSG:3857 = Web Mercator, EPSG:3067 = ETRS-TM35FIN.
+
+**Oppitunnit:** [`space-map-epsg`](/docs/topics/space#space-map-epsg), [`space-map-tm35fin`](/docs/topics/space#space-map-tm35fin)
+
 ### EPSILON {#epsilon}
 
 **EPSILON** (`Number.EPSILON`) — pienin erotus luvun 1 ja seuraavan IEEE 754 -liukuluvun välillä JavaScriptissä (~2,22 × 10⁻¹⁶). Liukulukujen yhtäsuuruutta ei pidä tarkistaa `===`-operaattorilla; `Math.abs(a - b) < Number.EPSILON` tai erillinen kirjasto on tarpeen esimerkiksi rahoituslaskennassa.
@@ -463,6 +493,12 @@ Verkkorajapinnan administratiivinen tila, jossa rajapinta on kytketty pois pää
 **Extract, Transform, Load** — tietoprosessointimalli, jossa data haetaan lähteestä, muunnetaan ja ladataan kohdetietokantaan. Yöllisen ETL-latauksen jälkeen PostgreSQL tarvitsee `ANALYZE`-komennon, jotta query planner saa ajantasaiset tilastot raportteja varten.
 
 **Oppitunnit:** [`b05-pg-vacuum-analyze-after-bulk`](/docs/topics/postgres#b05-pg-vacuum-analyze-after-bulk), [`b12-js-async-stream-backpressure`](/docs/topics/javascript#b12-js-async-stream-backpressure), [`exp-pg-explain-stats-stale`](/docs/topics/postgres#exp-pg-explain-stats-stale), [`sqd-foreign-data-wrapper`](/docs/topics/postgres#sqd-foreign-data-wrapper)
+
+### ETRS89 {#etrs89}
+
+**European Terrestrial Reference System 1989** — Euroopan mannerlaattaan kiinnitetty geodeettinen datumi. Suomen EUREF-FIN ja ETRS-TM35FIN nojaavat siihen; erona ITRF/WGS84-epochien laattaliike.
+
+**Oppitunnit:** [`space-datum-etrs89`](/docs/topics/space#space-datum-etrs89), [`space-map-tm35fin`](/docs/topics/space#space-map-tm35fin)
 
 ### EXISTS/IN {#exists-in}
 
@@ -644,11 +680,23 @@ HTTP-protokollan lukupyyntömetodi — hakee resurssin palvelimelta muuttamatta 
 
 **Oppitunnit:** [`b02-qt-shaders-qsb-13`](/docs/topics/qt#b02-qt-shaders-qsb-13), [`b03-qt-shaders-attribute-location`](/docs/topics/qt#b03-qt-shaders-attribute-location), [`b03-qt-shaders-qopenglshader`](/docs/topics/qt#b03-qt-shaders-qopenglshader), [`b03-qt-shaders-rhi-fallback`](/docs/topics/qt#b03-qt-shaders-rhi-fallback), [`b04-qt-shaders-attribute-location`](/docs/topics/qt#b04-qt-shaders-attribute-location), [`b05-qt-shaders-glsl-version`](/docs/topics/qt#b05-qt-shaders-glsl-version), [`b05-qt-shaders-rhi-backend`](/docs/topics/qt#b05-qt-shaders-rhi-backend), [`b05-qt-shaders-uniform-location`](/docs/topics/qt#b05-qt-shaders-uniform-location), [`b06-qt-shaders-precompile`](/docs/topics/qt#b06-qt-shaders-precompile), [`b06-qt-shaders-varying-interpolation`](/docs/topics/qt#b06-qt-shaders-varying-interpolation), [`b07-qt-shader-precision`](/docs/topics/qt#b07-qt-shader-precision), [`b07-qt-shader-qsb`](/docs/topics/qt#b07-qt-shader-qsb) (+7 muuta)
 
+### GNSS {#gnss}
+
+**Global Navigation Satellite System** — kattotermi globaaleille satelliittipaikannusjärjestelmille (GPS, GLONASS, Galileo, BeiDou). Puhekielen "GPS" tarkoittaa usein GNSS:ää, mutta teknisessä tekstissä GNSS on oikea termi.
+
+**Oppitunnit:** [`space-gnss-vs-gps`](/docs/topics/space#space-gnss-vs-gps), [`space-gnss-galileo`](/docs/topics/space#space-gnss-galileo)
+
 ### GPG {#gpg}
 
 **GNU Privacy Guard** — kryptografinen allekirjoitus- ja salaustyökalu. APT-pakettihallinnan `trusted.gpg.d/`-avain varmistaa, että repositorion paketit ovat luotettavalta julkaisijalta; ilman avainta APT varoittaa allekirjoitusvirheestä.
 
 **Oppitunnit:** [`apt-repository-add`](/docs/topics/linux#apt-repository-add)
+
+### GPS {#gps}
+
+**Global Positioning System** — Yhdysvaltojen globaali satelliittipaikannusjärjestelmä (MEO-konstellaatio, WGS84-datumi). Yksi GNSS-järjestelmistä; siviilisignaalit ovat avoimesti käytettävissä.
+
+**Oppitunnit:** [`space-gnss-gps-operator`](/docs/topics/space#space-gnss-gps-operator), [`space-datum-wgs84`](/docs/topics/space#space-datum-wgs84)
 
 ### GPU {#gpu}
 
@@ -776,6 +824,12 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **Oppitunnit:** [`b03-js-types-number-precision`](/docs/topics/javascript#b03-js-types-number-precision), [`b04-js-types-number-precision`](/docs/topics/javascript#b04-js-types-number-precision), [`b07-js-types-nan`](/docs/topics/javascript#b07-js-types-nan), [`b12-js-types-nan-check`](/docs/topics/javascript#b12-js-types-nan-check), [`exp-js-types-bigint-json`](/docs/topics/javascript#exp-js-types-bigint-json)
 
+### IGS {#igs}
+
+**International GNSS Service** — globaali yhteistyöverkko, joka tuottaa tarkkoja satelliittiratoja, kelloja ja muita tuotteita (sp3, clk, ANTEX) tieteelle ja PPP-paikannukseen.
+
+**Oppitunnit:** [`space-app-igs`](/docs/topics/space#space-app-igs), [`space-pos-ppp`](/docs/topics/space#space-pos-ppp)
+
 ### IIFE {#iife}
 
 **Immediately Invoked Function Expression** — heti suoritettava JavaScript-funktioilmaisu: `(function() { ... })()`. Vanhassa ES5-koodissa IIFE loi silmukan jokaiselle iteraatiolle erillisen sulkeuman; modernissa JS:ssä `let` silmukamuuttujana korvaa tarpeen.
@@ -841,6 +895,12 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 **Internet Service Provider** — internet-palveluntarjoaja. Reititysongelmat ISP:n verkon puolella näkyvät `traceroute`-tulosteessa katkoksena tai suurina viiveinä ISP:n solmuissa. ICMP-vastauksen puuttuminen ei aina tarkoita ISP-ongelmaa — monet reitittimet hylkäävät ICMP:n palomuurisäännöillä.
 
 **Oppitunnit:** [`b08-linux-network-traceroute`](/docs/topics/linux#b08-linux-network-traceroute), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub)
+
+### ITRF {#itrf}
+
+**International Terrestrial Reference Frame** — kansainvälinen, ajan myötä päivittyvä maakiinnitteinen referenssikehys (esim. ITRF2020). WGS84-realisaatiot pidetään lähellä ITRF:ää; tarkkuusgeodesiassa frame + epoch dokumentoidaan.
+
+**Oppitunnit:** [`space-datum-itrf`](/docs/topics/space#space-datum-itrf)
 
 ### IWYU {#iwyu}
 
@@ -950,6 +1010,12 @@ SQL-ikkunafunktio, joka palauttaa seuraavan rivin arvon määritellyn järjestyk
 
 **Oppitunnit:** [`sqd-lag-mom-comparison`](/docs/topics/postgres#sqd-lag-mom-comparison), [`sqd-lead-future-row`](/docs/topics/postgres#sqd-lead-future-row)
 
+### LEO {#leo}
+
+**Low Earth Orbit** — matala kiertorata (tyypillisesti alle ~2000 km). ISS ja monet kuva-/IoT-satelliitit ovat LEO:ssa; GNSS-konstellaatiot käyttävät korkeampaa MEO-rataa.
+
+**Oppitunnit:** [`space-orbit-meo-gnss`](/docs/topics/space#space-orbit-meo-gnss)
+
 ### LLM/IDE {#llm-ide}
 
 **LLM/IDE** — **Large Language Model** (tekoälymallipohjainen koodiavustaja) ja **Integrated Development Environment** (kehitysympäristö, esim. VS Code, CLion). `compile_commands.json` antaa sekä LLM:lle että IDE:lle tarkan tiedon kääntäjälipuista ja include-poluista jokaiselle `.cpp`-tiedostolle.
@@ -1021,6 +1087,12 @@ iptables/nftables NAT-toiminto, joka korvaa lähtevän paketin lähde-IP:n autom
 **Megabyte** — 1 024 kilotavua. PostgreSQLin `shared_buffers`-oletusarvo on usein 128 MB; tuotantopalvelimella suositellaan noin 25 % käytettävissä olevasta RAM-muistista.
 
 **Oppitunnit:** [`b02-pg-config-shared-14`](/docs/topics/postgres#b02-pg-config-shared-14), [`b03-js-modules-worker-postmessage`](/docs/topics/javascript#b03-js-modules-worker-postmessage), [`b05-pg-config-shared-buffers`](/docs/topics/postgres#b05-pg-config-shared-buffers), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b08-js-modules-dynamic-import`](/docs/topics/javascript#b08-js-modules-dynamic-import), [`b09-docker-dockerignore-build`](/docs/topics/docker#b09-docker-dockerignore-build), [`b09-js-async-event-loop-block`](/docs/topics/javascript#b09-js-async-event-loop-block), [`b09-qt-thread-qthreadpool`](/docs/topics/qt#b09-qt-thread-qthreadpool), [`b11-cpp-iwyu-cleanup`](/docs/topics/cpp#b11-cpp-iwyu-cleanup), [`exp-docker-build-multistage`](/docs/topics/docker#exp-docker-build-multistage), [`exp-js-runtime-memory-detached`](/docs/topics/javascript#exp-js-runtime-memory-detached), [`exp-pg-config-shared-buffers`](/docs/topics/postgres#exp-pg-config-shared-buffers)
+
+### MEO {#meo}
+
+**Medium Earth Orbit** — keskikorkea kiertorata (~19 000–23 000 km GNSS:lle). GPS-, Galileo- ja GLONASS-satelliitit sijoitetaan MEO:lle globaalin peiton ja kohtuullisen signaaliviiveen vuoksi.
+
+**Oppitunnit:** [`space-orbit-meo-gnss`](/docs/topics/space#space-orbit-meo-gnss), [`space-orbit-geo-comms`](/docs/topics/space#space-orbit-geo-comms)
 
 ### MIME {#mime}
 
@@ -1154,6 +1226,12 @@ CppCoreGuidelines NL (Naming and layout rules) -osio sisältää nimeämiskäyt�
 
 **Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b04-linux-network-route-metric`](/docs/topics/linux#b04-linux-network-route-metric), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub), [`b05-linux-network-resolv-search`](/docs/topics/linux#b05-linux-network-resolv-search), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`exp-linux-network-nmcli-down`](/docs/topics/linux#exp-linux-network-nmcli-down), [`linux-nmcli`](/docs/topics/linux#linux-nmcli), [`b12-linux-dbus-polkit-deny`](/docs/topics/linux#b12-linux-dbus-polkit-deny)
 
+### NMEA {#nmea}
+
+**National Marine Electronics Association** 0183 — tekstimuotoinen lausestandardi GNSS-paikkatiedon siirtoon (esim. `$GPGGA`, `$GPRMC`). Helppo parsia; survey-tarkkuudessa käytetään usein valmistajan binääriä tai RTCM/RINEX-ketjua.
+
+**Oppitunnit:** [`space-sig-nmea`](/docs/topics/space#space-sig-nmea)
+
 ### NOFILE {#nofile}
 
 Systemd-palveluyksikön `LimitNOFILE`-asetus määrittää prosessin avointen tiedostokuvainten (file descriptor) enimmäismäärän. Verkkopalvelimilla oletusraja (1024) on usein liian alhainen — `LimitNOFILE=65536` asetetaan yksikkökohtaisesti palvelutiedostossa, ei `/etc/security/limits.conf`-tiedostossa.
@@ -1195,6 +1273,12 @@ SQL-ikkunafunktio, joka jakaa rivit N tasaiseen ryhmään (bucket) ja palauttaa 
 **Network Time Protocol** — verkkoprotokolla kellonajan synkronointiin. systemd-journald voi merkitä lokit epäluotettavilla aikaleimauilla, jos NTP ei ole käytössä tai kello hyppii. `timedatectl status` näyttää NTP-synkronoinnin tilan; `systemd-timesyncd` on Linuxin kevyt NTP-asiakas.
 
 **Oppitunnit:** [`b06-linux-journalctl-verify`](/docs/topics/linux#b06-linux-journalctl-verify), [`b12-js-runtime-performance-now`](/docs/topics/javascript#b12-js-runtime-performance-now), [`b12-linux-tcp-udp-handshake`](/docs/topics/linux#b12-linux-tcp-udp-handshake), [`systemd-after-before`](/docs/topics/linux#systemd-after-before)
+
+### NTRIP {#ntrip}
+
+**Networked Transport of RTCM via Internet Protocol** — protokolla RTK/DGPS-korjausdatan siirtoon IP-verkon yli casterilta vastaanottimelle (mountpointit).
+
+**Oppitunnit:** [`space-pos-cors-ntrip`](/docs/topics/space#space-pos-cors-ntrip)
 
 ### NUL {#nul}
 
@@ -1370,6 +1454,12 @@ HTTP **POST** — pyyntömetodi, jolla lähetetään dataa palvelimelle (lomake,
 
 **Oppitunnit:** [`apt-repository-add`](/docs/topics/linux#apt-repository-add)
 
+### PPP {#ppp}
+
+**Precise Point Positioning** — tarkkuuspaikannus yhdellä vastaanottimella käyttäen tarkkoja rata-/kellotuotteita (IGS, Galileo HAS). Ei vaadi paikallista tukiasemaa kuten RTK, mutta konvergenssi kestää usein minuutteja.
+
+**Oppitunnit:** [`space-pos-ppp`](/docs/topics/space#space-pos-ppp)
+
 ### PR {#pr}
 
 **Pull Request** — pyyntö yhdistää koodimuutos päähaaraan (GitHub) tai merge request (GitLab). CI-pipeline ajaa testit ja lint-tarkistukset PR:n avautuessa; hyväksyntäkierros varmistaa laadun ennen mergeä.
@@ -1484,6 +1574,12 @@ systemd-notify-protokollan viesti `READY=1`, jonka palvelu lähettää `sd_notif
 
 **Oppitunnit:** [`exp-qt-shaders-glsl-version`](/docs/topics/qt#exp-qt-shaders-glsl-version)
 
+### RINEX {#rinex}
+
+**Receiver Independent Exchange Format** — standardimuoto GNSS-havainto- ja navigointidatan vaihtoon jälkikäsittelyä varten (RTKLIB, Bernese ym.).
+
+**Oppitunnit:** [`space-pos-rinex`](/docs/topics/space#space-pos-rinex)
+
 ### RLS {#rls}
 
 **Row Level Security** — PostgreSQLin rivitason pääsynhallinta, joka suodattaa rivit automaattisesti käyttäjäroolin tai istuntomuuttujan perusteella. `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` ja `CREATE POLICY` määrittävät suodatussäännöt — vahva kerros multi-tenant-arkkitehtuurissa, mutta ei korvaa saraketason maskausta.
@@ -1532,6 +1628,18 @@ TCP-yhteyden katkaisusignaalit: `FIN` sulkee yhteyden siististi neljällä paket
 
 **Oppitunnit:** [`b07-linux-network-tcpdump`](/docs/topics/linux#b07-linux-network-tcpdump)
 
+### RTCM {#rtcm}
+
+**Radio Technical Commission for Maritime Services** — binääriviestiperhe differentiaalisiin/RTK-korjauksiin. Moderni RTK käyttää RTCM 3.x MSM-viestejä; NTRIP kuljettaa niitä internetissä.
+
+**Oppitunnit:** [`space-app-rtcm`](/docs/topics/space#space-app-rtcm), [`space-pos-rtk`](/docs/topics/space#space-pos-rtk)
+
+### RTK {#rtk}
+
+**Real-Time Kinematic** — kantoaaltovaiheeseen perustuva differentiaalinen GNSS-paikannus tukiasemaan nähden. Integer ambiguity -ratkaisun (FIXED) jälkeen tyypillisesti senttitaso lyhyillä baselineilla.
+
+**Oppitunnit:** [`space-pos-rtk`](/docs/topics/space#space-pos-rtk), [`space-pos-ambiguity`](/docs/topics/space#space-pos-ambiguity)
+
 ### RTT {#rtt}
 
 **Round-Trip Time** — paketin edestakaiseen matkaan kuluva aika verkossa. `ss -ti` paljastaa socket-tason RTT:n, retransmit-laskurit ja `cwnd`-arvon suoraan kerneliltä. Korkea RTT tai kasvava retransmit-laskuri viittaa verkon ylikuormitukseen tai pakettihäviöön.
@@ -1573,6 +1681,12 @@ Amazon S3 -yhteensopiva objektivarasto-API. S3-protokolla on de facto standardi 
 **Static Application Security Testing** — staattinen tietoturva-analyysi lähdekoodille ilman suoritusta. CI-putkeen integroitu SAST-skanneri (esim. SonarQube, Semgrep) löytää injektiohaavoittuvuudet ja insecure API -käytöt automaattisesti. SAST täydentää dependency-skannausta ja dynaamista DAST-testausta.
 
 **Oppitunnit:** [`exp-scrum-dod-security-review`](/docs/topics/scrum#exp-scrum-dod-security-review)
+
+### SBAS {#sbas}
+
+**Satellite-Based Augmentation System** — täydennysjärjestelmä, jossa GEO-satelliitit lähettävät korjaus- ja eheysviestejä (esim. EGNOS Euroopassa, WAAS USA:ssa). Parantaa SPP-tarkkuutta ja turvallisuuskriittistä saatavuutta.
+
+**Oppitunnit:** [`space-gnss-sbas-egnos`](/docs/topics/space#space-gnss-sbas-egnos)
 
 ### SBOM {#sbom}
 
@@ -1970,6 +2084,12 @@ PostgreSQL-funktio, joka muuntaa taulukon (`ARRAY`) erillisiksi riveiksi. `SELEC
 
 **Oppitunnit:** [`rust-ownership-string-str`](/docs/topics/rust#rust-ownership-string-str)
 
+### UTM {#utm}
+
+**Universal Transverse Mercator** — maailmanlaajuinen poikittaisen Mercatorin vyöhykejärjestelmä (6° vyöhykkeet, metripohjaiset tasokoordinaatit). Suomessa käytetään myös kansallista ETRS-TM35FIN-varianttia.
+
+**Oppitunnit:** [`space-map-utm`](/docs/topics/space#space-map-utm), [`space-map-tm35fin`](/docs/topics/space#space-map-tm35fin)
+
 ### UUID {#uuid}
 
 **Universally Unique Identifier** — 128-bittinen standardimuotoinen yksilöivä tunniste (RFC 4122, esim. `550e8400-e29b-41d4-a716-446655440000`). Provisioning-skripteissä UUID-pohjainen hostname estää Avahi-nimiristiriidat kloonatuilla laitteilla; `nmcli`-automaatiossa UUID on luotettavampi profiiliviite kuin nimi.
@@ -2095,6 +2215,12 @@ TCP-yhteyden odotustila; tyypillisesti `CLOSE-WAIT`, jossa etäpää on sulkenut
 **Web Content Accessibility Guidelines** — W3C:n saavutettavuusstandardi verkkosisällölle (tasot A, AA, AAA). Qt-widgetien näppäimistönavigoinnin oikeellisuus (tab-järjestys, focus-indikaattori) on WCAG 2.1 -vaatimus; testaa jokainen lomake-näkymä manuaalisesti ilman hiirtä.
 
 **Oppitunnit:** [`b06-qt-widgets-tab-order`](/docs/topics/qt#b06-qt-widgets-tab-order)
+
+### WGS84 {#wgs84}
+
+**World Geodetic System 1984** — GPS:n käyttämä maailmanlaajuinen geodeettinen datumi ja ellipsoidi (a = 6 378 137 m). Maantieteellinen CRS usein EPSG:4326; realisaatiot pysyvät lähellä ITRF:ää.
+
+**Oppitunnit:** [`space-datum-wgs84`](/docs/topics/space#space-datum-wgs84), [`space-datum-wgs84-params`](/docs/topics/space#space-datum-wgs84-params)
 
 ### WIP {#wip}
 

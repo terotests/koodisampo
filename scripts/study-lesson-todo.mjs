@@ -25,7 +25,7 @@ const mdOut = path.join(lessonsDir, "TODO.md");
 
 const DOMAIN_ORDER = [
   "cpp", "javascript", "postgres", "docker", "linux", "qt", "scrum",
-  "git", "backend", "security", "robotframework", "rust",
+  "git", "backend", "security", "robotframework", "rust", "space",
 ];
 
 const SKIP_MD = new Set(["README", "TODO", "BATCH-pg-config"]);

@@ -13,6 +13,7 @@ export const PLAYER_SPECIALTY_OPTIONS = [
   { id: "backend", label: "Backend / API" },
   { id: "security", label: "Turvallisuus" },
   { id: "robotframework", label: "Robot Framework" },
+  { id: "space", label: "Avaruustekniikka / GNSS" },
 ];
 
 export function specialtyLabel(id) {

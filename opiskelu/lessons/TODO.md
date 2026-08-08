@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1382 / 1394** valmis (**99.1 %**).
+**1444 / 1456** valmis (**99.2 %**).
 
 ## Domain-yhteenveto
 
@@ -20,6 +20,7 @@
 | Turvallisuus | 35 | 35 | 100 |
 | Robot Framework | 21 | 21 | 100 |
 | Rust | 74 | 74 | 100 |
+| Avaruustekniikka | 62 | 62 | 100 |
 | kids | 0 | 12 | 0 |
 
 ## Kaikki aiheet
@@ -1864,6 +1865,105 @@
 | ✅ | 2 | `rust-types-result` | Tiedoston avaus voi epäonnistua. Mikä tyyppi mallintaa onnistumisen tai… |
 | ✅ | 2 | `rust-types-struct-update` | Luot uuden struct-instanssin kopioimalla vanhan mutta vaihdat yhden ken… |
 | ✅ | 2 | `rust-types-tuple-struct` | Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavallise… |
+
+### Avaruustekniikka (62/62)
+
+#### Sovellukset ja rajapinnat `space-applications` (10/10)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `space-app-accuracy-classes` | Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK f… |
+| ✅ | 4 | `space-app-antenna-pco` | Miksi tarkkuus-GNSS:ssä antennin phase center (PCO/PCV) pitää tuntea? |
+| ✅ | 2 | `space-app-assisted` | Mitkä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle? |
+| ✅ | 2 | `space-app-elevation-mask` | Miksi GNSS-vastaanottimissa käytetään elevaatiomaskia (esim. 10–15°)? |
+| ✅ | 3 | `space-app-igs` | Mikä on IGS:n rooli tarkkuus-GNSS:ssä? |
+| ✅ | 1 | `space-app-indoor-limit` | Miksi tavallinen GNSS toimii heikosti syvällä sisätiloissa? |
+| ✅ | 3 | `space-app-jamming` | Mikä on GNSS-jammingin ja spoofingin ero? |
+| ✅ | 3 | `space-app-rtcm` | Mikä on RTCM-korjausviesti GNSS:ssä? |
+| ✅ | 3 | `space-app-time-gps-utc` | Mikä ero on GPS-ajan ja UTC:n välillä? |
+| ✅ | 2 | `space-app-ttff` | Mitkä tarkoittaa TTFF GNSS-vastaanottimessa? |
+
+#### Geoidit, ellipsoidit ja WGS84 `space-datums` (11/11)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `space-datum-ecef` | Mitkä ovat ECEF-koordinaatit? |
+| ✅ | 2 | `space-datum-ellipsoid` | Mikä on referenssiellipsoidi geodesiassa? |
+| ✅ | 3 | `space-datum-enu` | Mihin ENU-koordinaatistoa käytetään GNSS-/inertiasovelluksissa? |
+| ✅ | 3 | `space-datum-etrs89` | Miksi Suomessa virallisessa paikkatiedossa käytetään usein ETRS89:ää ei… |
+| ✅ | 2 | `space-datum-geoid` | Mikä on geoidi? |
+| ✅ | 3 | `space-datum-grs80` | Miten GRS80 liittyy WGS84-ellipsoidiin? |
+| ✅ | 4 | `space-datum-itrf` | Mikä on ITRF geodesiassa? |
+| ✅ | 3 | `space-datum-orthometric` | Mikä ero on ellipsoidikorkeudella h ja ortometrisella korkeudella H? |
+| ✅ | 3 | `space-datum-undulation` | Mitä geoidiundulaatio N tarkoittaa? |
+| ✅ | 2 | `space-datum-wgs84` | Mikä on WGS84? |
+| ✅ | 3 | `space-datum-wgs84-params` | Mikä on WGS84-ellipsoidin puolisuuren akselin (a) likimääräinen pituus? |
+
+#### GNSS-järjestelmät `space-gnss` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `space-gnss-almanac-ephemeris` | Mikä ero on almanakalla ja efemeridillä GNSS:ssä? |
+| ✅ | 2 | `space-gnss-beidou` | Mikä on BeiDou? |
+| ✅ | 2 | `space-gnss-galileo` | Mikä on Galileo-järjestelmä? |
+| ✅ | 2 | `space-gnss-glonass` | Mikä erottaa klassisen GLONASS-signaalin GPS:stä taajuuksien jaon suhte… |
+| ✅ | 1 | `space-gnss-gps-operator` | Kuka operoi GPS-järjestelmää? |
+| ✅ | 3 | `space-gnss-qzss-navic` | Mitä yhteistä on QZSS:llä ja NavIC:lla verrattuna GPS:ään? |
+| ✅ | 3 | `space-gnss-sbas-egnos` | Mikä on EGNOS? |
+| ✅ | 1 | `space-gnss-vs-gps` | Mikä on ero GPS:n ja GNSS:n välillä? |
+
+#### Kartat ja projektiot `space-maps` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `space-map-epsg` | Mikä on EPSG-koodi paikkatiedossa? |
+| ✅ | 3 | `space-map-kkj` | Mikä on KKJ Suomen paikkatiedon historiassa? |
+| ✅ | 2 | `space-map-mercator-property` | Minkä ominaisuuden klassinen Mercator-projektio säilyttää? |
+| ✅ | 2 | `space-map-projection` | Miksi karttaprojektioita tarvitaan? |
+| ✅ | 3 | `space-map-scale-factor` | Mitä tarkoittaa UTM/TM-projektion mittakaavakerroin 0,9996 keskimeridia… |
+| ✅ | 2 | `space-map-tm35fin` | Mikä on ETRS-TM35FIN (EPSG:3067)? |
+| ✅ | 2 | `space-map-utm` | Mikä on UTM-koordinaatisto? |
+| ✅ | 3 | `space-map-web-mercator` | Mikä on Web Mercator (EPSG:3857) ja mikä sen sudenkuoppa? |
+
+#### Paikannusmenetelmät `space-positioning` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `space-pos-ambiguity` | Mitä tarkoittaa integer ambiguity resolution RTK:ssa? |
+| ✅ | 3 | `space-pos-baseline` | Mitkä tarkoittaa baseline differentiaalisessa GNSS:ssä? |
+| ✅ | 3 | `space-pos-cors-ntrip` | Mikä on NTRIP RTK-käytössä? |
+| ✅ | 3 | `space-pos-dgps` | Miten DGPS parantaa paikannusta? |
+| ✅ | 4 | `space-pos-ppp` | Miten PPP (Precise Point Positioning) eroaa RTK:sta? |
+| ✅ | 3 | `space-pos-rinex` | Mihin RINEX-tiedostoja käytetään? |
+| ✅ | 3 | `space-pos-rtk` | Mikä on RTK-paikannuksen ydinidea? |
+| ✅ | 2 | `space-pos-spp` | Mitä tarkoittaa SPP (Single Point Positioning) GNSS:ssä? |
+
+#### Satelliitit ja radat `space-satellites` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `space-orbit-geo-comms` | Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS e… |
+| ✅ | 3 | `space-orbit-inclination-gps` | Miksi GPS-ratojen inklinaatio on noin 55° eikä 0° (päiväntasaaja)? |
+| ✅ | 3 | `space-orbit-kepler-elements` | Mitä Keplerin rataelementit kuvaavat satelliitin yhteydessä? |
+| ✅ | 2 | `space-orbit-meo-gnss` | Mille kiertoradalle tyypilliset GNSS-satelliitit (GPS, Galileo) sijoite… |
+| ✅ | 2 | `space-orbit-period-gps` | Kuinka kauan GPS-satelliitilla kestää tyypillisesti yksi maan kierto (s… |
+| ✅ | 2 | `space-sat-atomic-clock` | Miksi GNSS-satelliiteissa on atomikelloja? |
+| ✅ | 2 | `space-sat-constellation` | Mitä tarkoittaa GNSS-konstellaatio? |
+| ✅ | 4 | `space-sat-relativity` | Miten suhteellisuusteoria vaikuttaa GPS-kelloihin käytännössä? |
+
+#### Signaalit ja vastaanotto `space-signals` (9/9)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `space-sig-carrier-phase` | Miksi kantoaaltovaihe (carrier phase) mahdollistaa senttitason paikannu… |
+| ✅ | 2 | `space-sig-dop` | Mitä DOP (Dilution of Precision) kuvaa? |
+| ✅ | 3 | `space-sig-iono` | Miten ionosfääri vaikuttaa GNSS-signaaliin? |
+| ✅ | 3 | `space-sig-l1-l5` | Miksi modernit vastaanottimet käyttävät useita taajuuksia (esim. L1 + L… |
+| ✅ | 3 | `space-sig-multipath` | Mikä on multipath-virhe GNSS-paikannuksessa? |
+| ✅ | 2 | `space-sig-nmea` | Mikä on NMEA 0183 GNSS-laitteissa? |
+| ✅ | 2 | `space-sig-pseudorange` | Mitä tarkoittaa pseudomatka (pseudorange) GNSS:ssä? |
+| ✅ | 2 | `space-sig-trilateration` | Miksi 3D-GNSS-paikkaan tarvitaan vähintään neljä satelliittia, ei kolme? |
+| ✅ | 3 | `space-sig-tropo` | Mikä on troposfääriviive GNSS:ssä? |
 
 ### kids (0/12)
 

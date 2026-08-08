@@ -20,6 +20,7 @@ export const DOMAIN_LABELS = {
   security: "Turvallisuus",
   robotframework: "Robot Framework",
   rust: "Rust",
+  space: "Avaruustekniikka",
 };
 
 export const CHAPTER_LABELS = {
@@ -95,6 +96,13 @@ export const CHAPTER_LABELS = {
   "rust-traits": "Rust traitit",
   "rust-async": "Rust async",
   "rust-testing": "Rust testaus",
+  "space-satellites": "Satelliitit ja radat",
+  "space-gnss": "GNSS-järjestelmät",
+  "space-signals": "Signaalit ja vastaanotto",
+  "space-positioning": "Paikannusmenetelmät",
+  "space-datums": "Geoidit, ellipsoidit ja WGS84",
+  "space-maps": "Kartat ja projektiot",
+  "space-applications": "Sovellukset ja rajapinnat",
 };
 
 /** Repo/dokumentaatioviite: domain/chapter/id */

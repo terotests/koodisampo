@@ -17,7 +17,7 @@ const lessonsDir = path.join(root, "opiskelu/lessons");
 
 const DOMAIN_ORDER = [
   "cpp", "javascript", "postgres", "docker", "linux", "qt", "scrum",
-  "git", "backend", "security", "robotframework", "rust",
+  "git", "backend", "security", "robotframework", "rust", "space",
 ];
 
 /** Ei julkaista opiskelusivustolle toistaiseksi (esim. lapsimoodin kysymykset). */
