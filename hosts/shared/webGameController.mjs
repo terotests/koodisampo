@@ -499,6 +499,9 @@ function serializeQuizFeedback(fb) {
     selectedN: fb.selectedN,
     correct: fb.correct,
     reaction: fb.reaction,
+    teaching: fb.teaching || "",
+    lessonUrl: fb.lessonUrl || "",
+    versions: Array.isArray(fb.versions) ? fb.versions : [],
   };
 }
 
@@ -626,6 +629,7 @@ function buildEncounterSnapshot(base) {
       payload.quiz = {
         greeting: quiz.greeting,
         prompt: quiz.question.prompt ?? "",
+        versions: Array.isArray(quiz.question.versions) ? quiz.question.versions : [],
         choices: quiz.question.choices.map((c, i) => ({
           n: i + 1,
           text: c.text,
@@ -670,6 +674,7 @@ function serializeOverlay(ov) {
       karmaHint: ov.correct ? "" : "",
       marked: ov.marked === true,
       lessonUrl: ov.lessonUrl || "",
+      versions: Array.isArray(ov.versions) ? ov.versions : [],
     };
   }
   if (ov.type === "aiStudy") {
@@ -683,6 +688,7 @@ function serializeOverlay(ov) {
       solutionText: ov.solutionText ?? "",
       solutionMarkdown: ov.solutionMarkdown ?? "",
       solutionSource: ov.solutionSource ?? "stub",
+      versions: Array.isArray(ov.versions) ? ov.versions : [],
     };
   }
   if (ov.type === "banter") {
@@ -1120,6 +1126,7 @@ function handleQuizKey(key) {
       solutionText: solution.choiceText,
       solutionMarkdown: solution.markdown,
       solutionSource: solution.source,
+      versions: Array.isArray(quiz.question.versions) ? quiz.question.versions : [],
     };
     persistWeb();
     return;
@@ -1154,6 +1161,7 @@ function handleQuizKey(key) {
     questionId: quiz.question.id,
     quizMeta: questionMetaFromQuiz(quiz, correct, teaching),
     lessonUrl: lessonUrl(quiz.question, { origin: "https://terotests.github.io" }),
+    versions: Array.isArray(quiz.question.versions) ? quiz.question.versions : [],
   };
 }
 

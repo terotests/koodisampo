@@ -78,6 +78,7 @@ Nykyisten kenttien lisäksi suositeltu:
   "studyNotes": "Valinnainen pidempi selitys AI-näkymään.",
   "featureId": "cpp:shared-ptr",
   "featurePoints": 4,
+  "versions": ["C++17"],
   "tags": ["raii", "ownership"]
 }
 ```
@@ -91,6 +92,7 @@ Nykyisten kenttien lisäksi suositeltu:
 | `audiences` | kyllä | `coworker`, `guru`, `security`, `ceo`, `project-lead`, `secretary`, `hostile` |
 | `sourceRef` | suositus → pakko 100+ kpl | Polku lähderekisterissä tai repo-polku |
 | `sourceUrl` | suositus | Suora linkki lukijalle / AI-opetukseen |
+| `versions` | valinnainen | Kielistandardi / framework-versio (esim. `C++17`, `ES2020`, `Qt 6`). Näkyy kysymyksessä, vastauksessa ja oppitunnilla. Pankin `defaultVersions` periytyy jos kysymyksellä ei ole omaa listaa. |
 
 `buildAiStudyText` voidaan päivittää näyttämään `sourceUrl` jos `bankSource` puuttuu.
 

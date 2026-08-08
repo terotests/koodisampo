@@ -70,6 +70,14 @@ for (const q of qs) {
     warnings.push(`${q.id}: unusual audiences`);
   }
 
+  if (q.versions !== undefined) {
+    if (!Array.isArray(q.versions)) {
+      errors.push(`${q.id}: versions must be an array of strings`);
+    } else if (q.versions.some((v) => typeof v !== "string" || !String(v).trim())) {
+      errors.push(`${q.id}: versions entries must be non-empty strings`);
+    }
+  }
+
   const norm = q.prompt?.toLowerCase().replace(/\s+/g, " ").trim();
   if (norm) {
     if (!prompts.has(norm)) prompts.set(norm, []);

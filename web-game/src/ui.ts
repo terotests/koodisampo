@@ -337,11 +337,25 @@ export function mountGameUI(game: WebGame) {
       }
     }
 
+    function normalizeVersionTags(raw: unknown): string[] {
+      if (!Array.isArray(raw)) return [];
+      return raw.map((v) => String(v ?? "").trim()).filter(Boolean);
+    }
+
+    function versionTagsHtml(raw: unknown): string {
+      const versions = normalizeVersionTags(raw);
+      if (!versions.length) return "";
+      return `<div class="version-tags" aria-label="Kieliversio">${versions
+        .map((v) => `<span class="version-tag">${esc(v)}</span>`)
+        .join("")}</div>`;
+    }
+
     function renderStudyListEntry(entry: {
       questionId?: string;
       prompt?: string;
       domain?: string;
       chapter?: string;
+      versions?: string[];
       entityName?: string;
       at?: number;
     }, index: number) {
@@ -353,6 +367,7 @@ export function mountGameUI(game: WebGame) {
       let html = `<div style="margin:10px 0 14px">`;
       html += `<div><b>[${index + 1}]</b> ${esc(entry.prompt)}${esc(who)}</div>`;
       html += `<div style="color:#8b949e;font-size:0.92em;margin-top:4px">${esc(tag)} — ${esc(formatStudyEntryDate(entry.at ?? 0))}</div>`;
+      html += versionTagsHtml(entry.versions);
       if (entry.questionId) {
         html += `<div style="color:#8b949e;font-size:0.92em;margin-top:2px">→ ${esc(entry.questionId)}</div>`;
       }
@@ -504,6 +519,7 @@ export function mountGameUI(game: WebGame) {
         const mark = ov.correct ? "✓ OIKEIN" : "✗ VÄÄRIN";
         html += `<div class="overlay-title ${cls}">${mark}</div>`;
         html += `<div class="greeting">${esc(ov.reaction)}</div>`;
+        html += versionTagsHtml(ov.versions);
         html += `<div class="teaching"><h4>── Selitys ──</h4>${esc(ov.teaching)}</div>`;
         if (ov.lessonUrl) {
           html += `<div style="margin-top:12px"><a href="${esc(ov.lessonUrl)}" target="_blank" rel="noopener" style="color:#58a6ff">📖 Lue oppitunti (GitHub Pages)</a></div>`;
@@ -530,6 +546,7 @@ export function mountGameUI(game: WebGame) {
         html += `<div class="overlay-title ai">═══ AI-opetus (ChatCorp™) ═══</div>`;
         html += `<div class="stats" style="margin-bottom:8px">Palkka: ${esc(formatSalary(state.salary))} <span style="color:#f85149">−5 €</span></div>`;
         html += `<div><span class="entity-name">${esc(ov.entityName)}</span> <span style="color:#8b949e">katselee sivuun kun kaivat puhelimen.</span></div>`;
+        html += versionTagsHtml(ov.versions);
         if (ov.solutionChoiceN > 0 || ov.solutionText || ov.solutionMarkdown) {
           html += `<div class="quiz-ai-solution">`;
           html += `<h4>── Ratkaisu ──</h4>`;
@@ -688,7 +705,14 @@ export function mountGameUI(game: WebGame) {
           }
         }
         html += `<div class="greeting">${esc(q.greeting)}</div>`;
-        const fb = state.quizFeedback as { selectedN?: number; correct?: boolean; reaction?: string } | undefined;
+        html += versionTagsHtml(q.versions);
+        const fb = state.quizFeedback as {
+          selectedN?: number;
+          correct?: boolean;
+          reaction?: string;
+          teaching?: string;
+          versions?: string[];
+        } | undefined;
         for (const c of q.choices) {
           let extra = "";
           if (fb?.selectedN === c.n) {
@@ -703,6 +727,7 @@ export function mountGameUI(game: WebGame) {
         }
         if (fb?.reaction && quizFeedbackRevealed) {
           html += `<div class="quiz-feedback-reaction">${esc(fb.reaction)}</div>`;
+          html += versionTagsHtml(fb.versions ?? q.versions);
         }
         if (!fb) {
           html += `<div class="divider">── tai ──</div>`;

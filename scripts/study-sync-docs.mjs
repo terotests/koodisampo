@@ -70,10 +70,22 @@ function demoteLessonSectionHeadings(md) {
   return md.replace(/^## (.+)$/gm, '<p class="lesson-section-heading">$1</p>');
 }
 
+function versionMetaSuffix(q) {
+  const versions = Array.isArray(q.versions)
+    ? q.versions.map((v) => String(v).trim()).filter(Boolean)
+    : [];
+  if (!versions.length) return "";
+  return ` · ${versions.map((v) => `\`${v}\``).join(" · ")}`;
+}
+
+function lessonMetaLine(q) {
+  return `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`${versionMetaSuffix(q)}*`;
+}
+
 function buildStubSection(q) {
   const correct = (q.choices || []).find((c) => c.correct);
   const lines = [
-    `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
+    lessonMetaLine(q),
     "",
     "**Oikea vastaus:**",
     "",
@@ -100,7 +112,7 @@ function buildManualSection(q, body) {
   content = demoteLessonSectionHeadings(content);
   content = linkGlossaryTerms(content);
   const lines = [
-    `*Vaikeus ${q.difficulty} · kysymys \`${q.id}\`*`,
+    lessonMetaLine(q),
     "",
     content,
   ];

@@ -14,12 +14,16 @@ function normalizeEntry(raw, defaults = {}) {
   if (!raw || typeof raw !== "object") return null;
   const questionId = String(raw.questionId || "");
   if (!questionId) return null;
+  const versions = Array.isArray(raw.versions)
+    ? raw.versions.map((v) => String(v).trim()).filter(Boolean)
+    : [];
   return {
     questionId,
     prompt: String(raw.prompt || ""),
     domain: String(raw.domain || ""),
     chapter: String(raw.chapter || ""),
     featureId: String(raw.featureId || ""),
+    versions,
     entityName: String(raw.entityName || ""),
     at: typeof raw.at === "number" ? raw.at : Date.now(),
     correct: raw.correct === true,
@@ -50,12 +54,16 @@ export function normalizeStudyBacklog(raw) {
 export function questionMetaFromQuiz(quiz, correct, teaching = "") {
   const q = quiz?.question ?? {};
   const entity = quiz?.entity ?? {};
+  const versions = Array.isArray(q.versions)
+    ? q.versions.map((v) => String(v).trim()).filter(Boolean)
+    : [];
   return {
     questionId: q.id || "",
     prompt: q.prompt || "",
     domain: q.domain || "",
     chapter: q.chapter || "",
     featureId: q.featureId || "",
+    versions,
     entityName: entity.name || entity.id || "",
     correct: correct === true,
     teaching: teaching || q.correctFeedback || q.wrongFeedback || "",
@@ -110,10 +118,14 @@ function formatWhen(ts) {
 
 function formatEntryLine(entry, i, options = {}) {
   const tag = [entry.domain, entry.chapter].filter(Boolean).join("/") || "yleinen";
+  const versions = Array.isArray(entry.versions)
+    ? entry.versions.map((v) => String(v).trim()).filter(Boolean).join(" · ")
+    : "";
   const who = entry.entityName ? ` (${entry.entityName})` : "";
+  const meta = versions ? `${tag} · ${versions}` : tag;
   const lines = [
     `  [${i + 1}] ${entry.prompt}${who}`,
-    `      ${tag} — ${formatWhen(entry.at)}`,
+    `      ${meta} — ${formatWhen(entry.at)}`,
   ];
   if (entry.questionId) {
     lines.push(`      → ${entry.questionId}`);

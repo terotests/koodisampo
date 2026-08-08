@@ -1,7 +1,10 @@
+import { resolveQuestionVersions } from "../../hosts/shared/questionVersions.mjs";
+
 type QuestionBank = {
   id?: string;
   domain?: string;
   source?: string;
+  defaultVersions?: string[];
   questions?: Array<Record<string, unknown>>;
 };
 
@@ -15,6 +18,7 @@ function flattenBanks(banks: QuestionBank[]) {
         domain: (q as { domain?: string }).domain || domain,
         bankId: bank.id,
         bankSource: bank.source,
+        versions: resolveQuestionVersions(q, bank),
       });
     }
   }
