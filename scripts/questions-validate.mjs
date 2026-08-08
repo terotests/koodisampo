@@ -36,6 +36,9 @@ const TOPIC_DOMAINS = {
   "rust-error": "rust", "rust-concurrency": "rust", "rust-tooling": "rust",
   "rust-safety": "rust", "rust-traits": "rust", "rust-async": "rust",
   "rust-testing": "rust",
+  "space-satellites": "space", "space-gnss": "space", "space-signals": "space",
+  "space-positioning": "space", "space-datums": "space", "space-maps": "space",
+  "space-applications": "space",
 };
 
 const ids = new Set();

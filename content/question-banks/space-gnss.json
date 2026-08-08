@@ -1,0 +1,2301 @@
+{
+  "id": "space-gnss",
+  "domain": "space",
+  "source": "https://gssc.esa.int/navipedia/",
+  "questions": [
+    {
+      "id": "space-orbit-meo-gnss",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mille kiertoradalle tyypilliset GNSS-satelliitit (GPS, Galileo) sijoitetaan?",
+      "choices": [
+        {
+          "text": "MEO (Medium Earth Orbit) — noin 19 000–23 000 km korkeudessa",
+          "correct": true
+        },
+        {
+          "text": "LEO (Low Earth Orbit) — alle 2000 km, kuten ISS",
+          "correct": false
+        },
+        {
+          "text": "GEO (Geostationary Orbit) — 35 786 km päiväntasaajan yllä",
+          "correct": false
+        },
+        {
+          "text": "HEO (Highly Elliptical Orbit) — Molnija-tyyppinen eloisa rata",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GNSS-konstellaatiot käyttävät MEO-ratoja: riittävä näkyvyys ja kohtuullinen signaaliviive.",
+      "wrongFeedback": "GPS ja Galileo eivät ole LEO- eivätkä GEO-radoilla. Tyypillinen korkeus on MEO-alueella.",
+      "featureId": "space:orbit-meo",
+      "featurePoints": 2,
+      "lessonRef": "space/satellites/space-orbit-meo-gnss",
+      "sourceUrl": "https://www.esa.int/Applications/Satellite_navigation/Galileo/Galileo_constellation",
+      "sourceRef": "esa/galileo-constellation"
+    },
+    {
+      "id": "space-orbit-geo-comms",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS ei?",
+      "choices": [
+        {
+          "text": "GEO pysyy paikallaan taivaalla yhden alueen yllä — GNSS tarvitsee liikkuvan konstellaation geometriaa",
+          "correct": true
+        },
+        {
+          "text": "GEO on ainoa rata jolla atomikello toimii",
+          "correct": false
+        },
+        {
+          "text": "GNSS-signaali ei voi kulkea GEO-korkeudesta",
+          "correct": false
+        },
+        {
+          "text": "GEO-satelliitteja saa lähettää vain kaupallisiin tarkoituksiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GEO sopii jatkuvasti samaan pisteeseen tarvitseville palveluille. Paikannus vaatii useita satelliitteja eri suunnista.",
+      "wrongFeedback": "GEO ei ole kielletty GNSS:ltä fysiikan takia — geometria ja kustannus tekevät MEO:sta paremman valinnan.",
+      "featureId": "space:orbit-geo",
+      "featurePoints": 2,
+      "lessonRef": "space/satellites/space-orbit-geo-comms",
+      "sourceUrl": "https://www.esa.int/Enabling_Support/Space_Transportation/Types_of_orbits",
+      "sourceRef": "esa/types-of-orbits"
+    },
+    {
+      "id": "space-orbit-kepler-elements",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä Keplerin rataelementit kuvaavat satelliitin yhteydessä?",
+      "choices": [
+        {
+          "text": "Radan muotoa, orientaatiota ja satelliitin sijaintia radalla tietyllä hetkellä",
+          "correct": true
+        },
+        {
+          "text": "Vain satelliitin massaa ja polttoainemäärää",
+          "correct": false
+        },
+        {
+          "text": "Vain antennin vahvistusta ja lähetystehoa",
+          "correct": false
+        },
+        {
+          "text": "Vain vastaanottimen kellovirhettä ja DOP-arvoa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kuusi klassista elementtiä (a, e, i, Ω, ω, ν/M) määrittävät radan geometrian ja paikan radalla.",
+      "wrongFeedback": "Kepler-elementit eivät kuvaa antennia tai vastaanotinta — ne kuvaavat kiertorataa.",
+      "featureId": "space:kepler",
+      "featurePoints": 3,
+      "lessonRef": "space/satellites/space-orbit-kepler-elements",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Keplerian_Elements",
+      "sourceRef": "navipedia/keplerian-elements"
+    },
+    {
+      "id": "space-orbit-inclination-gps",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi GPS-ratojen inklinaatio on noin 55° eikä 0° (päiväntasaaja)?",
+      "choices": [
+        {
+          "text": "Jotta satelliitit näkyisivät myös korkeilla leveysasteilla, ei vain tropiikissa",
+          "correct": true
+        },
+        {
+          "text": "Jotta satelliitit pysyisivät aina Suomen yllä paikallaan",
+          "correct": false
+        },
+        {
+          "text": "Koska 0° rata on fysikaalisesti mahdoton",
+          "correct": false
+        },
+        {
+          "text": "Koska inklinaatio 55° poistaa ionosfäärin vaikutuksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kallistettu rata peittää keski- ja korkeita leveyksiä. Päiväntasaajarata jättäisi pohjoisen heikkoon peittoon.",
+      "wrongFeedback": "Inklinaatio ei parkkeeraa satelliittia Suomeen eikä poista ionosfääriä — se parantaa globaalia peittoa.",
+      "featureId": "space:inclination",
+      "featurePoints": 3,
+      "lessonRef": "space/satellites/space-orbit-inclination-gps",
+      "sourceUrl": "https://www.gps.gov/systems/gps/space/",
+      "sourceRef": "gps.gov/space-segment"
+    },
+    {
+      "id": "space-orbit-period-gps",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Kuinka kauan GPS-satelliitilla kestää tyypillisesti yksi maan kierto (sideraalinen period)?",
+      "choices": [
+        {
+          "text": "Noin 12 tuntia (puoli sideraalista vuorokautta)",
+          "correct": true
+        },
+        {
+          "text": "Noin 90 minuuttia kuten LEO-satelliiteilla",
+          "correct": false
+        },
+        {
+          "text": "Tasan 24 tuntia kuten GEO-satelliiteilla",
+          "correct": false
+        },
+        {
+          "text": "Noin 7 päivää kuten geostationaarisella siirtoasemalla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GPS MEO-periodi on noin 11 h 58 min — kaksi kierrosta sideraalista vuorokautta kohti.",
+      "wrongFeedback": "90 min on LEO, 24 h GEO. GPS kiertää noin kahdesti vuorokaudessa.",
+      "featureId": "space:gps-period",
+      "featurePoints": 2,
+      "lessonRef": "space/satellites/space-orbit-period-gps",
+      "sourceUrl": "https://www.gps.gov/systems/gps/space/",
+      "sourceRef": "gps.gov/space-segment"
+    },
+    {
+      "id": "space-sat-atomic-clock",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi GNSS-satelliiteissa on atomikelloja?",
+      "choices": [
+        {
+          "text": "Paikannus perustuu tarkkaan ajanmittaukseen — nanosekunnin virhe on jo kymmeniä senttejä matkassa",
+          "correct": true
+        },
+        {
+          "text": "Atomikello pitää satelliitin asennon vakaana thrusterien sijaan",
+          "correct": false
+        },
+        {
+          "text": "Atomikello korvaa aurinkopaneelit energianlähteenä",
+          "correct": false
+        },
+        {
+          "text": "Atomikelloa tarvitaan vain televisiolähetyksiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pseudomatka = c × Δt. Ajanvirhe suoraan matkavirheeksi — siksi atomikellot ja kellokorjaukset.",
+      "wrongFeedback": "Atomikello ei ohjaa asentoa eikä tuota energiaa — se antaa tarkan ajan signaalille.",
+      "featureId": "space:atomic-clock",
+      "featurePoints": 2,
+      "lessonRef": "space/satellites/space-sat-atomic-clock",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Atomic_Clocks",
+      "sourceRef": "navipedia/atomic-clocks"
+    },
+    {
+      "id": "space-sat-relativity",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miten suhteellisuusteoria vaikuttaa GPS-kelloihin käytännössä?",
+      "choices": [
+        {
+          "text": "Erityis- ja yleinen suhteellisuusteoria siirtävät satelliitin kellotaajuutta — ne korjataan järjestelmässä",
+          "correct": true
+        },
+        {
+          "text": "Suhteellisuusteorialla ei ole mitattavaa vaikutusta GPS:ään",
+          "correct": false
+        },
+        {
+          "text": "Vain kvanttimekaniikka vaikuttaa, ei suhteellisuusteoria",
+          "correct": false
+        },
+        {
+          "text": "Korjaus tehdään vain LEO-satelliiteille, ei MEO:lle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ilman relativistisia korjauksia GPS harhautuisi kilometrejä päivässä. Korjaukset on rakennettu järjestelmään.",
+      "wrongFeedback": "Relativistiset efektit ovat GNSS:ssä välttämättömiä — niitä ei voi jättää huomiotta.",
+      "featureId": "space:relativity",
+      "featurePoints": 4,
+      "lessonRef": "space/satellites/space-sat-relativity",
+      "sourceUrl": "https://www.astronomy.ohio-state.edu/pogge.1/Ast162/Unit5/gps.html",
+      "sourceRef": "osu/gps-relativity"
+    },
+    {
+      "id": "space-sat-constellation",
+      "chapter": "space-satellites",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä tarkoittaa GNSS-konstellaatio?",
+      "choices": [
+        {
+          "text": "Suunniteltu joukko satelliitteja, jotka yhdessä tarjoavat globaalin tai alueellisen peiton",
+          "correct": true
+        },
+        {
+          "text": "Yksittäisen satelliitin antenniryhmä",
+          "correct": false
+        },
+        {
+          "text": "Vain vastaanottimen kanavien määrä",
+          "correct": false
+        },
+        {
+          "text": "Karttaprojektion parametrijoukko",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Konstellaatio = orbitaalitasot + satelliitit per taso. Esim. GPS: 24+ satelliittia kuudella tasolla.",
+      "wrongFeedback": "Konstellaatio ei ole antenni eikä projektio — se on satelliittijoukko peittoa varten.",
+      "featureId": "space:constellation",
+      "featurePoints": 2,
+      "lessonRef": "space/satellites/space-sat-constellation",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/GNSS",
+      "sourceRef": "navipedia/gnss"
+    },
+    {
+      "id": "space-gnss-vs-gps",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on ero GPS:n ja GNSS:n välillä?",
+      "choices": [
+        {
+          "text": "GPS on yksi Yhdysvaltojen järjestelmä; GNSS on yleisnimi kaikille satelliittipaikannusjärjestelmille",
+          "correct": true
+        },
+        {
+          "text": "GPS ja GNSS ovat synonyymejä ilman eroa",
+          "correct": false
+        },
+        {
+          "text": "GNSS on vain Euroopan Galileo-järjestelmän lyhenne",
+          "correct": false
+        },
+        {
+          "text": "GPS sisältää kaikki järjestelmät, GNSS vain sotilaskäytön",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GNSS = Global Navigation Satellite System. GPS, GLONASS, Galileo ja BeiDou ovat GNSS-järjestelmiä.",
+      "wrongFeedback": "Älä kutsu kaikkia järjestelmiä GPS:ksi teknisessä tekstissä — GNSS on kattotermi.",
+      "featureId": "space:gnss-vs-gps",
+      "featurePoints": 1,
+      "lessonRef": "space/gnss/space-gnss-vs-gps",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/GNSS",
+      "sourceRef": "navipedia/gnss"
+    },
+    {
+      "id": "space-gnss-gps-operator",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Kuka operoi GPS-järjestelmää?",
+      "choices": [
+        {
+          "text": "Yhdysvallat (Space Force / DoD) — siviilisignaali avoin maailmanlaajuisesti",
+          "correct": true
+        },
+        {
+          "text": "Euroopan unioni ja ESA yhdessä",
+          "correct": false
+        },
+        {
+          "text": "Venäjän Roscosmos yksin",
+          "correct": false
+        },
+        {
+          "text": "YK:n ITU suoraan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GPS on Yhdysvaltojen järjestelmä; siviili-L1 C/A (ja modernit signaalit) ovat avoimesti käytettävissä.",
+      "wrongFeedback": "Galileo on EU/ESA, GLONASS Venäjä. GPS:ää operoi Yhdysvallat.",
+      "featureId": "space:gps-operator",
+      "featurePoints": 1,
+      "lessonRef": "space/gnss/space-gnss-gps-operator",
+      "sourceUrl": "https://www.gps.gov/",
+      "sourceRef": "gps.gov"
+    },
+    {
+      "id": "space-gnss-galileo",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on Galileo-järjestelmä?",
+      "choices": [
+        {
+          "text": "Euroopan unionin ja ESA:n siviilijohtoinen globaali GNSS",
+          "correct": true
+        },
+        {
+          "text": "NASA:n Kuuhun tarkoitettu paikannusverkko",
+          "correct": false
+        },
+        {
+          "text": "Vain Suomen Maanmittauslaitoksen korjauspalvelu",
+          "correct": false
+        },
+        {
+          "text": "Pelkästään merenkulun AIS-järjestelmä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Galileo on EU:n GNSS — yhteentoimiva GPS:n kanssa, siviilijohtoinen.",
+      "wrongFeedback": "Galileo ei ole NASA:n eikä kansallinen korjauspalvelu — se on Euroopan globaali GNSS.",
+      "featureId": "space:galileo",
+      "featurePoints": 2,
+      "lessonRef": "space/gnss/space-gnss-galileo",
+      "sourceUrl": "https://www.esa.int/Applications/Satellite_navigation/Galileo",
+      "sourceRef": "esa/galileo"
+    },
+    {
+      "id": "space-gnss-glonass",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä erottaa klassisen GLONASS-signaalin GPS:stä taajuuksien jaon suhteen?",
+      "choices": [
+        {
+          "text": "Klassinen GLONASS käytti FDMA:ta (eri taajuus per satelliitti); GPS käyttää CDMA:ta",
+          "correct": true
+        },
+        {
+          "text": "GLONASS ei lähetä lainkaan koodia, vain kantoaaltoa",
+          "correct": false
+        },
+        {
+          "text": "GLONASS toimii vain GEO-radalla",
+          "correct": false
+        },
+        {
+          "text": "GLONASS käyttää pelkästään Wi-Fi-taajuuksia",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Perinteinen GLONASS L1/L2 oli FDMA; uudemmat signaalit tuovat CDMA:ta. GPS on CDMA-pohjainen.",
+      "wrongFeedback": "GLONASS on MEO-GNSS; klassinen ero GPS:ään oli FDMA vs CDMA.",
+      "featureId": "space:glonass-fdma",
+      "featurePoints": 3,
+      "lessonRef": "space/gnss/space-gnss-glonass",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/GLONASS_Signal_Structure",
+      "sourceRef": "navipedia/glonass-signal"
+    },
+    {
+      "id": "space-gnss-beidou",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on BeiDou?",
+      "choices": [
+        {
+          "text": "Kiinan globaali GNSS-järjestelmä (BDS), jossa on myös GEO/IGSO-satelliitteja alueelliseen peittoon",
+          "correct": true
+        },
+        {
+          "text": "Japanin QZSS-järjestelmän toinen nimi",
+          "correct": false
+        },
+        {
+          "text": "Intian NavIC-järjestelmän sotilasversio",
+          "correct": false
+        },
+        {
+          "text": "Vain EGNOS-korjausdatan toimittaja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BeiDou (BDS) on Kiinan GNSS; konstellaatiossa MEO + alueellisia GEO/IGSO-satelliitteja.",
+      "wrongFeedback": "QZSS on Japani, NavIC Intia, EGNOS SBAS. BeiDou on Kiinan BDS.",
+      "featureId": "space:beidou",
+      "featurePoints": 2,
+      "lessonRef": "space/gnss/space-gnss-beidou",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/BeiDou",
+      "sourceRef": "navipedia/beidou"
+    },
+    {
+      "id": "space-gnss-qzss-navic",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä yhteistä on QZSS:llä ja NavIC:lla verrattuna GPS:ään?",
+      "choices": [
+        {
+          "text": "Ne ovat alueellisia (RNSS) järjestelmiä, eivät täysin globaaleja konstellaatioita",
+          "correct": true
+        },
+        {
+          "text": "Ne korvaavat WGS84:n omilla ellipsoidillaan kaikkialla",
+          "correct": false
+        },
+        {
+          "text": "Ne toimivat vain veden alla",
+          "correct": false
+        },
+        {
+          "text": "Ne ovat pelkkiä karttaprojektioita ilman satelliitteja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "QZSS (Japani) ja NavIC/IRNSS (Intia) ovat alueellisia satelliittinavigointijärjestelmiä.",
+      "wrongFeedback": "QZSS ja NavIC ovat satelliittijärjestelmiä alueelliseen peittoon, eivät projektioita.",
+      "featureId": "space:rnss",
+      "featurePoints": 3,
+      "lessonRef": "space/gnss/space-gnss-qzss-navic",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/QZSS",
+      "sourceRef": "navipedia/qzss"
+    },
+    {
+      "id": "space-gnss-sbas-egnos",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on EGNOS?",
+      "choices": [
+        {
+          "text": "Euroopan SBAS — geostationaariset satelliitit lähettävät GPS-korjauksia ja eheysinformaatiota",
+          "correct": true
+        },
+        {
+          "text": "Galileon sotilassignaalin salausavain",
+          "correct": false
+        },
+        {
+          "text": "Suomen kansallinen tasokoordinaatisto",
+          "correct": false
+        },
+        {
+          "text": "NMEA-lauseiden vanhentunut dialekti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EGNOS on SBAS (WAAS:n eurooppalainen vastine): korjaukset + integrity lentoliikenteeseen ja muihin.",
+      "wrongFeedback": "EGNOS ei ole koordinaatisto eikä NMEA — se on satelliittipohjainen täydennysjärjestelmä (SBAS).",
+      "featureId": "space:egnos",
+      "featurePoints": 3,
+      "lessonRef": "space/gnss/space-gnss-sbas-egnos",
+      "sourceUrl": "https://www.esa.int/Applications/Satellite_navigation/EGNOS",
+      "sourceRef": "esa/egnos"
+    },
+    {
+      "id": "space-gnss-almanac-ephemeris",
+      "chapter": "space-gnss",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä ero on almanakalla ja efemeridillä GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Almanakka on karkea koko konstellaation rata; efemeridi on tarkan satelliitin rata- ja kellodata",
+          "correct": true
+        },
+        {
+          "text": "Almanakka on tarkempi kuin efemeridi",
+          "correct": false
+        },
+        {
+          "text": "Efemeridi sisältää vain karttaprojektion parametrit",
+          "correct": false
+        },
+        {
+          "text": "Molemmat tarkoittavat samaa NMEA-lausetta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Cold start käyttää almanakkaa hankintaan; navigointiratkaisu tarvitsee tuoreen efemeridin.",
+      "wrongFeedback": "Efemeridi on tarkka, almanakka karkea — ei toisinpäin.",
+      "featureId": "space:almanac-eph",
+      "featurePoints": 3,
+      "lessonRef": "space/gnss/space-gnss-almanac-ephemeris",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/GPS_Navigation_Message",
+      "sourceRef": "navipedia/gps-nav-message"
+    },
+    {
+      "id": "space-sig-pseudorange",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä tarkoittaa pseudomatka (pseudorange) GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Mitattu matka satelliittiin, joka sisältää kellovirheet ja viiveet — ei puhdas geometrinen etäisyys",
+          "correct": true
+        },
+        {
+          "text": "Vain kartalla mitattu 2D-etäisyys kahden merkin välillä",
+          "correct": false
+        },
+        {
+          "text": "Satelliitin todellinen laserilla mitattu etäisyys maasta",
+          "correct": false
+        },
+        {
+          "text": "Pelkkä DOP-luku ilman aikamittausta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Pseudomatka = c × (vastaanottoaika − lähetysaika) + virheet. Neljäs satelliitti ratkaisee kellon.",
+      "wrongFeedback": "Pseudomatka syntyy aikamittauksesta, ei karttaviivaimesta tai DOP-luvusta.",
+      "featureId": "space:pseudorange",
+      "featurePoints": 2,
+      "lessonRef": "space/signals/space-sig-pseudorange",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Pseudorange",
+      "sourceRef": "navipedia/pseudorange"
+    },
+    {
+      "id": "space-sig-trilateration",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi 3D-GNSS-paikkaan tarvitaan vähintään neljä satelliittia, ei kolme?",
+      "choices": [
+        {
+          "text": "Kolme etäisyyttä riittäisi paikkaan, mutta vastaanottimen kellovirhe on neljäs tuntematon",
+          "correct": true
+        },
+        {
+          "text": "Neljäs satelliitti tarvitaan vain karttaprojektiota varten",
+          "correct": false
+        },
+        {
+          "text": "Kolme satelliittia riittää aina kellovirheestä huolimatta",
+          "correct": false
+        },
+        {
+          "text": "Neljäs satelliitti mittaa vain lämpötilan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tuntemattomat: x, y, z, δt_receiver. Siksi ≥ 4 pseudomatkaa.",
+      "wrongFeedback": "Kyse ei ole kartasta — kellovirhe on neljäs ratkaistava parametri.",
+      "featureId": "space:trilateration",
+      "featurePoints": 2,
+      "lessonRef": "space/signals/space-sig-trilateration",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Positioning",
+      "sourceRef": "navipedia/positioning"
+    },
+    {
+      "id": "space-sig-l1-l5",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi modernit vastaanottimet käyttävät useita taajuuksia (esim. L1 + L5)?",
+      "choices": [
+        {
+          "text": "Monitaajuus auttaa korjaamaan ionosfääriviivettä ja parantaa robustiutta",
+          "correct": true
+        },
+        {
+          "text": "Useampi taajuus muuttaa WGS84-ellipsoidia automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "L5 poistaa tarpeen kaikille satelliiteille",
+          "correct": false
+        },
+        {
+          "text": "Monitaajuus tarvitaan vain NMEA-baudinopeuden nostoon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ionosfääriviive on taajuusriippuvainen — dual-frequency mittaa ja vähentää sitä.",
+      "wrongFeedback": "Lisätaajuudet eivät muuta datumia eivätkä korvaa satelliitteja — ne korjaavat etenemisvirheitä.",
+      "featureId": "space:dual-freq",
+      "featurePoints": 3,
+      "lessonRef": "space/signals/space-sig-l1-l5",
+      "sourceUrl": "https://www.gps.gov/systems/gps/modernization/civilsignals/",
+      "sourceRef": "gps.gov/civil-signals"
+    },
+    {
+      "id": "space-sig-multipath",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on multipath-virhe GNSS-paikannuksessa?",
+      "choices": [
+        {
+          "text": "Signaali saapuu myös heijastumana (rakennus, vesi) ja vääristää mitattua pseudomatkaa",
+          "correct": true
+        },
+        {
+          "text": "Satelliitin polttoaine loppuu ja rata muuttuu",
+          "correct": false
+        },
+        {
+          "text": "Karttaprojektion mittakaavavirhe UTM-vyöhykkeellä",
+          "correct": false
+        },
+        {
+          "text": "Vain geoidin undulaation mallivirhe",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Multipath on paikallinen RF-ongelma: heijastukset sekoittuvat suoraan signaaliin.",
+      "wrongFeedback": "Multipath ei ole rata- eikä geoidiongelma — se on heijastunut signaali.",
+      "featureId": "space:multipath",
+      "featurePoints": 3,
+      "lessonRef": "space/signals/space-sig-multipath",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Multipath",
+      "sourceRef": "navipedia/multipath"
+    },
+    {
+      "id": "space-sig-dop",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä DOP (Dilution of Precision) kuvaa?",
+      "choices": [
+        {
+          "text": "Miten satelliittigeometria vahvistaa mittausvirheet paikkavirheeksi",
+          "correct": true
+        },
+        {
+          "text": "Vain vastaanottimen akkukapasiteettia",
+          "correct": false
+        },
+        {
+          "text": "Geoidin undulaatiota metreinä",
+          "correct": false
+        },
+        {
+          "text": "NMEA-lauseen checksum-virhettä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Huono geometria (satelliitit klusterissa) → suuri DOP → suurempi paikkavirhe samalla mittauskohinalla.",
+      "wrongFeedback": "DOP on geometriakerroin, ei akku, geoidi eikä checksum.",
+      "featureId": "space:dop",
+      "featurePoints": 2,
+      "lessonRef": "space/signals/space-sig-dop",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Dilution_of_Precision",
+      "sourceRef": "navipedia/dop"
+    },
+    {
+      "id": "space-sig-iono",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miten ionosfääri vaikuttaa GNSS-signaaliin?",
+      "choices": [
+        {
+          "text": "Se viivästyttää koodimittausta ja edistää kantoaaltoa — virhe voi olla metrejää",
+          "correct": true
+        },
+        {
+          "text": "Se muuttaa WGS84-puolisuuren akselin pituutta",
+          "correct": false
+        },
+        {
+          "text": "Se vaikuttaa vain GEO-satelliitteihin",
+          "correct": false
+        },
+        {
+          "text": "Ionosfäärillä ei ole vaikutusta L-kaistan signaaleihin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ionosfääri on yksi suurimmista virhelähteistä single-frequency-ratkaisussa; dual-frequency / SBAS / mallit auttavat.",
+      "wrongFeedback": "Ionosfääri ei muuta ellipsoidia — se muuttaa signaalin etenemistä.",
+      "featureId": "space:iono",
+      "featurePoints": 3,
+      "lessonRef": "space/signals/space-sig-iono",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Ionospheric_Delay",
+      "sourceRef": "navipedia/iono"
+    },
+    {
+      "id": "space-sig-tropo",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on troposfääriviive GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Alailmakehän (kaasu + kosteus) aiheuttama ylimääräinen kulkuaika, tyypillisesti metriluokkaa zeniitissä",
+          "correct": true
+        },
+        {
+          "text": "Vain merenpohjan suolaisuuden vaikutus signaaliin",
+          "correct": false
+        },
+        {
+          "text": "Satelliitin thruster-manööverin aiheuttama hyppäys",
+          "correct": false
+        },
+        {
+          "text": "Kartan mittakaavavirhe Mercator-projektiossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Troposfääri ei riipu taajuudesta L-kaistalla samoin kuin ioni — korjataan malleilla / estimoidaan PPP:ssä.",
+      "wrongFeedback": "Troposfääriviive on ilmakehän alaosan vaikutus, ei kartta- tai thruster-ilmiö.",
+      "featureId": "space:tropo",
+      "featurePoints": 3,
+      "lessonRef": "space/signals/space-sig-tropo",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Tropospheric_Delay",
+      "sourceRef": "navipedia/tropo"
+    },
+    {
+      "id": "space-sig-carrier-phase",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi kantoaaltovaihe (carrier phase) mahdollistaa senttitason paikannuksen?",
+      "choices": [
+        {
+          "text": "Vaiheen mittaus on millimetritarkkaa, kun kokonaislukuaaltojen epäselvyys (ambiguity) ratkaistaan",
+          "correct": true
+        },
+        {
+          "text": "Kantoaalto kulkee tyhjiössä hitaammin kuin koodi",
+          "correct": false
+        },
+        {
+          "text": "Carrier phase poistaa tarpeen kaikille korjauspalveluille",
+          "correct": false
+        },
+        {
+          "text": "Vaihe mittaa suoraan geoidin undulaation",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RTK/PPP nojaavat kantoaaltoon + ambiguity resolution. Koodi yksin on metriluokkaa.",
+      "wrongFeedback": "Carrier phase ei mittaa geoidia eikä poista kaikkea prosessointia — se antaa tarkan geometrisen mitan.",
+      "featureId": "space:carrier",
+      "featurePoints": 4,
+      "lessonRef": "space/signals/space-sig-carrier-phase",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Carrier_Phase_Multipath",
+      "sourceRef": "navipedia/carrier-phase"
+    },
+    {
+      "id": "space-sig-nmea",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on NMEA 0183 GNSS-laitteissa?",
+      "choices": [
+        {
+          "text": "Tekstimuotoinen lausestandardi paikkatiedon ja satelliittidatan siirtoon (esim. GGA, RMC)",
+          "correct": true
+        },
+        {
+          "text": "Binäärinen efemeridiformaatti IGS:lle",
+          "correct": false
+        },
+        {
+          "text": "Suomen ETRS-TM35FIN-projektion EPSG-koodi",
+          "correct": false
+        },
+        {
+          "text": "SBAS-korjausviestin salausprotokolla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "NMEA 0183: ASCII-lauseet kuten $GPGGA. Helppo parsia, mutta rajoittunut tarkkuusesitys.",
+      "wrongFeedback": "NMEA ei ole IGS-binääri eikä EPSG — se on laiteintegraation tekstimuoto.",
+      "featureId": "space:nmea",
+      "featurePoints": 2,
+      "lessonRef": "space/signals/space-sig-nmea",
+      "sourceUrl": "https://gpsd.gitlab.io/gpsd/NMEA.html",
+      "sourceRef": "gpsd/nmea"
+    },
+    {
+      "id": "space-pos-spp",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä tarkoittaa SPP (Single Point Positioning) GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Paikka lasketaan yhden vastaanottimen mittauksista broadcast-efemeridillä — tyypillisesti metriluokkaa",
+          "correct": true
+        },
+        {
+          "text": "Kahden vastaanottimen phase-difference senttitasolla",
+          "correct": false
+        },
+        {
+          "text": "Vain inertianavigointia ilman satelliitteja",
+          "correct": false
+        },
+        {
+          "text": "Karttaprojektion muunnos WGS84 → TM35FIN",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "SPP on 'tavallinen GPS-fix': ei tukiasemaa, broadcast-rata, metritason tarkkuus.",
+      "wrongFeedback": "SPP ei ole RTK eikä karttamuunnos — se on yksittäisen vastaanottimen perusratkaisu.",
+      "featureId": "space:spp",
+      "featurePoints": 2,
+      "lessonRef": "space/positioning/space-pos-spp",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Single_Point_Positioning",
+      "sourceRef": "navipedia/spp"
+    },
+    {
+      "id": "space-pos-dgps",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miten DGPS parantaa paikannusta?",
+      "choices": [
+        {
+          "text": "Tunnetulla tukiasemalla mitatut korjaukset lähetetään liikkuvalle vastaanottimelle vähentämään yhteisiä virheitä",
+          "correct": true
+        },
+        {
+          "text": "DGPS vaihtaa ellipsoidia WGS72:een automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "DGPS poistaa multipathin täysin kaikissa ympäristöissä",
+          "correct": false
+        },
+        {
+          "text": "DGPS toimii vain ilman mitään satelliittinäkyvyyttä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Differentiaalikorjaus kumoaa yhteisiä virheitä (rata, kello, ioni lyhyillä baselineilla) → metrin alle usein.",
+      "wrongFeedback": "DGPS ei poista kaikkea multipathia eikä toimi ilman satelliitteja — se korjaa yhteisiä virheitä.",
+      "featureId": "space:dgps",
+      "featurePoints": 3,
+      "lessonRef": "space/positioning/space-pos-dgps",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Differential_GPS",
+      "sourceRef": "navipedia/dgps"
+    },
+    {
+      "id": "space-pos-rtk",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on RTK-paikannuksen ydinidea?",
+      "choices": [
+        {
+          "text": "Kantoaaltovaiheen differentiaalinen mittaus tukiasemaan nähden + integer ambiguity -ratkaisu",
+          "correct": true
+        },
+        {
+          "text": "Pelkkä kartan zoomaus suurempaan mittakaavaan",
+          "correct": false
+        },
+        {
+          "text": "Vain almanakan päivitys kerran vuodessa",
+          "correct": false
+        },
+        {
+          "text": "Paikannus pelkillä Wi-Fi-tukiasemilla ilman GNSS:ää",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RTK = real-time kinematic: phase diffs + fixed ambiguities → cm-tason suhteellinen paikka.",
+      "wrongFeedback": "RTK ei ole kartta- tai Wi-Fi-temppu — se on kantoaaltodifferentiaalinen GNSS.",
+      "featureId": "space:rtk",
+      "featurePoints": 3,
+      "lessonRef": "space/positioning/space-pos-rtk",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Real_Time_Kinematics",
+      "sourceRef": "navipedia/rtk"
+    },
+    {
+      "id": "space-pos-ppp",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miten PPP (Precise Point Positioning) eroaa RTK:sta?",
+      "choices": [
+        {
+          "text": "PPP käyttää tarkkoja rata-/kellotuotteita yhdessä vastaanottimessa; RTK nojaa paikalliseen tukiasemaan",
+          "correct": true
+        },
+        {
+          "text": "PPP vaatii aina kaksi antennia samassa tolpassa",
+          "correct": false
+        },
+        {
+          "text": "PPP toimii vain GEO-satelliiteilla",
+          "correct": false
+        },
+        {
+          "text": "PPP ja RTK ovat täysin sama algoritmi eri nimellä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "PPP on absoluuttinen tarkkuusmenetelmä IGS/HAS-tuotteilla; konvergenssiaika minuutteja–kymmeniä minuutteja.",
+      "wrongFeedback": "PPP ≠ RTK. PPP ei vaadi paikallista tukiasemaa samalla tavalla, mutta konvergoituu hitaammin.",
+      "featureId": "space:ppp",
+      "featurePoints": 4,
+      "lessonRef": "space/positioning/space-pos-ppp",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Precise_Point_Positioning",
+      "sourceRef": "navipedia/ppp"
+    },
+    {
+      "id": "space-pos-baseline",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitkä tarkoittaa baseline differentiaalisessa GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Vektori tukiaseman ja liikkuvan vastaanottimen välillä (suhteellinen paikka)",
+          "correct": true
+        },
+        {
+          "text": "Vain satelliitin inklinaatiokulma",
+          "correct": false
+        },
+        {
+          "text": "NMEA-baudinopeuden oletusarvo",
+          "correct": false
+        },
+        {
+          "text": "Geoidimallin grid-resoluutio",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RTK/DGPS-tarkkuus riippuu baseline-pituudesta: pidempi matka → heikompi virheiden korrelaatio.",
+      "wrongFeedback": "Baseline on tukiasema–rover -vektori, ei rata- tai NMEA-parametri.",
+      "featureId": "space:baseline",
+      "featurePoints": 3,
+      "lessonRef": "space/positioning/space-pos-baseline",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Baseline",
+      "sourceRef": "navipedia/baseline"
+    },
+    {
+      "id": "space-pos-cors-ntrip",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on NTRIP RTK-käytössä?",
+      "choices": [
+        {
+          "text": "Protokolla korjausdatan (usein RTCM) siirtoon internetin yli tukiasemaverkosta vastaanottimelle",
+          "correct": true
+        },
+        {
+          "text": "Uusi GNSS-konstellaatio Aasiassa",
+          "correct": false
+        },
+        {
+          "text": "Ellipsoidin litistyneisyysparametri",
+          "correct": false
+        },
+        {
+          "text": "Vain 2D-kartan tiilitysformaatti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "NTRIP = Networked Transport of RTCM via Internet Protocol. Käytössä FINPOS/muissa CORS-verkoissa.",
+      "wrongFeedback": "NTRIP ei ole konstellaatio eikä ellipsoidi — se on korjausdatan siirtoprotokolla.",
+      "featureId": "space:ntrip",
+      "featurePoints": 3,
+      "lessonRef": "space/positioning/space-pos-cors-ntrip",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/NTRIP",
+      "sourceRef": "navipedia/ntrip"
+    },
+    {
+      "id": "space-pos-rinex",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mihin RINEX-tiedostoja käytetään?",
+      "choices": [
+        {
+          "text": "Standardimuotoiseen GNSS-havainto- ja navigointidatan vaihtoon jälkikäsittelyä varten",
+          "correct": true
+        },
+        {
+          "text": "Vain 3D-mallien renderöintiin pelimoottorissa",
+          "correct": false
+        },
+        {
+          "text": "SBAS-signaalin RF-modulaatioon satelliitissa",
+          "correct": false
+        },
+        {
+          "text": "EPSG-koodien automaattiseen rekisteröintiin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RINEX on yhteisön teksti/binääristandardi observation + nav -datoille (esim. RTKLIB, Bernese).",
+      "wrongFeedback": "RINEX on havaintotiedostoformaatti jälkikäsittelyyn, ei pelimoottori- tai EPSG-työkalu.",
+      "featureId": "space:rinex",
+      "featurePoints": 3,
+      "lessonRef": "space/positioning/space-pos-rinex",
+      "sourceUrl": "https://files.igs.org/pub/data/format/rinex305.pdf",
+      "sourceRef": "igs/rinex"
+    },
+    {
+      "id": "space-pos-ambiguity",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä tarkoittaa integer ambiguity resolution RTK:ssa?",
+      "choices": [
+        {
+          "text": "Kantoaallon kokonaislukuaaltojen lukumäärän kiinnittäminen, jotta phase-mittaus muuttuu absoluuttiseksi tarkaksi matkaksi",
+          "correct": true
+        },
+        {
+          "text": "NMEA-checksumin korjaaminen",
+          "correct": false
+        },
+        {
+          "text": "Geoidimallin gridin interpolointi",
+          "correct": false
+        },
+        {
+          "text": "Satelliitin PRN-numeron arvaus",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Fixed ambiguity → cm. Float = reaaliarvoinen estimaatti → dm-tarkkuus tyypillisesti.",
+      "wrongFeedback": "Ambiguity liittyy kantoaallon aallonpituuksiin, ei NMEA- tai geoidilaskentaan.",
+      "featureId": "space:ambiguity",
+      "featurePoints": 4,
+      "lessonRef": "space/positioning/space-pos-ambiguity",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Integer_Ambiguity_Resolution",
+      "sourceRef": "navipedia/iar"
+    },
+    {
+      "id": "space-datum-ellipsoid",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on referenssiellipsoidi geodesiassa?",
+      "choices": [
+        {
+          "text": "Pyörähdysellipsoidi, joka approksimoi maan muotoa koordinaattilaskentaa varten",
+          "correct": true
+        },
+        {
+          "text": "Maan todellinen toppografinen pinta kaikkine vuorineen",
+          "correct": false
+        },
+        {
+          "text": "Vain merenpinnan hetkellinen aaltoilu",
+          "correct": false
+        },
+        {
+          "text": "Satelliitin aurinkopaneelin muoto",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ellipsoidi (a, f) on sileä matemaattinen pinta — lat/lon/height viittaavat siihen.",
+      "wrongFeedback": "Ellipsoidi ei ole toppografia eikä aaltoilu — se on laskennallinen referenssipinta.",
+      "featureId": "space:ellipsoid",
+      "featurePoints": 2,
+      "lessonRef": "space/datums/space-datum-ellipsoid",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Reference_Ellipsoid",
+      "sourceRef": "navipedia/ellipsoid"
+    },
+    {
+      "id": "space-datum-geoid",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on geoidi?",
+      "choices": [
+        {
+          "text": "Maan painovoimakentän ekvipotentiaalipinta, joka vastaa ihanteellista merenpintaa",
+          "correct": true
+        },
+        {
+          "text": "GPS-satelliittien muodostama verkko",
+          "correct": false
+        },
+        {
+          "text": "UTM-vyöhykkeen keskimeridiaani",
+          "correct": false
+        },
+        {
+          "text": "NMEA GGA-lauseen checksum-kenttä",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Geoidi on fysikaalinen referenssi korkeuksille; ellipsoidi on matemaattinen.",
+      "wrongFeedback": "Geoidi ei ole konstellaatio eikä UTM — se on painovoimapinta.",
+      "featureId": "space:geoid",
+      "featurePoints": 2,
+      "lessonRef": "space/datums/space-datum-geoid",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Geoid",
+      "sourceRef": "navipedia/geoid"
+    },
+    {
+      "id": "space-datum-wgs84",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on WGS84?",
+      "choices": [
+        {
+          "text": "GPS:n käyttämä maailmanlaajuinen geodeettinen datumi ja ellipsoidi (EPSG:4326 maantieteellisenä)",
+          "correct": true
+        },
+        {
+          "text": "Vain Suomen vanha KKJ-kaista 3",
+          "correct": false
+        },
+        {
+          "text": "EGNOS-satelliitin PRN-numero",
+          "correct": false
+        },
+        {
+          "text": "RINEX-tiedoston pakkausalgoritmi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WGS 84 on GPS:n referenssijärjestelmä: ellipsoidi + datumi. Käytännössä lähellä ITRF:ää.",
+      "wrongFeedback": "WGS84 ei ole KKJ eikä PRN — se on globaali geodeettinen järjestelmä.",
+      "featureId": "space:wgs84",
+      "featurePoints": 2,
+      "lessonRef": "space/datums/space-datum-wgs84",
+      "sourceUrl": "https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84",
+      "sourceRef": "nga/wgs84"
+    },
+    {
+      "id": "space-datum-wgs84-params",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on WGS84-ellipsoidin puolisuuren akselin (a) likimääräinen pituus?",
+      "choices": [
+        {
+          "text": "6 378 137 metriä",
+          "correct": true
+        },
+        {
+          "text": "6 356 752 metriä (tämä on pienempi akseli b likimäärin)",
+          "correct": false
+        },
+        {
+          "text": "35 786 000 metriä (GEO-korkeus)",
+          "correct": false
+        },
+        {
+          "text": "637,8 kilometriä (kymmenen kertaa liian pieni)",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "WGS84: a = 6 378 137 m (täsmälleen määritelty). Litistyneisyys f = 1/298.257223563.",
+      "wrongFeedback": "Muista a ≈ 6378 km, ei 637 km eikä GEO-korkeus.",
+      "featureId": "space:wgs84-a",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-wgs84-params",
+      "sourceUrl": "https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84",
+      "sourceRef": "nga/wgs84"
+    },
+    {
+      "id": "space-datum-undulation",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä geoidiundulaatio N tarkoittaa?",
+      "choices": [
+        {
+          "text": "Geoidin korkeus ellipsoidin yläpuolella (tai alapuolella) — silta h:n ja H:n välillä",
+          "correct": true
+        },
+        {
+          "text": "Satelliitin elevaatiokulma horisontista",
+          "correct": false
+        },
+        {
+          "text": "UTM-mittakaavakerroin keskimeridiaanilla",
+          "correct": false
+        },
+        {
+          "text": "DOP-luvun käänteisluku",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "H ≈ h − N. Undulaatio vaihtelee globaalisti kymmeniä metrejä (Suomessa tyypillisesti ~10–20 m luokkaa mallista riippuen).",
+      "wrongFeedback": "Undulaatio N ei ole elevaatio eikä DOP — se on geoidi−ellipsoidi -ero.",
+      "featureId": "space:undulation",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-undulation",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Geoid",
+      "sourceRef": "navipedia/geoid"
+    },
+    {
+      "id": "space-datum-etrs89",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi Suomessa virallisessa paikkatiedossa käytetään usein ETRS89:ää eikä suoraan 'raakaa' WGS84-hetkeä?",
+      "choices": [
+        {
+          "text": "ETRS89 on Eurooppaan kiinnitetty datumi (EUREF), joka ei ajaudu laattojen mukana kuten ITRF/WGS84-epochit",
+          "correct": true
+        },
+        {
+          "text": "ETRS89 käyttää täysin erilaista palloa ilman ellipsoidia",
+          "correct": false
+        },
+        {
+          "text": "WGS84 on kielletty kaikissa GPS-vastaanottimissa EU:ssa",
+          "correct": false
+        },
+        {
+          "text": "ETRS89 on vain NMEA-lauseen aliasnimi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ETRS89 ≈ ITRS 1989 Euroopassa; mannerlaatta kiinnitetty. Suomen EUREF-FIN nojaa siihen.",
+      "wrongFeedback": "ETRS89 on geodeettinen datumi Euroopalle — ei kielto WGS84-vastaanottimille.",
+      "featureId": "space:etrs89",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-etrs89",
+      "sourceUrl": "https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/koordinaatit-korkeudet-ja-tarkkamittaus/koordinaattijarjestelmat",
+      "sourceRef": "mml/koordinaattijarjestelmat"
+    },
+    {
+      "id": "space-datum-ecef",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitkä ovat ECEF-koordinaatit?",
+      "choices": [
+        {
+          "text": "Maakeskiset suorakulmaiset X, Y, Z -koordinaatit, jotka pyörivät maan mukana",
+          "correct": true
+        },
+        {
+          "text": "Paikallinen tangenttitaso itä-pohjoinen-up (ENU) aina",
+          "correct": false
+        },
+        {
+          "text": "Vain pikseleitä Web Mercator -tiilissä",
+          "correct": false
+        },
+        {
+          "text": "Satelliitin Kepler-elementit a, e, i",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GNSS-ratkaisu muodostuu usein ECEF:ssä ja muunnetaan lat/lon/height-muotoon.",
+      "wrongFeedback": "ECEF on maakeskinen XYZ, ei ENU eikä Kepler-joukko.",
+      "featureId": "space:ecef",
+      "featurePoints": 2,
+      "lessonRef": "space/datums/space-datum-ecef",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/ECEF",
+      "sourceRef": "navipedia/ecef"
+    },
+    {
+      "id": "space-datum-enu",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mihin ENU-koordinaatistoa käytetään GNSS-/inertiasovelluksissa?",
+      "choices": [
+        {
+          "text": "Paikalliseen itä-pohjoinen-ylös -kehikkoon suhteelliseen liikkeeseen ja visualisointiin",
+          "correct": true
+        },
+        {
+          "text": "Globaalin ellipsoidin ainoa virallinen datumi",
+          "correct": false
+        },
+        {
+          "text": "NMEA-lauseiden pakollinen esitysmuoto",
+          "correct": false
+        },
+        {
+          "text": "GEO-satelliittien rataelementtien standardi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ENU on paikallinen tangenttitaso: kätevä RTK-baselineille ja sensori-fuusiolle, ei globaali CRS.",
+      "wrongFeedback": "ENU ei korvaa WGS84-datumia — se on paikallinen kehikko.",
+      "featureId": "space:enu",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-enu",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates",
+      "sourceRef": "navipedia/ecef-enu"
+    },
+    {
+      "id": "space-datum-grs80",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miten GRS80 liittyy WGS84-ellipsoidiin?",
+      "choices": [
+        {
+          "text": "Ne ovat lähes identtisiä; ETRS89 käyttää GRS80:ää, WGS84-ellipsoidi on käytännössä sama metritasolla",
+          "correct": true
+        },
+        {
+          "text": "GRS80 on LEO-rata, WGS84 on GEO-rata",
+          "correct": false
+        },
+        {
+          "text": "GRS80 korvaa GNSS-signaalit Euroopassa",
+          "correct": false
+        },
+        {
+          "text": "GRS80 ja WGS84 eroavat satoja kilometrejä akseleissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "a on sama 6378137 m; f eroaa äärimmäisen vähän. Käytännön GIS-työssä usein vaihdettavissa, mutta datumi ≠ ellipsoidi.",
+      "wrongFeedback": "GRS80 ei ole rata — se on ellipsoidi, hyvin lähellä WGS84:ää.",
+      "featureId": "space:grs80",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-grs80",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Geodetic_Reference_System_1980",
+      "sourceRef": "wikipedia/grs80"
+    },
+    {
+      "id": "space-datum-orthometric",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä ero on ellipsoidikorkeudella h ja ortometrisella korkeudella H?",
+      "choices": [
+        {
+          "text": "h mitataan ellipsoidista, H geoidista (≈ merenpinta); muunnos tarvitsee undulaation N",
+          "correct": true
+        },
+        {
+          "text": "Ne ovat aina numeerisesti samat WGS84:ssä",
+          "correct": false
+        },
+        {
+          "text": "H on aina satelliitin kiertokorkeus",
+          "correct": false
+        },
+        {
+          "text": "h sisältää vain DOP-korjauksen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GNSS → h; rakentaminen/vaaitus → H. H ≈ h − N.",
+      "wrongFeedback": "h ja H eivät ole samoja — geoidiundulaatio erottaa ne.",
+      "featureId": "space:orthometric",
+      "featurePoints": 3,
+      "lessonRef": "space/datums/space-datum-orthometric",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Height_Systems",
+      "sourceRef": "navipedia/height-systems"
+    },
+    {
+      "id": "space-datum-itrf",
+      "chapter": "space-datums",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on ITRF geodesiassa?",
+      "choices": [
+        {
+          "text": "International Terrestrial Reference Frame — globaali, ajan myötä päivittyvä maakiinnitteinen referenssikehys",
+          "correct": true
+        },
+        {
+          "text": "Vain Suomen kunnan rajapyykkirekisteri",
+          "correct": false
+        },
+        {
+          "text": "Galileon salattu PRS-avainmateriaali",
+          "correct": false
+        },
+        {
+          "text": "NMEA 2000 -väylän pinostandardi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ITRF-realisaatiot (ITRF2014, ITRF2020…) ovat tarkkuusgeodesian globaali kehys; WGS84 seuraa lähelle.",
+      "wrongFeedback": "ITRF on kansainvälinen referenssikehys, ei kunnan rekisteri eikä NMEA.",
+      "featureId": "space:itrf",
+      "featurePoints": 4,
+      "lessonRef": "space/datums/space-datum-itrf",
+      "sourceUrl": "https://itrf.ign.fr/",
+      "sourceRef": "ign/itrf"
+    },
+    {
+      "id": "space-map-projection",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi karttaprojektioita tarvitaan?",
+      "choices": [
+        {
+          "text": "Ellipsoidin 3D-pinta pitää kuvata 2D-tasolle — jokin ominaisuus (kulma, pinta-ala, matka) vääristyy aina",
+          "correct": true
+        },
+        {
+          "text": "Projektio poistaa ionosfäärivirheet GNSS-signaalista",
+          "correct": false
+        },
+        {
+          "text": "Projektio synkronoi atomikellot automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Ilman projektiota satelliitit eivät näy vastaanottimelle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Gauss–Krüger, UTM, Mercator jne. ovat eri kompromisseja 2D-esitykseen.",
+      "wrongFeedback": "Projektio on geometrinen kuvaus ellipsoidilta tasolle — ei RF- eikä kellokorjaus.",
+      "featureId": "space:projection",
+      "featurePoints": 2,
+      "lessonRef": "space/maps/space-map-projection",
+      "sourceUrl": "https://proj.org/en/stable/about.html",
+      "sourceRef": "proj/about"
+    },
+    {
+      "id": "space-map-utm",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on UTM-koordinaatisto?",
+      "choices": [
+        {
+          "text": "Universaali poikittainen Mercator: maailma jaettu 6° vyöhykkeisiin metripohjaisilla tasokoordinaateilla",
+          "correct": true
+        },
+        {
+          "text": "Vain yksi globaali taso ilman vyöhykkeitä",
+          "correct": false
+        },
+        {
+          "text": "Pelkkä geoidimalli ilman projektiota",
+          "correct": false
+        },
+        {
+          "text": "GNSS-vastaanottimen binääriprotokolla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "UTM-vyöhyke 35N kattaa suuren osan Suomesta; mittakaava 0,9996 keskimeridiaanilla.",
+      "wrongFeedback": "UTM on vyöhykepohjainen projektio, ei geoidi eikä RF-protokolla.",
+      "featureId": "space:utm",
+      "featurePoints": 2,
+      "lessonRef": "space/maps/space-map-utm",
+      "sourceUrl": "https://proj.org/en/stable/operations/projections/utm.html",
+      "sourceRef": "proj/utm"
+    },
+    {
+      "id": "space-map-tm35fin",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on ETRS-TM35FIN (EPSG:3067)?",
+      "choices": [
+        {
+          "text": "Suomen virallinen tasokoordinaatisto: ETRS89 + TM-projektio vyöhykkeellä 35",
+          "correct": true
+        },
+        {
+          "text": "WGS72-pohjainen merenkulkukartta",
+          "correct": false
+        },
+        {
+          "text": "Vain NMEA-lauseiden suomenkielinen käännös",
+          "correct": false
+        },
+        {
+          "text": "Galileon High Accuracy Service -salaus",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EPSG:3067 on Maanmittauslaitoksen suosittelema metripohjainen järjestelmä Suomessa.",
+      "wrongFeedback": "TM35FIN on kansallinen tasokoordinaatisto, ei NMEA eikä Galileo-salaus.",
+      "featureId": "space:tm35fin",
+      "featurePoints": 2,
+      "lessonRef": "space/maps/space-map-tm35fin",
+      "sourceUrl": "https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/koordinaatit-korkeudet-ja-tarkkamittaus/koordinaattijarjestelmat",
+      "sourceRef": "mml/tm35fin"
+    },
+    {
+      "id": "space-map-web-mercator",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on Web Mercator (EPSG:3857) ja mikä sen sudenkuoppa?",
+      "choices": [
+        {
+          "text": "Selainkarttojen tasoprojektio; etäisyydet ja pinta-alat vääristyvät etenkin korkeilla leveyksillä",
+          "correct": true
+        },
+        {
+          "text": "Tarkin mahdollinen geodeettinen datumi senttitasolle",
+          "correct": false
+        },
+        {
+          "text": "Suomen virallinen korkeusjärjestelmä",
+          "correct": false
+        },
+        {
+          "text": "SBAS-korjausten siirtoprotokolla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EPSG:3857 sopii tiilikarttoihin, ei pinta-ala- tai tarkkuusmittaukseen pohjoisessa.",
+      "wrongFeedback": "Web Mercator ei ole korkeusjärjestelmä eikä SBAS — se on web-karttojen projektio.",
+      "featureId": "space:web-mercator",
+      "featurePoints": 3,
+      "lessonRef": "space/maps/space-map-web-mercator",
+      "sourceUrl": "https://proj.org/en/stable/operations/projections/webmerc.html",
+      "sourceRef": "proj/webmerc"
+    },
+    {
+      "id": "space-map-mercator-property",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Minkä ominaisuuden klassinen Mercator-projektio säilyttää?",
+      "choices": [
+        {
+          "text": "Kulmat (konformisuus) — siksi se sopii navigointiin loxodrome-kursseilla",
+          "correct": true
+        },
+        {
+          "text": "Kaikki pinta-alat tarkasti kaikkialla",
+          "correct": false
+        },
+        {
+          "text": "Kaikki etäisyydet globaalisti ilman mittakaavaa",
+          "correct": false
+        },
+        {
+          "text": "Geoidiundulaation N suoraan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Mercator on konforminen: kulmat säilyvät, pinta-alat eivät (Grönlanti vs Afrikka).",
+      "wrongFeedback": "Mercator ei säilytä pinta-aloja eikä undulaatiota — se säilyttää kulmat.",
+      "featureId": "space:mercator",
+      "featurePoints": 2,
+      "lessonRef": "space/maps/space-map-mercator-property",
+      "sourceUrl": "https://proj.org/en/stable/operations/projections/merc.html",
+      "sourceRef": "proj/merc"
+    },
+    {
+      "id": "space-map-scale-factor",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitä tarkoittaa UTM/TM-projektion mittakaavakerroin 0,9996 keskimeridiaanilla?",
+      "choices": [
+        {
+          "text": "Tasomatkat ovat hieman lyhyempiä kuin ellipsoidimatkat keskimeridiaanilla — kompromissi vyöhykkeen reunoille",
+          "correct": true
+        },
+        {
+          "text": "GPS-pseudomatkat kerrotaan aina 0,9996:lla",
+          "correct": false
+        },
+        {
+          "text": "Geoidi on 0,9996 kertaa ellipsoidi",
+          "correct": false
+        },
+        {
+          "text": "NMEA-korkeus skaalataan 0,9996:lla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "k0=0,9996 vähentää reunojen mittakaavavirhettä jakamalla virheen vyöhykkeelle.",
+      "wrongFeedback": "Mittakaavakerroin on projektion parametri, ei GNSS-pseudomatkan kerroin.",
+      "featureId": "space:scale-factor",
+      "featurePoints": 3,
+      "lessonRef": "space/maps/space-map-scale-factor",
+      "sourceUrl": "https://proj.org/en/stable/operations/projections/utm.html",
+      "sourceRef": "proj/utm-scale"
+    },
+    {
+      "id": "space-map-epsg",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on EPSG-koodi paikkatiedossa?",
+      "choices": [
+        {
+          "text": "Yksikäsitteinen tunniste koordinaattijärjestelmälle (CRS), esim. 4326 = WGS84 lon/lat",
+          "correct": true
+        },
+        {
+          "text": "Satelliitin PRN-numero konstellaatiossa",
+          "correct": false
+        },
+        {
+          "text": "RTCM-viestin tyyppinumero",
+          "correct": false
+        },
+        {
+          "text": "Vain kuvatiedoston DPI-asetus",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "EPSG-rekisteri (nykyisin IOGP) listaa CRS:t: 4326, 3857, 3067 jne.",
+      "wrongFeedback": "EPSG ei ole PRN eikä RTCM — se tunnistaa koordinaattijärjestelmän.",
+      "featureId": "space:epsg",
+      "featurePoints": 2,
+      "lessonRef": "space/maps/space-map-epsg",
+      "sourceUrl": "https://epsg.org/",
+      "sourceRef": "epsg.org"
+    },
+    {
+      "id": "space-map-kkj",
+      "chapter": "space-maps",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on KKJ Suomen paikkatiedon historiassa?",
+      "choices": [
+        {
+          "text": "Vanha kansallinen kartastokoordinaattijärjestelmä; nykyään siirrytty ETRS89/TM35FIN-järjestelmiin",
+          "correct": true
+        },
+        {
+          "text": "Uusi Galileo-palvelu vuodesta 2024",
+          "correct": false
+        },
+        {
+          "text": "GNSS-vastaanottimen tehdasasetus maailmanlaajuisesti",
+          "correct": false
+        },
+        {
+          "text": "Geoidimallin ainoa globaali standardi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "KKJ (kaistat) näkyy yhä vanhoissa aineistoissa — muunna ETRS89:ään virallisiin prosesseihin.",
+      "wrongFeedback": "KKJ on Suomen vanha järjestelmä, ei Galileo-palvelu.",
+      "featureId": "space:kkj",
+      "featurePoints": 3,
+      "lessonRef": "space/maps/space-map-kkj",
+      "sourceUrl": "https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/koordinaatit-korkeudet-ja-tarkkamittaus/koordinaattijarjestelmat",
+      "sourceRef": "mml/kkj"
+    },
+    {
+      "id": "space-app-ttff",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitkä tarkoittaa TTFF GNSS-vastaanottimessa?",
+      "choices": [
+        {
+          "text": "Time To First Fix — aika ensimmäiseen kelvolliseen paikkaratkaisuun käynnistyksen jälkeen",
+          "correct": true
+        },
+        {
+          "text": "Total Tropospheric Free Factor — tropoviiveen kerroin",
+          "correct": false
+        },
+        {
+          "text": "Tracked Triple Frequency Format — RINEX-versio",
+          "correct": false
+        },
+        {
+          "text": "Terrain To Flat Factor — projektion mittakaava",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Cold/warm/hot start vaikuttavat TTFF:ään; A-GNSS lyhentää sitä.",
+      "wrongFeedback": "TTFF = Time To First Fix, ei tropo- tai RINEX-termi.",
+      "featureId": "space:ttff",
+      "featurePoints": 2,
+      "lessonRef": "space/applications/space-app-ttff",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Time_To_First_Fix",
+      "sourceRef": "navipedia/ttff"
+    },
+    {
+      "id": "space-app-elevation-mask",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi GNSS-vastaanottimissa käytetään elevaatiomaskia (esim. 10–15°)?",
+      "choices": [
+        {
+          "text": "Matalan elevaation satelliiteilla on enemmän ilmakehä- ja multipath-virheitä",
+          "correct": true
+        },
+        {
+          "text": "Matalat satelliitit eivät lähetä efemeridiä lainkaan",
+          "correct": false
+        },
+        {
+          "text": "Elevaatiomaski muuttaa WGS84-parametreja",
+          "correct": false
+        },
+        {
+          "text": "Maski tarvitaan vain NMEA-checksumia varten",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Matalat satelliitit pidentävät ilmakehäpolkua ja heijastuvat helpommin — maski parantaa laatua saatavuuden kustannuksella.",
+      "wrongFeedback": "Elevaatiomaski suodattaa huonoja mittauksia — se ei muuta ellipsoidia.",
+      "featureId": "space:elev-mask",
+      "featurePoints": 2,
+      "lessonRef": "space/applications/space-app-elevation-mask",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Elevation_Mask",
+      "sourceRef": "navipedia/elevation-mask"
+    },
+    {
+      "id": "space-app-jamming",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on GNSS-jammingin ja spoofingin ero?",
+      "choices": [
+        {
+          "text": "Jamming tukkii signaalin häiriöllä; spoofing syöttää väärennettyjä GNSS-signaaleja harhauttamaan vastaanotinta",
+          "correct": true
+        },
+        {
+          "text": "Ne tarkoittavat täysin samaa RF-ilmiötä",
+          "correct": false
+        },
+        {
+          "text": "Jamming muuttaa vain geoidia, spoofing ellipsoidia",
+          "correct": false
+        },
+        {
+          "text": "Spoofing on mahdollista vain GEO-radoilla",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Jamming → ei fixiä/heikko SNR. Spoofing → väärä mutta 'uskottava' paikka/aika. Molemmat ovat reaalisia uhkia.",
+      "wrongFeedback": "Jamming ja spoofing eivät ole datumi-asioita — ne ovat RF-hyökkäyksiä/häiriöitä.",
+      "featureId": "space:jamming-spoof",
+      "featurePoints": 3,
+      "lessonRef": "space/applications/space-app-jamming",
+      "sourceUrl": "https://www.gps.gov/spectrum/jamming/",
+      "sourceRef": "gps.gov/jamming"
+    },
+    {
+      "id": "space-app-assisted",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mitkä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?",
+      "choices": [
+        {
+          "text": "Apudata verkosta: aika, karkea paikka, almanakka/efemeridi — TTFF lyhenee",
+          "correct": true
+        },
+        {
+          "text": "Korvaa satelliittisignaalit kokonaan tukiasemilla",
+          "correct": false
+        },
+        {
+          "text": "Muuttaa karttaprojektion automaattisesti TM35FIN:iksi",
+          "correct": false
+        },
+        {
+          "text": "Kalibroi geoidimallin kentällä ilman mittausta",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "A-GNSS nopeuttaa hankintaa; paikkaratkaisu perustuu silti satelliittimittauksiin (tai hybridiin).",
+      "wrongFeedback": "A-GNSS ei korvaa satelliitteja eikä geoidia — se auttaa käynnistystä.",
+      "featureId": "space:agnss",
+      "featurePoints": 2,
+      "lessonRef": "space/applications/space-app-assisted",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Assisted_GNSS",
+      "sourceRef": "navipedia/agnss"
+    },
+    {
+      "id": "space-app-antenna-pco",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi tarkkuus-GNSS:ssä antennin phase center (PCO/PCV) pitää tuntea?",
+      "choices": [
+        {
+          "text": "Mittaus viittaa sähköiseen vaihekeskukseen, ei välttämättä antennin fyysiseen pohjaan — mm–cm virhe muuten",
+          "correct": true
+        },
+        {
+          "text": "Phase center vaikuttaa vain NMEA-baudinopeuteen",
+          "correct": false
+        },
+        {
+          "text": "PCO tarvitaan ainoastaan Web Mercator -muunnokseen",
+          "correct": false
+        },
+        {
+          "text": "Phase center korvaa kokonaan geoidimallin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ARP + PCO/PCV-kalibrointi (IGS/NGS) on osa senttitasoista mittausta.",
+      "wrongFeedback": "PCO/PCV on antennin sähkögeometriaa, ei kartta- tai NMEA-asetus.",
+      "featureId": "space:pco",
+      "featurePoints": 4,
+      "lessonRef": "space/applications/space-app-antenna-pco",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Antenna_Phase_Centre",
+      "sourceRef": "navipedia/antenna-pc"
+    },
+    {
+      "id": "space-app-time-gps-utc",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä ero on GPS-ajan ja UTC:n välillä?",
+      "choices": [
+        {
+          "text": "GPS-aika on jatkuva (ei karkaussekunteja); UTC:hen nähden on kokonaislukupoikkeama leap seconds",
+          "correct": true
+        },
+        {
+          "text": "GPS-aika ja UTC ovat aina identtiset nanosekuntiin",
+          "correct": false
+        },
+        {
+          "text": "UTC seuraa vain Galileo-konstellaatiota",
+          "correct": false
+        },
+        {
+          "text": "GPS-aika resetoituu joka keskiyö paikallisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Navigointiviesti sisältää UTC-korjausparametrit; leap second -taulukko pitää olla ajan tasalla.",
+      "wrongFeedback": "GPS≠UTC jatkuvasti — karkaussekunnit erottavat ne.",
+      "featureId": "space:gps-time",
+      "featurePoints": 3,
+      "lessonRef": "space/applications/space-app-time-gps-utc",
+      "sourceUrl": "https://www.gps.gov/systems/gps/performance/accuracy/",
+      "sourceRef": "gps.gov/time"
+    },
+    {
+      "id": "space-app-indoor-limit",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Miksi tavallinen GNSS toimii heikosti syvällä sisätiloissa?",
+      "choices": [
+        {
+          "text": "L-kaistan signaali vaimenee seinissä ja katoissa — suora näkyvyys satelliitteihin puuttuu",
+          "correct": true
+        },
+        {
+          "text": "WGS84-ellipsoidi ei ulotu rakennusten sisälle",
+          "correct": false
+        },
+        {
+          "text": "NMEA-protokolla kieltää sisätilakoordinaatit",
+          "correct": false
+        },
+        {
+          "text": "Atomikellot sammuvat automaattisesti sisätiloissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "GNSS tarvitsee RF-näkyvyyttä. Sisätiloissa käytetään Wi-Fi/UWB/inertial-hybridiratkaisuja.",
+      "wrongFeedback": "Ongelma on signaalin vaimeneminen, ei ellipsoidi tai NMEA-kielto.",
+      "featureId": "space:indoor",
+      "featurePoints": 1,
+      "lessonRef": "space/applications/space-app-indoor-limit",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Indoor_Positioning",
+      "sourceRef": "navipedia/indoor"
+    },
+    {
+      "id": "space-app-igs",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on IGS:n rooli tarkkuus-GNSS:ssä?",
+      "choices": [
+        {
+          "text": "International GNSS Service tuottaa tarkkoja ratoja, kelloja ja muita tuotteita tieteelle ja PPP:lle",
+          "correct": true
+        },
+        {
+          "text": "IGS operoi ainoastaan EGNOS-GEO-satelliitteja",
+          "correct": false
+        },
+        {
+          "text": "IGS on NMEA-lauseiden valmistajaliitto",
+          "correct": false
+        },
+        {
+          "text": "IGS määrittelee vain Web Mercator -tiilikoon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "IGS-tuotteet (sp3, clk, ANTEX…) ovat PPP:n ja tarkan geodesian perusta.",
+      "wrongFeedback": "IGS ei ole EGNOS-operaattori eikä NMEA-liitto — se tuottaa GNSS-analyysituotteita.",
+      "featureId": "space:igs",
+      "featurePoints": 3,
+      "lessonRef": "space/applications/space-app-igs",
+      "sourceUrl": "https://igs.org/",
+      "sourceRef": "igs.org"
+    },
+    {
+      "id": "space-app-rtcm",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on RTCM-korjausviesti GNSS:ssä?",
+      "choices": [
+        {
+          "text": "Standardimuotoinen binääriviesti differentiaalisiin/RTK-korjauksiin tukiasemalta roverille",
+          "correct": true
+        },
+        {
+          "text": "Karttalehden rasteriformaatti",
+          "correct": false
+        },
+        {
+          "text": "Vain JSON-muotoinen GeoJSON-vaihtoehto",
+          "correct": false
+        },
+        {
+          "text": "Galileon avoimen palvelun salaus",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RTCM 3.x MSM-viestit kuljettavat havaintoja/korjauksia; NTRIP kuljettaa niitä IP:llä.",
+      "wrongFeedback": "RTCM on korjaus-/havaintoviestistandardi, ei karttarasteri.",
+      "featureId": "space:rtcm",
+      "featurePoints": 3,
+      "lessonRef": "space/applications/space-app-rtcm",
+      "sourceUrl": "https://www.rtcm.org/",
+      "sourceRef": "rtcm.org"
+    },
+    {
+      "id": "space-app-accuracy-classes",
+      "chapter": "space-applications",
+      "domain": "space",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "interview"
+      ],
+      "prompt": "Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakataarkkuudelle hyvissä oloissa?",
+      "choices": [
+        {
+          "text": "SPP metrit; SBAS/DGPS sub-metri…metri; RTK fixed sentit",
+          "correct": true
+        },
+        {
+          "text": "Kaikki kolme ovat millimetreissä ilman antennia",
+          "correct": false
+        },
+        {
+          "text": "SPP sentit, RTK vain metrit",
+          "correct": false
+        },
+        {
+          "text": "SBAS on aina tarkempi kuin RTK fixed",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Suuruusluokat: SPP ~2–10 m, SBAS ~0,5–2 m, RTK fixed ~1–2 cm (lyhyt baseline).",
+      "wrongFeedback": "RTK fixed on tarkempi kuin SPP/SBAS — ei toisinpäin.",
+      "featureId": "space:accuracy-classes",
+      "featurePoints": 2,
+      "lessonRef": "space/applications/space-app-accuracy-classes",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Accuracy",
+      "sourceRef": "navipedia/accuracy"
+    }
+  ]
+}
