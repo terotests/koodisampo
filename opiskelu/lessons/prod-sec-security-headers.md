@@ -18,7 +18,7 @@ Headerit ovat defense-in-depth, eivät korvaa authz-tarkistuksia, output encodin
 
 `Access-Control-Allow-Origin: *` ei korvaa CSP:tä.
 
-`Cache-Control: public` voi vuotaa kirjautuneen käyttäjän dataa välimuistiin.
+`Cache-Control: public` voi vuotaa kirjautuneen käyttäjän dataa jaettuun välimuistiin (CDN, proxy) — HTTPS ei estä tätä, koska TLS voi päättyä välikerrokseen. Katso [`prod-sec-cache-control`](/docs/topics/security#prod-sec-cache-control).
 
 ## Parempi korjaus
 
