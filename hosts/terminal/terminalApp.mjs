@@ -890,9 +890,18 @@ function printEncounter(session) {
   ]);
 }
 
+function versionTagsDisplay(question) {
+  const versions = Array.isArray(question?.versions)
+    ? question.versions.map((v) => String(v).trim()).filter(Boolean)
+    : [];
+  if (!versions.length) return "";
+  return versions.join(" · ");
+}
+
 function printQuizEncounter(session, quiz) {
   const view = session.getEncounterView();
   const side = buildQuizSideMenu(quiz.entity, session);
+  const versionLabel = versionTagsDisplay(quiz.question);
   const lines = [
     BANNER,
     `  ${styled("Kuolemat:", FG.gray)} ${session.exportDeaths()}   |   ${styled("Palkka:", FG.gray)} ${styled(formatSalary(session), FG.brightGreen)}\n`,
@@ -900,6 +909,9 @@ function printQuizEncounter(session, quiz) {
     `\n${wrap(quiz.greeting)}`,
     "",
   ];
+  if (versionLabel) {
+    lines.push(`  ${styled(`Versio: ${versionLabel}`, FG.cyan)}`, "");
+  }
   for (let i = 0; i < quiz.question.choices.length; i += 1) {
     lines.push(`  ${styled(`[${i + 1}]`, FG.yellow)} ${quiz.question.choices[i].text}`);
   }
@@ -963,6 +975,7 @@ async function showQuizOutcome(session, quiz, correct) {
   const teaching = correct ? quiz.question.correctFeedback : quiz.question.wrongFeedback;
   const reaction = buildQuizReactionWithEmotion(quiz.entity, correct, session);
   const points = quiz.question.featurePoints || 0;
+  const versionLabel = versionTagsDisplay(quiz.question);
   const mark = correct
     ? styled("✓ OIKEIN", FG.brightGreen, BOLD)
     : styled("✗ VÄÄRIN", FG.red, BOLD);
@@ -971,12 +984,16 @@ async function showQuizOutcome(session, quiz, correct) {
     const extra = marked
       ? [`  ${styled("✓ Merkitty opiskelulistalle — Kysy AI:lta.", FG.brightGreen)}`, ""]
       : [];
+    const versionLines = versionLabel
+      ? [`  ${styled(`Versio: ${versionLabel}`, FG.cyan)}`, ""]
+      : [];
     drawLinesClear([
       BANNER,
       `  ${mark}`,
       "",
       wrap(reaction),
       "",
+      ...versionLines,
       `  ${styled("── Selitys ──", FG.gray)}`,
       `  ${styled(wrap(teaching), FG.gray)}`,
       "",

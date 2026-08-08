@@ -25,6 +25,7 @@ export type TrainQuestion = {
   chapter?: string;
   bankId?: string;
   difficulty?: number;
+  versions?: string[];
   correctFeedback?: string;
   wrongFeedback?: string;
   studyNotes?: string;
@@ -146,8 +147,17 @@ export function mountQuestionTrainer(opts: QuestionTrainerOptions) {
 
     const q = round.question;
     const domain = domainLabel(q.domain || "");
+    const versions = Array.isArray(q.versions)
+      ? q.versions.map((v) => String(v).trim()).filter(Boolean)
+      : [];
+    const versionMeta = versions.length ? ` · ${versions.join(" · ")}` : "";
     let html = "";
-    html += `<div class="train-q-meta">${esc(domain)} · vaikeus ${esc(q.difficulty ?? "—")} · <code>${esc(q.id)}</code></div>`;
+    html += `<div class="train-q-meta">${esc(domain)} · vaikeus ${esc(q.difficulty ?? "—")}${esc(versionMeta)} · <code>${esc(q.id)}</code></div>`;
+    if (versions.length) {
+      html += `<div class="version-tags">${versions
+        .map((v) => `<span class="version-tag">${esc(v)}</span>`)
+        .join("")}</div>`;
+    }
     html += `<div class="train-prompt">${esc(q.prompt)}</div>`;
     html += `<div class="train-choices">`;
     for (const c of round.choices) {
@@ -171,6 +181,11 @@ export function mountQuestionTrainer(opts: QuestionTrainerOptions) {
         ? q.correctFeedback || "Oikein!"
         : q.wrongFeedback || q.correctFeedback || "Väärin.";
       html += `<div class="train-feedback ${ok ? "ok" : "bad"}">${ok ? "✓ Oikein" : "✗ Väärin"}</div>`;
+      if (versions.length) {
+        html += `<div class="version-tags">${versions
+          .map((v) => `<span class="version-tag">${esc(v)}</span>`)
+          .join("")}</div>`;
+      }
       html += `<div class="train-teaching"><h4>── Selitys ──</h4>${esc(teaching)}</div>`;
       if (q.studyNotes) {
         html += `<div class="train-teaching train-notes">${esc(q.studyNotes)}</div>`;

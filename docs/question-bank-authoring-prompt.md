@@ -45,18 +45,23 @@ Jokainen kysymys JSON-objektina:
   "sourceRef": "lahde/polku#ankkuri",
   "sourceUrl": "https://virallinen-dokumentaatio/...",
   "featureId": "domain:aihe-avain",
-  "featurePoints": 2-5
+  "featurePoints": 2-5,
+  "versions": ["C++17"]
 }
 
 Valinnainen diff 4–5: "studyNotes" — 2–4 lausetta AI-opetusnäkymään.
+Valinnainen `versions` — kielistandardi / framework-versio (esim. `C++17`, `ES2020`, `Qt 6`), näytetään kysymyksessä, vastauksessa ja oppitunnilla. Käytä kun vastaus riippuu tietystä versiosta.
 
 Pankkitaso:
 {
   "id": "pankki-id",
   "domain": "domain-avain",
   "source": "https://paalähde/",
+  "defaultVersions": ["C++17"],
   "questions": [ ... ]
 }
+
+`defaultVersions` periytyy kysymyksille joilla ei ole omaa `versions`-kenttää.
 
 ## Säännöt
 1. `id` uniikki — tarkista `npm run questions:list -- --json` ettei ole duplikaatteja

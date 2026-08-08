@@ -19,6 +19,10 @@ import {
   lessonSolutionMarkdown,
   resolveAiStudySolution,
 } from "../shared/lessonSolutionCore.mjs";
+import {
+  formatVersionTags,
+  resolveQuestionVersions,
+} from "../shared/questionVersions.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const banksDir = resolve(__dirname, "../../content/question-banks");
@@ -50,6 +54,7 @@ function loadAllQuestions() {
         domain: q.domain || domain,
         bankId: bank.id,
         bankSource: bank.source,
+        versions: resolveQuestionVersions(q, bank),
       });
     }
   }
@@ -690,9 +695,14 @@ export function buildAiStudyText(question, readLessonFile = null) {
   const parts = [];
 
   const tag = question.chapter || question.domain || "aihe";
-  parts.push(`【 ${tag} 】`);
+  const versionLabel = formatVersionTags(question.versions);
+  parts.push(versionLabel ? `【 ${tag} · ${versionLabel} 】` : `【 ${tag} 】`);
   parts.push("");
   parts.push(question.prompt);
+  if (versionLabel) {
+    parts.push("");
+    parts.push(`Versio: ${versionLabel}`);
+  }
   parts.push("");
   parts.push("── Ratkaisu ──");
   if (solution.choiceN > 0) {
