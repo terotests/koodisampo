@@ -21,9 +21,11 @@ function makeApp() {
   app.setViewport(1024, 768, false);
   const bank = JSON.parse(fs.readFileSync(path.join(root, "content/question-banks/rust.json"), "utf8"));
   const t = app.addTopic("rust", "RUST");
+  app.setStudyUrl("https://example.test/opiskelu/docs/intro/");
   for (const q of bank.questions) {
     const qi = app.addQuestion(t, q.prompt, q.correctFeedback || "", q.wrongFeedback || "");
     for (const c of q.choices) app.addChoice(qi, c.text, !!c.correct);
+    app.setQuestionLink(qi, "https://example.test/opiskelu/docs/topics/rust/#" + q.id);
   }
   app.start();
   return app;
@@ -150,6 +152,46 @@ function runUntilDone(app, limit = 120000) {
   const small = JSON.parse(app.render());
   const maxY = Math.max(...small.list.cmds.filter((c) => c.text).map((c) => c.y + (c.h || 0)));
   assert.ok(maxY <= 520 + 1, "content fits the screen: " + maxY);
+}
+
+// Opiskelumateriaali: alapalkin linkki ja vastauksen jälkeinen oppituntilinkki.
+{
+  const app = makeApp();
+  runUntilDone(app);
+  JSON.parse(app.render());
+  assert.equal(app.linkUrl.length, 1, "footer study link");
+  const fx = (app.linkX0[0] + app.linkX1[0]) / 2;
+  const fy = (app.linkY0[0] + app.linkY1[0]) / 2;
+  assert.ok(app.linkAt(fx, fy));
+  app.tap(fx, fy);
+  assert.equal(app.takeOpenUrl(), "https://example.test/opiskelu/docs/intro/");
+  assert.equal(app.takeOpenUrl(), "", "url is handed out once");
+  app.keyDown("o");
+  assert.equal(app.takeOpenUrl(), "https://example.test/opiskelu/docs/intro/");
+
+  app.keyDown("Enter");
+  runUntilDone(app);
+  app.keyDown("l");
+  assert.equal(app.takeOpenUrl(), "", "no lesson link before answering");
+  app.keyDown("1");
+  runUntilDone(app);
+  const q = app.questions[app.qIndex];
+  assert.match(q.lessonUrl, /^https:\/\/example\.test\/opiskelu\/docs\/topics\/rust\/#rust-/);
+  assert.match(app.screenText(), /LUE OPPITUNTI JA SELITYS/);
+  const doc = JSON.parse(app.render());
+  assert.equal(app.linkUrl.length, 2, "lesson link on screen");
+  const lx = (app.linkX0[1] + app.linkX1[1]) / 2;
+  const ly = (app.linkY0[1] + app.linkY1[1]) / 2;
+  app.tap(lx, ly);
+  assert.equal(app.takeOpenUrl(), q.lessonUrl);
+  assert.equal(app.phaseIndex(), 2, "tapping the link does not advance");
+  app.keyDown("L");
+  assert.equal(app.takeOpenUrl(), q.lessonUrl);
+  // Alleviivaus: linkkitekstin alla on tekstin levyinen viiva.
+  const run = doc.list.cmds.find((c) => c.text && c.text.startsWith("LUE OPPITUNTI"));
+  const line = doc.list.cmds.find((c) => !c.text && c.h === 2 && Math.abs(c.x - run.x) < 1 && c.y >= run.y && c.y < run.y + 60);
+  assert.ok(line, "underline under the lesson link");
+  assert.ok(line.w < 700, "underline is text-wide, not full-width: " + line.w);
 }
 
 console.log("terminal_quiz.test.mjs OK");

@@ -18366,6 +18366,7 @@ class KsQuestion  {
     this.badText = "";
     this.choices = [];
     this.correct = 0;
+    this.lessonUrl = "";
   }
 }
 class KsLine  {
@@ -18377,6 +18378,7 @@ class KsLine  {
     this.jitter = 20;
     this.hold = 0;
     this.hit = -1;
+    this.link = "";
   }
   isDone () {
     return this.shown >= this.text.length;
@@ -18419,8 +18421,17 @@ class KoodisampoTerminal  {
     this.hitY0 = [];
     this.hitY1 = [];
     this.hitV = [];
+    this.linkX0 = [];
+    this.linkX1 = [];
+    this.linkY0 = [];
+    this.linkY1 = [];
+    this.linkUrl = [];
+    this.studyUrl = "";
+    this.pendingUrl = "";
+    this.lessonNow = "";
     this.seed = 1234567;
     this.footEl = undefined;
+    this.footLink = undefined;
   }
   setSeed (s) {
     this.seed = s % 2147483646 + 1;
@@ -18458,6 +18469,19 @@ class KoodisampoTerminal  {
       q.correct = q.choices.length;
     }
     q.choices.push(text);
+  };
+  setQuestionLink (qi, url) {
+    const q = this.questions[qi];
+    q.lessonUrl = url;
+  };
+  setStudyUrl (url) {
+    this.studyUrl = url;
+    this.dirty = true;
+  };
+  takeOpenUrl () {
+    const u = this.pendingUrl;
+    this.pendingUrl = "";
+    return u;
   };
   questionCount () {
     return this.questions.length;
@@ -18748,6 +18772,7 @@ class KoodisampoTerminal  {
   showQuestion () {
     this.mode = 1;
     this.phase = 0;
+    this.lessonNow = "";
     this.clearScreen();
     this.qIndex = this.deck[this.roundPos];
     const q = this.questions[this.qIndex];
@@ -18833,6 +18858,17 @@ class KoodisampoTerminal  {
       if ( q.badText.length > 0 ) {
         this.emit("ln fb", q.badText, 16, 18, 250, -1);
       }
+    }
+    this.lessonNow = q.lessonUrl;
+    if ( q.lessonUrl.length > 0 ) {
+      this.gap(0);
+      let label = "LUE OPPITUNTI JA SELITYS  [L]";
+      if ( this.coarse ) {
+        label = "LUE OPPITUNTI JA SELITYS";
+      }
+      const li = this.emit("ln", label, 12, 10, 0, -1);
+      const ll = this.lines[li];
+      ll.link = q.lessonUrl;
     }
     this.gap(0);
     if ( this.roundPos + 1 < this.roundLen ) {
@@ -18932,6 +18968,18 @@ class KoodisampoTerminal  {
     this.idleMs = 0.0;
     if ( k == "t" || k == "T" ) {
       this.theme = (this.theme + 1) % 3;
+      return true;
+    }
+    if ( ((k == "l" || k == "L") && this.mode == 1) && this.phase == 2 ) {
+      if ( this.lessonNow.length > 0 ) {
+        this.pendingUrl = this.lessonNow;
+      }
+      return true;
+    }
+    if ( k == "o" || k == "O" ) {
+      if ( this.studyUrl.length > 0 ) {
+        this.pendingUrl = this.studyUrl;
+      }
       return true;
     }
     if ( k == "Escape" ) {
@@ -19050,6 +19098,14 @@ class KoodisampoTerminal  {
     return -1;
   };
   tap (x, y) {
+    let j = 0;
+    while (j < this.linkUrl.length) {
+      if ( ((x >= this.linkX0[j] && x < this.linkX1[j]) && y >= this.linkY0[j]) && y < this.linkY1[j] ) {
+        this.pendingUrl = this.linkUrl[j];
+        return true;
+      }
+      j = j + 1;
+    };
     let hit = -1;
     let i = 0;
     while (i < this.hitV.length) {
@@ -19136,19 +19192,30 @@ class KoodisampoTerminal  {
     s = ((s + ".ok { color: ") + fg) + " }\n";
     s = ((s + ".err { color: ") + fg) + " }\n";
     s = ((s + ".fb { color: ") + fg) + " }\n";
-    s = ((s + ".foot { font-size: 20px; color: ") + dm) + " }\n";
+    s = ((s + ".foot { font-size: 20px; color: ") + dm) + "; flex: 1 }\n";
+    s = s + ".footrow { display: flex; flex-direction: row; width: 100%; gap: 16px;";
+    s = s + " align-items: flex-start }\n";
+    s = s + ".linkrow { display: flex; flex-direction: row }\n";
+    s = s + ".linkbox { display: flex; flex-direction: column }\n";
+    s = ((s + ".lnk { font-size: 32px; line-height: 1.12; color: ") + fg) + " }\n";
+    s = ((s + ".flnk { font-size: 20px; color: ") + fg) + " }\n";
+    s = ((s + ".uline { width: 100%; height: 2px; background-color: ") + fg) + " }\n";
     s = s + "@media (max-width: 760px) {\n";
     s = s + "  .screen { padding: 16px 16px }\n";
     s = s + "  .ln { font-size: 25px }\n";
     s = s + "  .brand { font-size: 19px }\n";
     s = s + "  .status { font-size: 19px }\n";
     s = s + "  .foot { font-size: 17px }\n";
+    s = s + "  .flnk { font-size: 17px }\n";
+    s = s + "  .lnk { font-size: 25px }\n";
     s = s + "}\n";
     s = s + "@media (max-width: 420px) {\n";
     s = s + "  .ln { font-size: 22px }\n";
+    s = s + "  .lnk { font-size: 22px }\n";
     s = s + "}\n";
     s = s + "@media (max-height: 560px) {\n";
     s = s + "  .ln { font-size: 22px }\n";
+    s = s + "  .lnk { font-size: 22px }\n";
     s = s + "  .screen { padding: 10px 20px }\n";
     s = s + "}\n";
     return s;
@@ -19195,12 +19262,20 @@ class KoodisampoTerminal  {
       return "NAPAUTA VASTAUSTA TAI JATKA  ·  T = VÄRI";
     }
     if ( this.mode == 0 ) {
-      return ("[00-" + this.pad2(this.topics.length)) + "] / NUOLET + ENTER  ·  [T] VÄRI  ·  [M] ÄÄNI";
+      return ("[00-" + this.pad2(this.topics.length)) + "] / NUOLET + ENTER  ·  [O] OPISKELU  ·  [T] VÄRI  ·  [M] ÄÄNI";
     }
     if ( this.mode == 1 ) {
-      return "[1-4] VASTAA  ·  [ENTER] OHITA / JATKA  ·  [ESC] VALIKKO  ·  [T] VÄRI  ·  [M] ÄÄNI";
+      return "[1-4] VASTAA  ·  [ENTER] OHITA / JATKA  ·  [ESC] VALIKKO  ·  [O] OPISKELU  ·  [T] VÄRI  ·  [M] ÄÄNI";
     }
-    return "[ENTER] UUSI KIERROS  ·  [ESC] VALIKKO  ·  [T] VÄRI";
+    return "[ENTER] UUSI KIERROS  ·  [ESC] VALIKKO  ·  [O] OPISKELU  ·  [T] VÄRI";
+  };
+  linkEl (cls, text) {
+    const row = this.div("linkrow");
+    const box = this.div("linkbox");
+    box.addChild(this.span(cls, text));
+    box.addChild(this.div("uline"));
+    row.addChild(box);
+    return row;
   };
   build (body) {
     const page = this.div("screen");
@@ -19213,9 +19288,15 @@ class KoodisampoTerminal  {
     col.addChild(this.div("rule"));
     col.addChild(body);
     col.addChild(this.div("rule"));
-    const foot = this.span("foot", this.footText());
-    this.footEl = foot;
-    col.addChild(foot);
+    const frow = this.div("footrow");
+    frow.addChild(this.span("foot", this.footText()));
+    if ( this.studyUrl.length > 0 ) {
+      const fl = this.linkEl("flnk", "OPISKELUMATERIAALI");
+      this.footLink = fl;
+      frow.addChild(fl);
+    }
+    this.footEl = frow;
+    col.addChild(frow);
     page.addChild(col);
     return page;
   };
@@ -19239,7 +19320,10 @@ class KoodisampoTerminal  {
       if ( ((this.mode == 0 && l.hit >= 0) && l.hit == this.menuSel) && this.typingDone() ) {
         cls = cls + " sel";
       }
-      const e = this.span(cls, txt);
+      let e = this.span(cls, txt);
+      if ( l.link.length > 0 ) {
+        e = this.linkEl("lnk", txt);
+      }
       body.addChild(e);
       shownEls.push(e);
       shownIdx.push(i);
@@ -19289,10 +19373,23 @@ class KoodisampoTerminal  {
         this.hitY0.length = 0;
         this.hitY1.length = 0;
         this.hitV.length = 0;
+        this.linkX0.length = 0;
+        this.linkX1.length = 0;
+        this.linkY0.length = 0;
+        this.linkY1.length = 0;
+        this.linkUrl.length = 0;
+        if ( (typeof(this.footLink) !== "undefined" && this.footLink != null )  ) {
+          const fle = this.footLink;
+          this.addLinkRect(fle, this.studyUrl);
+        }
         let k = 0;
         while (k < ne) {
           const li = idx[k];
           const l = this.lines[li];
+          if ( l.link.length > 0 ) {
+            const le = els[k];
+            this.addLinkRect(le, l.link);
+          }
           if ( l.hit >= 0 ) {
             const e = els[k];
             this.hitY0.push(e.calculatedY);
@@ -19315,6 +19412,27 @@ class KoodisampoTerminal  {
       }
     };
     return "{}";
+  };
+  linkAt (x, y) {
+    let j = 0;
+    while (j < this.linkUrl.length) {
+      if ( ((x >= this.linkX0[j] && x < this.linkX1[j]) && y >= this.linkY0[j]) && y < this.linkY1[j] ) {
+        return true;
+      }
+      j = j + 1;
+    };
+    return false;
+  };
+  currentLesson () {
+    return this.lessonNow;
+  };
+  addLinkRect (row, url) {
+    const e = row.getChild(0);
+    this.linkX0.push(e.calculatedX - 6.0);
+    this.linkX1.push((e.calculatedX + e.calculatedWidth) + 6.0);
+    this.linkY0.push(e.calculatedY - 6.0);
+    this.linkY1.push((e.calculatedY + e.calculatedHeight) + 6.0);
+    this.linkUrl.push(url);
   };
   screenText () {
     let s = "";

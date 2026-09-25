@@ -40,6 +40,7 @@ class KsQuestion {
     def badText:string ""
     def choices:[string]
     def correct:int 0
+    def lessonUrl:string ""
 }
 
 ; Yksi ruudun rivi (kappale). `shown` kertoo, montako merkkiä siitä on jo
@@ -54,6 +55,8 @@ class KsLine {
     def jitter:int 20
     def hold:int 0
     def hit:int -1
+    ; Linkin osoite; rivi piirretään alleviivattuna ja avataan napautuksella.
+    def link:string ""
 
     fn isDone:boolean () {
         return (shown >= (strlen text))
@@ -109,6 +112,17 @@ class KoodisampoTerminal {
     def hitY0:[double]
     def hitY1:[double]
     def hitV:[int]
+    def linkX0:[double]
+    def linkX1:[double]
+    def linkY0:[double]
+    def linkY1:[double]
+    def linkUrl:[string]
+
+    ; Opiskelumateriaalin etusivu (alapalkin linkki) ja isännälle avattavaksi
+    ; jätetty osoite (`takeOpenUrl`).
+    def studyUrl:string ""
+    def pendingUrl:string ""
+    def lessonNow:string ""
 
     def seed:int 1234567
 
@@ -156,6 +170,23 @@ class KoodisampoTerminal {
             q.correct = (array_length q.choices)
         }
         push q.choices text
+    }
+
+    fn setQuestionLink:void (qi:int url:string) {
+        def q:KsQuestion (itemAt questions qi)
+        q.lessonUrl = url
+    }
+
+    fn setStudyUrl:void (url:string) {
+        studyUrl = url
+        dirty = true
+    }
+
+    ; Osoite, jonka isäntä avaa uuteen ikkunaan; tyhjä = ei mitään.
+    fn takeOpenUrl:string () {
+        def u:string pendingUrl
+        pendingUrl = ""
+        return u
     }
 
     fn questionCount:int () {
@@ -466,6 +497,7 @@ class KoodisampoTerminal {
     fn showQuestion:void () {
         mode = 1
         phase = 0
+        lessonNow = ""
         this.clearScreen()
         qIndex = (itemAt deck roundPos)
         def q:KsQuestion (itemAt questions qIndex)
@@ -531,6 +563,17 @@ class KoodisampoTerminal {
             if ((strlen q.badText) > 0) {
                 this.emit("ln fb" q.badText 16 18 250 -1)
             }
+        }
+        lessonNow = q.lessonUrl
+        if ((strlen q.lessonUrl) > 0) {
+            this.gap(0)
+            def label:string "LUE OPPITUNTI JA SELITYS  [L]"
+            if coarse {
+                label = "LUE OPPITUNTI JA SELITYS"
+            }
+            def li:int (this.emit("ln" label 12 10 0 -1))
+            def ll:KsLine (itemAt lines li)
+            ll.link = q.lessonUrl
         }
         this.gap(0)
         if ((roundPos + 1) < roundLen) {
@@ -626,6 +669,18 @@ class KoodisampoTerminal {
         idleMs = 0.0
         if ((k == "t") || (k == "T")) {
             theme = ((theme + 1) % 3)
+            return true
+        }
+        if (((k == "l") || (k == "L")) && (mode == 1) && (phase == 2)) {
+            if ((strlen lessonNow) > 0) {
+                pendingUrl = lessonNow
+            }
+            return true
+        }
+        if ((k == "o") || (k == "O")) {
+            if ((strlen studyUrl) > 0) {
+                pendingUrl = studyUrl
+            }
             return true
         }
         if (k == "Escape") {
@@ -750,6 +805,14 @@ class KoodisampoTerminal {
 
     ; Napautus: rivillä, jossa on valinta, se valitaan; muualla se on ENTER.
     fn tap:boolean (x:double y:double) {
+        def j:int 0
+        while (j < (array_length linkUrl)) {
+            if ((x >= (itemAt linkX0 j)) && (x < (itemAt linkX1 j)) && (y >= (itemAt linkY0 j)) && (y < (itemAt linkY1 j))) {
+                pendingUrl = (itemAt linkUrl j)
+                return true
+            }
+            j = (j + 1)
+        }
         def hit:int -1
         def i:int 0
         while (i < (array_length hitV)) {
@@ -845,19 +908,30 @@ class KoodisampoTerminal {
         s = s + ".ok { color: " + fg + " }\n"
         s = s + ".err { color: " + fg + " }\n"
         s = s + ".fb { color: " + fg + " }\n"
-        s = s + ".foot { font-size: 20px; color: " + dm + " }\n"
+        s = s + ".foot { font-size: 20px; color: " + dm + "; flex: 1 }\n"
+        s = s + ".footrow { display: flex; flex-direction: row; width: 100%; gap: 16px;"
+        s = s + " align-items: flex-start }\n"
+        s = s + ".linkrow { display: flex; flex-direction: row }\n"
+        s = s + ".linkbox { display: flex; flex-direction: column }\n"
+        s = s + ".lnk { font-size: 32px; line-height: 1.12; color: " + fg + " }\n"
+        s = s + ".flnk { font-size: 20px; color: " + fg + " }\n"
+        s = s + ".uline { width: 100%; height: 2px; background-color: " + fg + " }\n"
         s = s + "@media (max-width: 760px) {\n"
         s = s + "  .screen { padding: 16px 16px }\n"
         s = s + "  .ln { font-size: 25px }\n"
         s = s + "  .brand { font-size: 19px }\n"
         s = s + "  .status { font-size: 19px }\n"
         s = s + "  .foot { font-size: 17px }\n"
+        s = s + "  .flnk { font-size: 17px }\n"
+        s = s + "  .lnk { font-size: 25px }\n"
         s = s + "}\n"
         s = s + "@media (max-width: 420px) {\n"
         s = s + "  .ln { font-size: 22px }\n"
+        s = s + "  .lnk { font-size: 22px }\n"
         s = s + "}\n"
         s = s + "@media (max-height: 560px) {\n"
         s = s + "  .ln { font-size: 22px }\n"
+        s = s + "  .lnk { font-size: 22px }\n"
         s = s + "  .screen { padding: 10px 20px }\n"
         s = s + "}\n"
         return s
@@ -914,15 +988,28 @@ class KoodisampoTerminal {
             return "NAPAUTA VASTAUSTA TAI JATKA  ·  T = VÄRI"
         }
         if (mode == 0) {
-            return "[00-" + (this.pad2((array_length topics))) + "] / NUOLET + ENTER  ·  [T] VÄRI  ·  [M] ÄÄNI"
+            return "[00-" + (this.pad2((array_length topics))) + "] / NUOLET + ENTER  ·  [O] OPISKELU  ·  [T] VÄRI  ·  [M] ÄÄNI"
         }
         if (mode == 1) {
-            return "[1-4] VASTAA  ·  [ENTER] OHITA / JATKA  ·  [ESC] VALIKKO  ·  [T] VÄRI  ·  [M] ÄÄNI"
+            return "[1-4] VASTAA  ·  [ENTER] OHITA / JATKA  ·  [ESC] VALIKKO  ·  [O] OPISKELU  ·  [T] VÄRI  ·  [M] ÄÄNI"
         }
-        return "[ENTER] UUSI KIERROS  ·  [ESC] VALIKKO  ·  [T] VÄRI"
+        return "[ENTER] UUSI KIERROS  ·  [ESC] VALIKKO  ·  [O] OPISKELU  ·  [T] VÄRI"
     }
 
     def footEl@(optional):EVGElement
+    def footLink@(optional):EVGElement
+
+    ; Alleviivattu linkki: teksti ja sen alla viiva, laatikko tekstin levyinen.
+    ; Laatikko on rivin sisällä, koska sarakkeen lapsena se venyisi koko
+    ; leveyteen ja viiva sen mukana.
+    fn linkEl:EVGElement (cls:string text:string) {
+        def row (this.div("linkrow"))
+        def box (this.div("linkbox"))
+        box.addChild((this.span(cls text)))
+        box.addChild((this.div("uline")))
+        row.addChild(box)
+        return row
+    }
 
     fn build:EVGElement (body:EVGElement) {
         def page (this.div("screen"))
@@ -935,9 +1022,15 @@ class KoodisampoTerminal {
         col.addChild((this.div("rule")))
         col.addChild(body)
         col.addChild((this.div("rule")))
-        def foot (this.span("foot" (this.footText())))
-        footEl = foot
-        col.addChild(foot)
+        def frow (this.div("footrow"))
+        frow.addChild((this.span("foot" (this.footText()))))
+        if ((strlen studyUrl) > 0) {
+            def fl (this.linkEl("flnk" "OPISKELUMATERIAALI"))
+            footLink = fl
+            frow.addChild(fl)
+        }
+        footEl = frow
+        col.addChild(frow)
         page.addChild(col)
         return page
     }
@@ -963,6 +1056,9 @@ class KoodisampoTerminal {
                 cls = cls + " sel"
             }
             def e (this.span(cls txt))
+            if ((strlen l.link) > 0) {
+                e = (this.linkEl("lnk" txt))
+            }
             body.addChild(e)
             push shownEls e
             push shownIdx i
@@ -1019,10 +1115,23 @@ class KoodisampoTerminal {
                 clear hitY0
                 clear hitY1
                 clear hitV
+                clear linkX0
+                clear linkX1
+                clear linkY0
+                clear linkY1
+                clear linkUrl
+                if (!null? footLink) {
+                    def fle:EVGElement (unwrap footLink)
+                    this.addLinkRect(fle studyUrl)
+                }
                 def k:int 0
                 while (k < ne) {
                     def li:int (itemAt idx k)
                     def l:KsLine (itemAt lines li)
+                    if ((strlen l.link) > 0) {
+                        def le:EVGElement (itemAt els k)
+                        this.addLinkRect(le l.link)
+                    }
                     if (l.hit >= 0) {
                         def e:EVGElement (itemAt els k)
                         push hitY0 e.calculatedY
@@ -1045,6 +1154,32 @@ class KoodisampoTerminal {
             }
         }
         return "{}"
+    }
+
+    ; Onko pisteessä linkki (isäntä vaihtaa hiiren osoittimen).
+    fn linkAt:boolean (x:double y:double) {
+        def j:int 0
+        while (j < (array_length linkUrl)) {
+            if ((x >= (itemAt linkX0 j)) && (x < (itemAt linkX1 j)) && (y >= (itemAt linkY0 j)) && (y < (itemAt linkY1 j))) {
+                return true
+            }
+            j = (j + 1)
+        }
+        return false
+    }
+
+    fn currentLesson:string () {
+        return lessonNow
+    }
+
+    ; Linkin osuma-alue: vähän väljempi kuin teksti, sormea varten.
+    fn addLinkRect:void (row:EVGElement url:string) {
+        def e:EVGElement (row.getChild(0))
+        push linkX0 (e.calculatedX - 6.0)
+        push linkX1 (e.calculatedX + e.calculatedWidth + 6.0)
+        push linkY0 (e.calculatedY - 6.0)
+        push linkY1 (e.calculatedY + e.calculatedHeight + 6.0)
+        push linkUrl url
     }
 
     ; Ruudun teksti ruudunlukijalle (isäntä peilaa sen aria-live-alueeseen).

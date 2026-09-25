@@ -7,6 +7,10 @@ import { renderDisplayList, setFontFallback } from "./vendor/evg-webgl.js";
 import { installCanvasMeasurer } from "./vendor/evg-measure.js";
 
 const CONTENT = new URL("../content/question-banks/", location.href);
+// Opiskelumateriaali (Docusaurus) julkaistaan pelin viereen: /koodisampo/opiskelu/
+const STUDY = new URL("../opiskelu/", location.href);
+// Aiheet, joita opiskelusivustolla ei ole (scripts/study-sync-docs.mjs).
+const NO_STUDY_DOMAINS = new Set(["kids"]);
 
 // Pankin tiedostonimi → aiheen nimi valikossa.
 const TITLES = {
@@ -33,6 +37,7 @@ const KEYS = new Set(["Enter", " ", "Escape", "ArrowUp", "ArrowDown", "Backspace
 const canvas = document.getElementById("screen");
 const msg = document.getElementById("msg");
 const sr = document.getElementById("sr");
+const srLesson = document.getElementById("srLesson");
 
 function fail(text) {
   msg.textContent = text;
@@ -67,8 +72,25 @@ async function loadBanks(app) {
       if (!q.prompt || !Array.isArray(q.choices) || q.choices.length < 2) continue;
       const qi = app.addQuestion(t, q.prompt, q.correctFeedback || "", q.wrongFeedback || "");
       for (const c of q.choices) app.addChoice(qi, String(c.text), !!c.correct);
+      const url = lessonUrl(q, item.bank);
+      if (url) app.setQuestionLink(qi, url);
     }
   }
+}
+
+// Sama osoite kuin pelin "Lue oppitunti" -linkissä (hosts/shared/studyLessonLinks.mjs):
+// aihesivu /docs/topics/<domain>/ ja ankkuri kysymyksen id:hen.
+function lessonUrl(q, bank) {
+  const ref = (q.lessonRef || "").replace(/^\/+|\/+$/g, "").split("/")[0];
+  const domain = ref || q.domain || bank.domain || String(bank.id || "").split("-")[0] || "general";
+  if (NO_STUDY_DOMAINS.has(domain) || !q.id) return "";
+  return new URL(`docs/topics/${encodeURIComponent(domain)}/#${encodeURIComponent(q.id)}`, STUDY).href;
+}
+
+function openLink(url) {
+  if (!url) return;
+  const w = window.open(url, "_blank", "noopener");
+  if (w) w.opener = null;
 }
 
 function titleOf(item) {
@@ -131,6 +153,9 @@ async function main() {
   measure.refresh();
 
   const app = new KoodisampoTerminal();
+  const studyHub = new URL("docs/intro/", STUDY).href;
+  app.setStudyUrl(studyHub);
+  document.getElementById("srStudy").href = studyHub;
   app.setSeed((Date.now() ^ (Math.random() * 0x7fffffff)) & 0x7fffffff);
   const savedTheme = Number(store("ks-terminal-theme") || 0);
   app.setTheme(savedTheme >= 0 && savedTheme < THEMES.length ? savedTheme : 0);
@@ -176,6 +201,9 @@ async function main() {
       document.querySelector('meta[name="theme-color"]').content = doc.bg;
       store("ks-terminal-theme", String(theme));
     }
+    const lesson = app.currentLesson();
+    srLesson.hidden = !lesson;
+    if (lesson) srLesson.href = lesson;
     const done = app.typingDone();
     if (done && !wasDone) sr.textContent = app.screenText();
     wasDone = done;
@@ -208,13 +236,22 @@ async function main() {
       e.preventDefault();
       needPaint = true;
     }
+    openLink(app.takeOpenUrl());
   });
 
-  canvas.addEventListener("pointerdown", (e) => {
+  canvas.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    canvas.style.cursor = app.linkAt(e.clientX - r.left, e.clientY - r.top) ? "pointer" : "text";
+  });
+
+  // pointerup eikä pointerdown: kosketuksessa vasta nosto on käyttäjän ele,
+  // jonka aikana selain sallii uuden ikkunan avaamisen.
+  canvas.addEventListener("pointerup", (e) => {
     clicker.wake();
     const r = canvas.getBoundingClientRect();
     app.tap(e.clientX - r.left, e.clientY - r.top);
     needPaint = true;
+    openLink(app.takeOpenUrl());
   });
 }
 

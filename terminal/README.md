@@ -14,10 +14,20 @@ vastausvaihtoehdot. Kierroksessa on 10 kysymystä valitusta aiheesta.
 | `1`–`4` / `a`–`d` | vastaus (kun kysymys on kokonaan ruudulla) |
 | ENTER / välilyönti | 1. kirjoita kysymys loppuun, 2. ohita lukutauko, 3. tulosta vaihtoehdot; palautteen jälkeen seuraava |
 | ESC | aihevalikko |
+| L | avaa kysymyksen oppitunnin (vastauksen jälkeen) uuteen ikkunaan |
+| O | avaa opiskelumateriaalin etusivun uuteen ikkunaan |
 | T | väri: vihreä / meripihka / valkoinen |
 | M | näppäinääni päälle / pois |
 
 Kosketusnäytöllä vaihtoehtoa tai aihetta napautetaan, muualle napautus on ENTER.
+
+**Opiskelumateriaali:** alapalkin oikeassa reunassa on aina alleviivattu
+OPISKELUMATERIAALI-linkki (`../opiskelu/docs/intro/`), ja vastauksen jälkeen
+ruudulle tulostuu linkki LUE OPPITUNTI JA SELITYS, joka vie kysymyksen kohtaan
+opiskelusivustolla (`../opiskelu/docs/topics/<domain>/#<kysymyksen id>`, sama
+osoite kuin pelin "Lue oppitunti" -linkissä). Linkit avautuvat uuteen
+ikkunaan. Lasten kysymyksillä ei ole oppituntilinkkiä, koska niitä ei ole
+opiskelusivustolla.
 
 ## Rakenne
 
