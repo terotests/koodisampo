@@ -12,6 +12,8 @@ const CONTENT = new URL("../content/question-banks/", location.href);
 const STUDY = new URL("../opiskelu/", location.href);
 // Aiheet, joita opiskelusivustolla ei ole (scripts/study-sync-docs.mjs).
 const NO_STUDY_DOMAINS = new Set(["kids"]);
+// Pankit, joita terminaalissa ei kysytä (lasten kysymykset kuuluvat pelin lapsitilaan).
+const SKIP_BANKS = new Set(["kids-easy.json"]);
 
 // Pankin tiedostonimi → aiheen nimi valikossa.
 const TITLES = {
@@ -20,7 +22,6 @@ const TITLES = {
   "docker-ops.json": "DOCKER",
   "git-ci.json": "GIT JA CI",
   "javascript-web.json": "JAVASCRIPT JA WEB",
-  "kids-easy.json": "LASTEN HELPOT",
   "linux-ops.json": "LINUX JA SYSTEMD",
   "postgresql-tuning.json": "POSTGRESQL-VIRITYS",
   "qt-dev.json": "QT-KEHITYS",
@@ -57,7 +58,7 @@ function store(key, value) {
 async function loadBanks(app) {
   const files = await (await fetch(new URL("manifest.json", CONTENT))).json();
   const banks = await Promise.all(
-    files.map(async (f) => {
+    files.filter((f) => !SKIP_BANKS.has(f)).map(async (f) => {
       try {
         const r = await fetch(new URL(f, CONTENT));
         return r.ok ? { file: f, bank: await r.json() } : null;
