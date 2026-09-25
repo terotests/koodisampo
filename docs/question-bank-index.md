@@ -1,12 +1,39 @@
 # Koodisampo — kysymyspankin kooste
 
-Yhteensä **1301** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
+Yhteensä **1273** kysymystä. Generoitu: `node scripts/questions-export-md.mjs`
 
 Oikea vastaus merkitty **lihavoituna**.
 
-## backend (5)
+## backend (19)
 
-### backend-api (1)
+### backend-api (4)
+
+#### `backend-outbox-pattern` · diff 4
+
+Tilaus tallennetaan kantaan ja heti perään lähetetään viesti jonoon. Joskus viesti lähtee, vaikka transaktio peruttiin, ja joskus tilaus tallentuu ilman viestiä. Mikä malli?
+
+- **Transactional outbox: viesti samaan transaktioon, erillinen julkaisija lähettää** ✓
+- Lähetä viesti ennen tietokantakirjoitusta, niin se ei koskaan jää lähtemättä
+- Kasvata jonon retry-määrää, jolloin puuttuvat viestit toimitetaan lopulta
+- Kaksi erillistä transaktiota, jotka commitoidaan mahdollisimman nopeasti peräkkäin
+
+#### `prod-backend-external-timeout` · diff 4
+
+Ulkoinen API hidastuu ja koko backend alkaa timeoutata. Mikä puuttuu?
+
+- **Timeoutit, rajatut retryt ja hallittu virhekäyttäytyminen ulkoisille riippuvuuksille** ✓
+- Pidempi HTTP-timeout jokaiseen ulkoiseen kutsuun ilman retry-rajaa
+- Lisää worker-säikeitä jotta odottavat pyynnöt mahtuvat jonoon
+- Poista ulkoiset API-kutsut synkronisesta polusta kokonaan
+
+#### `prod-backend-feature-flag` · diff 3
+
+Uusi suositusalgoritmi rikkoo checkoutin osalle käyttäjistä. Miten pienennät riskiä etukäteen?
+
+- **Feature flag tai kill switch: julkaise pienelle joukolle ja sammuta ilman uutta deployta** ✓
+- Julkaise kaikille heti — bugit löytyvät nopeammin tuotannosta
+- Pidä uusi algoritmi erillisessä branchissa kunnes seuraava sprintti
+- Lisää vain enemmän yksikkötestejä ilman tuotantokontrollia
 
 #### `prod-backend-webhook-idempotency` · diff 4
 
@@ -17,7 +44,34 @@ Maksupalvelu lähettää saman webhookin kahdesti verkkohäiriön jälkeen. Mite
 - Lisää timeout webhook-käsittelyyn odottaen verkon vakaantumista
 - Poista palveluntarjoajan retry-asetus integraatiosta kokonaan
 
-### backend-data (3)
+### backend-data (7)
+
+#### `backend-deadlock-lock-order` · diff 4
+
+Kaksi rinnakkaista siirtoa: toinen päivittää tilit A→B, toinen B→A. Lokissa näkyy satunnaisesti 'deadlock detected'. Miten estät?
+
+- **Lukitse rivit aina samassa järjestyksessä, esim. pienin tili-id ensin** ✓
+- Nosta deadlock_timeout minuuttiin, jolloin lukkiutuminen ehtii purkautua itsestään
+- Poista transaktio ja tee päivitykset erillisinä autocommit-lauseina
+- Lisää indeksi tilitaulun saldosarakkeelle lukitusten nopeuttamiseksi
+
+#### `backend-lost-update-atomic` · diff 4
+
+Varastosaldo luetaan sovellukseen, siitä vähennetään 1 ja arvo kirjoitetaan takaisin. Ruuhkassa saldo jää liian suureksi. Yksinkertaisin korjaus?
+
+- **Atominen päivitys tietokannassa: UPDATE stock SET qty = qty - 1 WHERE id = $1 AND qty > 0** ✓
+- Välimuisti saldolle sovelluksen muistiin, jolloin tietokantalukuja on vähemmän
+- Transaktion isolaatio READ UNCOMMITTEDiksi, jolloin muutokset näkyvät heti
+- Retry-logiikka, joka kirjoittaa saldon uudelleen virheen sattuessa
+
+#### `backend-migration-lock-timeout` · diff 4
+
+Migraatio `ALTER TABLE orders ADD COLUMN note text` jumittuu, ja samalla kaikki orders-kyselyt jonoutuvat ja API kaatuu. Pitkä raporttikysely oli käynnissä. Miten suojaat migraatiot?
+
+- **SET lock_timeout ennen ALTERia ja uusi yritys, jos lukkoa ei saada** ✓
+- Aja migraatio aina VACUUM FULLin jälkeen, jolloin taulu ei ole lukittuna
+- Lisää sarake DEFAULT-arvolla, jolloin ALTER ei tarvitse lukkoa lainkaan
+- Nosta max_connections, jotta jonoutuneet kyselyt mahtuvat odottamaan
 
 #### `prod-backend-n-plus-one` · diff 3
 
@@ -37,6 +91,15 @@ Kaksi käyttäjää muokkaa samaa riviä ja viimeinen tallennus ylikirjoittaa to
 - DELETE + INSERT korvaa UPDATE:n konfliktien välttämiseksi tietokannassa
 - Piilota rivi muilta käyttäjiltä UI:ssa samanaikaisen muokkauksen aikana
 
+#### `prod-backend-schema-migration` · diff 5
+
+Tuotantoon lisätään NOT NULL -sarake isoon tauluun ja deploy jäätyy. Mikä meni pieleen?
+
+- **Iso skeemamuutos yhdessä deployssa — käytä expand-and-contract -mallia erillisissä vaiheissa** ✓
+- NOT NULL -sarake pitää aina lisätä ilman DEFAULT-arvoa datan eheyden vuoksi
+- Suuri taulu pitää aina kopioida uuteen tauluun käsin ennen deployta
+- Skeemamuutos on turvallinen jos se ajetaan yöllä kun liikennettä on vähän
+
 #### `prod-backend-transfer-transaction` · diff 4
 
 Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen päivitys epäonnistuu kesken. Mitä tarvitaan?
@@ -46,7 +109,61 @@ Rahansiirto vähentää saldoa yhdeltä tililtä ja lisää toiselle. Toinen pä
 - sleep() kyselyjen välissä antaa tietokannan ehtiä synkronoitua ennen tarkistusta
 - Lokita molemmat päivitykset — inkonsistenssi korjataan myöhäisessä batch-ajossa
 
-### ops-incident (1)
+### ops-incident (8)
+
+#### `prod-backend-queue-dlq` · diff 4
+
+Taustajobi epäonnistuu aina samalla viestillä ja jono jumittuu. Mitä teet?
+
+- **Rajaa retryt, käytä backoffia ja siirrä pysyvästi epäonnistuva viesti dead-letter queueen** ✓
+- Poista virheenkäsittely jotta viesti ohitetaan automaattisesti
+- Käynnistä worker uudelleen — se poistaa jumittuneen viestin jonosta
+- Lisää worker-instansseja jotta sama viesti käsitellään nopeammin
+
+#### `prod-ops-alert-fatigue` · diff 3
+
+Tiimi saa kymmeniä hälytyksiä päivässä eikä tiedä mikä on tärkeää. Mikä on ongelma?
+
+- **Alertit eivät kuvaa käyttäjävaikutusta — hälytä vain asioista jotka vaativat toimenpiteen** ✓
+- Liian vähän alertteja — lisää hälytyksiä kaikista metriikoista
+- Poista kaikki alertit ja luota manuaaliseen tarkistukseen
+- Lähetä alertit vain sähköpostilla jotta ne eivät häiritse
+
+#### `prod-ops-config-env` · diff 3
+
+Staging toimii, tuotanto kaatuu: ympäristömuuttuja puuttuu. Miten estät tämän?
+
+- **Validoi pakolliset env-muuttujat käynnistyksessä — fail fast jos kriittinen config puuttuu** ✓
+- Käytä oletusarvoa tuotannossa jotta palvelu käynnistyy aina
+- Tarkista config vasta ensimmäisessä API-pyynnössä virhetilanteessa
+- Pidä kaikki konfiguraatio kovakoodattuna lähdekoodissa
+
+#### `prod-ops-connection-pool` · diff 4
+
+API hidastuu ruuhkassa, mutta CPU on vain 30 %. Mitä tarkistat?
+
+- **Saturation: DB connection pool, thread pool, jonot, lockit ja hitaat queryt** ✓
+- Lisää CPU-resursseja — 30 % käyttö tarkoittaa että kone on liian pieni
+- Kasvata connection poolia tuplaten ilman muita muutoksia
+- Oleta että hidastuminen johtuu käyttäjien hitaista laitteista
+
+#### `prod-ops-deploy-rollback` · diff 4
+
+Deployn jälkeen virheprosentti nousee 0,1 % → 8 %. Mitä teet ensin?
+
+- **Pysäytä rollout ja rollbackaa edelliseen tunnetusti toimivaan versioon** ✓
+- Aloita heti live-debuggaus tuotannossa juurisyyn löytämiseksi
+- Odota 24 h — virheet voivat olla tilapäisiä käyttäjävirheitä
+- Lisää instansseja jotta virheet jakautuvat useammalle palvelimelle
+
+#### `prod-ops-healthy-but-down` · diff 5
+
+Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?
+
+- **RED/USE: error rate, latency, throughput, saturation + riippuvuudet — healthcheck voi testata vain prosessia** ✓
+- Käynnistä container uudelleen — healthcheck on aina oikeassa
+- Poista readiness-probe jotta liikenne ohjautuu nopeammin
+- Oleta käyttäjävirhe — älä tutki infrastruktuuria
 
 #### `prod-ops-observability` · diff 5
 
@@ -57,9 +174,155 @@ Tuotannossa satunnainen datan korruptio, mutta lokit eivät riitä juurisyyn lö
 - Poista varoitustasoiset lokit vähentääksesi hälytyksiä on-call-vuoroissa
 - Käynnistä interaktiivinen debugger tuotannossa live-sessiolla virheen jäljitykseen
 
-## cpp (204)
+#### `prod-ops-runbook` · diff 3
 
-### correctness (20)
+Hälytys soi yöllä: maksut epäonnistuvat. Mistä aloitat?
+
+- **Runbook: lyhyt toimintalista — dashboard, riippuvuudet, rollback ja eskalointi** ✓
+- Soita heti kaikille kehittäjille ja aloita vapaamuotoinen debuggaus
+- Odota aamuun kun enemmän ihmisiä on paikalla
+- Käynnistä kaikki palvelut uudelleen ja toivo parasta
+
+## cpp (208)
+
+### cmake (15)
+
+#### `prod-cmake-cxx-flags-global` · diff 3
+
+Tiimi asettaa C++20:n globaalisti: `set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")`. Miksi moderni CMake suosii toista tapaa?
+
+- **target_compile_features(target PUBLIC|PRIVATE cxx_std_20) — standardi kuuluu targetille, ei koko projektille** ✓
+- CMAKE_CXX_FLAGS on ainoa tapa MSVC:llä — target_compile_features ei toimi
+- Globaali -std=c++20 on parempi koska se pakottaa kaikki riippuvuudet samaan standardiin
+- C++20 vaatii add_definitions(-DCXX20) erikseen jokaisessa targetissa
+
+#### `prod-cmake-duplicate-sources` · diff 3
+
+Sama `src/core.cpp` on listattu sekä `app`-exessä että `tests`-targetissa. Linkitys toimii, mutta ylläpito on kivulias. Parempi malli?
+
+- **Tee core erilliseksi kirjastoksi ja linkkaa se app:iin ja testeihin target_link_libraries(PRIVATE core)** ✓
+- Kopioi core.cpp eri hakemistoon testejä varten — erilliset kopiot estävät duplikaattiongelmat
+- Listaa core.cpp vain app:ssa ja #include testitiedostoon suoraan
+- Käytä add_custom_command joka kääntää core.cpp kerran ja kopioi .o-tiedoston
+
+#### `prod-cmake-fetchcontent-pin` · diff 4
+
+FetchContent hakee fmt-kirjaston GitHubin `main`-branchista. CI-buildit alkavat epäonnistua satunnaisesti ilman koodimuutoksia. Mikä korjaus?
+
+- **Pinnaa versio release tagilla tai commit hashilla — älä seuraa liikkuvaa main-branchia** ✓
+- Aja FetchContent jokaisen buildin alussa ilman cachea — tuore main on aina turvallisin
+- Poista FetchContent ja kopioi fmt lähdekoodi suoraan repoon ilman versionhallintaa
+- Vaihda GIT_SHALLOW FALSE — syvä clone korjaa epävakaat buildit
+
+#### `prod-cmake-fmt-public-leak` · diff 4
+
+Kirjasto `core` käyttää `fmt`:ää vain `.cpp`-tiedostossa, mutta CMakeListsissä on `target_link_libraries(core PUBLIC fmt::fmt)`. Miksi tämä on ongelma?
+
+- **PUBLIC vuotaa riippuvuuden kaikille `core`:n linkkaajille — PRIVATE riittää jos headerit eivät paljasta `fmt`:ää** ✓
+- fmt pitää aina linkata INTERFACE — STATIC ei toimi kolmannen osapuolen libeille
+- PUBLIC on pakollinen kaikille ulkoisille kirjastoille CMake 3.x:ssä
+- Ongelma on vain Windowsilla — Linuxissa PUBLIC/PRIVATE on irrelevantti
+
+#### `prod-cmake-glob-missed-source` · diff 3
+
+Lisäät `src/foo.cpp`:n, mutta build ei linkitä sitä ennen kuin ajat `cmake` uudelleen. CMakeLists: `file(GLOB SOURCES src/*.cpp)`. Mikä on ongelma?
+
+- **GLOB ei päivity automaattisesti — listaa lähteet eksplisiittisesti tai käytä CONFIGURE_DEPENDS** ✓
+- GLOB toimii vain header-tiedostoille — .cpp vaatii add_executable
+- Puuttuu `cmake --build . --target clean` jokaisen uuden tiedoston jälkeen
+- Ninja-generaattori ei tue GLOBia — vaihda Makefiles-generaattoriin
+
+#### `prod-cmake-header-only-interface` · diff 3
+
+Header-only-kirjastossa ei ole `.cpp`-tiedostoja. Miten mallinnat sen modernissa CMakessa?
+
+- **add_library(mylib INTERFACE) + target_include_directories ja target_compile_features INTERFACE-scopeilla** ✓
+- add_library(mylib STATIC) ilman lähdetiedostoja — tyhjä .cpp pakollinen
+- include_directories() globaalisti — header-only ei tarvitse targetia
+- add_executable dummy.cpp vain jotta CMake hyväksyy projektin
+
+#### `prod-cmake-install-interface` · diff 4
+
+Kirjasto buildaa lokaalisti, mutta asennetun paketin käyttäjä saa include-polun `/home/dev/proj/include`. CMakeListsissä: `target_include_directories(mylib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä puuttuu?
+
+- **BUILD_INTERFACE ja INSTALL_INTERFACE generator expressionit — älä vuoda absoluuttista source pathia installiin** ✓
+- Kovakoodaa `/usr/local/include` kaikille alustoille
+- Käytä aina `include_directories()` globaalisti installin jälkeen
+- Poista install-säännöt — headerit löytyvät automaattisesti find_package:lla
+
+#### `prod-cmake-missing-build-type` · diff 3
+
+Linux-dev ajaa `cmake -S . -B build && cmake --build build` ilman build typea. Ohjelma on hidas eikä gdb näytä selkeitä rivejä. Mitä puuttuu?
+
+- **Single-config-generaattorilla (Ninja/Makefiles) pitää antaa `-DCMAKE_BUILD_TYPE=Debug` configure-vaiheessa** ✓
+- Debug-symbolit tulevat automaattisesti kaikissa Linux-buildissa ilman asetusta
+- Build type valitaan aina `cmake --build`:n `--config Debug` -lipulla Makefiles-generaattorilla
+- Lisää `-g` globaalisti CMAKE_CXX_FLAGS:iin juureen — se korvaa build typen
+
+#### `prod-cmake-openssl-imported` · diff 4
+
+OpenSSL on kytketty vanhalla tyylillä: `include_directories(${OPENSSL_INCLUDE_DIR})` ja `target_link_libraries(app ${OPENSSL_LIBRARIES})`. Mikä moderni korvaus?
+
+- **find_package(OpenSSL REQUIRED) + target_link_libraries(app PRIVATE OpenSSL::SSL OpenSSL::Crypto)** ✓
+- Lataa OpenSSL FetchContentilla main-branchista joka buildissa
+- Kopioi openssl/*.h projektin include/-kansioon ja linkkaa -lssl manuaalisesti
+- pkg-config on ainoa tuettu tapa — find_package ei toimi OpenSSL:lle
+
+#### `prod-cmake-rpath-install` · diff 4
+
+Ohjelma toimii build-hakemistossa, mutta installin jälkeen: `error while loading shared libraries: libfoo.so`. Ensimmäinen CMake-korjaus?
+
+- **Aseta CMAKE_INSTALL_RPATH esim. $ORIGIN/../lib jotta runtime linker löytää jaetut kirjastot** ✓
+- Linkkaa aina staattisesti — shared libraryt eivät toimi installissa
+- Kopioi libfoo.so manuaalisesti /usr/lib:ään jokaisella kehittäjällä
+- Poista install-säännöt — aja ohjelma aina build-hakemistosta
+
+#### `prod-cmake-source-dir-subproject` · diff 3
+
+Kirjasto toimii yksinään, mutta `add_subdirectory(third_party/lib)` isommassa projektissa antaa väärän include-polun. Libin CMakeLists: `target_include_directories(lib PUBLIC ${CMAKE_SOURCE_DIR}/include)`. Mikä korjaus?
+
+- **Käytä CMAKE_CURRENT_SOURCE_DIR — CMAKE_SOURCE_DIR viittaa ylimmän tason projektiin** ✓
+- Korvaa include-polku aina CMAKE_BINARY_DIR:llä
+- Poista add_subdirectory — vain find_package toimii aliprojekteissa
+- Siirrä headerit projektin juureen jotta SOURCE_DIR on sama kaikille
+
+#### `prod-cmake-subdir-options-leak` · diff 4
+
+Lisäät riippuvuuden `add_subdirectory(third_party/somelib)` ja yhtäkkiä pääprojektiin ilmestyy uusia install-targetteja ja testejä. Miten rajaat vuodon?
+
+- **add_subdirectory(... EXCLUDE_FROM_ALL) ja pakota riippuvuuden optionit OFF:ksi ennen subdirectoryä** ✓
+- Poista kaikki option()-kutsut pääprojektin CMakeListsistä
+- Kopioi somelib:n lähdekoodi suoraan src/-kansioon ilman CMakeä
+- EXCLUDE_FROM_ALL estää find_package:n toiminnan — älä käytä sitä
+
+#### `prod-cmake-transitive-zlib` · diff 4
+
+`core`:n public headerit käyttävät zlib-API:a, mutta `app` linkkaa vain `core`:a ja saa linkkerivirheen `undefined reference to deflate`. `core` linkkaa `ZLIB::ZLIB` PRIVATElla. Korjaus?
+
+- **Vaihda core:n linkitys PUBLIC ZLIB::ZLIB — riippuvuus tarvitaan public API:n käyttäjille** ✓
+- App:n pitää aina linkata kaikki riippuvuudet käsin — transitiivinen linkitys ei toimi
+- Siirrä zlib #include vain .cpp-tiedostoon — PUBLIC headerit eivät vaikuta linkitykseen
+- Käytä INTERFACE-only targetia core:lle ilman linkitystä
+
+#### `prod-cmake-werror-third-party` · diff 4
+
+CI kaatuu kun `add_subdirectory(third_party/somelib)` buildaa vendor-koodin projektin globaalilla `-Werror`:lla. Mitä korjaat?
+
+- **Siirrä -Wall/-Werror omaan targetiin (PRIVATE) ja jätä -Werror optionin taakse — älä pakota vendor-koodille** ✓
+- Poista kaikki warning-flagit koko projektista — CI:n pitää mennä läpi hiljaisuudessa
+- Forkkaa somelib ja korjaa kaikki sen warningit ennen integraatiota
+- Lisää -Wno-error globaalisti ennen add_subdirectory — se poistaa kaikki varoitukset
+
+#### `prod-cpp-cmake-target-includes` · diff 4
+
+Lisäät kolmannen osapuolen libin, mutta sen build kaatuu koska juuren CMakeListsissä on `add_compile_options(-Wall -Wextra)` ja `add_definitions(-DUSE_SSL)`. Mitä korjaat?
+
+- **Siirrä asetukset target-kohtaisiksi (`target_compile_options`, `target_compile_definitions`) — älä levitä globaalisti** ✓
+- Poista kolmannen osapuolen lib kokonaan — globaalit flagit ovat aina oikein
+- Lisää `-w` globaalisti hiljentääksesi kaikki varoitukset koko projektissa
+- Käännä riippuvuus erillisessä CMake-projektissa ilman yhteisiä asetuksia manuaalisesti
+
+### correctness (14)
 
 #### `b02-cpp-correct-dangling-15` · diff 4
 
@@ -78,15 +341,6 @@ Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. Miksi tark
 - **size_t on unsigned — vertailu nollaan on aina tosi** ✓
 - Optimointi -O3 rikkoo unsigned-vertailun
 - size_t on signed tyypin aliaksena tässä kontekstissa
-
-#### `b03-cpp-correct-three-way-default` · diff 3
-
-Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?
-
-- **<=> (spaceship) tai std::strong_ordering — totaalinen järjestys** ✓
-- Palauta a < b || a == b — kattaa yhtäsuuruuden erikseen comparatorissa
-- Vaihda std::sort std::stable_sort:iin — yhtäsuuruus ei enää haittaa
-- Kirjoita kaksi eri comparatoria: yksi < ja yksi > vertailulle
 
 #### `b03-cpp-prod-exception-noexcept` · diff 4
 
@@ -115,24 +369,6 @@ Aliluokka ylikirjoittaa `virtual void draw()` mutta perusluokan signatuuri muutt
 - final kaikille funktioille automaattisesti estää piilotetut override-virheet
 - Poista virtual ja käytä switch type-kentällä polymorfian sijaan
 
-#### `b05-cpp-explicit-constructor` · diff 3
-
-Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. Miten estät?
-
-- **explicit-konstruktori — estää hiljaiset implisiittiset muunnokset kutsukohdassa** ✓
-- private konstruktori riittää estämään implisiittiset muunnokset ulkopuolelta
-- delete default constructor estää vahingossa tapahtuvat Meters-muunnokset
-- Muuta int double:ksi — se estää implisiittisen kokonaislukumuunnoksen
-
-#### `b05-cpp-signed-compare-bug` · diff 4
-
-Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. Mikä on riski?
-
-- **Implisiittinen signed/unsigned vertailu voi aiheuttaa ikuisen silmukan** ✓
-- Ei riskiä — kääntäjä korjaa signed/unsigned vertailun automaattisesti
-- Vain debug-buildissa ongelma — release-build käsittelee vertailun oikein
-- int on aina turvallisempi kuin size_t silmukka-indeksinä
-
 #### `b06-cpp-signed-compare-bug` · diff 4
 
 Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väärä haara. Mikä on riski?
@@ -142,38 +378,20 @@ Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väärä h
 - size_t on aina signed C++17:ssä — vertailu int:n kanssa on turvallinen
 - Vain float-vertailu on vaarallinen — int ja size_t ovat turvallisia
 
-#### `b06-cpp-static-cast-review` · diff 2
-
-Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi?
-
-- **static_cast on näkyvä ja rajattu — helpompi grep ja turvallisempi kuin C-cast** ✓
-- C-style cast on nopeampi käännöksessä — static_cast hidastaa optimointia
-- static_cast poistaa tarpeen kaikille muille cast-tyypeille koodissa
-- Kääntäjä kieltää static_castin C++20:ssä — käytä vain C-style castia
-
 #### `b07-cpp-assert-vs-expect` · diff 3
 
-assert() katoaa release-buildissa mutta invariantti on kriittinen tuotannossa. Mitä käytät?
+assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää tarkistaa runtime. Mitä käytät?
 
 - **Runtime check + throw/log tuotannossa — assert vain debug-invarianteille** ✓
 - assert riittää kriittisiin tuotantoinvariantteihin release-buildissä
 - Poista kaikki tarkistukset release:ssä — ne hidastavat suorituskykyä
 - #ifdef DEBUG around return korvaa runtime-tarkistuksen tuotannossa
 
-#### `b07-cpp-rule-of-five` · diff 4
-
-Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructorin. Mikä puuttuu?
-
-- **Rule of five: copy/move ctor + assign — tai =delete / =default tietoisesti** ✓
-- Destructor riittää — muut special memberit generoituvat aina turvallisesti
-- Vain copy constructor tarvitaan kun destructor on määritelty
-- Smart pointer korvaa luokan — special membereitä ei tarvita lainkaan
-
 #### `b08-cpp-assert-ndebug` · diff 3
 
-Release-buildissa assert(ei-null) poistuu — nullptr kaataa myöhemmin. Mitä teet tuotantovalvontaan?
+Release-buildissa assert poistuu — miten varmistat että testit löytävät virheet myös tuotantokonfiguraatiossa?
 
-- **assert vain kehitykseen — tuotannossa explicit check ja error handling** ✓
+- **Aja testit myös release-buildissa — assert ei korvaa runtime-tarkistuksia** ✓
 - assert toimii release-buildissä — NDEBUG ei poista sitä
 - Poista kaikki tarkistukset nopeuden vuoksi — nullptr crash paljastaa virheen
 - NDEBUG määrittää assertin aina päälle tuotantobuildissa
@@ -186,15 +404,6 @@ Laskenta `int64_t` → `int32_t` hiljaa truncaa arvon. Miten estät käännösai
 - static_cast riittää turvallisuuteen — se estää hiljaisen truncauksen
 - Muuta int32_t int64_t:ksi — narrowing ei koskaan tapahdu laajennuksessa
 - Narrowing on vain floating point -ongelma — kokonaisluvut ovat turvallisia
-
-#### `b09-cpp-switch-fallthrough` · diff 3
-
-Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuotannosta. Moderni dokumentointi?
-
-- **[[fallthrough]] attribuutti tai break — eksplisiittinen intentti switchissä** ✓
-- goto case2 on selkeämpi tapa dokumentoida tarkoituksellinen putoaminen
-- Switch on deprecated — käytä if-ketjua fallthrough-ongelmien välttämiseksi
-- Kääntäjä korjaa fallthrough automaattisesti — ei dokumentointia tarvita
 
 #### `correct-overflow` · diff 4
 
@@ -228,7 +437,7 @@ Mitä tarkoittaa undefined behavior (UB) C++:ssa?
 Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — epävakaa sort. C++20 ratkaisu?
 
 - Palauta aina -1 tai 1 — sort toimii ilman yhtäsuuruutta
-- **operator<=> tai std::strong_ordering comparatorissa** ✓
+- **default operator<=> structissa + ranges::sort (tai bool-predikaatti comparatorissa)** ✓
 - memcmp kaikille tyypeille — nopea yleisratkaisu
 - Poista sort ja käytä linked list -rakennetta
 
@@ -241,7 +450,18 @@ Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin — virhee
 - Muuta funktio void:ksi ja käytä globaalia flagia
 - Poista return ja käytä poikkeusta aina
 
-### cpp-production (8)
+### cpp-build (1)
+
+#### `prod-cpp-sanitizer-tsan` · diff 5
+
+Release-build toimii, mutta TSan löytää data racen kahden säikeen välillä. Miksi mutex tarvitaan?
+
+- **Data race on UB — säikeet eivät synkronoi samaa muuttujaa ilman mutexia/atomicsia vaikka "toimii koneellani"** ✓
+- TSan on väärässä — release-optimointi korjaa racen automaattisesti
+- volatile riittää thread-safetyyn — TSan ei tunnista sitä
+- Data race on vain varoitus — ohjelma on määritelty käyttäytymään satunnaisesti
+
+### cpp-production (11)
 
 #### `prod-cpp-coroutine-lifetime` · diff 5
 
@@ -251,6 +471,24 @@ Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen. Mik
 - co_await kopioi kaiken automaattisesti coroutine frameen
 - Coroutine estää dangling-referenssit automaattisesti suspendin jälkeen
 - volatile korjaa lifetime-ongelman paikallisen muuttujan viittauksessa
+
+#### `prod-cpp-exception-safety-strong` · diff 5
+
+assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa strong exception safety -takuun?
+
+- **Kopioi väliaikaiseen, swap vain onnistuneen kopion jälkeen — alkuperäinen säilyy jos kopio heittää** ✓
+- swap heittää aina — strong guarantee ei ole mahdollinen vectorissa
+- noexcept destructor riittää — kopioinnin ei tarvitse olla exception-safe
+- catch (...) ja jatka — strong guarantee tarkoittaa samaa kuin basic
+
+#### `prod-cpp-expected-vs-optional` · diff 4
+
+Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Milloin `std::expected` on parempi kuin `std::optional`?
+
+- **Kun tarvitset sekä onnistumisen että virhekoodin/viestin ilman exceptionia — expected kantaa error-tyypin** ✓
+- optional korvaa aina expectedin — error-tyyppi on turha
+- Käytä aina exceptionia — expected on vain C-koodin jäänne
+- optional<bool> riittää kaikkiin virhetilanteisiin
 
 #### `prod-cpp-false-sharing-struct` · diff 4
 
@@ -314,6 +552,15 @@ Uusi vaihtoehto lisätään `std::variant`-tyyppiin, mutta käsittely unohtuu ko
 - Korvaa variant std::any:llä — kääntäjä pakottaa käsittelemään uudet tyypit
 - Muunna kaikki stringiksi switchissä — se havaitsee puuttuvan käsittelyn
 - Lisää default-haara joka ignoraa tuntemattoman — compile-time tarkistus riittää
+
+#### `prod-cpp-volatile-not-thread-safe` · diff 4
+
+Kaksi säiettä jakaa `volatile bool done` -lipun. Miksi tämä ei takaa thread-safetyä?
+
+- **volatile estää vain optimoinnin — ei tarjoa atomisuutta eikä memory ordering -takuita** ✓
+- volatile on deprecated — käytä aina mutexia boolille
+- volatile bool on atomisesti thread-safe C++11:ssä
+- std::atomic vaatii aina mutexin volatile-boolin päällä
 
 ### maintainability (21)
 
@@ -411,10 +658,10 @@ Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudell
 
 Logitus käyttää sprintf-puskuria — satunnainen overflow tuotannossa. Korvaava C++20-ratkaisu?
 
-- **std::format — tyyppiturvallinen muotoilu** ✓
-- printf on turvallisempi kuin format
-- stringstream + operator<< riittää aina
-- sprintf with bigger buffer
+- **std::format — tulos on std::string, ja muotoilu tarkistetaan käännösaikana** ✓
+- snprintf kaksinkertaisella puskurilla — koko riittää nyt kaikille riveille
+- printf-perhe on turvallisempi, koska se ei varaa muistia dynaamisesti
+- std::to_chars koko lokiriville — muotoilee tekstin ja luvut yhdellä kutsulla
 
 #### `b09-cpp-extract-function-refactor` · diff 2
 
@@ -506,16 +753,7 @@ Milloin `std::string_view` on hyödyllinen?
 - const char* aina parempi kuin string_view legacy-API:ssa
 - string_view omistaa merkkijonon automaattisesti kontissa
 
-### performance (25)
-
-#### `b02-cpp-perf-move-09` · diff 3
-
-Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std::move(returnVec)`. Onko se oikein?
-
-- Kyllä — std::move returnissa on aina pakollinen
-- **Ei — NRVO/RVO usein riittää ilman std::move:a** ✓
-- Palauta shared_ptr vektorin sijaan — selkeämpi omistajuus
-- Kopioi aina varmuuden vuoksi ennen palautusta
+### performance (21)
 
 #### `b02-cpp-perf-shrink-10` · diff 3
 
@@ -525,15 +763,6 @@ Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapaudu. M
 - **shrink_to_fit() tai swap-trick vanhoilla kääntäjillä** ✓
 - resize(0) riittää — capacity palautuu nollaan
 - delete vector — ainoa tapa vapauttaa muisti
-
-#### `b03-cpp-cr-move-semantics` · diff 3
-
-Code reviewissa funktio palauttaa suuren `std::vector` arvona ja reviewer ehdottaa `std::move`-paluuta. Miksi?
-
-- **RVO/NRVO usein riittää — move voi estää optimoinnin** ✓
-- std::move palautuksessa on aina pakollinen C++17:ssä
-- move tekee palautuksesta automaattisesti thread-safen
-- Palauta const reference — vältät kopioinnin kokonaan
 
 #### `b03-cpp-perf-string-reserve` · diff 2
 
@@ -580,15 +809,6 @@ Hot loop kärsii cache miss — kaksi counteria samassa cache line:ssä eri thre
 - Käytä float double tilalle hot loopissa vähentääksesi cache missejä
 - Poista mutex — false sharing ei vaikuta suorituskykyyn eri säikeillä
 
-#### `b07-cpp-reserve-vector` · diff 2
-
-Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia allokaatioita. Ensimmäinen optimointi?
-
-- **vector.reserve(n) ennen silmukkaa — vähentää toistuvia reallokaatioita** ✓
-- Käytä list<T> aina — se välttää vectorin reallokaatio-ongelman
-- Poista reserve — se hidastaa push_back-silmukkaa merkittävästi
-- Muuta push_back emplace_backiksi ilman reservea — se korvaa kapasiteettivarauksen
-
 #### `b08-cpp-emplace-back` · diff 2
 
 vectoriin lisätään monimutkaisia olioita — push_back(T(...)) luo turhan kopion. Miten vältät väliaikaisen?
@@ -615,15 +835,6 @@ Rakennat isoja olioita suoraan vectoriin väliaikaisten kopioiden sijaan. Mikä 
 - push_back on aina tehokkaampi monimutkaisille olioille vectorissa
 - insert(0, obj) jokaiselle alkiolle — se välttää väliaikaisen objektin
 - reserve korvaa emplace_backin — kopioita ei synny varauksen jälkeen
-
-#### `b09-cpp-vector-reserve-incident` · diff 3
-
-Profilointi näyttää tuhansia vector-reallokaatioita request-käsittelyssä. Ensimmäinen optimointi?
-
-- **reserve() kun alkiomäärä on arvioitavissa — vähentää reallokaatioita** ✓
-- Korvaa vector std::list:llä aina — se poistaa reallokaatio-ongelman
-- Poista push_back — käytä indeksointia ilman kapasiteettivarausta
-- reserve hidastaa aina — älä käytä sitä request-käsittelyssä
 
 #### `b11-cpp-bind-vs-lambda` · diff 3
 
@@ -1160,7 +1371,7 @@ Mikä on moderni korvike dynaamiselle `int[]`-taulukolle?
 - shared_ptr taulukolle
 - C-style VLA
 
-### style (30)
+### style (28)
 
 #### `b02-cpp-style-consteval-04` · diff 4
 
@@ -1280,15 +1491,6 @@ Kutsuja ignooraa bool validate() paluuarvon — bugi tuotannossa. Miten pakota t
 - Kommentti // must check estää paluuarvon unohtamisen käännöksessä
 - Heitä poikkeus aina — se korvaa nodiscard-tarkistuksen
 
-#### `b08-cpp-enum-class-scope` · diff 2
-
-Vanha `enum Color { Red, Green }` törmää toisen headerin `Red`-vakion kanssa. Miten estät nimiristiriidat?
-
-- **enum class Color { Red, Green } — scoped enum** ✓
-- Lisää prefix RED_COLOR manuaalisesti
-- Siirrä enum namespaceen ilman class-avainsanaa
-- #define Red 1
-
 #### `b09-cpp-delete-copy-semantics` · diff 3
 
 Luokka hallitsee yksilöllistä resurssia — kopio ei saa olla mahdollinen. Miten ilmaiset API:ssa?
@@ -1306,15 +1508,6 @@ Code review: `enum Color { RED, GREEN }` sekoittuu toisen `enum Status { RED }` 
 - Prefixaa arvot COLOR_RED — se estää nimikonfliktit toisen enumin kanssa
 - #define RED 0 korvaa enumin ja ratkaisee namespace-sotkun
 - Plain enum on deprecated C++17:ssä — käytä int-tyyppiä ja kommentteja
-
-#### `b09-cpp-rule-of-five-review` · diff 4
-
-Luokassa on custom destructor mutta ei copy/move -operaatioita. Code review -huomio?
-
-- **Rule of Five — määrittele tai =default/delete kaikki viisi special memberia** ✓
-- Destructor riittää — compiler generoi loput turvallisesti resurssiluokalle
-- Lisää vain copy constructor — move-operaatiot generoituvat automaattisesti
-- Siirry C:hen — ei special membereitä, ei double-free-riskiä
 
 #### `b11-cpp-braces-required` · diff 2
 
@@ -1597,7 +1790,7 @@ Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alueeksi?
 - std::atomic korvaa mutexin kun jaettu data on yksi int
 - volatile mutex-jäsen estää data racen ilman erillistä lukitusta
 
-### tools (35)
+### tools (32)
 
 #### `b02-cpp-tools-concepts-02` · diff 4
 
@@ -1643,15 +1836,6 @@ Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virhevi
 - static_assert(false) funktion alussa jokaiselle template-tyypille
 - Kommentti // T must be sortable funktion määrittelyn yläpuolella
 - Käytä void*-parametria ja castaa oikeaan tyyppiin funktion sisällä
-
-#### `b04-cpp-consteval-compile-time` · diff 4
-
-Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?
-
-- **consteval funktio — pakottaa compile-time evaluoinnin** ✓
-- constexpr riittää aina — se on täysin sama asia kuin consteval
-- Macro #define TABLE_SIZE 256 laskee taulukon käännösaikana
-- static initializer ilman constevalia riittää aina tähän
 
 #### `b05-cpp-constexpr-config` · diff 3
 
@@ -1733,15 +1917,6 @@ RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr custom de
 - Raw delete toimii FILE*-pointterille samoin kuin malloc-allokaatiolle
 - shared_ptr on aina pakollinen C-API-resurssien hallintaan C++:ssa
 - unique_ptr ei tue custom deleteriä — vain oletusdelete on mahdollinen
-
-#### `b08-cpp-chrono-literals` · diff 2
-
-Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 millisekuntia C++14:ssä?
-
-- **using namespace std::chrono_literals; auto t = 500ms; — tyypitetty timeout** ✓
-- 500 chrono ilman suffixia — kääntäjä deduoi millisekunnit automaattisesti
-- sleep(500) on aina millisekunteja C++14 std::chrono API:ssa
-- #define ms * 1 on chrono-literalin virallinen korvaaja
 
 #### `b08-cpp-initializer-list-trap` · diff 4
 
@@ -1860,15 +2035,6 @@ API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti ilman magic
 - 500 * CLOCKS_PER_SEC ilman yksikkökommenttia
 - double seconds = 0.5 — yksikkö jää kutsujan vastuulle
 
-#### `exp-cpp-tools-format-logging` · diff 2
-
-Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa turvalliseen merkkijonoon?
-
-- strcpy logipuskuriin — vähiten overheadia
-- **std::format (C++20) tai std::ostringstream** ✓
-- printf ilman format-specifieriä — yksinkertaisin API
-- itoa + strcat ketjutus turvalliseen bufferiin
-
 #### `tools-auto` · diff 1
 
 Mitä `auto` tekee modernissa C++:ssa?
@@ -1914,18 +2080,9 @@ Miksi `using StringMap = std::map<std::string, int>` on usein parempi kuin typed
 - typedef ei toimi C++11:ssä template-tyypeille
 - using tekee aliaksesta automaattisesti constexpr-tyypin
 
-## docker (142)
+## docker (108)
 
-### docker (79)
-
-#### `b02-docker-build-copy-03` · diff 4
-
-Docker build on hidas — jokainen pieni koodimuutos invalidoi koko dependency layerin. Fix?
-
-- **COPY package.json ensin, sitten lähdekoodi — layer cache säilyy** ✓
-- COPY . . heti alussa invalidoi vain viimeisen layerin buildissa
-- --no-cache poistaa hitaan buildin syyn pysyvästi jokaisessa CI-ajossa
-- Yksi RUN-komento kaikelle nopeuttaa buildiä cachea rikkomatta
+### docker (56)
 
 #### `b02-docker-exec-debug-04` · diff 2
 
@@ -1981,15 +2138,6 @@ Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerfile-build
 - COPY ei toimi binääritiedostoille
 - ADD on pakollinen multi-stage buildissa
 
-#### `b03-docker-dockerignore-build` · diff 2
-
-Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen optimointi?
-
-- **.dockerignore — sulje node_modules, .git, build-artifaktit** ✓
-- docker build --no-cache aina
-- Kopioi koko repo COPY . .
-- Build context ei vaikuta nopeuteen
-
 #### `b03-docker-entrypoint-cmd` · diff 3
 
 `docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?
@@ -1998,15 +2146,6 @@ Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen optimo
 - CMD korvaa aina ENTRYPOINTin
 - Vain yksi niistä sallittu
 - shell-form on identtinen exec-formin kanssa
-
-#### `b03-docker-prune-disk` · diff 2
-
-CI-runnerin levy täyttyy 'no space left' — satoja dangling imageja. Turvallinen siivous?
-
-- **docker system prune -f (tai image prune) — poista käyttämättömät** ✓
-- rm -rf /var/lib/docker ilman varmuuskopiota
-- docker rmi $(docker images -q) tuotantokoneella
-- Prune poistaa käynnissä olevat kontit
 
 #### `b03-docker-secrets-compose` · diff 4
 
@@ -2017,24 +2156,6 @@ DB-salasana on compose-tiedoston environment-osiossa gitissä. Parempi tapa?
 - Salasana Dockerfile ARG:ssa
 - Commit .env tuotantoon
 
-#### `b03-docker-stats-limits` · diff 3
-
-Yksi kontti syö koko hostin RAM:in — muut palvelut kaatuvat. docker stats näyttää 100%. Mitä asetat?
-
-- **docker run --memory / --cpus tai compose deploy.resources limits** ✓
-- Restart=always riittää
-- docker stats asettaa limitit automaattisesti
-- Privileged mode jakaa RAM:in tasaisesti
-
-#### `b03-docker-user-nonroot` · diff 3
-
-Security review: Dockerfile ei määritä USER:ia — kontti ajaa rootina. Korjaus?
-
-- **Lisää non-root USER ja varmista tiedosto-oikeudet COPY:ssa** ✓
-- Privileged mode turvallisempi
-- Root on OK kontissa koska eristetty
-- Poista ENTRYPOINT
-
 #### `b04-docker-build-arg` · diff 3
 
 Sama Dockerfile eri versioille — BASE_IMAGE vaihtelee CI:ssä. Miten parametrisoit?
@@ -2043,33 +2164,6 @@ Sama Dockerfile eri versioille — BASE_IMAGE vaihtelee CI:ssä. Miten parametri
 - sed Dockerfile ennen buildia aina
 - ENV BASE_IMAGE — sama kuin ARG
 - Kopioi Dockerfile kolmeen versioon
-
-#### `b04-docker-buildkit-cache` · diff 3
-
-CI-build kopioi koko kontekstin joka kerta — cache ei hyödy package.json muutoksista. Optimointi?
-
-- **COPY package.json ensin, RUN npm ci, sitten loput — layer cache hyötyy** ✓
-- COPY . ensin — yksinkertaisin
-- Poista cache — aina clean build
-- Yksi RUN kaikelle
-
-#### `b04-docker-cgroup-limits` · diff 4
-
-Kontti syö koko hostin RAM:in — OOM killaa naapurikontteja. docker run rajoitus?
-
-- **--memory ja --cpus (tai deploy.resources compose:ssa)** ✓
-- Vain --restart unless-stopped
-- Docker rajoittaa automaattisesti 512MB
-- nice -n 19 riittää
-
-#### `b04-docker-compose-depends-on` · diff 3
-
-Compose-sovellus kaatuu koska API käynnistyy ennen Postgresia. Mitä compose-tiedostoon?
-
-- **depends_on + healthcheck db:lle (Compose v2 condition: service_healthy)** ✓
-- restart: always riittää järjestykseen
-- links: — ainoa tapa
-- Poista db — käytä sqlite
 
 #### `b04-docker-compose-profile` · diff 3
 
@@ -2143,15 +2237,6 @@ Security review: kontti ei tarvitse root-oikeuksia eikä NET_RAW. Hardening?
 - Vain --read-only riittää
 - Root on turvallinen kontissa
 
-#### `b05-docker-compose-depends-on` · diff 3
-
-App-kontti käynnistyy ennen Postgresia ja kaatuu connection refused -virheeseen. Compose-korjaus?
-
-- **depends_on + healthcheck db:lle — odota valmiutta** ✓
-- restart: always korjaa käynnistysjärjestyksen
-- links: deprecated riittää
-- Poista depends_on — järjestys on satunnainen OK
-
 #### `b05-docker-healthcheck-prod` · diff 3
 
 Orkestraattori ei huomaa jumiutunutta Node-prosessia — kontti on 'running' mutta ei vastaa. Lisäät?
@@ -2170,15 +2255,6 @@ Konttilokit katoavat rebootissa. Miten varmistat lokien keräyksen?
 - stdout ei tarvitse konfiguraatiota
 - Vain exec tail -f kontissa
 
-#### `b05-docker-prune-disk-full` · diff 2
-
-Build-palvelimen levy täynnä — vanhoja imageja ja stopped-kontteja pinossa. Turvallisin siivous?
-
-- **docker system prune — poistaa käyttämättömät resurssit (tarkista ensin)** ✓
-- rm -rf /var/lib/docker ilman varmuuskopiota
-- Poista vain running-kontit
-- Levy täyttyy — Docker ei tue siivousta
-
 #### `b05-docker-security-cap-drop` · diff 4
 
 Minimoit konttioikeudet — tarvitset vain verkon, ei kernel-muutoksia. Mitä compose-asetusta käytät?
@@ -2196,24 +2272,6 @@ Security review: kontti ajaa rootina. Mikä on Dockerin suositus tuotantoon?
 - Root on turvallinen kontissa koska eristetty
 - chmod 777 korjaa oikeudet
 - Vain --privileged estää root-ongelmat
-
-#### `b05-dockerfile-layer-cache` · diff 3
-
-Docker build on hidas — jokainen koodirivin muutos invalidoi koko npm install -kerroksen. Korjaus?
-
-- **Kopioi package.json ensin, asenna riippuvuudet, vasta sitten COPY lähdekoodi** ✓
-- Lisää --no-cache jokaiseen buildiin
-- Yhdistä kaikki RUN-komennot yhteen COPY:hen
-- Poista .dockerignore
-
-#### `b05-dockerfile-multistage-size` · diff 3
-
-Tuotantoimage on 2 GB koska build-työkalut mukana runtime-kuvassa. Ratkaisu?
-
-- **Multi-stage build — käännä builder-stagessa, kopioi vain binary final-stageen** ✓
-- Poista kaikki LABEL-kentät
-- Käytä latest-tagia base imagessa
-- Yksi RUN apt-get && build && cleanup riittää aina
 
 #### `b06-docker-build-context-size` · diff 3
 
@@ -2251,15 +2309,6 @@ Compose-pino käynnistää riippuvat palvelut ennen kuin API on valmis. Mitä li
 - links-kenttä korvaa healthcheckin palveluiden käynnistysjärjestyksessä
 - sleep 30 entrypoint-skriptissä on vakiokäytäntö riippuvuuksien synkronointiin
 
-#### `b06-docker-compose-restart` · diff 2
-
-Tuotantokontti pitää käynnistää automaattisesti host-rebootin jälkeen. Compose-kenttä?
-
-- **restart: unless-stopped tai always käynnistää kontin uudelleen rebootin jälkeen** ✓
-- restart: no on suositeltu tuotantokäytäntö host-rebootin jälkeen
-- depends_on: reboot käynnistää palvelut automaattisesti hostin uudelleenkäynnistyksessä
-- init: true korvaa restart-politiikan ja hoitaa reboot-palautuksen
-
 #### `b06-docker-logging-rotation` · diff 3
 
 Konttilokit täyttävät levyn — json-file driver kasvaa rajatta. Miten rajoitat?
@@ -2296,15 +2345,6 @@ CI-buildit ovat hitaita vaikka Dockerfile on optimoitu. BuildKit-ominaisuus joka
 - Poista multi-stage — yksi stage nopeuttaa BuildKit-cachea merkittävästi
 - BuildKit ei tue cachea — vain per-layer cache toimii Dockerfile-buildissa
 
-#### `b07-docker-compose-depends` · diff 3
-
-App käynnistyy ennen Postgresia — connection refused. compose.yml korjaus?
-
-- **depends_on + healthcheck condition odottaa Postgresin valmiiksi ennen app-käynnistystä** ✓
-- restart: always varmistaa että app yhdistää Postgresiin ennen käynnistymistä
-- links-kenttä odottaa tietokannan healthy-tilan ennen riippuvan palvelun starttia
-- Poista depends_on — compose käynnistää palvelut oikeassa järjestyksessä ilman sitä
-
 #### `b07-docker-copy-chown` · diff 4
 
 Non-root user ei voi kirjoittaa /app/logs — permission denied tuotannossa. Dockerfile-korjaus?
@@ -2340,24 +2380,6 @@ Tuotantoon deployattiin eri image kuin testissä — tag liikkui. Miten lukitset
 - latest-tag on turvallisin tapa lukita tuotantoversio deployissa
 - docker pull riittää varmistamaan saman image-sisällön testissä ja tuotannossa
 - Digest on vain metadata — tag riittää version lukitsemiseen tuotantoon
-
-#### `b07-docker-multistage-build` · diff 3
-
-Tuotanto-image sisältää koko Go toolchainin — image 1.2 GB. Miten pienennät?
-
-- **Multi-stage build erottaa toolchain-stagen ja minimal runtime-stagen (distroless)** ✓
-- Poista .dockerignore — se kasvattaa image-kokoa ja hidastaa buildia merkittävästi
-- Yksi Dockerfile-stage riittää — erillistä runtime-stageta ei tarvita Go-projekteissa
-- RUN apt install build-essential runtime-stageen pienentää tuotanto-imagea
-
-#### `b07-docker-run-user` · diff 3
-
-Security audit: kontti ajaa rootina. Miten korjaat Dockerfilessa?
-
-- **Luo non-root-käyttäjä ja aseta USER ennen CMD:ä Dockerfilessa** ✓
-- Root on pakollinen kontin oletuskäyttäjä — USER-riviä ei voi käyttää
-- chmod 777 sovellushakemistossa korjaa security audit -havainnon root-käytöstä
-- Poista USER-rivi — Docker käyttää automaattisesti turvallista non-root-käyttäjää
 
 #### `b08-docker-buildkit-cache` · diff 3
 
@@ -2397,12 +2419,12 @@ Dev: lähdekoodimuutos pitäisi synkata konttiin ilman rebuildia joka kerta. Com
 
 #### `b08-docker-exec-user` · diff 3
 
-Debuggaat konttia — docker exec -it ajaa rootina vaikka Dockerfile USER app. Miksi?
+Debuggaat konttia ja haluat ajaa shellin tietyllä käyttäjällä. Mitä optiota käytät?
 
-- **exec oletus root ellei --user — USER vaikuttaa vain CMD/ENTRYPOINT-käynnistykseen** ✓
-- Dockerfile USER estää docker exec -komennon kokonaan root-käyttäjänä
-- docker exec ignore Dockerfile USER -asetuksen aina debug-sessioissa
-- Vain docker run kunnioittaa USER-riviä — exec ajaa aina Dockerfile-käyttäjänä
+- **docker exec -it --user app myapp sh (tai --user root tarvittaessa)** ✓
+- Dockerfile USER riittää — exec noudattaa sitä automaattisesti aina
+- --privileged vaihtaa exec-käyttäjän Dockerfile USER -asetukseen
+- docker run --user app korvaa exec-debugin käynnissä olevassa kontissa
 
 #### `b08-docker-prune-build-cache` · diff 2
 
@@ -2422,15 +2444,6 @@ CI putki — haluat skannata imagen CVE:t ennen deploya. Työkalu ekosysteemiss�
 - Image-skannaus rikkoo buildin turhaan — sitä ei kannata CI-putkeen lisätä
 - Vain base image tarvitsee skannauksen — sovelluslayerit eivät sisällä CVE:itä
 
-#### `b08-docker-secrets-env` · diff 3
-
-Code review: API-avain Dockerfile ENV:ssä. Turvallisempi Compose/Swarm tapa?
-
-- **secrets mountataan /run/secrets/ -polkuun — ei ENV:ään image-layeriin** ✓
-- ARG korvaa ENV:n tuotannossa — salaisuus ei jää image-historiaan
-- Base64-koodaus salaa API-avaimen riittävästi Dockerfile ENV:ssä
-- .env-tiedosto git-repossa on OK private repossa — ei tarvita secrets-mekanismia
-
 #### `b08-dockerfile-arg-env` · diff 3
 
 Build-time versio build-argilla — runtime config erikseen. Ero ARG vs ENV?
@@ -2439,24 +2452,6 @@ Build-time versio build-argilla — runtime config erikseen. Ero ARG vs ENV?
 - ARG ja ENV ovat identtiset — molemmat säilyvät final imagessa runtimeen
 - ENV-muuttujat eivät näy kontin ympäristössä ajonaikaisesti
 - ARG säilyy aina final imagessa samalla tavalla kuin ENV runtime-konfigina
-
-#### `b08-dockerfile-copy-chown` · diff 3
-
-Non-root USER ei voi kirjoittaa COPY:llä tuotua hakemistoa. Dockerfile-korjaus?
-
-- **COPY --chown=app:app tai RUN chown ennen USER-vaihtoa korjaa kirjoitusoikeuden** ✓
-- USER root runtimeen on suositeltu tapa korjata non-root-käyttäjän oikeudet
-- COPY-komento ei tue chown-optiota — omistajuus täytyy asettaa runtime-ajassa
-- chmod 777 on tuotantokäytäntö kun non-root USER ei voi kirjoittaa hakemistoon
-
-#### `b09-docker-buildkit-cache-mount` · diff 4
-
-Go-moduulien lataus hidastaa CI-buildia vaikka go.mod ei muutu. BuildKit-optimointi?
-
-- **RUN --mount=type=cache,target=/go/pkg/mod go mod download nopeuttaa CI-buildia** ✓
-- COPY go.sum ensin riittää — BuildKit cache mount ei tuo lisähyötyä go.mod:lle
-- BuildKit ei tue cache mount -optiota — vain per-layer cache toimii
-- Vendoring poistaa tarpeen cache mountille go-moduulien latauksessa
 
 #### `b09-docker-cmd-entrypoint` · diff 3
 
@@ -2467,15 +2462,6 @@ Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylikirjoittaa
 - Vain RUN-komento voi ajaa skriptejä Dockerfilessa ennen kontin käynnistystä
 - ENTRYPOINT ei voi olla shell-form — vain exec-form on tuettu Dockerfilessa
 
-#### `b09-docker-dockerignore-build` · diff 2
-
-Docker build lähettää 500 MB node_modules kontekstina vaikka ne asennetaan kontissa. Korjaus?
-
-- **.dockerignore sulkee node_modules, .git ja build-artifaktit pois kontekstista** ✓
-- Poista COPY-komento kokonaan — se estää node_modules:n lähettämisen buildiin
-- docker build --squash poistaa ylimääräiset tiedostot build-kontekstista
-- node_modules täytyy aina olla build-kontekstissa jotta asennus onnistuu
-
 #### `b09-docker-env-secrets-smell` · diff 4
 
 Code review: DATABASE_PASSWORD Dockerfile ENV:ssä. Miksi tämä on ongelma?
@@ -2485,15 +2471,6 @@ Code review: DATABASE_PASSWORD Dockerfile ENV:ssä. Miksi tämä on ongelma?
 - Salasana Dockerfile ENV:ssä on OK kun git-repo on private
 - Vain EXPOSE-portti on turvallisuusongelma — ENV-salaisuudet ovat turvallisia
 
-#### `b09-docker-exec-debug` · diff 2
-
-Kontti pyörii mutta shelliä ei ole imageessa — tarvitset interaktiivisen debug-session. Komento?
-
-- **docker exec -it container_name sh avaa shellin elävään konttiin debug-tarkoituksessa** ✓
-- docker attach korvaa exec:in aina kun tarvitaan interaktiivinen debug-sessio
-- docker run --rm ilman imagea avaa shellin olemassa olevaan konttiin
-- docker exec vaatii kontin pysäyttämisen ennen interaktiivisen shellin avaamista
-
 #### `b09-docker-image-tag-pin` · diff 3
 
 Tuotanto käyttää `FROM node:latest` — eilen build rikkoutui. Korjaus?
@@ -2502,15 +2479,6 @@ Tuotanto käyttää `FROM node:latest` — eilen build rikkoutui. Korjaus?
 - latest-tag on tuorein ja turvallisin valinta tuotannon base imageen
 - Poista FROM-rivi ja käytä scratch-basea — se korvaa version kiinnittämisen
 - Base image -tag ei vaikuta build-tulokseen — versio on merkityksetön
-
-#### `b09-docker-resource-limits` · diff 3
-
-Yksi kontti syö koko hostin CPU:n — muut palvelut jäätyvät. Compose-rajoitus?
-
-- **deploy.resources.limits cpus/memory tai docker run --cpus --memory rajoittaa konttia** ✓
-- restart: always rajoittaa kontin CPU- ja muistinkäytön automaattisesti
-- nice -20 kontin sisällä riittää estämään yhden kontin host-resurssien ylikäytön
-- Docker ei tue resurssirajoja — cgroups on poistettu modernista Dockerista
 
 #### `b09-docker-secrets-mount` · diff 4
 
@@ -2593,15 +2561,6 @@ CI-buildit ovat hitaita — jokainen layer invalidoituu kun package.json muuttuu
 - --no-cache poistaa cache-ongelman hidastamalla jokaista buildiä pysyvästi
 - Kaikki RUN-komennot yhdelle riville parantaa cache-invalidaatiota CI:ssä
 
-#### `exp-docker-build-multistage` · diff 3
-
-Go-binary image on 1.2 GB koska build-työkalut mukana. Miten pienennät?
-
-- **Multi-stage build erottaa builder- ja runtime-stagen imagessa** ✓
-- .dockerignore:n poistaminen pienentää Go-binaryn image-kokoa merkittävästi
-- latest-tagi valitsee aina pienimmän mahdollisen base imagen buildissa
-- Yksi stage riittää kun build-työkalut jätetään runtime-imageen mukaan
-
 #### `exp-docker-prod-healthcheck` · diff 3
 
 Load balancer lähettää liikenteen kontille joka on jumissa. Miten Docker tunnistaa unhealthy-tilan?
@@ -2629,7 +2588,7 @@ Tuotantokontti kaatuu yöllä eikä nouse uudelleen host-rebootin jälkeen. Mit�
 - Dockerissa restart policy ei vaikuta kontin käynnistymiseen rebootin jälkeen
 - cron docker start korvaa restart policyn tuotantoympäristössä luotettavasti
 
-### docker-network (34)
+### docker-network (26)
 
 #### `b02-docker-net-alias-10` · diff 3
 
@@ -2657,15 +2616,6 @@ Compose: web ei tavoita db:ä hostname `db` — molemmat samassa projektissa. Ty
 - Compose DNS-bugi estää db-hostnamen löytymisen samassa projektissa
 - IP-osoite tarvitaan aina hostname-resoluution sijaan compose-verkossa
 - Service name -kentän poistaminen korjaa verkko-yhteyden composeissa
-
-#### `b02-docker-net-host-08` · diff 4
-
-Low-latency palvelu tarvitsee suoran host-portin ilman NAT:ia. Verkko-optio?
-
-- **--network host jakaa kontin verkkopinon hostin kanssa Linuxissa** ✓
-- Bridge on aina nopein vaihtoehto low-latency palvelulle ilman NAT:ia
-- none-verkko tarjoaa suoran host-portin ilman NAT-yhteyttä kontissa
-- overlay local only jakaa host-portin ilman erillistä verkkonamespacea
 
 #### `b02-docker-net-inspect-09` · diff 3
 
@@ -2703,24 +2653,6 @@ Legacy-sovellus hajoaa IPv6-osoitteeseen DNS:ssä — kontissa toimii IPv4-only 
 - Käytä network_mode: none
 - DNS aina palauttaa IPv4
 
-#### `b04-docker-network-alias` · diff 3
-
-Kontti A ei löydä kontti B:tä nimellä `api` samassa user-defined networkissä. Compose-ratkaisu?
-
-- **Palvelun nimi compose:ssa on DNS-nimi — network: shared + service name api** ✓
-- linkit konttien välillä pakollisia
-- Käytä aina host network
-- Extra_hosts 127.0.0.1
-
-#### `b05-docker-net-bridge-default` · diff 2
-
-Kaksi konttia samassa default bridge-verkossa — voivatko ne kommunikoida nimellä?
-
-- **Ei automaattisesti — default bridge ei tarjoa DNS-nimiä; käytä user-defined network** ✓
-- Kyllä — container_name riittää aina
-- Vain host network tukee kommunikaatiota
-- Bridge ja host ovat sama verkko
-
 #### `b05-docker-net-dns-custom` · diff 3
 
 Kontti ei resolvdu sisäistä DNS-nimeä corporate DNS:llä. Compose-korjaus?
@@ -2729,15 +2661,6 @@ Kontti ei resolvdu sisäistä DNS-nimeä corporate DNS:llä. Compose-korjaus?
 - extra_hosts korvaa aina DNS:n
 - DNS toimii vain host network -modessa
 - Muokkaa /etc/resolv.conf kontissa pysyvästi
-
-#### `b05-docker-net-host-mode` · diff 3
-
-Latency-kriittinen palvelu tarvitsee suoran pääsyn host-portteihin ilman NAT:ia. Verkko-mode?
-
-- **network_mode: host — kontti jakaa hostin network stackin** ✓
-- bridge + publish kaikki portit riittää aina
-- none network nopeuttaa liikennettä
-- overlay vain Swarmissa — ei host-modea
 
 #### `b06-docker-network-ipvlan` · diff 5
 
@@ -2792,33 +2715,6 @@ Kontti kuuntelee 8080 — host ei tavoita localhost:8080. docker run?
 - -v 8080:8080 avaa kontin portin hostille samalla tavalla kuin -p
 - EXPOSE 8080 Dockerfilessa publishaa portin hostille automaattisesti
 - --network none julkaisee kontin portin hostille ilman erillistä mappingia
-
-#### `b08-docker-network-bridge-dns` · diff 3
-
-Compose-palvelu `api` ei löydä `db`-hostnamea — oletusbridge-verkossa. Mikä pitää olla?
-
-- **Palvelut samassa user-defined networkissä — Compose luo DNS-nimet palveluille** ✓
-- links: db:database riittää hostname-resoluutioon oletusbridge-verkossa
-- Kontit eivät voi resolvata toistensa nimiä Docker-verkossa ollenkaan
-- Käytä host network -tilaa kun palveluiden välinen DNS-resoluutio tarvitaan
-
-#### `b08-docker-network-host` · diff 4
-
-Kontti tarvitsee suoran pääsyn hostin verkkoon (multicast). Milloin network_mode: host?
-
-- **Host mode kun bridge/NAT ei riitä — jakaa network stackin, tietoturvariski mukana** ✓
-- network_mode: host on turvallisin oletus multicast- ja UDP-sovelluksille
-- Host mode toimii identtisesti Mac/Windows Docker Desktopissa kuin Linux-hostilla
-- EXPOSE Dockerfilessa riittää UDP-multicastin toimintaan bridge-verkossa
-
-#### `b09-docker-net-alias` · diff 2
-
-Kontti pitää tavoittaa nimellä `database` samassa Compose-verkossa. Asetus?
-
-- **Palvelunimi tai network alias user-defined networkissä — Compose DNS tavoittaa kontin** ✓
-- links: database on moderni tapa antaa kontille alias-nimen compose-verkossa
-- hostname-kenttä riittää aina DNS-resoluutioon compose-palveluiden välillä
-- Default bridge tukee alias-nimiä samalla tavalla kuin user-defined network
 
 #### `b09-docker-net-internal` · diff 3
 
@@ -2919,15 +2815,6 @@ Kontit samassa verkossa eivät pingaa toisiaan nimellä. Mitä diagnostiikkaa aj
 - Image-rebuild korjaa DNS-resoluution ilman verkkotarkistusta tai inspectia
 - DNS toimii vain overlay-verkossa usean hostin klusterissa oikein
 
-#### `exp-docker-net-macvlan` · diff 5
-
-Legacy-laite vaatii kontille oman MAC-osoitteen LANissa. Mikä network driver?
-
-- **macvlan antaa kontille oman MAC-osoitteen ja LAN-osoitteen** ✓
-- bridge-verkko riittää erilliselle MAC-tasolle legacy-laitteille verkossa
-- none-verkko plus port mapping antaa erillisen MAC-osoitteen lähiverkossa
-- host network antaa kontille erillisen MAC-osoitteen lähiverkossa suoraan
-
 #### `exp-docker-net-publish-bind` · diff 3
 
 Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mikä publish-syntaksi?
@@ -2937,7 +2824,16 @@ Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mikä publi
 - EXPOSE Dockerfile riittää publishiin
 - Port mapping toimii vain Swarmissa
 
-### docker-production (2)
+### docker-production (6)
+
+#### `prod-docker-build-secret-arg` · diff 4
+
+Miksi `ARG NPM_TOKEN` Dockerfilessa on huono tapa asentaa private packageja buildissä?
+
+- **ARG voi jäädä image-historiaan/layeriin — käytä RUN --mount=type=secret ilman build-argia** ✓
+- ARG ei ole käytettävissä RUN-vaiheessa — vain ENV toimii buildissa
+- NPM_TOKEN ARG:na on turvallinen kun image pushataan private registryyn
+- BuildKit estää automaattisesti ARG-salaisuudet päätymästä cacheen
 
 #### `prod-docker-env-secrets` · diff 4
 
@@ -2948,6 +2844,15 @@ Dockerfile sisältää rivin `ENV API_KEY=sk_live_...`. Mikä ongelma tuotannoss
 - Docker poistaa ENV-salaisuudet buildin jälkeen automaattisesti imagesta
 - API-key ENV:ssä toimii vain build-vaiheessa eikä näy runtime-ympäristössä
 
+#### `prod-docker-healthcheck-db-down` · diff 5
+
+HEALTHCHECK testaa DB-yhteyttä ja tietokanta on hetkellisesti alhaalla. Mitä healthcheckin pitäisi tehdä?
+
+- **Erottele: prosessi elossa (liveness) vs valmis palvelemaan (readiness) — älä restartaa jos vain riippuvuus on alhaalla** ✓
+- HEALTHCHECK pitää aina kaataa kontti kun DB on alhaalla — restart korjaa tilanteen
+- Poista HEALTHCHECK — Docker hoitaa riippuvuuksien tilan automaattisesti
+- HEALTHCHECK=NONE ja luota restart: always -politiikkaan
+
 #### `prod-docker-k8s-probes` · diff 4
 
 Kubernetes-pod käynnistyy, mutta sovellus ei vielä vastaa HTTP-pyyntöihin. Orkestrointi lähettää liikenteen liian aikaisin. Mikä auttaa?
@@ -2957,16 +2862,25 @@ Kubernetes-pod käynnistyy, mutta sovellus ei vielä vastaa HTTP-pyyntöihin. Or
 - restart: never estää orkestraattoria lähettämästä liikennettä liian aikaisin
 - Kiinteä sleep entrypointissa korvaa readiness-proben luotettavasti
 
-### docker-volumes (27)
+#### `prod-docker-nonroot-bind-mount` · diff 4
 
-#### `b02-docker-vol-backup-14` · diff 4
+Dockerfilessa `USER appuser` mutta bind mount -hakemistoon ei voi kirjoittaa. Mikä on yleisin syy?
 
-Named volume backup ilman container downtimea — suositeltu tapa?
+- **Host-hakemiston UID/GID ei vastaa kontin appuseria — chown tai matching uid buildissa** ✓
+- USER direktiivi ei toimi bind mountin kanssa — poista USER
+- Bind mount ohittaa aina file permissionit — chmod 777 on ainoa korjaus
+- Non-root kontti ei voi koskaan kirjoittaa volumeen
 
-- **docker run --rm -v vol:/data -v $(pwd):/backup alpine tar czf /backup/vol.tar.gz /data** ✓
-- docker cp running db container
-- Snapshot host root
-- Export image only
+#### `prod-docker-rootless-vs-root` · diff 4
+
+Mitä eroa on hostin root-käyttäjällä ja kontin USER rootilla rootless Docker -ympäristössä?
+
+- **Kontin root on namespace-rajattu — ei ole host-rootia ilman capability-vuotoa** ✓
+- Ne ovat identtiset — kontin root = täysi host-root aina
+- Rootless Docker estää USER root -rivin Dockerfilessa kokonaan
+- Host root tarvitaan aina bind mount -kirjoitukseen
+
+### docker-volumes (20)
 
 #### `b02-docker-vol-bind-12` · diff 3
 
@@ -2976,15 +2890,6 @@ Dev: koodi bind-mountattu mutta muutokset eivät näy containerissa — macOS/Wi
 - Bind mount ei toimi macOS/Windows Docker Desktop -ympäristössä ollenkaan
 - Käytä vain COPY dev-ympäristössä — bind mount ei synkronoi muutoksia
 - chmod 777 host-kansiossa korjaa bind mount -synkronointiviiveen automaattisesti
-
-#### `b02-docker-vol-named-11` · diff 3
-
-PostgreSQL data katoaa containerin poiston jälkeen — mitä käytit väärin?
-
-- **Named volume puuttui — käytä -v pgdata:/var/lib/postgresql/data** ✓
-- Bind mount on aina parempi valinta PostgreSQL-datalle tuotantoympäristössä
-- tmpfs-tallennus riittää PostgreSQL-datan pysyvyyteen kontin poiston jälkeen
-- COPY data imageen säilyttää tietokannan kontin poiston jälkeen luotettavasti
 
 #### `b02-docker-vol-ro-13` · diff 2
 
@@ -3030,24 +2935,6 @@ Postgres data katoaa `docker compose down` jälkeen. Mikä puuttui?
 - Bind mount /tmp aina riittää
 - container_name riittää persistenssiin
 - Data tallentuu automaattisesti imageen
-
-#### `b05-docker-vol-bind-perms` · diff 4
-
-Bind mount host-kansiosta — kontti kirjoittaa permission denied. Juurisyy?
-
-- **Hostin ja kontin UID/GID eivät täsmää — non-root ei omista mountattuja tiedostoja** ✓
-- Bind mount ei tue kirjoitusta ollenkaan — vain named volume on read-write
-- chmod 777 host-kansiossa on turvallinen tapa korjata oikeudet tuotannossa
-- Kirjoitusoikeus vaatii aina named volumen — bind mount on read-only oletuksena
-
-#### `b05-docker-vol-named-backup` · diff 3
-
-Postgres-data named volumessa — tarvitset varmuuskopion ilman konttia. Miten?
-
-- **Apukontti mounttaa volumen ja pakkaa datan host-polkuun tar-komennolla** ✓
-- docker cp kopioi named volumen suoraan ilman mounttia tai apukonttia
-- Named volume on Dockerin hallinnassa eikä sitä voi varmuuskopioida ulos
-- Vain bind mount tukee varmuuskopiointia — named volume ei kelpaa backupiin
 
 #### `b05-docker-vol-readonly-root` · diff 3
 
@@ -3103,15 +2990,6 @@ Kehityksessä haluat live-reload lähdekoodilla hostilta. Volume-tyyppi?
 - tmpfs mount on suositeltu dev-ympäristön live-reload-käyttöön tuotannossa
 - COPY riittää devissä — bind mountia ei tarvita lähdekoodin synkronointiin
 
-#### `b07-docker-volume-named` · diff 2
-
-DB-data katoaa kontin poiston jälkeen. Miten säilytät datan?
-
-- **Named volume docker volume create + mount -v dbdata:/var/lib/postgresql/data** ✓
-- Bind mount /tmp-polkuun säilyttää DB-datan kontin poiston jälkeen luotettavasti
-- Data kontin writable layerissa pysyy kun docker rm poistaa kontin
-- docker rm -v säilyttää named volumen datan automaattisesti backupina
-
 #### `b08-docker-volume-bind-selinux` · diff 4
 
 RHEL-host: bind mount permission denied vaikka chmod 777. Todennäköisin syy?
@@ -3148,15 +3026,6 @@ Usean hostin Swarm-klusterissa tarvitset jaetun volumen. Vaihtoehto local driver
 - Bind mount skaalautuu usean hostin Swarm-klusterissa ilman erillistä driveria
 - Docker ei tue jaettuja volumeja — multi-host vaatii aina Kubernetesin
 
-#### `b09-docker-vol-mount-propagation` · diff 4
-
-Bind mount host-kansiosta ei näy muutoksia nested mountissa. Propagation-asetus?
-
-- **bind propagation rshared/rslave — säätää nested mount -näkyvyyttä hostin ja kontin välillä** ✓
-- read_only: true korjaa mount propagation -ongelman bind mount -skenaariossa
-- Propagation-asetus ei vaikuta bind mounteihin — vain named volume tukee sitä
-- Vain named volume tukee nested mountteja — bind mount ei toimi sisäkkäisesti
-
 #### `b10-docker-volumes-backup-01` · diff 4
 
 Named volume pitää varmuuskopioida ilman kontin käynnistämistä. Tyypillinen tapa?
@@ -3184,15 +3053,6 @@ Bind mount ./config:/app/config — kontti ei saa kirjoittaa. Mikä on tyypillin
 - Vain named volume sallii read-write -oikeudet bind mountin sijaan aina
 - Dockerfile EXPOSE korjaa bind mountin tiedosto-oikeudet automaattisesti
 
-#### `exp-docker-vol-db-persist` · diff 3
-
-Postgres-kontti poistettiin `docker rm` — data katosi. Miten olisi pitänyt tallentaa data?
-
-- **Named volume: -v pgdata:/var/lib/postgresql/data** ✓
-- Vain container layer — data säilyy automaattisesti
-- docker commit ennen rm
-- ENV DATA=/tmp riittää
-
 #### `exp-docker-vol-readonly` · diff 3
 
 Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio?
@@ -3202,9 +3062,9 @@ Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio?
 - Vain tmpfs voi olla read-only
 - Dockerfile VOLUME estää kirjoituksen
 
-## git (20)
+## git (24)
 
-### git-ci (9)
+### git-ci (10)
 
 #### `ci-artifact-retention` · diff 3
 
@@ -3278,6 +3138,15 @@ CI käyttää dependency-cachea mutta buildit saavat satunnaisesti väärät pak
 - Cacheaa koko workspace ilman invalidointia vähentääksesi riippuvuuksien latausaikaa
 - Poista lockfile buildistä ja luota semver-rangeihin nopeuden vuoksi
 
+#### `prod-ci-deploy-rollback` · diff 4
+
+Tuotantodeploy on rikki ja edellinen versio on tunnettu. Nopein turvallinen rollback CI/CD:ssä?
+
+- **Deployaa edellinen tunnettu image-tag/digest tai revert-commit — älä debuggaa tuotannossa ensin** ✓
+- git reset --hard HEAD~5 tuotantopalvelimella ja käynnistä uudelleen
+- Poista healthcheck jotta käyttäjät pääsevät palveluun
+- Ota käyttöön feature flag joka piilottaa kaiken uuden koodin runtime-käännöksellä
+
 #### `prod-ci-flaky-test` · diff 4
 
 Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel?
@@ -3287,7 +3156,16 @@ Testi epäonnistuu vain joskus CI:ssä. Mikä on hyvä ensimmäinen askel?
 - Poista hidas testi pipelinesta ja aja se vain manuaalisesti ennen releaseta
 - Merkitse CI vihreäksi paikallisen onnistuneen testiajon perusteella
 
-### git-workflow (11)
+### git-workflow (14)
+
+#### `git-blame-ignore-revs` · diff 3
+
+Koko repo formatoitiin yhdellä commitilla, ja nyt git blame näyttää lähes jokaiselle riville vain formatointicommitin. Miten saat alkuperäiset tekijät näkyviin?
+
+- **Lisää commit .git-blame-ignore-revs-tiedostoon (blame.ignoreRevsFile)** ✓
+- Peru formatointicommit git revertillä ja formatoi tiedostot vähitellen
+- Aja git blame --reverse, joka ohittaa pelkät muotoilumuutokset
+- Squashaa formatointi edelliseen committiin rebase -i:llä mainissa
 
 #### `git-cherry-pick-conflict` · diff 3
 
@@ -3297,6 +3175,15 @@ Haluat tuoda yksittäisen commitin toisesta branchista ilman koko haaran mergeä
 - git merge --squash <branch> tuo vain yhden commitin kerrallaan ilman muita muutoksia
 - git rebase <branch> siirtää kaikki commitit ja valitsee yhden automaattisesti
 - git checkout <branch> -- . kopioi yhden commitin diff:n työhakemistoon
+
+#### `git-leaked-secret-history` · diff 4
+
+API-avain commitoitiin vahingossa ja pushattiin julkiseen repoon tunti sitten. Mikä on ensimmäinen toimenpide?
+
+- **Mitätöi ja vaihda avain heti — historian siivous vasta sen jälkeen** ✓
+- Poista tiedosto uudella commitilla, jolloin avain katoaa repositoriosta
+- Tee git commit --amend ja force push, jolloin kukaan ei näe avainta
+- Muuta repo yksityiseksi, jolloin vuotanut avain ei ole enää vaarallinen
 
 #### `git-log-filtering` · diff 3
 
@@ -3388,18 +3275,18 @@ Rebase tehtiin ja branch pitää puskea uudestaan. Miten vältät että ylikirjo
 - git reset --hard origin/main synkronoi paikallisen historian remoteen
 - git clean -fd siivoaa työhakemiston ja korjaa push-konfliktit
 
-## javascript (234)
+#### `prod-git-rebase-onto` · diff 5
 
-### js-async (59)
+Feature-branch perustui vanhaan mainiin. Main on edennyt ja haluat siirtää vain feature-commitit uuden mainin päälle. Komento?
 
-#### `b02-js-async-await-04` · diff 3
+- **git rebase --onto main <vanha-main-tip> feature-branch — siirtää commitit uudelle pohjalle** ✓
+- git merge main — siirtää vain feature-commitit ilman merge-committia
+- git cherry-pick main..feature — päivittää automaattisesti koko branchin
+- git reset --hard main — säilyttää feature-muutokset turvallisesti
 
-async funktio heittää virheen — caller ei saa stack tracea. Miten käsittelet?
+## javascript (202)
 
-- **try/catch awaitin ympärillä tai .catch() promisen ketjussa** ✓
-- async-funktio ei voi heittää virhettä koskaan kutsujalle
-- console.log on ainoa tapa nähdä async-funktion virheilmoitus
-- Poista async — silloin throw toimii taas normaalisti callerissa
+### js-async (46)
 
 #### `b02-js-async-fetch-01` · diff 2
 
@@ -3409,15 +3296,6 @@ REST-kutsu timeout 30s — käyttäjä navigoi pois. Miten peruutat fetchin?
 - fetch API ei tue kesken jääneen pyynnön peruuttamista lainkaan
 - window.close() keskeyttää kaikki aktiiviset fetch-pyynnöt välittömästi
 - setTimeout(null) peruuttaa edellisen fetch-kutsun automaattisesti
-
-#### `b02-js-async-microtask-03` · diff 4
-
-console.log järjestys: sync, Promise.resolve().then, setTimeout(0). Mikä ensin microtask jonossa?
-
-- **Promise.then ennen setTimeout — microtask-queue macrotaskin edellä** ✓
-- setTimeout ajetaan aina ennen microtask-jonon tyhjennystä
-- Synkroninen koodi ajetaan viimeisenä jokaisella event loop -kierroksella
-- Järjestys on satunnainen kun timer ja promise ovat samassa kierroksessa
 
 #### `b02-js-async-promise-02` · diff 3
 
@@ -3500,15 +3378,6 @@ Hidas API — haluat timeoutin 5s jälkeen AbortError. Oikea yhdistelmä?
 - fetch.timeout(5000) — built-in
 - XMLHttpRequest sync timeout
 
-#### `b05-js-async-debounce` · diff 3
-
-Hakukenttä laukaisee API-kutsun jokaisella näppäimellä — palvelin ylikuormittuu. Ratkaisu?
-
-- **Debounce — odota tauko ennen kutsua** ✓
-- Synkroninen XMLHttpRequest
-- while-loop odottaa käyttäjää
-- Poista input-kenttä
-
 #### `b05-js-event-loop-order` · diff 3
 
 console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(() => console.log('C')); Tulostusjärjestys?
@@ -3517,15 +3386,6 @@ console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(
 - A, B, C
 - A, B samanaikaisesti C
 - C, A, B
-
-#### `b05-js-fetch-abort-controller` · diff 4
-
-Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — vanha vastaus ylikirjoittaa uuden. Korjaus?
-
-- **AbortController — abort edellinen pyyntö uuden alkaessa** ✓
-- fetch ei voi peruuttaa
-- location.reload() ennen fetchiä
-- Global flag ilman abortia riittää
 
 #### `b05-js-promise-chain-catch` · diff 3
 
@@ -3554,15 +3414,6 @@ Fetch-ketju — haluat cleanup riippumatta success/failure. Mitä käytät?
 - finally toimii vain synkronisessa try-catch-lohkossa, ei promisessa
 - async-funktio hoitaa resurssien vapautuksen automaattisesti ilman finallyä
 
-#### `b06-js-async-queue-microtask` · diff 3
-
-console.log järjestys: sync, setTimeout(0), promise.then. Mitä tulostuu ensin promise:n jälkeen?
-
-- **Promise.then ajetaan microtask-jonossa ennen setTimeout-macrotaskia** ✓
-- setTimeout(0) saa aina etuoikeuden ennen Promise-callbackia event loopissa
-- Synkroninen koodi ja promise-then jakavat saman suoritusprioriteetin
-- Tulostusjärjestys riippuu selaimen satunnaistetusta ajoituksesta
-
 #### `b06-js-async-settimeout-zero` · diff 2
 
 setTimeout(fn, 0) ei suorita fn heti — miksi?
@@ -3572,24 +3423,6 @@ setTimeout(fn, 0) ei suorita fn heti — miksi?
 - setTimeout suorittaa callbackin synkronisesti heti kutsumishetkellä
 - Viive nollalla tarkoittaa että kutsu ohitetaan ja callbackia ei ajeta
 
-#### `b07-js-async-abort` · diff 4
-
-Käyttäjä vaihtaa sivua ennen fetchin valmistumista — vanha vastaus ylikirjoittaa uuden. Korjaus?
-
-- **AbortController — signal fetchiin ja abort navigoinnissa peruuttaa pyynnön** ✓
-- Ignoroi vanha vastaus flagilla — race condition ratkeaa ilman abortia
-- Synkroninen fetch estää vanhan vastauksen ylikirjoittamisen uuden päälle
-- localStorage-cache kaikille vastauksille estää navigointikonfliktit
-
-#### `b07-js-async-await-error` · diff 3
-
-async funktio heittää — unhandled rejection tuotannossa. Miten käsittelet?
-
-- **try/catch awaitin ympärillä tai .catch() promisessa — async heittää rejectionina** ✓
-- async-funktio ei koskaan heitä — virheet muunnetaan automaattisesti arvoiksi
-- console.log(error) riittää tuotannossa unhandled rejection -ongelman estoon
-- Poista async-avainsana — synkroninen funktio estää rejection-virheet
-
 #### `b07-js-async-debounce` · diff 4
 
 Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset saapuvat myöhemmin ja ylikirjoittavat uudemman tuloksen. Korjaus?
@@ -3598,24 +3431,6 @@ Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset sa
 - Lisää vain setInterval — päivitä 100 ms välein
 - Poista async ja käytä synkronista fetchiä
 - Tallenna vain ensimmäinen vastaus — ignooraa loput
-
-#### `b07-js-async-microtask` · diff 4
-
-console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?
-
-- **Promise.then (microtask) ennen setTimeout (macrotask) event loopissa** ✓
-- setTimeout ajetaan aina ennen microtask-jonoa kun viive on nolla
-- Kaikki console.log-kutsut suoritetaan synkronisesti samassa järjestyksessä
-- Promise.then on macrotask samassa jonossa kuin setTimeout ja setInterval
-
-#### `b08-js-async-generator` · diff 4
-
-Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?
-
-- **async function* generator — for await...of paginoituun API-iteraatioon** ✓
-- while(true) sync fetch — async generator ei tue awaitia yield-kutsujen välissä
-- Generatorit eivät tue async/await-syntaksia — vain synkroninen yield
-- Callback-pyramid on moderni tapa paginoida API-kutsuja for-loopin sijaan
 
 #### `b08-js-async-microtask-starvation` · diff 5
 
@@ -3653,15 +3468,6 @@ Express-endpoint jäädyttää koko palvelimen 30 sekunniksi raskaalla JSON-pars
 - JSON.parse on aina async — se ei voi blokata event loop -säiettä
 - Lisää useampia Express-instanssia samaan prosessiin — ratkaisee blokin
 
-#### `b09-js-async-fetch-abort` · diff 3
-
-Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — haluat peruuttaa pyynnön. API?
-
-- **AbortController + signal fetch-kutsussa — peruuttaa pyynnön navigoinnissa** ✓
-- fetch.cancel() built-in — kutsu peruuttaa pyynnön ilman AbortControlleria
-- Selaimen sulkeminen on ainoa tapa keskeyttää käynnissä oleva fetch-pyyntö
-- Promise.race ilman abortia riittää — hidas pyyntö peruuntuu automaattisesti
-
 #### `b09-js-async-promise-chain` · diff 3
 
 Callback hell API-ketjussa — kolme peräkkäistä fetch-kutsua. Moderni refaktorointi?
@@ -3698,15 +3504,6 @@ async stack trace katkeaa await-kohdassa debugissa. Node/DevTools apu?
 - Poista async
 - console.trace riittää
 
-#### `b12-js-async-await-top-level` · diff 3
-
-config.mjs lataa env-tiedoston ennen muita importteja. Ratkaisu?
-
-- **top-level await ES-moduulissa** ✓
-- import() synkroninen
-- require await
-- TLA vain TypeScriptissä
-
 #### `b12-js-async-callback-to-promise` · diff 2
 
 Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käärit sen await-yhteensopivaksi?
@@ -3742,15 +3539,6 @@ Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä sil
 - function* riittää awaitille sisällä
 - async function palauttaa arrayn automaattisesti
 - Generators eivät tue promiseja
-
-#### `b12-js-async-iterator-for-await` · diff 4
-
-ReadableStream data async iterable. Silmukka?
-
-- **for await (const chunk of stream)** ✓
-- for (chunk of stream) synkroninen
-- stream.read() kerran
-- callback only
 
 #### `b12-js-async-microtask-starvation` · diff 5
 
@@ -3878,15 +3666,6 @@ Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — state päivittyy u
 - setState on turvallista vaikka komponentti on jo unmountattu
 - async/await korvaa tarpeen peruuttaa hidas HTTP-pyyntö kesken
 
-#### `exp-js-async-microtask-order` · diff 4
-
-Bugiraportti: `console.log` järjestys on 1, 4, 2, 3 — setTimeout(0), Promise.resolve, sync. Miksi?
-
-- **Promise microtask ajetaan ennen setTimeout-macrotaskia loopissa** ✓
-- setTimeout ajetaan aina ennen muita asynkronisia tehtäviä
-- Synkroninen koodi suoritetaan uudelleen jokaisella loop-kierroksella
-- Promise.then on macrotask samassa jonossa kuin setTimeout
-
 #### `exp-js-async-promise-all-settled` · diff 3
 
 Dashboard hakee viisi API:a — yksi failaa ja koko näkymä jää tyhjäksi Promise.all:in takia. Parempi malli?
@@ -3923,16 +3702,7 @@ Event handler kutsuu `saveData()` async-funktiota ilman awaitia eikä lisää `.
 - async-funktiot eivät voi epäonnistua ilman awaitia — virheet nieltyvät
 - try/catch async-funktion sisällä riittää aina — kutsuja ei tarvitse .catch()
 
-### js-modules (49)
-
-#### `b02-js-modules-cycle-09` · diff 4
-
-Kaksi moduulia importtaa toisensa — toinen export undefined init aikana. Ratkaisu?
-
-- **Refaktoroi jaettu riippuvuus kolmanteen moduuliin tai lazy import** ✓
-- Poista export — import riittää kun sykli on vain kahden moduulin välillä
-- Siirry CommonJS:ään — se ratkaisee circular dependency -ongelman
-- global variable jakaa tilan moduulien välillä init-ongelman kiertämiseksi
+### js-modules (38)
 
 #### `b02-js-modules-dynamic-08` · diff 3
 
@@ -4006,24 +3776,6 @@ Code review: tiedosto exporttaa sekä default että 5 named exportia — reviewe
 - Default export on deprecated
 - Vain yksi export per tiedosto sallittu
 
-#### `b04-js-modules-import-meta` · diff 3
-
-ES-moduulissa tarvitset nykyisen moduulin URL:n asset-polkuun. Standardi API?
-
-- **import.meta.url** ✓
-- __dirname — saatavilla browsereissa
-- window.location aina
-- require.resolve
-
-#### `b05-js-modules-dynamic-import` · diff 3
-
-Raskas chart-kirjasto ladataan vain kun käyttäjä avaa analytics-sivun. Miten?
-
-- **import('chart.js') — dynamic import code-splitting** ✓
-- Static import tiedoston alussa aina
-- document.write('<script>')
-- eval('import chart')
-
 #### `b05-js-modules-esm-import` · diff 2
 
 HTML:ssä `<script src='app.js'>` — import/export ei toimi. Korjaus?
@@ -4033,24 +3785,6 @@ HTML:ssä `<script src='app.js'>` — import/export ei toimi. Korjaus?
 - import toimii ilman type=module
 - Vain bundler — selain ei tue moduleja
 
-#### `b05-js-modules-top-level-await` · diff 4
-
-Moduulin init tarvitsee config-fetch ennen exportteja. Moderni tapa ilman callback-helvettiä?
-
-- **Top-level await moduulissa — odottaa ennen moduulin valmistumista** ✓
-- Sync XMLHttpRequest
-- Global window.config setTimeout:lla
-- Top-level await toimii vain Node:ssa
-
-#### `b06-js-modules-import-assertions` · diff 4
-
-JSON config moduuli — haluat importtaa JSON ESM:ssä turvallisesti. Miten?
-
-- **import config from './config.json' with { type: 'json' } — import attribute** ✓
-- fetch config runtime aina — JSON ei kuulu moduulijärjestelmään ESM:ssä
-- require('config.json') toimii ESM-moduulissa samalla tavalla kuin CommonJS
-- import json ilman assertionia — bundler tunnistaa tyypin tiedostopäätteestä
-
 #### `b06-js-modules-reexport` · diff 3
 
 Barrel file exporttaa utils-moduulien API yhdessä paikassa. Miten?
@@ -4059,24 +3793,6 @@ Barrel file exporttaa utils-moduulien API yhdessä paikassa. Miten?
 - import foo ja aseta window.foo — barrel kerää API:n globaalisti
 - require() barrel-tiedostossa yhdistää utils-moduulit CommonJS:ssä
 - export default kaikista moduuleista — yksi default export riittää barrelissa
-
-#### `b06-js-modules-top-level-await` · diff 3
-
-ESM moduuli tarvitsee async init ennen exporttia. Miten ilman wrapper-funktiota?
-
-- **Top-level await moduulin juuressa — ESM sallii async init ennen exportteja** ✓
-- await toimii vain async-funktion sisällä — moduulin juuri on aina synkroninen
-- Async IIFE moduulin alussa korvaa top-level awaitin kaikissa bundlereissa
-- CommonJS require tukee async initia natiivisti ilman wrapper-funktiota
-
-#### `b07-js-modules-cycle` · diff 4
-
-a.js importtaa b.js ja b.js importtaa a.js — undefined export. Miten korjaat?
-
-- **Refaktoroi jaettu riippuvuus kolmanteen moduuliin — rikkoo import-syklin** ✓
-- Lisää require sync importin tilalle — sykli ratkeaa CommonJS-hoistingilla
-- Poista export-lauseet — import riittää moduulien väliseen linkitykseen
-- window.global väliaikaisena sidontapaikkana korjaa circular dependency -ongelman
 
 #### `b07-js-modules-dynamic` · diff 3
 
@@ -4104,42 +3820,6 @@ a.js importtaa b.js ja b.js importtaa a.js — export undefined initissä. Juuri
 - ES modules eivät salli syklisiä importteja — bundler estää ne buildissa
 - Bundler bug aiheuttaa aina undefined exportit — refaktorointi ei auta
 - Import hoisting poistaa syklit automaattisesti — undefined on väliaikainen
-
-#### `b08-js-modules-dynamic-import` · diff 3
-
-Raskas chart-kirjasto vain admin-sivulla — bundle liian iso. Latausstrategia?
-
-- **dynamic import() — code splitting route- tai komponenttitason mukaan** ✓
-- Staattinen import chart-kirjastosta ylhäällä — bundler poistaa admin-chunkin
-- require() on ainoa tapa lazy loadata moduuleja selaimessa ilman bundleria
-- Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla
-
-#### `b08-js-modules-top-level-await` · diff 4
-
-ES module init lataa config.json ennen exportteja — miten ilman async IIFE?
-
-- **Top-level await moduulissa — await fetch config ennen export-lauseita** ✓
-- var config = sync fetch — XMLHttpRequest on synkroninen moduulin initissä
-- Top-level await toimii vain CommonJS:ssä — ESM vaatii async IIFE:n
-- Export ennen await aina — moduulin arvot ovat saatavilla ennen async initia
-
-#### `b09-js-modules-circular-dep` · diff 4
-
-Moduuli A importtaa B:n ja B importtaa A:n — undefined exportit bootissa. Korjaus?
-
-- **Refaktoroi jaettu logiikka kolmanteen moduuliin — poista import-sykli** ✓
-- Lisää delay requireen — odota että toinen moduuli on fully evaluated
-- Circular deps toimivat aina ESM:ssä — undefined export on väliaikainen
-- Yhdistä A ja B yhdeksi tiedostoksi aina — ainoa tapa korjata sykli
-
-#### `b09-js-modules-dynamic-import` · diff 3
-
-Raskas chart-kirjasto tarvitaan vain admin-sivulla — haluat pienentää initial bundlea. Lataus?
-
-- **dynamic import() — code splitting lazy load pienentää initial bundlea** ✓
-- require() top-level ESM:ssä — lazy load admin-moduuli tarvittaessa
-- Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla
-- Staattinen import kaikille sivuille — bundler poistaa käyttämättömän koodin
 
 #### `b09-js-modules-esm-cjs-interop` · diff 4
 
@@ -4366,7 +4046,7 @@ Miten tuot moduulin `utils.js` funktion `format` ESM-tyylillä?
 - #include "utils.js"
 - import format from utils ilman lainausmerkkejä
 
-### js-runtime (55)
+### js-runtime (49)
 
 #### `b02-js-runtime-closure-12` · diff 3
 
@@ -4431,15 +4111,6 @@ Deep copy state Redux-storeen JSON.parse(JSON.stringify(obj)) — Date muuttuu s
 - Spread {...obj} deep clone
 - eval clone
 
-#### `b04-js-runtime-error-cause` · diff 3
-
-fetch wrapper heittää uuden Error('API failed') — alkuperäinen stack katoaa. ES2022 parannus?
-
-- **throw new Error('API failed', { cause: originalError })** ✓
-- console.log original — riittää
-- Error ei tue ketjutusta
-- String(originalError) stackissa
-
 #### `b04-js-runtime-gc-closure` · diff 4
 
 SPA muistin käyttö kasvaa navigoidessa — vanhat DOM-viittaukset closureissa. Miten estät?
@@ -4449,15 +4120,6 @@ SPA muistin käyttö kasvaa navigoidessa — vanhat DOM-viittaukset closureissa.
 - location.reload() joka sivulla
 - global.gc() tuotannossa
 
-#### `b04-js-runtime-structured-clone` · diff 4
-
-JSON.parse(JSON.stringify(obj)) rikkoo Date-objektit ja undefined-kentät. Parempi deep clone?
-
-- **structuredClone(obj) — structured clone algorithm** ✓
-- Object.assign riittää deep cloneen
-- Spread {...obj} deep clone
-- lodash ainoa vaihtoehto
-
 #### `b05-js-fetch-cors-preflight` · diff 4
 
 POST JSON toiselle domainille — selain lähettää OPTIONS ensin. Miksi?
@@ -4466,15 +4128,6 @@ POST JSON toiselle domainille — selain lähettää OPTIONS ensin. Miksi?
 - OPTIONS on API-bugi
 - fetch ei tue cross-origin
 - Preflight vain HTTP:llä ei HTTPS:llä
-
-#### `b05-js-runtime-closure-stale` · diff 3
-
-for-silmukassa 5 nappia — kaikki tulostavat 5. Klassinen bugi. Korjaus?
-
-- **let i silmukassa tai IIFE/closure joka kaappaa arvon per iteratio** ✓
-- var i riittää aina
-- Poista closure — globaali i
-- onclick ei tue closureja
 
 #### `b05-js-runtime-dom-reflow` · diff 3
 
@@ -4530,15 +4183,6 @@ Object.freeze ei estä nested muutoksia — config objekti mutatoitu. Miten syv�
 - const-esto estää nested-muutokset koska viittaus ei voi vaihtua
 - JSON.parse(JSON.stringify(config)) takaa syvän immuuttisuuden aina turvallisesti
 
-#### `b07-js-runtime-closure-loop` · diff 3
-
-for-loopissa 5 click-handleria — kaikki tulostavat 5. Klassinen bugi ja fix?
-
-- **let i loopissa tai IIFE — var jakaa saman sidonnan kaikille callbackeille** ✓
-- var korjaa automaattisesti closure-ongelman loopissa click-handlereissa
-- Poista handlerit kokonaan — loop ei tarvitse erillisiä callback-funktioita
-- setTimeout(0) var-loopissa luo erillisen sidonnan jokaiselle iteratiolle
-
 #### `b07-js-runtime-json-parse` · diff 2
 
 API palauttaa JSON-stringin — eval(data) parseen. Turvallinen tapa?
@@ -4593,15 +4237,6 @@ Script headissä — document.getElementById palauttaa null. Milloin DOM on valm
 - Kaikki metodit kopioidaan jokaiseen objektiin luontihetkellä erikseen
 - Vain class-instanssit perivät metodit — plain objectit eivät käytä prototyyppiä
 
-#### `b08-js-runtime-weakmap` · diff 4
-
-DOM-elementtiin liitetty metadata — Map aiheuttaa memory leakin kun element poistuu. Rakenne?
-
-- **WeakMap — avaimet heikosti viitattuja, GC voi kerätä elementin** ✓
-- Globaali object metadata-tallennukseen — ei estä elementin garbage collectionia
-- WeakMap pitää avaimet ikuisesti elossa — vahvempi kuin tavallinen Map
-- JSON.stringify elementtiin — metadata säilyy ilman muistivuotoriskiä
-
 #### `b09-js-runtime-closure-leak` · diff 4
 
 SPA:n muisti kasvaa navigoidessa — DevTools näyttää detached DOM -nodeja. Syy?
@@ -4610,15 +4245,6 @@ SPA:n muisti kasvaa navigoidessa — DevTools näyttää detached DOM -nodeja. S
 - GC ei toimi moderneissa selaimissa — detached nodeja ei kerätä koskaan
 - innerHTML tyhjentää aina listenerit — ei tarvitse removeEventListener
 - Muistivuoto on vain Node-ongelma — selaimet vapauttavat DOM-automaattisesti
-
-#### `b09-js-runtime-debounce-search` · diff 2
-
-Hakukenttä laukaisee API-kutsun jokaisella näppäinpainalluksella. Optimointi?
-
-- **debounce — odota tauko ennen hakua** ✓
-- throttle ja debounce ovat sama asia
-- Poista input listener
-- Synkroninen haku aina
 
 #### `b09-js-runtime-raf-animation` · diff 3
 
@@ -4863,7 +4489,7 @@ for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 0); } — mitä t
 - undefined × 3 — i on määrittelemätön callback-hetkellä
 - Syntaksivirhe — var ja nuoli estävät setTimeout-kutsun
 
-### js-types (50)
+### js-types (48)
 
 #### `b02-js-types-coalesce-06` · diff 2
 
@@ -4964,15 +4590,6 @@ JSON.stringify(BigInt(42)) heittää TypeError. Miksi?
 - JSON.stringify muuntaa automaattisesti numberiksi
 - parseInt korjaa serialisoinnin
 
-#### `b05-js-types-nullish-coalescing` · diff 2
-
-Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?
-
-- **value ?? 10 — nullish coalescing** ✓
-- value || 10 on oikein nollalle
-- value == 10
-- typeof value || 10
-
 #### `b05-js-types-strict-equality` · diff 2
 
 Code review: `if (status == '200')` — miksi pyydetään muutosta?
@@ -5062,15 +4679,6 @@ Haluat piilottaa objektin sisäisen avaimen for-in loopilta mutta käyttää sit
 - Merkkijono prefix _ riittää piilottamaan avaimen for-in ja Object.keys:iltä
 - Symbol serialisoituu JSON:iin automaattisesti kuten merkkijonoavaimet
 - Map vaatii Symbol-avaimia — primitiivit eivät kelpaa Map-avaimiksi
-
-#### `b09-js-types-bigint-json` · diff 4
-
-API palauttaa 64-bit ID:n — JSON.stringify heittää BigInt:illä. Ratkaisu?
-
-- **Custom replacer tai serialisoi stringiksi — JSON ei tue BigInt natiivisti** ✓
-- JSON.stringify tukee BigInt automaattisesti — ei tarvitse muunnosta
-- Muuta kaikki Number — MAX_SAFE_INTEGER kattaa 64-bit ID:t aina
-- eval() parseen — BigInt säilyy automaattisesti JSON-merkkijonossa
 
 #### `b09-js-types-null-object` · diff 3
 
@@ -5512,7 +5120,7 @@ API palauttaa tuntematonta JSON-dataa TypeScriptissä. Miksi `unknown` on turval
 
 #### `kids-animal-cow` · diff 1
 
-Mikä eläin sanoo mää?
+Mikä eläin sanoo muu?
 
 - **Lehmä** ✓
 - Koira
@@ -5634,7 +5242,7 @@ Millä ajetaan polkemalla?
 - Lentokoneella
 - Juna ei liiku polkemalla
 
-## linux (168)
+## linux (151)
 
 ### apt (8)
 
@@ -5710,7 +5318,7 @@ Uusi palvelin — haluat asentaa tuoreimmat tietoturvapäivitykset. Mikä on oik
 - apt install --update asentaa ja päivittää kaikki paketit yhdellä komennolla
 - apt refresh && apt patch on oikea pari turvallisuuspäivityksille
 
-### avahi (25)
+### avahi (18)
 
 #### `avahi-mdns` · diff 4
 
@@ -5757,15 +5365,6 @@ Kehität paikallista HTTP-palvelua — haluat sen löytyvän `_http._tcp`. Miten
 - Kirjoita oma UDP-broadcast-skripti joka lähettää palvelutiedot porttiin 5353 säännöllisesti
 - Avaa SSH-tunneli palvelimelle — asiakkaat löytävät palvelun tunnelin kautta automaattisesti
 
-#### `b03-linux-avahi-browse-services` · diff 2
-
-Toimistossa pitää löytää paikallinen tulostin ilman IP:tä. Avahi-komento?
-
-- **avahi-browse -a tai -r _ipp._tcp** ✓
-- nmap -sS 0.0.0.0/0
-- arp-scan internetistä
-- Avahi toimii vain Windowsissa
-
 #### `b03-linux-avahi-hostname-local` · diff 3
 
 Kehityskone hostaa API:n osoitteessa devbox.local — toinen kone ei resolvaa. Tarkista?
@@ -5783,33 +5382,6 @@ IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista IP:tä
 - Kovakoodaa IP-osoite sovellukseen — rikkoutuu heti kun DHCP vaihtaa gatewayn osoitteen
 - Broadcast UDP kaikille porteille — ei noudata mDNS/DNS-SD-protokollan service-tyyppiä
 - Avahi toimii vain clientinä eikä pysty julkaisemaan omia palveluita lähiverkkoon
-
-#### `b04-linux-avahi-browse` · diff 3
-
-Lähiverkossa pitäisi näkyä mDNS-palvelu mutta se ei löydy. Diagnostiikkakomento?
-
-- **avahi-browse -a tai avahi-browse -rt _http._tcp** ✓
-- ping palvelu.local riittää aina
-- nmap -sP korvaa mDNS:n
-- systemctl stop avahi — nopeampi
-
-#### `b05-linux-avahi-browse` · diff 2
-
-Toimiston tulostin pitäisi löytyä verkosta automaattisesti. Mikä työkalu listaa mDNS-palvelut?
-
-- **avahi-browse -a — kaikki ilmoitetut palvelut** ✓
-- ping printer.local riittää diagnostiikkaan
-- systemctl status cups
-- docker ps | grep avahi
-
-#### `b05-linux-avahi-hostname-conflict` · diff 4
-
-Kaksi konetta ilmoittaa saman `.local`-hostname:n — palvelut vaihtelevat. Mikä on juurisyy?
-
-- **Hostname-konflikti mDNS:ssä — hostnamet täytyy olla uniikit verkossa** ✓
-- Avahi ei tue useaa konetta samassa lähiverkossa — jokainen kone tarvitsee oman Avahi-instanssinsa
-- Vain keskitetty DNS-palvelin korjaa konfliktin — mDNS ei toimi ilman perinteistä nimipalvelinta
-- Konflikti johtuu aina palomuurista joka estää liikennettä koneiden välillä lähiverkossa
 
 #### `b05-linux-avahi-publish-service` · diff 3
 
@@ -5865,15 +5437,6 @@ Docker-kontti julkaisee mDNS-palvelun mutta host ei näe sitä. Tyypillinen syy?
 - Kontti tarvitsee port 80 avattuna jotta host näkee mDNS-palvelun
 - Poista .local-pääte hostnamesta jotta host löytää konttipalvelun
 
-#### `b07-linux-avahi-resolve` · diff 2
-
-Kehityskone printer.local ei resolvdu. Avahi-työkalu joka testaa nimen?
-
-- **avahi-resolve -n printer.local — mDNS-nimen resoluution testaus** ✓
-- nslookup printer.local toimii .local-nimille perinteisellä DNS:llä
-- ping 8.8.8.8 testaa printer.local mDNS-resoluution toimivuuden
-- systemctl stop avahi-daemon korjaa printer.local resoluution
-
 #### `b08-linux-avahi-resolve` · diff 3
 
 Kehityskone ei löydä palvelua `printer.local` — mDNS pitäisi toimia. Ensimmäinen tarkistus?
@@ -5901,15 +5464,6 @@ Kehityskone ei löydä kollegan .local-palvelua — sama WiFi. Yleisin syy Linux
 - .local toimii vain Windowsissa, ei samassa WiFi-verkossa Linuxilla
 - DNS-palvelin puuttuu — mDNS ei toimi ilman keskitettyä DNS:ää
 
-#### `b09-linux-avahi-service-discovery` · diff 3
-
-Lähiverkon tulostin pitäisi löytyä ilman staattista IP:tä. Protokolla?
-
-- **mDNS/Avahi — .local-palvelunimi lähiverkon discoveryyn** ✓
-- Vain DHCP-reservointi skaalautuu lähiverkon palvelujen löytöön
-- DNS A-record riittää tulostimen löytämiseen ilman staattista IP:tä
-- Avahi on vain macOS-ominaisuus, ei Linux-lähiverkossa
-
 #### `exp-linux-avahi-conflict` · diff 3
 
 Kaksi laitetta claimaa saman hostname.local — verkko sekoaa. Miten Avahi ratkaisee konfliktin?
@@ -5928,16 +5482,7 @@ Toimiston tulostin pitäisi löytyä automaattisesti LANissa ilman staattista IP
 - FTP broadcast ilmoittaa tulostimen lähiverkossa automaattisesti
 - SMTP discovery paljastaa tulostimet ilman staattista IP:tä
 
-#### `exp-linux-avahi-service-xml` · diff 4
-
-Haluat julkaista HTTP-palvelun portissa 8080 mDNS:llä. Mihin konfiguraatio kuuluu?
-
-- **/etc/avahi/services/*.service XML DNS-SD-määrittely portille 8080** ✓
-- /etc/hosts -rivi julkaisee HTTP-palvelun portissa 8080 mDNS:llä
-- systemd unit riittää mDNS-palvelun ilmoitukseen ilman Avahia
-- iptables DNAT hoitaa HTTP-palvelun discoveryn portissa 8080
-
-### journald (31)
+### journald (25)
 
 #### `b02-linux-journalctl-boot-05` · diff 2
 
@@ -5956,15 +5501,6 @@ Haluat vain nginx-palvelun viimeiset virheet. Tehokkain komento?
 - grep nginx /var/log/* hakee indeksoidusti nginx-yksikön virheet
 - tail -f /dev/null seuraa nginx-palvelun virhelokimerkintöjä
 - systemctl cat nginx tulostaa viimeisimmät err-tason lokirivit
-
-#### `b02-linux-journald-persist-07` · diff 3
-
-Rebootin jälkeen vanhat lokit katoavat — forensic-tarve. journald-muutos?
-
-- **Storage=persistent /var/log/journal journald.conf:ssa** ✓
-- Storage=volatile säilyttää lokit rebootien yli forensic-tarkoituksiin
-- Poista journald ja käytä vain rsyslogia lokitiedostojen säilytykseen
-- Rsyslog-only korvaa persistent-journalin automaattisesti rebootissa
 
 #### `b03-linux-journalctl-follow-unit` · diff 2
 
@@ -6020,15 +5556,6 @@ Incident: tarvitset vain virhe- ja kriittiset viestit viime tunnilta. journalctl
 - journalctl -q hiljentää varoitukset lokitiedostoista, ei suodata priority-tason mukaan
 - Vain dmesg — kernel-rengaspuskuri ei sisällä sovellusten err-tason journal-viestejä
 
-#### `b04-linux-journald-RateLimit` · diff 4
-
-Bugi tulvittaa journald:n identtisillä virheillä — diagnostiikka vaikeaa. Mitä konfiguroit?
-
-- **RateLimitIntervalSec / RateLimitBurst journald.conf:ssa** ✓
-- Poista journald kokonaan ja siirrä kaikki lokitus perinteiseen syslog-daemoniin
-- rm -rf /var/log/journal poistaa vanhat lokit mutta ei estä uutta floodia täyttämästä levyä uudelleen
-- Vain syslog — ei rate limitiä — syslogilla ei ole journaldin sisäänrakennettua flood-suojaa
-
 #### `b05-linux-journalctl-unit-since` · diff 2
 
 Tuotantoincidentti — tarvitset nginx-unitin lokit viimeisen tunnin ajalta. Mikä komento?
@@ -6046,15 +5573,6 @@ Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain virheisii
 - journalctl --no-pager estää debug
 - systemctl stop journald
 - grep ERROR riittää aina
-
-#### `b05-linux-journald-storage-persist` · diff 3
-
-Rebootin jälkeen edellisen bootin lokit katoavat. Mikä journald.conf-asetus korjaa?
-
-- **Storage=persistent — lokit /var/log/journal** ✓
-- ForwardToSyslog=no estää journalin lähettämisen syslogille, ei vaikuta talletuksen pysyvyyteen
-- MaxLevelStore=debug säätää tallennettavan lokitason, ei sitä säilyykö loki rebootin yli
-- RateLimitInterval=0 poistaa nopeusrajoituksen, ei vaikuta journalin tallennuspaikkaan
 
 #### `b06-linux-journalctl-reverse` · diff 2
 
@@ -6119,15 +5637,6 @@ Incidentti alkoi noin klo 14:30 — haluat lokit siitä eteenpäin. Nopein journ
 - cat /var/log/messages näyttää unit-lokit tarkalla aikaleimalla
 - dmesg | grep 14:30 korvaa journalctl --since -filtterin
 
-#### `b08-linux-journalctl-unit` · diff 2
-
-Nginx kaatuu — haluat vain nginx-unitin virheet viime bootista. Komento?
-
-- **journalctl -u nginx -b -p err** ✓
-- journalctl ilman -u näyttää vain nginx
-- tail /var/log/nginx/error.log aina riittää systemd:ssä
-- -b näyttää kaikki bootit kerralla
-
 #### `b08-linux-journald-storage` · diff 3
 
 Levy täyttyy journal-lokeista embedded-laitteessa. Mitä journald.conf-asetusta säädät?
@@ -6137,15 +5646,6 @@ Levy täyttyy journal-lokeista embedded-laitteessa. Mitä journald.conf-asetusta
 - journald ei voi rajoittaa levytilaa tai retention-aikaa lainkaan
 - rm -rf /var/log/journal estää journalin täyttämästä levyä pysyvästi
 
-#### `b09-linux-journalctl-follow-live` · diff 2
-
-Seuraat tuotantopalvelun lokia reaaliajassa deployn aikana. Komento?
-
-- **journalctl -u palvelu.service -f — seuraa unitin live-lokia** ✓
-- tail -f /var/log/syslog seuraa systemd-palvelun uusia rivejä
-- systemctl logs -f on oikea komento reaaliaikaiseen lokiseurantaan
-- journalctl --rotate -f tailaa uusia merkintöjä deployn aikana
-
 #### `b09-linux-journald-forward-syslog` · diff 3
 
 Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?
@@ -6154,15 +5654,6 @@ Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?
 - journald ei tue ulkoista forwardingia syslog-formaattiin
 - Kopioi /var/log/journal manuaalisesti keskus-LOKI-palvelimelle
 - systemctl export-logs riittää syslog-formaatin toimittamiseen
-
-#### `b09-linux-journald-priority-filter` · diff 3
-
-Incident-haku: tarvitset vain error-tason viestit viimeiseltä bootilta. Suodatin?
-
-- **journalctl -b -p err** ✓
-- journalctl --grep ERROR riittää aina
-- dmesg -l err
-- Priority ei ole journald-kenttä
 
 #### `exp-linux-journalctl-since-boot` · diff 2
 
@@ -6256,6 +5747,17 @@ Gatewayn MAC vaihtuu harvoin ja aiheuttaa katkoja — haluat kiinteän ARP-merki
 - echo aa:bb > /proc/net/arp — ARP-taulua ei voi muokata suoraan kirjoittamalla /proc-tiedostoon
 - ip route add 192.168.1.1 dev eth0 — tämä lisää reitin, ei kiinteää MAC-osoitetta ARP-tauluun
 
+### linux-cgroups (1)
+
+#### `prod-linux-cgroups-v2-memory` · diff 4
+
+Docker-kontin muistiraja on 512M, mutta haluat nähdä saman cgroup v2 -tasolla hostilla. Mistä lukema?
+
+- **systemd-cgtop tai cat /sys/fs/cgroup/.../memory.current — cgroup v2 muistinkäyttö** ✓
+- free -h näyttää konttikohtaisen muistin cgroup-polun kautta
+- docker stats on ainoa tapa — host ei näe cgroup v2 -rajoja
+- ps aux RSS summa vastaa cgroup memory.current arvoa
+
 ### linux-dbus (5)
 
 #### `b12-linux-dbus-bluez-pair` · diff 3
@@ -6303,7 +5805,54 @@ Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäk
 - D-Bus daemon on kaatunut — reboot auttaa aina, vaikka daemon on selvästi käynnissä ja vastaa muille
 - dbus-send vaatii aina rootin — nmcli käyttää samaa D-Bus-rajapintaa samoilla polkit-säännöillä
 
-### linux-network (46)
+### linux-incident (5)
+
+#### `linux-deleted-open-file` · diff 3
+
+df näyttää levyn täyneksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?
+
+- **Prosessi pitää poistettua tiedostoa yhä auki (lsof +L1 näyttää sen)** ✓
+- Tiedostojärjestelmä on korruptoitunut — aja fsck heti tuotannossa
+- du ei laske lokitiedostoja — tarkista käyttö ls -la:lla koko levyltä
+- rm siirsi tiedoston roskakoriin, joka pitää tyhjentää erikseen
+
+#### `prod-linux-incident-slow-no-cpu` · diff 5
+
+API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullonkaula levy-IO:ssa?
+
+- **iostat -xz 1 tai pidstat -d 1 — levy-IO ja odotusajat prosessikohtaisesti** ✓
+- top riittää — se näyttää aina levy-IO:n pullonkaulana
+- free -h paljastaa levy-IO-ruuhkan muistin kautta
+- ss -tulpn näyttää levy-latenssin per yhteys
+
+#### `prod-linux-logrotate-copytruncate` · diff 4
+
+logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lokimerkintöjä rotaation jälkeen. Parempi tapa?
+
+- **Käytä `create` + `postrotate` signaali (esim. USR1/SIGHUP) jos sovellus tukee lokin uudelleenavausta** ✓
+- Lisää copytruncate ja compress — se korjaa race conditionin automaattisesti
+- Poista logrotate ja anna lokit kasvaa rajattomasti
+- truncate -s 0 on aina turvallisempi kuin mikään signaali
+
+#### `prod-linux-lsof-deleted-log` · diff 4
+
+Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on todennäköisin syy?
+
+- **Poistettu mutta auki pidetty lokitiedosto — `lsof +L1` tai `lsof | grep deleted`** ✓
+- du laskee väärin sparse-tiedostot aina — käytä ls -la sen sijaan
+- Journald käyttää RAM-levyä jota du ei näe — reboot korjaa tilan
+- Tiedostojärjestelmä on korruptoitunut — ainoa korjaus on mkfs
+
+#### `prod-linux-strace-hung-process` · diff 4
+
+Prosessi on jumissa tuotannossa etkä halua käynnistää sitä uudelleen. Miten näet mihin syscalliin se odottaa?
+
+- **strace -p <pid> — näyttää reaaliaikaiset syscallit ja odotukset** ✓
+- kill -9 <pid> ja analysoi core dump myöhemmin
+- gdb attach vaatii aina prosessin pysäyttämisen tuotannossa
+- lsof -p riittää näyttämään syscall-jonon
+
+### linux-network (38)
 
 #### `b02-linux-network-nmcli-11` · diff 2
 
@@ -6314,15 +5863,6 @@ Wi-Fi katkeilee — haluat vaihtaa verkko profiilin CLI:stä. Komento?
 - route add default vaihtaa aktiivisen Wi-Fi-verkon profiilin
 - systemctl restart network aktivoi valitun NM-profiilin reconnectissa
 
-#### `b02-linux-network-resolv-10` · diff 3
-
-Lyhyet hostnamet eivät resolvdu — FQDN toimii. Mikä tiedosto?
-
-- **search/domain /etc/resolv.conf tai systemd-resolved** ✓
-- /etc/hosts määrittää search-domainit lyhyille hostnameille
-- /etc/nsswitch.conf DNS off estää FQDN-resoluution
-- iptables search-kenttä rikkoo lyhyiden hostnamejen haun
-
 #### `b02-linux-network-route-09` · diff 4
 
 VPN-yhteys toimii mutta vain internal IP:t eivät routtaudu. Diagnostiikka?
@@ -6331,15 +5871,6 @@ VPN-yhteys toimii mutta vain internal IP:t eivät routtaudu. Diagnostiikka?
 - reboot korjaa VPN-reitityksen ja internal IP -reachability
 - Poista default route korjaa VPN:n internal-reitit
 - ifdown eth0 palauttaa VPN-reitit policy routing -tauluun
-
-#### `b02-linux-network-ss-08` · diff 3
-
-Sovellus sanoo portti 8080 varattu — mikä komento näyttää prosessin joka kuuntelee?
-
-- **ss -tlnp | grep 8080 tai ss -ulnp UDP-kuuntelijalle** ✓
-- netstat -a näyttää prosessin joka kuuntelee porttia 8080
-- ping localhost paljastaa portin 8080 omistavan prosessin
-- ifconfig listaa TCP-kuuntelijat ja prosessit portissa 8080
 
 #### `b03-linux-network-ethtool-link` · diff 4
 
@@ -6430,24 +5961,6 @@ Wi-Fi katkesi toimistossa. Miten nmcli:llä yhdistät tunnetun profiilin?
 - nmcli device delete wlan0
 - ifup wlan0 riittää NetworkManagerissa aina
 - systemctl restart network
-
-#### `b05-linux-network-resolv-search` · diff 3
-
-Sisäinen hostname `app.internal` ei resolvdu mutta FQDN toimii. Mikä resolv.conf-asetus auttaa?
-
-- **search internal — lyhyet nimet kokeillaan search-domaineissa** ✓
-- nameserver 127.0.0.1 riittää aina — määrittää DNS-palvelimen, ei lyhyiden nimien suffixia
-- options rotate korjaa searchin — rotate vaihtaa nameserver-järjestystä, ei lisää domain-suffixia
-- Poista resolv.conf kokonaan — ilman tiedostoa myöskään FQDN-haku ei enää toimi
-
-#### `b05-linux-network-ss-listen` · diff 2
-
-Portti 8080 on jo käytössä — uusi palvelu ei käynnisty. Mikä komento näyttää prosessin?
-
-- **ss -tlnp | grep 8080 — kuuntelevat TCP-portit + prosessi** ✓
-- ping localhost 8080 — ICMP-ping ei tue porttinumeroa eikä kerro mikä prosessi kuuntelee
-- ifconfig 8080 — työkalu näyttää verkkorajapinnat, ei kuunteleva prosessi tai portti
-- netstat on ainoa tapa — ss ei toimi nykyaikaisissa jakeluissa lainkaan
 
 #### `b06-linux-network-ethtool-offload` · diff 5
 
@@ -6548,33 +6061,6 @@ API-viive — epäilet reitityspolkua ulkoiseen palveluun. Perustyökalu polun s
 - ifconfig näyttää reitityspolun ja hopit ulkoiseen palveluun
 - curl -I korvaa tracerouten API-viiveen juurisyy-analyysissä
 
-#### `b08-linux-resolv-search` · diff 3
-
-Lyhyt hostname 'db' ei resolvdu — FQDN toimii. Mitä /etc/resolv.conf search-kenttä tekee?
-
-- **search lisää domain-suffiksia lyhyille nimille — järjestys tärkeä** ✓
-- search määrittää DNS-palvelimen IP-osoitteen resolv.conf:ssa
-- search korvaa /etc/hosts-tiedoston lyhyiden hostnamejen resoluutiossa
-- search on deprecated eikä vaikuta resolverin suffix-kokeiluun
-
-#### `b08-linux-ss-listening` · diff 2
-
-Mikä prosessi kuuntelee porttia 5432? Nopein diagnostiikka?
-
-- **ss -tlnp tai ss -ulnp — listening socketit ja prosessit** ✓
-- ping localhost kertoo mikä prosessi kuuntelee porttia 5432
-- netstat on ainoa työkalu listening-porttien diagnostiikkaan
-- lsof ilman porttisuodatinta riittää kuuntelijan tunnistamiseen
-
-#### `b09-linux-net-firewall-cmd` · diff 3
-
-Uusi palvelu portissa 8443 — firewalld estää ulkoiset yhteydet. Pysyvä aukko?
-
-- **firewall-cmd --add-port=8443/tcp --permanent && firewall-cmd --reload** ✓
-- iptables -F — tyhjennä kaikki säännöt avataksesi portin 8443
-- systemctl stop firewalld on suositeltu pysyvä aukko porttiin
-- Portti 8443 aukeaa automaattisesti kun palvelu käynnistyy
-
 #### `b09-linux-net-nat-troubleshoot` · diff 4
 
 Kontti saavuttaa hostin mutta ei internetiä — epäilet NAT:ia. Tarkistus?
@@ -6583,15 +6069,6 @@ Kontti saavuttaa hostin mutta ei internetiä — epäilet NAT:ia. Tarkistus?
 - Vain DNS on syy — ping IP:llä riittää NAT-ongelman diagnosointiin
 - NAT toimii automaattisesti kaikissa distroissa ilman sääntöjä
 - ifconfig up korjaa konttiverkon NAT:in ja internet-yhteyden
-
-#### `b09-linux-net-ss-listen` · diff 2
-
-Portti 8080 on varattu mutta et tiedä mikä prosessi kuuntelee. Moderni työkalu?
-
-- **ss -tlnp | grep 8080 — listenerit ja prosessit portissa** ✓
-- ping localhost 8080 kertoo mikä prosessi varaa portin
-- ifconfig näyttää kuuntelevat portit ja prosessitiedot
-- netstat on ainoa moderni työkalu portin 8080 kuuntelijalle
 
 #### `b09-linux-net-tcpdump-incident` · diff 4
 
@@ -6674,15 +6151,6 @@ Kontti-host ei reachaa 10.20.0.0/16 VPN-verkkoa. ip route näyttää oletusyhtey
 - Poista default route korjaa VPN-reitityksen automaattisesti
 - ifconfig on ainoa työkalu VPN-reittien diagnosointiin
 
-#### `exp-linux-network-ss-listen` · diff 3
-
-Portti 8080 on jo käytössä deploy epäonnistuu. Mikä komento näyttää mikä prosessi kuuntelee?
-
-- **ss -tlnp | grep 8080 tai ss -ulnp UDP-kuuntelijalle** ✓
-- netstat -a ilman -p näyttää prosessin portti 8080 kuuntelijana
-- lsof tiedostopoluille paljastaa portin 8080 omistajan
-- reboot vapauttaa portin 8080 ilman prosessitarkistusta
-
 #### `linux-ip-route` · diff 4
 
 Palvelin ei pääse ulos verkon 10.0.0.0/8 ulkopuolelle, mutta pingaa gatewayn. Mikä todennäköisin puuttuu?
@@ -6718,6 +6186,26 @@ Mikä prosessi kuuntelee porttia 8080? Nopein moderni komento?
 - ping localhost varmistaa että portti 8080 on vapaa
 - cat /etc/services listaa prosessit portti 8080 kuuntelijana
 - ifconfig -a näyttää TCP-kuuntelijat ja niiden prosessit
+
+#### `prod-linux-bind-localhost` · diff 3
+
+Palvelu toimii koneella `curl localhost:8080` mutta ulkopuolelta yhteys timeouttaa. Todennäköisin syy?
+
+- **Sovellus kuuntelee vain 127.0.0.1:8080 — bindaa 0.0.0.0 tai oikea interface-IP** ✓
+- DNS ei resolvaa localhost-nimeä kontissa
+- TCP backlog on liian pieni — ss ei näytä LISTEN-tilaa
+- IPv6 estää IPv4-yhteydet automaattisesti
+
+### linux-ssh (1)
+
+#### `prod-linux-ssh-bastion-forward` · diff 4
+
+Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin 5432 tietokantaan. SSH-komennot?
+
+- **ssh -J bastion prod ja ssh -L 5432:db.internal:5432 prod (tai ProxyJump + LocalForward ssh_configissa)** ✓
+- ssh -A prod — agent forwarding riittää tietokantayhteyteen
+- scp db.internal:/data . — kopioi koko tietokannan paikallisesti
+- telnet bastion 22 avaa tunnelin automaattisesti
 
 ### linux-tcp-udp (6)
 
@@ -6775,7 +6263,7 @@ DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomuuri.
 - UDP ei kulje NAT:in läpi koskaan — palomuurit pudottavat kaiken UDP-liikenteen automaattisesti
 - ss -ltn näyttää UDP-vastaukset — -t ja -l rajaavat näkymän pelkkiin TCP LISTEN-socketeihin
 
-### systemd (43)
+### systemd (37)
 
 #### `b02-linux-systemd-env-04` · diff 4
 
@@ -6939,15 +6427,6 @@ Backup-skripti ajetaan vain jos mount on käytettävissä. Miten unit ehto?
 - ExecStartPre=test -d /backup korvaa Condition-ehdon unitissa
 - WantedBy=multi-user.target määrittää mount-ehdon backup-unitille
 
-#### `b06-linux-systemd-LimitsNOFILE` · diff 4
-
-Palvelu saa 'too many open files' tuotannossa. Miten nostat rajan systemd-unitissa?
-
-- **LimitNOFILE=65535 [Service]-osassa service unit -tiedostossa** ✓
-- ulimit -n skriptissä ennen exec pitää rajan palveluprosessille
-- Restart=on-failure korjaa liian alhaisen NOFILE-rajan palvelussa
-- Type=notify nostaa NOFILE-rajan automaattisesti systemd-palvelulle
-
 #### `b06-linux-systemd-logind` · diff 3
 
 Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä komponentti hallinnoi?
@@ -6984,15 +6463,6 @@ High-traffic palvelu saa Too many open files — ulimit ok login-shellissa. Miss
 - sysctl -w fs.file-max korjaa yksittäisen palvelun open files -virheen
 - chmod 777 /proc nostaa palvelun file descriptor -rajan heti
 
-#### `b07-linux-systemd-restart-policy` · diff 3
-
-Palvelu kaatuu satunnaisesti yöllä — aamulla se on alhaalla. Mikä Restart= arvo nostaa sen automaattisesti?
-
-- **Restart=on-failure tai Restart=always — systemd käynnistää uudelleen** ✓
-- Restart=no on tuotannon oletus ja pitää palvelun yöllä pystyssä
-- Type=notify korvaa restart-politiikan service unit -tiedostossa
-- KillMode=process estää automaattisen uudelleenkäynnistyksen kaatumisen jälkeen
-
 #### `b07-linux-systemd-wantedby` · diff 3
 
 Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä [Install]-osiosta puuttuu?
@@ -7020,45 +6490,9 @@ App service pitää käynnistyä vain jos network-online.target on valmis. Unit-
 - ExecStartPre=ping google.com korvaa network-online.target riippuvuuden
 - Type=notify luo verkkoyhteyden ennen palvelun käynnistystä
 
-#### `b08-linux-systemd-restart-policy` · diff 3
-
-Palvelu kaatuu satunnaisesti — haluat systemd:n käynnistävän sen uudelleen. Mitä unit-tiedostoon?
-
-- **Restart=on-failure tai always + StartLimitBurst/Interval unitissa** ✓
-- Type=forking korjaa palvelun satunnaiset kaatumiset yöllä
-- Restart-direktiivi ei ole systemd:ssä tuettu service unitissa
-- cron @reboot riittää korvaamaan systemd-restart-politiikan
-
-#### `b08-linux-systemd-timer` · diff 3
-
-Cron-korvaus: backup ajastus systemd:llä. Mitä tarvitset?
-
-- **.timer unit + .service unit — OnCalendar= ajastuksessa** ✓
-- Vain service unit riittää systemd-ajastukseen ilman timeria
-- systemd ei tue ajastuksia — cron on pakollinen korvaaja
-- at-komento on aina parempi kuin systemd timer backup-ajoihin
-
-#### `b08-linux-systemd-wantedby` · diff 2
-
-Uusi service-unit ei käynnisty bootissa vaikka enabled. Install-osiossa puuttuu?
-
-- **WantedBy=multi-user.target — enable luo symlinkin oikeaan targetiin** ✓
-- After=network.target riittää unitin enableen ja boot-käynnistykseen
-- ExecStart riittää boot-käynnistykseen ilman [Install]-osiota
-- systemctl start tekee enable-automaattisesti ja boot-linkityksen
-
-#### `b09-linux-systemd-after-before` · diff 3
-
-App käynnistyy ennen verkkoa — DNS lookup epäonnistuu bootissa. Unit-riippuvuus?
-
-- **After=network-online.target + Wants=network-online.target** ✓
-- Before=network.target riittää boot-järjestykseen ennen DNS-hakua
-- Requires=multi-user.target varmistaa verkon ennen app-käynnistystä
-- Unit-riippuvuudet eivät vaikuta boot-käynnistyksen järjestykseen
-
 #### `b09-linux-systemd-kill-mode` · diff 4
 
-Palvelu spawnnaa child-prosesseja — stop jättää zombie-prosesseja. KillMode-korjaus?
+Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään stopin jälkeen. Mikä on turvallisempi asetus?
 
 - **KillMode=control-group — tappaa koko cgroupin prosessit stopissa** ✓
 - KillMode=process riittää kun palvelu spawnnaa child-prosesseja
@@ -7164,27 +6598,38 @@ Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:lle?
 - A jatkaa normaalisti ja B käynnistetään uudelleen erikseen
 - systemd käynnistää A:n uudelleen kunnes B onnistuu lopulta
 
-## postgres (180)
+### systemd-hardening (3)
 
-### pg-config (24)
+#### `prod-linux-capabilities-port80` · diff 4
 
-#### `b02-pg-config-connections-15` · diff 3
+Sovellus tarvitsee portin 80, mutta sitä ei haluta ajaa rootina. Mikä vaihtoehto on tuotannossa yleisin?
 
-500 microservice instanssia × 10 connection = pool explosion. Ratkaisu?
+- **Reverse proxy (nginx/Caddy) portissa 80 ja sovellus kuuntelee korkeaa porttia non-rootina** ✓
+- setcap cap_sys_admin=+ep — antaa kaikki admin-oikeudet ilman root-käyttäjää
+- chmod 4755 binääriin — setuid riittää aina turvallisesti privileged-portteihin
+- Aja palvelu rootina mutta piilota se process listasta
 
-- **Connection pooler (PgBouncer) + alenna max_connections tarpeen mukaan** ✓
-- max_connections=100000 skaalaa microservice-arkkitehtuurin ilman pooleria
-- Jokainen app suoraan superuser-yhteydellä vähentää connection overheadia
-- Poista idle timeout jotta pool explosion ei kasvata connection-määrää
+#### `prod-linux-systemd-analyze-security` · diff 4
 
-#### `b02-pg-config-shared-14` · diff 3
+Haluat arvioida unit-tiedoston eristystason ennen tuotantoon vientiä. Mikä työkalu auttaa?
 
-PostgreSQL cache hit ratio matala — ensimmäinen muistiparametri tarkistaa?
+- **systemd-analyze security unit.service — näyttää exposure scoren ja puuttuvat hardening-asetukset** ✓
+- systemctl cat unit.service — tulostaa automaattisesti turvallisuusraportin
+- journalctl -p err — näyttää vain sandbox-virheet käynnistyksessä
+- strace systemd — se analysoi unit-tiedoston sandbox-asetukset
 
-- **shared_buffers tyypillisesti ~25 % RAM — testaa cache hit ratioa** ✓
-- work_mem=8GB globaalisti korjaa matalan cache hit ration ensimmäisenä
-- fsync=off tuotannossa parantaa cache hit ratioa ilman datan riskiä
-- random_page_cost=0 on ensimmäinen muistiparametri matalalle cache hitille
+#### `prod-linux-systemd-protect-system` · diff 5
+
+Unitissa on `ProtectSystem=strict` ja sovellus ei voi enää kirjoittaa `/var/lib/myapp`iin. Turvallisin korjaus?
+
+- **Lisää `ReadWritePaths=/var/lib/myapp` — salli vain tarvittava kirjoituspolku** ✓
+- Poista ProtectSystem kokonaan — palvelu tarvitsee täyden root-fs:n kirjoitusoikeuden
+- Aja palvelu root-käyttäjänä — sandbox-asetukset eivät koske rootia
+- chmod 777 /var/lib/myapp korjaa systemd-sandboxauksen rajoituksen
+
+## postgres (121)
+
+### pg-config (15)
 
 #### `b03-pg-config-effective-cache` · diff 3
 
@@ -7222,15 +6667,6 @@ Tuotannossa hidas query tuntematon — haluat top 10 CPU-kuluttajaa historiasta.
 - EXPLAIN kaikille quereille cron
 - Log every query ilman sampling
 
-#### `b04-pg-config-effective-cache` · diff 3
-
-Planner aliarvioi index scan hyödyn — effective_cache_size on default 4GB mutta RAM 64GB. Vaikutus?
-
-- **Nosta effective_cache_size ~ OS cache + shared_buffers arvio — planner suosii indeksejä** ✓
-- effective_cache_size varaa RAM:ia PostgreSQLille
-- Parametri ei vaikuta suunnitteluun
-- Aseta 0 nopeimpaan
-
 #### `b04-pg-config-log-min-duration` · diff 3
 
 Haluat lokittaa vain > 500ms kestävät kyselyt tuotannossa ilman kaiken logitusta. Parametri?
@@ -7248,24 +6684,6 @@ CREATE INDEX kestää tunteja isolla taululla — logissa 'external sort'. Mitä
 - work_mem — sama kuin maintenance
 - shared_buffers heti 64GB
 - max_connections 10000
-
-#### `b05-pg-config-log-min-duration` · diff 3
-
-Haluat lokittaa vain > 500ms kestävät queryt tuotannossa. Mikä GUC?
-
-- **log_min_duration_statement = 500ms lokittaa vain hitaat kyselyt** ✓
-- log_statement = all on kevyt tapa suodattaa vain yli 500 ms kestävät kyselyt
-- log_connections = on kirjoittaa jokaisen kyselyn suoritusajan lokiin
-- logging_collector = off estää hitaiden kyselyiden lokituksen tuotannossa
-
-#### `b05-pg-config-shared-buffers` · diff 3
-
-16 GB RAM palvelin — shared_buffers on 128MB oletus. Tyypillinen lähtösuositus?
-
-- **Noin 25 % RAM:sta (esim. 4 GB) — aloitusarvo, säädä mittausten perusteella** ✓
-- 90 % RAM shared_buffers-arvoksi maksimoi PostgreSQLin oman page cache -kerroksen
-- 128 MB oletusarvo riittää 16 GB palvelimella koska OS hoitaa loput cachesta
-- shared_buffers ei vaikuta lukusuorituskykyyn koska PostgreSQL lukee suoraan levyltä
 
 #### `b06-pg-config-checkpoint-timeout` · diff 3
 
@@ -7312,42 +6730,6 @@ App-tason mutex kahden workerin välillä — ei taululock. Mitä PostgreSQL tar
 - UNLOGGED table toimii kevyenä mutex-ratkaisuna worker-koordinaatioon
 - Advisory lockit vaativat erillisen extensionin — eivät ole core PostgreSQLissä
 
-#### `b07-pg-config-log-slow` · diff 2
-
-Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf?
-
-- **log_min_duration_statement = esim. 1000ms — lokittaa hitaat kyselyt** ✓
-- log_statement = all ikuisesti prodissa on kevyt tapa lokittaa hitaat kyselyt
-- Poista logging kokonaan parantaa suorituskykyä ja paljastaa hitaat kyselyt
-- EXPLAIN jokaisessa requestissa korvaa slow query -lokituksen tuotannossa
-
-#### `b08-pg-config-checkpoint` · diff 4
-
-IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeout. Tavoite?
-
-- **Levitä checkpoint I/O — completion_target ~0.9, säätö timeout/max_wal** ✓
-- checkpoint_timeout = 1s nopeuttaa I/O-spikejä ja parantaa throughputia
-- Checkpoint ei aiheuta I/O:ta koska dirty pages kirjoitetaan WAL:in kautta
-- fsync = off tuotantoon poistaa checkpoint-kuorman turvallisesti
-
-#### `b08-pg-config-max-connections` · diff 3
-
-Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Arkkitehtuurikorjaus?
-
-- **Connection pooler (PgBouncer) — pidä max_connections kohtuullisena** ✓
-- Nosta max_connections = 10000 jotta jokainen microservice saa oman yhteyden
-- Jokainen microservice avaa oman connection stormin ilman pooleria
-- Pooler korvaa PostgreSQL-palvelimen kokonaan sovelluskerroksessa
-
-#### `b09-pg-config-pgbouncer-pool` · diff 3
-
-500 microservice-instanssia avaa oman PG-yhteyden — `too many connections`. Ratkaisu?
-
-- **PgBouncer connection pooling — transaction/session pool yhteyksille** ✓
-- max_connections = 10000 ratkaisee too many connections -virheen turvallisesti
-- Jokainen microservice-instanssi tarvitsee oman PostgreSQL-instanssin
-- Persistent connections estävät poolauksen — pooleri ei toimi niiden kanssa
-
 #### `exp-pg-config-max-connections` · diff 3
 
 App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context switch helvetti. Ratkaisu?
@@ -7366,15 +6748,6 @@ Uusi DB-palvelin 32 GB RAM — junior asettaa shared_buffers = 32GB. Miksi vää
 - shared_buffers = 0 paras koska OS page cache hoitaa kaiken bufferoinnin
 - PostgreSQL ei käytä shared_buffers vaan lukee suoraan levyltä joka kerta
 
-#### `exp-pg-config-work-mem-sort` · diff 4
-
-EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC auttaa?
-
-- **work_mem session/query kohtaisesti — varovasti globaalisti** ✓
-- maintenance_work_mem query runtimeen korjaa Sort → Disk temp file -ongelman
-- wal_buffers sorttiin antaa muistisortille tilaa jokaisessa istunnossa
-- random_page_cost = 0 estää sortin spillaamisen levylle automaattisesti
-
 #### `pg-config-work-mem` · diff 4
 
 Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetus auttaa ensin?
@@ -7383,6 +6756,15 @@ Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetus auttaa
 - Pienennä shared_buffers aina kun sort spillaa levylle
 - max_connections = 10000 antaa jokaiselle sortille oman muistipoolin
 - Poista indeksit nopeuttaaksesi sort/hash-operaatioita kyselyissä
+
+#### `pg-statement-timeout-role` · diff 3
+
+BI-työkalun ad hoc -kyselyt pyörivät välillä tunteja ja vievät tuotantokannan resurssit. Miten rajaat vain niiden keston?
+
+- **ALTER ROLE bi_reader SET statement_timeout = '5min' — roolikohtainen aikaraja** ✓
+- Pienennä max_connections-arvoa, jolloin pitkät kyselyt katkeavat
+- Laske work_mem minimiin BI-käyttäjälle, jolloin raskaat kyselyt eivät käynnisty
+- Aseta statement_timeout postgresql.confissa viiteen sekuntiin kaikille
 
 ### pg-cte-window (14)
 
@@ -7512,43 +6894,7 @@ Tarvitset rivin arvon JA koko taulun keskiarvon samalla rivillä ilman self-join
 - CROSS JOIN (SELECT AVG...) — aina parempi
 - HAVING AVG(amount)
 
-### pg-explain (30)
-
-#### `b02-pg-explain-analyze-05` · diff 3
-
-Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento?
-
-- **EXPLAIN (ANALYZE, BUFFERS) SELECT ... tuotantokopiossa tai stagingissa** ✓
-- EXPLAIN ilman ANALYZE riittää aina näyttämään todelliset suoritusajat
-- SELECT * only paljastaa miksi kysely on hidas tuotannossa
-- pg_dump tuotannosta antaa EXPLAIN ANALYZE -tulokset ilman kuormitusta
-
-#### `b02-pg-explain-nested-07` · diff 4
-
-Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix?
-
-- **Indeksi join/where-sarakkeille tai muuta join-järjestystä / statistics** ✓
-- SET enable_nestloop=off aina kun Nested Loop toistuu miljoona kertaa
-- Lisää RAM only korjaa Nested Loop + Seq Scan -yhdistelmän ilman indeksiä
-- Poista JOIN ja tee kaksi erillistä kyselyä sovelluskerroksessa aina
-
-#### `b02-pg-explain-seq-06` · diff 3
-
-EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono?
-
-- **Ei — pieni osuma tai suuri fraction voi olla halvempi kuin index scan** ✓
-- Seq Scan aina korjattava indeksillä 5M rivin taulussa
-- Seq Scan on aina merkki bugista plannerissa tai rikkinäisestä indeksistä
-- Rebuild DB on ensimmäinen toimenpide kun EXPLAIN näyttää Seq Scanin
-
-#### `b02-pg-explain-stats-08` · diff 3
-
-Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpide?
-
-- **ANALYZE table_name — päivitä statistics ennen planin arviointia** ✓
-- REINDEX DATABASE korjaa plannerin arvion kun todelliset rivit poikkeavat
-- random_page_cost=0 pakottaa plannerin käyttämään oikeaa rivimäärää
-- Poista WHERE jotta planner laskee rivit tarkasti jokaisessa kyselyssä
+### pg-explain (15)
 
 #### `b03-pg-explain-buffers-hit` · diff 4
 
@@ -7586,59 +6932,14 @@ Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen transa
 - READ UNCOMMITTED on Postgres default
 - Isolation level ei vaikuta SELECT
 
-#### `b04-pg-explain-buffers-io` · diff 4
-
-EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hitto disk I/O. Lisälippu?
-
-- **EXPLAIN (ANALYZE, BUFFERS) — shared/local hit vs read** ✓
-- EXPLAIN VERBOSE riittää aina
-- SET log_statement = all
-- pg_stat_activity riittää query planiin
-
-#### `b04-pg-explain-cost-settings` · diff 4
-
-SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus 4.0. Tyypillinen SSD-säätö?
-
-- **Laske random_page_cost lähemmäs seq_page_cost (esim. 1.1–1.5)** ✓
-- Nosta random_page_cost 10:een
-- Cost parametrit eivät vaikuta
-- Poista indeksit SSD:llä
-
-#### `b04-pg-explain-index-only` · diff 4
-
-EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usein?
-
-- **Visibility map ei ajan tasalla — VACUUM tarvitaan tai query tarvitsee muita sarakkeita** ✓
-- Index Only Scan on deprecated
-- B-tree ei tue index only
-- Seq scan aina nopeampi
-
 #### `b04-pg-explain-parallel` · diff 4
 
 Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?
 
-- **Onko kysely parallel safe — EXPLAIN näyttaa Gather; tarkista parallel_setup_cost ja table size** ✓
+- **Onko kysely parallel safe — EXPLAIN näyttää Gather; tarkista parallel_setup_cost ja table size** ✓
 - Parallel on aina päällä automaattisesti
 - Vain REINDEX käyttää parallelia
 - max_connections estää parallelin
-
-#### `b05-pg-explain-hash-join` · diff 3
-
-EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?
-
-- **Nested Loop voi valita planner jos toinen taulu pieni + indeksi — tai kasvata work_mem** ✓
-- Hash Join on ainoa vaihtoehto
-- SET enable_hashjoin=off riittää aina
-- Seq scan molemmissa on aina parempi
-
-#### `b05-pg-explain-index-only-scan` · diff 4
-
-EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?
-
-- **Covering-indeksi INCLUDE-sarakkeilla ja VACUUM pitää visibility mapin ajan tasalla** ✓
-- SET enable_indexscan = off pakottaa plannerin ohittamaan heap fetch -vaiheen
-- Seq scan on halvempi kuin index-only scan kun taulu on alle miljoona riviä
-- Index Only Scan ei tarvitse visibility mapia koska indeksi sisältää kaiken datan
 
 #### `b06-pg-explain-generic-plan` · diff 4
 
@@ -7658,24 +6959,6 @@ Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?
 - Indeksi puuttuu aina kun planner arvioi 10 riviä mutta löytää 10 miljoonaa
 - work_mem on liian korkea ja se vääristää plannerin rivimääräarvioita
 
-#### `b06-pg-explain-wal-fpi` · diff 5
-
-EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/FPI tarkoittaa?
-
-- **Full page images WAL:issa — checkpoint ja write amplification vaikuttavat I/O:hon** ✓
-- shared_blks_read mittaa cache osumia, ei levylukuja EXPLAIN BUFFERS -näkymässä
-- FPI ei vaikuta I/O-kuormaan koska WAL kirjoitetaan erilliseen muistipuskuriin
-- BUFFERS-näkymä näyttää vain CPU-aikaa, ei buffer cache -käyttöä
-
-#### `b07-pg-explain-nested-loop` · diff 4
-
-Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?
-
-- **Indeksi join-sarakkeeseen — planner voi vaihtaa hash/merge joiniin** ✓
-- Lisää LIMIT ilman ORDER BY korjaa nested loop -kustannuksen isossa joinissa
-- Poista JOIN ja hae data kahdella erillisellä kyselyllä aina
-- Nested loop on aina paras join-strategia kun toinen taulu on pieni
-
 #### `b07-pg-explain-prepare` · diff 3
 
 Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ratkaisu?
@@ -7684,24 +6967,6 @@ Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ra
 - String concat SQL aina on turvallisin tapa vähentää parse overheadia
 - Poista parametrit kyselystä jotta PostgreSQL cachettaa suunnitelman
 - EXPLAIN jokaisessa requestissa cachettaa suunnitelman automaattisesti
-
-#### `b07-pg-explain-seq-vs-index` · diff 3
-
-Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?
-
-- **Taulu on pieni — seq scan halvempi kuin indeksihaku satunnaisella I/O:lla** ✓
-- Indeksi on aina rikki kun planner valitsee seq scanin olemassa olevasta indeksistä
-- PostgreSQL-bugi aiheuttaa seq scanin valinnan vaikka indeksi on kunnossa
-- VACUUM puuttuu aina kun planner ohittaa indeksin pienessä taulussa
-
-#### `b08-pg-explain-cost-settings` · diff 3
-
-Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halvemmalta manuaalisesti. Säädettävä?
-
-- **Laske random_page_cost SSD:lle — seq_page_cost suhteessa** ✓
-- enable_seqscan = off pysyvästi pakottaa indeksin SSD-palvelimella
-- Cost-parametrit eivät vaikuta plannerin valintaan ollenkaan
-- cpu_index_tuple_cost = 0 korjaa seq scan -valinnan SSD-ympäristössä
 
 #### `b08-pg-explain-nested-loop` · diff 4
 
@@ -7712,15 +6977,6 @@ Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloin NL 
 - Hash join ei ole olemassa PostgreSQLissä suurten taulujen yhdistämisessä
 - Seq scan sisä loopissa on OK kun ulkopuolella on alle miljoona riviä
 
-#### `b08-pg-explain-seq-scan` · diff 3
-
-Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisin syy?
-
-- **Taulu pieni — seq scan halvempi kuin index random I/O pienellä datamäärällä** ✓
-- Indeksi pitää pakottaa enable_indexscan=off-asetuksella pienissä tauluissa
-- Seq scan valinta on aina bugi vaikka taulussa on alle tuhat riviä
-- statistics_target = 0 korjaa plannerin seq scan -valinnan olemassa olevalla indeksillä
-
 #### `b09-pg-explain-nested-loop` · diff 4
 
 JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?
@@ -7729,15 +6985,6 @@ JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi val
 - Nested Loop on aina nopein 100k × 100k rivin joinissa
 - Lisää LIMIT ilman ORDER BY korjaa nested loop -kustannuksen joinissa
 - JOIN ei skaalaudu PostgreSQLissä yli tuhannen rivin tuloksiin
-
-#### `b09-pg-explain-seq-scan-large` · diff 3
-
-EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?
-
-- **Tarkista selectivity — planner arvioi seq scan halvemmaksi, ANALYZE ja WHERE** ✓
-- Indeksi on rikki — REINDEX aina kun seq scan 5M rivin taulussa
-- Seq scan on aina virhe suurissa tauluissa vaikka suurin osa riveistä matchaa
-- PostgreSQL ei käytä indeksejä yli miljoonan rivin tauluissa lainkaan
 
 #### `exp-pg-explain-nested-loop` · diff 4
 
@@ -7784,25 +7031,7 @@ EXPLAIN näyttää Seq Scan isolla taululla vaikka indeksi on. Tyypillisin syy?
 - Indeksi on aina rikki bulk loadin jälkeen ja vaatii REINDEX DATABASE
 - VACUUM FULL pakollinen ennen kuin planner voi valita Index Scanin
 
-### pg-indexes (30)
-
-#### `b02-pg-indexes-btree-02` · diff 2
-
-WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksityyppi?
-
-- **B-tree composite index (status, created_at) oikealla sarakejärjestyksellä** ✓
-- GIN only on oletusindeksi equality- ja range-ehdoille PostgreSQLissä
-- BRIN aina parempi kuin B-tree kun WHERE:ssä on status ja created_at
-- Seq scan aina nopein status = 'active' AND created_at > -ehdossa
-
-#### `b02-pg-indexes-covering-04` · diff 4
-
-Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?
-
-- **INCLUDE columns: CREATE INDEX ... INCLUDE (email)** ✓
-- CLUSTER only tekee index-only scanin mahdolliseksi id ja email -kyselyssä
-- Materialized view aina tarpeen kun SELECT listassa on id ja email
-- Secondary sort korvaa covering indexin PostgreSQL 11+ index-only scanissa
+### pg-indexes (16)
 
 #### `b03-pg-indexes-concurrent-create` · diff 3
 
@@ -7840,15 +7069,6 @@ UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensimm�
 - restart postgres
 - Locks eivät vaikuta UPDATEen
 
-#### `b04-pg-indexes-concurrent-create` · diff 4
-
-Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunteiksi. Vaihtoehto?
-
-- **CREATE INDEX CONCURRENTLY — ei exclusive lockia kirjoituksiin** ✓
-- REINDEX CONCURRENTLY riittää aina
-- Indeksi vain maintenance windowissa ilman CONCURRENTLY
-- Duplikaatti taulu + swap
-
 #### `b04-pg-indexes-expression` · diff 4
 
 Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei käytössä. Ratkaisu?
@@ -7858,33 +7078,6 @@ Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei kä
 - B-tree email riittää funktiokutsulle
 - Trigger joka kopioi lower email
 
-#### `b04-pg-indexes-gin-jsonb` · diff 4
-
-Kysely `WHERE data @> '{"status":"active"}'` JSONB-sarakkeessa on hidas 5M rivillä. Indeksityyppi?
-
-- **GIN-indeksi JSONB:lle — CREATE INDEX ON t USING GIN (data)** ✓
-- B-tree data-sarakkeelle riittää aina
-- Hash-indeksi JSONB containmentiin
-- Ei indeksiä — seq scan aina nopein
-
-#### `b04-pg-indexes-partial-active` · diff 3
-
-90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimointi?
-
-- **Partial index: WHERE archived = false** ✓
-- Full index status-sarakkeelle riittää
-- Ei indeksiä — seq scan pienelle
-- UNIQUE constraint archived
-
-#### `b05-pg-indexes-concurrent-create` · diff 3
-
-Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot indeksin ilman pitkää lukkoa?
-
-- **CREATE INDEX CONCURRENTLY — ei exclusive lockia koko ajaksi** ✓
-- REINDEX CONCURRENTLY riittää aina
-- Indeksi luodaan vain maintenance windowissa ilman CONCURRENTLY
-- CONCURRENTLY on nopeampi kuin tavallinen
-
 #### `b05-pg-indexes-duplicate-drop` · diff 2
 
 Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?
@@ -7893,15 +7086,6 @@ Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. To
 - Pidä molemmat varmuuden vuoksi
 - REINDEX molemmat
 - Indeksit eivät vaikuta INSERT-nopeuteen
-
-#### `b05-pg-indexes-expression` · diff 4
-
-Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree emailille ei käytössä. Ratkaisu?
-
-- **Expression index: CREATE INDEX ON users (lower(email))** ✓
-- Seq scan aina — funktio estää indeksin
-- Hash index lower():lle
-- Muuta email upper case — ei indeksiä
 
 #### `b06-pg-indexes-brin-timeseries` · diff 4
 
@@ -7914,21 +7098,12 @@ Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?
 
 #### `b06-pg-indexes-hash-index` · diff 3
 
-Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?
+Harkitset hash-indeksiä UUID-sarakkeelle, jota haetaan vain yhtäsuuruudella. Mikä rajoitus on hyvä tietää?
 
 - **Hash-indeksi sopii vain =-vertailuun — range scan ei toimi hash-indeksillä** ✓
 - Hash-indeksi korvaa btree-indeksin kaikissa UUID-hauissa automaattisesti
 - Hash-indeksi tukee ORDER BY -lausekkeita samalla tavalla kuin btree-indeksi
 - Hash-indeksi on PostgreSQLin oletusindeksityyppi CREATE INDEX -komennossa
-
-#### `b06-pg-indexes-include-columns` · diff 3
-
-Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexissä. Miten?
-
-- **CREATE INDEX ... INCLUDE (col) — covering index PostgreSQL 11+:ssa** ✓
-- CLUSTER TABLE järjestää rivit niin että index-only scan toimii ilman INCLUDE:a
-- Lisää kaikki SELECT-sarakkeet key columns -listaan indeksin määrittelyssä
-- INCLUDE-sarakkeet ovat saatavilla vain MySQL:ssä, ei PostgreSQLissä
 
 #### `b06-pg-indexes-reindex-concurrently` · diff 4
 
@@ -7938,33 +7113,6 @@ Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtime?
 - DROP INDEX ja CREATE INDEX uudelleen välttää lukituksen bloated indeksissä
 - VACUUM rebuildaa indeksin automaattisesti ilman erillistä REINDEX-komentoa
 - CONCURRENTLY-optio toimii vain CREATE INDEX -komennossa, ei REINDEX:ssä
-
-#### `b07-pg-index-btree-vs-gin` · diff 3
-
-JSONB @> query on hidas seq scanilla. Mikä indeksityyppi?
-
-- **GIN-indeksi JSONB-sarakkeelle — tukee @> containment-kyselyitä** ✓
-- B-tree riittää JSONB @>-operaattorille tehokkaasti suurilla tauluilla
-- Hash-indeksi JSONB containment-hakuun on nopein vaihtoehto
-- JSONB-kenttiä ei voi indeksoida PostgreSQLissä lainkaan
-
-#### `b07-pg-index-partial` · diff 4
-
-Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?
-
-- **Partial index WHERE deleted_at IS NULL — indeksoi vain aktiiviset rivit** ✓
-- Full index kaikille riveille on pienempi ja nopeampi kuin osittainen indeksi
-- Indeksin poisto nopeuttaa hakuja kun deleted_at IS NOT NULL -rivejä on enemmistö
-- Hash index kaikille riveille korvaa partial indexin tehokkaammin
-
-#### `b07-pg-index-unused` · diff 3
-
-Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle indeksille. Toimenpide?
-
-- **Poista käyttämättömät indeksit — ne hidastavat INSERT/UPDATE-operaatioita** ✓
-- Lisää indeksejä kun idx_scan = 0 — planner tarvitsee enemmän vaihtoehtoja
-- REINDEX kaikki indeksit korjaa idx_scan = 0 -tilan pg_stat_user_indexesissä
-- Indeksit eivät vaikuta kirjoitusnopeuteen koska ne ovat erillisiä rakenteita
 
 #### `b08-pg-indexes-btree-gist` · diff 4
 
@@ -7984,24 +7132,6 @@ Indeksi (a,b) — query WHERE b=1 ei käytä indeksiä tehokkaasti. Miksi?
 - Sarakkeiden järjestyksellä indeksissä ei ole väliä equality- ja range-hauissa
 - b-only query hyödyntää (a,b)-indeksiä täydellisesti ilman erillistä indeksiä
 
-#### `b09-pg-index-composite-order` · diff 4
-
-Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?
-
-- **Equality-sarake ensin, range toisena — (tenant_id, created_at)** ✓
-- Sarakkeiden järjestyksellä composite-indeksissä ei ole väliä plannerille
-- Tarvitaan aina kaksi erillistä indeksiä equality + range -kyselyihin
-- Hash-indeksi korjaa väärän sarakkeiden järjestyksen composite-indeksissä
-
-#### `b09-pg-index-unused-drop` · diff 3
-
-pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT hidastuu. Toimenpide?
-
-- **Arvioi poisto — unused index hidastaa kirjoituksia turhaan** ✓
-- Pidä indeksi aina — idx_scan = 0 tarkoittaa että se on valmiina tulevaan
-- REINDEX korjaa unused-tilan ja aktivoi indeksin planner-valinnoissa
-- Unused tarkoittaa että indeksi on liian pieni eikä hidasta INSERTejä
-
 #### `exp-pg-indexes-btree-composite` · diff 3
 
 Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi indeksi — mikä järjestys?
@@ -8019,15 +7149,6 @@ EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SELECT l
 - Lisää seq scan hint plannerille jotta heap fetch ohitetaan automaattisesti
 - Poista WHERE-ehto jotta Index Scan palauttaa kaikki SELECT-sarakkeet
 - CLUSTER TABLE riittää korvaamaan covering indexin SELECT-listassa
-
-#### `exp-pg-indexes-partial-active` · diff 3
-
-Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active riveille?
-
-- **Partial index WHERE archived = false aktiivisille riveille** ✓
-- Full btree kaikille riveille on pienempi kuin osittainen indeksi
-- Seq scan aina nopein kun archived-rivejä on enemmistö taulussa
-- Hash index kaikille sarakkeille korvaa partial indexin PostgreSQLissä
 
 #### `exp-pg-indexes-unused-drop` · diff 3
 
@@ -8067,15 +7188,6 @@ Correlated subquery jokaiselle riville on hidas. Ensimmäinen refaktorointi?
 - Kasvata seq_page_cost
 - Poista indeksit
 
-#### `sqd-exists-vs-in` · diff 3
-
-Etsi asiakkaat joilla on vähintään yksi avoin tilaus. Mikä on usein tehokkain?
-
-- **EXISTS (SELECT 1 FROM orders WHERE ...)** ✓
-- customer_id IN (SELECT ...) miljoonan rivin alikyselyllä aina
-- CROSS JOIN ja COUNT
-- NOT DISTINCT FROM
-
 #### `sqd-filter-outer-join` · diff 4
 
 LEFT JOIN orders, mutta haluat vain avoimet tilaukset — asiakkaat ilman avointa säilyvät. Missä ehto?
@@ -8094,15 +7206,6 @@ Raportti: kaikki asiakkaat, myös ilman tilauksia. Join-tyyppi?
 - CROSS JOIN customers, orders
 - RIGHT JOIN aina parempi kuin LEFT
 
-#### `sqd-join-on-not-where` · diff 2
-
-ANSI-tyylinen join: ulkoiset suodattimet vs join-ehdot. Missä `orders.status = 'open'` jos se määrittää matchin?
-
-- **ON-ehdossa tai WHERE:ssa inner joinissa — mutta erota ulkoiset suodattimet selkeyden vuoksi** ✓
-- Aina WHERE — ON on vain legacy
-- HAVING-kentässä
-- GROUP BY:ssä
-
 #### `sqd-lateral-top-n` · diff 4
 
 Kolme viimeisintä tilausta per asiakas ilman window-funktiota. PostgreSQL-malli?
@@ -8111,6 +7214,15 @@ Kolme viimeisintä tilausta per asiakas ilman window-funktiota. PostgreSQL-malli
 - CROSS JOIN orders ilman rajaus
 - GROUP BY customer_id ja MAX kolme kertaa
 - UNION kolme erillistä kyselyä per asiakas
+
+#### `sqd-left-join-count-zero` · diff 3
+
+Raportti: tilausten määrä per asiakas, myös nollat. `LEFT JOIN orders o ... GROUP BY c.id` ja `COUNT(*)` näyttää tilauksettomille asiakkaille luvun 1. Korjaus?
+
+- **COUNT(o.id) — laskee vain rivit, joilla on tilaus; LEFT JOINin NULL-rivi jää laskematta** ✓
+- Vaihda LEFT JOIN INNER JOINiksi, jolloin tilauksettomat asiakkaat saavat arvon 0
+- Lisää HAVING COUNT(*) > 1, jotta tyhjät ryhmät nollautuvat raportissa
+- COUNT(DISTINCT c.id) laskee tilaukset asiakaskohtaisesti oikein
 
 #### `sqd-many-to-many-bridge` · diff 3
 
@@ -8138,6 +7250,15 @@ Asiakkaat jotka eivät ole koskaan tilanneet. Malli?
 - WHERE customer_id NOT IN (SELECT ...) — aina turvallisin NULL:ien kanssa
 - LEFT JOIN ja WHERE orders.id = NULL
 - EXCEPT ilman indeksejä aina hitain
+
+#### `sqd-not-in-null` · diff 4
+
+Kysely `WHERE customer_id NOT IN (SELECT customer_id FROM blacklist)` palauttaa yhtäkkiä nolla riviä. Blacklist-tauluun lisättiin rivi, jossa customer_id on NULL. Miksi?
+
+- **NOT IN vertaa jokaiseen arvoon: x <> NULL on tuntematon, joten ehto ei ole koskaan tosi — käytä NOT EXISTS** ✓
+- NULL-rivi rikkoo blacklist-taulun indeksin, joten alikysely epäonnistuu hiljaa ja palauttaa tyhjän
+- NOT IN toimii vain numeerisille sarakkeille, ja NULL muuttaa alikyselyn tuloksen tyypin tekstiksi
+- PostgreSQL rajaa NOT IN -alikyselyn tuhanteen riviin, ja NULL-rivi ylittää rajan
 
 #### `sqd-null-safe-join` · diff 3
 
@@ -8240,7 +7361,16 @@ Päivitä yksi avain JSONB-dokumentissa ilman koko dokumentin korvaamista.
 - payload::text replace
 - DELETE payload
 
-### pg-query-design (20)
+### pg-query-design (21)
+
+#### `sqd-aggregate-filter` · diff 3
+
+Raportti tarvitsee samalle riville kaikkien tilausten määrän sekä avoimet ja peruutetut erikseen. Siistein PostgreSQL-tapa yhdellä kyselyllä?
+
+- **COUNT(*) FILTER (WHERE status = 'open') ja vastaava FILTER peruutetuille** ✓
+- Kolme erillistä kyselyä ja UNION ALL, koska aggregaatti ei voi rajata rivejä
+- GROUP BY status palauttaa kaikki luvut samalle riville automaattisesti
+- WHERE status IN ('open', 'cancelled') ja COUNT(*) kahteen kertaan
 
 #### `sqd-avoid-cartesian` · diff 3
 
@@ -8260,24 +7390,6 @@ Raportti Exceliin: status-koodi 1/2/3 pitää näyttää teksteinä. Missä muot
 - Päivitä tauluun tekstit jokaisella raportilla
 - Käytä HAVING muotoiluun
 
-#### `sqd-covering-index-design` · diff 4
-
-Indeksi `(status)` mutta kysely hakee myös `name` ja `email`. Miten vältät tauluhaut?
-
-- **INCLUDE (name, email) indeksissä — covering index vain tarvittaville sarakkeille** ✓
-- SELECT * hyötyy aina indeksistä
-- Lisää kaikki sarakkeet KEY:iin turhaan
-- Poista WHERE — seq scan on nopea
-
-#### `sqd-crosstab-alternative` · diff 4
-
-Kuukausittainen myynti sarakkeina (tammi…joulu). PostgreSQL-työkalu?
-
-- **crosstab() tablefunc-laajennuksessa tai conditional aggregation SUM(CASE WHEN month=...)** ✓
-- UNION 12 erillistä saraketta ilman aggregointia
-- PIVOT on sisäänrakennettu PostgreSQL:ssä kuten SQL Serverissä
-- CROSS JOIN generate_series riittää aina
-
 #### `sqd-distinct-join-duplicates` · diff 3
 
 JOIN palauttaa saman asiakkaan viidesti. Raportti tarvitsee yhden rivin per asiakas. Ensimmäinen korjaus?
@@ -8296,15 +7408,6 @@ Tarvitset vain tiedon: onko asiakkaalla avoin tilaus. Tehokkain ilmaisu?
 - JOIN orders ja COUNT(*) GROUP BY — kevyin tapa
 - SELECT MAX(order_id) ja vertaa nollaan
 
-#### `sqd-explain-before-tune` · diff 3
-
-Kysely hidastui release:n jälkeen. Ensimmäinen askel ennen GUC-säätöä?
-
-- **EXPLAIN (ANALYZE, BUFFERS) stagingissa — ymmärrä suunnitelma, sitten kirjoita/korjaa SQL** ✓
-- Kasvata shared_buffers heti
-- Poista kaikki indeksit ja luo uudelleen
-- Lisää CACHE keyword SELECTiin
-
 #### `sqd-filter-before-join` · diff 3
 
 Liität `orders` (50M riviä) ja `customers` (2M). Tarvitset vain viime kuun tilaukset. Missä suodatus?
@@ -8316,9 +7419,9 @@ Liität `orders` (50M riviä) ja `customers` (2M). Tarvitset vain viime kuun til
 
 #### `sqd-group-by-discipline` · diff 3
 
-Raportti: summa per alue. SELECT-listassa vain group-by-sarakkeet ja aggregaatit. Miksi?
+Raportti: summa per alue. Miksi SELECT-listassa saa olla vain GROUP BY -sarakkeita ja aggregaatteja?
 
-- **Vältä funktioimattomia sarakkeita ilman GROUP BY — PostgreSQL vaatii johdonmukaisuuden** ✓
+- **Ryhmässä on monta riviä — ei-aggregoidulla sarakkeella ei olisi yhtä arvoa** ✓
 - Lisää kaikki sarakkeet SELECT *:llä — GROUP BY korjaa duplikaatit
 - ORDER BY piilottaa GROUP BY -virheet
 - HAVING korvaa GROUP BY:n
@@ -8331,6 +7434,15 @@ Tarvitset summat alueittain, tuoteperheittäin ja grand totalin yhdellä kyselyl
 - ROLLUP aina tuottaa kaikki yhdistelmät automaattisesti oikein
 - UNION neljä erillistä GROUP BY -kyselyä on aina nopein
 - WITH ROLLUP on natiivi PostgreSQL-syntaksi
+
+#### `sqd-half-open-date-range` · diff 3
+
+Kuukausiraportti: `WHERE created_at BETWEEN '2024-03-01' AND '2024-03-31'`, ja created_at on timestamptz. Osa 31.3. tehdyistä tilauksista puuttuu. Miksi ja miten korjaat?
+
+- **Yläraja tarkoittaa 31.3. klo 00.00 — käytä puoliavointa väliä: >= '2024-03-01' AND < '2024-04-01'** ✓
+- BETWEEN jättää molemmat rajat pois, joten kuukauden ensimmäinen ja viimeinen päivä puuttuvat
+- Lisää ORDER BY created_at, jolloin viimeisen päivän rivit tulevat mukaan tulokseen
+- timestamptz tallentaa ajat UTC:nä, joten 31.3. rivit siirtyvät huhtikuulle pysyvästi
 
 #### `sqd-having-vs-where` · diff 3
 
@@ -8359,14 +7471,23 @@ Kehität uutta analytiikkakyselyä tuotantataululle. Miten testaat turvallisesti
 - Poista indeksit testauksen ajaksi nopeuttaaksesi
 - Käytä SELECT * ilman LIMITiä stagingissa
 
-#### `sqd-prepared-statement-plan` · diff 3
+#### `sqd-null-equality` · diff 1
 
-Sama parametrikysely ajetaan miljoonia kertoja. Hyöty prepared statementista?
+Kysely `SELECT * FROM users WHERE deleted_at = NULL` ei palauta yhtään riviä, vaikka poistamattomia käyttäjiä on tuhansia. Miksi?
 
-- **Parse/plan cache — vähemmän parserikuormaa, vakaa suunnitelma** ✓
-- Prepared estää SQL-injektion ja korvaa indeksit
-- Prepared pakottaa seq scanin
-- Ei hyötyä PostgreSQL:ssä
+- **Vertailu NULLiin on aina tuntematon — oikea ehto on deleted_at IS NULL** ✓
+- NULL-arvot eivät ole indeksissä, joten haku ei löydä niitä
+- = NULL toimii vain, jos sarakkeelle on asetettu DEFAULT NULL
+- Kysely tarvitsee LIMITin, koska NULL-rivejä on liikaa palautettavaksi
+
+#### `sqd-numeric-money` · diff 2
+
+Laskujen summat tallennetaan `double precision` -sarakkeeseen, ja kuukausisumma heittää sentin verran. Mikä tyyppi rahalle?
+
+- **numeric(12,2) tai kokonaisluku sentteinä — tarkat desimaalit** ✓
+- real — pienempi liukuluku pyöristää vähemmän kuin double precision
+- money-tyyppi, koska se muuntaa valuutat automaattisesti oikein
+- text, jotta desimaalierotin säilyy täsmälleen syötetyssä muodossa
 
 #### `sqd-readable-cte-names` · diff 2
 
@@ -8399,19 +7520,19 @@ Raportti tarvitsee vain `order_id` ja `description` miljoonarivisestä `orders`-
 
 Tiimi jakaa SQL-skriptejä code reviewssa. Mikä käytäntö parantaa ylläpidettävyyttä?
 
-- **Yksi looginen lause per rivi, isoitu avainsana, selkeä sarkkeiden lista — yhtenäinen tyyli** ✓
+- **Yksi looginen lause per rivi, isoitu avainsana, selkeä sarakkeiden lista — yhtenäinen tyyli** ✓
 - Minifiöi kaikki yhdeksi riviksi nopeuttaaksesi parseria
 - Käytä SELECT * kaikissa raporteissa yhtenäisyyden vuoksi
 - Vältä kommentteja — ne vanhenevat
 
-#### `sqd-subquery-vs-cte-same` · diff 3
+#### `sqd-timestamptz` · diff 3
 
-Sisäkkäinen subquery 5 tasoa syvänä. Refaktorointi luettavuuteen?
+Palvelimet ovat eri aikavyöhykkeillä, ja tapahtumien järjestys sekoaa raporteissa. Aikasarake on `timestamp` (without time zone). Mikä on suositus?
 
-- **WITH-vaiheet: jokainen logiikkakerros omaan nimettyyn CTE:hen** ✓
-- Lisää sulkumerkkejä
-- Siirrä kaikki yhteen UPDATE-lauseeseen
-- Käytä globaalia temp-taulua prodissa
+- **timestamptz — yksiselitteinen hetki, joka näytetään istunnon aikavyöhykkeessä** ✓
+- timestamp riittää, kunhan jokainen palvelin asettaa kellonsa paikalliseen aikaan
+- Tallenna aika tekstinä ISO-muodossa, jolloin vyöhyke ei vaikuta järjestykseen
+- Käytä date-tyyppiä ja erillistä time-saraketta, niin vyöhykkeet eivät sekoitu
 
 #### `sqd-union-all-vs-union` · diff 3
 
@@ -8421,6 +7542,15 @@ Yhdistät kahden alueen myyntirivit; duplikaatteja ei pitäisi syntyä. Valinta?
 - UNION aina — se on turvallisempi vaikka data on erillistä
 - UNION ALL vain jos tarvitset DISTINCT
 - INSERT kahdesti samaan tauluun UNION:in sijaan
+
+#### `sqd-upsert-on-conflict` · diff 3
+
+Import-ajo lisää tuotteita: uusi SKU lisätään, olemassa olevan hinta päivitetään. Koodi tekee SELECTin ja sitten INSERTin tai UPDATEn, ja rinnakkaiset ajot kaatuvat unique-virheeseen. Ratkaisu?
+
+- **INSERT ... ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price — atominen upsert** ✓
+- Lukitse koko taulu LOCK TABLE -komennolla jokaisen rivin käsittelyn ajaksi
+- Poista unique-rajoite, jolloin rinnakkaiset ajot eivät enää kaadu virheeseen
+- Aja SELECT kahdesti ennen INSERTiä, niin kilpailutilanne ehtii ratketa
 
 ### pg-sql-security (8)
 
@@ -8496,52 +7626,7 @@ Analyytikot eivät saa nähdä henkilötunnuksia. Ensimmäinen kerros?
 - Salaa koko tietokanta levylle
 - Piilota sarake vain UI:ssa
 
-### pg-vacuum (34)
-
-#### `b02-pg-vacuum-bloat-09` · diff 4
-
-UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpide?
-
-- **Dead tuples — VACUUM (autovacuum) vapauttaa tilaa uudelleenkäyttöön** ✓
-- DELETE DATABASE ja restore on normaali toimenpide UPDATE-heavy bloatissa
-- VACUUM FULL heti tuotannossa päivällä kun rivimäärä ei kasva
-- Lisää indeksejä UPDATE-heavy tauluun kun levy kasvaa vaikka rivit eivät
-
-#### `b02-pg-vacuum-full-12` · diff 3
-
-Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski?
-
-- **Exclusive lock + uudelleenkirjoitus — downtime ja lock tuotannossa** ✓
-- VACUUM FULL online ilman lockia kun levy on lähes täynnä bloatista
-- Ei riskiä VACUUM FULL:ssa koska se vain merkitsee dead tuples poistetuiksi
-- Nopeampi kuin tavallinen VACUUM koska FULL ohittaa MVCC-siivouksen
-
-#### `b02-pg-vacuum-long-xact-11` · diff 4
-
-Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h. Mitä teet?
-
-- **Selvitä pitkä transaktio — se estää vacuumia poistamasta dead tupleja** ✓
-- REBOOT server korjaa idle in transaction 8h ilman että transaktio päättyy
-- max_connections=1 pakottaa autovacuumin siivoamaan dead tuples heti
-- DROP autovacuum estää dead tuplejen kasaantumisen pitkien transaktioiden aikana
-
-#### `b02-pg-vacuum-wrap-10` · diff 5
-
-Varoitus: database approaching transaction ID wraparound. Kiireellinen toimenpide?
-
-- **VACUUM FREEZE (autovacuum freeze) — estä shutdown wraparound** ✓
-- Ignoroi varoitus koska wraparound korjautuu seuraavassa pg_restartissa
-- pg_dump only riittää estämään transaction ID wraparound -shutdownin
-- DROP TABLE random nopeuttaa freeze-vaihetta wraparound-varoituksen jälkeen
-
-#### `b03-pg-vacuum-analyze-stats` · diff 2
-
-Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentuneet. Komento?
-
-- **ANALYZE table_name (tai autovacuum analyze trigger)** ✓
-- VACUUM FULL heti
-- REINDEX kaikki
-- Stats päivittyvät automaattisesti heti loadissa
+### pg-vacuum (12)
 
 #### `b03-pg-vacuum-freeze-settings` · diff 4
 
@@ -8561,122 +7646,23 @@ Logissa 'database must be vacuumed within 10 million transactions' — mitä uhk
 - Indeksit poistuvat
 - Varoitus on informatiivinen — ei toimenpiteitä
 
-#### `b04-pg-vacuum-analyze-stats` · diff 3
-
-Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhentuneet arviot bulk-insertin jälkeen. Toimenpide?
-
-- **ANALYZE taulu; tai odota autovacuum analyze** ✓
-- REINDEX DATABASE heti
-- DROP INDEX — seq scan nopeampi
-- Käynnistä PG uudestaan — stats päivittyy
-
-#### `b04-pg-vacuum-dead-tuples` · diff 3
-
-pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy taulussa. Ensimmäinen toimenpide?
-
-- **Varmista autovacuum käynnissä; säätä autovacuum_vacuum_scale_factor tarvittaessa** ✓
-- VACUUM FULL heti tuotannossa
-- Dead tuples ovat harmless — ignore
-- DROP TABLE
-
-#### `b04-pg-vacuum-freeze-age` · diff 5
-
-Varoitus: 'database must be vacuumed within 200 million transactions' — mitä uhkaa?
-
-- **Transaction ID wraparound — pakollinen anti-wraparound vacuum** ✓
-- Levy täynnä — vain disk issue
-- Indeksit korruptoituvat automaattisesti
-- Varoitus voidaan ignore — cosmetic
-
-#### `b04-pg-vacuum-long-xact` · diff 4
-
-Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in transaction' 12h. Syy?
-
-- **Pitkä transaktio pitää xmin:ää — estää vacuum poistamasta rivejä** ✓
-- Autovacuum pois päältä oletuksena
-- Dead tuples poistuvat automaattisesti commitissa
-- REINDEX korjaa — ei vacuum
-
-#### `b05-pg-vacuum-analyze-after-bulk` · diff 2
-
-Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk-operaation jälkeen?
-
-- **Aja ANALYZE tai VACUUM ANALYZE — planner tarvitsee päivitetyn tilaston** ✓
-- Planner päivittää tilastot automaattisesti heti bulk INSERT -operaation jälkeen
-- REINDEX DATABASE on pakollinen ennen kuin kyselyt palautuvat normaaliksi
-- DROP ja CREATE TABLE on nopein tapa päivittää plannerin rivimääräarvioita
-
-#### `b05-pg-vacuum-bloat-long-xact` · diff 4
-
-Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle transactionin. Juurisyy?
-
-- **Pitkä avoin transaktio estää dead tuple -siivouksen — VACUUM ei voi poistaa rivejä** ✓
-- Autovacuum on oletuksena pois päältä ja pitää aktivoida manuaalisesti ensin
-- VACUUM FULL heti ilman tutkintaa on ensimmäinen askel bloat-ongelmaan
-- Idle in transaction -tila ei vaikuta vacuumiin koska transaktio ei kirjoita dataa
-
-#### `b05-pg-vacuum-full-lock` · diff 4
-
-DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat?
-
-- **VACUUM FULL ottaa exclusive lockin — taulu on lukittu koko operaation ajan** ✓
-- VACUUM FULL on nopeampi kuin tavallinen VACUUM eikä vaadi maintenance-ikkunaa
-- VACUUM FULL ei vapauta levytilaa vaan vain merkitsee dead tuplet uudelleenkäytettäviksi
-- VACUUM FULL korvaa REINDEX:in ja rebuildaa indeksit samalla ilman lukitusta
-
-#### `b05-pg-vacuum-wraparound` · diff 5
-
-PostgreSQL varoittaa: 'database is not accepting commands to avoid wraparound'. Kiireellinen toimenpide?
-
-- **Aja VACUUM (FREEZE) tai varmista autovacuum — XID wraparound on kriittinen** ✓
-- Käynnistä PostgreSQL uudelleen — wraparound-varoitus nollautuu restartissa
-- DROP suurin taulu vapauttaa transaction ID -tilaa ja poistaa wraparound-riskin
-- Nosta max_connections arvoa jotta autovacuum saa enemmän työntekijöitä käyttöön
-
-#### `b06-pg-vacuum-autovacuum-scale` · diff 3
-
-Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät?
-
-- **autovacuum_vacuum_scale_factor — taulukohtainen tai globaali säätö** ✓
-- max_connections määrittää kuinka usein autovacuum käynnistyy suurille tauluille
-- random_page_cost vaikuttaa autovacuumin trigger-kynnykseen dead tupleille
-- Autovacuum ei skaalaudu taulukoon — sama threshold kaikille tauluille
-
 #### `b06-pg-vacuum-index-cleanup` · diff 4
 
-VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?
+Taulu on vacuumoitu säännöllisesti, mutta sen indeksit ovat kasvaneet moninkertaisiksi UPDATE-kuormassa. Mitä teet?
 
-- **vacuum index_cleanup päälle / REINDEX bloated indekseille** ✓
-- VACUUM FULL ei koskaan tarvita koska tavallinen VACUUM shrinkaa indeksit
-- DROP TABLE on ensimmäinen toimenpide kun indeksit eivät pienene vacuumilla
-- Index bloat -ilmiötä ei ole olemassa PostgreSQLin MVCC-mallissa
+- **REINDEX INDEX CONCURRENTLY — VACUUM ei kutista indeksitiedostoja** ✓
+- VACUUM (INDEX_CLEANUP ON) pienentää indeksitiedostot takaisin alkuperäiseen kokoonsa
+- DROP TABLE ja lataa data uudelleen on ensimmäinen toimenpide
+- Indeksibloatia ei ole PostgreSQLin MVCC-mallissa
 
 #### `b06-pg-vacuum-skip-locked` · diff 4
 
-DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete?
+Siivousjob poistaa miljoona vanhaa riviä yhdellä DELETE-lauseella — lukot ja bloat haittaavat tuotantoa. Miten poistat hallitusti?
 
-- **DELETE ... LIMIT batch + FOR UPDATE SKIP LOCKED -kuvio eräpoistoon** ✓
-- DELETE kaikki rivit yhdellä transaktiolla on turvallisin tapa batch-poistoon
-- TRUNCATE partial poistaa osan riveistä ilman lukitusta tai transaktiota
-- VACUUM during DELETE nopeuttaa poistoa ja vapauttaa lukot välittömästi
-
-#### `b07-pg-vacuum-analyze` · diff 2
-
-Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokomento?
-
-- **ANALYZE — päivittää tilastot plannerin rivimääräarvioita varten** ✓
-- VACUUM FULL aina bulk INSERTin jälkeen ennen muita ylläpitotoimia
-- REINDEX on ensimmäinen askel kun planner arvioi rivimäärät väärin
-- CHECKPOINT only päivittää planner-statistiikan bulk loadin jälkeen
-
-#### `b07-pg-vacuum-autovacuum` · diff 3
-
-autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen toimenpide?
-
-- **Tarkista autovacuum-asetukset ja pitkät transaktiot pg_stat_activityssä** ✓
-- DROP DATABASE ja luo uudelleen on nopein tapa korjata wraparound-varoitus
-- Poista autovacuum ja aja manuaalinen VACUUM kerran viikossa
-- REINDEX DATABASE korjaa transaction ID wraparound -varoituksen
+- **Erissä: alikysely LIMIT 10000 FOR UPDATE SKIP LOCKED, commit joka erän jälkeen** ✓
+- DELETE ... LIMIT 10000 suoraan — PostgreSQL rajaa poistettavat rivit LIMITillä
+- Yksi iso DELETE yhdessä transaktiossa on aina nopein ja turvallisin
+- TRUNCATE ... WHERE poistaa vain vanhat rivit ilman lukitusta
 
 #### `b07-pg-vacuum-bloat` · diff 4
 
@@ -8695,69 +7681,6 @@ Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?
 - Rivi on lukittu exclusive lockilla ja ei näy muille transaktioille
 - Rivi on poistettu mutta näkyy vielä vanhoille transaktioille MVCC:ssä
 - Freeze poistaa rivin datan levyltä ja vapauttaa sivun uudelleenkäyttöön
-
-#### `b08-pg-vacuum-autovacuum-threshold` · diff 3
-
-Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria säädät?
-
-- **autovacuum_vacuum_threshold + scale factor — tai taulukohtaiset storage params** ✓
-- max_connections määrittää autovacuumin dead tuple -kynnyksen suurille tauluille
-- Autovacuum ei ole konfiguroitavissa — samat oletusarvot kaikille tauluille
-- VACUUM FULL cron-ajossa riittää korvaamaan autovacuumin dead tuple -siivouksen
-
-#### `b08-pg-vacuum-bloat` · diff 4
-
-Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toimenpide?
-
-- **Bloat — VACUUM FULL/pg_repack ja paranna autovacuum-asetuksia** ✓
-- REINDEX DATABASE riittää korjaamaan taulun fyysisen bloat-ongelman
-- Bloat ei vaikuta suorituskykyyn koska dead tuplet ohitetaan skannauksessa
-- DROP TABLE korjaa bloatin automaattisesti ilman maintenance-ikkunaa
-
-#### `b08-pg-vacuum-freeze` · diff 5
-
-Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa?
-
-- **Transaction ID wraparound — vacuum freeze estää pakotetun shutdownin** ✓
-- Levy täyttyy WAL-logeista — ainoa uhka anti-wraparound-varoituksessa
-- Freeze poistaa kaiken datan taulusta ja vaatii restore backupista
-- Varoitus on kosmeettinen eikä vaadi toimenpiteitä tuotantoympäristössä
-
-#### `b09-pg-vacuum-autovacuum-tuning` · diff 4
-
-Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö?
-
-- **autovacuum_vacuum_scale_factor / threshold tai table storage params** ✓
-- Poista autovacuum — manuaalinen VACUUM riittää UPDATE-heavy tauluille
-- VACUUM FULL cron joka minuutti on turvallisin tapa estää bloatia
-- Autovacuum ei skaalaudu isoille tauluille — sama threshold kaikille
-
-#### `b09-pg-vacuum-bloat-table` · diff 4
-
-Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables näyttää korkean n_dead_tup. Toimenpide?
-
-- **VACUUM (ANALYZE) — autovacuum ei pysynyt, tarkista bloat ja dead tuplet** ✓
-- DROP TABLE heti kun n_dead_tup on korkea pg_stat_user_tablesissa
-- Dead tuplet eivät vaikuta suorituskykyyn koska ne ohitetaan skannauksessa
-- REINDEX korvaa VACUUM:in dead tuple -siivouksessa 50 GB taulussa
-
-#### `b09-pg-vacuum-freeze-age` · diff 5
-
-Varoitus: `database must be vacuumed within 200 million transactions`. Kiireellinen toimenpide?
-
-- **VACUUM FREEZE — estää transaction ID wraparound** ✓
-- RESTART PostgreSQL — korjaa automaattisesti
-- Lisää RAM — wraparound on muistiongelma
-- Ignoroi — varoitus on informatiivinen
-
-#### `b09-pg-vacuum-full-lock` · diff 3
-
-DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tämä on riski?
-
-- **VACUUM FULL lukitsee taulun exclusive lockilla — katkoa tuotannossa** ✓
-- VACUUM FULL on nopeampi kuin VACUUM eikä vaadi maintenance-ikkunaa
-- FULL poistaa datan taulusta ja vaatii restore backupista
-- Lock kestää vain millisekunteja riippumatta taulun koosta
 
 #### `exp-pg-vacuum-autovacuum-tune` · diff 3
 
@@ -8795,6 +7718,15 @@ pg_stat_activity näyttää 12 h avoimen read transactionin — dead tuples kasa
 - Autovacuum pois päältä estää dead tuplejen kasaantumisen pitkien xactien aikana
 - Long xact ei vaikuta vacuumiin koska autovacuum käyttää erillistä xmin-arvoa
 
+#### `pg-partition-retention` · diff 4
+
+Lokitaulusta poistetaan joka yö yli 90 päivää vanhat rivit DELETEllä. Taulu paisuu, eikä autovacuum ehdi. Kestävämpi rakenne?
+
+- **Osioi taulu kuukausittain ja poista vanhat osiot kokonaisina (DETACH + DROP)** ✓
+- Aja VACUUM FULL joka yö DELETEn jälkeen, niin levytila palautuu
+- Lisää indeksi created_at-sarakkeelle, jolloin DELETE ei tuota dead tupleja
+- Vaihda DELETE TRUNCATEen ja rajaa poistettavat rivit WHERE-ehdolla
+
 #### `pg-vacuum-bloat` · diff 4
 
 Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?
@@ -8804,9 +7736,9 @@ Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?
 - SELECT-kyselyt tarvitsevat REINDEX ennen jokaista UPDATE-operaatiota
 - PostgreSQL ei tue UPDATE:ia MVCC-mallissa, vain INSERT ja DELETE
 
-## qt (164)
+## qt (143)
 
-### qt-models (19)
+### qt-models (15)
 
 #### `b02-qt-models-reset-10` · diff 4
 
@@ -8844,15 +7776,6 @@ QTableView näyttää kaikki 100k riviä — UI jumittaa. Nopea suodatus ilman u
 - Poista model — käytä QLabel listaa
 - ProxyModel hidastaa aina
 
-#### `b04-qt-models-setData` · diff 3
-
-QTableView ei päivity kun muokkaat dataa suoraan taustatallennuksessa. Mitä modelin pitää tehdä?
-
-- **emit dataChanged(topLeft, bottomRight, roles) muutoksen jälkeen** ✓
-- Kutsu view->update() aina riittää
-- Model ei tarvitse ilmoittaa — view pollaa
-- Poista model ja luo uusi
-
 #### `b04-qt-models-sort-filter` · diff 3
 
 QTableView tarvitsee live-haun suodatuksen ilman erillistä kopiomallia. Qt-luokka?
@@ -8870,15 +7793,6 @@ Custom delegate tarvitsee tooltip-datan eri kuin display. Mistä se tulee?
 - Vain Qt::DisplayRole on sallittu
 - Delegate generoi tooltipin satunnaisesti
 - Model ei voi palauttaa useaa roolia
-
-#### `b05-qt-models-sort-filter` · diff 3
-
-QTableView tarvitsee suodatuksen ja lajittelun ilman datan duplikaatiota. Ratkaisu?
-
-- **QSortFilterProxyModel source modelin päällä** ✓
-- Kopioi data uuteen QStandardItemModel:iin suodatettuna
-- Piilota rivit setRowHidden manuaalisesti aina
-- SQL WHERE riittää — ei proxya
 
 #### `b06-qt-models-editable-delegate` · diff 3
 
@@ -8916,15 +7830,6 @@ QTableView näyttää dataa mutta sortaus ei toimi. Mitä puuttuu?
 - QSortFilterProxyModel riittää ilman sortattavaa dataa source modelissa
 - QTableView ei tue sortausta — vain QTableWidget sorttaa
 
-#### `b08-qt-models-data-changed` · diff 3
-
-Custom model päivittää solun — view ei päivity ennen full reset. Mitä signaalia emit?
-
-- **dataChanged(topLeft, bottomRight, roles) — targeted update yhdelle solulle** ✓
-- layoutChanged aina yhdestä solusta — se on kevyin päivityssignaali
-- modelReset jokaiselle muutokselle — view päivittyy ilman flickeriä
-- View pollaa modelia timerilla — signaaleja ei tarvita solupäivitykseen
-
 #### `b08-qt-models-sort-filter` · diff 3
 
 QTableView suodatus — haluat näyttää vain aktiiviset rivit ilman datan poistoa. Proxy?
@@ -8942,15 +7847,6 @@ Lataat koko listan uudelleen — beginResetModel on raskas ja välkkyy. Parempi 
 - Luo uusi model aina — se on nopein tapa päivittää koko lista
 - resetModel on ainoa tapa päivittää — incremental update ei toimi
 - View päivittyy automaattisesti ilman model-signaaleja datan muuttuessa
-
-#### `b09-qt-models-sort-proxy` · diff 3
-
-QTableView sorttaus rikkoo custom modelin indeksit. Ratkaisu?
-
-- **QSortFilterProxyModel source modelin päällä — view näkee proxyn** ✓
-- Lajittele source data suoraan — view seuraa automaattisesti indeksejä
-- Model ei tue sorttausta Qt:ssa — vain QTableWidget sorttaa
-- setSortingEnabled(false) aina — sorttaus rikkoo custom modelin
 
 #### `exp-qt-models-persistent-index` · diff 4
 
@@ -9087,7 +7983,7 @@ Uusi Qt desktop -sovellus tarvitsee lomakkeita, taulukoita ja perinteisiä dialo
 - Qt Quick toimii vain mobiilissa
 - Molemmat vaativat aina OpenGL-shadereita
 
-### qt-opengl (21)
+### qt-opengl (18)
 
 #### `b02-qt-opengl-context-11` · diff 4
 
@@ -9143,15 +8039,6 @@ Kaksi QOpenGLWidget:iä — tekstuurit ladataan kahdesti. Miten jaat GL-resurssi
 - Yksi widget riittää aina
 - Share context kielletty Qt 6:ssa
 
-#### `b05-qt-opengl-context-share` · diff 4
-
-Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat resurssit?
-
-- **QOpenGLWidget::setShareContext tai shared context group** ✓
-- Kaksi erillistä QApplication:ia
-- OpenGL ei tue resurssien jakoa
-- VBO:t kopioidaan aina CPU:lla
-
 #### `b05-qt-opengl-makecurrent` · diff 3
 
 OpenGL-kutsu kaatuu 'without current context'. Mitä teet ennen glDrawArrays?
@@ -9197,15 +8084,6 @@ Peli renderöi 300 FPS ja kuluttaa CPU:ta turhaan. Miten rajoitat frame ratea?
 - Poista double buffering — se vähentää CPU-kuormaa 300 FPS:llä
 - setFixedSize renderille — se synkronoi framen näytön refresh rateen
 
-#### `b08-qt-opengl-context-share` · diff 4
-
-Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat GL-resurssit?
-
-- **QSurfaceFormat setShareContext — sama QOpenGLContext share group** ✓
-- OpenGL ei tue resurssien jakoa — jokainen widget luo omat tekstuurit
-- Piirrä kaikki yhteen widgetiin aina — share context ei ole tuettu
-- shareContext toimii vain QML:llä — ei QOpenGLWidgetissä
-
 #### `b08-qt-opengl-vsync` · diff 3
 
 OpenGL-demo repii — CPU 100% spin loopissa. Miten synkkaat frame rateen?
@@ -9214,15 +8092,6 @@ OpenGL-demo repii — CPU 100% spin loopissa. Miten synkkaat frame rateen?
 - while(true) update() on oikea game loop Qt OpenGL-demossa
 - VSync ei ole Qt:ssä saatavilla — vain platform API toimii
 - QPainter korvaa swap chainin — VSync ei vaikuta OpenGL-widgettiin
-
-#### `b09-qt-opengl-context-share` · diff 4
-
-Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Optimointi?
-
-- **QSurfaceFormat setSharedContext — jaetut GL-resurssit widgetien välillä** ✓
-- Kaksi erillistä QApplication:ia — se jakaa tekstuurit automaattisesti
-- OpenGL ei tue resurssien jakoa — tekstuurit ladataan aina kahdesti
-- QPainter korvaa OpenGL:n aina — share context ei ole tarpeen
 
 #### `b09-qt-opengl-vsync-tear` · diff 3
 
@@ -9460,7 +8329,7 @@ QML:ssä pitää ajaa raskasta JSON-parsintaa ilman UI-jumitusta. Qt Quick -vaih
 - Timer { repeat: true } jakaa työn frameihin — riittää megatavuille dataa
 - QML JavaScript on aina async — ei tarvita WorkerScriptiä
 
-### qt-shaders (24)
+### qt-shaders (23)
 
 #### `b02-qt-shaders-qsb-13` · diff 4
 
@@ -9588,15 +8457,6 @@ Shader ei reagoi uniform-muutoksiin — väri pysyy valkoisena. Tyypillinen virh
 - QShaderProgram ei tarvitse bindiä — uniformit päivittyvät automaattisesti
 - Vain vertex shader voi käyttää uniformeja fragment shaderissa
 
-#### `b08-qt-shaders-precision` · diff 3
-
-Fragment shader toimii desktopilla mutta on musta mobiilissa. Epäily?
-
-- **precision mediump/lowp mobiilissa — tarkista GLSL ES precision qualifierit** ✓
-- Mobiili ei tue fragment shadereita — vain vertex shader toimii
-- Qt ei tue OpenGL ES — shaderit toimivat vain desktopilla
-- precision ei vaikuta väriin — musta ruutu johtuu muusta syystä
-
 #### `b08-qt-shaders-uniform` · diff 4
 
 Shader ei näy oikein — uniform arvo ei päivity. Qt6 RHI/shader polulla?
@@ -9678,16 +8538,7 @@ QOpenGLShaderProgram on linkitetty. Miten asetat muuttujan `mvpMatrix` shaderiin
 - Q_PROPERTY riittää shader-uniformeille
 - Uniformit asetetaan vain .vert-tiedostossa
 
-### qt-signals (20)
-
-#### `b02-qt-signals-disconnect-05` · diff 3
-
-Dialog sulkeutuu mutta slot laukeaa edelleen destroyed senderistä. Esto?
-
-- **disconnect, QPointer tai destroyed-signaali estää myöhäisen slotin** ✓
-- Toivo ettei lähettäjä emitoi enää dialogin sulkeuduttua
-- static connect ilman receiveria sitoo slotin automaattisesti ikuiseksi
-- Poista kaikki signaalit projektista estääksesi myöhäiset slotit
+### qt-signals (14)
 
 #### `b02-qt-signals-queued-04` · diff 4
 
@@ -9752,15 +8603,6 @@ Lambda-slotti connectissa — disconnect ei toimi osoitteella. Miksi?
 - disconnect poistaa kaikki automaattisesti
 - Vain SIGNAL/SLOT makro toimii
 
-#### `b05-qt-signals-queued-connection` · diff 4
-
-Worker-säie emittoi signaalin joka päivittää GUI:ta — satunnainen crash. Korjaus?
-
-- **Qt::QueuedConnection — slot ajetaan GUI-säieessä** ✓
-- DirectConnection on aina nopein ja turvallisin
-- Poista signaalit — käytä globaalia muuttujaa
-- BlockingQueuedConnection GUI-säieestä GUI-säieeseen
-
 #### `b06-qt-signals-auto-connection` · diff 3
 
 on_pushButton_clicked() ei kutsuta — slot nimi väärä. Miten auto-connection löytää slotin?
@@ -9788,24 +8630,6 @@ Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit vää
 - Lambda korvaa disconnectin — context object ei ole tarpeen
 - emit stop riittää — se estää slotin kutsun dialogin sulkeuduttua
 
-#### `b07-qt-signals-queued` · diff 4
-
-Worker-thread emit signaalin joka päivittää GUI-widgettiä — satunnainen crash. Korjaus?
-
-- **Qt::QueuedConnection — slot ajetaan receiver-threadissa turvallisesti** ✓
-- Qt::DirectConnection nopeuttaa — se on turvallinen cross-thread GUI-päivityksessä
-- Kutsu widgettiä suoraan workerista — mutex riittää thread-safetyyn
-- Poista signaalit — suora kutsu on nopein tapa päivittää GUI
-
-#### `b08-qt-signals-blocking` · diff 3
-
-Lataat modelin UI:hin — jokainen setData laukaisee dataChanged ja hidastaa. Miten hiljennät?
-
-- **QSignalBlocker tai blockSignals(true) — palauta false batch-päivityksen jälkeen** ✓
-- disconnect kaikki signaalit pysyvästi — se nopeuttaa model-latausta
-- Signaaleja ei voi estää Qt:ssa — dataChanged laukeaa aina
-- sleep() signaalien välissä — se estää liian monta dataChanged-kutsua
-
 #### `b08-qt-signals-unique-connection` · diff 3
 
 Sama connect() kutsutaan initissä kahdesti — slotti suoritetaan kaksinkertaisesti. Esto?
@@ -9814,24 +8638,6 @@ Sama connect() kutsutaan initissä kahdesti — slotti suoritetaan kaksinkertais
 - connect poistaa vanhan automaattisesti — duplikaatteja ei synny
 - UniqueConnection toimii vain queued connection -tyypillä
 - Käytä macro connect aina — se estää duplikaattiyhteydet
-
-#### `b09-qt-signals-block-updates` · diff 3
-
-Lataat 1000 riviä modeliin — jokainen setData laukaisee view-päivityksen. Optimointi?
-
-- **QSignalBlocker tai blockSignals(true) bulk-päivityksen ajaksi** ✓
-- Poista view tilapäisesti — se on nopein tapa ladata 1000 riviä
-- Signaaleja ei voi estää Qt:ssa — setData laukaisee aina päivityksen
-- processEvents() nopeuttaa bulk-latausta — se estää UI-jumiutumisen
-
-#### `b09-qt-signals-unique-connection` · diff 3
-
-Sama connect() kutsutaan useasti initissä — slotti laukeaa monta kertaa. Estä?
-
-- **Qt::UniqueConnection — connect epäonnistuu jos yhteys on jo olemassa** ✓
-- disconnect() ennen jokaista connectia manuaalisesti — ainoa tapa estää duplikaatti
-- UniqueConnection ei toimi lambda-sloteilla — vain member-funktiot
-- Signaalit eivät voi duplikoitua — Qt estää sen automaattisesti
 
 #### `exp-qt-signals-disconnect-lifetime` · diff 3
 
@@ -9860,7 +8666,7 @@ Sama signaali connectataan kahdesti samaan slottiin. Miten estät duplikaattikut
 - QSignalSpy estää duplikaatit automaattisesti
 - Signaaleja voi laukaista vain kerran
 
-### qt-threading (20)
+### qt-threading (13)
 
 #### `b02-qt-thread-gui-07` · diff 4
 
@@ -9879,15 +8685,6 @@ Satoja lyhyitä taustatehtäviä — QThread jokaiselle liian raskas. Vaihtoehto
 - std::thread jokaiselle tehtävälle ilman rajaa skaalaa parhaiten
 - UI-timer 1 ms intervallilla ajaa satoja tehtäviä taustalla
 - Blocking GUI-säiettä pitää järjestyksen kun tehtäviä on satoja
-
-#### `b02-qt-thread-worker-06` · diff 3
-
-Pitää ajaa raskas laskenta ilman UI-jäätymistä. Qt-rakenne?
-
-- **QObject-worker moveToThread(QThread*) — älä override QThread::run GUI:ssa** ✓
-- Override QThread::run suoraan QWidget-luokassa raskaalle laskennalle
-- sleep() UI-säikeessä vapauttaa CPU:n taustatehtäville
-- fork() erillinen prosessi pitää UI:n responsiivisena laskennan aikana
 
 #### `b03-qt-thread-invoke-method` · diff 4
 
@@ -9916,15 +8713,6 @@ Worker-thread emit deleteLater() QObjectille joka elää GUI-threadissä — cra
 - Kutsu delete suoraan workerista
 - QObject ei voi tuhoutua threadeissa
 
-#### `b04-qt-thread-affinity` · diff 4
-
-Worker-säie kutsuu suoraan QLabel::setText — satunnainen crash. Oikea Qt-malli?
-
-- **QueuedConnection signaalilla worker→GUI tai QMetaObject::invokeMethod Qt::QueuedConnection** ✓
-- mutex labelin ympärillä riittää
-- GUI-päivitys worker-threadistä on OK
-- volatile QLabel*
-
 #### `b05-qt-thread-gui-touch` · diff 4
 
 Taustasäie kutsuu widget->setText() suoraan — intermittent crash. Sääntö?
@@ -9933,15 +8721,6 @@ Taustasäie kutsuu widget->setText() suoraan — intermittent crash. Sääntö?
 - QWidget on thread-safe
 - Mutex riittää widget-muutoksiin
 - QApplication::processEvents taustasäieessä korjaa
-
-#### `b05-qt-thread-movetothread` · diff 3
-
-Raskas laskenta jäädyttää GUI:n. Oikea Qt-pattern?
-
-- **Worker QObject + moveToThread(QThread) — signaalit takaisin GUI:hin** ✓
-- QThread::run override GUI-luokassa
-- sleep() pääsäieessä taustalla
-- QTimer::singleShot(0) riittää raskaalle työlle
 
 #### `b06-qt-thread-event-loop` · diff 3
 
@@ -9969,42 +8748,6 @@ Code review: QLabel::setText kutsutaan worker-threadista. Mikä sääntö rikkou
 - setText on thread-safe — QLabel päivittyy mistä säikeestä tahansa
 - Vain QPixmap vaatii main threadin — QLabel ei ole thread-safe
 - Mutex riittää — GUI-päivitys worker-threadista on turvallinen
-
-#### `b07-qt-thread-moveToThread` · diff 4
-
-Raskas laskenta jäädyttää GUI-threadin. Qt-idiomi taustatyölle?
-
-- **Worker QObject moveToThread(QThread) — signaalit takaisin GUI-säikeeseen** ✓
-- std::thread suoraan widgetistä — se on Qt:n suositeltu taustatyömalli
-- QThread::run ilman QObjectia — se korvaa moveToThread-patternin
-- processEvents silmukassa — se pitää GUI:n responsiivisena raskaassa työssä
-
-#### `b08-qt-thread-invoke` · diff 4
-
-Worker-säie päivittää QLabel:ia suoraan — crash. Oikea tapa kutsua GUI-metodia toisesta säieestä?
-
-- **invokeMethod(..., Qt::QueuedConnection) tai signaali GUI-säikeeseen** ✓
-- Direct call QLabel::setText workeristä — mutex tekee päivityksen thread-safeksi
-- mutex riittää GUI-päivitykseen worker-threadista ilman invokeMethodia
-- GUI ei tarvitse säieturvallisuutta — QLabel::setText on thread-safe Qt:ssa
-
-#### `b08-qt-thread-qthreadpool` · diff 3
-
-Paljon lyhyitä taustatehtäviä — uusi QThread jokaiselle on raskasta. Parempi Qt-ratkaisu?
-
-- **QThreadPool + QRunnable / QtConcurrent — uudelleenkäytettävä säiepooli** ✓
-- QThread::create jokaiselle tehtävälle — se on kevyin tapa lyhyille töille
-- GUI-säie voi ajaa raskaat tehtävät — processEvents pitää UI:n elossa
-- std::thread ilman Qt integraatiota aina parempi kuin QThreadPool
-
-#### `b09-qt-thread-qthreadpool` · diff 3
-
-Satoja lyhyitä taustatehtäviä — uusi QThread jokaiselle on liian raskasta. Pattern?
-
-- **QThreadPool + QRunnable — uudelleenkäytettävä säiepooli lyhyille tehtäville** ✓
-- QThread::create jokaiselle tehtävälle — kevyin tapa satoihin töihin
-- sleep() pääsäikeessä — se jakaa CPU-aikaa taustatehtäville
-- QtConcurrent::run ilman poolia aina — QThreadPool ei tuo hyötyä
 
 #### `b09-qt-thread-wait-condition` · diff 4
 
@@ -10314,29 +9057,18 @@ Miksi QWidget:lle annetaan parent-osoitin konstruktorissa?
 - Ilman parentia widget on automaattisesti modal-dialogi
 - Parent korvaa QApplication-olion event loopin hallinnassa
 
-## robotframework (12)
+## robotframework (21)
 
-### rf-advanced (1)
+### rf-basics (7)
 
-#### `rf-custom-python-keyword` · diff 4
+#### `rf-env-variables` · diff 4
 
-Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?
+Testit ajetaan devissä, stagingissä ja tuotannossa. Miten ympäristökohtaiset URLit ja salaisuudet hallitaan?
 
-- **Kirjoita Python-kirjasto (.py) jossa funktiot ovat suoraan RF-avainsanoja — Library MyLib** ✓
-- Käytä Evaluate-avainsanaa kaikelle Python-logiikalle suoraan .robot-tiedostossa
-- Kutsu Python-skriptiä Process.Run Process komennolla ja parsaa stdout
-- Kirjoita logiikka Java-kirjastona koska RF on alun perin Java-pohjainen
-
-### rf-basics (6)
-
-#### `rf-data-driven` · diff 4
-
-Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?
-
-- **[Template] avainsana + test cases -taulukossa rivit ovat data-rivejä — data-driven tyyli** ✓
-- FOR-silmukka testin sisällä iteroi listan yli ja ajaa askeleet jokaiselle
-- Luo 10 erillistä testiä identtisillä askeleilla mutta eri muuttujilla
-- Käytä pytest-parametrize dekoraattoria .robot-tiedostossa suoraan
+- **Muuttujatiedostot tai --variable/--variablefile ajossa; salaisuudet CI:n secret storesta** ✓
+- Kovakoodaa BASE_URL jokaiseen .robot-tiedostoon ja vaihda käsin ennen ajoa
+- Committaa salasanat variables/prod.yaml-tiedostoon versionhallintaan
+- Käytä aina samaa staging-URL:ia myös tuotantotesteissä
 
 #### `rf-keyword-structure` · diff 3
 
@@ -10365,6 +9097,15 @@ Useat .robot-testitiedostot tarvitsevat samoja avainsanoja. Miten jaat ne ilman 
 - Käytä *** Global Keywords *** -osiota joka näkyy automaattisesti kaikissa testeissä
 - Tallenna avainsanat YAML-tiedostoon ja lataa ne --include-lipulla ajossa
 
+#### `rf-secrets-logging` · diff 4
+
+Salasana näkyy Robotin log.html-raportissa CI-artefakteissa. Mikä meni pieleen?
+
+- **Salasana välitettiin keyword-argumenttina tai logattiin — lue salaisuudet env/secret storesta ja rajoita loggausta** ✓
+- Robot Framework ei koskaan kirjaa argumentteja — vika on CI-palvelimen konfiguraatiossa
+- Salasanat pitää kovakoodata .robot-tiedostoon jotta ne eivät näy raporteissa
+- Poista log.html kokonaan CI:stä — se on ainoa tapa suojata salaisuudet
+
 #### `rf-setup-teardown` · diff 3
 
 Jokainen testi tarvitsee selaimen avauksen alussa ja sulkemisen lopussa. Mikä Robot Framework -mekanismi?
@@ -10383,7 +9124,63 @@ Robot Frameworkissa on lista URL-osoitteita joita käytetään testissä. Mikä 
 - %{URLS} ympäristömuuttuja joka tallennetaan ennen testiajoa shellissä
 - &{URLS} sanakirjamuuttuja jossa avaimina indeksit ja arvoina URLit
 
-### rf-execution (3)
+### rf-design (5)
+
+#### `rf-abstraction-level` · diff 4
+
+Checkout-testi sisältää 80 riviä Click/Input Text -askeleita. UI-muutos rikkoo kymmeniä testejä. Mikä rakenne on parempi?
+
+- **Nosta tekniset UI-askeleet domain-tason keywordeiksi — testi kertoo liiketoimintaflow'n** ✓
+- Pidä kaikki Click-rivit testissä mutta kopioi ne resource-tiedostoon
+- Lisää jokaisen Clickin eteen Sleep 2s jotta testit eivät hajoa
+- Siirrä koko 80-rivinen testi yhteen Python-funktioon ja kutsu sitä Robotista
+
+#### `rf-api-vs-ui` · diff 4
+
+Tiimi ajaa kaiken checkout-flow'n selaimella. Testit kestävät 45 min ja flakkaavat. Osa testeistä tarkistaa vain tilauksen luonnin. Mitä muutat?
+
+- **Testaa backend-flow API-tasolla (RequestsLibrary/Python-client); käytä selainta vain kriittisiin UI-polkuihin** ✓
+- Lisää rinnakkaisuutta Pabotilla ilman testien eristystä
+- Korvaa kaikki testit yhdellä pitkällä end-to-end -testillä
+- Lisää Sleep 5s jokaisen askeleen väliin jotta testit vakaantuvat
+
+#### `rf-custom-python-keyword` · diff 4
+
+Tarvitset monimutkaista laskentaa jota ei voi tehdä RF-avainsanoilla. Miten laajennat?
+
+- **Kirjoita Python-kirjasto (.py) jossa funktiot ovat suoraan RF-avainsanoja — Library MyLib** ✓
+- Käytä Evaluate-avainsanaa kaikelle Python-logiikalle suoraan .robot-tiedostossa
+- Kutsu Python-skriptiä Process.Run Process komennolla ja parsaa stdout
+- Kirjoita logiikka Java-kirjastona koska RF on alun perin Java-pohjainen
+
+#### `rf-data-driven` · diff 4
+
+Sama testi pitää ajaa kymmenellä eri syöte/tulos -parilla. Miten Robot Frameworkissa?
+
+- **[Template] avainsana + test cases -taulukossa rivit ovat data-rivejä — data-driven tyyli** ✓
+- FOR-silmukka testin sisällä iteroi listan yli ja ajaa askeleet jokaiselle
+- Luo 10 erillistä testiä identtisillä askeleilla mutta eri muuttujilla
+- Käytä pytest-parametrize dekoraattoria .robot-tiedostossa suoraan
+
+#### `rf-test-data` · diff 4
+
+Testi luo käyttäjän test@example.com. Ensimmäinen ajo onnistuu, toinen kaatuu koska käyttäjä on jo olemassa. Miten hallitset testidatan?
+
+- **Uniikki tunniste (timestamp/build id), teardown-siivous tai kertakäyttöinen testitenantti** ✓
+- Oleta että ympäristö on tyhjä ennen jokaista ajoa
+- Aja testi vain kerran päivässä jotta data ei törmää
+- Poista testi kokonaan jos se epäonnistuu toisella ajolla
+
+### rf-execution (4)
+
+#### `rf-ci-exit-code` · diff 4
+
+CI ajaa Robot-testit, mutta build menee vihreäksi vaikka testit epäonnistuivat. Mikä meni pieleen?
+
+- **Pipeline nielee Robotin exit coden esim. || true -rakenteella — älä peitä epäonnistumista** ✓
+- Robot Framework ei palauta exit codea — CI ei voi tietää epäonnistumisesta
+- JUnit XML puuttuu, joten CI ei voi merkitä buildia punaiseksi
+- log.html pitää poistaa ennen CI-ajoa jotta exit code toimii
 
 #### `rf-ci-integration` · diff 4
 
@@ -10394,14 +9191,14 @@ Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tulosform
 - Käytä --format jenkins-lippua joka generoi Jenkins-pluginin vaatiman formaatin
 - Jenkins Robot Framework Plugin lukee vain log.html-tiedostoa selaimessa
 
-#### `rf-run-on-failure` · diff 4
+#### `rf-pabot-parallel` · diff 4
 
-Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-testistä debuggausta varten. Miten?
+Robot-testit kestävät 45 minuuttia. Voiko ne ajaa rinnakkain turvallisesti?
 
-- **Register Keyword To Run On Failure Capture Page Screenshot — ajetaan automaattisesti failissa** ✓
-- Lisää Capture Page Screenshot jokaisen testin [Teardown]-osioon manuaalisesti
-- Käytä --on-failure screenshot komentoriviparametria robot-ajossa globaalisti
-- SeleniumLibrary tallentaa aina kuvakaappauksen automaattisesti ilman konfiguraatiota
+- **Kyllä Pabotilla tai CI:n rinnakkaisilla jobeilla — mutta vain jos testit ovat eristettyjä (data, sessio, portit)** ✓
+- Kyllä — lisää rinnakkaisuus ensin, eristys korjataan myöhemmin
+- Ei — Robot Framework ei tue rinnakkaisuutta lainkaan
+- Kyllä — kaikki testit voivat jakaa saman kirjautuneen selainistunnon nopeuden vuoksi
 
 #### `rf-tags-include-exclude` · diff 3
 
@@ -10412,7 +9209,7 @@ Testisuitessa on 200 testiä mutta haluat ajaa vain smoke-testit CI:ssä. Miten 
 - Lisää if-ehto jokaisen testin alkuun joka tarkistaa ympäristömuuttujan
 - Käytä --test 'Smoke*' glob-patternia joka suodattaa nimiperusteisesti
 
-### rf-web (2)
+### rf-web (5)
 
 #### `rf-browser-library` · diff 4
 
@@ -10423,6 +9220,33 @@ Robot Frameworkilla pitää testata modernia SPA-sovellusta. Mikä kirjasto sove
 - RequestsLibrary riittää SPA-testaukseen koska se testaa API-kutsut suoraan
 - RPA.Browser ajaa testit pelkästään headless-tilassa ilman todellista selainta
 
+#### `rf-flaky-tests` · diff 4
+
+Testi epäonnistuu kerran viikossa CI:ssä mutta menee aina rerunilla läpi. Mitä teet?
+
+- **Kerää debug-artefaktit, selvitä juurisyy ja korjaa odotus/data/eristys — flaky-tag on väliaikainen** ✓
+- Lisää Sleep 10s ja aja testi aina kolme kertaa — ongelma ratkaistu
+- Poista testi ilman selvitystä koska se menee useimmiten läpi
+- Merkitse testi pysyvästi flaky-tagilla ja jätä se pois CI:stä ikuisesti
+
+#### `rf-run-on-failure` · diff 4
+
+Haluat automaattisen kuvakaappauksen jokaisesta epäonnistuneesta web-testistä debuggausta varten. Miten?
+
+- **Register Keyword To Run On Failure Capture Page Screenshot — ajetaan automaattisesti failissa** ✓
+- Lisää Capture Page Screenshot jokaisen testin [Teardown]-osioon manuaalisesti
+- Käytä --on-failure screenshot komentoriviparametria robot-ajossa globaalisti
+- SeleniumLibrary tallentaa aina kuvakaappauksen automaattisesti ilman konfiguraatiota
+
+#### `rf-selector-strategy` · diff 4
+
+Web-testit hajoavat aina kun CSS-luokkia refaktoroidaan. Mitä muutat selectoreissa?
+
+- **Käytä stabiileja testiselektoreita kuten data-testid — vältä tyyliluokkia ja pitkiä XPath-polkuja** ✓
+- Käytä pidempää XPath-polkuja jotta elementti on varmasti uniikki
+- Korvaa kaikki selectorit tekstisisällöllä kuten Click    Ostoskori
+- Käytä aina css=.btn.primary.mt-2 koska se on lyhyin kirjoittaa
+
 #### `rf-wait-until` · diff 3
 
 Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun latauduttua. Miten korjaat?
@@ -10432,9 +9256,9 @@ Web-testi epäonnistuu koska elementti ei ole vielä näkyvissä sivun lataudutt
 - Set Selenium Speed 2s hidastaa kaikkia toimintoja riittävästi
 - Poista implicit wait kokonaan ja käytä try/except logiikkaa testissä
 
-## rust (66)
+## rust (75)
 
-### rust-async (10)
+### rust-async (12)
 
 #### `rust-async-future-await` · diff 3
 
@@ -10444,6 +9268,24 @@ Mitä `async fn` palauttaa Rustissa?
 - Os-säie heti kun funktio kutsutaan
 - Blocking thread pool entry
 - Promise<T> JavaScript-objekti
+
+#### `rust-async-http-timeout` · diff 3
+
+Rust-palvelu kutsuu ulkoista API:a ilman timeoutia. Mikä riski?
+
+- **Future odottaa liian kauan — taskit ja connection poolit kasautuvat** ✓
+- Rust kaatuu automaattisesti 30 s jälkeen
+- Ei riskiä — async on aina non-blocking
+- Vain synkroninen koodi voi jumittua
+
+#### `rust-async-spawn-lost-errors` · diff 3
+
+Taustatehtävä panikoi, mutta kukaan ei huomaa. Mikä meni pieleen?
+
+- **JoinHandle pudotettiin — panic/virhe jäi näkymättömäksi fire-and-forgetissä** ✓
+- tokio::spawn propagoi panicin automaattisesti HTTP-vastaukseen
+- Async-tehtävä ei voi panikoida
+- Virhe näkyy aina stderrissä tuotannossa
 
 #### `rust-async-tokio-join-handle` · diff 2
 
@@ -10638,7 +9480,7 @@ Miten käynnistät uuden OS-säikeen std-kirjastolla?
 - pthread_create wrapper ainoa
 - Process::fork Rustissa
 
-### rust-error (5)
+### rust-error (6)
 
 #### `rust-error-from-into` · diff 2
 
@@ -10676,6 +9518,15 @@ Funktio palauttaa `Result<T, E>`. Mitä `?`-operaattori tekee Err-haarassa?
 - Muuntaa Err:n automaattisesti poikkeukseksi runtime-hetkellä
 - Panikoi aina — sama kuin `.unwrap()`
 
+#### `rust-error-thiserror-anyhow` · diff 3
+
+Kirjastossa palautetaan `anyhow::Result`. Miksi code review vastustaa?
+
+- **anyhow sopii app-kerrokseen — kirjaston API:ssa kutsuja ei voi matchata virhetyyppejä** ✓
+- anyhow on aina kielletty Rustissa
+- thiserror on vain testeihin
+- Box<dyn Error> on ainoa oikea kirjasto-API
+
 #### `rust-error-unwrap-vs-expect` · diff 2
 
 Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suosittelee tuotantoon?
@@ -10685,7 +9536,7 @@ Prototype-koodissa kutsut `.unwrap()` Resultille. Code review mitä suosittelee 
 - catch_unwind korvaa Err-käsittelyn
 - unwrap_or_else on aina forbidden
 
-### rust-ownership (7)
+### rust-ownership (8)
 
 #### `rust-ownership-box-heap` · diff 2
 
@@ -10750,7 +9601,16 @@ Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe?
 - Indeksointi palauttaa aina kopion — viittaus ok
 - Borrow checker ei koske vektoreihin
 
-### rust-safety (2)
+#### `rust-rc-weak-cycle` · diff 4
+
+Puurakenteessa lapsi pitää `Rc`-viitteen vanhempaansa ja vanhempi `Rc`-viitteet lapsiinsa. Puu ei vapaudu koskaan. Miksi ja mikä korjaa?
+
+- **Rc-viitekehä pitää laskurit nollan yläpuolella — tee vanhempaviitteestä Weak<T>** ✓
+- Rc vapautuu vasta ohjelman lopussa — vaihda Box<T>:hen molempiin suuntiin
+- Kutsu drop() juurelle käsin, jolloin koko puu vapautuu rekursiivisesti
+- Vaihda Arc<T>:hen, jonka atominen laskuri purkaa kehät automaattisesti
+
+### rust-safety (4)
 
 #### `rust-safety-borrow-checker` · diff 2
 
@@ -10761,6 +9621,24 @@ Mikä Rustin ominaisuus estää data race -virheet käännösaikana ilman roskie
 - Kaikki säikeet ajetaan yhdessä prosessissa GIL-lukon alla
 - TSan-instrumentointi jokaisessa release-buildissa oletuksena
 
+#### `rust-safety-secret-debug` · diff 3
+
+Struct sisältää API-avaimen ja sille deriveataan Debug. Mikä riski?
+
+- **Debug tulostaa kentät lokeihin — salaisuudet voivat vuotaa tuotannossa** ✓
+- Debug on compile-time pois release-buildissa automaattisesti
+- derive(Debug) redaktoi automaattisesti salaiset kentät
+- Riski vain jos käytät nightly-Rustia
+
+#### `rust-safety-supply-chain` · diff 3
+
+Rust-projekti käyttää 120 cratea. Miten pienennät dependency-riskiä?
+
+- **Commitoi Cargo.lock, minimoi riippuvuudet, cargo audit/deny CI:ssä** ✓
+- Rust poistaa supply chain -riskin — crateja ei tarvitse seurata
+- Poista Cargo.lock — aina uusimmat versiot tuotannossa
+- Lisää default-features kaikkiin crateihin nopeuteen
+
 #### `rust-safety-unsafe-block` · diff 3
 
 Milloin `unsafe`-lohko on perusteltu?
@@ -10770,7 +9648,7 @@ Milloin `unsafe`-lohko on perusteltu?
 - Performance aina — safe Rust on hidas
 - unsafe kielletty tuotannossa
 
-### rust-testing (8)
+### rust-testing (9)
 
 #### `rust-testing-catch-unwind` · diff 3
 
@@ -10835,6 +9713,15 @@ Testaat että funktio panikoi virheellisellä syötteellä. Mikä attribuutti?
 - #[test(panic)] cargo syntax
 - catch_unwind ainoa tapa
 
+#### `rust-testing-slow-sleep` · diff 2
+
+Testi käyttää oikeaa sleepiä ja kestää 30 sekuntia. Miten nopeutat?
+
+- **#[tokio::test(start_paused = true)] + tokio::time::advance — ei oikeaa odotusta** ✓
+- Lisää thread::sleep testiin tarkkuuden vuoksi
+- Poista testi — hitaat testit eivät kuulu CI:hin
+- cargo test --release nopeuttaa sleep-testejä
+
 #### `rust-testing-tokio-test` · diff 2
 
 Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testissä?
@@ -10844,7 +9731,7 @@ Testaat async-funktiota joka käyttää tokio::time::sleep. Miten ajat sen testi
 - block_on testissä aina kielletty
 - cargo test --async flag
 
-### rust-tooling (6)
+### rust-tooling (7)
 
 #### `rust-tooling-cargo` · diff 1
 
@@ -10873,6 +9760,15 @@ Miten ajat yksikkötestit Rust-projektissa?
 - cargo run --tests
 - make test rust standard
 
+#### `rust-tooling-ci-baseline` · diff 2
+
+Mikä on järkevä minimiputki Rust-projektin CI:ssä?
+
+- **fmt --check, clippy -D warnings, test, doc, audit/deny** ✓
+- cargo build riittää — testit valinnaisia
+- Vain cargo test ilman fmt/clippy
+- rustc suoraan ilman Cargoa tuotannossa
+
 #### `rust-tooling-clippy` · diff 2
 
 Code review haluaa automatisoida Rust-tyylivihjeet CI:ssä. Mikä työkalu?
@@ -10900,7 +9796,7 @@ Tuotantobinary on liian hidas debug-buildista. Mikä Cargo-komento?
 - RUSTFLAGS=--O cargo build
 - cargo deploy production
 
-### rust-traits (8)
+### rust-traits (9)
 
 #### `rust-traits-bounds-generic` · diff 3
 
@@ -10946,6 +9842,15 @@ Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät stru
 - impl Debug käsin aina pakollinen
 - println!("{:?}", foo) toimii ilman Debugia
 - #[debug] attribuutti
+
+#### `rust-traits-dispatch-choice` · diff 3
+
+Valitset `impl Trait`, geneerisen parametrin ja `Box<dyn Trait>` välillä. Miten päätät?
+
+- **impl Trait/geneerinen = staattinen dispatch; Box<dyn Trait> = heterogeeninen runtime-lista** ✓
+- Box<dyn Trait> on aina nopein — käytä sitä kaikkialla
+- impl Trait ja geneerinen T: Trait ovat aina identtisiä
+- dyn Trait ei vaadi object safety -tarkistusta
 
 #### `rust-traits-dyn-trait-object` · diff 3
 
@@ -11048,7 +9953,7 @@ Haluat newtype-wrapperin `UserId(u64)` estämään sekoittamasta tavalliseen u64
 - const UserId: u64
 - #define UserId u64
 
-## scrum (90)
+## scrum (88)
 
 ### scrum-dod (11)
 
@@ -11151,7 +10056,7 @@ Tekninen velka kasvaa. Miten DoD auttaa hallitsemaan sitä sprinttitasolla?
 - Velka kirjataan erilliseen Done-lite -tilaan joka laskee velocityyn
 - DoD koskee vain uutta koodia, ei refaktorointia tai teknistä velkaa
 
-### scrum-dor (20)
+### scrum-dor (18)
 
 #### `b02-scrum-dor-deps-05` · diff 3
 
@@ -11233,24 +10138,6 @@ Product Backlog on sekava — tiimi ei tiedä mitä refinenoida seuraavaksi. Kuk
 - Scrum Master yksin
 - Kehittäjä jolla eniten avoimia tikettejä
 - Aakkosjärjestys reiluuden vuoksi
-
-#### `b05-scrum-dor-dependency` · diff 4
-
-Tarinalla on riippuvuus ulkoiseen API:hin jota ei ole vielä saatavilla. Otetaanko sprinttiin?
-
-- **Riippuvuus ratkaistava tai mockattava ennen DoR:n täyttymistä** ✓
-- Kyllä — tiimi odottaa API:a koko sprintin ilman suunnitelmaa
-- Kyllä — ulkoiset riippuvuudet eivät kuulu DoR-checklistiin
-- Siirretään automaattisesti seuraavaan vuoteen odottamaan API:a
-
-#### `b05-scrum-dor-unclear-story` · diff 3
-
-Tarinan acceptance criteria on 'toimii hyvin'. Sprint planningissa kehittäjät arvailevat. Mitä DoR vaatii?
-
-- **Testattavat hyväksymiskriteerit ennen sprinttiin ottamista** ✓
-- Story point -arvo riittää kun tarina on backlogissa arvioitu
-- DoR on valinnainen jos PO on kiireinen ja sprint alkaa pian
-- Kriteerit kirjoitetaan sprintin lopussa retroissa yhdessä
 
 #### `b07-scrum-dor-design` · diff 4
 
@@ -11870,18 +10757,83 @@ Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmia?
 - Mitä enemmän kehittäjiä sitä parempi velocity ilman koordinaatiokustannusta
 - 2–3 riittää enterprise-projektiin koska Scrum skaalautuu pienillä tiimeillä
 
-## security (4)
+## security (37)
 
-### web-security (4)
+### sec-api (6)
 
-#### `prod-sec-csrf` · diff 4
+#### `prod-sec-idempotency` · diff 4
 
-Selain lähettää session-cookien automaattisesti myös haitalliselta sivulta tulevaan POST-pyyntöön. Mikä suoja?
+POST /api/charge Idempotency-Key: abc123 — sama pyyntö lähetetään kahdesti verkko-ongelman takia. Miksi avain on tärkeä?
 
-- **CSRF-token validointi tai SameSite-cookie rajoittaa cross-site POST-pyyntöjä** ✓
-- CORS-header riittää estämään automaattiset evästepohjaiset lomake-POSTit
-- HTTPS-salaus kanavalla eliminoi cross-site-pyyntöjen istunnon kaappaamisen
-- Piilota lomake CSS:llä estääksesi näkyvät väärinkäytetyt lomake-submit-napit
+- **Estää saman toiminnon toistumisen — tallenna key tenant-kohtaisesti ja palauta sama tulos toistopyynnölle** ✓
+- Idempotency key salaa maksukortin — PCI-vaatimus
+- Key korvaa JWT:n — autentikointi tapahtuu headerissa
+- Vain GET-pyynnöt voivat olla idempotentteja — POST ei
+
+#### `prod-sec-idor-bola` · diff 4
+
+GET /api/invoices/12345 — käyttäjä vaihtaa URL:ssa ID:n 12346 ja näkee toisen asiakkaan laskun. Kirjautuminen tarkistetaan, omistajuutta ei. Mikä haavoittuvuus?
+
+- **IDOR / BOLA — objektikohtainen valtuutus puuttuu; tarkista omistajuus jokaisessa endpointissa** ✓
+- CSRF — selain lähetti evästeen väärään pyyntöön ilman tokenia
+- SQL injection — invoice_id interpoloidaan kyselyyn ilman parametreja
+- JWT exp puuttuu — token on vanhentunut mutta hyväksytään silti
+
+#### `prod-sec-mass-assignment` · diff 4
+
+PATCH /api/users/me — backend tekee Object.assign(user, req.body) ja save(). Body sisältää displayName, role: admin ja isEmailVerified: true. Mikä riski?
+
+- **Mass assignment / overposting — hyväksy vain whitelistatut kentät, erota input-DTO domain-mallista** ✓
+- CSRF — PATCH ei vaadi CSRF-tokenia kun käytetään Bearer-tokenia
+- Race condition — kaksi PATCH-pyyntöä ylikirjoittaa toisensa ilman lukitusta
+- JSON parsing error — liian suuri body kaataa parserin
+
+#### `prod-sec-rate-limiting` · diff 3
+
+Login käyttää Argon2id:tä, mutta hyökkääjä yrittää miljoonia salasanoja eri IP:istä. Mitä hashingin lisäksi tarvitaan?
+
+- **Rate limit IP:llä ja käyttäjätunnuksella, lockout, MFA, credential stuffing -havainto ja yhtenäinen virheilmoitus** ✓
+- Vaihda MD5:een — nopeampi hash nopeuttaa kirjautumista
+- Poista salasanakenttä — OAuth2 on ainoa turvallinen tapa
+- Captcha jokaisella sivulatauksella riittää — ei tarvita kirjautumiskohtaista rajaa
+
+#### `prod-sec-ssrf` · diff 4
+
+POST /api/fetch-preview hakee käyttäjän antaman URL:n. Hyökkääjä antaa http://169.254.169.254/latest/meta-data/. Mikä riski?
+
+- **SSRF — palvelin tekee pyynnön sisäverkkoon; estä private IP:t, metadata ja käytä allowlistaa** ✓
+- XSS — metadata-vastaus renderöidään escapetoimattomana selaimessa
+- DNS rebinding on ainoa riski — HTTP-redirect riittää estämään hyökkäyksen
+- CORS estää selaimen lukemasta metadata-vastausta — SSRF ei ole mahdollinen
+
+#### `prod-sec-webhook-signature` · diff 4
+
+POST /webhooks/payment — backend luottaa bodyyn { invoiceId, paid: true } ilman allekirjoituksen tarkistusta. Mikä puuttuu?
+
+- **Webhookin aitous allekirjoituksella — raw body, timestamp/replay-ikkuna ja idempotentti käsittely** ✓
+- IP-allowlist maksupalvelun osoitteista riittää — body on aina luotettava
+- HTTPS riittää — TLS salaa ja todentaa lähettäjän
+- JSON schema validointi korvaa allekirjoituksen
+
+### sec-auth (8)
+
+#### `prod-sec-account-enumeration` · diff 3
+
+Login palauttaa 'User not found' mutta väärällä salasanalla 'Invalid password'. Mikä riski?
+
+- **Account enumeration — käytä samaa ulkoista virheilmoitusta: sähköposti tai salasana virheellinen** ✓
+- Ei riskiä — käyttäjätunnus on julkista tietoa joka tapauksessa
+- Captcha login-sivulla estää enumerationin täysin
+- Palauta HTTP 404 vain olemattomille käyttäjille — selkeämpi UX
+
+#### `prod-sec-authn-authz` · diff 3
+
+DELETE /api/users/:id — endpoint tarkistaa JWT:n ja löytää käyttäjän, mutta ei tarkista saako tämä käyttäjä poistaa kohdetta. Miksi JWT ei riitä?
+
+- **Autentikaatio kertoo kuka — valtuutus kertoo mitä saa tehdä; tarkista rooli, omistajuus tai policy** ✓
+- JWT pitää vaihtaa opaque session-tokeniin — JWT ei tue DELETE-metodia
+- DELETE vaatii aina admin-roolin globaalisti — muut metodit eivät
+- CORS estää DELETE:n selaimesta — palvelin ei tarvitse authz-tarkistusta
 
 #### `prod-sec-jwt-claims` · diff 4
 
@@ -11892,6 +10844,62 @@ API hyväksyy JWT:n tarkistamatta `exp`- ja `aud`-kenttiä. Mikä riski?
 - aud-claim on dokumentaatiota — allekirjoituksen tarkistus riittää autentikointiin
 - exp-validointi tapahtuu automaattisesti selaimessa ennen API-kutsua
 
+#### `prod-sec-mfa-recovery` · diff 4
+
+MFA: TOTP-secret tallennetaan plaintextinä ja recovery-koodit näytetään uudelleen asetuksissa. Mitä korjaat?
+
+- **Salaa TOTP levossa, näytä recovery-koodit kerran, tallenna hashattuina ja vaadi re-auth herkkiin muutoksiin** ✓
+- Poista MFA — liian monimutkainen ylläpitää turvallisesti
+- Lähetä TOTP SMS:llä — helpompi kuin authenticator-sovellus
+- Tallenna secret base64:na — se on salattu muoto
+
+#### `prod-sec-password-reset` · diff 4
+
+Reset-linkki: /reset?token=123456 — 6-numeroinen token, voimassa 24 h. Mikä ongelma?
+
+- **Liian pieni token-avaruus, liian pitkä voimassaolo — käytä kryptografista tokenia, hash tallennuksessa, kertakäyttö** ✓
+- Token URL:ssa on ok — HTTPS salaa query-parametrin
+- 24 h on liian lyhyt — käyttäjät eivät ehdi resetoida
+- 6 numeroa riittää kun rate limit on päällä
+
+#### `prod-sec-rbac-abac` · diff 5
+
+Globaali role == admin ei skaalaudu: projektin omistaja saa poistaa projektinsa, org-admin vain oman organisaationsa projektit. Mikä lähestymistapa?
+
+- **Resurssikohtainen policy — canDeleteProject(user, project) riippuu käyttäjästä, resurssista ja tenantista** ✓
+- Lisää rooli super-admin joka voi kaiken — yksinkertaisin ratkaisu
+- Tallenna rooli JWT:hen — se riittää kaikkiin päätöksiin
+- Poista poisto-oikeus kaikilta — soft delete riittää
+
+#### `sec-jwt-alg-confusion` · diff 4
+
+JWT-kirjasto hyväksyy tokenin otsikossa ilmoitetun algoritmin sellaisenaan. Hyökkääjä lähettää tokenin, jossa `alg` on `none` tai RS256:n sijaan HS256. Mikä korjaus?
+
+- **Kiinnitä sallitut algoritmit palvelimella — älä luota tokenin alg-kenttään** ✓
+- Tarkista, ettei tokenin alg-kenttä ole tyhjä, ja hyväksy muut arvot
+- Pidennä allekirjoitusavainta, jolloin algoritmin vaihto ei onnistu
+- Salaa koko token JWE:llä, jolloin alg-kenttää ei voi muuttaa
+
+#### `sec-session-fixation` · diff 4
+
+Sovellus käyttää kirjautumisen jälkeen samaa session-id:tä kuin ennen kirjautumista. Hyökkääjä voi asettaa uhrille tuntemansa id:n. Mikä korjaus?
+
+- **Luo uusi session-id kirjautumisen yhteydessä ja mitätöi vanha** ✓
+- Pidennä session-id:tä, jolloin hyökkääjä ei pysty arvaamaan sitä
+- Salaa session-id cookiessa, jolloin hyökkääjän asettama arvo ei kelpaa
+- Siirrä session-id cookiesta URL-parametriksi, jotta se näkyy lokeissa
+
+### sec-data (4)
+
+#### `prod-sec-data-minimization` · diff 3
+
+Analytiikka lähettää email, fullName, page, IP ja userAgent. Mitä security/privacy-reviewissa kysyt?
+
+- **Tarvitaanko henkilötietoa, pseudonyymi userId, säilytysaika, pääsy, kolmannet osapuolet ja poistopyyntö** ✓
+- Lisää kaikki mahdolliset kentät — enemmän dataa parempi analytiikka
+- IP on anonymisoitu automaattisesti — ei tarvitse miettiä
+- GDPR ei koske analytiikkaa — vain rekisteröityjä käyttäjiä
+
 #### `prod-sec-password-hash` · diff 4
 
 Salasanat tallennetaan SHA-256-hasheina ilman suolaa. Mikä parempi ratkaisu?
@@ -11901,6 +10909,192 @@ Salasanat tallennetaan SHA-256-hasheina ilman suolaa. Mikä parempi ratkaisu?
 - Base64-koodaus riittää kun tietokanta on suojattu HTTPS-yhteyden takana
 - Yhteinen pepper-avain kaikille salasanoille yksinkertaistaa vertailulogiikkaa
 
+#### `prod-sec-secret-management` · diff 4
+
+Tuotannon Stripe-avain on kovakoodattu: const stripeKey = 'sk_live_...'. Mitä teet?
+
+- **Poista reposta, kierrätä avain heti, käytä secret manageria ja rajaa avaimen oikeudet** ✓
+- Siirrä .env-tiedostoon ja commitoi .env.example — avain on turvassa
+- Base64-koodaa avain — se ei näy grepissä
+- Odota seuraavaan sprinttiin — kierto voidaan tehdä myöhemmin
+
+#### `prod-sec-sensitive-logging` · diff 4
+
+Virhetilanteessa logger.error({ body: req.body, headers: req.headers }). Mikä riski?
+
+- **Lokeihin voi päätyä Authorization, cookiet, salasanat ja henkilötiedot — redaktoi ja älä loggaa raakaa bodyä** ✓
+- Structured logging on aina turvallista — JSON-muoto suojaa arkaluonteiset kentät
+- Vain tuotannon lokit ovat riski — dev-ympäristön lokit voi jättää täyteen
+- Log level error riittää — debug-lokit eivät sisällä arkaluonteista dataa
+
+### sec-design (7)
+
+#### `prod-sec-dev-config-leak` · diff 4
+
+Stagingissä on DEBUG=true, CORS=* ja testikäyttäjä admin/admin. Mikä riski?
+
+- **Dev-oletukset jaetussa ympäristössä — turvalliset oletukset, erillinen config ja deploy-tarkistukset** ✓
+- Staging on vain testiä, joten debug ja CORS=* eivät haittaa
+- HTTPS riittää suojaamaan stagingin vaikka DEBUG olisi päällä
+- Testitunnus on ok, kunhan salasana vaihdetaan kerran kuussa
+
+#### `prod-sec-fail-closed` · diff 4
+
+Policy service timeouttaa. API ei saa vastausta siitä, onko käyttäjällä oikeus nähdä raportti. Päästetäänkö pyyntö läpi?
+
+- **Fail closed — jos oikeutta ei voida varmistaa, pyyntö estetään** ✓
+- Fail open — käyttökokemus on tärkeämpi, päästetään läpi ja logitetaan
+- Cachetaan viimeisin tunnettu päätös ikuisesti — nopeuttaa vastausta
+- Palautetaan 200 tyhjällä raportilla — ei paljasteta oikeuksia
+
+#### `prod-sec-frontend-authz` · diff 3
+
+Admin-nappi piilotetaan frontendissä, mutta API ei tarkista admin-oikeutta. Mikä meni pieleen?
+
+- **Frontend ei ole turvaraja — kaikki valtuutus pitää tarkistaa palvelimella** ✓
+- CSS display:none riittää estämään admin-toiminnon
+- Riittää tarkistaa rooli frontend-routerissa ennen sivun renderöintiä
+- API voi luottaa siihen, että vain admin näkee napin
+
+#### `prod-sec-least-privilege-db` · diff 4
+
+Backend käyttää tietokantaan superuser-tunnusta. Mikä riski?
+
+- **Sovellusmurtuma antaa liian laajat DB-oikeudet — käytä rajattua runtime-käyttäjää** ✓
+- Superuser on ok, koska vain backend yhdistää tietokantaan
+- Salataan connection string — se riittää suojaamaan tietokannan
+- Riittää käyttää read-only superuseria kaikissa endpointeissa
+
+#### `prod-sec-supply-chain` · diff 4
+
+package.json: "some-lib": "^1.2.0" — CI asentaa ilman lockfileä. Mikä riski?
+
+- **Build ei ole toistettava — uusi transitiivinen dependency voi tulla sisään; käytä lockfileä ja npm ci** ✓
+- Caret (^) estää major-päivitykset — versio on aina turvallinen
+- npm install on deterministinen — sama package.json tuottaa aina saman puun
+- Supply chain riski on vain Docker-imagessa — npm ei liity
+
+#### `prod-sec-tenant-isolation` · diff 5
+
+POST /api/reports ottaa tenant_id:n request bodysta. Raportti cachetetaan avaimella `report:last-month`. Admin (acme) pyytää tenant_id: other-company. Mikä meni pieleen?
+
+- **Tenant ei saa tulla luotettuna käyttäjän syötteestä — johda sessiosta/tokenista ja tarkista jäsenyys** ✓
+- Raportti pitää generoida asynkronisesti — synkroninen endpoint on DoS-riski
+- POST pitää olla GET — idempotentti metodi estää väärän tenantin
+- Admin-rooli riittää — globaali admin saa lukea kaikkien tenantien datan
+
+#### `prod-sec-threat-modeling` · diff 4
+
+Uusi ominaisuus: käyttäjä voi jakaa yksityisen raportin linkillä. Mitä uhkia mietit ennen toteutusta?
+
+- **Arvaamaton token, voimassaoloaika, peruutus, Referer/lokit, edelleenjako ja audit — insecure design** ✓
+- Vain XSS — linkki renderöidään HTML:ssä
+- Riittää tarkistaa että linkki on HTTPS — salausta ei voi murtaa
+- Rate limit riittää — brute force estää tokenin arvaamisen
+
+### sec-input (5)
+
+#### `prod-sec-file-upload` · diff 4
+
+Profiilikuvan upload tarkistaa vain if filename.endswith('.jpg'). Mikä riski?
+
+- **Pääte ei todista sisältöä — tarkista magic bytes, rajoita koko, uudelleenkoodaa kuva, älä suorita tiedostoa** ✓
+- JPEG on aina turvallinen — binäärimuoto ei voi sisältää koodia
+- Riittää tallentaa uploads/-kansioon — webrootin ulkopuolella ei ole riskiä
+- Base64-enkoodaus ennen tallennusta poistaa haittaohjelman
+
+#### `prod-sec-path-traversal` · diff 3
+
+GET /download?file=report.pdf — backend: sendFile('/var/app/files/' + req.query.file). Hyökkääjä antaa ../../../../etc/passwd. Mikä riski?
+
+- **Path traversal — käytä tiedosto-ID:tä, normalisoi polku ja varmista että se pysyy base-hakemistossa** ✓
+- Directory listing — palvelin listaa kansion sisällön automaattisesti
+- Symlink attack vaatii root-oikeudet — ei koske tavallista käyttäjää
+- URL-encoding riittää — %2e%2e estää pisteet automaattisesti
+
+#### `prod-sec-shell-injection` · diff 4
+
+Sovellus ajaa `os.system("convert " + user_filename)` ilman validointia. Hyökkääjä syöttää `file.png; rm -rf /`. Mikä korjaus?
+
+- **Älä käytä shelliä — subprocess argumenttilistana tai kirjasto joka ei interpoloi shelliin** ✓
+- Escapaa lainausmerkit riittää — shell käsittelee puolipisteet turvallisesti
+- Aja root-oikeuksin vain luotettaville käyttäjille
+- Base64-koodaa filename ennen shell-komentoa
+
+#### `prod-sec-sql-sort-injection` · diff 4
+
+GET /api/users?sort=name — koodi: db.query(`SELECT * FROM users ORDER BY ${req.query.sort}`). Miksi prepared statement ei yksin auta?
+
+- **Sarakkeen nimeä tai SQL-avainsanaa ei voi parametrisoida — käytä whitelistaa sallituille sort-kentille** ✓
+- Prepared statement toimii vain INSERT-kyselyissä, ei SELECT ORDER BY:ssä
+- sort-parametri pitää URL-enkoodata — se estää injectionin automaattisesti
+- ORDER BY pitää poistaa — pagination riittää turvallisuuteen
+
+#### `prod-sec-unsafe-deserialization` · diff 5
+
+API ottaa base64-kentän ja tekee pickle.loads(base64decode(input)). Miksi vaarallista?
+
+- **Epäluotettavaa dataa ei saa deserialisoida formaattiin joka voi suorittaa koodia — käytä JSON + skeemavalidointi** ✓
+- Base64 on salausta — pickle purkaa sen turvallisesti
+- pickle on turvallinen kun input tulee HTTPS:n yli
+- Vain XML-deserialisointi on riski — pickle on Pythonin sisäinen formaatti
+
+### web-security (7)
+
+#### `prod-sec-cache-control` · diff 3
+
+Palkkakuitin PDF: Cache-Control: public, max-age=86400. Mikä riski?
+
+- **Yksityinen data voi päätyä jaettuun välimuistiin — käytä Cache-Control: no-store tai private tarpeen mukaan** ✓
+- public nopeuttaa latausta — PDF on staattinen joten se on ok
+- max-age=86400 on liian lyhyt — käyttäjä joutuu lataamaan uudelleen
+- Vain selaimen cache — CDN ei koskaan tallenna public-responssia
+
+#### `prod-sec-cors` · diff 4
+
+API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?
+
+- **CORS ei ole palvelinpuolen authz — credentials + villi origin on vaarallinen; salli vain tunnetut originit** ✓
+- CORS estää curl-pyynnöt — API on turvallinen vain selaimesta
+- Wildcard origin nopeuttaa kehitystä — tuotannossa sama on ok
+- CSRF-token korvaa CORS-headerit kokonaan
+
+#### `prod-sec-csrf` · diff 4
+
+Selain lähettää session-cookien automaattisesti myös haitalliselta sivulta tulevaan POST-pyyntöön. Mikä suoja?
+
+- **CSRF-token validointi tai SameSite-cookie rajoittaa cross-site POST-pyyntöjä** ✓
+- CORS-header riittää estämään automaattiset evästepohjaiset lomake-POSTit
+- HTTPS-salaus kanavalla eliminoi cross-site-pyyntöjen istunnon kaappaamisen
+- Piilota lomake CSS:llä estääksesi näkyvät väärinkäytetyt lomake-submit-napit
+
+#### `prod-sec-open-redirect` · diff 3
+
+Login ohjaa: /login?next=https://evil.example/phish. Mikä riski ja korjaus?
+
+- **Open redirect — salli vain suhteelliset sisäiset polut tai allowlistatut domainit** ✓
+- HTTPS kohde on turvallinen — phishing ei toimi salatulla sivulla
+- next-parametri on ok kun se on URL-enkoodattu
+- CORS estää ulkoiseen domainiin ohjauksen
+
+#### `prod-sec-security-headers` · diff 3
+
+Kirjautuneille käyttäjille palautetaan HTML-sivuja ilman turva-headereita. Mitä lisäisit ensimmäisenä?
+
+- **CSP, X-Content-Type-Options: nosniff, Referrer-Policy, Permissions-Policy ja HSTS tuotannon HTTPS:ään** ✓
+- X-Powered-By: Express — kertoo käytetyn frameworkin debuggausta varten
+- Cache-Control: public — nopeuttaa sivujen latausta
+- Access-Control-Allow-Origin: * — sallii kaikki originit
+
+#### `prod-sec-tls-verify-off` · diff 3
+
+Kehittäjä lisää `curl -k` tai `verify=False` korjatakseen TLS-virheen. Mikä riski?
+
+- **Man-in-the-middle voi siepata tai muuttaa liikennettä — sertifikaattia ei validoida** ✓
+- TLS-salaus poistuu kokonaan — liikenne menee plaintextinä
+- Vain self-signed sertifikaatit toimivat — CA-varmennetut eivät
+- verify=False vaikuttaa vain kehitysympäristöön, ei tuotantoon
+
 #### `prod-sec-xss` · diff 3
 
 Käyttäjän kommentti renderöidään HTML:ään ilman escapetusta. Mikä riski?
@@ -11909,4 +11103,596 @@ Käyttäjän kommentti renderöidään HTML:ään ilman escapetusta. Mikä riski
 - SQL injection kommenttikentässä kun HTML renderöidään ilman suodatinta
 - CSRF hyökkäys rajoittuu GET-pyyntöihin ilman csrf-tokenia lomakkeessa
 - Deadlock syntyy kun HTML-parser lukitsee tietokantayhteyden renderöinnin ajaksi
+
+## space (64)
+
+### space-applications (10)
+
+#### `space-app-accuracy-classes` · diff 2
+
+Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakatarkkuudelle hyvissä oloissa?
+
+- **SPP metrit; SBAS/DGPS sub-metri…metri; RTK fixed sentit** ✓
+- Kaikki kolme ovat millimetreissä ilman antennia
+- SPP sentit, RTK vain metrit
+- SBAS on aina tarkempi kuin RTK fixed
+
+#### `space-app-antenna-pco` · diff 4
+
+Miksi tarkkuus-GNSS:ssä antennin phase center (PCO/PCV) pitää tuntea?
+
+- **Mittaus viittaa sähköiseen vaihekeskukseen, ei välttämättä antennin fyysiseen pohjaan — mm–cm virhe muuten** ✓
+- Phase center vaikuttaa vain NMEA-baudinopeuteen
+- PCO tarvitaan ainoastaan Web Mercator -muunnokseen
+- Phase center korvaa kokonaan geoidimallin
+
+#### `space-app-assisted` · diff 2
+
+Mitä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?
+
+- **Apudata verkosta: aika, karkea paikka, almanakka/efemeridi — TTFF lyhenee** ✓
+- Korvaa satelliittisignaalit kokonaan tukiasemilla
+- Muuttaa karttaprojektion automaattisesti TM35FIN:iksi
+- Kalibroi geoidimallin kentällä ilman mittausta
+
+#### `space-app-elevation-mask` · diff 2
+
+Miksi GNSS-vastaanottimissa käytetään elevaatiomaskia (esim. 10–15°)?
+
+- **Matalan elevaation satelliiteilla on enemmän ilmakehä- ja multipath-virheitä** ✓
+- Matalat satelliitit eivät lähetä efemeridiä lainkaan
+- Elevaatiomaski muuttaa WGS84-parametreja
+- Maski tarvitaan vain NMEA-checksumia varten
+
+#### `space-app-igs` · diff 3
+
+Mikä on IGS:n rooli tarkkuus-GNSS:ssä?
+
+- **International GNSS Service tuottaa tarkkoja ratoja, kelloja ja muita tuotteita tieteelle ja PPP:lle** ✓
+- IGS operoi ainoastaan EGNOS-GEO-satelliitteja
+- IGS on NMEA-lauseiden valmistajaliitto
+- IGS määrittelee vain Web Mercator -tiilikoon
+
+#### `space-app-indoor-limit` · diff 1
+
+Miksi tavallinen GNSS toimii heikosti syvällä sisätiloissa?
+
+- **L-kaistan signaali vaimenee seinissä ja katoissa — suora näkyvyys satelliitteihin puuttuu** ✓
+- WGS84-ellipsoidi ei ulotu rakennusten sisälle
+- NMEA-protokolla kieltää sisätilakoordinaatit
+- Atomikellot sammuvat automaattisesti sisätiloissa
+
+#### `space-app-jamming` · diff 3
+
+Mikä on GNSS-jammingin ja spoofingin ero?
+
+- **Jamming tukkii signaalin häiriöllä; spoofing syöttää väärennettyjä GNSS-signaaleja harhauttamaan vastaanotinta** ✓
+- Ne tarkoittavat täysin samaa RF-ilmiötä
+- Jamming muuttaa vain geoidia, spoofing ellipsoidia
+- Spoofing on mahdollista vain GEO-radoilla
+
+#### `space-app-rtcm` · diff 3
+
+Mikä on RTCM-korjausviesti GNSS:ssä?
+
+- **Standardimuotoinen binääriviesti differentiaalisiin/RTK-korjauksiin tukiasemalta roverille** ✓
+- Karttalehden rasteriformaatti
+- Vain JSON-muotoinen GeoJSON-vaihtoehto
+- Galileon avoimen palvelun salaus
+
+#### `space-app-time-gps-utc` · diff 3
+
+Mikä ero on GPS-ajan ja UTC:n välillä?
+
+- **GPS-aika on jatkuva (ei karkaussekunteja); UTC:hen nähden on kokonaislukupoikkeama leap seconds** ✓
+- GPS-aika ja UTC ovat aina identtiset nanosekuntiin
+- UTC seuraa vain Galileo-konstellaatiota
+- GPS-aika resetoituu joka keskiyö paikallisesti
+
+#### `space-app-ttff` · diff 2
+
+Mitä tarkoittaa TTFF GNSS-vastaanottimessa?
+
+- **Time To First Fix — aika ensimmäiseen kelvolliseen paikkaratkaisuun käynnistyksen jälkeen** ✓
+- Total Tropospheric Free Factor — tropoviiveen kerroin
+- Tracked Triple Frequency Format — RINEX-versio
+- Terrain To Flat Factor — projektion mittakaava
+
+### space-datums (11)
+
+#### `space-datum-ecef` · diff 2
+
+Mitkä ovat ECEF-koordinaatit?
+
+- **Maakeskiset suorakulmaiset X, Y, Z -koordinaatit, jotka pyörivät maan mukana** ✓
+- Paikallinen tangenttitaso itä-pohjoinen-up (ENU) aina
+- Vain pikseleitä Web Mercator -tiilissä
+- Satelliitin Kepler-elementit a, e, i
+
+#### `space-datum-ellipsoid` · diff 2
+
+Mikä on referenssiellipsoidi geodesiassa?
+
+- **Pyörähdysellipsoidi, joka approksimoi maan muotoa koordinaattilaskentaa varten** ✓
+- Maan todellinen toppografinen pinta kaikkine vuorineen
+- Vain merenpinnan hetkellinen aaltoilu
+- Satelliitin aurinkopaneelin muoto
+
+#### `space-datum-enu` · diff 3
+
+Mihin ENU-koordinaatistoa käytetään GNSS-/inertiasovelluksissa?
+
+- **Paikalliseen itä-pohjoinen-ylös -kehikkoon suhteelliseen liikkeeseen ja visualisointiin** ✓
+- Globaalin ellipsoidin ainoa virallinen datumi
+- NMEA-lauseiden pakollinen esitysmuoto
+- GEO-satelliittien rataelementtien standardi
+
+#### `space-datum-etrs89` · diff 3
+
+Miksi Suomessa virallisessa paikkatiedossa käytetään usein ETRS89:ää eikä suoraan 'raakaa' WGS84-hetkeä?
+
+- **ETRS89 on Eurooppaan kiinnitetty datumi (EUREF), joka ei ajaudu laattojen mukana kuten ITRF/WGS84-epochit** ✓
+- ETRS89 käyttää täysin erilaista palloa ilman ellipsoidia
+- WGS84 on kielletty kaikissa GPS-vastaanottimissa EU:ssa
+- ETRS89 on vain NMEA-lauseen aliasnimi
+
+#### `space-datum-geoid` · diff 2
+
+Mikä on geoidi?
+
+- **Maan painovoimakentän ekvipotentiaalipinta, joka vastaa ihanteellista merenpintaa** ✓
+- GPS-satelliittien muodostama verkko
+- UTM-vyöhykkeen keskimeridiaani
+- NMEA GGA-lauseen checksum-kenttä
+
+#### `space-datum-grs80` · diff 3
+
+Miten GRS80 liittyy WGS84-ellipsoidiin?
+
+- **Ne ovat lähes identtisiä; ETRS89 käyttää GRS80:ää, WGS84-ellipsoidi on käytännössä sama metritasolla** ✓
+- GRS80 on LEO-rata, WGS84 on GEO-rata
+- GRS80 korvaa GNSS-signaalit Euroopassa
+- GRS80 ja WGS84 eroavat satoja kilometrejä akseleissa
+
+#### `space-datum-itrf` · diff 4
+
+Mikä on ITRF geodesiassa?
+
+- **International Terrestrial Reference Frame — globaali, ajan myötä päivittyvä maakiinnitteinen referenssikehys** ✓
+- Vain Suomen kunnan rajapyykkirekisteri
+- Galileon salattu PRS-avainmateriaali
+- NMEA 2000 -väylän pinostandardi
+
+#### `space-datum-orthometric` · diff 3
+
+Mikä ero on ellipsoidikorkeudella h ja ortometrisella korkeudella H?
+
+- **h mitataan ellipsoidista, H geoidista (≈ merenpinta); muunnos tarvitsee undulaation N** ✓
+- Ne ovat aina numeerisesti samat WGS84:ssä
+- H on aina satelliitin kiertokorkeus
+- h sisältää vain DOP-korjauksen
+
+#### `space-datum-undulation` · diff 3
+
+Mitä geoidiundulaatio N tarkoittaa?
+
+- **Geoidin korkeus ellipsoidin yläpuolella (tai alapuolella) — silta h:n ja H:n välillä** ✓
+- Satelliitin elevaatiokulma horisontista
+- UTM-mittakaavakerroin keskimeridiaanilla
+- DOP-luvun käänteisluku
+
+#### `space-datum-wgs84` · diff 2
+
+Mikä on WGS84?
+
+- **GPS:n käyttämä maailmanlaajuinen geodeettinen datumi ja ellipsoidi (EPSG:4326 maantieteellisenä)** ✓
+- Vain Suomen vanha KKJ-kaista 3
+- EGNOS-satelliitin PRN-numero
+- RINEX-tiedoston pakkausalgoritmi
+
+#### `space-datum-wgs84-params` · diff 3
+
+Mihin WGS84-ellipsoidin parametreja a (puolisuuri akseli) ja f (litistyneisyys) tarvitaan?
+
+- **Ne määrittävät ellipsoidin koon ja muodon — tarvitaan ECEF-muunnoksiin** ✓
+- Ne kertovat geoidin korkeuden merenpinnasta jokaisessa pisteessä
+- Ne ovat GPS-satelliittien ratakorkeus ja inklinaatio
+- Ne ovat UTM-projektion vyöhykenumero ja mittakaavakerroin
+
+### space-gnss (8)
+
+#### `space-gnss-almanac-ephemeris` · diff 3
+
+Mikä ero on almanakalla ja efemeridillä GNSS:ssä?
+
+- **Almanakka on karkea koko konstellaation rata; efemeridi on tarkan satelliitin rata- ja kellodata** ✓
+- Almanakka on tarkempi kuin efemeridi
+- Efemeridi sisältää vain karttaprojektion parametrit
+- Molemmat tarkoittavat samaa NMEA-lausetta
+
+#### `space-gnss-beidou` · diff 2
+
+Mikä on BeiDou?
+
+- **Kiinan globaali GNSS-järjestelmä (BDS), jossa on myös GEO/IGSO-satelliitteja alueelliseen peittoon** ✓
+- Japanin QZSS-järjestelmän toinen nimi
+- Intian NavIC-järjestelmän sotilasversio
+- Vain EGNOS-korjausdatan toimittaja
+
+#### `space-gnss-galileo` · diff 2
+
+Mikä on Galileo-järjestelmä?
+
+- **Euroopan unionin ja ESA:n siviilijohtoinen globaali GNSS** ✓
+- NASA:n Kuuhun tarkoitettu paikannusverkko
+- Vain Suomen Maanmittauslaitoksen korjauspalvelu
+- Pelkästään merenkulun AIS-järjestelmä
+
+#### `space-gnss-glonass` · diff 2
+
+Mikä erottaa klassisen GLONASS-signaalin GPS:stä taajuuksien jaon suhteen?
+
+- **Klassinen GLONASS käytti FDMA:ta (eri taajuus per satelliitti); GPS käyttää CDMA:ta** ✓
+- GLONASS ei lähetä lainkaan koodia, vain kantoaaltoa
+- GLONASS toimii vain GEO-radalla
+- GLONASS käyttää pelkästään Wi-Fi-taajuuksia
+
+#### `space-gnss-gps-operator` · diff 1
+
+Kuka operoi GPS-järjestelmää?
+
+- **Yhdysvallat (Space Force / DoD) — siviilisignaali avoin maailmanlaajuisesti** ✓
+- Euroopan unioni ja ESA yhdessä
+- Venäjän Roscosmos yksin
+- YK:n ITU suoraan
+
+#### `space-gnss-qzss-navic` · diff 3
+
+Mitä yhteistä on QZSS:llä ja NavIC:lla verrattuna GPS:ään?
+
+- **Ne ovat alueellisia (RNSS) järjestelmiä, eivät täysin globaaleja konstellaatioita** ✓
+- Ne korvaavat WGS84:n omilla ellipsoidillaan kaikkialla
+- Ne toimivat vain veden alla
+- Ne ovat pelkkiä karttaprojektioita ilman satelliitteja
+
+#### `space-gnss-sbas-egnos` · diff 3
+
+Mikä on EGNOS?
+
+- **Euroopan SBAS — geostationaariset satelliitit lähettävät GPS-korjauksia ja eheysinformaatiota** ✓
+- Galileon sotilassignaalin salausavain
+- Suomen kansallinen tasokoordinaatisto
+- NMEA-lauseiden vanhentunut dialekti
+
+#### `space-gnss-vs-gps` · diff 1
+
+Mikä on ero GPS:n ja GNSS:n välillä?
+
+- **GPS on yksi Yhdysvaltojen järjestelmä; GNSS on yleisnimi kaikille satelliittipaikannusjärjestelmille** ✓
+- GPS ja GNSS ovat synonyymejä ilman eroa
+- GNSS on vain Euroopan Galileo-järjestelmän lyhenne
+- GPS sisältää kaikki järjestelmät, GNSS vain sotilaskäytön
+
+### space-maps (8)
+
+#### `space-map-epsg` · diff 2
+
+Mikä on EPSG-koodi paikkatiedossa?
+
+- **Yksikäsitteinen tunniste koordinaattijärjestelmälle (CRS), esim. 4326 = WGS84 lon/lat** ✓
+- Satelliitin PRN-numero konstellaatiossa
+- RTCM-viestin tyyppinumero
+- Vain kuvatiedoston DPI-asetus
+
+#### `space-map-kkj` · diff 3
+
+Mikä on KKJ Suomen paikkatiedon historiassa?
+
+- **Vanha kansallinen kartastokoordinaattijärjestelmä; nykyään siirrytty ETRS89/TM35FIN-järjestelmiin** ✓
+- Uusi Galileo-palvelu vuodesta 2024
+- GNSS-vastaanottimen tehdasasetus maailmanlaajuisesti
+- Geoidimallin ainoa globaali standardi
+
+#### `space-map-mercator-property` · diff 2
+
+Minkä ominaisuuden klassinen Mercator-projektio säilyttää?
+
+- **Kulmat (konformisuus) — siksi se sopii navigointiin loxodrome-kursseilla** ✓
+- Kaikki pinta-alat tarkasti kaikkialla
+- Kaikki etäisyydet globaalisti ilman mittakaavaa
+- Geoidiundulaation N suoraan
+
+#### `space-map-projection` · diff 2
+
+Miksi karttaprojektioita tarvitaan?
+
+- **Ellipsoidin 3D-pinta pitää kuvata 2D-tasolle — jokin ominaisuus (kulma, pinta-ala, matka) vääristyy aina** ✓
+- Projektio poistaa ionosfäärivirheet GNSS-signaalista
+- Projektio synkronoi atomikellot automaattisesti
+- Ilman projektiota satelliitit eivät näy vastaanottimelle
+
+#### `space-map-scale-factor` · diff 3
+
+Mitä tarkoittaa UTM/TM-projektion mittakaavakerroin 0,9996 keskimeridiaanilla?
+
+- **Tasomatkat ovat hieman lyhyempiä kuin ellipsoidimatkat keskimeridiaanilla — kompromissi vyöhykkeen reunoille** ✓
+- GPS-pseudomatkat kerrotaan aina 0,9996:lla
+- Geoidi on 0,9996 kertaa ellipsoidi
+- NMEA-korkeus skaalataan 0,9996:lla
+
+#### `space-map-tm35fin` · diff 2
+
+Mikä on ETRS-TM35FIN (EPSG:3067)?
+
+- **Suomen virallinen tasokoordinaatisto: ETRS89 + TM-projektio vyöhykkeellä 35** ✓
+- WGS72-pohjainen merenkulkukartta
+- Vain NMEA-lauseiden suomenkielinen käännös
+- Galileon High Accuracy Service -salaus
+
+#### `space-map-utm` · diff 2
+
+Mikä on UTM-koordinaatisto?
+
+- **Universaali poikittainen Mercator: maailma jaettu 6° vyöhykkeisiin metripohjaisilla tasokoordinaateilla** ✓
+- Vain yksi globaali taso ilman vyöhykkeitä
+- Pelkkä geoidimalli ilman projektiota
+- GNSS-vastaanottimen binääriprotokolla
+
+#### `space-map-web-mercator` · diff 3
+
+Mikä on Web Mercator (EPSG:3857) ja mikä sen sudenkuoppa?
+
+- **Selainkarttojen tasoprojektio; etäisyydet ja pinta-alat vääristyvät etenkin korkeilla leveyksillä** ✓
+- Tarkin mahdollinen geodeettinen datumi senttitasolle
+- Suomen virallinen korkeusjärjestelmä
+- SBAS-korjausten siirtoprotokolla
+
+### space-positioning (9)
+
+#### `space-pos-ambiguity` · diff 4
+
+Mitä tarkoittaa integer ambiguity resolution RTK:ssa?
+
+- **Kantoaallon kokonaislukuaaltojen lukumäärän kiinnittäminen, jotta phase-mittaus muuttuu absoluuttiseksi tarkaksi matkaksi** ✓
+- NMEA-checksumin korjaaminen
+- Geoidimallin gridin interpolointi
+- Satelliitin PRN-numeron arvaus
+
+#### `space-pos-baseline` · diff 3
+
+Mitä tarkoittaa baseline differentiaalisessa GNSS:ssä?
+
+- **Vektori tukiaseman ja liikkuvan vastaanottimen välillä (suhteellinen paikka)** ✓
+- Vain satelliitin inklinaatiokulma
+- NMEA-baudinopeuden oletusarvo
+- Geoidimallin grid-resoluutio
+
+#### `space-pos-cors-ntrip` · diff 3
+
+Mikä on NTRIP RTK-käytössä?
+
+- **Protokolla korjausdatan (usein RTCM) siirtoon internetin yli tukiasemaverkosta vastaanottimelle** ✓
+- Uusi GNSS-konstellaatio Aasiassa
+- Ellipsoidin litistyneisyysparametri
+- Vain 2D-kartan tiilitysformaatti
+
+#### `space-pos-dgps` · diff 3
+
+Miten DGPS parantaa paikannusta?
+
+- **Tunnetulla tukiasemalla mitatut korjaukset lähetetään liikkuvalle vastaanottimelle vähentämään yhteisiä virheitä** ✓
+- DGPS vaihtaa ellipsoidia WGS72:een automaattisesti
+- DGPS poistaa multipathin täysin kaikissa ympäristöissä
+- DGPS toimii vain ilman mitään satelliittinäkyvyyttä
+
+#### `space-pos-ppp` · diff 4
+
+Miten PPP (Precise Point Positioning) eroaa RTK:sta?
+
+- **PPP käyttää tarkkoja rata-/kellotuotteita yhdessä vastaanottimessa; RTK nojaa paikalliseen tukiasemaan** ✓
+- PPP vaatii aina kaksi antennia samassa tolpassa
+- PPP toimii vain GEO-satelliiteilla
+- PPP ja RTK ovat täysin sama algoritmi eri nimellä
+
+#### `space-pos-ppp-convergence` · diff 3
+
+PPP-ratkaisu tarvitsee käynnistyksen jälkeen kymmeniä minuutteja ennen senttitasoa, RTK vain muutamia sekunteja. Miksi?
+
+- **Tukiasemaa ei ole: ilmakehäviiveet ja ambiguityt estimoidaan vähitellen** ✓
+- PPP odottaa, että satelliitit lähettävät tarkat radat broadcast-viestissä kerran tunnissa
+- PPP-vastaanottimet käyttävät vain yhtä taajuutta, mikä hidastaa laskentaa
+- PPP laskee sijainnin UTM-tasossa, ja projektion ratkaiseminen vie aikaa
+
+#### `space-pos-rinex` · diff 3
+
+Mihin RINEX-tiedostoja käytetään?
+
+- **Standardimuotoiseen GNSS-havainto- ja navigointidatan vaihtoon jälkikäsittelyä varten** ✓
+- Vain 3D-mallien renderöintiin pelimoottorissa
+- SBAS-signaalin RF-modulaatioon satelliitissa
+- EPSG-koodien automaattiseen rekisteröintiin
+
+#### `space-pos-rtk` · diff 3
+
+Mikä on RTK-paikannuksen ydinidea?
+
+- **Kantoaaltovaiheen differentiaalinen mittaus tukiasemaan nähden + integer ambiguity -ratkaisu** ✓
+- Pelkkä kartan zoomaus suurempaan mittakaavaan
+- Vain almanakan päivitys kerran vuodessa
+- Paikannus pelkillä Wi-Fi-tukiasemilla ilman GNSS:ää
+
+#### `space-pos-spp` · diff 2
+
+Mitä tarkoittaa SPP (Single Point Positioning) GNSS:ssä?
+
+- **Paikka lasketaan yhden vastaanottimen mittauksista broadcast-efemeridillä — tyypillisesti metriluokkaa** ✓
+- Kahden vastaanottimen phase-difference senttitasolla
+- Vain inertianavigointia ilman satelliitteja
+- Karttaprojektion muunnos WGS84 → TM35FIN
+
+### space-satellites (8)
+
+#### `space-orbit-geo-comms` · diff 2
+
+Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS ei?
+
+- **GEO pysyy paikallaan taivaalla yhden alueen yllä — GNSS tarvitsee liikkuvan konstellaation geometriaa** ✓
+- GEO on ainoa rata jolla atomikello toimii
+- GNSS-signaali ei voi kulkea GEO-korkeudesta
+- GEO-satelliitteja saa lähettää vain kaupallisiin tarkoituksiin
+
+#### `space-orbit-inclination-gps` · diff 3
+
+Miksi GPS-ratojen inklinaatio on noin 55° eikä 0° (päiväntasaaja)?
+
+- **Jotta satelliitit näkyisivät myös korkeilla leveysasteilla, ei vain tropiikissa** ✓
+- Jotta satelliitit pysyisivät aina Suomen yllä paikallaan
+- Koska 0° rata on fysikaalisesti mahdoton
+- Koska inklinaatio 55° poistaa ionosfäärin vaikutuksen
+
+#### `space-orbit-kepler-elements` · diff 3
+
+Mitä Keplerin rataelementit kuvaavat satelliitin yhteydessä?
+
+- **Radan muotoa, orientaatiota ja satelliitin sijaintia radalla tietyllä hetkellä** ✓
+- Vain satelliitin massaa ja polttoainemäärää
+- Vain antennin vahvistusta ja lähetystehoa
+- Vain vastaanottimen kellovirhettä ja DOP-arvoa
+
+#### `space-orbit-meo-gnss` · diff 2
+
+Mille kiertoradalle tyypilliset GNSS-satelliitit (GPS, Galileo) sijoitetaan?
+
+- **MEO (Medium Earth Orbit) — noin 19 000–23 000 km korkeudessa** ✓
+- LEO (Low Earth Orbit) — alle 2000 km, kuten ISS
+- GEO (Geostationary Orbit) — 35 786 km päiväntasaajan yllä
+- HEO (Highly Elliptical Orbit) — Molnija-tyyppinen eloisa rata
+
+#### `space-orbit-period-gps` · diff 2
+
+GPS-satelliitti kiertää maan kahdesti sideraalisen vuorokauden aikana. Mitä siitä seuraa käytännössä?
+
+- **Sama satelliittikuvio toistuu taivaalla joka päivä noin 4 minuuttia aiemmin** ✓
+- Satelliitti pysyy koko ajan samassa kohdassa taivasta kuten geostationaarinen satelliitti
+- Jokainen satelliitti näkyy Suomesta vain kerran vuodessa
+- Kiertoaika määrää signaalin taajuuden, joten L1 ja L5 syntyvät eri ratanopeuksista
+
+#### `space-sat-atomic-clock` · diff 2
+
+Miksi GNSS-satelliiteissa on atomikelloja?
+
+- **Paikannus perustuu tarkkaan ajanmittaukseen — nanosekunnin virhe on jo kymmeniä senttejä matkassa** ✓
+- Atomikello pitää satelliitin asennon vakaana thrusterien sijaan
+- Atomikello korvaa aurinkopaneelit energianlähteenä
+- Atomikelloa tarvitaan vain televisiolähetyksiin
+
+#### `space-sat-constellation` · diff 2
+
+Mitä tarkoittaa GNSS-konstellaatio?
+
+- **Suunniteltu joukko satelliitteja, jotka yhdessä tarjoavat globaalin tai alueellisen peiton** ✓
+- Yksittäisen satelliitin antenniryhmä
+- Vain vastaanottimen kanavien määrä
+- Karttaprojektion parametrijoukko
+
+#### `space-sat-relativity` · diff 4
+
+Miten suhteellisuusteoria vaikuttaa GPS-kelloihin käytännössä?
+
+- **Erityis- ja yleinen suhteellisuusteoria siirtävät satelliitin kellotaajuutta — ne korjataan järjestelmässä** ✓
+- Suhteellisuusteorialla ei ole mitattavaa vaikutusta GPS:ään
+- Vain kvanttimekaniikka vaikuttaa, ei suhteellisuusteoria
+- Korjaus tehdään vain LEO-satelliiteille, ei MEO:lle
+
+### space-signals (10)
+
+#### `space-sig-carrier-phase` · diff 4
+
+Miksi kantoaaltovaihe (carrier phase) mahdollistaa senttitason paikannuksen?
+
+- **Vaiheen mittaus on millimetritarkkaa, kun kokonaislukuaaltojen epäselvyys (ambiguity) ratkaistaan** ✓
+- Kantoaalto kulkee tyhjiössä hitaammin kuin koodi
+- Carrier phase poistaa tarpeen kaikille korjauspalveluille
+- Vaihe mittaa suoraan geoidin undulaation
+
+#### `space-sig-cycle-slip` · diff 4
+
+RTK-ratkaisu putoaa hetkeksi float-tilaan, kun auto ajaa sillan ali. Mitä kantoaaltomittaukselle tapahtui?
+
+- **Cycle slip — vaiheseuranta katkesi, ja ambiguity ratkaistaan uudelleen** ✓
+- Satelliitin atomikello nollautui, ja efemeridi pitää ladata uudelleen
+- Ionosfääriviive kasvoi niin paljon, että L1 ja L5 vaihtoivat paikkaa
+- Vastaanotin vaihtoi WGS84:stä ETRS89:ään, ja koordinaatit siirtyivät
+
+#### `space-sig-dop` · diff 2
+
+Mitä DOP (Dilution of Precision) kuvaa?
+
+- **Miten satelliittigeometria vahvistaa mittausvirheet paikkavirheeksi** ✓
+- Vain vastaanottimen akkukapasiteettia
+- Geoidin undulaatiota metreinä
+- NMEA-lauseen checksum-virhettä
+
+#### `space-sig-iono` · diff 3
+
+Miten ionosfääri vaikuttaa GNSS-signaaliin?
+
+- **Se viivästyttää koodimittausta ja edistää kantoaaltoa — virhe voi olla metrejä** ✓
+- Se muuttaa WGS84-puolisuuren akselin pituutta
+- Se vaikuttaa vain GEO-satelliitteihin
+- Ionosfäärillä ei ole vaikutusta L-kaistan signaaleihin
+
+#### `space-sig-l1-l5` · diff 3
+
+Miksi modernit vastaanottimet käyttävät useita taajuuksia (esim. L1 + L5)?
+
+- **Monitaajuus auttaa korjaamaan ionosfääriviivettä ja parantaa robustiutta** ✓
+- Useampi taajuus muuttaa WGS84-ellipsoidia automaattisesti
+- L5 poistaa tarpeen kaikille satelliiteille
+- Monitaajuus tarvitaan vain NMEA-baudinopeuden nostoon
+
+#### `space-sig-multipath` · diff 3
+
+Mikä on multipath-virhe GNSS-paikannuksessa?
+
+- **Signaali saapuu myös heijastumana (rakennus, vesi) ja vääristää mitattua pseudomatkaa** ✓
+- Satelliitin polttoaine loppuu ja rata muuttuu
+- Karttaprojektion mittakaavavirhe UTM-vyöhykkeellä
+- Vain geoidin undulaation mallivirhe
+
+#### `space-sig-nmea` · diff 2
+
+Mikä on NMEA 0183 GNSS-laitteissa?
+
+- **Tekstimuotoinen lausestandardi paikkatiedon ja satelliittidatan siirtoon (esim. GGA, RMC)** ✓
+- Binäärinen efemeridiformaatti IGS:lle
+- Suomen ETRS-TM35FIN-projektion EPSG-koodi
+- SBAS-korjausviestin salausprotokolla
+
+#### `space-sig-pseudorange` · diff 2
+
+Mitä tarkoittaa pseudomatka (pseudorange) GNSS:ssä?
+
+- **Mitattu matka satelliittiin, joka sisältää kellovirheet ja viiveet — ei puhdas geometrinen etäisyys** ✓
+- Vain kartalla mitattu 2D-etäisyys kahden merkin välillä
+- Satelliitin todellinen laserilla mitattu etäisyys maasta
+- Pelkkä DOP-luku ilman aikamittausta
+
+#### `space-sig-trilateration` · diff 2
+
+Miksi 3D-GNSS-paikkaan tarvitaan vähintään neljä satelliittia, ei kolme?
+
+- **Kolme etäisyyttä riittäisi paikkaan, mutta vastaanottimen kellovirhe on neljäs tuntematon** ✓
+- Neljäs satelliitti tarvitaan vain karttaprojektiota varten
+- Kolme satelliittia riittää aina kellovirheestä huolimatta
+- Neljäs satelliitti mittaa vain lämpötilan
+
+#### `space-sig-tropo` · diff 3
+
+Mikä on troposfääriviive GNSS:ssä?
+
+- **Alailmakehän (kaasu + kosteus) aiheuttama ylimääräinen kulkuaika, tyypillisesti metriluokkaa zeniitissä** ✓
+- Vain merenpohjan suolaisuuden vaikutus signaaliin
+- Satelliitin thruster-manööverin aiheuttama hyppäys
+- Kartan mittakaavavirhe Mercator-projektiossa
 

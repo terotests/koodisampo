@@ -2,13 +2,13 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1262 / 1274** valmis (**99.1 %**).
+**1261 / 1273** valmis (**99.1 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 209 | 209 | 100 |
+| C++ | 208 | 208 | 100 |
 | JavaScript | 202 | 202 | 100 |
 | PostgreSQL | 121 | 121 | 100 |
 | Docker | 108 | 108 | 100 |
@@ -25,7 +25,7 @@
 
 ## Kaikki aiheet
 
-### C++ (209/209)
+### C++ (208/208)
 
 #### cmake `cmake` (15/15)
 
@@ -253,7 +253,7 @@
 | ✅ | 4 | `thread-data-race` | Kaksi säiettä kirjoittaa samaan `int`-muuttujaan ilman synkronointia. M… |
 | ✅ | 3 | `thread-lock-guard` | Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alue… |
 
-#### C++ työkalut `tools` (33/33)
+#### C++ työkalut `tools` (32/32)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -284,7 +284,6 @@
 | ✅ | 3 | `b11-cpp-werror-policy` | Tiimi haluaa ettei uusia varoituksia päädy main-haaraan. Mikä käytäntö … |
 | ✅ | 3 | `exp-cpp-cr-optional-review` | Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni… |
 | ✅ | 3 | `exp-cpp-prod-chrono-timeout` | API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti il… |
-| ✅ | 2 | `exp-cpp-tools-format-logging` | Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa … |
 | ✅ | 1 | `tools-auto` | Mitä `auto` tekee modernissa C++:ssa? |
 | ✅ | 3 | `tools-constexpr` | Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-a… |
 | ✅ | 1 | `tools-nullptr` | Mikä on turvallisin tapa nollata osoitin C++11:ssä? |
