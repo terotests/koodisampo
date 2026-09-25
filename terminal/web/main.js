@@ -3,7 +3,8 @@
 // Ohut kerros: lataa kysymyspankit, antaa Ranger-sovellukselle kellon,
 // näppäimet ja kosketukset, ja maalaa sen palauttaman EVG-näyttölistan
 // WebGL 2:lla. Pelilogiikka ja ruudun asettelu ovat KoodisampoTerminal.rgr:ssä.
-import { renderDisplayList, setFontFallback } from "./vendor/evg-webgl.js";
+import { prepareDisplayList, setFontFallback } from "./vendor/evg-webgl.js";
+import { moireEnvelope } from "./moire.js";
 import { installCanvasMeasurer } from "./vendor/evg-measure.js";
 
 const CONTENT = new URL("../content/question-banks/", location.href);
@@ -188,12 +189,31 @@ async function main() {
   coarseQuery.addEventListener?.("change", resize);
   resize();
 
+  // Moiré liikkuu hitaasti; liikettä vähentävä asetus pysäyttää sen ja
+  // E-näppäin kytkee sen pois kokonaan (muistetaan selaimessa).
+  const still = matchMedia("(prefers-reduced-motion: reduce)");
+  let effectOn = store("ks-terminal-moire") !== "0";
+  let doc = null;
+  let built = null;
+  let fxTime = 0;
+  let fxWasVisible = false;
+
+  function draw() {
+    for (const inst of doc.list.effects || []) {
+      inst.off = !effectOn;
+      inst.time = fxTime;
+    }
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    built.draw();
+  }
+
   let lastTheme = -1;
   let wasDone = false;
   function paint() {
-    const doc = JSON.parse(app.render());
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    renderDisplayList(gl, doc, { dpr });
+    doc = JSON.parse(app.render());
+    if (built) built.dispose();
+    built = prepareDisplayList(gl, doc, { dpr });
+    draw();
     const theme = app.themeIndex();
     if (theme !== lastTheme) {
       lastTheme = theme;
@@ -207,29 +227,51 @@ async function main() {
     const done = app.typingDone();
     if (done && !wasDone) sr.textContent = app.screenText();
     wasDone = done;
-    window.__ksTerminal = { app, commands: doc.list.cmds.length, cssErrors: doc.cssErrors, mode: app.modeIndex() };
+    window.__ksTerminal = {
+      app, commands: doc.list.cmds.length, cssErrors: doc.cssErrors, mode: app.modeIndex(),
+      // Tarkistuksia varten: siirrä efektin kelloa (s).
+      setFxTime(t) { fxTime = t; needPaint = true; },
+    };
   }
 
   app.start();
   let prev = performance.now();
-  function frame(now) {
+  function tickFrame(now) {
     const dt = now - prev;
     prev = now;
     if (app.tick(dt)) needPaint = true;
     if (app.takeTyped() > 0) clicker.click();
+    const fx = doc && (doc.list.effects || [])[0];
+    let moving = false;
+    if (effectOn && !still.matches && fx) {
+      fxTime += dt / 1000;
+      // Piirretään joka ruutu vain kun efekti näkyy, ja kerran sen jälkeen,
+      // jotta viimeinenkin jälki pyyhkiytyy pois.
+      const visible = moireEnvelope(fxTime, fx.p) > 0;
+      moving = visible || fxWasVisible;
+      fxWasVisible = visible;
+    }
     if (needPaint) {
       needPaint = false;
       paint();
+    } else if (moving) {
+      draw();
     }
-    requestAnimationFrame(frame);
+    requestAnimationFrame(tickFrame);
   }
-  requestAnimationFrame(frame);
+  requestAnimationFrame(tickFrame);
 
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     clicker.wake();
     if (e.key === "m" || e.key === "M") {
       clicker.toggle();
+      return;
+    }
+    if (e.key === "e" || e.key === "E") {
+      effectOn = !effectOn;
+      store("ks-terminal-moire", effectOn ? "1" : "0");
+      needPaint = true;
       return;
     }
     if (app.keyDown(e.key) || KEYS.has(e.key)) {

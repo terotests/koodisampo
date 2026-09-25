@@ -19155,6 +19155,30 @@ class KoodisampoTerminal  {
     }
     return "#031207";
   };
+  glowRgb (ch) {
+    if ( this.theme == 1 ) {
+      if ( ch == 0 ) {
+        return "1.0";
+      }
+      if ( ch == 1 ) {
+        return "0.69";
+      }
+      return "0.0";
+    }
+    if ( this.theme == 2 ) {
+      if ( ch == 2 ) {
+        return "1.0";
+      }
+      return "0.9";
+    }
+    if ( ch == 1 ) {
+      return "1.0";
+    }
+    if ( ch == 0 ) {
+      return "0.25";
+    }
+    return "0.44";
+  };
   themeName () {
     if ( this.theme == 1 ) {
       return "amber";
@@ -19171,7 +19195,11 @@ class KoodisampoTerminal  {
     let s = "";
     s = s + ".screen { display: flex; flex-direction: column; align-items: center;";
     s = s + " width: 100vw; height: 100vh; padding: 30px 44px;";
-    s = ((s + " font-family: VT323; background-color: ") + bg) + " }\n";
+    s = ((s + " font-family: VT323; background-color: ") + bg) + ";";
+    s = s + " evg-surface-effect: moire; evg-effect-on: always;";
+    s = s + " evg-fx-strength: 0.1; evg-fx-glow: 0.06; evg-fx-period: 3.2;";
+    s = s + " evg-fx-skew: 2.2; evg-fx-speed: 0.05;";
+    s = ((((((s + " evg-fx-r: ") + this.glowRgb(0)) + "; evg-fx-g: ") + this.glowRgb(1)) + "; evg-fx-b: ") + this.glowRgb(2)) + " }\n";
     s = s + ".col { display: flex; flex-direction: column; width: 100%;";
     s = s + " max-width: 1080px; height: 100%; gap: 12px }\n";
     s = s + ".top { display: flex; flex-direction: row; width: 100%; gap: 16px }\n";

@@ -18,6 +18,7 @@ vastausvaihtoehdot. Kierroksessa on 10 kysymystä valitusta aiheesta.
 | O | avaa opiskelumateriaalin etusivun uuteen ikkunaan |
 | T | väri: vihreä / meripihka / valkoinen |
 | M | näppäinääni päälle / pois |
+| E | moiré-efekti päälle / pois |
 
 Kosketusnäytöllä vaihtoehtoa tai aihetta napautetaan, muualle napautus on ENTER.
 
@@ -29,6 +30,14 @@ osoite kuin pelin "Lue oppitunti" -linkissä). Linkit avautuvat uuteen
 ikkunaan. Lasten kysymyksillä ei ole oppituntilinkkiä, koska niitä ei ole
 opiskelusivustolla.
 
+**Moiré:** ruudun päällä on EVG:n surface effect -plugin `moire` (filter,
+`web/moire.js`), joka julistetaan Rangerin tyylissä (`evg-surface-effect: moire`
+ja `evg-fx-*`-parametrit `.screen`-luokassa). Kaksi hienoa ristikkoa
+päällekkäin tuottaa kaartuvat juovat ja samankeskiset "pallot". Efekti on
+hetkittäinen: noin 6 sekuntia kerrallaan, epäsäännöllisesti kerran 24 sekunnin
+jaksossa, ja pallot ovat joka kerta eri kohdissa. Muun ajan ruutua ei piirretä
+uudelleen efektin takia. `prefers-reduced-motion` pysäyttää sen.
+
 ## Rakenne
 
 | Tiedosto | |
@@ -37,6 +46,7 @@ opiskelusivustolla.
 | `build.mjs` | kääntää sovelluksen + EVG-moottorin selaimen IIFE:ksi ja kopioi maalarin |
 | `web/koodisampo-terminal.js` | käännetty bundle (**commitoitu**, generoitu) |
 | `web/vendor/evg-webgl.js`, `evg-measure.js` | EVG:n WebGL 2 -maalari ja tekstinmittaaja (Ranger `lib/evg/gl`, MIT, kopioitu) |
+| `web/moire.js` | moiré-efektin GLSL-plugin ja sen ajoituskäyrä |
 | `web/main.js` | selainisäntä: pankkien lataus, kello, näppäimet, kosketus, WebGL-piirto, ääni |
 | `web/index.html` | kanvaasi ja CSS:n CRT-pinta (juovat, vinjetti, hehku) |
 | `web/fonts/VT323-Regular.ttf` | VT323-fontti (SIL OFL 1.1, `OFL.txt`) |
