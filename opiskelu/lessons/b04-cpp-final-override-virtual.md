@@ -16,7 +16,7 @@ public:
 };
 ```
 
-Koodi kääntyy. `Derived`-olio kutsutaan `Base*`:n kautta — väärä metodi, hiljainen bugi. Parametrilistan ero (oletusarvo lasketaan) riittää rikkomaan override-yhteyden.
+Koodi kääntyy. `Derived`-olio kutsutaan `Base*`:n kautta — väärä metodi, hiljainen bugi. Parametrilistan ero riittää rikkomaan override-yhteyden — oletusarvo ei tee `draw(int)`:stä ja `draw()`:stä samaa signatuuria.
 
 ## Ratkaisu
 
@@ -30,6 +30,6 @@ Kääntäjä varmistaa, että signatuuri vastaa virtuaalista base-metodia. Yhdis
 
 ## Käytännössä
 
-`override` on pakollinen käytäntö periytyvässä koodissa. Se korvaa manuaalisen "onko tämä oikeasti virtual override" -tarkistuksen.
+Kieli ei vaadi `override`a, mutta se on vahvasti suositeltu käytäntö periytyvässä koodissa (CppCoreGuidelines C.128). Se korvaa manuaalisen "onko tämä oikeasti virtual override" -tarkistuksen.
 
 [Lue lisää](https://en.cppreference.com/w/cpp/language/override)

@@ -15,7 +15,7 @@
       "prompt": "Sama signaali connectataan kahdesti samaan slottiin. Miten estät duplikaattikutsut?",
       "choices": [
         {
-          "text": "Qt::UniqueConnection connect-viitelaskurissa",
+          "text": "Qt::UniqueConnection connect()-kutsun viimeiseksi parametriksi",
           "correct": true
         },
         {
@@ -155,7 +155,7 @@
         "guru",
         "hostile"
       ],
-      "prompt": "QOpenGLWidget piirtää mustaa. OpenGL-kutsut tehdään väärästä säikeestä. Ensimmäinen korjaus?",
+      "prompt": "QOpenGLWidget piirtää mustaa. GL-kutsut tehdään paintGL():n ulkopuolelta (esim. latausmetodissa). Ensimmäinen korjaus?",
       "choices": [
         {
           "text": "Kutsu makeCurrent() widgetin kontekstissa ennen GL-komentoja",
@@ -166,7 +166,7 @@
           "correct": false
         },
         {
-          "text": "glFlush() riittää päivittämään piirin ilman aktiivista kontekstia",
+          "text": "glFlush() riittää päivittämään piirron ilman aktiivista kontekstia",
           "correct": false
         },
         {
@@ -174,7 +174,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "GL-konteksti on säikeekohtainen — makeCurrent aktivoi sen.",
+      "correctFeedback": "paintGL():n ulkopuolella konteksti ei ole current — makeCurrent() aktivoi sen.",
       "wrongFeedback": "Ilman aktiivista kontekstia GL-kutsut ovat undefined.",
       "sourceRef": "qt-docs/qopenglwidget.html",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
@@ -404,14 +404,14 @@
         "coworker",
         "security"
       ],
-      "prompt": "Dialog sulkeutuu mutta background-worker emitoi edelleen vanhaan slottiin — use-after-free. Miten estät?",
+      "prompt": "Dialog sulkeutuu ja tuhoutuu, mutta background-worker emitoi edelleen lambdaan, joka käyttää dialogin osoitinta — use-after-free. Miten estät?",
       "choices": [
         {
-          "text": "disconnect tai QPointer receiverille estää slotin kuolleeseen objektiin",
+          "text": "Anna connectille context-olioksi dialogi tai katkaise yhteys itse",
           "correct": true
         },
         {
-          "text": "Qt:n roskienkeruu vapauttaa slotit automaattisesti dialogin sulkeuduttua",
+          "text": "Qt:n roskienkeruu vapauttaa lambdat automaattisesti dialogin sulkeuduttua",
           "correct": false
         },
         {
@@ -419,12 +419,12 @@
           "correct": false
         },
         {
-          "text": "Signaalit eivät laukea enää kuin lähettäjä-objekti on tuhottu",
+          "text": "Lambda-yhteydet katkeavat aina itsestään, kun jokin QObject tuhoutuu",
           "correct": false
         }
       ],
-      "correctFeedback": "Qt ei automaattisesti irrota kaikkia yhteyksiä — hallitse elinkaarta.",
-      "wrongFeedback": "Receiver tuhoutunut mutta yhteys aktiivinen → crash. disconnect/QPointer.",
+      "correctFeedback": "Context-olion tuhoutuessa Qt katkaisee lambda-yhteyden automaattisesti.",
+      "wrongFeedback": "Ilman context-oliota lambda-yhteys elää lähettäjän mukana ja kutsuu kuollutta dialogia. Käytä connect(sender, sig, dialog, lambda) tai disconnect.",
       "sourceRef": "doc.qt.io/signalsandslots",
       "sourceUrl": "https://doc.qt.io/qt-6/signalsandslots.html",
       "featureId": "qt:signal-lifetime",
@@ -446,7 +446,7 @@
           "correct": true
         },
         {
-          "text": "Override QThread::run() suoraan QWidget-luokassa UI-säikeessä",
+          "text": "Laske suoraan QWidget-slotissa ja kutsu repaint() välillä",
           "correct": false
         },
         {
@@ -459,7 +459,7 @@
         }
       ],
       "correctFeedback": "Worker-object threadissä on Qt:n suositeltu malli — doc moveToThread.",
-      "wrongFeedback": "QThread subclass run() on anti-pattern UI-työlle — käytä worker-QObjectia.",
+      "wrongFeedback": "Raskas työ GUI-säikeessä jäädyttää UI:n — worker-QObject omassa QThreadissa.",
       "sourceRef": "doc.qt.io/qthread",
       "sourceUrl": "https://doc.qt.io/qt-6/qthread.html",
       "featureId": "qt:movetothread",
@@ -694,7 +694,7 @@
       "prompt": "Shader compile ok mutta uniform ei vaikuta — hardcoded location 0. Miten Qt 6 -tyylillä vältät?",
       "choices": [
         {
-          "text": "QShaderProgram::uniformLocation(\"name\") tai layout(binding) GLSL:ssä",
+          "text": "QOpenGLShaderProgram::uniformLocation(\"name\") tai layout(location = N) GLSL:ssä",
           "correct": true
         },
         {
@@ -764,7 +764,7 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "Tiimi migoi Qt 5 fixed-functionista Qt 6:een — shaderit hajosivat. Mikä arkkitehtuuri muuttui?",
+      "prompt": "Tiimi migroi Qt 5 -sovelluksen Qt 6:een — ShaderEffectien inline-GLSL-shaderit hajosivat. Mikä arkkitehtuuri muuttui?",
       "choices": [
         {
           "text": "QRhi-pipeline tekee shadereista backend-agnostisempia (GL/Vulkan/Metal)",
@@ -1183,7 +1183,7 @@
       "prompt": "Shader uniform `mvpMatrix` — location vaihtuu eri GPU:lla. Turvallinen tapa?",
       "choices": [
         {
-          "text": "QShaderProgram::uniformLocation(\"mvpMatrix\") tai uniform buffer (UBO)",
+          "text": "QOpenGLShaderProgram::uniformLocation(\"mvpMatrix\") tai uniform buffer (UBO)",
           "correct": true
         },
         {
@@ -1218,7 +1218,7 @@
       "prompt": "Asetusdialogi avautuu mutta pääikkuna vastaa klikkauksiin taustalla. Korjaus?",
       "choices": [
         {
-          "text": "dialog.exec() modal-tilassa tai QDialog::ApplicationModal estää taustan",
+          "text": "dialog.exec() tai setWindowModality(Qt::ApplicationModal) estää taustan",
           "correct": true
         },
         {
@@ -1365,15 +1365,15 @@
           "correct": true
         },
         {
-          "text": "Qt::DirectConnection aina",
+          "text": "Qt::DirectConnection estää slotin toistokutsun",
           "correct": false
         },
         {
-          "text": "disconnect ei ole tarpeen",
+          "text": "connect() korvaa vanhan yhteyden automaattisesti",
           "correct": false
         },
         {
-          "text": "UniqueConnection toimii vain queued",
+          "text": "UniqueConnection toimii vain QueuedConnectionilla",
           "correct": false
         }
       ],
@@ -1431,19 +1431,19 @@
       "prompt": "QTimer luotu worker-threadissa ei laukea. Mikä sääntö?",
       "choices": [
         {
-          "text": "QTimer tarvitsee event loopin siinä threadissa jossa se luotiin",
+          "text": "QTimer tarvitsee event loopin siinä säikeessä, jossa se luotiin",
           "correct": true
         },
         {
-          "text": "QTimer toimii vain main threadissa aina",
+          "text": "QTimer toimii vain pääsäikeessä — worker-säikeessä ei koskaan",
           "correct": false
         },
         {
-          "text": "start() riittää ilman threadia",
+          "text": "start() riittää — timer käyttää pääsäikeen event loopia",
           "correct": false
         },
         {
-          "text": "Timerit eivät toimi Qt:ssa",
+          "text": "QTimer vaatii aina QThreadPoolin laukeakseen worker-säikeessä",
           "correct": false
         }
       ],
@@ -1676,23 +1676,23 @@
       "prompt": "Qt 6 app renderöi Metalilla macOS:llä mutta testaaja raportoi mustan ruudun Windowsilla. Tarkista?",
       "choices": [
         {
-          "text": "QRhi backend (D3D11/Vulkan/OpenGL) — shader cross-backend yhteensopivuus",
+          "text": "QRhi-backend (D3D11/Vulkan/GL) — shaderien cross-backend-tuki",
           "correct": true
         },
         {
-          "text": "OpenGL 1.0 riittää Qt 6:ssa",
+          "text": "Windows vaatii OpenGL 1.0:n — Qt 6 ei tue muuta",
           "correct": false
         },
         {
-          "text": "RHI on vain mobiilissa",
+          "text": "Metal-shader toimii sellaisenaan myös D3D11:llä",
           "correct": false
         },
         {
-          "text": "Shaders eivät riipu alustasta",
+          "text": "Shaderit eivät riipu backendistä — vika on näytönohjaimessa",
           "correct": false
         }
       ],
-      "correctFeedback": "Qt RHI abstrakoi grafiikan — testaa kaikki target-backendit.",
+      "correctFeedback": "Qt RHI abstrahoi grafiikan — testaa kaikki kohde-backendit.",
       "wrongFeedback": "Shader/formaatti voi erota backendin mukaan.",
       "sourceRef": "doc.qt.io/qrhi",
       "sourceUrl": "https://doc.qt.io/qt-6/qrhi.html",
@@ -1748,19 +1748,19 @@
       "prompt": "Luokka käyttää signaaleja ja slotteja, mutta linkitys valittaa staticMetaObject:sta. Mikä build-vaihe puuttuu?",
       "choices": [
         {
-          "text": "MOC ei ajettu — varmista Q_OBJECT, headers CMake AUTOMOC:ssa tai qmake moc",
+          "text": "moc ei ajettu — Q_OBJECT-header mukaan AUTOMOCiin",
           "correct": true
         },
         {
-          "text": "Poista Q_OBJECT — ei tarvita",
+          "text": "Poista Q_OBJECT-makro — sitä ei tarvita signaaleille",
           "correct": false
         },
         {
-          "text": "Vaihda QWidget → QObject riittää",
+          "text": "Vaihda kantaluokka QWidgetistä QObjectiin — riittää",
           "correct": false
         },
         {
-          "text": "Käännä vain .cpp uudestaan",
+          "text": "Käännä pelkkä .cpp uudelleen ilman headerin muutosta",
           "correct": false
         }
       ],
@@ -1950,27 +1950,27 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Worker-thread emit deleteLater() QObjectille joka elää GUI-threadissä — crash satunnaisesti. Miksi?",
+      "prompt": "Worker-säikeessä elävä QObject kutsuu deleteLater(), mutta säikeellä ei ole event loopia — objekti ei tuhoudu. Miksi?",
       "choices": [
         {
-          "text": "deleteLater vaatii event loopin omistajasäikeessä — käytä queued delete tai siirrä objekti oikeaan threadiin",
+          "text": "deleteLater postaa eventin omistajasäikeen event looppiin — ilman sitä poisto viivästyy",
           "correct": true
         },
         {
-          "text": "deleteLater on synkroninen aina",
+          "text": "deleteLater on synkroninen ja tuhoaa objektin heti kutsuvassa säikeessä",
           "correct": false
         },
         {
-          "text": "Kutsu delete suoraan workerista",
+          "text": "deleteLater toimii vain GUI-säikeessä luoduille QObjecteille",
           "correct": false
         },
         {
-          "text": "QObject ei voi tuhoutua threadeissa",
+          "text": "QObjecteja ei voi tuhota lainkaan muissa kuin pääsäikeessä",
           "correct": false
         }
       ],
-      "correctFeedback": "deleteLater postaa eventin — event loop pitää pyöriä oikeassa threadissä.",
-      "wrongFeedback": "Cross-thread delete vaatii huolen. QueuedConnection + deleteLater oikeassa threadissä.",
+      "correctFeedback": "DeferredDelete-event käsitellään objektin säikeen event loopissa (tai kun säie päättyy).",
+      "wrongFeedback": "deleteLater on säieturvallinen, mutta poisto tapahtuu vasta omistajasäikeen event loopissa.",
       "sourceRef": "doc.qt.io/qobject",
       "sourceUrl": "https://doc.qt.io/qt-6/qobject.html#deleteLater",
       "featureId": "qt:delete-later",
@@ -2021,24 +2021,24 @@
       "prompt": "Kaksi QOpenGLWidget:iä — tekstuurit ladataan kahdesti. Miten jaat GL-resurssit?",
       "choices": [
         {
-          "text": "QOpenGLWidget::setShareContext() / shared OpenGL context widgetien välillä",
+          "text": "Qt::AA_ShareOpenGLContexts ennen QApplicationia — widgetit jakavat GL-resurssit",
           "correct": true
         },
         {
-          "text": "Kopioi tekstuurit memcpy:llä",
+          "text": "Kopioi tekstuurit memcpy:llä widgetistä toiseen joka framella",
           "correct": false
         },
         {
-          "text": "Yksi widget riittää aina",
+          "text": "Yksi QOpenGLWidget riittää aina — kahta ei voi näyttää samaan aikaan",
           "correct": false
         },
         {
-          "text": "Share context kielletty Qt 6:ssa",
+          "text": "Kontekstien jakaminen on kielletty Qt 6:ssa — lataa tekstuurit kahdesti",
           "correct": false
         }
       ],
-      "correctFeedback": "Shared GL context jakaa texture/buffer ID:t — QOpenGLWidget docs.",
-      "wrongFeedback": "Ilman share contextia resurssit duplikoituvat. setShareContext.",
+      "correctFeedback": "AA_ShareOpenGLContexts jakaa texture/buffer-ID:t kaikkien QOpenGLWidgetien kesken.",
+      "wrongFeedback": "QOpenGLWidgetillä ei ole setShareContextia. Käytä Qt::AA_ShareOpenGLContexts-attribuuttia (raaka konteksti: QOpenGLContext::setShareContext).",
       "sourceRef": "doc.qt.io/qopenglwidget",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
       "featureId": "qt:share-context",
@@ -2182,7 +2182,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "exec() blocks until closed — QDialog docs.",
+      "correctFeedback": "exec() blokkaa, kunnes dialogi suljetaan — QDialog docs.",
       "wrongFeedback": "show() on modeless. Modal vaatii exec():n tai application-modal flagin.",
       "sourceRef": "qdialog/modality",
       "sourceUrl": "https://doc.qt.io/qt-6/qdialog.html#modal-dialogs",
@@ -2217,7 +2217,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "QObject::disconnect needs same functor or destroy context — Qt docs.",
+      "correctFeedback": "disconnect vaatii saman funktorin — lambdalle tallenna QMetaObject::Connection.",
       "wrongFeedback": "Lambda connect vaatii QMetaObject::Connection tai context lifetime disconnect.",
       "sourceRef": "qobject/connect",
       "sourceUrl": "https://doc.qt.io/qt-6/qobject.html#connect",
@@ -2252,7 +2252,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "QObject thread affinity — Qt object trees and ownership.",
+      "correctFeedback": "Widgetit kuuluvat GUI-säikeelle — Qt:n thread affinity.",
       "wrongFeedback": "Qt GUI ei ole thread-safe. Päivitä signaalilla GUI-säieeseen.",
       "sourceRef": "threads/affinity",
       "sourceUrl": "https://doc.qt.io/qt-6/threads-qobject.html",
@@ -2287,7 +2287,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Item roles in model — Qt Item Data Roles.",
+      "correctFeedback": "Malli palauttaa eri dataa eri rooleille — Qt Item Data Roles.",
       "wrongFeedback": "Model palauttaa eri dataa eri rooleille. ToolTipRole tooltipille.",
       "sourceRef": "qt/item-data-roles",
       "sourceUrl": "https://doc.qt.io/qt-6/qt.html#ItemDataRole-enum",
@@ -2322,7 +2322,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Current context required for GL calls — QOpenGLContext.",
+      "correctFeedback": "GL-kutsut vaativat current-kontekstin — QOpenGLContext.",
       "wrongFeedback": "OpenGL-komennot vaativat aktiivisen kontekstin. makeCurrent() ensin.",
       "sourceRef": "qopenglcontext/makecurrent",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglcontext.html#makeCurrent",
@@ -2357,7 +2357,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Inactive uniforms optimized out — OpenGL shader docs.",
+      "correctFeedback": "Käyttämättömät uniformit optimoidaan pois — location on -1.",
       "wrongFeedback": "Käyttämätön uniform poistetaan. Varmista shader käyttää sitä.",
       "sourceRef": "opengl/shader-uniforms",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglshaderprogram.html#setUniformValue",
@@ -2376,23 +2376,23 @@
       "prompt": "Shader hylätään: 'version 330 incompatible'. Korjaus Qt 6 desktop OpenGL:lla?",
       "choices": [
         {
-          "text": "#version 330 core tai uudempi — core profile vaatii version deklaraation",
+          "text": "Pyydä QSurfaceFormatilla 3.3 core -konteksti ja käytä #version 330 core",
           "correct": true
         },
         {
-          "text": "Poista version rivi kokonaan",
+          "text": "Poista version-rivi kokonaan — ajuri valitsee sopivan version",
           "correct": false
         },
         {
-          "text": "GLSL 100 riittää desktopille",
+          "text": "GLSL 100 riittää desktopille kaikilla OpenGL-ajureilla",
           "correct": false
         },
         {
-          "text": "Qt generoi shaderin automaattisesti",
+          "text": "Qt generoi shaderin automaattisesti oikealle versiolle",
           "correct": false
         }
       ],
-      "correctFeedback": "GLSL version must match context — Qt OpenGL docs.",
+      "correctFeedback": "Shaderin GLSL-versio ja kontekstin versio pitää täsmätä — Qt OpenGL docs.",
       "wrongFeedback": "Core profile vaatii eksplisiittisen version. Tarkista context versio.",
       "sourceRef": "qopenglshader/glsl",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglshader.html#compiling-shaders",
@@ -2430,7 +2430,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "QRhi abstracts graphics backends — Qt RHI docs.",
+      "correctFeedback": "QRhi abstrahoi grafiikkabackendit — Qt RHI docs.",
       "wrongFeedback": "RHI mahdollistaa Vulkan/Metal/D3D11 backendit Qt 6:ssa.",
       "sourceRef": "qt/rhi",
       "sourceUrl": "https://doc.qt.io/qt-6/qrhi.html",
@@ -2468,7 +2468,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "sizeHint tells layout preferred size — QWidget docs.",
+      "correctFeedback": "sizeHint kertoo layoutille suositellun koon — QWidget docs.",
       "wrongFeedback": "Layout kysyy sizeHint():ia. Ilman sitä widget saa liian vähän tilaa.",
       "sourceRef": "qwidget/sizehint",
       "sourceUrl": "https://doc.qt.io/qt-6/qwidget.html#sizeHint",
@@ -2530,7 +2530,7 @@
           "correct": false
         },
         {
-          "text": "setEnabled(false) estää labelin saamasta fokusta tab-näppäimellä",
+          "text": "setTabOrder(label, label) poistaa labelin tab-ketjusta kokonaan",
           "correct": false
         },
         {
@@ -2557,7 +2557,7 @@
       "prompt": "List widget tarvitsee right-click menu. Miten toteutat Qt-widgetsissa?",
       "choices": [
         {
-          "text": "customContextMenuRequested + QMenu — standard pattern list widgetissä",
+          "text": "setContextMenuPolicy(Qt::CustomContextMenu) + customContextMenuRequested + QMenu",
           "correct": true
         },
         {
@@ -2573,7 +2573,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Context menu policy — Qt docs QWidget context menu.",
+      "correctFeedback": "CustomContextMenu-policy laukaisee customContextMenuRequested-signaalin — QWidget docs.",
       "wrongFeedback": "customContextMenuRequested on Qt:n standardi tapa.",
       "sourceRef": "qwidget#contextMenuPolicy-prop",
       "sourceUrl": "https://doc.qt.io/qt-6/qwidget.html#contextMenuPolicy-prop",
@@ -2595,23 +2595,23 @@
       "prompt": "on_pushButton_clicked() ei kutsuta — slot nimi väärä. Miten auto-connection löytää slotin?",
       "choices": [
         {
-          "text": "on_<objectName>_<signal>() — moc auto-connect pattern Designerissä",
+          "text": "on_<objectName>_<signal>() — connectSlotsByName() setupUi():ssa yhdistää",
           "correct": true
         },
         {
-          "text": "Kaikki public metodit auto-connect — moc yhdistää ne signaaleihin",
+          "text": "Kaikki public-metodit yhdistyvät — moc liittää ne signaaleihin",
           "correct": false
         },
         {
-          "text": "Vain connect() eksplisiittisesti — auto-connection ei ole Qt:ssä",
+          "text": "Vain connect() eksplisiittisesti — auto-connectionia ei ole Qt:ssä",
           "correct": false
         },
         {
-          "text": "Slot nimi voi olla mitä tahansa — moc löytää sen signaalin perusteella",
+          "text": "Slotin nimi voi olla mitä tahansa — moc löytää sen signaalin perusteella",
           "correct": false
         }
       ],
-      "correctFeedback": "Auto-connection naming — Qt docs designer connection.",
+      "correctFeedback": "setupUi() kutsuu QMetaObject::connectSlotsByName() — nimen pitää täsmätä objectNameen.",
       "wrongFeedback": "Auto-connect vaatii on_object_signal nimen. Muoto on tiukka.",
       "sourceRef": "designer/using-a-ui-file",
       "sourceUrl": "https://doc.qt.io/qt-6/designer-using-a-ui-file.html#automatic-connections",
@@ -2665,15 +2665,15 @@
       "prompt": "Worker-thread ei vastaa signaaleihin — slot ei kutsuta. Mitä worker-thread tarvitsee?",
       "choices": [
         {
-          "text": "QEventLoop exec() worker-säikeessä — event delivery queued connectionille",
+          "text": "QThread::exec() (oletus-run()) — event loop toimittaa queued-kutsut",
           "correct": true
         },
         {
-          "text": "Thread ilman event loop riittää — signaalit toimitetaan suoraan",
+          "text": "Thread ilman event loopia riittää — signaalit toimitetaan suoraan",
           "correct": false
         },
         {
-          "text": "GUI thread exec korvaa worker exec — ei tarvita erillistä loopia",
+          "text": "GUI-säikeen exec korvaa workerin loopin — erillistä ei tarvita",
           "correct": false
         },
         {
@@ -2681,7 +2681,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Threads and QObjects — Qt docs thread basics event loop.",
+      "correctFeedback": "Queued-yhteydet toimitetaan vastaanottajan säikeen event loopissa — QThread::exec().",
       "wrongFeedback": "Queued connection vaatii event loop vastaanottajathreadissa.",
       "sourceRef": "threads-qobject",
       "sourceUrl": "https://doc.qt.io/qt-6/threads-qobject.html",
@@ -2997,7 +2997,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Layout managers handle resize — Qt Layout Management.",
+      "correctFeedback": "Layout-managerit hoitavat resizen — Qt Layout Management.",
       "wrongFeedback": "Kiinteät koordinaatit eivät skaalaudu. Käytä layoutteja.",
       "sourceRef": "qt/layout",
       "sourceUrl": "https://doc.qt.io/qt-6/layout.html",
@@ -3083,18 +3083,18 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit väärin?",
+      "prompt": "Dialogi tuhoutuu, mutta sen osoitinta käyttävä lambda-slot kutsutaan yhä — use-after-free. Mitä teit väärin?",
       "choices": [
         {
-          "text": "Ei disconnect tai parent — QObject elinikä hallitsee signaaliyhteyksiä",
+          "text": "Lambda yhdistettiin ilman context-oliota — yhteys ei katkea dialogin mukana",
           "correct": true
         },
         {
-          "text": "Signaalit eivät tarvitse disconnectia — Qt katkaisee automaattisesti",
+          "text": "Signaalit eivät koskaan katkea — jokainen yhteys pitää aina disconnectata käsin",
           "correct": false
         },
         {
-          "text": "Lambda korvaa disconnectin — context object ei ole tarpeen",
+          "text": "Lambda korvaa disconnectin — context-oliota ei tarvita lainkaan",
           "correct": false
         },
         {
@@ -3102,8 +3102,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Disconnect or destroy receiver — Qt object lifetime.",
-      "wrongFeedback": "Elävä yhteys kuolleeseen objektiin crashaa. disconnect tai parent.",
+      "correctFeedback": "Anna dialogi context-olioksi: Qt katkaisee yhteyden sen tuhoutuessa.",
+      "wrongFeedback": "Qt katkaisee yhteydet tuhoutuvaan vastaanottajaan tai context-olioon — mutta ei lambdaan, jolla ei ole contextia.",
       "sourceRef": "qt/signalsandslots",
       "sourceUrl": "https://doc.qt.io/qt-6/signalsandslots.html",
       "featureId": "qt:disconnect",
@@ -3129,7 +3129,7 @@
           "correct": false
         },
         {
-          "text": "Vain QPixmap vaatii main threadin — QLabel ei ole thread-safe",
+          "text": "Vain QPixmap vaatii main threadin — QLabelia saa päivittää mistä vain",
           "correct": false
         },
         {
@@ -3137,7 +3137,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "QObject thread affinity — GUI updates on owning thread.",
+      "correctFeedback": "Widgetit elävät GUI-säikeessä — päivitä niitä vain siellä.",
       "wrongFeedback": "Qt GUI ei ole thread-safe. Päivitä main threadissa.",
       "sourceRef": "qt/threads-qobject",
       "sourceUrl": "https://doc.qt.io/qt-6/threads-qobject.html",
@@ -3172,7 +3172,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Model must provide sortable data — Qt Model/View.",
+      "correctFeedback": "Mallin pitää tarjota lajiteltavaa dataa — Qt Model/View.",
       "wrongFeedback": "Sortaus vaatii model-tuen ja viewn enable. Tarkista DisplayRole.",
       "sourceRef": "qt/modelview",
       "sourceUrl": "https://doc.qt.io/qt-6/model-view-programming.html",
@@ -3242,7 +3242,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "OpenGL calls require current context — QOpenGLWidget.",
+      "correctFeedback": "GL-kutsut vaativat current-kontekstin — QOpenGLWidget.",
       "wrongFeedback": "Ilman makeCurrent GL-kutsut voivat epäonnistua hiljaa.",
       "sourceRef": "qt/qopenglwidget",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
@@ -3277,7 +3277,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Swap interval ties to display refresh — QSurfaceFormat.",
+      "correctFeedback": "Swap interval sitoo framet näytön virkistykseen — QSurfaceFormat.",
       "wrongFeedback": "Rajaton render loop polttaa CPU:ta. Vsync tai timer.",
       "sourceRef": "qt/qsurfaceformat",
       "sourceUrl": "https://doc.qt.io/qt-6/qsurfaceformat.html",
@@ -3304,7 +3304,7 @@
           "correct": false
         },
         {
-          "text": "QShaderProgram ei tarvitse bindiä — uniformit päivittyvät automaattisesti",
+          "text": "QOpenGLShaderProgram ei tarvitse bindiä — uniformit päivittyvät itsestään",
           "correct": false
         },
         {
@@ -3312,7 +3312,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Check uniform location and active program — QShaderProgram.",
+      "correctFeedback": "Tarkista uniformin location ja että ohjelma on bindattu ennen setUniformValuea — QOpenGLShaderProgram.",
       "wrongFeedback": "Uniform voi olla dead code. Tarkista location ja bind timing.",
       "sourceRef": "qt/qshaderprogram",
       "sourceUrl": "https://doc.qt.io/qt-6/qshaderprogram.html",
@@ -3328,34 +3328,33 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Qt 6 shader ei lataudu — .frag tiedosto suoraan ei toimi. Miten shader valmistellaan?",
+      "prompt": "Qt 6 Qt Quick ShaderEffect ei lataa .frag-tiedostoa suoraan. Miten shader valmistellaan?",
       "choices": [
         {
-          "text": "qsb offline compilation — .qsb binary Qt Shader Toolsilla Qt 6:ssa",
+          "text": "qsb offline-käännös — .qsb-tiedosto Qt Shader Toolsilla Qt 6:ssa",
           "correct": true
         },
         {
-          "text": "Lue .glsl runtime compile aina — qsb ei ole tuettu Qt 6 RHI:ssa",
+          "text": "Lue .glsl ja käännä ajossa aina — qsb ei ole tuettu Qt 6 RHI:ssa",
           "correct": false
         },
         {
-          "text": "QPainter korvaa shaderin — ei tarvita erillistä shader-latausta",
+          "text": "QPainter korvaa shaderin — erillistä shader-latausta ei tarvita",
           "correct": false
         },
         {
-          "text": "Qt 5 QGLShader only — Qt 6 ei tue shader-käännöstä",
+          "text": "Vain Qt 5:n QGLShader toimii — Qt 6 ei tue shadereita lainkaan",
           "correct": false
         }
       ],
-      "correctFeedback": "Qt 6 uses precompiled .qsb — Qt Shader Tools.",
+      "correctFeedback": "Qt 6:n RHI-polku (esim. ShaderEffect) käyttää esikäännettyä .qsb:tä — Qt Shader Tools.",
       "wrongFeedback": "Qt 6 RHI vaatii qsb. Käännä shader offline.",
       "sourceRef": "qt/shadertools",
       "sourceUrl": "https://doc.qt.io/qt-6/qtshadertools-index.html",
       "featureId": "qt:qsb",
       "featurePoints": 3,
       "versions": [
-        "Qt 6",
-        "Qt 5"
+        "Qt 6"
       ]
     },
     {
@@ -3443,11 +3442,11 @@
       "prompt": "Tooltip tulee liian hitaasti QA-testaajille. Mitä Qt-sovelluksessa säädät?",
       "choices": [
         {
-          "text": "QApplication style/toolTipDuration tai platform theme — säädä showDelay",
+          "text": "QProxyStyle: palauta styleHintissä SH_ToolTip_WakeUpDelay-viive",
           "correct": true
         },
         {
-          "text": "Tooltip-delay ei ole konfiguroitavissa Qt-sovelluksessa",
+          "text": "Tooltip-viive ei ole konfiguroitavissa Qt-sovelluksessa",
           "correct": false
         },
         {
@@ -3459,8 +3458,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Tool tip behavior via style/platform — QToolTip docs.",
-      "wrongFeedback": "Style ja platform theme vaikuttavat delayhin. Testaa eri OS:illä.",
+      "correctFeedback": "Tooltipin ilmestymisviive tulee style hintistä SH_ToolTip_WakeUpDelay — QStyle docs.",
+      "wrongFeedback": "setToolTipDuration säätää vain näyttöaikaa. Viive säädetään style hintillä (QProxyStyle).",
       "sourceRef": "qtooltip",
       "sourceUrl": "https://doc.qt.io/qt-6/qtooltip.html",
       "featureId": "qt:tooltip",
@@ -3494,7 +3493,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "UniqueConnection prevents duplicate connections — Qt connect docs.",
+      "correctFeedback": "UniqueConnection estää duplikaattiyhteydet — connect-dokumentaatio.",
       "wrongFeedback": "Ilman UniqueConnection duplikaatticonnectit kasaantuvat.",
       "sourceRef": "qt/uniqueconnection",
       "sourceUrl": "https://doc.qt.io/qt-6/qt.html#ConnectionType-enum",
@@ -3529,7 +3528,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "QSortFilterProxyModel filters/sorts — Model/View.",
+      "correctFeedback": "QSortFilterProxyModel suodattaa ja lajittelee — Model/View.",
       "wrongFeedback": "Proxy säilyttää lähtödatan. Suodata view-tasolla.",
       "sourceRef": "qsortfilterproxymodel",
       "sourceUrl": "https://doc.qt.io/qt-6/qsortfilterproxymodel.html",
@@ -3564,7 +3563,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Swap interval controls vsync — QSurfaceFormat.",
+      "correctFeedback": "Swap interval ohjaa VSynciä — QSurfaceFormat.",
       "wrongFeedback": "Busy loop polttaa CPU:n. VSync tai timer-pohjainen update.",
       "sourceRef": "qsurfaceformat/swapInterval",
       "sourceUrl": "https://doc.qt.io/qt-6/qsurfaceformat.html#setSwapInterval",
@@ -3637,7 +3636,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "focusPolicy determines keyboard focus — QWidget.",
+      "correctFeedback": "focusPolicy määrää näppäimistöfokuksen — QWidget.",
       "wrongFeedback": "NoFocus estää tab-fokuksen. StrongFocus tai TabFocus tarvitaan.",
       "sourceRef": "qwidget/focusPolicy",
       "sourceUrl": "https://doc.qt.io/qt-6/qwidget.html#focusPolicy-prop",
@@ -3882,7 +3881,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Swap interval controls VSync — QSurfaceFormat.",
+      "correctFeedback": "Swap interval ohjaa VSynciä — QSurfaceFormat.",
       "wrongFeedback": "Tearing johtuu buffer swap ilman VSync. setSwapInterval(1).",
       "sourceRef": "qsurfaceformat/swapInterval",
       "sourceUrl": "https://doc.qt.io/qt-6/qsurfaceformat.html#setSwapInterval",
@@ -3952,7 +3951,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Unused uniforms removed at link — OpenGL shader docs.",
+      "correctFeedback": "Käyttämättömät uniformit poistetaan linkityksessä — OpenGL shader docs.",
       "wrongFeedback": "Käyttämätön uniform poistetaan. Varmista että shader käyttää sitä.",
       "sourceRef": "qopenglshaderprogram/setUniformValue",
       "sourceUrl": "https://doc.qt.io/qt-6/qopenglshaderprogram.html#setUniformValue",
@@ -4341,7 +4340,7 @@
         }
       ],
       "correctFeedback": "Context properties — QQmlContext docs.",
-      "wrongFeedback": "Context property injektoi C++-olion juurikontekstiin. Singleton on vaihtoehto, mutta setContextProperty on suora tapa.",
+      "wrongFeedback": "setContextProperty injektoi olion juurikontekstiin ilman importtia. Qt 6 suosittelee kuitenkin uusiin moduuleihin singletonia (QML_SINGLETON).",
       "sourceRef": "qqmlcontext-setcontextproperty",
       "sourceUrl": "https://doc.qt.io/qt-6/qqmlcontext.html#setContextProperty",
       "featureId": "qt:qml-context-property",
@@ -4379,7 +4378,7 @@
         }
       ],
       "correctFeedback": "QML singleton types — Qt QML module docs.",
-      "wrongFeedback": "Singleton varmistaa yhden instanssin moduulissa. tavallinen QML-tiedosto luo uuden instanssin per import.",
+      "wrongFeedback": "Singleton varmistaa yhden instanssin moduulissa. Tavallinen QML-tyyppi luo uuden instanssin jokaisesta käytöstä.",
       "sourceRef": "qtqml-typesystem-objecttypes",
       "sourceUrl": "https://doc.qt.io/qt-6/qtqml-typesystem-objecttypes.html",
       "featureId": "qt:qml-singleton",
@@ -4508,27 +4507,27 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
+      "prompt": "Image lataa suuren paikallisen kuvatiedoston ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
       "choices": [
         {
-          "text": "asynchronous: true (oletus) + placeholder/pienoiskuva — lataus taustasäikeessä",
+          "text": "asynchronous: true + sopiva sourceSize — dekoodaus taustasäikeessä",
           "correct": true
         },
         {
-          "text": "cache: false — pakottaa async-latauksen",
+          "text": "cache: false — pakottaa kuvan latauksen taustasäikeeseen",
           "correct": false
         },
         {
-          "text": "QML Image ei tue verkko-URL:ia — lataa C++:lla",
+          "text": "QML Image ei tue suuria kuvia — lataa ne aina C++:lla",
           "correct": false
         },
         {
-          "text": "sourceSize: 0 — lataa aina täyden resoluution synkronisesti",
+          "text": "sourceSize: 0 — lataa täyden resoluution nopeimmin",
           "correct": false
         }
       ],
-      "correctFeedback": "Image asynchronous loading — Qt Quick Image docs.",
-      "wrongFeedback": "Image lataa oletuksena async. Tarkista placeholder ja sourceSize suorituskyvyn vuoksi.",
+      "correctFeedback": "asynchronous: true siirtää paikallisen kuvan latauksen taustasäikeeseen — Qt Quick Image docs.",
+      "wrongFeedback": "Paikalliset kuvat ladataan oletuksena synkronisesti (verkkokuvat aina asynkronisesti). Aseta asynchronous: true ja rajaa sourceSize.",
       "sourceRef": "qml-qtquick-image",
       "sourceUrl": "https://doc.qt.io/qt-6/qml-qtquick-image.html",
       "featureId": "qt:qml-image",
@@ -4546,7 +4545,7 @@
       "prompt": "Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä. Miten saat natiivin ulkoasun?",
       "choices": [
         {
-          "text": "QQuickStyle::setStyle(\"Fusion\") tai platform-tyyli — valitse Style ennen QML-latausta",
+          "text": "Älä pakota tyyliä, tai QQuickStyle::setStyle(\"macOS\"/\"Windows\") ennen latausta",
           "correct": true
         },
         {
@@ -4562,8 +4561,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Qt Quick Controls styling — QQuickStyle docs.",
-      "wrongFeedback": "Tyyli valitaan QQuickStyle:llä tai QT_QUICK_CONTROLS_STYLE. Basic/Fusion/Material ovat eri teemoja.",
+      "correctFeedback": "Qt 6:n oletustyyli on alustan natiivi tyyli (macOS/Windows) — QQuickStyle docs.",
+      "wrongFeedback": "Basic ja Fusion ovat alustariippumattomia tyylejä. Natiivi ulkoasu: macOS- tai Windows-tyyli tai oletus.",
       "sourceRef": "qtquickcontrols2-styles",
       "sourceUrl": "https://doc.qt.io/qt-6/qtquickcontrols2-styles.html",
       "featureId": "qt:qml-controls-style",

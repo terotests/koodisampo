@@ -31,7 +31,7 @@ import { helper } from 'my-lib/utils';  // OK
 import x from 'my-lib/src/internal/helper.js'; // ERR_PACKAGE_PATH_NOT_EXPORTED
 ```
 
-Voit erottaa ESM/CJS: `"import"` / `"require"` -ehdot exports-objektissa.
+Kun `exports` on määritelty, se menee `main`-kentän edelle tukevissa Node-versioissa. Voit erottaa ESM/CJS: `"import"` / `"require"` -ehdot exports-objektissa.
 
 ## Käytännössä
 

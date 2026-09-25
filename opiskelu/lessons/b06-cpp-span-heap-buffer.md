@@ -8,7 +8,7 @@ Tämä on yleisin C-tyylinen buffer overflow -kuvio modernissa C++-koodissa.
 
 ## Ratkaisu
 
-Yhdistä osoitin ja pituus yhdeksi tyypiksi — `std::span`:
+Yhdistä osoitin ja pituus yhdeksi tyypiksi — C++20:n `std::span`:
 
 ```cpp
 void process(std::span<const std::byte> data) {
@@ -16,7 +16,7 @@ void process(std::span<const std::byte> data) {
 }
 
 // kutsu
-process(std::span<const std::byte>(buf, len));
+process(std::as_bytes(std::span(buf, len)));  // buf: const uint8_t*
 ```
 
 `span` ei omista dataa; se on näkymä olemassa olevaan taulukkoon, vektoriin tai puskuriin. Rajat kulkevat mukana API:ssa — kääntäjä ja koodinlukija näkevät ne yhdessä.

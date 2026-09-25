@@ -1,4 +1,4 @@
-# Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratkaisu?
+# Kaksi oliota osoittaa toisiinsa shared_ptr:llä — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?
 
 ## Tilanne
 

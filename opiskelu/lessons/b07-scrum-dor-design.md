@@ -1,4 +1,4 @@
-# Sprint alkaa — arkkitehtuurisia avoimia kysymyksiä on vielä kolme. Pitäisikö tarina ollut sprintissä?
+# Sprintti alkaa, ja tarinassa on yhä kolme avointa arkkitehtuurikysymystä. Olisiko tarinan pitänyt tulla sprinttiin?
 
 ## Tilanne
 

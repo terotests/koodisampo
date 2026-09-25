@@ -14,7 +14,7 @@ ESLint ja TypeScript merkitsevät rivin virheeksi. `const` ei tarkoita "muuttuma
 
 ## Ratkaisu
 
-**const estää uudelleensijoituksen — arvo ei voi vaihtua** tarkoittaa, että muuttujaa ei voi sitoa uudelleen:
+**const estää uudelleensijoituksen — muuttujaan ei voi sijoittaa uutta arvoa.** Sidontaa ei voi asettaa uudelleen, mutta objektin sisältö voi muuttua:
 
 ```javascript
 const maxRetries = 3;

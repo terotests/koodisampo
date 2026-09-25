@@ -1,11 +1,11 @@
-# Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mikä publish-syntaksi?
+# Palvelu kuuntelee kontissa osoitteessa 0.0.0.0:8080, mutta hostilta siihen ei saa yhteyttä. Mikä publish-syntaksi?
 
 ## Tilanne
 
 Node-sovellus kontissa kuuntelee porttia 8080:
 
 ```javascript
-app.listen(8080, '127.0.0.1');
+app.listen(8080, '0.0.0.0');
 ```
 
 Kontti käynnistyy ilman porttimääritystä:
@@ -25,13 +25,13 @@ docker run -d -p 8080:8080 myweb:latest
 curl http://localhost:8080
 ```
 
-Jos sovellus kuuntelee vain `127.0.0.1` kontissa, publish toimii silti — NAT ohjaa liikenteen kontin loopbackiin. Parempi käytäntö on kuunnella `0.0.0.0`:
+Huomaa: jos sovellus kuuntelisi kontissa vain `127.0.0.1`:tä, publish ei auttaisi — julkaistu liikenne saapuu kontin verkkorajapintaan, ei sen loopbackiin. Sovelluksen pitää kuunnella `0.0.0.0`:
 
 ```javascript
 app.listen(8080, '0.0.0.0');
 ```
 
-Tietylle interface:lle: `-p 127.0.0.1:8080:8080`.
+Hostin puolen bindauksen voi rajata tiettyyn osoitteeseen: `-p 127.0.0.1:8080:8080`.
 
 ## Käytännössä
 

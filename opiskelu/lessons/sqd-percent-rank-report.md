@@ -1,8 +1,8 @@
-# Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio?
+# Raporttiin tarvitaan jokaisen myyjän suhteellinen sijoitus (0–1) kaikkien myyjien joukossa. Ikkunafunktio?
 
 ## Tilanne
 
-Raportissa jokaisella myyjällä: absoluuttinen myynti ja suhteellinen sijoitus top-myynnissä — esim. "olet top 15 %:ssa". RANK antaa sijoituksen, mutta prosenttiosuus vaatii eri funktion.
+Raportissa jokaisella myyjällä: absoluuttinen myynti ja suhteellinen sijoitus kaikkien myyjien joukossa — esim. "olet top 15 %:ssa". RANK antaa absoluuttisen sijan, mutta suhteellinen sijoitus välillä 0–1 vaatii eri funktion.
 
 ## Ratkaisu
 
@@ -18,7 +18,7 @@ FROM sales_by_person;
 
 `PERCENT_RANK()` palauttaa arvon 0–1: `(rank - 1) / (total_rows - 1)`. Pienempi arvo = korkeampi myynti (kun ORDER BY DESC).
 
-Vaihtoehdot: **CUME_DIST()** (kumulatiivinen jakauma), **RANK()** / **DENSE_RANK()** absoluuttiseen sijoitukseen. Valitse funktio raportin määritelmän mukaan.
+Vaihtoehdot: **CUME_DIST()** (kumulatiivinen jakauma), **RANK()** / **DENSE_RANK()** absoluuttiseen sijoitukseen. Valitse funktio raportin määritelmän mukaan. Huomaa, että myyjän *osuus* myynnistä on eri asia kuin sijoitus: se lasketaan esim. `sales / SUM(sales) OVER ()` tai `sales / MAX(sales) OVER ()`.
 
 ## Taustaa
 

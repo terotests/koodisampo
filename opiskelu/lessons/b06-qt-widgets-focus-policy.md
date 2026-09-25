@@ -24,7 +24,7 @@ for (auto *label : findChildren<QLabel *>()) {
 }
 ```
 
-Qt focus policy — Qt docs QWidget focusPolicy. `QLabel`:n oletus on `TabFocus` tai `NoFocus` riippuen Qt-versiosta — aseta eksplisiittisesti.
+`QLabel`:n oletus on `NoFocus`, mutta esim. `setTextInteractionFlags(Qt::TextSelectableByKeyboard)` tai tyylin/aliluokan muutos voi antaa sille fokuksen — aseta policy eksplisiittisesti. `setEnabled(false)` poistaisi myös tab-pysähdyksen, mutta harmaannuttaa labelin, joten se ei ole oikea korjaus.
 
 ## Käytännössä
 

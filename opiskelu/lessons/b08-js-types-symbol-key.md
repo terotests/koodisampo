@@ -22,7 +22,7 @@ Alaviiva-prefix `_internal` on vain konventio — se ei piilota mitään. JSON-s
 
 ## Ratkaisu
 
-**Symbol('internal') — ei enumerable oletuksena, piilossa for-in loopilta:**
+**Symbol('internal') — for-in ja Object.keys ohittavat symboliavaimet:**
 
 ```javascript
 const INTERNAL = Symbol('internal');
@@ -50,6 +50,8 @@ for (const key in store) {
 ```
 
 ## Käytännössä
+
+Huomaa: symboliavaiminen property on silti enumerable (`Object.getOwnPropertyDescriptor(store, INTERNAL).enumerable === true`). Se piiloutuu, koska for-in, `Object.keys` ja `JSON.stringify` käsittelevät vain merkkijonoavaimia.
 
 Symbol-avaimet eivät ole salattuja — `Object.getOwnPropertySymbols()` paljastaa ne. Yksityisiin kenttiin modernissa koodissa käytä `#privateField` (class private fields) tai WeakMap:ia.
 

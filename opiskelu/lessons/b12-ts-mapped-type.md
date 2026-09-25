@@ -1,4 +1,4 @@
-# type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] }
+# type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] } — mikä tyyppirakenne?
 
 ## Tilanne
 
@@ -19,7 +19,7 @@ Käsin kopioit `readonly`-modifier jokaiselle kentälle — toistoa ja ylläpito
 
 ## Ratkaisu
 
-**Conditional type — type-level logiikka**:
+**Mapped type — käy läpi T:n avaimet ja muuntaa ne:**
 
 ```typescript
 type ReadonlyFields<T> = {
@@ -34,7 +34,7 @@ function render(user: ImmutableUser) {
 }
 ```
 
-Tämä on mapped type: `[K in keyof T]` käy läpi jokaisen avaimen ja luo uuden tyypin. TypeScriptin sisäänrakennettu `Readonly<T>` tekee saman. Mapped types ovat type-level logiikkaa — sukua conditional typeille (`Partial`, `Pick` rakentuvat samalla syntaksilla).
+Tämä on mapped type: `[K in keyof T]` käy läpi jokaisen avaimen ja luo uuden tyypin. TypeScriptin sisäänrakennettu `Readonly<T>` tekee saman. Myös `Partial` ja `Pick` ovat mapped typejä. Conditional type (`T extends U ? X : Y`) on eri rakenne: se valitsee tyypin ehdon perusteella.
 
 ## Käytännössä
 

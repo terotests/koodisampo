@@ -12,5 +12,7 @@ API palauttaa 'crs: EPSG:3067'. Mitä asiakasohjelman pitää ymmärtää?
 
 Tallenna EPSG aina metadataan. Älä arvaa projektiota tiedostonimestä.
 
+Tarkista myös akselijärjestys: EPSG:4326 määritellään järjestyksessä lat, lon, mutta GeoJSON ja moni ohjelmisto käyttävät järjestystä lon, lat. Sekaannus siirtää pisteet väärälle puolelle maapalloa.
+
 
 [Lue lisää](https://epsg.org/)

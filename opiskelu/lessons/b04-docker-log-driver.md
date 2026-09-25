@@ -1,12 +1,12 @@
-# Konttilokit katoavat rebootin jälkeen — oletus json-file kasvaa loputtomasti. Tuotanto-asetus?
+# Konttilokit katoavat, kun kontti korvataan deployssa, ja oletus json-file kasvaa rajatta. Tuotantoasetus?
 
 ## Tilanne
-Konttilokit katoavat host-rebootin jälkeen tai `/var/lib/docker/containers/` kasvaa loputtomasti json-file-driverilla ilman rotaatiota.
+Konttilokit katoavat, kun kontti poistetaan ja korvataan uudella deployssa — json-file-lokit poistuvat kontin mukana. Lisäksi `/var/lib/docker/containers/` kasvaa loputtomasti json-file-driverilla ilman rotaatiota.
 
 Yksittäinen palvelu voi täyttää levyn gigatavuiksi lokidataa.
 
 ## Ratkaisu
-**logging driver esim. journald/json-file max-size & max-file tai centralized driver.**
+**Keskitetty logging driver tai json-file max-size/max-file -rotaatiolla.** Rotaatio rajaa levynkäytön, mutta vain keskitetty keräys säilyttää lokit kontin poiston yli.
 
 Daemon.json:
 

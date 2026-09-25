@@ -8,7 +8,7 @@ Hardening:
 ProtectSystem=strict
 ```
 
-`/usr`, `/boot` ja `/etc` (ja usein koko juuri) ovat read-only kontissa/unitissa. Sovellus tarvitsee tilaa `/var/lib/myapp` — kirjoitus epäonnistuu. Houkutus: poistaa `ProtectSystem` kokonaan. Se heikentää eristystä turhaan.
+`strict` tekee koko tiedostojärjestelmän read-onlyksi unitille — vain API-tiedostojärjestelmät `/dev`, `/proc` ja `/sys` jäävät poikkeuksiksi. (`ProtectSystem=full` suojaisi vain `/usr`:n, `/boot`:n ja `/etc`:n.) Sovellus tarvitsee tilaa `/var/lib/myapp` — kirjoitus epäonnistuu. Houkutus: poistaa `ProtectSystem` kokonaan. Se heikentää eristystä turhaan.
 
 ## Ratkaisu
 
@@ -24,7 +24,7 @@ ReadWritePaths=/var/lib/myapp
 ## Käytännössä
 
 - Yhdistä `ProtectHome`, `PrivateTmp`, `NoNewPrivileges` — testaa `systemd-analyze security`.
-- Jos tarvitset vain configin lukua `/etc`:stä, `strict` on ok; kirjoitus menee `/var` / `StateDirectory=` -polkuihin.
+- Jos tarvitset vain configin lukua `/etc`:stä, `strict` on ok; kirjoitus onnistuu vain `ReadWritePaths=`- tai `StateDirectory=`-poluissa, sillä `strict` suojaa myös `/var`:n.
 - `StateDirectory=myapp` luo ja hallinnoi `/var/lib/myapp` systemdille siististi.
 
 [Lue lisää](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#ProtectSystem=)

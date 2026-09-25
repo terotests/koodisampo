@@ -1,17 +1,19 @@
-# `docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?
+# Dockerfilessa on `ENTRYPOINT ["./entrypoint.sh"]` ja `CMD ["node", "server.js"]`. Miksi `docker run myimage bash` ei avaa bash-shelliä?
 
 ## Tilanne
 Tiimi ajaa `docker run myimage bash` odottaen pääsevänsä debug-shelliin, mutta sovellus käynnistyy silti. ENTRYPOINT ja CMD sekoittuvat.
 
 ## Ratkaisu
-**ENTRYPOINT on pääkomento, CMD on oletusargumentit — exec-form selkeyttää.**
+**`bash` korvaa vain CMD:n — se annetaan argumenttina ENTRYPOINTille.** ENTRYPOINT on pääkomento, CMD on oletusargumentit.
 
 ```dockerfile
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["server"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "server.js"]
 
+# docker run myimage
+# → ./entrypoint.sh node server.js
 # docker run myimage bash
-# → /docker-entrypoint.sh bash
+# → ./entrypoint.sh bash
 ```
 
 `docker run`-komennon argumentit korvaavat `CMD`:n, ei `ENTRYPOINT`:ia. Debug override:

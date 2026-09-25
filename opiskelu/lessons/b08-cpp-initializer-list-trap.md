@@ -1,4 +1,4 @@
-# Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?
+# Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` kääntyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?
 
 ## Tilanne
 

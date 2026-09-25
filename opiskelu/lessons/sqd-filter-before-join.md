@@ -4,35 +4,26 @@
 
 Myyntiraportti yhdistää tilaukset ja asiakkaat. `orders`-taulu sisältää viiden vuoden historian — noin 50 miljoonaa riviä. `customers`-taulussa on kaksi miljoonaa riviä. Liiketoimintavaatimus on selkeä: vain kuluvan kuukauden tilaukset alueittain.
 
-Huono tapa on liittää ensin kaikki ja suodattaa vasta lopussa:
+Kysymys kuuluu: pitääkö suodatus kirjoittaa erilliseen alikyselyyn ennen JOINia, vai riittääkö `WHERE`-ehto?
+
+Huono tapa on hakea kaikki tilaukset sovellukseen tai rajata rivit vasta aggregoinnin jälkeen (esim. `HAVING`-ehdolla) — silloin miljoonia turhia rivejä kulkee joinin ja ryhmittelyn läpi.
+
+## Ratkaisu
+
+**Rajaa `orders` suoraan `WHERE`-ehdolla — planner soveltaa ehdon ennen joinia:**
 
 ```sql
 SELECT c.region, count(*)
 FROM orders o
 JOIN customers c ON c.id = o.customer_id
 WHERE o.created_at >= date_trunc('month', CURRENT_DATE)
+  AND o.created_at < date_trunc('month', CURRENT_DATE) + interval '1 month'
 GROUP BY c.region;
 ```
 
-PostgreSQL saattaa onneksi työntää `WHERE`-ehdon joinin alle, mutta luettava koodi ja eksplisiittinen early filtering varmistavat, ettei optimoija joudu arvailemaan. Väärässä järjestyksessä kirjoitettu kysely voi aiheuttaa väliaikaisesti miljoonien rivien hash joinin.
+PostgreSQLin planner työntää yhtä taulua koskevan `WHERE`-ehdon (predicate pushdown) inner joinin alle: `orders` suodatetaan ensin, ja `created_at`-indeksi rajaa joukon heti. Ehdon kirjoittaminen alikyselyyn ei siis nopeuta kyselyä — tärkeintä on, että rajaus on kannassa ja kohdistuu `orders`-tauluun.
 
-## Ratkaisu
-
-**Suodata `orders` aikarajalla ennen JOINia — pienennä joukkoa mahdollisimman aikaisin:**
-
-```sql
-SELECT c.region, count(*)
-FROM (
-  SELECT customer_id
-  FROM orders
-  WHERE created_at >= date_trunc('month', CURRENT_DATE)
-    AND created_at < date_trunc('month', CURRENT_DATE) + interval '1 month'
-) o
-JOIN customers c ON c.id = o.customer_id
-GROUP BY c.region;
-```
-
-Tai CTE:llä luettavammin:
+Jos haluat erottaa vaiheet luettavuuden vuoksi, CTE toimii samoin (PostgreSQL 12+ yhdistää sen pääkyselyyn):
 
 ```sql
 WITH recent_orders AS (
@@ -47,7 +38,7 @@ JOIN customers c ON c.id = o.customer_id
 GROUP BY c.region;
 ```
 
-Early filtering pienentää joinin syötettä — query design -best practice. Mitä vähemmän rivejä liitetään, sitä vähemmän muistia, I/O:ta ja CPU:a kuluu.
+Early filtering pienentää joinin syötettä — mitä vähemmän rivejä liitetään, sitä vähemmän muistia, I/O:ta ja CPU:ta kuluu.
 
 ## Käytännössä
 

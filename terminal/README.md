@@ -6,7 +6,8 @@ Julkaistaan osoitteeseen https://terotests.github.io/koodisampo/terminal/
 Kysymys kirjoitetaan ruudulle merkki kerrallaan epätasaisella rytmillä
 (välilyönti ja välimerkit hidastavat). Sen jälkeen kursori vilkkuu lukutauon
 ajan (1,8–7 s kysymyksen pituuden mukaan), ja vasta sitten tulostetaan
-vastausvaihtoehdot. Kierroksessa on 10 kysymystä valitusta aiheesta.
+vastausvaihtoehdot. Kierroksessa on 10 kysymystä valitusta aiheesta. Lasten
+helpot kysymykset (`kids-easy.json`) eivät ole mukana; ne kuuluvat pelin lapsitilaan.
 
 | Näppäin | Toiminto |
 | --- | --- |

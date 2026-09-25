@@ -20,7 +20,7 @@ if (loc >= 0)
     program.setUniformValue(loc, mvp);
 ```
 
-**GLSL (moderni tapa):** sidotaan uniform eksplisiittisesti:
+**GLSL (moderni tapa):** uniform-blokille annetaan `binding`-indeksi:
 
 ```glsl
 #version 330 core
@@ -29,16 +29,16 @@ layout(std140, binding = 0) uniform Matrices {
 };
 ```
 
-tai yksittäiselle uniformille:
+tai yksittäiselle uniformille eksplisiittinen location (GLSL 4.3 tai `GL_ARB_explicit_uniform_location`):
 
 ```glsl
 layout(location = 2) uniform mat4 mvpMatrix;
 ```
 
-`QShaderProgram::uniformLocation("name")` (RHI-polulla) tai `QOpenGLShaderProgram::uniformLocation()` (OpenGL-polulla) palauttaa oikean indeksin tai −1, jos uniform on optimoitu pois.
+`QOpenGLShaderProgram::uniformLocation("name")` palauttaa oikean indeksin tai −1, jos uniform on optimoitu pois. `binding` koskee uniform-blokkeja ja samplereita, `location` yksittäisiä uniformeja.
 
 ## Käytännössä
 
 Älä koskaan kovakoodaa uniform location -numeroita eri ajureilla. Cache location linkityksen jälkeen. UBO/std140 on suositeltava, kun uniformeja on paljon — vähentää location-sekaannuksia.
 
-[Lue lisää](https://doc.qt.io/qt-6/qshaderprogram.html)
+[Lue lisää](https://doc.qt.io/qt-6/qopenglshaderprogram.html)

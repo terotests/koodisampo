@@ -15,7 +15,7 @@ Dialogi näkyy etualalla, mutta käyttäjä voi silti klikata pääikkunan nappe
 
 ## Ratkaisu
 
-`dialog.exec()` modal-tilassa tai `QDialog::ApplicationModal` estää taustan:
+`dialog.exec()` tai `setWindowModality(Qt::ApplicationModal)` estää taustan:
 
 ```cpp
 void MainWindow::openSettings() {

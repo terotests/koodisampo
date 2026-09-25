@@ -1,4 +1,4 @@
-# resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Todennäköisin syy?
+# resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Mistä jatkat vianetsintää?
 
 ## Tilanne
 

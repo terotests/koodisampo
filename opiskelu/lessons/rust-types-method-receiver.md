@@ -61,8 +61,10 @@ impl Counter {
 
 Useimmat metodit käyttävät **`&self`** (luku) tai **`&mut self`** (muutos). **`self`** on harvinaisempi — sopii kun metodi purkaa arvon osiin tai muuntaa sen toiseen tyyppiin (`into_*`-metodit).
 
+Myös **`mut self`** on validi receiver: metodi ottaa arvon omistukseensa ja saa muokata sitä, esim. builder-tyylinen `fn with_n(mut self, n: u32) -> Self`. Se ei kuitenkaan muokkaa kutsujan muuttujaa, koska arvo siirtyy metodille — pelkkään kentän muokkaamiseen oikea valinta on `&mut self`.
+
 Jos metodi ei tarvitse instanssia ollenkaan, se on **`fn new() -> Self`** tai muu **assosioitu funktio** ilman `self`-parametria. Assosioitu funktio ei ole metodi samassa mielessä, mutta se elää samassa `impl`-lohkossa.
 
-Muista: **`&mut self` vaatii `mut`-muuttujan** — `let mut counter = Counter { n: 0 };`. Ilman `mut`-avainsanaa et voi kutsua muuttavia metodeja, vaikka structin kentät olisivat muuttuvia.
+Muista: **`&mut self` vaatii `mut`-muuttujan** — `let mut counter = Counter { n: 0 };`. Ilman `mut`-avainsanaa et voi kutsua muuttavia metodeja. Rustissa yksittäisiä kenttiä ei voi merkitä `mut`-avainsanalla — muuttuvuus tulee muuttujasta tai lainasta.
 
 [Lue lisää](https://doc.rust-lang.org/book/ch05-03-method-syntax.html)

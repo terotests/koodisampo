@@ -1,4 +1,4 @@
-# Yhteys toimii pingillä mutta ARP-taulu näyttää incomplete. Mitä komento tarkistaa?
+# Yhteys samassa aliverkossa olevaan koneeseen ei toimi — epäilet, ettei ARP-selvitys onnistu. Millä komennolla tarkistat?
 
 ## Tilanne
 

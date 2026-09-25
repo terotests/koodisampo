@@ -1,4 +1,4 @@
-# Tuotanto-Compose tarvitsee TLS-sertin ilman salaisuuden leimimistä imageen. Ratkaisu?
+# Tuotanto-Compose tarvitsee TLS-sertin ilman, että salaisuus päätyy imageen. Ratkaisu?
 
 ## Tilanne
 Tuotanto-Compose tarvitsee TLS-sertin. Kovakoodattu cert repoon tai ENV imageen on hylätty security reviewissa — salaisuus ei saa päätyä image-layeriin.

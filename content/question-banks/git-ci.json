@@ -211,7 +211,7 @@
         }
       ],
       "correctFeedback": "git stash push/pop on tarkoitettu juuri väliaikaiseen muutosten säilömiseen.",
-      "wrongFeedback": "reset ja clean ovat tuhoavia toimintoja. stash säilöö muutokset pinoon.",
+      "wrongFeedback": "reset ja amend muuttavat commit-historiaa ja clean poistaa tiedostot pysyvästi. stash säilöö muutokset pinoon.",
       "sourceRef": "git-scm/docs/git-stash",
       "sourceUrl": "https://git-scm.com/docs/git-stash",
       "featureId": "git:stash",
@@ -261,7 +261,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tiedät että työtä on kadonnut vasta äskettäin. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?",
+      "prompt": "Resetoit branchin vahingossa ja tuoreet commitit katosivat historiasta. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?",
       "choices": [
         {
           "text": "git reflog näyttää HEAD-historian — löydä sha ja git checkout/reset siihen",
@@ -547,7 +547,7 @@
       "prompt": "CI-pipelinessa unit-testit ja lintterit voitaisiin ajaa rinnakkain nopeuttamaan buildia. Miten toteutat?",
       "choices": [
         {
-          "text": "parallel-lohko tai matrix strategy ajaa riippumattomat vaiheen rinnakkain",
+          "text": "parallel-lohko tai matrix strategy ajaa riippumattomat vaiheet rinnakkain",
           "correct": true
         },
         {
@@ -564,7 +564,7 @@
         }
       ],
       "correctFeedback": "parallel-vaiheet (Jenkins/GitHub Actions matrix) hyödyntävät resursseja tehokkaasti.",
-      "wrongFeedback": "Yksi shell-skripti ajaa peräkkäin ellei tausta & käytetä, mikä ei anna virheraporttia.",
+      "wrongFeedback": "Yksi shell-skripti ajaa komennot peräkkäin, ellei käytetä taustaa (&), jolloin virheet jäävät helposti huomaamatta.",
       "sourceRef": "jenkins.io/doc/book/pipeline/syntax/#parallel",
       "sourceUrl": "https://www.jenkins.io/doc/book/pipeline/syntax/#parallel",
       "featureId": "git:ci-parallel",
@@ -658,7 +658,7 @@
           "correct": true
         },
         {
-          "text": "git clone . ../copy tekee erillisen kopion jonka voi linkittää alkuperäiseen",
+          "text": "git switch hotfix-branch pitää kummankin branchin keskeneräiset muutokset erillään",
           "correct": false
         },
         {
@@ -671,7 +671,7 @@
         }
       ],
       "correctFeedback": "worktree mahdollistaa usean branchin rinnakkaisen työstämisen yhdestä reposta.",
-      "wrongFeedback": "clone on raskas. worktree jakaa saman .git-hakemiston kevyesti.",
+      "wrongFeedback": "switch ja checkout vaihtavat saman working treen sisältöä ja kuljettavat muutokset mukana. worktree antaa toisen hakemiston samaan .git-repoon.",
       "sourceRef": "git-scm/docs/git-worktree",
       "sourceUrl": "https://git-scm.com/docs/git-worktree",
       "featureId": "git:worktree",
@@ -690,7 +690,7 @@
       "prompt": "Projekti pitää testata kolmella Node-versiolla ja kahdella käyttöjärjestelmällä. Miten GitHub Actionsissa?",
       "choices": [
         {
-          "text": "strategy: matrix: node: [16,18,20] os: [ubuntu, windows] ajaa kaikki yhdistelmät",
+          "text": "strategy: matrix: node: [18, 20, 22], os: [ubuntu-latest, windows-latest]",
           "correct": true
         },
         {

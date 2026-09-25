@@ -1,4 +1,4 @@
-# Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi?
+# Date on mutatoitava ja altis aikavyöhykebugeille. Mikä uusi standardi-API korvaa sen?
 
 ## Tilanne
 

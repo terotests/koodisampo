@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-25T13:24:44.065Z",
+  "generatedAt": "2026-09-25T14:46:30.020Z",
   "summary": {
-    "totalQuestions": 1274,
-    "readyLessons": 1262,
+    "totalQuestions": 1273,
+    "readyLessons": 1261,
     "pendingLessons": 12,
     "percent": 99.1
   },
@@ -10,8 +10,8 @@
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 209,
-      "total": 209,
+      "ready": 208,
+      "total": 208,
       "chapters": [
         {
           "id": "cmake",
@@ -219,7 +219,7 @@
             {
               "id": "exp-cpp-correct-compare-three-way",
               "difficulty": 4,
-              "prompt": "Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — epävakaa sort. C++20 ratkaisu?",
+              "prompt": "Structin käsin kirjoitetut <, == ja > ovat keskenään ristiriidassa, ja std::sort käyttäytyy oudosti. C++20-ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-correct-compare-three-way.md"
             },
@@ -256,7 +256,7 @@
             {
               "id": "prod-cpp-coroutine-lifetime",
               "difficulty": 5,
-              "prompt": "Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen. Mikä riski?",
+              "prompt": "Coroutine ottaa parametrin `const std::string&` ja käyttää sitä `co_await`:n jälkeen. Kutsujan merkkijono on väliaikainen. Mikä riski?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-cpp-coroutine-lifetime.md"
             },
@@ -404,7 +404,7 @@
             {
               "id": "b07-cpp-pimpl-abi",
               "difficulty": 4,
-              "prompt": "Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mitä kuvio?",
+              "prompt": "Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mikä kuvio auttaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-pimpl-abi.md"
             },
@@ -594,7 +594,7 @@
             {
               "id": "b11-cpp-preincrement",
               "difficulty": 1,
-              "prompt": "Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin silmukassa. Miksi cpp-best-practices suosii `++i`?",
+              "prompt": "Code review kommentoi silmukkaa `for (auto it = c.begin(); it != c.end(); it++)`. Miksi cpp-best-practices suosii `++it`:tä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b11-cpp-preincrement.md"
             },
@@ -714,7 +714,7 @@
             {
               "id": "exp-cpp-portability-byte-order",
               "difficulty": 4,
-              "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaaliset shift-makrot?",
+              "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++20+ tapa välttää manuaaliset shift-makrot?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-portability-byte-order.md"
             },
@@ -757,7 +757,7 @@
             {
               "id": "b03-cpp-safety-array-span",
               "difficulty": 3,
-              "prompt": "Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?",
+              "prompt": "Legacy-funktio ottaa `int buf[256]`, mutta kutsuja antaa pienemmän taulukon. Miten modernisoit rajapinnan?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-cpp-safety-array-span.md"
             },
@@ -834,7 +834,7 @@
             {
               "id": "b06-cpp-weak-ptr-cycle",
               "difficulty": 4,
-              "prompt": "Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?",
+              "prompt": "Kaksi oliota osoittaa toisiinsa shared_ptr:llä — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-weak-ptr-cycle.md"
             },
@@ -862,7 +862,7 @@
             {
               "id": "b08-cpp-unique-ptr-deleter",
               "difficulty": 4,
-              "prompt": "FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallinnet oikein?",
+              "prompt": "FILE* pitää sulkea fclose:lla — unique_ptr oletusdeleterillä ei riitä. Miten mallinnat sen oikein?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-unique-ptr-deleter.md"
             },
@@ -876,7 +876,7 @@
             {
               "id": "b09-cpp-optional-null-api",
               "difficulty": 3,
-              "prompt": "API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypillisesti?",
+              "prompt": "API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypitetysti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-optional-null-api.md"
             },
@@ -1059,7 +1059,7 @@
             {
               "id": "b06-cpp-attributes-fallthrough",
               "difficulty": 2,
-              "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä. Miten dokumentoit tarkoituksellinen putoaminen?",
+              "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä. Miten dokumentoit tarkoituksellisen putoamisen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-cpp-attributes-fallthrough.md"
             },
@@ -1263,7 +1263,7 @@
             {
               "id": "b08-cpp-atomic-memory-order",
               "difficulty": 5,
-              "prompt": "Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei näy heti toisessa CPU:ssa. Mikä voi auttaa?",
+              "prompt": "Tuottaja kirjoittaa puskuriin ja kasvattaa sitten atomic<int>-laskuria relaxed-järjestyksellä. Kuluttaja näkee uuden laskurin mutta vanhaa dataa. Mikä auttaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-atomic-memory-order.md"
             },
@@ -1328,8 +1328,8 @@
         {
           "id": "tools",
           "label": "C++ työkalut",
-          "ready": 33,
-          "total": 33,
+          "ready": 32,
+          "total": 32,
           "questions": [
             {
               "id": "b02-cpp-tools-concepts-02",
@@ -1376,7 +1376,7 @@
             {
               "id": "b05-cpp-lambda-capture-review",
               "difficulty": 2,
-              "prompt": "Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x muuttuu silmukan jälkeen. Mikä on turvallisin korjaus?",
+              "prompt": "Code reviewissa lambda kaappaa paikallisen muuttujan viittauksella `[&x]` ja ajetaan myöhemmin, kun x on jo tuhoutunut. Turvallisin korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-cpp-lambda-capture-review.md"
             },
@@ -1432,7 +1432,7 @@
             {
               "id": "b08-cpp-initializer-list-trap",
               "difficulty": 4,
-              "prompt": "Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?",
+              "prompt": "Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` kääntyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-cpp-initializer-list-trap.md"
             },
@@ -1519,13 +1519,6 @@
               "prompt": "API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti ilman magic-numeroita?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-cpp-prod-chrono-timeout.md"
-            },
-            {
-              "id": "exp-cpp-tools-format-logging",
-              "difficulty": 2,
-              "prompt": "Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa turvalliseen merkkijonoon?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-cpp-tools-format-logging.md"
             },
             {
               "id": "tools-auto",
@@ -1693,7 +1686,7 @@
             {
               "id": "b08-js-async-microtask-starvation",
               "difficulty": 5,
-              "prompt": "while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. Miksi?",
+              "prompt": "Funktio `pump()` ajastaa itsensä aina uudelleen: `Promise.resolve().then(pump)`. Synkronista silmukkaa ei ole, mutta UI jäätyy. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-async-microtask-starvation.md"
             },
@@ -1742,7 +1735,7 @@
             {
               "id": "b12-js-async-async-stack",
               "difficulty": 5,
-              "prompt": "async stack trace katkeaa await-kohdassa debugissa. Node/DevTools apu?",
+              "prompt": "Virheen stack trace katkeaa await-kohtaan debugatessa. Mikä auttaa näkemään koko async-ketjun?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-async-stack.md"
             },
@@ -1777,7 +1770,7 @@
             {
               "id": "b12-js-async-microtask-starvation",
               "difficulty": 5,
-              "prompt": "while(true) { queueMicrotask(() => {}) } — UI jäätyy vaikka ei ole synkronista silmukkaa. Miksi?",
+              "prompt": "Funktio `tick()` kutsuu lopuksi `queueMicrotask(tick)`. Synkronista silmukkaa ei ole, mutta UI jäätyy. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-microtask-starvation.md"
             },
@@ -1798,7 +1791,7 @@
             {
               "id": "b12-js-async-promise-race-cancel",
               "difficulty": 3,
-              "prompt": "Käyttäjä peruuttaa — haluat että hitain fetch häviää kilpajuoksussa. Metodi?",
+              "prompt": "Käyttäjä painaa Peruuta — käynnissä olevan fetch-pyynnön pitää oikeasti keskeytyä. Mitä käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-promise-race-cancel.md"
             },
@@ -2065,7 +2058,7 @@
             {
               "id": "b12-js-modules-import-meta-resolve",
               "difficulty": 4,
-              "prompt": "Node 20+ resolvaa specifierin suhteessa moduuliin?",
+              "prompt": "ESM-tiedostossa haluat selvittää specifierin polun suhteessa nykyiseen moduuliin. Mikä API?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-import-meta-resolve.md"
             },
@@ -2135,14 +2128,14 @@
             {
               "id": "b12-js-modules-type-module",
               "difficulty": 2,
-              "prompt": "Node-projekti käyttää `import` ilman Babelia. package.json-asetus?",
+              "prompt": "Node-projektin .js-tiedostot käyttävät `import`-syntaksia. Mikä package.json-asetus kertoo Nodelle eksplisiittisesti, että ne ovat ES-moduuleja?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-type-module.md"
             },
             {
               "id": "b12-js-modules-wasm-import",
               "difficulty": 4,
-              "prompt": "WebAssembly moduuli ESM:ssä?",
+              "prompt": "Selaimessa: miten lataat ja instansioit .wasm-moduulin tehokkaasti suoraan verkosta?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-modules-wasm-import.md"
             },
@@ -2543,14 +2536,14 @@
             {
               "id": "b02-js-types-optional-05",
               "difficulty": 2,
-              "prompt": "API palauttaa `{ name?: string }` — miten luet turvallisesti ilman undefined crash?",
+              "prompt": "API palauttaa joskus `user: null`, jolloin `user.profile.name` kaatuu TypeErroriin. Miten luet kentän turvallisesti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-optional-05.md"
             },
             {
               "id": "b02-js-types-strict-07",
               "difficulty": 2,
-              "prompt": "Bugi: `if (count == '0')` menee läpi kun count on 0. Fix?",
+              "prompt": "Bugi: `if (input == 0)` menee läpi myös, kun input on tyhjä merkkijono `''`. Fix?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-types-strict-07.md"
             },
@@ -2648,7 +2641,7 @@
             {
               "id": "b07-js-types-optional-chain",
               "difficulty": 2,
-              "prompt": "Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?",
+              "prompt": "Konsolissa: `TypeError: Cannot read properties of null (reading 'profile')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-types-optional-chain.md"
             },
@@ -2774,7 +2767,7 @@
             {
               "id": "b12-js-types-parseint-radix",
               "difficulty": 3,
-              "prompt": "parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen?",
+              "prompt": "parseInt('08') vanhassa JS:ssä — miksi radix 10 kannattaa aina antaa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-parseint-radix.md"
             },
@@ -2788,7 +2781,7 @@
             {
               "id": "b12-js-types-spread-copy",
               "difficulty": 2,
-              "prompt": "Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?",
+              "prompt": "Haluat kopioida taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-spread-copy.md"
             },
@@ -2816,14 +2809,14 @@
             {
               "id": "b12-js-types-temporal-api",
               "difficulty": 4,
-              "prompt": "Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi?",
+              "prompt": "Date on mutatoitava ja altis aikavyöhykebugeille. Mikä uusi standardi-API korvaa sen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-temporal-api.md"
             },
             {
               "id": "b12-js-types-truthy-falsy",
               "difficulty": 2,
-              "prompt": "Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus tyhjälle kentälle?",
+              "prompt": "Lomake muuntaa kentän numeroksi, ja `if (!quantity)` hylkää validin arvon 0. Parempi tarkistus puuttuvalle arvolle?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-types-truthy-falsy.md"
             },
@@ -2851,7 +2844,7 @@
             {
               "id": "exp-js-types-strict-equality",
               "difficulty": 2,
-              "prompt": "Auth-bugi: `if (!token)` hylkää validin tyhjän merkkijonon `''` ja sallii `0`. Turvallisempi tarkistus?",
+              "prompt": "Auth-bugi: `if (token)` hyväksyy minkä tahansa truthy-arvon, esim. `1` tai `{}`, vaikka tokenin pitää olla ei-tyhjä merkkijono. Turvallisempi tarkistus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-js-types-strict-equality.md"
             },
@@ -2950,7 +2943,7 @@
             {
               "id": "b12-ts-mapped-type",
               "difficulty": 5,
-              "prompt": "type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] }",
+              "prompt": "type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] } — mikä tyyppirakenne?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-ts-mapped-type.md"
             },
@@ -3050,7 +3043,7 @@
             {
               "id": "b03-pg-config-random-page-cost",
               "difficulty": 3,
-              "prompt": "Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä?",
+              "prompt": "Kanta siirrettiin SSD:lle, mutta planner valitsee yhä seq scanin, vaikka index scan olisi nopeampi. Mitä säädät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-config-random-page-cost.md"
             },
@@ -3085,7 +3078,7 @@
             {
               "id": "b06-pg-config-checkpoint-timeout",
               "difficulty": 3,
-              "prompt": "Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät?",
+              "prompt": "Tuotannossa I/O-piikki joka 5. minuutti — checkpoint aiheuttaa. Mitä säädät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-config-checkpoint-timeout.md"
             },
@@ -3170,7 +3163,7 @@
             {
               "id": "sqd-first-value-partition",
               "difficulty": 4,
-              "prompt": "Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä toimii?",
+              "prompt": "Jokaiselle tilausriville tarvitset saman asiakkaan ensimmäisen tilauksen päivämäärän ilman GROUP BY:tä. Mikä toimii?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-first-value-partition.md"
             },
@@ -3198,14 +3191,14 @@
             {
               "id": "sqd-percent-rank-report",
               "difficulty": 3,
-              "prompt": "Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio?",
+              "prompt": "Raporttiin tarvitaan jokaisen myyjän suhteellinen sijoitus (0–1) kaikkien myyjien joukossa. Ikkunafunktio?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-percent-rank-report.md"
             },
             {
               "id": "sqd-pivot-conditional-agg",
               "difficulty": 4,
-              "prompt": "Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta?",
+              "prompt": "Myynti on riveinä (product, quarter, amount). Raporttiin tarvitaan sarakkeet Q1–Q4 tuotteittain ilman crosstab-laajennusta. Miten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-pivot-conditional-agg.md"
             },
@@ -3304,7 +3297,7 @@
             {
               "id": "b06-pg-explain-misestimate-rows",
               "difficulty": 4,
-              "prompt": "Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?",
+              "prompt": "Planner valitsee Nested Loopin — rows estimate 10, mutta actual 10M. Juurisyy?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-explain-misestimate-rows.md"
             },
@@ -3382,7 +3375,7 @@
             {
               "id": "b03-pg-indexes-fillfactor-update",
               "difficulty": 4,
-              "prompt": "Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?",
+              "prompt": "UPDATE-raskas taulu bloataa nopeasti, vaikka autovacuum on päällä. Taulutason säätö?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-pg-indexes-fillfactor-update.md"
             },
@@ -3417,7 +3410,7 @@
             {
               "id": "b06-pg-indexes-brin-timeseries",
               "difficulty": 4,
-              "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
+              "prompt": "Aikasarjataulussa on miljardi riviä, ja kyselyt rajaavat aikaväleillä. Kustannustehokas indeksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-brin-timeseries.md"
             },
@@ -3565,7 +3558,7 @@
             {
               "id": "sqd-semi-join-distinct",
               "difficulty": 3,
-              "prompt": "Tarvitset asiakkaat joilla on tilaus — ei tarvitse tilausrivejä. Vältä?",
+              "prompt": "Tarvitset asiakkaat, joilla on vähintään yksi tilaus — tilausrivejä ei tarvita. Paras kuvio?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-semi-join-distinct.md"
             }
@@ -3728,7 +3721,7 @@
             {
               "id": "sqd-limit-preview",
               "difficulty": 2,
-              "prompt": "Kehität uutta analytiikkakyselyä tuotantataululle. Miten testaat turvallisesti?",
+              "prompt": "Kehität uutta analytiikkakyselyä tuotantotaululle. Miten testaat turvallisesti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-limit-preview.md"
             },
@@ -3848,7 +3841,7 @@
             {
               "id": "sqd-search-path-injection",
               "difficulty": 4,
-              "prompt": "Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski?",
+              "prompt": "SECURITY DEFINER -funktio kutsuu `normalize_email()` ilman skeemaa, eikä funktiolle ole asetettu search_pathia. Mikä on riski?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-search-path-injection.md"
             },
@@ -4012,7 +4005,7 @@
             {
               "id": "b03-docker-entrypoint-cmd",
               "difficulty": 3,
-              "prompt": "`docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?",
+              "prompt": "Dockerfilessa on `ENTRYPOINT [\"./entrypoint.sh\"]` ja `CMD [\"node\", \"server.js\"]`. Miksi `docker run myimage bash` ei avaa bash-shelliä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-entrypoint-cmd.md"
             },
@@ -4061,7 +4054,7 @@
             {
               "id": "b04-docker-log-driver",
               "difficulty": 3,
-              "prompt": "Konttilokit katoavat rebootin jälkeen — oletus json-file kasvaa loputtomasti. Tuotanto-asetus?",
+              "prompt": "Konttilokit katoavat, kun kontti korvataan deployssa, ja oletus json-file kasvaa rajatta. Tuotantoasetus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-docker-log-driver.md"
             },
@@ -4096,7 +4089,7 @@
             {
               "id": "b05-docker-log-driver-json",
               "difficulty": 2,
-              "prompt": "Konttilokit katoavat rebootissa. Miten varmistat lokien keräyksen?",
+              "prompt": "Konttilokit katoavat, kun kontti poistetaan ja luodaan uudelleen deployssa. Miten varmistat lokien keräyksen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-docker-log-driver-json.md"
             },
@@ -4278,7 +4271,7 @@
             {
               "id": "b09-docker-secrets-mount",
               "difficulty": 4,
-              "prompt": "Tuotanto-Compose tarvitsee TLS-sertin ilman salaisuuden leimimistä imageen. Ratkaisu?",
+              "prompt": "Tuotanto-Compose tarvitsee TLS-sertin ilman, että salaisuus päätyy imageen. Ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-docker-secrets-mount.md"
             },
@@ -4412,7 +4405,7 @@
             {
               "id": "b03-docker-net-ipv6-disable",
               "difficulty": 4,
-              "prompt": "Legacy-sovellus hajoaa IPv6-osoitteeseen DNS:ssä — kontissa toimii IPv4-only hostilla. Diagnostiikka?",
+              "prompt": "Legacy-sovellus kaatuu, kun DNS palauttaa kontissa IPv6-osoitteen, vaikka verkossa toimii vain IPv4. Diagnostiikka?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-net-ipv6-disable.md"
             },
@@ -4545,7 +4538,7 @@
             {
               "id": "exp-docker-net-publish-bind",
               "difficulty": 3,
-              "prompt": "Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mikä publish-syntaksi?",
+              "prompt": "Palvelu kuuntelee kontissa osoitteessa 0.0.0.0:8080, mutta hostilta siihen ei saa yhteyttä. Mikä publish-syntaksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-docker-net-publish-bind.md"
             }
@@ -4638,7 +4631,7 @@
             {
               "id": "b03-docker-vol-tmpfs-secrets",
               "difficulty": 4,
-              "prompt": "Kontti kirjoittaa väliaikaista salaista tokenia levylle — se jää image layeriin. Ratkaisu?",
+              "prompt": "Kontti kirjoittaa väliaikaisen salaisen tokenin levylle — se jää kontin writable layeriin. Ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-vol-tmpfs-secrets.md"
             },
@@ -4673,14 +4666,14 @@
             {
               "id": "b06-docker-volume-mount-propagation",
               "difficulty": 5,
-              "prompt": "Bind mount host-muutokset ei näky kontissa — mount propagation väärä. Mitä säätät?",
+              "prompt": "Bind mountin alle hostilla tehdyt mountit eivät näy kontissa — mount propagation väärä. Mitä säädät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-docker-volume-mount-propagation.md"
             },
             {
               "id": "b07-docker-volume-backup",
               "difficulty": 4,
-              "prompt": "Postgres volume pitää varmuuskopioida ilman konttia samassa verkossa. Käytännöllinen tapa?",
+              "prompt": "Postgres-volume pitää varmuuskopioida johdonmukaisesti. Käytännöllinen tapa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-docker-volume-backup.md"
             },
@@ -4708,7 +4701,7 @@
             {
               "id": "b09-docker-vol-anonymous",
               "difficulty": 3,
-              "prompt": "Dockerfile: `VOLUME /data` — data katoaa kontin poiston jälkeen. Miksi?",
+              "prompt": "Dockerfile: `VOLUME /data` — kontti korvataan uudella, ja data näyttää kadonneen. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-docker-vol-anonymous.md"
             },
@@ -4886,7 +4879,7 @@
             {
               "id": "b06-linux-avahi-daemon-restart",
               "difficulty": 2,
-              "prompt": "Uusi .service-tiedosto lisätty — palvelu ei näkyy verkossa. Mitä teet ensin?",
+              "prompt": "Uusi .service-tiedosto lisätty, mutta palvelu ei näy verkossa. Mitä teet ensin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-avahi-daemon-restart.md"
             },
@@ -5034,7 +5027,7 @@
             {
               "id": "b06-linux-journalctl-reverse",
               "difficulty": 2,
-              "prompt": "Incidentti — tarvitset vanhimmat lokit ensin aikajärjestyksessä. Mitä journalctl-optiota?",
+              "prompt": "Incidentti — haluat nähdä uusimmat lokimerkinnät ensin. Mitä journalctl-optiota käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-journalctl-reverse.md"
             },
@@ -5090,7 +5083,7 @@
             {
               "id": "b09-linux-journald-forward-syslog",
               "difficulty": 3,
-              "prompt": "Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?",
+              "prompt": "Keskitetty lokipalvelin vaatii syslog-formaatin. journald-konfiguraatio?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-linux-journald-forward-syslog.md"
             },
@@ -5241,7 +5234,7 @@
             {
               "id": "linux-deleted-open-file",
               "difficulty": 3,
-              "prompt": "df näyttää levyn täyneksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?",
+              "prompt": "df näyttää levyn täydeksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/linux-deleted-open-file.md"
             },
@@ -5340,7 +5333,7 @@
             {
               "id": "b04-linux-resolv-stub",
               "difficulty": 4,
-              "prompt": "resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Todennäköisin syy?",
+              "prompt": "resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Mistä jatkat vianetsintää?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-linux-resolv-stub.md"
             },
@@ -5368,14 +5361,14 @@
             {
               "id": "b06-linux-network-ethtool-offload",
               "difficulty": 5,
-              "prompt": "Tuotantoverkko — checksum offload aiheuttaa corrupt-paketteja virtuaalisessa NIC:ssä. Mitä työkalu?",
+              "prompt": "Tuotantoverkko — checksum offload aiheuttaa korruptoituneita paketteja virtuaalisessa NIC:ssä. Mikä työkalu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-network-ethtool-offload.md"
             },
             {
               "id": "b06-linux-network-ip-neigh",
               "difficulty": 3,
-              "prompt": "Yhteys toimii pingillä mutta ARP-taulu näyttää incomplete. Mitä komento tarkistaa?",
+              "prompt": "Yhteys samassa aliverkossa olevaan koneeseen ei toimi — epäilet, ettei ARP-selvitys onnistu. Millä komennolla tarkistat?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-network-ip-neigh.md"
             },
@@ -5587,7 +5580,7 @@
             {
               "id": "b12-linux-tcp-retransmit-info",
               "difficulty": 4,
-              "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?",
+              "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. Mikä ss-lippu näyttää sisäiset TCP-tiedot (RTT, retrans)?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-linux-tcp-retransmit-info.md"
             },
@@ -5672,7 +5665,7 @@
             {
               "id": "b03-linux-systemd-type-notify",
               "difficulty": 4,
-              "prompt": "CI merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?",
+              "prompt": "systemd merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-linux-systemd-type-notify.md"
             },
@@ -5742,21 +5735,21 @@
             {
               "id": "b06-linux-systemd-ConditionPath",
               "difficulty": 4,
-              "prompt": "Backup-skripti ajetaan vain jos mount on käytettävissä. Miten unit ehto?",
+              "prompt": "Backup-skripti saa ajautua vain, jos /backup on mountattu. Miten määrität ehdon unitiin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-systemd-ConditionPath.md"
             },
             {
               "id": "b06-linux-systemd-logind",
               "difficulty": 3,
-              "prompt": "Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä komponentti hallinnoi?",
+              "prompt": "Käyttäjän palveluiden pitää jatkua ilman interaktiivista loginia. Mikä systemd-komponentti hallinnoi sessioita?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-systemd-logind.md"
             },
             {
               "id": "b06-linux-systemd-Requires",
               "difficulty": 3,
-              "prompt": "App unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestys?",
+              "prompt": "App-unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestyksen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-linux-systemd-Requires.md"
             },
@@ -5777,14 +5770,14 @@
             {
               "id": "b07-linux-systemd-wantedby",
               "difficulty": 3,
-              "prompt": "Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä [Install]-osiosta puuttuu?",
+              "prompt": "`systemctl enable` varoittaa, ettei unitissa ole asennusohjeita, eikä palvelu käynnisty bootissa. Mitä [Install]-osiosta puuttuu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-linux-systemd-wantedby.md"
             },
             {
               "id": "b08-linux-systemd-logind",
               "difficulty": 4,
-              "prompt": "SSH-istunto katkeaa mutta prosessi tapetaan logoutissa — haluat pitää jobin elossa. Mitä?",
+              "prompt": "SSH:lla käynnistetty pitkä job tapetaan uloskirjautuessa (logind KillUserProcesses=yes). Miten pidät sen elossa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-linux-systemd-logind.md"
             },
@@ -5833,7 +5826,7 @@
             {
               "id": "exp-linux-systemd-timer-incident",
               "difficulty": 3,
-              "prompt": "Yöllinen backup-skripti ei ajautunut cronin sijaan. Miten systemd-timer korvaa crontabin?",
+              "prompt": "Yöllinen backup-skripti halutaan ajaa systemd:llä cronin sijaan. Miten systemd-timer korvaa crontabin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-linux-systemd-timer-incident.md"
             },
@@ -5847,7 +5840,7 @@
             {
               "id": "systemd-after-before",
               "difficulty": 4,
-              "prompt": "Unit A tarvitsee verkon ennen käynnistystä mutta ei saa kaatua jos B epäonnistuu. Mikä riippuvuus?",
+              "prompt": "Unit A tarvitsee verkon ennen käynnistystä, mutta sen ei pidä kaatua, jos verkon odotus epäonnistuu. Mikä riippuvuus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/systemd-after-before.md"
             },
@@ -5875,7 +5868,7 @@
             {
               "id": "systemd-wants-requires",
               "difficulty": 4,
-              "prompt": "Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:lle?",
+              "prompt": "Unit A: `Requires=B` ja `After=B`. B:n käynnistys epäonnistuu. Mitä A:lle tapahtuu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/systemd-wants-requires.md"
             }
@@ -6294,7 +6287,7 @@
             {
               "id": "qt-opengl-makecurrent",
               "difficulty": 4,
-              "prompt": "QOpenGLWidget piirtää mustaa. OpenGL-kutsut tehdään väärästä säikeestä. Ensimmäinen korjaus?",
+              "prompt": "QOpenGLWidget piirtää mustaa. GL-kutsut tehdään paintGL():n ulkopuolelta (esim. latausmetodissa). Ensimmäinen korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/qt-opengl-makecurrent.md"
             },
@@ -6365,7 +6358,7 @@
             {
               "id": "b13-qt-quick-image-async",
               "difficulty": 2,
-              "prompt": "Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
+              "prompt": "Image lataa suuren paikallisen kuvatiedoston ja jäädyttää UI:n latauksen aikana. QML-korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b13-qt-quick-image-async.md"
             },
@@ -6548,7 +6541,7 @@
             {
               "id": "b07-qt-shader-qsb",
               "difficulty": 3,
-              "prompt": "Qt 6 shader ei lataudu — .frag tiedosto suoraan ei toimi. Miten shader valmistellaan?",
+              "prompt": "Qt 6 Qt Quick ShaderEffect ei lataa .frag-tiedostoa suoraan. Miten shader valmistellaan?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-qt-shader-qsb.md"
             },
@@ -6597,7 +6590,7 @@
             {
               "id": "exp-qt-shaders-rhi-backend",
               "difficulty": 5,
-              "prompt": "Tiimi migoi Qt 5 fixed-functionista Qt 6:een — shaderit hajosivat. Mikä arkkitehtuuri muuttui?",
+              "prompt": "Tiimi migroi Qt 5 -sovelluksen Qt 6:een — ShaderEffectien inline-GLSL-shaderit hajosivat. Mikä arkkitehtuuri muuttui?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-qt-shaders-rhi-backend.md"
             },
@@ -6696,7 +6689,7 @@
             {
               "id": "b07-qt-signals-disconnect",
               "difficulty": 3,
-              "prompt": "Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit väärin?",
+              "prompt": "Dialogi tuhoutuu, mutta sen osoitinta käyttävä lambda-slot kutsutaan yhä — use-after-free. Mitä teit väärin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-qt-signals-disconnect.md"
             },
@@ -6710,7 +6703,7 @@
             {
               "id": "exp-qt-signals-disconnect-lifetime",
               "difficulty": 3,
-              "prompt": "Dialog sulkeutuu mutta background-worker emitoi edelleen vanhaan slottiin — use-after-free. Miten estät?",
+              "prompt": "Dialog sulkeutuu ja tuhoutuu, mutta background-worker emitoi edelleen lambdaan, joka käyttää dialogin osoitinta — use-after-free. Miten estät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-qt-signals-disconnect-lifetime.md"
             },
@@ -6767,7 +6760,7 @@
             {
               "id": "b04-qt-deferred-delete",
               "difficulty": 4,
-              "prompt": "Worker-thread emit deleteLater() QObjectille joka elää GUI-threadissä — crash satunnaisesti. Miksi?",
+              "prompt": "Worker-säikeessä elävä QObject kutsuu deleteLater(), mutta säikeellä ei ole event loopia — objekti ei tuhoudu. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-qt-deferred-delete.md"
             },
@@ -7078,7 +7071,7 @@
             {
               "id": "b09-scrum-dod-documentation",
               "difficulty": 3,
-              "prompt": "Feature on testattu mutta API-dokumentaatio puuttuu — tiimi haluaa merkitä Done. DoD?",
+              "prompt": "Tiimin DoD vaatii päivitetyn API-dokumentaation. Feature on testattu, mutta dokumentaatio puuttuu, ja tiimi haluaa merkitä sen valmiiksi. Mitä teette?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-scrum-dod-documentation.md"
             },
@@ -7177,7 +7170,7 @@
             {
               "id": "b03-scrum-tech-debt-backlog",
               "difficulty": 3,
-              "prompt": "Tekninen velka kasaaantuu — PO sanoo 'ei aikaa'. Miten tuot backlogiin?",
+              "prompt": "Tekninen velka kasautuu — PO sanoo 'ei aikaa'. Miten tuot sen backlogiin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-scrum-tech-debt-backlog.md"
             },
@@ -7212,7 +7205,7 @@
             {
               "id": "b07-scrum-dor-design",
               "difficulty": 4,
-              "prompt": "Sprint alkaa — arkkitehtuurisia avoimia kysymyksiä on vielä kolme. Pitäisikö tarina ollut sprintissä?",
+              "prompt": "Sprintti alkaa, ja tarinassa on yhä kolme avointa arkkitehtuurikysymystä. Olisiko tarinan pitänyt tulla sprinttiin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-scrum-dor-design.md"
             },
@@ -7268,7 +7261,7 @@
             {
               "id": "scrum-story-split",
               "difficulty": 4,
-              "prompt": "Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa **liiketoiminta-kerroksia** pystysuunnassa?",
+              "prompt": "Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa teknisten kerrosten läpi pystysuunnassa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/scrum-story-split.md"
             }
@@ -7607,7 +7600,7 @@
             {
               "id": "b03-scrum-artifacts-transparency",
               "difficulty": 2,
-              "prompt": "Product Backlog on jaettu kolmessa eri työkalussa — kukaan ei näe kokonaiskuvaa. Scrum-arvo?",
+              "prompt": "Product Backlog on jaettu kolmeen eri työkaluun — kukaan ei näe kokonaiskuvaa. Mikä empirismin pilari kärsii?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-scrum-artifacts-transparency.md"
             },
@@ -7705,7 +7698,7 @@
             {
               "id": "scrum-team-size",
               "difficulty": 3,
-              "prompt": "Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmia?",
+              "prompt": "Mikä on Scrum Guide 2020:n mukaan Scrum-tiimin tyypillinen enimmäiskoko?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/scrum-team-size.md"
             }
@@ -7848,7 +7841,7 @@
             {
               "id": "git-reflog-recovery",
               "difficulty": 4,
-              "prompt": "Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tiedät että työtä on kadonnut vasta äskettäin. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?",
+              "prompt": "Resetoit branchin vahingossa ja tuoreet commitit katosivat historiasta. Mikä Git-mekanismi säilyttää HEAD-siirtojen historian palautusta varten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/git-reflog-recovery.md"
             },
@@ -8342,7 +8335,7 @@
             {
               "id": "prod-sec-cors",
               "difficulty": 4,
-              "prompt": "API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?",
+              "prompt": "API kopioi pyynnön Origin-headerin sellaisenaan Access-Control-Allow-Origin-arvoksi ja palauttaa Access-Control-Allow-Credentials: true. Mikä ongelma?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-sec-cors.md"
             },
@@ -8507,7 +8500,7 @@
             {
               "id": "rf-ci-integration",
               "difficulty": 4,
-              "prompt": "Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tulosformaatti integroituu?",
+              "prompt": "Robot Framework -testien tulokset pitää raportoida Jenkinsin yleiseen JUnit-raportointiin. Mikä tulosformaatti integroituu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rf-ci-integration.md"
             },
@@ -9057,7 +9050,7 @@
             {
               "id": "rust-traits-bounds-generic",
               "difficulty": 3,
-              "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?",
+              "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> &T` vaatii alkioiden vertailua. Miten rajaat T:n?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-traits-bounds-generic.md"
             },
@@ -9106,7 +9099,7 @@
             {
               "id": "rust-traits-impl-trait-return",
               "difficulty": 3,
-              "prompt": "Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?",
+              "prompt": "Funktio palauttaa aina saman konkreettisen tyypin, mutta haluat piilottaa sen kutsujalta ja luvata vain traitin. Mikä paluutyyppi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-traits-impl-trait-return.md"
             },
@@ -9128,7 +9121,7 @@
             {
               "id": "rust-types-enum-variants",
               "difficulty": 2,
-              "prompt": "Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?",
+              "prompt": "API-kutsu palauttaa joko onnistuneen vastauksen bodyn tai virheen statuskoodin. Miten mallinnat tämän yhdellä tyypillä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-types-enum-variants.md"
             },
@@ -9562,7 +9555,7 @@
             {
               "id": "space-orbit-geo-comms",
               "difficulty": 2,
-              "prompt": "Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS ei?",
+              "prompt": "Miksi TV-satelliitit sijoitetaan GEO-radalle, mutta globaalit GNSS-konstellaatiot perustuvat pääosin MEO-ratoihin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-orbit-geo-comms.md"
             },

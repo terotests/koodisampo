@@ -8,7 +8,7 @@ Ongelma on API-muodossa: osoitin yksin ei kerro rajoja. Pituus on erillinen para
 
 ## Ratkaisu
 
-Korvaa rajaton osoitin tyypillä, joka kantaa pituuden mukana — `std::span<const char>` tai `std::span<const std::byte>`:
+Korvaa rajaton osoitin tyypillä, joka kantaa pituuden mukana — C++20:n `std::span<const char>` tai `std::span<const std::byte>`:
 
 ```cpp
 void parse(std::span<const char> data) {

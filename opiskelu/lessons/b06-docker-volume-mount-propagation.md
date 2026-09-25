@@ -1,4 +1,4 @@
-# Bind mount host-muutokset ei näy kontissa — mount propagation väärä. Mitä säätät?
+# Bind mountin alle hostilla tehdyt mountit eivät näy kontissa — mount propagation väärä. Mitä säädät?
 
 ## Tilanne
 

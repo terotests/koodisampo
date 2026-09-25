@@ -1,10 +1,10 @@
-# Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?
+# Planner valitsee Nested Loopin — rows estimate 10, mutta actual 10M. Juurisyy?
 
 ## Tilanne
 
 `EXPLAIN ANALYZE` paljastaa katastrofaalisen arvio-eron: planner luulee 10 riviä, todellisuudessa 10 miljoonaa. Se valitsee nested loopin tai pienen hash-taulun — suunnitelma romahtaa. Indeksi voi olla olemassa, mutta planner "ei tiedä" sen hyödyllisyyttä.
 
-Tämä on klassinen **tilasto-ongelma**, ei seq scan -preferenssi itsessään.
+Tämä on klassinen **tilasto-ongelma**: aliarvio saa nested loopin näyttämään halvalta, vaikka isolle rivimäärälle hash join tai merge join olisi oikea valinta.
 
 ## Ratkaisu
 
@@ -21,7 +21,7 @@ CREATE STATISTICS stats_dep (dependencies) ON col_a, col_b FROM t;
 ANALYZE t;
 ```
 
-Vasta päivitettyjen statsien jälkeen arvioi `EXPLAIN (ANALYZE, BUFFERS)` uudelleen. Juurisyy on lähes aina stats, ei "bugi seq scanissa".
+Vasta päivitettyjen statsien jälkeen arvioi `EXPLAIN (ANALYZE, BUFFERS)` uudelleen. Juurisyy on lähes aina stats, ei "bugi nested loopissa".
 
 ## Taustaa
 

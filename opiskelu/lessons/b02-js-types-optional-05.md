@@ -1,4 +1,4 @@
-# API palauttaa `{ name?: string }` — miten luet turvallisesti ilman undefined crash?
+# API palauttaa joskus `user: null`, jolloin `user.profile.name` kaatuu TypeErroriin. Miten luet kentän turvallisesti?
 
 ## Tilanne
 
@@ -6,12 +6,12 @@ Frontend hakee käyttäjäprofiilin ja renderöi tervehdyksen:
 
 ```javascript
 async function greet(userId) {
-  const user = await fetchUser(userId); // { profile?: { name?: string } }
+  const user = await fetchUser(userId); // null | { profile?: { name?: string } }
   return `Hei, ${user.profile.name}!`;
 }
 ```
 
-Jos `profile` puuttuu — esimerkiksi uusi käyttäjä ei ole täyttänyt profiilia — koodi kaatuu: `Cannot read properties of undefined (reading 'name')`. TypeScript varoittaa tästä, mutta runtime-koodissa optional propertyt ovat edelleen yleinen tuotantobugi.
+Jos API palauttaa `null` — esimerkiksi käyttäjä on poistettu — koodi kaatuu: `Cannot read properties of null (reading 'profile')`. Sama käy, jos `profile` puuttuu: `Cannot read properties of undefined (reading 'name')`. TypeScript varoittaa tästä, mutta runtime-koodissa puuttuvat välitasot ovat edelleen yleinen tuotantobugi.
 
 Vanha tapa oli pitkä ketju if-lauseita tai `&&`-short-circuitia, joka on vaikealukuista syvissä poluissa.
 

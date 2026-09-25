@@ -1,4 +1,4 @@
-# Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaaliset shift-makrot?
+# Verkkoprotokolla serialisoi uint32_t:n. Mikä C++20+ tapa välttää manuaaliset shift-makrot?
 
 ## Tilanne
 

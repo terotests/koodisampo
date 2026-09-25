@@ -1,4 +1,4 @@
-# Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?
+# Aikasarjataulussa on miljardi riviä, ja kyselyt rajaavat aikaväleillä. Kustannustehokas indeksi?
 
 ## Tilanne
 

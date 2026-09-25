@@ -21,7 +21,7 @@ Puuttuva haara paljastuu vasta testissä tai tuotannossa.
 
 ## Ratkaisu
 
-**null/undefined erotellaan — optional chaining tarpeen**:
+**Exhaustiveness check — uusi union-variantti antaa käännösvirheen:**
 
 ```typescript
 function label(status: Status): string {
@@ -37,7 +37,7 @@ function label(status: Status): string {
 }
 ```
 
-`never` tarkoittaa "ei arvoa". Jos unioniin lisätään uusi variantti (esim. `'scheduled'`), `status` default-haarassa ei ole enää `never` — kääntäjä antaa virheen. Sama ajatus kuin `strictNullChecks`: pakota käsittelemään kaikki mahdolliset arvot; optional chaining (`obj?.field`) erottaa puuttuvan (`undefined`/`null`) määritellystä arvosta.
+`never` tarkoittaa "ei arvoa". Jos unioniin lisätään uusi variantti (esim. `'scheduled'`), `status` default-haarassa ei ole enää `never` — kääntäjä antaa virheen.
 
 ## Käytännössä
 

@@ -22,25 +22,20 @@ Worker-säikeessä ei pyöri event loopia — queued-signaaleja ei toimiteta.
 
 ## Ratkaisu
 
-Worker-säikeessä tarvitaan `QEventLoop exec()` — event delivery queued connectionille:
+Worker-säikeessä tarvitaan event loop, eli `QThread::exec()` — oletus-`QThread::run()` kutsuu sen:
 
 ```cpp
-// Älä override QThread::run() tyhjäksi — oletus kutsuu exec():
-
-// tai eksplisiittisesti worker-luokassa:
-void DataProcessor::run() {
-    // ... työ ...
-    emit done();
-}
-
-// connect:
+// Älä override QThread::run():ia ilman exec()-kutsua.
+// Worker-objektin kanssa oletus-run() riittää:
+m_worker->moveToThread(m_thread);
 connect(m_thread, &QThread::started, m_worker, &DataProcessor::run);
+m_thread->start();   // run() → exec() → queued-kutsut toimitetaan
 ```
 
-Threads and QObjects — Qt docs thread basics event loop. `QThread::start()` käynnistää oletuksena `exec()`, joka käsittelee queued-tapahtumat.
+Tyypillinen virhe on `QThread`-aliluokka, jonka `run()` tekee työn eikä kutsu `exec()`:iä — silloin säikeeseen siirrettyjen objektien slotteja ei koskaan kutsuta.
 
 ## Käytännössä
 
-Jos override `QThread::run()`, kutsu lopuksi `exec()` tai älä override ollenkaan — käytä worker-objektia. Debug: `qDebug() << QThread::currentThread()` senderissä ja receiverissä.
+Jos ylikirjoitat `QThread::run()`:n, kutsu siinä `exec()` tai jätä run() ylikirjoittamatta ja käytä worker-objektia. Debug: `qDebug() << QThread::currentThread()` senderissä ja receiverissä.
 
 [Lue lisää](https://doc.qt.io/qt-6/threads-qobject.html)

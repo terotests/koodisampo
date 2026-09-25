@@ -1,4 +1,4 @@
-# App unit käynnistää ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestys?
+# App-unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestyksen?
 
 ## Tilanne
 

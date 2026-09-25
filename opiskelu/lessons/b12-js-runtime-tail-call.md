@@ -2,7 +2,7 @@
 
 ## Tilanne
 
-Funktionaalinen koodi käyttää tail-recursive faktoriaal:
+Funktionaalinen koodi käyttää tail-rekursiivista kertomafunktiota:
 
 ```javascript
 function fact(n, acc = 1) {
@@ -12,11 +12,11 @@ function fact(n, acc = 1) {
 fact(100000); // RangeError
 ```
 
-ES6 spec lupasi tail call optimization (TCO), mutta käytännössä engine-tuki on olematon.
+ES6-spesifikaatio määrittelee strict mode -koodille proper tail callit (TCO), mutta käytännössä vain Safari (JavaScriptCore) toteuttaa ne. V8 (Chrome, Node.js) ja SpiderMonkey (Firefox) eivät tue niitä.
 
 ## Ratkaisu
 
-**Ei laajaa tukea — älä luota TCO:hon rekursioon**. Muunna loopiksi:
+**Ei laajaa tukea — älä luota TCO:hon syvässä rekursiossa**. Muunna loopiksi:
 
 ```javascript
 function fact(n) {
@@ -28,6 +28,6 @@ function fact(n) {
 
 ## Käytännössä
 
-Safari poisti TCO-tuen. Rekursio syvälle puu/haku: iteratiivinen stack tai trampoliini. `fact(100000)` overflowaa aina — käytä BigInt suurille luvuille.
+V8 kokeili TCO:ta lipun takana, mutta poisti toteutuksen. Koodi, joka toimii Safarissa, voi siis kaatua Chromessa. Syvä rekursio (puu/haku): iteratiivinen pino tai trampoliini. Huom: näin suuren luvun kertoma ylittää Numberin rajan (`Infinity`) — käytä BigIntiä, jos tarvitset tarkan tuloksen.
 
 [Lue lisää](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Tail_recursion)

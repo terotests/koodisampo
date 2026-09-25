@@ -16,16 +16,17 @@ Custom tyyppi ilman iteratoria — kääntäjäviesti mainitsee sisäisen instan
 **C++20 concepts**:
 
 ```cpp
-template<std::ranges::sortable R>
+template<std::ranges::random_access_range R>
+    requires std::sortable<std::ranges::iterator_t<R>>
 void sortLike(R& c) {
     std::ranges::sort(c);
 }
 ```
 
-Tai `requires std::sortable<R>`. Virheellinen tyyppi → "constraints not satisfied" kutsukohdassa.
+Huom: `std::ranges::sortable`-nimistä conceptia ei ole. `std::sortable` (`<iterator>`) rajaa **iteraattorityyppiä**, joten kontille se kirjoitetaan muodossa `std::sortable<std::ranges::iterator_t<R>>`. Virheellinen tyyppi → "constraints not satisfied" kutsukohdassa.
 
 ## Käytännössä
 
-Std-konseptit: `sortable`, `copyable`, `regular`. Omat konseptit domain-rajapintoihin. CppCoreGuidelines T.24.
+Std-konseptit: `std::sortable` (iteraattoreille), `std::copyable`, `std::regular`. Omat konseptit domain-rajapintoihin. CppCoreGuidelines T.24.
 
 [Lue lisää](https://en.cppreference.com/w/cpp/language/constraints)

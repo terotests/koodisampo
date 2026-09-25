@@ -16,15 +16,20 @@ Tiedostoja muokataan hostilla, mutta kontissa webpack ei huomaa muutoksia — ho
 
 ## Ratkaisu
 
-**Cached/delegated mount tai docker sync korjaa host/VM-tiedostojärjestelmäeron.** Docker Desktop macOS:lla tarjoaa mount-konsistensseja:
+**Docker Desktopin VM-tiedostojako: tarkista file sharing ja watcherin pollaus.** Vanhat `:cached`- ja `:delegated`-liput ovat nykyisessä Docker Desktopissa no-op — ne eivät muuta mitään.
+
+Tarkista ensin, että hakemisto on jaettu Docker Desktopin File sharing -asetuksissa (macOS:llä VirtioFS). Jos tiedostot päivittyvät kontissa mutta watcher ei reagoi, inotify-tapahtumat eivät välity VM-rajan yli — ota pollaus käyttöön:
 
 ```yaml
-volumes:
-  - .:/app:cached    # macOS: host prioriteetti, nopeampi luku kontista
-  - .:/app:delegated # macOS: kontti prioriteetti, nopeampi kirjoitus kontista
+services:
+  web:
+    volumes:
+      - .:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true   # tai webpackin watchOptions.poll
 ```
 
-Windows WSL2:ssa pidä projekti WSL-filesystemissa (`\\wsl$\...`), ei Windows-puolella — bind mount on huomattavasti nopeampi. Vanhemmissa setupissa `docker-sync` tai Mutagen synkronoi tiedostot erillisellä prosessilla.
+Windows WSL2:ssa pidä projekti WSL-filesystemissa (`\\wsl$\...`), ei Windows-puolella — bind mount on huomattavasti nopeampi. Vaihtoehtoisesti Compose Watch (`develop.watch`) tai Mutagen synkronoi tiedostot erillisellä mekanismilla.
 
 ## Käytännössä
 

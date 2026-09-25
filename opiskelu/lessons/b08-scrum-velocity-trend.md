@@ -4,7 +4,7 @@
 
 Organisaatiossa on kolme Scrum-tiimiä. Kuukausittaisessa johtoryhmässä esitetään taulukko: Tiimi A 45 SP, Tiimi B 32 SP, Tiimi C 58 SP. Kysymys kuuluu: "Miksi B on hitain — pitääkö tehostaa?"
 
-Vertailu olettaa, että story pointit ovat **yhteismitallisia** eri tiimien välill. Ne eivät ole: jokainen tiimi kaliberoi oman skaalansa referenssitarinoilla. Tiimi C voi inflatoida arvioita, Tiimi B tehdä isoja integraatioita pienillä pisteillä. Velocity kertoo kunkin tiimin **omaan historiaan** suhteutettua kapasiteettia — ei tuottavuutta tiimien välillä.
+Vertailu olettaa, että story pointit ovat **yhteismitallisia** eri tiimien välillä. Ne eivät ole: jokainen tiimi kaliberoi oman skaalansa referenssitarinoilla. Tiimi C voi inflatoida arvioita, Tiimi B tehdä isoja integraatioita pienillä pisteillä. Velocity kertoo kunkin tiimin **omaan historiaan** suhteutettua kapasiteettia — ei tuottavuutta tiimien välillä.
 
 Virheellinen vertailu johtaa vääriin resurssipäätöksiin ja estimointikulttuurin vääristymiseen.
 
@@ -12,7 +12,7 @@ Virheellinen vertailu johtaa vääriin resurssipäätöksiin ja estimointikulttu
 
 **Velocity on suunnitteluavustin — vertailu vääristää estimointia.**
 
-Velocity supports forecasting — not a productivity comparison (Scrum Guide). Kukin tiimi käyttää velocityä omiin sprintti- ja release-ennusteisiinsa. Tiimien välinen pistevertailu kannustaa pelotteluun, skaalan muuttamiseen ja keskinäiseen kilpailuun — vastoin Scrumin tiimilähtöistä empirismiä.
+Velocity tukee oman tiimin ennustamista — ei tiimien välistä tuottavuusvertailua. Scrum Guide ei määrittele velocityä; se on tiimien oma lisäkäytäntö. Kukin tiimi käyttää velocityä omiin sprintti- ja release-ennusteisiinsa. Tiimien välinen pistevertailu kannustaa pelotteluun, skaalan muuttamiseen ja keskinäiseen kilpailuun — vastoin Scrumin tiimilähtöistä empirismiä.
 
 ## Käytännössä
 

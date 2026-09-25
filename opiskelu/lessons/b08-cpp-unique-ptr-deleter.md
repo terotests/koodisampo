@@ -1,4 +1,4 @@
-# FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallinnet?
+# FILE* pitää sulkea fclose:lla — unique_ptr oletusdeleterillä ei riitä. Miten mallinnat sen oikein?
 
 ## Tilanne
 

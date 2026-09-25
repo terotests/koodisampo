@@ -1,16 +1,17 @@
-# Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä [Install]-osiosta puuttuu?
+# `systemctl enable` varoittaa, ettei unitissa ole asennusohjeita, eikä palvelu käynnisty bootissa. Mitä [Install]-osiosta puuttuu?
 
 ## Tilanne
 
-Uusi `analytics.service` on asennettu ja enabletty:
+Uusi `analytics.service` on asennettu ja sitä yritetään enabloida:
 
 ```bash
 sudo systemctl enable analytics.service
+# The unit files have no installation config (WantedBy=, RequiredBy=, ...)
 systemctl is-enabled analytics
-# enabled
+# static
 ```
 
-Rebootin jälkeen palvelu on silti `inactive`. Unit-tiedoston `[Install]`-osio on tyhjä tai puuttuu kokonaan — `enable` ei löydä targetia, johon symlink luodaan, tai symlink osoittaa väärään paikkaan.
+Rebootin jälkeen palvelu on `inactive`. Unit-tiedoston `[Install]`-osio on tyhjä tai puuttuu kokonaan — `enable` ei löydä targetia, johon symlink luotaisiin, joten mitään ei tapahdu.
 
 ```ini
 [Service]
@@ -35,7 +36,7 @@ sudo systemctl enable analytics.service
 ls /etc/systemd/system/multi-user.target.wants/analytics.service
 ```
 
-**WantedBy creates symlink for enable** — ilman tätä `systemctl enable` voi näyttää onnistuvan mutta boot-linkki puuttuu tai on väärä.
+**WantedBy creates symlink for enable** — ilman tätä `systemctl enable` ei luo boot-linkkiä, vaan varoittaa puuttuvista asennusohjeista ja unit jää `static`-tilaan.
 
 ## Käytännössä
 

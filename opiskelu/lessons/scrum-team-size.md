@@ -1,4 +1,4 @@
-# Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmia?
+# Mikä on Scrum Guide 2020:n mukaan Scrum-tiimin tyypillinen enimmäiskoko?
 
 ## Tilanne
 
@@ -8,16 +8,16 @@ Koordinaatio vie aikaa varsinaiselta työltä — viestintäkanavat täyttyvät,
 
 ## Ratkaisu
 
-Scrum Guide suosittelee tiimin olevan **pieni ja riittävän moniosaava** — käytännössä noin **7 ± 2 kehittäjää** ennen kuin koordinaatiokuorma kasvaa merkittävästi.
+Scrum Guide 2020 sanoo, että Scrum-tiimi on **tyypillisesti enintään 10 henkeä** — luku sisältää Product Ownerin, Scrum Masterin ja Developersit. Tiimin pitää olla riittävän pieni pysyäkseen ketteränä ja riittävän suuri saadakseen merkittävää työtä valmiiksi sprintissä.
 
-- Alle viisi: riski puuttuville taidoille ja lomien katveille.
-- Yli yhdeksän: viestintä, synkronointi ja itseorganisoituminen vaikeutuvat.
-- "Two-pizza team" -periaate: tiimi mahtuu yhteen huoneeseen ilman monimutkaista hierarkiaa.
+- Pienempi tiimi viestii paremmin ja on tuottavampi.
+- Liian pieni tiimi: riski puuttuville taidoille ja lomien katveille.
+- Yli 10 hengen tiimi: viestintä, synkronointi ja itseohjautuvuus vaikeutuvat.
 
-Koko ei ole kiinteä laki vaan ohje: jos daily ja sprint planning venyvät koordinaatiosta, tiimi on todennäköisesti liian suuri.
+Vanhempi, 2017 Scrum Guiden suositus oli 3–9 kehittäjää (usein "7 ± 2"). Vuoden 2020 opas luopui erillisestä kehitystiimistä ja puhuu koko Scrum-tiimin koosta.
 
 ## Käytännössä
 
-Jos tiimi on >9, harkitse jakamista kahteen cross-functional tiimiin eri backlog-alueilla — älä lisää ihmisiä samaan Scrum-tiimiin. Mittaa: onko sprint goal yhä selkeä kaikille? Jos ei, koko on ongelma, ei motivaatio.
+Jos tiimi kasvaa liian suureksi, Scrum Guide suosittelee jakamaan sen useaksi yhtenäiseksi Scrum-tiimiksi, jotka keskittyvät samaan tuotteeseen ja jakavat saman Product Goalin, Product Backlogin ja Product Ownerin — älä lisää ihmisiä samaan tiimiin. Mittaa: onko sprint goal yhä selkeä kaikille? Jos ei, koko on ongelma, ei motivaatio.
 
 [Lue lisää](https://scrumguides.org/scrum-guide.html)

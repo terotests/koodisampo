@@ -1,4 +1,4 @@
-# Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät?
+# Tuotannossa I/O-piikki joka 5. minuutti — checkpoint aiheuttaa. Mitä säädät?
 
 ## Tilanne
 

@@ -1,57 +1,53 @@
-# Code reviewissa lambda kaappaa ulkoisen muuttujan viittauksella `[&x]` mutta x muuttuu silmukan jälkeen. Mikä on turvallisin korjaus?
+# Code reviewissa lambda kaappaa paikallisen muuttujan viittauksella `[&x]` ja ajetaan myöhemmin, kun x on jo tuhoutunut. Turvallisin korjaus?
 
 ## Tilanne
 
-Sovellus rekisteröi callbackeja (UI-napit, `std::async`, Qt-signaalit, ajastimet) ja ajaa ne vasta myöhemmin. Silmukka luo handlerit, mutta kaappaa muuttujan **viittauksella**:
+Sovellus rekisteröi callbackeja (UI-napit, `std::async`, Qt-signaalit, ajastimet) ja ajaa ne vasta myöhemmin. Funktio luo handlerit, mutta kaappaa paikallisen muuttujan **viittauksella**:
 
 ```cpp
 struct Item { int id; /* ... */ };
-std::vector<Item> items = fetchItems();
 
-std::vector<std::function<void()>> handlers;
-int x = 0;
-
-for (auto& item : items) {
-    x = item.id;  // x päivittyy jokaisella kierroksella
-    handlers.push_back([&x]() { use(x); });  // BUG: kaikki jakavat saman x:n
+void registerHandlers(EventLoop& loop, const std::vector<Item>& items) {
+    for (const auto& item : items) {
+        int x = item.id;                    // paikallinen muuttuja
+        loop.post([&x]() { use(x); });      // BUG: viittaus x:ään
+    }   // x tuhoutuu jokaisen kierroksen lopussa
 }
 
-// Myöhemmin — esim. käyttäjä klikkaa nappeja tai worker käynnistyy:
-for (auto& h : handlers) {
-    h();  // jokainen kutsuu use() samalla arvolla: viimeinen id
-}
+// Myöhemmin event loop ajaa lambdat — x:ää ei enää ole:
+// jokainen kutsu lukee roikkuvan viittauksen (UB)
 ```
 
 Vertaa oikeaan tapaan silmukkaindeksillä:
 
 ```cpp
 for (int i = 0; i < 10; ++i) {
-    handlers.push_back([i]() { log(i); });  // OK — jokainen lambda saa oman kopion i:stä
+    loop.post([i]() { log(i); });  // OK — jokainen lambda saa oman kopion i:stä
 }
 ```
 
 ### Miksi `[&x]` rikkoo
 
-Kaappaus **ei tallenna arvoa** — se tallentaa osoitteen samaan `x`-muuttujaan. Kaikki handlerit näkevät saman muuttujan. Kun ne ajetaan silmukan jälkeen, `x` on jo viimeisen iteraation arvo.
+Viittauskaappaus **ei tallenna arvoa** — se tallentaa viittauksen `x`-muuttujaan. Viittaus ei pidennä muuttujan elinikää: kun lambda ajetaan myöhemmin, `x` on jo tuhoutunut ja viittaus roikkuu. Tulos on undefined behavior — ohjelma voi näyttää "vanhan" arvon, roskaa tai kaatua.
 
-Tämä on C++:n vastine JavaScriptin `var`-silmukka-ansaan: callback elää pidempään kuin silmukan hetkellinen tila, mutta viittauskaappaus sitoo sen **elävään** muuttujaan, ei sen arvoon tietyllä hetkellä.
+Sama pätee `[&]`-kaappaukseen: se kaappaa kaiken viittauksella eikä pidä mitään elossa.
 
 ## Ratkaisu
 
 Kaappaa **arvo**, kun lambda elää pidempään kuin muuttujan merkityksellinen elinkaari:
 
 ```cpp
-for (auto& item : items) {
-    x = item.id;
-    handlers.push_back([x]() { use(x); });  // kopio kaappaushetkellä — jokaisella eri arvo
+for (const auto& item : items) {
+    int x = item.id;
+    loop.post([x]() { use(x); });  // kopio kaappaushetkellä — elää lambdan mukana
 }
 ```
 
 Tai kaappaa suoraan silmukkamuuttuja, jos se on se mitä tarvitset:
 
 ```cpp
-for (auto item : items) {  // item on jo kopio jokaisesta alkioista
-    handlers.push_back([item]() { use(item.id); });
+for (auto item : items) {  // item on jo kopio kustakin alkiosta
+    loop.post([item]() { use(item.id); });
 }
 ```
 
@@ -59,7 +55,7 @@ C++14+: generalized capture on selkeä myös viittaus-silmukassa:
 
 ```cpp
 for (const auto& item : items) {
-    handlers.push_back([id = item.id]() { use(id); });
+    loop.post([id = item.id]() { use(id); });
 }
 ```
 
@@ -71,7 +67,7 @@ for (const auto& item : items) {
 |---------|-----------------|------------------|
 | `[x]` | Kopioi vain `x` | Näkee heti mitä kiinnitetään |
 | `[=]` | Kopioi kaikki lambda-rungossa käytetyt ulkoiset | Toimii usein, mutta piilottaa intentin; uusi muuttuja lambdaan kaappautuu automaattisesti |
-| `[&x]` | Viittaus `x`:ään | OK vain jos lambda kutsutaan ennen kuin `x` muuttuu tai poistuu |
+| `[&x]` | Viittaus `x`:ään | OK vain jos lambda kutsutaan ennen kuin `x` tuhoutuu |
 
 `[=]` ei ole "aina turvallisin": se kaappaa `this`-osoittimen jäsenfunktioissa (ei kopioi objektia), eikä se poista elinkaari-ongelmia kaikissa tilanteissa.
 

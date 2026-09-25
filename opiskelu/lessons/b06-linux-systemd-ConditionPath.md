@@ -1,4 +1,4 @@
-# Backup-skripti ajetaan vain jos mount on käytettävissä. Miten unit ehto?
+# Backup-skripti saa ajautua vain, jos /backup on mountattu. Miten määrität ehdon unitiin?
 
 ## Tilanne
 

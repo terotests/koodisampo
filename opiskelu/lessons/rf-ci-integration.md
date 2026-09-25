@@ -1,4 +1,4 @@
-# Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tulosformaatti integroituu?
+# Robot Framework -testien tulokset pitää raportoida Jenkinsin yleiseen JUnit-raportointiin. Mikä tulosformaatti integroituu?
 
 ## Tilanne
 
@@ -8,7 +8,7 @@ Jenkins (kuten GitLab CI ja GitHub Actions) ymmärtää natiivisti JUnit XML -mu
 
 ## Ratkaisu
 
-**robot --xunit output.xml tuottaa JUnit-muotoisen raportin jonka Jenkins parsii natiivisti.**
+**robot --xunit xunit.xml tuottaa JUnit-muotoisen raportin jonka Jenkins parsii natiivisti.** Älä anna xUnit-tiedostolle nimeä `output.xml` — se törmää Robotin oman tulostiedoston kanssa.
 
 ```bash
 robot --outputdir results --xunit xunit.xml tests/
@@ -36,6 +36,6 @@ Tallenna CI:ssä ainakin:
 - screenshotit
 - selaimen trace/video, jos Browser Library on konfiguroitu niin
 
-JUnit XML on CI:n yhteenvetoa varten. Robotin `log.html` on debuggausta varten — älä tyydy pelkkään "build failed" -näkymään. GitHub Actionsissa käytä `publish-unit-test-result`-actionia; GitLabissa `reports: junit:`.
+Jenkinsin Robot Framework -plugin osaa lukea myös `output.xml`:n suoraan, mutta yleinen `junit`-askel vaatii xUnit-tiedoston. JUnit XML on CI:n yhteenvetoa varten. Robotin `log.html` on debuggausta varten — älä tyydy pelkkään "build failed" -näkymään. GitHub Actionsissa käytä `publish-unit-test-result`-actionia; GitLabissa `reports: junit:`.
 
 [Lue lisää](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#xunit-compatible-result-file)

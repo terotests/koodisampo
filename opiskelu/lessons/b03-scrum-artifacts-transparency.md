@@ -1,4 +1,4 @@
-# Product Backlog on jaettu kolmessa eri työkalussa — kukaan ei näe kokonaiskuvaa. Scrum-arvo?
+# Product Backlog on jaettu kolmeen eri työkaluun — kukaan ei näe kokonaiskuvaa. Mikä empirismin pilari kärsii?
 
 ## Tilanne
 
@@ -8,7 +8,7 @@ Artefaktit ovat olemassa, mutta **läpinäkyvyys** puuttuu.
 
 ## Ratkaisu
 
-Ongelma rikkoo Scrum-arvoa **Transparency (läpinäkyvyys)**.
+Ongelma rikkoo empirismin pilaria **Transparency (läpinäkyvyys)**. Scrumin kolme pilaria ovat läpinäkyvyys, tarkastelu ja sopeutuminen. Ne eivät ole Scrumin arvoja — arvoja ovat sitoutuminen, keskittyminen, avoimuus, kunnioitus ja rohkeus.
 
 - Product Backlog on **yksi totuuden lähde** — kaikkien sidosryhmien nähtävissä ja ymmärrettävissä.
 - Sprint Backlog ja Increment noudattavat samaa periaatetta: kaikki näkevät saman tilanteen.

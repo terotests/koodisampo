@@ -1,4 +1,4 @@
-# Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta?
+# Myynti on riveinä (product, quarter, amount). Raporttiin tarvitaan sarakkeet Q1–Q4 tuotteittain ilman crosstab-laajennusta. Miten?
 
 ## Tilanne
 

@@ -1,4 +1,4 @@
-# Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä komponentti hallinnoi?
+# Käyttäjän palveluiden pitää jatkua ilman interaktiivista loginia. Mikä systemd-komponentti hallinnoi sessioita?
 
 ## Tilanne
 

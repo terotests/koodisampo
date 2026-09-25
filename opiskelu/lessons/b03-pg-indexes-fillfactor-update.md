@@ -1,4 +1,4 @@
-# Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?
+# UPDATE-raskas taulu bloataa nopeasti, vaikka autovacuum on päällä. Taulutason säätö?
 
 ## Tilanne
 

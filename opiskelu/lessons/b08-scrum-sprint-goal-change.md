@@ -8,14 +8,14 @@ Sprint goal ei ole helposti vaihdettavissa — se on sprintin sitoumus.
 
 ## Ratkaisu
 
-**Goal ei vaihdu kevyesti — neuvottele tiimi, peru sprint tarvittaessa.**
+**Sprint Goal pysyy — jos se vanhenee, PO voi perua sprintin.**
 
-Scrum Guide sanoo, että Sprint Goal on sprintin aikana syntyvä yhteinen tavoite. Muutos vaatii tiimin yhteisymmärryksen — ei yksipuolista PO:n päätöstä. Jos goal menettää merkityksensä kokonaan, vaihtoehto on sprintin peruutus PO:n toimesta.
+Scrum Guide 2020: Sprint Goal on Developersien sitoumus, joka luodaan Sprint Planningissa. Sprintin aikana ei tehdä muutoksia, jotka vaarantaisivat Sprint Goalin. Scopea (Sprint Backlogia) voi tarkentaa ja neuvotella PO:n kanssa sitä mukaa kuin opitaan, mutta itse goal ei vaihdu — ei PO:n yksipuolisella päätöksellä eikä tiimin yhteisymmärrykselläkään.
 
-Sprint Goal ohjaa sprinttiä — muutos vaatii tiimin yhteisymmärryksen (Scrum Guide). Radikaali goal-vaihto on poikkeus, ei normaali.
+Jos goal menettää merkityksensä kokonaan, ainoa keino on sprintin peruutus, ja sen voi tehdä vain Product Owner. Uusi goal syntyy seuraavassa Sprint Planningissa.
 
 ## Käytännössä
 
-Kysy: "Jos vaihdamme goalin, mitä jätämme pois? Onko vanha goal yhä relevantti?" Dokumentoi päätös. Jos goal-vaihtoja tulee joka sprint, tarkista PO:n priorisointi ja refinement — ongelma voi olla suunnittelussa. Sprintin peruutus on viimeinen keino.
+Kysy: "Onko nykyinen goal yhä arvokas?" Jos on, uusi feature menee Product Backlogiin ja priorisoidaan seuraavaan sprinttiin. Jos ei, PO voi perua sprintin — peruutus on poikkeus ja viimeinen keino. Jos tällaisia tilanteita tulee joka sprintti, tarkista PO:n priorisointi, refinement ja sprintin pituus — ongelma voi olla suunnittelussa.
 
 [Lue lisää](https://scrumguides.org/scrum-guide.html#sprint-goal)

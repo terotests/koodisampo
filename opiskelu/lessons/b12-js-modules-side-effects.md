@@ -16,7 +16,7 @@ Dev toimii, mutta production-buildissa IE11 / vanha Safari kaatuu — polyfill-m
 
 ## Ratkaisu
 
-**Side-effect import** — bundler luulee moduulin kuolleeksi koodiksi ja poistaa sen tree-shakingissa. Korjaus:
+**Side-effect import** — jos paketti on merkitty `"sideEffects": false`, bundler olettaa, ettei yhdelläkään moduulilla ole sivuvaikutuksia. Pelkkä `import './polyfill.js'` ilman käytettyjä exportteja näyttää silloin kuolleelta koodilta, ja se poistetaan. Korjaus: lisää polyfill `sideEffects`-listaan:
 
 ```json
 // package.json

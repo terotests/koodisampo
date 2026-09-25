@@ -1,36 +1,38 @@
-# Worker-thread emit deleteLater() QObjectille joka elää GUI-threadissä — crash satunnaisesti. Miksi?
+# Worker-säikeessä elävä QObject kutsuu deleteLater(), mutta säikeellä ei ole event loopia — objekti ei tuhoudu. Miksi?
 
 ## Tilanne
 
-Resurssienhallinnassa worker vapauttaa väliaikaisen objektin:
+Worker-säikeessä luotu apuobjekti vapautetaan `deleteLater()`:lla:
 
 ```cpp
-void Worker::cleanup() {
-    m_tempBuffer->deleteLater();  // luotu GUI-säikeessä
+void Worker::run() {             // QThread::run() override ilman exec()
+    auto *buffer = new TempBuffer;   // elää worker-säikeessä
+    process(buffer);
+    buffer->deleteLater();       // poisto ei tapahdu heti
+    while (m_running) { doWork(); }  // event loopia ei ajeta
 }
 ```
 
-`TempBuffer` luotiin pääikkunassa ja elää GUI-säikeessä. `deleteLater()` worker-säikeestä postaa poistotapahtuman — mutta event loop, joka käsittelee sen, on väärässä säikeessä tai ei ole käynnissä oikeaan aikaan.
+`deleteLater()` postaa `DeferredDelete`-tapahtuman objektin omaan säikeeseen. Koska worker-säikeessä ei pyöri event loopia, tapahtumaa ei käsitellä ja objekti jää muistiin.
 
 ## Ratkaisu
 
-`deleteLater` vaatii event loopin omistajasäikeessä — käytä queued delete tai siirrä objekti oikeaan threadiin:
+`deleteLater()` on säieturvallinen, mutta poisto tapahtuu vasta objektin omistajasäikeen event loopissa. Anna säikeelle event loop tai tuhoa objekti suoraan omassa säikeessään:
 
 ```cpp
-void Worker::cleanup() {
-    QMetaObject::invokeMethod(m_tempBuffer, "deleteLater",
-                              Qt::QueuedConnection);
-}
+// Worker-objekti + QThread: oletus-run() ajaa exec():n
+worker->moveToThread(thread);
+connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+thread->start();
 
-// tai signaali GUI-säikeeseen:
-emit requestDelete(m_tempBuffer);
-// slot GUI-säieessä: buffer->deleteLater();
+// tai ilman event loopia: tuhoa suoraan omassa säikeessä
+delete buffer;
 ```
 
-deleteLater postaa eventin — event loop pitää pyöriä oikeassa threadissä. Poisto tapahtuu vastaanottajan event loopissa seuraavan kierroksen aikana.
+Jos säikeessä ei ole event loopia, Qt käsittelee odottavat poistot viimeistään säikeen päättyessä.
 
 ## Käytännössä
 
-Objektin thread affinity määrää, missä säikeessä `deleteLater()` on turvallinen. GUI-objektit tuhoa aina GUI-säikeestä. Worker-säikeen objektit: `connect(thread, &QThread::finished, worker, &QObject::deleteLater)`.
+Objektin thread affinity määrää, missä säikeessä `deleteLater()`-poisto suoritetaan — kutsun voi tehdä mistä säikeestä tahansa. GUI-säikeen objektit poistuvat GUI:n event loopissa. Worker-säikeen objekteille: `connect(thread, &QThread::finished, worker, &QObject::deleteLater)`.
 
 [Lue lisää](https://doc.qt.io/qt-6/qobject.html#deleteLater)

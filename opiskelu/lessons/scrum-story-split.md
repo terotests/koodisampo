@@ -1,4 +1,4 @@
-# Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa liiketoiminta-kerroksia pystysuunnassa?
+# Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa teknisten kerrosten läpi pystysuunnassa?
 
 ## Tilanne
 

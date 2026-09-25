@@ -1,10 +1,10 @@
-# Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — epävakaa sort. C++20 ratkaisu?
+# Structin käsin kirjoitetut <, == ja > ovat keskenään ristiriidassa, ja std::sort käyttäytyy oudosti. C++20-ratkaisu?
 
 ## Tilanne
 
-Custom comparator palauttaa vain `<` ja `>` — kun `a == b`, palautusarvo on epämääräinen tai aina `false`. `std::sort` vaatii **tiukan heikomman järjestyksen** (strict weak ordering). Virheellinen comparator voi jättää järjestyksen epävakaaksi tai antaa UB:n.
+Structille on kirjoitettu käsin `operator<`, `operator==` ja `operator>`, mutta ne vertailevat eri kenttiä tai eri järjestyksessä — esimerkiksi `a < b` ja `b < a` voivat olla molemmat tosia. `std::sort` vaatii **tiukan heikon järjestyksen** (strict weak ordering); ristiriitainen vertailu antaa väärän järjestyksen tai jopa UB:n (lukua rajojen yli).
 
-Vanha ratkaisu: palauta `-1/0/1` kolmesta arvosta — helppo sekoittaa `bool`-paluuarvoon.
+Kuusi käsin kirjoitettua operaattoria on helppo saada epäjohdonmukaisiksi, kun structiin lisätään kenttiä. Myöskään `std::stable_sort` ei auta — se vaatii saman johdonmukaisuuden.
 
 ## Ratkaisu
 
@@ -21,7 +21,7 @@ struct Item {
 std::ranges::sort(items);
 ```
 
-`default` generoi `std::strong_ordering` — totaalinen järjestys, jossa yhtäsuuruus on määritelty.
+`default` vertailee jäsenet määrittelyjärjestyksessä ja generoi niistä johdonmukaiset `<`, `<=`, `>`, `>=` (ja defaultattu `<=>` tuo mukanaan myös `==`:n). Tässä paluutyyppi on `std::strong_ordering` — totaalinen järjestys, jossa yhtäsuuruus on määritelty.
 
 Custom bool-comparator (tarvittaessa):
 

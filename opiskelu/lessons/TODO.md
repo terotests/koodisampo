@@ -2,13 +2,13 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1262 / 1274** valmis (**99.1 %**).
+**1261 / 1273** valmis (**99.1 %**).
 
 ## Domain-yhteenveto
 
 | Domain | Valmiit | Yhteensä | % |
 |--------|---------|----------|---|
-| C++ | 209 | 209 | 100 |
+| C++ | 208 | 208 | 100 |
 | JavaScript | 202 | 202 | 100 |
 | PostgreSQL | 121 | 121 | 100 |
 | Docker | 108 | 108 | 100 |
@@ -25,7 +25,7 @@
 
 ## Kaikki aiheet
 
-### C++ (209/209)
+### C++ (208/208)
 
 #### cmake `cmake` (15/15)
 
@@ -63,7 +63,7 @@
 | ✅ | 4 | `correct-overflow` | Signed integer ylivuoto C++:ssa tuotantokoodissa — mitä standardi sanoo? |
 | ✅ | 3 | `correct-signed-unsigned` | Miksi `for (int i = 0; i < v.size(); i++)` voi olla vaarallinen? |
 | ✅ | 3 | `correct-ub` | Mitä tarkoittaa undefined behavior (UB) C++:ssa? |
-| ✅ | 4 | `exp-cpp-correct-compare-three-way` | Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — … |
+| ✅ | 4 | `exp-cpp-correct-compare-three-way` | Structin käsin kirjoitetut <, == ja > ovat keskenään ristiriidassa, ja … |
 | ✅ | 3 | `exp-cpp-incident-nodiscard` | Tuotantoon meni buildi jossa `parseConfig()` palautusarvo ignoroitiin —… |
 
 #### cpp-build `cpp-build` (1/1)
@@ -76,7 +76,7 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 5 | `prod-cpp-coroutine-lifetime` | Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen… |
+| ✅ | 5 | `prod-cpp-coroutine-lifetime` | Coroutine ottaa parametrin `const std::string&` ja käyttää sitä `co_awa… |
 | ✅ | 5 | `prod-cpp-exception-safety-strong` | assign-operaatio heittää kesken kopioinnin. Miten copy-and-swap takaa s… |
 | ✅ | 4 | `prod-cpp-expected-vs-optional` | Funktio lataa käyttäjän ID:llä ja voi epäonnistua useasta syystä. Millo… |
 | ✅ | 4 | `prod-cpp-false-sharing-struct` | Kaksi std::atomic-laskuria on vierekkäin structissa ja eri säikeet päiv… |
@@ -132,7 +132,7 @@
 | ✅ | 3 | `b11-cpp-forward-declare-header` | Headeriin lisätään `#include "HeavyWidget.hpp"` vain koska funktio otta… |
 | ✅ | 3 | `b11-cpp-if-init-statement` | Funktio hakee arvon mapista ja tarkistaa sen: `auto it = m.find(k); if … |
 | ✅ | 3 | `b11-cpp-in-place-optional` | Koodi tekee `std::optional<BigType> o; o = BigType(args);` — kaksi kons… |
-| ✅ | 1 | `b11-cpp-preincrement` | Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin sil… |
+| ✅ | 1 | `b11-cpp-preincrement` | Code review kommentoi silmukkaa `for (auto it = c.begin(); it != c.end(… |
 | ✅ | 3 | `b11-cpp-shared-ptr-copy-hot` | Funktio ottaa `std::shared_ptr<Foo>` arvona ja kutsutaan jokaisella fra… |
 | ✅ | 2 | `b11-cpp-std-endl-flush` | Hot loopissa logataan tuhansia rivejä `std::cout << x << std::endl`. Mi… |
 | ✅ | 3 | `exp-cpp-perf-reserve-vector` | Profileri näyttää tuhansia vector-uudelleenallokaatioita CSV-parserissa… |
@@ -153,7 +153,7 @@
 | ✅ | 3 | `b10-cpp-portability-abi-01` | Jaetaan kirjasto Windowsin ja Linuxin välillä. Mikä rajapintavalinta pa… |
 | ✅ | 2 | `b11-cpp-std-filesystem` | Koodi käyttää `GetFileAttributesW` / `stat()` suoraan polkujen käsittel… |
 | ✅ | 2 | `b11-cpp-std-thread-port` | Uusi moduuli käyttää suoraan `pthread_create` / `CreateThread`. Mitä cp… |
-| ✅ | 4 | `exp-cpp-portability-byte-order` | Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaa… |
+| ✅ | 4 | `exp-cpp-portability-byte-order` | Verkkoprotokolla serialisoi uint32_t:n. Mikä C++20+ tapa välttää manuaa… |
 | ✅ | 2 | `portability-explicit` | Miksi yksiparametrisessä konstruktorissa kannattaa usein `explicit`? |
 
 #### C++ turvallisuus `safety` (36/36)
@@ -163,7 +163,7 @@
 | ✅ | 2 | `b02-cpp-safety-make-unique-06` | Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusp… |
 | ✅ | 3 | `b02-cpp-safety-noexcept-05` | Koodikatselmassa `Blob`-luokalla on move-konstruktori, joka siirtää `da… |
 | ✅ | 3 | `b03-cpp-prod-virtual-dtor` | Tuotantobugi: `delete base_ptr` ei kutsu johdetun luokan destructoria. … |
-| ✅ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. M… |
+| ✅ | 3 | `b03-cpp-safety-array-span` | Legacy-funktio ottaa `int buf[256]`, mutta kutsuja antaa pienemmän taul… |
 | ✅ | 4 | `b04-cpp-rule-of-five` | Luokka hallitsee dynaamista bufferia — destructor on määritelty, mutta … |
 | ✅ | 2 | `b04-cpp-smart-ptr-make-shared` | Code review: `shared_ptr<Foo>(new Foo(), customDeleter)`. Milloin make_… |
 | ✅ | 4 | `b04-cpp-string-view-lifetime` | Funktio palauttaa `std::string_view` joka viittaa paikalliseen std::str… |
@@ -174,11 +174,11 @@
 | ✅ | 3 | `b06-cpp-raii-scope-guard` | Funktio avaa tiedoston ja pitää sulkea poikkeuksessa. Miten toteutat il… |
 | ✅ | 4 | `b06-cpp-span-heap-buffer` | API ottaa raw pointer ja pituus — buffer overrun tuotannossa. Miten mod… |
 | ✅ | 3 | `b06-cpp-vector-emplace-back` | Rakennat vektorin monimutkaisia olioita — push_back kopioi turhaan. Mit… |
-| ✅ | 4 | `b06-cpp-weak-ptr-cycle` | Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratk… |
+| ✅ | 4 | `b06-cpp-weak-ptr-cycle` | Kaksi oliota osoittaa toisiinsa shared_ptr:llä — muisti ei vapaudu. Mik… |
 | ✅ | 2 | `b07-cpp-optional-null-api` | Hakufunktio palauttaa -1 kun avainta ei löydy — kutsujat sekoittavat vi… |
 | ✅ | 3 | `b07-cpp-span-bounds-check` | Funktio ottaa (T* data, size_t len) — tuotannossa buffer overflow. Mikä… |
 | ✅ | 3 | `b08-cpp-span-bounds` | Code review: funktio ottaa `std::span<int>` ja indeksoi ilman tarkistus… |
-| ✅ | 4 | `b08-cpp-unique-ptr-deleter` | FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallin… |
+| ✅ | 4 | `b08-cpp-unique-ptr-deleter` | FILE* pitää sulkea fclose:lla — unique_ptr oletusdeleterillä ei riitä. … |
 | ✅ | 4 | `b09-cpp-enable-shared-from-this` | Async callback tarvitsee `shared_ptr`:n `this`:stä, mutta `shared_ptr(t… |
 | ✅ | 3 | `b09-cpp-optional-null-api` | API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkist… |
 | ✅ | 3 | `b09-cpp-raw-pointer-refactor` | Legacy-moduuli palauttaa `new`-allokoituja olioita kutsujalle. Refaktor… |
@@ -243,7 +243,7 @@
 | ✅ | 3 | `b05-cpp-atomic-counter` | Usea säie päivittää jaettua laskuria. Mikä primitiivi on oikea ilman mu… |
 | ✅ | 4 | `b06-cpp-packaged-task` | Worker-thread ajaa funktion ja palauttaa tuloksen kutsijalle. Mitä käyt… |
 | ✅ | 5 | `b07-cpp-atomic-acquire-release` | Lock-free jonossa tuottaja kirjoittaa datan ja asettaa flagin — kulutta… |
-| ✅ | 5 | `b08-cpp-atomic-memory-order` | Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei n… |
+| ✅ | 5 | `b08-cpp-atomic-memory-order` | Tuottaja kirjoittaa puskuriin ja kasvattaa sitten atomic<int>-laskuria … |
 | ✅ | 4 | `b08-cpp-shared-mutex-read` | Konfiguraatiocache: lukijoita paljon, kirjoittajia harvoin — std::mutex… |
 | ✅ | 4 | `b09-cpp-condition-variable-wait` | Worker-säie odottaa queuea — spurious wakeup aiheuttaa tyhjän pop:in. O… |
 | ✅ | 3 | `b11-cpp-avoid-global-state` | Moduulissa on `static std::map<int, User> g_cache` ja useat säikeet kut… |
@@ -253,7 +253,7 @@
 | ✅ | 4 | `thread-data-race` | Kaksi säiettä kirjoittaa samaan `int`-muuttujaan ilman synkronointia. M… |
 | ✅ | 3 | `thread-lock-guard` | Mikä on turvallisin tapa lukita `std::mutex` lyhyeksi kriittiseksi alue… |
 
-#### C++ työkalut `tools` (33/33)
+#### C++ työkalut `tools` (32/32)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
@@ -263,7 +263,7 @@
 | ✅ | 3 | `b03-cpp-tools-if-constexpr` | Template-funktio tarvitsee eri haaran integraalisille vs float-tyypeill… |
 | ✅ | 4 | `b04-cpp-concept-constraints` | Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihi… |
 | ✅ | 3 | `b05-cpp-constexpr-config` | Konfiguraatiovakiot lasketaan build-ajassa. Mikä avainsana varmistaa et… |
-| ✅ | 2 | `b05-cpp-lambda-capture-review` | Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x… |
+| ✅ | 2 | `b05-cpp-lambda-capture-review` | Code reviewissa lambda kaappaa paikallisen muuttujan viittauksella `[&x… |
 | ✅ | 3 | `b06-cpp-deleted-function` | Luokka ei saa kopioida — kopio-konstruktori kutsuu vahingossa. Miten es… |
 | ✅ | 2 | `b06-cpp-enum-class-scope` | Code reviewissa `enum Color { Red, Green };` aiheuttaa nimikonfliktit h… |
 | ✅ | 3 | `b06-cpp-nodiscard-return` | Tuotantobugi: `allocateBuffer()` palautusarvo jätetään huomiotta ja res… |
@@ -271,7 +271,7 @@
 | ✅ | 4 | `b07-cpp-perfect-forwarding` | Tehdasfunktio make<T>(Args&&... args) välittää argumentit konstruktoril… |
 | ✅ | 3 | `b07-cpp-spaceship-operator` | Luokalle tarvitaan ==, !=, <, <=, >, >= — paljon boilerplatea. C++20 ly… |
 | ✅ | 2 | `b07-cpp-unique-ptr-deleter` | RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr … |
-| ✅ | 4 | `b08-cpp-initializer-list-trap` | Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutt… |
+| ✅ | 4 | `b08-cpp-initializer-list-trap` | Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` kääntyy, mutt… |
 | ✅ | 3 | `b08-cpp-optional-monadic` | Ketju: optional palauttaa arvon, seuraava funktio ottaa arvon — if-linn… |
 | ✅ | 3 | `b08-cpp-sort-requirements` | std::sort kaatuu outoon virheeseen custom-iteratorilla. Mitä iteratorin… |
 | ✅ | 4 | `b08-cpp-variant-visit` | std::variant<int, string> — switch-tyylinen käsittely ilman visitor-luo… |
@@ -284,7 +284,6 @@
 | ✅ | 3 | `b11-cpp-werror-policy` | Tiimi haluaa ettei uusia varoituksia päädy main-haaraan. Mikä käytäntö … |
 | ✅ | 3 | `exp-cpp-cr-optional-review` | Code reviewissa kollega palauttaa `T*` joka voi olla null. Mikä moderni… |
 | ✅ | 3 | `exp-cpp-prod-chrono-timeout` | API-kutsu tarvitsee 500 ms timeoutin. Miten ilmaiset ajan modernisti il… |
-| ✅ | 2 | `exp-cpp-tools-format-logging` | Tiimi korvaa sprintf-loggauksen. Mikä moderni standardikirjasto auttaa … |
 | ✅ | 1 | `tools-auto` | Mitä `auto` tekee modernissa C++:ssa? |
 | ✅ | 3 | `tools-constexpr` | Haluat laskea taulukon koon käännösaikana ilman makroja. Mitä funktio-a… |
 | ✅ | 1 | `tools-nullptr` | Mikä on turvallisin tapa nollata osoitin C++11:ssä? |
@@ -313,22 +312,22 @@
 | ✅ | 3 | `b06-js-async-promise-finally` | Fetch-ketju — haluat cleanup riippumatta success/failure. Mitä käytät? |
 | ✅ | 2 | `b06-js-async-settimeout-zero` | setTimeout(fn, 0) ei suorita fn heti — miksi? |
 | ✅ | 4 | `b07-js-async-debounce` | Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset … |
-| ✅ | 5 | `b08-js-async-microtask-starvation` | while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. … |
+| ✅ | 5 | `b08-js-async-microtask-starvation` | Funktio `pump()` ajastaa itsensä aina uudelleen: `Promise.resolve().the… |
 | ✅ | 3 | `b08-js-async-parallel` | Lataat kolme riippumatonta API:a — await peräkkäin kestää 3×. Nopeampi … |
 | ✅ | 3 | `b08-js-async-race-timeout` | fetch ei saa roikkua yli 5 sekuntia — timeout ilman manuaalista flagia? |
 | ✅ | 4 | `b09-js-async-event-loop-block` | Express-endpoint jäädyttää koko palvelimen 30 sekunniksi raskaalla JSON… |
 | ✅ | 3 | `b09-js-async-promise-chain` | Callback hell API-ketjussa — kolme peräkkäistä fetch-kutsua. Moderni re… |
 | ✅ | 4 | `b09-js-async-unhandled-rejection` | Tuotannossa `UnhandledPromiseRejection` kaataa Node-prosessin. Miten kä… |
 | ✅ | 2 | `b12-js-async-async-returns-promise` | Mikä `async function foo() { return 42; }` palauttaa kutsujalle? |
-| ✅ | 5 | `b12-js-async-async-stack` | async stack trace katkeaa await-kohdassa debugissa. Node/DevTools apu? |
+| ✅ | 5 | `b12-js-async-async-stack` | Virheen stack trace katkeaa await-kohtaan debugatessa. Mikä auttaa näke… |
 | ✅ | 2 | `b12-js-async-callback-to-promise` | Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käär… |
 | ✅ | 4 | `b12-js-async-eventemitter-memory` | Node EventEmitter 'data' listenerit kasaantuvat — MaxListenersExceededW… |
 | ✅ | 3 | `b12-js-async-fetch-keepalive` | Analytics beacon sivun unloadissa — fetch katkeaa. Vaihtoehto? |
 | ✅ | 4 | `b12-js-async-generator-async` | Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylist… |
-| ✅ | 5 | `b12-js-async-microtask-starvation` | while(true) { queueMicrotask(() => {}) } — UI jäätyy vaikka ei ole synk… |
+| ✅ | 5 | `b12-js-async-microtask-starvation` | Funktio `tick()` kutsuu lopuksi `queueMicrotask(tick)`. Synkronista sil… |
 | ✅ | 3 | `b12-js-async-promise-all-error` | Promise.all — yksi reject. Mitä tapahtuu? |
 | ✅ | 3 | `b12-js-async-promise-finally` | Latausnäkymä pitää piilottaa sekä onnistumisessa että virheessä. Mikä P… |
-| ✅ | 3 | `b12-js-async-promise-race-cancel` | Käyttäjä peruuttaa — haluat että hitain fetch häviää kilpajuoksussa. Me… |
+| ✅ | 3 | `b12-js-async-promise-race-cancel` | Käyttäjä painaa Peruuta — käynnissä olevan fetch-pyynnön pitää oikeasti… |
 | ✅ | 2 | `b12-js-async-promise-then-chain` | fetch palauttaa promisen — haluat JSON-objektin. Ensimmäinen then-ketju? |
 | ✅ | 4 | `b12-js-async-promise-with-resolvers` | Rakennat deferred-patternin: ulkopuolinen koodi resolveaa promisen myöh… |
 | ✅ | 3 | `b12-js-async-queue-microtask` | Haluat ajaa funktion heti synkronisen koodin jälkeen mutta ennen setTim… |
@@ -370,7 +369,7 @@
 | ✅ | 3 | `b12-js-modules-dynamic-conditional` | Lataa moduuli vain adminille. Pattern? |
 | ✅ | 4 | `b12-js-modules-import-attributes` | Haluat importata JSON-moduulin ESM:llä selaimessa. Moderni syntaksi? |
 | ✅ | 5 | `b12-js-modules-import-defer` | ES proposal: import ajetaan vasta kun binding käytetään? |
-| ✅ | 4 | `b12-js-modules-import-meta-resolve` | Node 20+ resolvaa specifierin suhteessa moduuliin? |
+| ✅ | 4 | `b12-js-modules-import-meta-resolve` | ESM-tiedostossa haluat selvittää specifierin polun suhteessa nykyiseen … |
 | ✅ | 3 | `b12-js-modules-import-order` | ESM importit hoistataan — sivuvaikutus järjestyksessä? |
 | ✅ | 2 | `b12-js-modules-mjs-cjs-ext` | Node ESM-tiedosto ilman type module? |
 | ✅ | 3 | `b12-js-modules-namespace-import` | import * as utils from './utils.js' — utils on? |
@@ -380,8 +379,8 @@
 | ✅ | 3 | `b12-js-modules-side-effects` | Bundleri poistaa `import './polyfill.js'` tree-shakingissa ja polyfill … |
 | ✅ | 2 | `b12-js-modules-specifier-must-relative` | import from 'lodash' vs './lodash.js' — ero? |
 | ✅ | 4 | `b12-js-modules-treeshake-pure` | Bundleri säilyttää kuolleen koodin side-effect funktiossa. Annotaatio? |
-| ✅ | 2 | `b12-js-modules-type-module` | Node-projekti käyttää `import` ilman Babelia. package.json-asetus? |
-| ✅ | 4 | `b12-js-modules-wasm-import` | WebAssembly moduuli ESM:ssä? |
+| ✅ | 2 | `b12-js-modules-type-module` | Node-projektin .js-tiedostot käyttävät `import`-syntaksia. Mikä package… |
+| ✅ | 4 | `b12-js-modules-wasm-import` | Selaimessa: miten lataat ja instansioit .wasm-moduulin tehokkaasti suor… |
 | ✅ | 4 | `exp-js-modules-cycle` | Circular import: a.js importtaa b.js ja toisin päin — export undefined … |
 | ✅ | 3 | `exp-js-modules-dynamic-import` | Admin-näkymän bundle on liian iso — haluat ladata sen vain admin-reitil… |
 | ✅ | 3 | `exp-js-modules-top-level-await` | config.mjs pitää ladata ennen appin init — callback pyramid. Moderni mo… |
@@ -446,8 +445,8 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 2 | `b02-js-types-coalesce-06` | Portti 0 on kelvollinen arvo. Oletus 3000 saa tulla vain kun konfiguraa… |
-| ✅ | 2 | `b02-js-types-optional-05` | API palauttaa `{ name?: string }` — miten luet turvallisesti ilman unde… |
-| ✅ | 2 | `b02-js-types-strict-07` | Bugi: `if (count == '0')` menee läpi kun count on 0. Fix? |
+| ✅ | 2 | `b02-js-types-optional-05` | API palauttaa joskus `user: null`, jolloin `user.profile.name` kaatuu T… |
+| ✅ | 2 | `b02-js-types-strict-07` | Bugi: `if (input == 0)` menee läpi myös, kun input on tyhjä merkkijono … |
 | ✅ | 3 | `b03-js-types-number-precision` | Laskin näyttää 0.1 + 0.2 === 0.3 false — laskutuskoodi valittaa senteis… |
 | ✅ | 2 | `b03-js-types-optional-chaining` | Dashboard asettaa `document.title = user.profile.name`, mutta vanhentun… |
 | ✅ | 4 | `b03-js-types-symbol-key` | Kirjasto haluaa piilottaa metadatan objektista ilman name collision -ri… |
@@ -461,7 +460,7 @@
 | ✅ | 3 | `b06-js-types-map-key-object` | Objekti avaimena Mapissa — sama key instance löytyy. Miksi ei Object av… |
 | ✅ | 3 | `b06-js-types-temporal-date` | Date.parse('01/02/2023') tulos vaihtelee locale:sta. Miten vältät? |
 | ✅ | 3 | `b07-js-types-nan` | parseInt palauttaa NaN — if (x === NaN) ei toimi. Oikea testi? |
-| ✅ | 2 | `b07-js-types-optional-chain` | Konsolissa: `TypeError: Cannot read properties of undefined (reading 'n… |
+| ✅ | 2 | `b07-js-types-optional-chain` | Konsolissa: `TypeError: Cannot read properties of null (reading 'profil… |
 | ✅ | 2 | `b07-js-types-strict-equality` | Bug: `if (!userId)` hylkää validin arvon `0`. Mikä tarkistus on turvall… |
 | ✅ | 3 | `b08-js-types-bigint` | 64-bit ID ylittää Number.MAX_SAFE_INTEGER — JSON API palauttaa ison num… |
 | ✅ | 2 | `b08-js-types-strict-equals` | API hylkää vain `if (token == null) return unauthorized()`. Mikä arvo p… |
@@ -479,18 +478,18 @@
 | ✅ | 2 | `b12-js-types-nan-check` | Laskenta palauttaa NaN — `value === NaN` on aina false. Miten tarkistat? |
 | ✅ | 3 | `b12-js-types-object-keys-values` | Haluat iteroida objektin arvot ilman for...in prototyypin perintää. Met… |
 | ✅ | 2 | `b12-js-types-object-shorthand` | Mikä ES6-ominaisuus lyhentää `{ id: id, name: name }` kun muuttujien ni… |
-| ✅ | 3 | `b12-js-types-parseint-radix` | parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen? |
+| ✅ | 3 | `b12-js-types-parseint-radix` | parseInt('08') vanhassa JS:ssä — miksi radix 10 kannattaa aina antaa? |
 | ✅ | 2 | `b12-js-types-rest-params` | Funktio ottaa vaihtelevan määrän numeroita yhtenä parametrina taulukkon… |
-| ✅ | 2 | `b12-js-types-spread-copy` | Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nope… |
+| ✅ | 2 | `b12-js-types-spread-copy` | Haluat kopioida taulukon ilman että muokkaat alkuperäistä pushilla. Nop… |
 | ✅ | 3 | `b12-js-types-structured-equality` | Kaksi eri objektia {a:1} ja {a:1} — {} === {} on false. Miksi? |
 | ✅ | 4 | `b12-js-types-symbol-tostring` | Object.keys() ei näytä Symbol-avaimia. Miten iteroidaan ne? |
 | ✅ | 1 | `b12-js-types-template-literal` | Haluat rakentaa tervehdyksen muuttujasta `name` ilman `+`-ketjua (`'Hei… |
-| ✅ | 4 | `b12-js-types-temporal-api` | Date on mutatoitava ja timezone-bugeja. Moderni ES-proposal korvaajaksi? |
-| ✅ | 2 | `b12-js-types-truthy-falsy` | Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus … |
+| ✅ | 4 | `b12-js-types-temporal-api` | Date on mutatoitava ja altis aikavyöhykebugeille. Mikä uusi standardi-A… |
+| ✅ | 2 | `b12-js-types-truthy-falsy` | Lomake muuntaa kentän numeroksi, ja `if (!quantity)` hylkää validin arv… |
 | ✅ | 1 | `b12-js-types-typeof-string` | Mikä `typeof 'hello'` palauttaa? |
 | ✅ | 4 | `exp-js-types-bigint-json` | API palauttaa 64-bit ID:n — JSON.parse menettää tarkkuuden. Miten käsit… |
 | ✅ | 2 | `exp-js-types-nullish-coalescing` | Palvelimen timeout-asetus 0 tarkoittaa 'ei timeoutia', mutta konfiguraa… |
-| ✅ | 2 | `exp-js-types-strict-equality` | Auth-bugi: `if (!token)` hylkää validin tyhjän merkkijonon `''` ja sall… |
+| ✅ | 2 | `exp-js-types-strict-equality` | Auth-bugi: `if (token)` hyväksyy minkä tahansa truthy-arvon, esim. `1` … |
 | ✅ | 3 | `js-types-null-object` | Miksi `typeof null === 'object'` on historiallinen ansa? |
 | ✅ | 2 | `js-types-strict-eq` | Miksi `===` on turvallisempi kuin `==` vertailussa? |
 
@@ -508,7 +507,7 @@
 | ✅ | 4 | `b12-ts-generic-constraint` | T extends { id: string } — tarkoitus? |
 | ✅ | 3 | `b12-ts-generic-function` | identity<T>(arg: T): T — miksi generic? |
 | ✅ | 2 | `b12-ts-interface-extends` | BaseUser + adminRole — miten laajennat? |
-| ✅ | 5 | `b12-ts-mapped-type` | type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] } |
+| ✅ | 5 | `b12-ts-mapped-type` | type ReadonlyFields<T> = { readonly [K in keyof T]: T[K] } — mikä tyypp… |
 | ✅ | 3 | `b12-ts-narrowing-in` | if ('kind' in obj) — mitä tämä tekee? |
 | ✅ | 2 | `b12-ts-narrowing-typeof` | function log(x: string | number) — x.toFixed()? |
 | ✅ | 5 | `b12-ts-never-exhaustive` | switch union — default: const _x: never = x. Tarkoitus? |
@@ -527,12 +526,12 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `b03-pg-config-effective-cache` | Planner valitsee seq scanin vaikka data mahtuu muistiin — SSD-palvelin … |
-| ✅ | 3 | `b03-pg-config-random-page-cost` | Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä? |
+| ✅ | 3 | `b03-pg-config-random-page-cost` | Kanta siirrettiin SSD:lle, mutta planner valitsee yhä seq scanin, vaikk… |
 | ✅ | 3 | `b03-pg-config-ssl-mode` | App yhdistää Postgresiin internetin yli — compliance vaatii salatun yht… |
 | ✅ | 3 | `b03-pg-config-statements-ext` | Tuotannossa hidas query tuntematon — haluat top 10 CPU-kuluttajaa histo… |
 | ✅ | 3 | `b04-pg-config-log-min-duration` | Haluat lokittaa vain > 500ms kestävät kyselyt tuotannossa ilman kaiken … |
 | ✅ | 4 | `b04-pg-config-maintenance-work-mem` | CREATE INDEX kestää tunteja isolla taululla — logissa 'external sort'. … |
-| ✅ | 3 | `b06-pg-config-checkpoint-timeout` | Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät? |
+| ✅ | 3 | `b06-pg-config-checkpoint-timeout` | Tuotannossa I/O-piikki joka 5. minuutti — checkpoint aiheuttaa. Mitä sä… |
 | ✅ | 5 | `b06-pg-config-huge-pages` | Suuri shared_buffers — TLB miss hidastaa. Mitä Linux + PostgreSQL optim… |
 | ✅ | 3 | `b06-pg-config-parallel-workers` | Raporttikysely ei parallelize — seq scan yksin. Mitä parametria nostat? |
 | ✅ | 4 | `b06-pg-config-track-io-timing` | pg_stat_statements näyttää query time mutta ei I/O breakdown. Mitä enab… |
@@ -548,12 +547,12 @@
 |---|------|-----|---------|
 | ✅ | 4 | `sqd-cte-materialized-hint` | PostgreSQL 12+: CTE viitataan kerran, mutta planner yhdistää sen pääkys… |
 | ✅ | 3 | `sqd-cte-readability` | Sama alikysely toistuu kolmessa kohdassa raportissa. Miten refaktoroit? |
-| ✅ | 4 | `sqd-first-value-partition` | Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä… |
+| ✅ | 4 | `sqd-first-value-partition` | Jokaiselle tilausriville tarvitset saman asiakkaan ensimmäisen tilaukse… |
 | ✅ | 4 | `sqd-lag-mom-comparison` | Raportti näyttää kuukausimyynnin ja edellisen kuun eron samalla rivillä… |
 | ✅ | 3 | `sqd-lead-future-row` | Seuraavan tilauksen päivämäärä samalla rivillä nykyisen kanssa. Funktio? |
 | ✅ | 3 | `sqd-ntile-buckets` | Jaa asiakkaat neljään kvartiiliin liikevaihdon mukaan. Funktio? |
-| ✅ | 3 | `sqd-percent-rank-report` | Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio? |
-| ✅ | 4 | `sqd-pivot-conditional-agg` | Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta? |
+| ✅ | 3 | `sqd-percent-rank-report` | Raporttiin tarvitaan jokaisen myyjän suhteellinen sijoitus (0–1) kaikki… |
+| ✅ | 4 | `sqd-pivot-conditional-agg` | Myynti on riveinä (product, quarter, amount). Raporttiin tarvitaan sara… |
 | ✅ | 3 | `sqd-rank-vs-dense` | Top 3 myyjää; tasapisteet eivät saa hypätä sijaa 4:stä 6:een. Funktio? |
 | ✅ | 4 | `sqd-recursive-cte-hierarchy` | Organisaatiopuu: esimies–alainen hierarkia taulussa `parent_id`. Miten … |
 | ✅ | 4 | `sqd-row-number-dedup` | Tarvitset viimeisimmän tilauksen per asiakas. Mikä ikkunafunktio? |
@@ -571,7 +570,7 @@
 | ✅ | 4 | `b03-pg-explain-isolation-level` | Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen… |
 | ✅ | 4 | `b04-pg-explain-parallel` | Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_p… |
 | ✅ | 4 | `b06-pg-explain-generic-plan` | Prepared statement plan on hidas eri parametreilla. Miten näet generic … |
-| ✅ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy? |
+| ✅ | 4 | `b06-pg-explain-misestimate-rows` | Planner valitsee Nested Loopin — rows estimate 10, mutta actual 10M. Ju… |
 | ✅ | 3 | `b07-pg-explain-prepare` | Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overh… |
 | ✅ | 4 | `b08-pg-explain-nested-loop` | Nested Loop + Seq Scan sisäpuolella miljoona riviä — hidas join. Milloi… |
 | ✅ | 4 | `b09-pg-explain-nested-loop` | JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi … |
@@ -586,12 +585,12 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `b03-pg-indexes-concurrent-create` | Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Onli… |
-| ✅ | 4 | `b03-pg-indexes-fillfactor-update` | Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taul… |
+| ✅ | 4 | `b03-pg-indexes-fillfactor-update` | UPDATE-raskas taulu bloataa nopeasti, vaikka autovacuum on päällä. Taul… |
 | ✅ | 4 | `b03-pg-indexes-gin-jsonb` | JSONB metadata-kenttä `@> '{"status":"active"}'` query hidas seq scan. … |
 | ✅ | 4 | `b03-pg-locks-blocking-query` | UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensim… |
 | ✅ | 4 | `b04-pg-indexes-expression` | Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella… |
 | ✅ | 2 | `b05-pg-indexes-duplicate-drop` | Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidast… |
-| ✅ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas… |
+| ✅ | 4 | `b06-pg-indexes-brin-timeseries` | Aikasarjataulussa on miljardi riviä, ja kyselyt rajaavat aikaväleillä. … |
 | ✅ | 3 | `b06-pg-indexes-hash-index` | Harkitset hash-indeksiä UUID-sarakkeelle, jota haetaan vain yhtäsuuruud… |
 | ✅ | 4 | `b06-pg-indexes-reindex-concurrently` | Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtim… |
 | ✅ | 4 | `b08-pg-indexes-btree-gist` | Geo-query: `WHERE location && box` — btree ei toimi. Indeksityyppi? |
@@ -616,7 +615,7 @@
 | ✅ | 3 | `sqd-not-exists-anti` | Asiakkaat jotka eivät ole koskaan tilanneet. Malli? |
 | ✅ | 4 | `sqd-not-in-null` | Kysely `WHERE customer_id NOT IN (SELECT customer_id FROM blacklist)` p… |
 | ✅ | 3 | `sqd-null-safe-join` | JOIN kahdella sarakkeella joissa voi olla NULL. Mikä vertailu on turval… |
-| ✅ | 3 | `sqd-semi-join-distinct` | Tarvitset asiakkaat joilla on tilaus — ei tarvitse tilausrivejä. Vältä? |
+| ✅ | 3 | `sqd-semi-join-distinct` | Tarvitset asiakkaat, joilla on vähintään yksi tilaus — tilausrivejä ei … |
 
 #### JSON/JSONB-kyselyt `pg-json` (9/9)
 
@@ -647,7 +646,7 @@
 | ✅ | 3 | `sqd-half-open-date-range` | Kuukausiraportti: `WHERE created_at BETWEEN '2024-03-01' AND '2024-03-3… |
 | ✅ | 3 | `sqd-having-vs-where` | Haluat rivit joissa `status = 'active'` ennen ryhmittelyä. Mihin ehto k… |
 | ✅ | 4 | `sqd-keyset-pagination` | API-sivutus OFFSET 500000 hidastuu. Parempi malli suurille tauluille? |
-| ✅ | 2 | `sqd-limit-preview` | Kehität uutta analytiikkakyselyä tuotantataululle. Miten testaat turval… |
+| ✅ | 2 | `sqd-limit-preview` | Kehität uutta analytiikkakyselyä tuotantotaululle. Miten testaat turval… |
 | ✅ | 1 | `sqd-null-equality` | Kysely `SELECT * FROM users WHERE deleted_at = NULL` ei palauta yhtään … |
 | ✅ | 2 | `sqd-numeric-money` | Laskujen summat tallennetaan `double precision` -sarakkeeseen, ja kuuka… |
 | ✅ | 2 | `sqd-readable-cte-names` | Monivaiheinen raportti on vaikea lukea sisäkkäisillä alikyselyillä. Mit… |
@@ -668,7 +667,7 @@
 | ✅ | 3 | `sqd-parameterized-query` | Käyttäjän syöte menee WHERE-ehtoon. Miten estät SQL-injektion? |
 | ✅ | 3 | `sqd-readonly-role` | BI-työkalu tarvitsee vain luku-oikeuden. Rooli? |
 | ✅ | 4 | `sqd-rls-policy` | Sama taulu, käyttäjä näkee vain oman tiiminsä rivit. PostgreSQL-ominais… |
-| ✅ | 4 | `sqd-search-path-injection` | Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski? |
+| ✅ | 4 | `sqd-search-path-injection` | SECURITY DEFINER -funktio kutsuu `normalize_email()` ilman skeemaa, eik… |
 | ✅ | 3 | `sqd-view-column-mask` | Analyytikot eivät saa nähdä henkilötunnuksia. Ensimmäinen kerros? |
 
 #### VACUUM/autovacuum `pg-vacuum` (12/12)
@@ -700,19 +699,19 @@
 | ✅ | 3 | `b02-docker-run-user-01` | Containeri ajaa rootina tuotannossa — audit finding. Ensimmäinen harden… |
 | ✅ | 4 | `b03-docker-buildkit-cache-mount` | npm ci kestää 5 min jokaisessa buildissa vaikka package-lock ei muutu. … |
 | ✅ | 2 | `b03-docker-copy-vs-add` | Code review ehdottaa ADD-komentoa, joka hakee tarballin URL:sta Dockerf… |
-| ✅ | 3 | `b03-docker-entrypoint-cmd` | `docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Do… |
+| ✅ | 3 | `b03-docker-entrypoint-cmd` | Dockerfilessa on `ENTRYPOINT ["./entrypoint.sh"]` ja `CMD ["node", "ser… |
 | ✅ | 4 | `b03-docker-secrets-compose` | DB-salasana on compose-tiedoston environment-osiossa gitissä. Parempi t… |
 | ✅ | 3 | `b04-docker-build-arg` | Sama Dockerfile eri versioille — BASE_IMAGE vaihtelee CI:ssä. Miten par… |
 | ✅ | 3 | `b04-docker-compose-profile` | Kehityksessä tarvitaan debug-työkalukontti, tuotannossa ei. Compose-mal… |
 | ✅ | 2 | `b04-docker-copy-from-container` | Tuotantokontista pitää hakea crash-dump tiedosto hostille. Toimenpide? |
 | ✅ | 2 | `b04-docker-exec-interactive` | Kontissa pitää debugata konfig-tiedostoa interaktiivisesti. Komento? |
 | ✅ | 3 | `b04-docker-health-interval` | Healthcheck merkitsee kontin unhealthy liian myöhään — 5 min outage. Mi… |
-| ✅ | 3 | `b04-docker-log-driver` | Konttilokit katoavat rebootin jälkeen — oletus json-file kasvaa loputto… |
+| ✅ | 3 | `b04-docker-log-driver` | Konttilokit katoavat, kun kontti korvataan deployssa, ja oletus json-fi… |
 | ✅ | 2 | `b04-docker-prune-dangling` | Levy täynnä `<none>` image-tageja CI-koneella. Siivouskomento? |
 | ✅ | 4 | `b04-docker-secrets-env` | Tuotanto: salasanat ENV-muuttujina Dockerfile:ssa. Turvallisempi Compos… |
 | ✅ | 4 | `b04-docker-security-cap-drop` | Security review: kontti ei tarvitse root-oikeuksia eikä NET_RAW. Harden… |
 | ✅ | 3 | `b05-docker-healthcheck-prod` | Orkestraattori ei huomaa jumiutunutta Node-prosessia — kontti on 'runni… |
-| ✅ | 2 | `b05-docker-log-driver-json` | Konttilokit katoavat rebootissa. Miten varmistat lokien keräyksen? |
+| ✅ | 2 | `b05-docker-log-driver-json` | Konttilokit katoavat, kun kontti poistetaan ja luodaan uudelleen deploy… |
 | ✅ | 4 | `b05-docker-security-cap-drop` | Minimoit konttioikeudet — tarvitset vain verkon, ei kernel-muutoksia. M… |
 | ✅ | 4 | `b05-docker-security-nonroot` | Security review: kontti ajaa rootina. Mikä on Dockerin suositus tuotant… |
 | ✅ | 3 | `b06-docker-build-context-size` | docker build lähettää gigatavun node_modules kontekstissa. Miten estät? |
@@ -738,7 +737,7 @@
 | ✅ | 3 | `b09-docker-cmd-entrypoint` | Kontti ajaa ensin migraatiot, sitten sovelluksen, ja deploy haluaa ylik… |
 | ✅ | 4 | `b09-docker-env-secrets-smell` | Code review: DATABASE_PASSWORD Dockerfile ENV:ssä. Miksi tämä on ongelm… |
 | ✅ | 3 | `b09-docker-image-tag-pin` | Tuotanto käyttää `FROM node:latest` — eilen build rikkoutui. Korjaus? |
-| ✅ | 4 | `b09-docker-secrets-mount` | Tuotanto-Compose tarvitsee TLS-sertin ilman salaisuuden leimimistä imag… |
+| ✅ | 4 | `b09-docker-secrets-mount` | Tuotanto-Compose tarvitsee TLS-sertin ilman, että salaisuus päätyy imag… |
 | ✅ | 4 | `docker-compose-network` | Compose-projektissa palvelut eivät näe toisiaan. Yleisin konfiguraatiov… |
 | ✅ | 4 | `docker-exit-code` | Kontti poistuu heti käynnistyksen jälkeen. Ensimmäinen diagnosoitava as… |
 | ✅ | 4 | `docker-healthcheck` | Orkestraattori käynnistää uuden kontin ennen vanhan poistoa. Mikä Docke… |
@@ -761,7 +760,7 @@
 | ✅ | 3 | `b02-docker-net-inspect-09` | Container ei saa IP:tä custom networkista — diagnostiikka? |
 | ✅ | 3 | `b03-docker-net-compose-depends` | App-kontti käynnistyy ennen Postgresia ja kaatuu connection refused. Co… |
 | ✅ | 3 | `b03-docker-net-internal-network` | Backend-API ei saa olla suoraan internetissä — vain reverse proxy ulos.… |
-| ✅ | 4 | `b03-docker-net-ipv6-disable` | Legacy-sovellus hajoaa IPv6-osoitteeseen DNS:ssä — kontissa toimii IPv4… |
+| ✅ | 4 | `b03-docker-net-ipv6-disable` | Legacy-sovellus kaatuu, kun DNS palauttaa kontissa IPv6-osoitteen, vaik… |
 | ✅ | 3 | `b05-docker-net-dns-custom` | Kontti ei resolvdu sisäistä DNS-nimeä corporate DNS:llä. Compose-korjau… |
 | ✅ | 5 | `b06-docker-network-ipvlan` | Kontit tarvitsevat omat MAC-osoitteet LAN-segmentissä. Mikä driver? |
 | ✅ | 4 | `b06-docker-network-mode-none` | Batch-prosessi ei tarvitse verkkoa — minimoi attack surface. network_mo… |
@@ -780,7 +779,7 @@
 | ✅ | 3 | `exp-docker-net-compose-alias` | Compose-palvelu `api` ei löydä `cache`-palvelua hostnameilla. Mitä comp… |
 | ✅ | 3 | `exp-docker-net-custom-dns` | Kontti ei resolvdu sisäistä DNS-nimeä custom-verkossa. Mitä docker run … |
 | ✅ | 4 | `exp-docker-net-inspect-dns` | Kontit samassa verkossa eivät pingaa toisiaan nimellä. Mitä diagnostiik… |
-| ✅ | 3 | `exp-docker-net-publish-bind` | Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mi… |
+| ✅ | 3 | `exp-docker-net-publish-bind` | Palvelu kuuntelee kontissa osoitteessa 0.0.0.0:8080, mutta hostilta sii… |
 
 #### Docker tuotanto `docker-production` (6/6)
 
@@ -801,17 +800,17 @@
 | ✅ | 2 | `b02-docker-vol-ro-13` | Config mountattu containeriin — attacker ei saa muokata. Flag? |
 | ✅ | 3 | `b03-docker-vol-external-volume` | Compose-projekti uudelleenkäynnistyy eri nimellä — vanha named volume j… |
 | ✅ | 3 | `b03-docker-vol-named-vs-bind` | Tuotantodata bind-mountataan suoraan host-polusta — deploy eri poluilla… |
-| ✅ | 4 | `b03-docker-vol-tmpfs-secrets` | Kontti kirjoittaa väliaikaista salaista tokenia levylle — se jää image … |
+| ✅ | 4 | `b03-docker-vol-tmpfs-secrets` | Kontti kirjoittaa väliaikaisen salaisen tokenin levylle — se jää kontin… |
 | ✅ | 3 | `b04-docker-volume-named` | Postgres data katoaa `docker compose down` jälkeen. Mikä puuttui? |
 | ✅ | 3 | `b05-docker-vol-readonly-root` | Security hardening: kontti ei saa muokata omaa filesystemia. Mitä asetu… |
 | ✅ | 4 | `b06-docker-security-readonly-tmpfs` | Read-only rootfs mutta app tarvitsee /tmp kirjoitusta. Miten? |
 | ✅ | 4 | `b06-docker-volume-driver` | Tuotanto tarvitsee NFS-pohjainen persistent storage kontteille. Miten m… |
-| ✅ | 5 | `b06-docker-volume-mount-propagation` | Bind mount host-muutokset ei näky kontissa — mount propagation väärä. M… |
-| ✅ | 4 | `b07-docker-volume-backup` | Postgres volume pitää varmuuskopioida ilman konttia samassa verkossa. K… |
+| ✅ | 5 | `b06-docker-volume-mount-propagation` | Bind mountin alle hostilla tehdyt mountit eivät näy kontissa — mount pr… |
+| ✅ | 4 | `b07-docker-volume-backup` | Postgres-volume pitää varmuuskopioida johdonmukaisesti. Käytännöllinen … |
 | ✅ | 3 | `b07-docker-volume-bind` | Kehityksessä haluat live-reload lähdekoodilla hostilta. Volume-tyyppi? |
 | ✅ | 4 | `b08-docker-volume-bind-selinux` | RHEL-host: bind mount permission denied vaikka chmod 777. Todennäköisin… |
 | ✅ | 2 | `b08-docker-volumes-named` | Postgres-data katoaa kontti poistossa — käytit bind mountia väärään pol… |
-| ✅ | 3 | `b09-docker-vol-anonymous` | Dockerfile: `VOLUME /data` — data katoaa kontin poiston jälkeen. Miksi? |
+| ✅ | 3 | `b09-docker-vol-anonymous` | Dockerfile: `VOLUME /data` — kontti korvataan uudella, ja data näyttää … |
 | ✅ | 3 | `b09-docker-vol-driver-local` | Usean hostin Swarm-klusterissa tarvitset jaetun volumen. Vaihtoehto loc… |
 | ✅ | 4 | `b10-docker-volumes-backup-01` | Named volume pitää varmuuskopioida ilman kontin käynnistämistä. Tyypill… |
 | ✅ | 3 | `exp-docker-vol-backup` | Haluat varmuuskopioida named volumen ilman konttia käynnissä. Miten? |
@@ -845,7 +844,7 @@
 | ✅ | 3 | `b03-linux-avahi-hostname-local` | Kehityskone hostaa API:n osoitteessa devbox.local — toinen kone ei reso… |
 | ✅ | 3 | `b03-linux-avahi-publish-service` | IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista … |
 | ✅ | 3 | `b05-linux-avahi-publish-service` | Kehityspalvelu portissa 3000 pitäisi löytyä mDNS:llä ilman manuaalista … |
-| ✅ | 2 | `b06-linux-avahi-daemon-restart` | Uusi .service-tiedosto lisätty — palvelu ei näkyy verkossa. Mitä teet e… |
+| ✅ | 2 | `b06-linux-avahi-daemon-restart` | Uusi .service-tiedosto lisätty, mutta palvelu ei näy verkossa. Mitä tee… |
 | ✅ | 2 | `b06-linux-avahi-resolve-hostname` | Tulostin ilmoittaa hostname.local mutta ping epäonnistuu. Miten testaat… |
 | ✅ | 3 | `b06-linux-avahi-service-type` | Julkaiset sisäisen API:n mDNS:llä kehitysympäristössä. Mitä service typ… |
 | ✅ | 3 | `b07-linux-avahi-daemon-check` | Lähiverkon palvelut eivät ilmesty — epäilet Avahia. Ensimmäinen tarkist… |
@@ -870,7 +869,7 @@
 | ✅ | 3 | `b04-linux-journalctl-priority-err` | Incident: tarvitset vain virhe- ja kriittiset viestit viime tunnilta. j… |
 | ✅ | 2 | `b05-linux-journalctl-unit-since` | Tuotantoincidentti — tarvitset nginx-unitin lokit viimeisen tunnin ajal… |
 | ✅ | 3 | `b05-linux-journald-priority-filter` | Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain v… |
-| ✅ | 2 | `b06-linux-journalctl-reverse` | Incidentti — tarvitset vanhimmat lokit ensin aikajärjestyksessä. Mitä j… |
+| ✅ | 2 | `b06-linux-journalctl-reverse` | Incidentti — haluat nähdä uusimmat lokimerkinnät ensin. Mitä journalctl… |
 | ✅ | 4 | `b06-linux-journalctl-verify` | Audit vaatii lokien eheyden tarkistuksen. Mitä journalctl tarjoaa? |
 | ✅ | 3 | `b06-linux-journald-forward-syslog` | Legacy syslog-kollektori tarvitsee journal-lokit. Miten journald konfig… |
 | ✅ | 2 | `b07-linux-journalctl-follow` | Debuggaat live-incidenttiä — haluat seurata uusia logirivejä reaaliajas… |
@@ -878,7 +877,7 @@
 | ✅ | 3 | `b07-linux-journald-json` | Lokit pitää parsia automaattisesti — plain text on hankala. journalctl … |
 | ✅ | 2 | `b08-linux-journalctl-since` | Incidentti alkoi noin klo 14:30 — haluat lokit siitä eteenpäin. Nopein … |
 | ✅ | 3 | `b08-linux-journald-storage` | Levy täyttyy journal-lokeista embedded-laitteessa. Mitä journald.conf-a… |
-| ✅ | 3 | `b09-linux-journald-forward-syslog` | Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio? |
+| ✅ | 3 | `b09-linux-journald-forward-syslog` | Keskitetty lokipalvelin vaatii syslog-formaatin. journald-konfiguraatio? |
 | ✅ | 2 | `exp-linux-journalctl-since-boot` | Tuotantobugi tapahtui rebootin jälkeen. Miten suodatat vain nykyisen bo… |
 | ✅ | 4 | `exp-linux-journald-disk-full` | Incident: /var/log/journal täyttää levyn ja palvelin ei kirjoita uusia … |
 | ✅ | 3 | `exp-linux-journald-priority-filter` | Loki tulvii DEBUG-rivejä. Miten näet vain err-tason ja korkeammat yhdel… |
@@ -915,7 +914,7 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 3 | `linux-deleted-open-file` | df näyttää levyn täyneksi, mutta du löytää vain puolet käytöstä. Iso lo… |
+| ✅ | 3 | `linux-deleted-open-file` | df näyttää levyn täydeksi, mutta du löytää vain puolet käytöstä. Iso lo… |
 | ✅ | 5 | `prod-linux-incident-slow-no-cpu` | API on hidas mutta CPU ei ole lähelläkään 100 %. Mistä näet onko pullon… |
 | ✅ | 4 | `prod-linux-logrotate-copytruncate` | logrotate käyttää `copytruncate` ja sovellus menettää satunnaisesti lok… |
 | ✅ | 4 | `prod-linux-lsof-deleted-log` | Levy näyttää täydeltä, mutta `du` ei löydä isoja tiedostoja. Mikä on to… |
@@ -937,8 +936,8 @@
 | ✅ | 3 | `b04-linux-ss-tuln` | Portti 8080 pitäisi kuunnella mutta palvelu ei vastaa. Mikä komento lis… |
 | ✅ | 3 | `b05-linux-network-ip-route` | VPN-yhteys toimii mutta sisäverkon aliverkko on tavoittamaton. Mitä tar… |
 | ✅ | 2 | `b05-linux-network-nmcli-connect` | Wi-Fi katkesi toimistossa. Miten nmcli:llä yhdistät tunnetun profiilin? |
-| ✅ | 5 | `b06-linux-network-ethtool-offload` | Tuotantoverkko — checksum offload aiheuttaa corrupt-paketteja virtuaali… |
-| ✅ | 3 | `b06-linux-network-ip-neigh` | Yhteys toimii pingillä mutta ARP-taulu näyttää incomplete. Mitä komento… |
+| ✅ | 5 | `b06-linux-network-ethtool-offload` | Tuotantoverkko — checksum offload aiheuttaa korruptoituneita paketteja … |
+| ✅ | 3 | `b06-linux-network-ip-neigh` | Yhteys samassa aliverkossa olevaan koneeseen ei toimi — epäilet, ettei … |
 | ✅ | 3 | `b06-linux-network-resolv-options` | DNS-haku hidastuu — haluat rajoittaa retry ja timeout. Missä konfiguroi… |
 | ✅ | 2 | `b06-linux-network-ss-udp` | DNS-palvelu ei vastaa — haluat nähdä UDP-kuuntelijat. Mitä ss-optiota? |
 | ✅ | 2 | `b07-linux-network-curl-debug` | curl palauttaa SSL certificate problem — haluat nähdä TLS-handshaken. c… |
@@ -976,7 +975,7 @@
 |---|------|-----|---------|
 | ✅ | 4 | `b12-linux-tcp-close-wait-leak` | Palvelimen muisti kasvaa — epäilet vuotavia TCP-yhteyksiä joita sovellu… |
 | ✅ | 3 | `b12-linux-tcp-established-filter` | Haluat nähdä vain aktiiviset TCP-yhteydet tiettyyn palveluporttiin 443.… |
-| ✅ | 4 | `b12-linux-tcp-retransmit-info` | Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu… |
+| ✅ | 4 | `b12-linux-tcp-retransmit-info` | Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. Mikä ss-… |
 | ✅ | 3 | `b12-linux-tcp-syn-backlog` | API palauttaa connection refused heti — ei timeout. TCP-kuuntelija ja S… |
 | ✅ | 2 | `b12-linux-tcp-udp-handshake` | Mikä ero TCP:n ja UDP:n välillä on yhteyden muodostuksessa? |
 | ✅ | 3 | `b12-linux-udp-stateless-firewall` | DNS UDP:53 toimii ulospäin mutta vastaus ei palaudu sisään — NAT/palomu… |
@@ -992,7 +991,7 @@
 | ✅ | 3 | `b03-linux-systemd-analyze-blame` | Palvelin käynnistyy hitaasti tuotantoon noston jälkeen. Mikä systemd-ko… |
 | ✅ | 2 | `b03-linux-systemd-env-file` | Salaisuudet ovat suoraan unit-tiedostossa gitissä. Miten systemd hoitaa… |
 | ✅ | 3 | `b03-linux-systemd-restart-burst` | Bugi aiheuttaa crash loopin — palvelu käynnistyy uudelleen 500 kertaa m… |
-| ✅ | 4 | `b03-linux-systemd-type-notify` | CI merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se … |
+| ✅ | 4 | `b03-linux-systemd-type-notify` | systemd merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutt… |
 | ✅ | 3 | `b04-linux-systemd-ExecStartPre` | Palvelu käynnistyy ennen kuin tietokanta on valmis — yhteys epäonnistuu… |
 | ✅ | 3 | `b04-linux-systemd-mask` | Vanha palvelu käynnistyy uudestaan päivityksen jälkeen vaikka disable t… |
 | ✅ | 3 | `b04-linux-systemd-override` | Haluat muuttaa vain yhden Environment-rivin vendor unitiin ilman tiedos… |
@@ -1002,26 +1001,26 @@
 | ✅ | 4 | `b05-linux-systemd-socket-activation` | Haluat käynnistää palvelun vasta kun porttiin tulee yhteys. Mikä system… |
 | ✅ | 3 | `b05-linux-systemd-timer-oncalendar` | Cron-korvaaja ajaa backup-skriptin maanantaisin klo 03:00. Miten määrit… |
 | ✅ | 4 | `b05-linux-systemd-type-notify` | Palvelu käynnistyy ennen kuin se kuuntelee porttia — riippuvat unitit j… |
-| ✅ | 4 | `b06-linux-systemd-ConditionPath` | Backup-skripti ajetaan vain jos mount on käytettävissä. Miten unit ehto? |
-| ✅ | 3 | `b06-linux-systemd-logind` | Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä k… |
-| ✅ | 3 | `b06-linux-systemd-Requires` | App unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakot… |
+| ✅ | 4 | `b06-linux-systemd-ConditionPath` | Backup-skripti saa ajautua vain, jos /backup on mountattu. Miten määrit… |
+| ✅ | 3 | `b06-linux-systemd-logind` | Käyttäjän palveluiden pitää jatkua ilman interaktiivista loginia. Mikä … |
+| ✅ | 3 | `b06-linux-systemd-Requires` | App-unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakot… |
 | ✅ | 2 | `b07-linux-systemd-journal-unit` | Palvelu kirjoittaa stdoutiin mutta lokit eivät näy journalctl -u myapp.… |
 | ✅ | 4 | `b07-linux-systemd-limit-nofile` | High-traffic palvelu saa Too many open files — ulimit ok login-shelliss… |
-| ✅ | 3 | `b07-linux-systemd-wantedby` | Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä… |
-| ✅ | 4 | `b08-linux-systemd-logind` | SSH-istunto katkeaa mutta prosessi tapetaan logoutissa — haluat pitää j… |
+| ✅ | 3 | `b07-linux-systemd-wantedby` | `systemctl enable` varoittaa, ettei unitissa ole asennusohjeita, eikä p… |
+| ✅ | 4 | `b08-linux-systemd-logind` | SSH:lla käynnistetty pitkä job tapetaan uloskirjautuessa (logind KillUs… |
 | ✅ | 4 | `b08-linux-systemd-requires` | App service pitää käynnistyä vain jos network-online.target on valmis. … |
 | ✅ | 4 | `b09-linux-systemd-kill-mode` | Palvelun unitissa on `KillMode=process` — workerit jäävät pyörimään sto… |
 | ✅ | 4 | `b09-linux-systemd-memory-limit` | Muistivuoto täyttää koko palvelimen — haluat rajoittaa yhden unitin RAM… |
 | ✅ | 3 | `b09-linux-systemd-restart-policy` | Palvelu kaatuu satunnaisesti yöllä — haluat automaattisen uudelleenkäyn… |
 | ✅ | 3 | `exp-linux-systemd-failed-service` | Tuotantopalvelu on failed-tilassa rebootin jälkeen. Mikä komento näyttä… |
 | ✅ | 3 | `exp-linux-systemd-reload-vs-restart` | Muutit nginx unit-tiedoston ExecStart-rivin. Mitä teet ennen kuin uusi … |
-| ✅ | 3 | `exp-linux-systemd-timer-incident` | Yöllinen backup-skripti ei ajautunut cronin sijaan. Miten systemd-timer… |
+| ✅ | 3 | `exp-linux-systemd-timer-incident` | Yöllinen backup-skripti halutaan ajaa systemd:llä cronin sijaan. Miten … |
 | ✅ | 4 | `exp-linux-systemd-wants-vs-requires` | App.service riippuu tietokannasta. DB kaatuu — haluat appin pysähtyvän.… |
-| ✅ | 4 | `systemd-after-before` | Unit A tarvitsee verkon ennen käynnistystä mutta ei saa kaatua jos B ep… |
+| ✅ | 4 | `systemd-after-before` | Unit A tarvitsee verkon ennen käynnistystä, mutta sen ei pidä kaatua, j… |
 | ✅ | 3 | `systemd-enable-boot` | Palvelu käynnistyy manuaalisesti mutta ei bootin jälkeen. Mitä komentoa… |
 | ✅ | 4 | `systemd-restart-policy` | Palvelu kaatuu satunnaisesti prosessivirheeseen. Mikä `Restart=` arvo o… |
 | ✅ | 4 | `systemd-timer` | Haluat ajastaa yöllisen backup-skriptin ilman cronia. Mikä systemd-ratk… |
-| ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:ll… |
+| ✅ | 4 | `systemd-wants-requires` | Unit A: `Requires=B` ja `After=B`. B:n käynnistys epäonnistuu. Mitä A:l… |
 
 #### systemd-hardening `systemd-hardening` (3/3)
 
@@ -1128,7 +1127,7 @@
 | ✅ | 5 | `exp-qt-opengl-context-thread` | OpenGL render crashaa satunnaisesti — QOpenGLWidget luodaan worker-thre… |
 | ✅ | 4 | `exp-qt-opengl-makecurrent` | Render loopissa glError invalid operation — context ei aktiivinen. Mitä… |
 | ✅ | 4 | `exp-qt-opengl-vao-vbo` | Piirrät meshiä joka frame ilman buffer-objekteja — CPU bottleneck. Ensi… |
-| ✅ | 4 | `qt-opengl-makecurrent` | QOpenGLWidget piirtää mustaa. OpenGL-kutsut tehdään väärästä säikeestä.… |
+| ✅ | 4 | `qt-opengl-makecurrent` | QOpenGLWidget piirtää mustaa. GL-kutsut tehdään paintGL():n ulkopuolelt… |
 | ✅ | 5 | `qt-opengl-vbo` | Piirrät paljon kolmioita QOpenGLWidgetissä. Miten vältät turhat CPU→GPU… |
 
 #### Qt Quick / QML `qt-quick` (20/20)
@@ -1142,7 +1141,7 @@
 | ✅ | 3 | `b13-qt-quick-controls-style` | Qt Quick Controls -napit näyttävät erilaisilta Windowsilla ja macOS:llä… |
 | ✅ | 2 | `b13-qt-quick-debug-console` | QML binding ei toimi odotetusti — haluat nopean lokituksen ilman C++-de… |
 | ✅ | 4 | `b13-qt-quick-i18n-retranslate` | Käyttäjä vaihtaa kielen lennossa — qsTr()-tekstit eivät päivity QML:ssä… |
-| ✅ | 2 | `b13-qt-quick-image-async` | Image lataa suuren kuvan verkosta ja jäädyttää UI:n latauksen aikana. Q… |
+| ✅ | 2 | `b13-qt-quick-image-async` | Image lataa suuren paikallisen kuvatiedoston ja jäädyttää UI:n lataukse… |
 | ✅ | 2 | `b13-qt-quick-listview-delegate` | ListView näyttää 10 000 riviä hitaasti — kaikki delegate-instanssit luo… |
 | ✅ | 3 | `b13-qt-quick-loader-component` | Haluat ladata raskaan QML-näkymän vasta kun käyttäjä avaa sen. Qt Quick… |
 | ✅ | 3 | `b13-qt-quick-property-animation` | Rectangle liikkuu x: 0 → 300 kun `running` muuttuu true. Yksinkertaisin… |
@@ -1172,14 +1171,14 @@
 | ✅ | 4 | `b06-qt-shaders-precompile` | Shader compile hidastaa app käynnistystä. Miten Qt 6 RHI auttaa? |
 | ✅ | 5 | `b06-qt-shaders-varying-interpolation` | Fragment shader saa väärät interpolated arvot vertex-attribuuteista. Mi… |
 | ✅ | 5 | `b07-qt-shader-precision` | Shader toimii desktopilla mutta on musta mobiilissa OpenGL ES:llä. Tode… |
-| ✅ | 3 | `b07-qt-shader-qsb` | Qt 6 shader ei lataudu — .frag tiedosto suoraan ei toimi. Miten shader … |
+| ✅ | 3 | `b07-qt-shader-qsb` | Qt 6 Qt Quick ShaderEffect ei lataa .frag-tiedostoa suoraan. Miten shad… |
 | ✅ | 4 | `b07-qt-shader-uniform` | Shader ei reagoi uniform-muutoksiin — väri pysyy valkoisena. Tyypilline… |
 | ✅ | 4 | `b08-qt-shaders-uniform` | Shader ei näy oikein — uniform arvo ei päivity. Qt6 RHI/shader polulla? |
 | ✅ | 3 | `b09-qt-shaders-compile-log` | QOpenGLShaderProgram linkkaus epäonnistuu — musta ruutu. Debug-askel? |
 | ✅ | 3 | `b09-qt-shaders-qml-graph-effect` | QML-käyttöliittymässä tarvitset blur-efektin itemille. Qt Quick -kompon… |
 | ✅ | 4 | `b09-qt-shaders-uniform-location` | uniform float u_time ei päivity — setUniformValue ei vaikuta. Yleisin s… |
 | ✅ | 3 | `exp-qt-shaders-glsl-version` | Shader failaa macOS:llä mutta toimii Windowsilla — puuttuu `#version`. … |
-| ✅ | 5 | `exp-qt-shaders-rhi-backend` | Tiimi migoi Qt 5 fixed-functionista Qt 6:een — shaderit hajosivat. Mikä… |
+| ✅ | 5 | `exp-qt-shaders-rhi-backend` | Tiimi migroi Qt 5 -sovelluksen Qt 6:een — ShaderEffectien inline-GLSL-s… |
 | ✅ | 4 | `exp-qt-shaders-uniform-location` | Shader compile ok mutta uniform ei vaikuta — hardcoded location 0. Mite… |
 | ✅ | 5 | `qt-shaders-glsl-version` | Shader ei käännä Qt:ssa: 'version directive must occur before anything … |
 | ✅ | 4 | `qt-shaders-uniform` | QOpenGLShaderProgram on linkitetty. Miten asetat muuttujan `mvpMatrix` … |
@@ -1197,9 +1196,9 @@
 | ✅ | 3 | `b05-qt-signals-disconnect-lambda` | Lambda-slotti connectissa — disconnect ei toimi osoitteella. Miksi? |
 | ✅ | 3 | `b06-qt-signals-auto-connection` | on_pushButton_clicked() ei kutsuta — slot nimi väärä. Miten auto-connec… |
 | ✅ | 4 | `b06-qt-signals-lambda-disconnect` | Lambda-connect jää eloon widgetin tuhoutumisen jälkeen — crash. Miten d… |
-| ✅ | 3 | `b07-qt-signals-disconnect` | Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit … |
+| ✅ | 3 | `b07-qt-signals-disconnect` | Dialogi tuhoutuu, mutta sen osoitinta käyttävä lambda-slot kutsutaan yh… |
 | ✅ | 3 | `b08-qt-signals-unique-connection` | Sama connect() kutsutaan initissä kahdesti — slotti suoritetaan kaksink… |
-| ✅ | 3 | `exp-qt-signals-disconnect-lifetime` | Dialog sulkeutuu mutta background-worker emitoi edelleen vanhaan slotti… |
+| ✅ | 3 | `exp-qt-signals-disconnect-lifetime` | Dialog sulkeutuu ja tuhoutuu, mutta background-worker emitoi edelleen l… |
 | ✅ | 4 | `exp-qt-signals-queued-cross-thread` | Worker-thread emitoi signaalin joka päivittää GUI-labelin — satunnainen… |
 | ✅ | 3 | `qt-signals-unique` | Sama signaali connectataan kahdesti samaan slottiin. Miten estät duplik… |
 
@@ -1211,7 +1210,7 @@
 | ✅ | 3 | `b02-qt-thread-pool-08` | Satoja lyhyitä taustatehtäviä — QThread jokaiselle liian raskas. Vaihto… |
 | ✅ | 4 | `b03-qt-thread-invoke-method` | Worker-threadista pitää päivittää label GUI:ssa. Turvallinen Qt-tapa? |
 | ✅ | 3 | `b03-qt-thread-qtimer-thread` | QTimer luotu worker-threadissa ei laukea. Mikä sääntö? |
-| ✅ | 4 | `b04-qt-deferred-delete` | Worker-thread emit deleteLater() QObjectille joka elää GUI-threadissä —… |
+| ✅ | 4 | `b04-qt-deferred-delete` | Worker-säikeessä elävä QObject kutsuu deleteLater(), mutta säikeellä ei… |
 | ✅ | 4 | `b05-qt-thread-gui-touch` | Taustasäie kutsuu widget->setText() suoraan — intermittent crash. Säänt… |
 | ✅ | 3 | `b06-qt-thread-event-loop` | Worker-thread ei vastaa signaaleihin — slot ei kutsuta. Mitä worker-thr… |
 | ✅ | 4 | `b06-qt-thread-future` | Pitkä laskenta taustalla — haluat tulos GUI:hin ilman raw threadia. Qt-… |
@@ -1264,7 +1263,7 @@
 |---|------|-----|---------|
 | ✅ | 3 | `b02-scrum-dod-perf-02` | Uusi API hidastaa raporttia 10× — tarina 'done' ilman suorituskykytesti… |
 | ✅ | 4 | `b02-scrum-dod-rollback-03` | Tuotantoon mennyt feature ei täytä DoD:ia — miten tiimi reagoi sprintin… |
-| ✅ | 3 | `b09-scrum-dod-documentation` | Feature on testattu mutta API-dokumentaatio puuttuu — tiimi haluaa merk… |
+| ✅ | 3 | `b09-scrum-dod-documentation` | Tiimin DoD vaatii päivitetyn API-dokumentaation. Feature on testattu, m… |
 | ✅ | 3 | `exp-scrum-dod-docs-minimum` | Operaatio valittaa puuttuvasta runbookista incidentin jälkeen. Mitä DoD… |
 | ✅ | 4 | `exp-scrum-dod-regression-suite` | Tuotantoon meni bugi joka olisi kaatunut regressiotestissä. Mitä DoD:ii… |
 | ✅ | 4 | `exp-scrum-dod-security-review` | Turvallisuustiimi löysi OWASP-aukko sprintin jälkeen. Miten DoD estää t… |
@@ -1282,12 +1281,12 @@
 | ✅ | 2 | `b02-scrum-dor-size-06` | Backlog-item on 21 story pointia — tiimi ei saa valmiiksi yhdessä sprin… |
 | ✅ | 3 | `b03-scrum-backlog-refine-spike` | Tarina vaatii teknistä selvitystä ennen estimointia — arkkitehtuuri epä… |
 | ✅ | 3 | `b03-scrum-dor-testable` | Tarina: 'Paranna suorituskykyä'. Refinementissa puuttuu hyväksymiskrite… |
-| ✅ | 3 | `b03-scrum-tech-debt-backlog` | Tekninen velka kasaaantuu — PO sanoo 'ei aikaa'. Miten tuot backlogiin? |
+| ✅ | 3 | `b03-scrum-tech-debt-backlog` | Tekninen velka kasautuu — PO sanoo 'ei aikaa'. Miten tuot sen backlogii… |
 | ✅ | 3 | `b04-scrum-backlog-refinement-ongoing` | Sprint Planning venyy koska tarinat eivät ole valmiita. Milloin backlog… |
 | ✅ | 3 | `b04-scrum-dor-acceptance-clear` | Tarina siirtyy sprinttiin ilman hyväksymiskriteereitä. Mid-sprint väitt… |
 | ✅ | 3 | `b04-scrum-pbi-invest` | Backlog item on liian suuri sprinttiin: epäselvä, ei testattavissa. Ref… |
 | ✅ | 3 | `b04-scrum-refinement-backlog-order` | Product Backlog on sekava — tiimi ei tiedä mitä refinenoida seuraavaksi… |
-| ✅ | 4 | `b07-scrum-dor-design` | Sprint alkaa — arkkitehtuurisia avoimia kysymyksiä on vielä kolme. Pitä… |
+| ✅ | 4 | `b07-scrum-dor-design` | Sprintti alkaa, ja tarinassa on yhä kolme avointa arkkitehtuurikysymyst… |
 | ✅ | 3 | `b07-scrum-dor-sized` | Epic otetaan suoraan sprinttiin ilman pilkkomista. Mitä DoR vaatii enne… |
 | ✅ | 3 | `b09-scrum-dor-size-limit` | Tarinan arvio on 21 story pointia — tiimi epäilee liian suurta sprintti… |
 | ✅ | 2 | `b09-scrum-dor-ux-mockup` | UI-tarinassa kehittäjät arvailevat layoutia. Mikä DoR-elementti puuttuu? |
@@ -1295,7 +1294,7 @@
 | ✅ | 3 | `exp-scrum-dor-refinement-timebox` | Backlog refinement syö 30 % sprintin kapasiteetista. Mitä best practice… |
 | ✅ | 3 | `exp-scrum-dor-split-story` | Backlog refinementissa tarina on 21 pistettä ja epäselvä. Mitä DoR-best… |
 | ✅ | 3 | `scrum-dor-criteria` | Mikä kuuluu Definition of Ready -kriteereihin ennen kuin tarina otetaan… |
-| ✅ | 4 | `scrum-story-split` | Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa **liiketoimi… |
+| ✅ | 4 | `scrum-story-split` | Epic on liian iso estimointiin. Mikä pilkkomistapa leikkaa teknisten ke… |
 
 #### estimointi `scrum-estimation` (12/12)
 
@@ -1355,7 +1354,7 @@
 |---|------|-----|---------|
 | ✅ | 3 | `b02-scrum-team-cross-14` | Tiimissä vain yksi henkilö osaa deployata — bottleneck joka sprintti. S… |
 | ✅ | 2 | `b02-scrum-team-sm-13` | Scrum Master assignaa tehtäviä kehittäjille sprintin alussa. Mikä rooli… |
-| ✅ | 2 | `b03-scrum-artifacts-transparency` | Product Backlog on jaettu kolmessa eri työkalussa — kukaan ei näe kokon… |
+| ✅ | 2 | `b03-scrum-artifacts-transparency` | Product Backlog on jaettu kolmeen eri työkaluun — kukaan ei näe kokonai… |
 | ✅ | 3 | `b03-scrum-sm-servant-leader` | Scrum Master antaa päivittäin tehtävälistoja kehittäjille. Roolivirhe? |
 | ✅ | 2 | `b03-scrum-team-stable-membership` | Johto kiertää kehittäjiä projektien välillä viikoittain. Miksi Scrum Ma… |
 | ✅ | 3 | `b04-scrum-cross-functional-delivery` | Tiimi viimeistelee koodin mutta increment jää testaamatta ja dokumentoi… |
@@ -1369,7 +1368,7 @@
 | ✅ | 2 | `exp-scrum-team-po-authority` | Kehittäjä haluaa priorisoida oman teknisen refaktoroinnin tuoteomistaja… |
 | ✅ | 3 | `exp-scrum-team-sm-impediment` | CI-putki on ollut punaisena kolme päivää ja hidastaa koko tiimiä. Scrum… |
 | ✅ | 3 | `scrum-team-cross-functional` | Mitä tarkoittaa että Scrum-tiimi on cross-functional? |
-| ✅ | 3 | `scrum-team-size` | Mikä on suositeltu Scrum-tiimin koko (devit) ennen koordinaatio-ongelmi… |
+| ✅ | 3 | `scrum-team-size` | Mikä on Scrum Guide 2020:n mukaan Scrum-tiimin tyypillinen enimmäiskoko? |
 
 ### Git (24/24)
 
@@ -1398,7 +1397,7 @@
 | ✅ | 3 | `git-log-filtering` | Haluat nähdä vain yhden tiedoston muutoshistorian viimeisen kuukauden a… |
 | ✅ | 3 | `git-merge-conflict-resolve` | git merge tuottaa CONFLICT-merkintöjä tiedostoon. Mikä on oikea työnkul… |
 | ✅ | 4 | `git-rebase-interactive` | Feature-branchissa on 5 pientä committia jotka pitäisi yhdistää siistik… |
-| ✅ | 4 | `git-reflog-recovery` | Paikallinen branch näyttää tyhjältä commit-historian jälkeen, mutta tie… |
+| ✅ | 4 | `git-reflog-recovery` | Resetoit branchin vahingossa ja tuoreet commitit katosivat historiasta.… |
 | ✅ | 3 | `git-reset-vs-revert` | Viimeisin commit mainiin on buginen ja kollegat ovat jo pullanneet sen.… |
 | ✅ | 3 | `git-stash-workflow` | Keskeneräinen työ pitää siirtää sivuun nopeasti ilman committia esim. b… |
 | ✅ | 3 | `git-tag-release` | Release pitää merkitä niin että CI voi triggata deployment tietystä ver… |
@@ -1505,7 +1504,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 3 | `prod-sec-cache-control` | Palkkakuitin PDF: Cache-Control: public, max-age=86400. Mikä riski? |
-| ✅ | 4 | `prod-sec-cors` | API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Cr… |
+| ✅ | 4 | `prod-sec-cors` | API kopioi pyynnön Origin-headerin sellaisenaan Access-Control-Allow-Or… |
 | ✅ | 4 | `prod-sec-csrf` | Selain lähettää session-cookien automaattisesti myös haitalliselta sivu… |
 | ✅ | 3 | `prod-sec-open-redirect` | Login ohjaa: /login?next=https://evil.example/phish. Mikä riski ja korj… |
 | ✅ | 3 | `prod-sec-security-headers` | Kirjautuneille käyttäjille palautetaan HTML-sivuja ilman turva-headerei… |
@@ -1541,7 +1540,7 @@
 | | diff | id | kysymys |
 |---|------|-----|---------|
 | ✅ | 4 | `rf-ci-exit-code` | CI ajaa Robot-testit, mutta build menee vihreäksi vaikka testit epäonni… |
-| ✅ | 4 | `rf-ci-integration` | Robot Framework -testien tulokset pitää raportoida Jenkinsiin. Mikä tul… |
+| ✅ | 4 | `rf-ci-integration` | Robot Framework -testien tulokset pitää raportoida Jenkinsin yleiseen J… |
 | ✅ | 4 | `rf-pabot-parallel` | Robot-testit kestävät 45 minuuttia. Voiko ne ajaa rinnakkain turvallise… |
 | ✅ | 3 | `rf-tags-include-exclude` | Testisuitessa on 200 testiä mutta haluat ajaa vain smoke-testit CI:ssä.… |
 
@@ -1659,21 +1658,21 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 3 | `rust-traits-bounds-generic` | Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. M… |
+| ✅ | 3 | `rust-traits-bounds-generic` | Geneerinen funktio `fn largest<T>(list: &[T]) -> &T` vaatii alkioiden v… |
 | ✅ | 2 | `rust-traits-default-impl` | Trait-metodilla on oletustoteutus. Miten tyyppi käyttää sitä ilman omaa… |
 | ✅ | 2 | `rust-traits-definition` | Mikä Rustin trait vastaa käytännössä Java-interfacen roolia? |
 | ✅ | 3 | `rust-traits-deref-coercion` | Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy? |
 | ✅ | 1 | `rust-traits-derive-debug` | Struct tarvitsee `{:?}`-tulostuksen testeissä. Mitä attribuuttia lisäät… |
 | ✅ | 3 | `rust-traits-dispatch-choice` | Valitset `impl Trait`, geneerisen parametrin ja `Box<dyn Trait>` välill… |
 | ✅ | 3 | `rust-traits-dyn-trait-object` | Tarvitset heterogeenisen vektorin eri tyypeistä samalla traitilla. Mikä… |
-| ✅ | 3 | `rust-traits-impl-trait-return` | Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä pa… |
+| ✅ | 3 | `rust-traits-impl-trait-return` | Funktio palauttaa aina saman konkreettisen tyypin, mutta haluat piilott… |
 | ✅ | 2 | `rust-traits-iterator` | Mikä trait mahdollistaa `for item in collection` -silmukan? |
 
 #### Rust tyypit `rust-types` (8/8)
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `rust-types-enum-variants` | Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä… |
+| ✅ | 2 | `rust-types-enum-variants` | API-kutsu palauttaa joko onnistuneen vastauksen bodyn tai virheen statu… |
 | ✅ | 1 | `rust-types-if-let` | `Option`-arvo pitää purkaa vain onnistuneessa tapauksessa ilman turhaa … |
 | ✅ | 2 | `rust-types-match-exhaustive` | Miksi `match` enum-arvolla vaatii kaikki variantit käsiteltäväksi? |
 | ✅ | 2 | `rust-types-method-receiver` | Metodi muokkaa structia. Mikä receiver on oikea: `self`, `&self` vai `&… |
@@ -1759,7 +1758,7 @@
 
 | | diff | id | kysymys |
 |---|------|-----|---------|
-| ✅ | 2 | `space-orbit-geo-comms` | Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS e… |
+| ✅ | 2 | `space-orbit-geo-comms` | Miksi TV-satelliitit sijoitetaan GEO-radalle, mutta globaalit GNSS-kons… |
 | ✅ | 3 | `space-orbit-inclination-gps` | Miksi GPS-ratojen inklinaatio on noin 55° eikä 0° (päiväntasaaja)? |
 | ✅ | 3 | `space-orbit-kepler-elements` | Mitä Keplerin rataelementit kuvaavat satelliitin yhteydessä? |
 | ✅ | 2 | `space-orbit-meo-gnss` | Mille kiertoradalle tyypilliset GNSS-satelliitit (GPS, Galileo) sijoite… |

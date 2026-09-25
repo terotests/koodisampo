@@ -6,7 +6,7 @@ Debuggaat tuntematonta kolmannen osapuolen objektia, johon propertyt luetaan sat
 
 ## Ratkaisu
 
-**new Proxy(target, { get(trap) { log; return Reflect.get(...) } })**:
+**new Proxy(target, { get(t, prop, r) { log(prop); return Reflect.get(t, prop, r) } })** — get-trap saa argumentteina kohdeobjektin, property-nimen ja receiverin:
 
 ```javascript
 const logged = new Proxy(config, {
@@ -19,6 +19,6 @@ const logged = new Proxy(config, {
 
 ## Käytännössä
 
-Käytä `Reflect`-metodeja trap:eissa oikean `this`-sidonnan vuoksi. Vue 3 reactivity ja Immer käyttävät Proxya sisäisesti. Proxy ei toimi kaikilla objekteilla (esim. tietyt native objektit).
+Proxy ja Reflect ovat ES2015-ominaisuuksia, joten ne toimivat kaikissa moderneissa ympäristöissä. Käytä `Reflect`-metodeja trap:eissa oikean `this`-sidonnan vuoksi. Vue 3 reactivity ja Immer käyttävät Proxya sisäisesti. Proxy ei toimi kaikilla objekteilla (esim. tietyt native objektit).
 
 [Lue lisää](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
