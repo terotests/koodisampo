@@ -1,4 +1,4 @@
-# Mitkä tarkoittaa baseline differentiaalisessa GNSS:ssä?
+# Mitä tarkoittaa baseline differentiaalisessa GNSS:ssä?
 
 ## Tilanne
 

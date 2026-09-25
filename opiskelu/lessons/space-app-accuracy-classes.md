@@ -1,4 +1,4 @@
-# Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakataarkkuudelle hyvissä oloissa?
+# Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakatarkkuudelle hyvissä oloissa?
 
 ## Tilanne
 

@@ -333,7 +333,7 @@
       "prompt": "Tiimi jakaa SQL-skriptejä code reviewssa. Mikä käytäntö parantaa ylläpidettävyyttä?",
       "choices": [
         {
-          "text": "Yksi looginen lause per rivi, isoitu avainsana, selkeä sarkkeiden lista — yhtenäinen tyyli",
+          "text": "Yksi looginen lause per rivi, isoitu avainsana, selkeä sarakkeiden lista — yhtenäinen tyyli",
           "correct": true
         },
         {
@@ -885,41 +885,6 @@
       "featurePoints": 3
     },
     {
-      "id": "sqd-exists-vs-in",
-      "chapter": "pg-joins",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Etsi asiakkaat joilla on vähintään yksi avoin tilaus. Mikä on usein tehokkain?",
-      "choices": [
-        {
-          "text": "EXISTS (SELECT 1 FROM orders WHERE ...)",
-          "correct": true
-        },
-        {
-          "text": "customer_id IN (SELECT ...) miljoonan rivin alikyselyllä aina",
-          "correct": false
-        },
-        {
-          "text": "CROSS JOIN ja COUNT",
-          "correct": false
-        },
-        {
-          "text": "NOT DISTINCT FROM",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "EXISTS on semi-join — lopettaa ensimmäiseen matchiin.",
-      "wrongFeedback": "IN voi materialisoida koko listan.",
-      "sourceRef": "packt/sql-query-design#pg-joins",
-      "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
-      "featureId": "postgres:exists-in",
-      "featurePoints": 3
-    },
-    {
       "id": "sqd-not-exists-anti",
       "chapter": "pg-joins",
       "domain": "postgres",
@@ -989,41 +954,6 @@
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:lateral-topn",
       "featurePoints": 4
-    },
-    {
-      "id": "sqd-join-on-not-where",
-      "chapter": "pg-joins",
-      "domain": "postgres",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "ANSI-tyylinen join: ulkoiset suodattimet vs join-ehdot. Missä `orders.status = 'open'` jos se määrittää matchin?",
-      "choices": [
-        {
-          "text": "ON-ehdossa tai WHERE:ssa inner joinissa — mutta erota ulkoiset suodattimet selkeyden vuoksi",
-          "correct": true
-        },
-        {
-          "text": "Aina WHERE — ON on vain legacy",
-          "correct": false
-        },
-        {
-          "text": "HAVING-kentässä",
-          "correct": false
-        },
-        {
-          "text": "GROUP BY:ssä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Erottele match-ehto ja raporttisuodatin — luettavuus.",
-      "wrongFeedback": "ON vs WHERE merkitys eroaa outer joinissa.",
-      "sourceRef": "packt/sql-query-design#pg-joins",
-      "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
-      "featureId": "postgres:join-on-where",
-      "featurePoints": 2
     },
     {
       "id": "sqd-semi-join-distinct",
@@ -1777,10 +1707,10 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Raportti: summa per alue. SELECT-listassa vain group-by-sarakkeet ja aggregaatit. Miksi?",
+      "prompt": "Raportti: summa per alue. Miksi SELECT-listassa saa olla vain GROUP BY -sarakkeita ja aggregaatteja?",
       "choices": [
         {
-          "text": "Vältä funktioimattomia sarakkeita ilman GROUP BY — PostgreSQL vaatii johdonmukaisuuden",
+          "text": "Ryhmässä on monta riviä — ei-aggregoidulla sarakkeella ei olisi yhtä arvoa",
           "correct": true
         },
         {
@@ -1796,7 +1726,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "GROUP BY -sääntö pakottaa selkeän aggregointimallin.",
+      "correctFeedback": "PostgreSQL hylkää sarakkeen, joka ei ole GROUP BY:ssä eikä aggregaatissa — ellei se ole funktionaalisesti riippuvainen ryhmitellystä pääavaimesta.",
       "wrongFeedback": "SELECT * + GROUP BY tuottaa virheen tai epämääräisen tuloksen.",
       "sourceRef": "packt/sql-query-design#pg-query-design",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -1840,41 +1770,6 @@
       "featurePoints": 2
     },
     {
-      "id": "sqd-crosstab-alternative",
-      "chapter": "pg-query-design",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Kuukausittainen myynti sarakkeina (tammi…joulu). PostgreSQL-työkalu?",
-      "choices": [
-        {
-          "text": "crosstab() tablefunc-laajennuksessa tai conditional aggregation SUM(CASE WHEN month=...)",
-          "correct": true
-        },
-        {
-          "text": "UNION 12 erillistä saraketta ilman aggregointia",
-          "correct": false
-        },
-        {
-          "text": "PIVOT on sisäänrakennettu PostgreSQL:ssä kuten SQL Serverissä",
-          "correct": false
-        },
-        {
-          "text": "CROSS JOIN generate_series riittää aina",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Conditional aggregation on portable; crosstab on PG-työkalu.",
-      "wrongFeedback": "Ei natiivia PIVOT-syntaksia PostgreSQL:ssä.",
-      "sourceRef": "packt/sql-query-design#pg-query-design",
-      "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
-      "featureId": "postgres:crosstab",
-      "featurePoints": 4
-    },
-    {
       "id": "sqd-grouping-sets",
       "chapter": "pg-query-design",
       "domain": "postgres",
@@ -1908,41 +1803,6 @@
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:grouping-sets",
       "featurePoints": 4
-    },
-    {
-      "id": "sqd-subquery-vs-cte-same",
-      "chapter": "pg-query-design",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Sisäkkäinen subquery 5 tasoa syvänä. Refaktorointi luettavuuteen?",
-      "choices": [
-        {
-          "text": "WITH-vaiheet: jokainen logiikkakerros omaan nimettyyn CTE:hen",
-          "correct": true
-        },
-        {
-          "text": "Lisää sulkumerkkejä",
-          "correct": false
-        },
-        {
-          "text": "Siirrä kaikki yhteen UPDATE-lauseeseen",
-          "correct": false
-        },
-        {
-          "text": "Käytä globaalia temp-taulua prodissa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "CTE jakaa monimutkaisen kyselyn vaiheisiin — maintainability.",
-      "wrongFeedback": "Syvä sisäkkäisyys vaikeuttaa reviewta.",
-      "sourceRef": "packt/sql-query-design#pg-query-design",
-      "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
-      "featureId": "postgres:cte-vs-nested",
-      "featurePoints": 3
     },
     {
       "id": "sqd-pivot-conditional-agg",
@@ -2015,77 +1875,6 @@
       "featurePoints": 3
     },
     {
-      "id": "sqd-explain-before-tune",
-      "chapter": "pg-query-design",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru",
-        "project-lead"
-      ],
-      "prompt": "Kysely hidastui release:n jälkeen. Ensimmäinen askel ennen GUC-säätöä?",
-      "choices": [
-        {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) stagingissa — ymmärrä suunnitelma, sitten kirjoita/korjaa SQL",
-          "correct": true
-        },
-        {
-          "text": "Kasvata shared_buffers heti",
-          "correct": false
-        },
-        {
-          "text": "Poista kaikki indeksit ja luo uudelleen",
-          "correct": false
-        },
-        {
-          "text": "Lisää CACHE keyword SELECTiin",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Query plan ennen konfiguraatiota — kirjan järjestys.",
-      "wrongFeedback": "Konfiguraatio ei korvaa huonoa kyselyä.",
-      "sourceRef": "packt/sql-query-design#pg-query-design",
-      "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
-      "featureId": "postgres:explain-first",
-      "featurePoints": 3
-    },
-    {
-      "id": "sqd-covering-index-design",
-      "chapter": "pg-query-design",
-      "domain": "postgres",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Indeksi `(status)` mutta kysely hakee myös `name` ja `email`. Miten vältät tauluhaut?",
-      "choices": [
-        {
-          "text": "INCLUDE (name, email) indeksissä — covering index vain tarvittaville sarakkeille",
-          "correct": true
-        },
-        {
-          "text": "SELECT * hyötyy aina indeksistä",
-          "correct": false
-        },
-        {
-          "text": "Lisää kaikki sarakkeet KEY:iin turhaan",
-          "correct": false
-        },
-        {
-          "text": "Poista WHERE — seq scan on nopea",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Covering index palauttaa sarakkeet indeksistä — design + performance.",
-      "wrongFeedback": "Laaja indeksi joka sarakkeella on turhaa.",
-      "sourceRef": "packt/sql-query-design#pg-query-design",
-      "sourceUrl": "https://www.postgresql.org/docs/current/indexes-index-only-scans.html",
-      "featureId": "postgres:covering-index",
-      "featurePoints": 4
-    },
-    {
       "id": "sqd-foreign-data-wrapper",
       "chapter": "pg-json",
       "domain": "postgres",
@@ -2122,41 +1911,6 @@
       "featurePoints": 4
     },
     {
-      "id": "sqd-prepared-statement-plan",
-      "chapter": "pg-query-design",
-      "domain": "postgres",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Sama parametrikysely ajetaan miljoonia kertoja. Hyöty prepared statementista?",
-      "choices": [
-        {
-          "text": "Parse/plan cache — vähemmän parserikuormaa, vakaa suunnitelma",
-          "correct": true
-        },
-        {
-          "text": "Prepared estää SQL-injektion ja korvaa indeksit",
-          "correct": false
-        },
-        {
-          "text": "Prepared pakottaa seq scanin",
-          "correct": false
-        },
-        {
-          "text": "Ei hyötyä PostgreSQL:ssä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Prepared statements ovat design + performance -käytäntö.",
-      "wrongFeedback": "PostgreSQL hyötyy prepared statementeista.",
-      "sourceRef": "packt/sql-query-design#pg-query-design",
-      "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
-      "featureId": "postgres:prepared-statement",
-      "featurePoints": 3
-    },
-    {
       "id": "sqd-null-safe-join",
       "chapter": "pg-joins",
       "domain": "postgres",
@@ -2190,6 +1944,289 @@
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:null-safe-join",
       "featurePoints": 3
+    },
+    {
+      "id": "sqd-not-in-null",
+      "chapter": "pg-joins",
+      "domain": "postgres",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kysely `WHERE customer_id NOT IN (SELECT customer_id FROM blacklist)` palauttaa yhtäkkiä nolla riviä. Blacklist-tauluun lisättiin rivi, jossa customer_id on NULL. Miksi?",
+      "choices": [
+        {
+          "text": "NOT IN vertaa jokaiseen arvoon: x <> NULL on tuntematon, joten ehto ei ole koskaan tosi — käytä NOT EXISTS",
+          "correct": true
+        },
+        {
+          "text": "NULL-rivi rikkoo blacklist-taulun indeksin, joten alikysely epäonnistuu hiljaa ja palauttaa tyhjän",
+          "correct": false
+        },
+        {
+          "text": "NOT IN toimii vain numeerisille sarakkeille, ja NULL muuttaa alikyselyn tuloksen tyypin tekstiksi",
+          "correct": false
+        },
+        {
+          "text": "PostgreSQL rajaa NOT IN -alikyselyn tuhanteen riviin, ja NULL-rivi ylittää rajan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "SQL:n kolmiarvoisessa logiikassa `x NOT IN (1, NULL)` on NULL eikä TRUE, joten WHERE hylkää jokaisen rivin. NOT EXISTS ei kärsi tästä.",
+      "wrongFeedback": "Syy ei ole indeksi, tyyppi eikä raja: NULL tekee jokaisesta <>-vertailusta tuntemattoman. Käytä NOT EXISTS tai suodata NULLit alikyselystä.",
+      "featureId": "postgres:not-in-null",
+      "featurePoints": 4,
+      "sourceRef": "postgresql/docs/functions-subquery",
+      "sourceUrl": "https://www.postgresql.org/docs/current/functions-subquery.html#FUNCTIONS-SUBQUERY-NOTIN"
+    },
+    {
+      "id": "sqd-left-join-count-zero",
+      "chapter": "pg-joins",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Raportti: tilausten määrä per asiakas, myös nollat. `LEFT JOIN orders o ... GROUP BY c.id` ja `COUNT(*)` näyttää tilauksettomille asiakkaille luvun 1. Korjaus?",
+      "choices": [
+        {
+          "text": "COUNT(o.id) — laskee vain rivit, joilla on tilaus; LEFT JOINin NULL-rivi jää laskematta",
+          "correct": true
+        },
+        {
+          "text": "Vaihda LEFT JOIN INNER JOINiksi, jolloin tilauksettomat asiakkaat saavat arvon 0",
+          "correct": false
+        },
+        {
+          "text": "Lisää HAVING COUNT(*) > 1, jotta tyhjät ryhmät nollautuvat raportissa",
+          "correct": false
+        },
+        {
+          "text": "COUNT(DISTINCT c.id) laskee tilaukset asiakaskohtaisesti oikein",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "COUNT(*) laskee rivit, ja LEFT JOIN tuottaa tilauksettomalle asiakkaalle yhden rivin NULL-arvoilla. COUNT(sarake) ohittaa NULLit, joten tulos on 0.",
+      "wrongFeedback": "INNER JOIN pudottaisi tilauksettomat asiakkaat kokonaan pois, ja HAVING poistaa rivejä eikä korjaa lukua. COUNT(o.id) antaa nollan.",
+      "featureId": "postgres:left-join-count",
+      "featurePoints": 3,
+      "sourceRef": "postgresql/docs/functions-aggregate",
+      "sourceUrl": "https://www.postgresql.org/docs/current/functions-aggregate.html"
+    },
+    {
+      "id": "sqd-aggregate-filter",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Raportti tarvitsee samalle riville kaikkien tilausten määrän sekä avoimet ja peruutetut erikseen. Siistein PostgreSQL-tapa yhdellä kyselyllä?",
+      "choices": [
+        {
+          "text": "COUNT(*) FILTER (WHERE status = 'open') ja vastaava FILTER peruutetuille",
+          "correct": true
+        },
+        {
+          "text": "Kolme erillistä kyselyä ja UNION ALL, koska aggregaatti ei voi rajata rivejä",
+          "correct": false
+        },
+        {
+          "text": "GROUP BY status palauttaa kaikki luvut samalle riville automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "WHERE status IN ('open', 'cancelled') ja COUNT(*) kahteen kertaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "FILTER-lauseke rajaa yhden aggregaatin syötteen. Se tekee saman kuin SUM(CASE WHEN ... THEN 1 ELSE 0 END), mutta luettavammin.",
+      "wrongFeedback": "GROUP BY status tuottaa oman rivin per status, ja WHERE rajaa koko kyselyn. FILTER rajaa vain yhden aggregaatin.",
+      "featureId": "postgres:aggregate-filter",
+      "featurePoints": 3,
+      "sourceRef": "postgresql/docs/syntax-aggregates",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-expressions.html#SYNTAX-AGGREGATES"
+    },
+    {
+      "id": "sqd-half-open-date-range",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Kuukausiraportti: `WHERE created_at BETWEEN '2024-03-01' AND '2024-03-31'`, ja created_at on timestamptz. Osa 31.3. tehdyistä tilauksista puuttuu. Miksi ja miten korjaat?",
+      "choices": [
+        {
+          "text": "Yläraja tarkoittaa 31.3. klo 00.00 — käytä puoliavointa väliä: >= '2024-03-01' AND < '2024-04-01'",
+          "correct": true
+        },
+        {
+          "text": "BETWEEN jättää molemmat rajat pois, joten kuukauden ensimmäinen ja viimeinen päivä puuttuvat",
+          "correct": false
+        },
+        {
+          "text": "Lisää ORDER BY created_at, jolloin viimeisen päivän rivit tulevat mukaan tulokseen",
+          "correct": false
+        },
+        {
+          "text": "timestamptz tallentaa ajat UTC:nä, joten 31.3. rivit siirtyvät huhtikuulle pysyvästi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "BETWEEN on suljettu väli, mutta pelkkä päivämäärä tarkoittaa keskiyötä. Puoliavoin väli toimii kaikilla aikatarkkuuksilla ja käyttää indeksiä.",
+      "wrongFeedback": "BETWEEN sisältää rajat, mutta '2024-03-31' on 31.3. klo 00.00. Käytä ehtoa `< seuraavan kuun ensimmäinen päivä`.",
+      "featureId": "postgres:half-open-range",
+      "featurePoints": 3,
+      "sourceRef": "postgresql/docs/functions-datetime",
+      "sourceUrl": "https://www.postgresql.org/docs/current/functions-datetime.html"
+    },
+    {
+      "id": "sqd-timestamptz",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Palvelimet ovat eri aikavyöhykkeillä, ja tapahtumien järjestys sekoaa raporteissa. Aikasarake on `timestamp` (without time zone). Mikä on suositus?",
+      "choices": [
+        {
+          "text": "timestamptz — yksiselitteinen hetki, joka näytetään istunnon aikavyöhykkeessä",
+          "correct": true
+        },
+        {
+          "text": "timestamp riittää, kunhan jokainen palvelin asettaa kellonsa paikalliseen aikaan",
+          "correct": false
+        },
+        {
+          "text": "Tallenna aika tekstinä ISO-muodossa, jolloin vyöhyke ei vaikuta järjestykseen",
+          "correct": false
+        },
+        {
+          "text": "Käytä date-tyyppiä ja erillistä time-saraketta, niin vyöhykkeet eivät sekoitu",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "timestamptz muuntaa syötteen UTC:ksi tallennettaessa, joten vertailu ja järjestys ovat oikein vyöhykkeestä riippumatta.",
+      "wrongFeedback": "timestamp ilman vyöhykettä ei tiedä, minkä vyöhykkeen aika se on. Eri palvelimien kirjoittamat arvot eivät ole vertailukelpoisia.",
+      "featureId": "postgres:timestamptz",
+      "featurePoints": 3,
+      "sourceRef": "postgresql/wiki/dont-do-this",
+      "sourceUrl": "https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_timestamp_.28without_time_zone.29"
+    },
+    {
+      "id": "sqd-numeric-money",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Laskujen summat tallennetaan `double precision` -sarakkeeseen, ja kuukausisumma heittää sentin verran. Mikä tyyppi rahalle?",
+      "choices": [
+        {
+          "text": "numeric(12,2) tai kokonaisluku sentteinä — tarkat desimaalit",
+          "correct": true
+        },
+        {
+          "text": "real — pienempi liukuluku pyöristää vähemmän kuin double precision",
+          "correct": false
+        },
+        {
+          "text": "money-tyyppi, koska se muuntaa valuutat automaattisesti oikein",
+          "correct": false
+        },
+        {
+          "text": "text, jotta desimaalierotin säilyy täsmälleen syötetyssä muodossa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Liukuluku ei esitä lukua 0,10 tarkasti, joten summat ajautuvat. numeric laskee desimaalit tarkasti.",
+      "wrongFeedback": "real on vielä epätarkempi, money riippuu lc_monetary-asetuksesta eikä muunna valuuttoja, eikä tekstillä voi laskea.",
+      "featureId": "postgres:numeric-money",
+      "featurePoints": 2,
+      "sourceRef": "postgresql/docs/datatype-numeric",
+      "sourceUrl": "https://www.postgresql.org/docs/current/datatype-numeric.html"
+    },
+    {
+      "id": "sqd-upsert-on-conflict",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Import-ajo lisää tuotteita: uusi SKU lisätään, olemassa olevan hinta päivitetään. Koodi tekee SELECTin ja sitten INSERTin tai UPDATEn, ja rinnakkaiset ajot kaatuvat unique-virheeseen. Ratkaisu?",
+      "choices": [
+        {
+          "text": "INSERT ... ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price — atominen upsert",
+          "correct": true
+        },
+        {
+          "text": "Lukitse koko taulu LOCK TABLE -komennolla jokaisen rivin käsittelyn ajaksi",
+          "correct": false
+        },
+        {
+          "text": "Poista unique-rajoite, jolloin rinnakkaiset ajot eivät enää kaadu virheeseen",
+          "correct": false
+        },
+        {
+          "text": "Aja SELECT kahdesti ennen INSERTiä, niin kilpailutilanne ehtii ratketa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ON CONFLICT tekee tarkistuksen ja kirjoituksen yhtenä atomisena operaationa unique-indeksin varassa. EXCLUDED viittaa riviin, jota yritettiin lisätä.",
+      "wrongFeedback": "SELECT-sitten-INSERT on kilpailutilanne: kaksi ajoa näkee saman puuttuvan rivin. Rajoitteen poisto tuottaa duplikaatteja, ja taululukko pysäyttää muut.",
+      "featureId": "postgres:upsert",
+      "featurePoints": 3,
+      "sourceRef": "postgresql/docs/sql-insert",
+      "sourceUrl": "https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT"
+    },
+    {
+      "id": "sqd-null-equality",
+      "chapter": "pg-query-design",
+      "domain": "postgres",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "guru",
+        "secretary"
+      ],
+      "prompt": "Kysely `SELECT * FROM users WHERE deleted_at = NULL` ei palauta yhtään riviä, vaikka poistamattomia käyttäjiä on tuhansia. Miksi?",
+      "choices": [
+        {
+          "text": "Vertailu NULLiin on aina tuntematon — oikea ehto on deleted_at IS NULL",
+          "correct": true
+        },
+        {
+          "text": "NULL-arvot eivät ole indeksissä, joten haku ei löydä niitä",
+          "correct": false
+        },
+        {
+          "text": "= NULL toimii vain, jos sarakkeelle on asetettu DEFAULT NULL",
+          "correct": false
+        },
+        {
+          "text": "Kysely tarvitsee LIMITin, koska NULL-rivejä on liikaa palautettavaksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "NULL tarkoittaa tuntematonta, joten edes NULL = NULL ei ole tosi. IS NULL ja IS NOT NULL ovat oikeat testit.",
+      "wrongFeedback": "Syy ei ole indeksi eikä oletusarvo: mikä tahansa `= NULL` -vertailu on NULL, ja WHERE hylkää sen.",
+      "featureId": "postgres:null-comparison",
+      "featurePoints": 1,
+      "sourceRef": "postgresql/docs/functions-comparison",
+      "sourceUrl": "https://www.postgresql.org/docs/current/functions-comparison.html"
     }
   ]
 }

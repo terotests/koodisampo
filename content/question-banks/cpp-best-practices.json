@@ -2045,41 +2045,6 @@
       ]
     },
     {
-      "id": "b02-cpp-perf-move-09",
-      "chapter": "performance",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "project-lead"
-      ],
-      "prompt": "Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std::move(returnVec)`. Onko se oikein?",
-      "choices": [
-        {
-          "text": "Kyllä — std::move returnissa on aina pakollinen",
-          "correct": false
-        },
-        {
-          "text": "Ei — NRVO/RVO usein riittää ilman std::move:a",
-          "correct": true
-        },
-        {
-          "text": "Palauta shared_ptr vektorin sijaan — selkeämpi omistajuus",
-          "correct": false
-        },
-        {
-          "text": "Kopioi aina varmuuden vuoksi ennen palautusta",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Named RVO on usein parempi kuin std::move return — estää move-from-tilan.",
-      "wrongFeedback": "std::move return voi estää RVO:n. Luota optimoijaan tai palauta arvo suoraan.",
-      "sourceRef": "cpp-best-practices/06-Performance.md",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/copy_elision",
-      "featureId": "cpp:nrvo",
-      "featurePoints": 4
-    },
-    {
       "id": "b02-cpp-perf-shrink-10",
       "chapter": "performance",
       "domain": "cpp",
@@ -2289,44 +2254,6 @@
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-return-ref",
       "featureId": "cpp:dangling-reference",
       "featurePoints": 4
-    },
-    {
-      "id": "b03-cpp-cr-move-semantics",
-      "chapter": "performance",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Code reviewissa funktio palauttaa suuren `std::vector` arvona ja reviewer ehdottaa `std::move`-paluuta. Miksi?",
-      "choices": [
-        {
-          "text": "RVO/NRVO usein riittää — move voi estää optimoinnin",
-          "correct": true
-        },
-        {
-          "text": "std::move palautuksessa on aina pakollinen C++17:ssä",
-          "correct": false
-        },
-        {
-          "text": "move tekee palautuksesta automaattisesti thread-safen",
-          "correct": false
-        },
-        {
-          "text": "Palauta const reference — vältät kopioinnin kokonaan",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Named return value optimization voi jo siirtää ilman move:a — cppreference varoittaa turhasta std::move palautuksessa.",
-      "wrongFeedback": "Palautusarvo on jo rvalue — liian aikainen move voi jopa haitata NRVO:ta.",
-      "sourceRef": "cppreference/return",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/return",
-      "featureId": "cpp:move-semantics",
-      "featurePoints": 4,
-      "versions": [
-        "C++17"
-      ]
     },
     {
       "id": "b03-cpp-prod-virtual-dtor",
@@ -2578,44 +2505,6 @@
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md",
       "featureId": "cpp:std-array",
       "featurePoints": 3
-    },
-    {
-      "id": "b03-cpp-correct-three-way-default",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?",
-      "choices": [
-        {
-          "text": "default operator<=> + ranges::sort — tai bool-comparator (a < b)",
-          "correct": true
-        },
-        {
-          "text": "Palauta a < b || a == b — kattaa yhtäsuuruuden erikseen comparatorissa",
-          "correct": false
-        },
-        {
-          "text": "Vaihda std::sort std::stable_sort:iin — yhtäsuuruus ei enää haittaa",
-          "correct": false
-        },
-        {
-          "text": "Kirjoita kaksi eri comparatoria: yksi < ja yksi > vertailulle",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Default operator<=> jäsenissä + ranges::sort — comparator palauttaa bool.",
-      "wrongFeedback": "Palauta false kun a==b bool-comparatorissa. Älä palauta suoraan <=>-tulosta sorttiin.",
-      "sourceRef": "cppreference/operator_spaceship",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_comparison",
-      "featureId": "cpp:spaceship",
-      "featurePoints": 4,
-      "versions": [
-        "C++20"
-      ]
     },
     {
       "id": "b03-cpp-portability-fixed-width",
@@ -2972,43 +2861,6 @@
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread/lock",
       "featureId": "cpp:deadlock",
       "featurePoints": 4
-    },
-    {
-      "id": "b04-cpp-consteval-compile-time",
-      "chapter": "tools",
-      "domain": "cpp",
-      "difficulty": 4,
-      "audiences": [
-        "guru"
-      ],
-      "prompt": "Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?",
-      "choices": [
-        {
-          "text": "consteval funktio — pakottaa compile-time evaluoinnin",
-          "correct": true
-        },
-        {
-          "text": "constexpr riittää aina — se on täysin sama asia kuin consteval",
-          "correct": false
-        },
-        {
-          "text": "Macro #define TABLE_SIZE 256 laskee taulukon käännösaikana",
-          "correct": false
-        },
-        {
-          "text": "static initializer ilman constevalia riittää aina tähän",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "consteval funktioita EI voi kutsua runtime — pakottaa constexpr-kontekstin.",
-      "wrongFeedback": "constexpr voi ajaa runtime:ssa. consteval on tiukempi compile-time pakko.",
-      "sourceRef": "en.cppreference.com/consteval",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/consteval",
-      "featureId": "cpp:consteval",
-      "featurePoints": 4,
-      "versions": [
-        "C++20"
-      ]
     },
     {
       "id": "b04-cpp-init-list-initializer",
@@ -3806,42 +3658,6 @@
       "featurePoints": 2
     },
     {
-      "id": "b05-cpp-signed-compare-bug",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "security",
-        "guru"
-      ],
-      "prompt": "Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. Mikä on riski?",
-      "choices": [
-        {
-          "text": "Implisiittinen signed/unsigned vertailu voi aiheuttaa ikuisen silmukan",
-          "correct": true
-        },
-        {
-          "text": "Ei riskiä — kääntäjä korjaa signed/unsigned vertailun automaattisesti",
-          "correct": false
-        },
-        {
-          "text": "Vain debug-buildissa ongelma — release-build käsittelee vertailun oikein",
-          "correct": false
-        },
-        {
-          "text": "int on aina turvallisempi kuin size_t silmukka-indeksinä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Mixed signedness on UB-riski — CppCore Guidelines ES.100.",
-      "wrongFeedback": "Negatiivinen int muunnetaan suureksi unsignediksi. Käytä size_t tai std::ssize.",
-      "sourceRef": "CppCoreGuidelines#Res-mix",
-      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Res-mix",
-      "featureId": "cpp:signed-compare",
-      "featurePoints": 4
-    },
-    {
       "id": "b05-cpp-atomic-counter",
       "chapter": "threadability",
       "domain": "cpp",
@@ -3874,41 +3690,6 @@
       "sourceRef": "en.cppreference.com/atomic",
       "sourceUrl": "https://en.cppreference.com/w/cpp/atomic/atomic",
       "featureId": "cpp:atomic",
-      "featurePoints": 3
-    },
-    {
-      "id": "b05-cpp-explicit-constructor",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. Miten estät?",
-      "choices": [
-        {
-          "text": "explicit-konstruktori — estää hiljaiset implisiittiset muunnokset kutsukohdassa",
-          "correct": true
-        },
-        {
-          "text": "private konstruktori riittää estämään implisiittiset muunnokset ulkopuolelta",
-          "correct": false
-        },
-        {
-          "text": "delete default constructor estää vahingossa tapahtuvat Meters-muunnokset",
-          "correct": false
-        },
-        {
-          "text": "Muuta int double:ksi — se estää implisiittisen kokonaislukumuunnoksen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "explicit estää implisiittiset konversiot — cppreference explicit.",
-      "wrongFeedback": "Ilman explicitia `Meters m = 5` on sallittu. Merkitse single-arg ctor explicit.",
-      "sourceRef": "en.cppreference.com/explicit",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/explicit",
-      "featureId": "cpp:explicit",
       "featurePoints": 3
     },
     {
@@ -4370,44 +4151,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b06-cpp-static-cast-review",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi?",
-      "choices": [
-        {
-          "text": "static_cast on näkyvä ja rajattu — helpompi grep ja turvallisempi kuin C-cast",
-          "correct": true
-        },
-        {
-          "text": "C-style cast on nopeampi käännöksessä — static_cast hidastaa optimointia",
-          "correct": false
-        },
-        {
-          "text": "static_cast poistaa tarpeen kaikille muille cast-tyypeille koodissa",
-          "correct": false
-        },
-        {
-          "text": "Kääntäjä kieltää static_castin C++20:ssä — käytä vain C-style castia",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "static_cast on eksplisiittinen conversion — CppCoreGuidelines ES.48.",
-      "wrongFeedback": "C-cast yhdistää useita cast-tyyppejä. static_cast on rajattu ja selkeä.",
-      "sourceRef": "CppCoreGuidelines#Es-explicit-casts",
-      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Es-explicit-casts",
-      "featureId": "cpp:static-cast",
-      "featurePoints": 2,
-      "versions": [
-        "C++20"
-      ]
-    },
-    {
       "id": "b06-cpp-attributes-fallthrough",
       "chapter": "style",
       "domain": "cpp",
@@ -4621,41 +4364,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b07-cpp-reserve-vector",
-      "chapter": "performance",
-      "domain": "cpp",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia allokaatioita. Ensimmäinen optimointi?",
-      "choices": [
-        {
-          "text": "vector.reserve(n) ennen silmukkaa — vähentää toistuvia reallokaatioita",
-          "correct": true
-        },
-        {
-          "text": "Käytä list<T> aina — se välttää vectorin reallokaatio-ongelman",
-          "correct": false
-        },
-        {
-          "text": "Poista reserve — se hidastaa push_back-silmukkaa merkittävästi",
-          "correct": false
-        },
-        {
-          "text": "Muuta push_back emplace_backiksi ilman reservea — se korvaa kapasiteettivarauksen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "reserve varaa kapasiteetin etukäteen — cppreference vector::reserve.",
-      "wrongFeedback": "Ilman reservea vector kasvaa eksponentiaalisesti uudelleenallokoiden.",
-      "sourceRef": "en.cppreference.com/vector/reserve",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/container/vector/reserve",
-      "featureId": "cpp:vector-reserve",
-      "featurePoints": 2
-    },
-    {
       "id": "b07-cpp-endian-portable",
       "chapter": "portability",
       "domain": "cpp",
@@ -4801,41 +4509,6 @@
       "sourceUrl": "https://en.cppreference.com/w/cpp/utility/optional",
       "featureId": "cpp:optional",
       "featurePoints": 2
-    },
-    {
-      "id": "b07-cpp-rule-of-five",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructorin. Mikä puuttuu?",
-      "choices": [
-        {
-          "text": "Rule of five: copy/move ctor + assign — tai =delete / =default tietoisesti",
-          "correct": true
-        },
-        {
-          "text": "Destructor riittää — muut special memberit generoituvat aina turvallisesti",
-          "correct": false
-        },
-        {
-          "text": "Vain copy constructor tarvitaan kun destructor on määritelty",
-          "correct": false
-        },
-        {
-          "text": "Smart pointer korvaa luokan — special membereitä ei tarvita lainkaan",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Oman resurssin hallinta vaatii five special members — CppCoreGuidelines C.21.",
-      "wrongFeedback": "Puutteelliset special members aiheuttavat double-free tai leak.",
-      "sourceRef": "CppCoreGuidelines#C21",
-      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c21",
-      "featureId": "cpp:rule-of-five",
-      "featurePoints": 4
     },
     {
       "id": "b07-cpp-nodiscard-error",
@@ -5086,41 +4759,6 @@
       ]
     },
     {
-      "id": "b08-cpp-enum-class-scope",
-      "chapter": "style",
-      "domain": "cpp",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "secretary"
-      ],
-      "prompt": "Vanha `enum Color { Red, Green }` törmää toisen headerin `Red`-vakion kanssa. Miten estät nimiristiriidat?",
-      "choices": [
-        {
-          "text": "enum class Color { Red, Green } — scoped enum",
-          "correct": true
-        },
-        {
-          "text": "Lisää prefix RED_COLOR manuaalisesti",
-          "correct": false
-        },
-        {
-          "text": "Siirrä enum namespaceen ilman class-avainsanaa",
-          "correct": false
-        },
-        {
-          "text": "#define Red 1",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "enum class estää implisiittisen int-muunnoksen ja vuotaa nimiavaruuteen — CppCoreGuidelines Enum.3.",
-      "wrongFeedback": "Scoped enum on moderni tapa. Vanha enum saastuttaa ympäröivän scope:n.",
-      "sourceRef": "CppCoreGuidelines#Enum.3",
-      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#enum3",
-      "featureId": "cpp:enum-class",
-      "featurePoints": 2
-    },
-    {
       "id": "b08-cpp-sort-requirements",
       "chapter": "tools",
       "domain": "cpp",
@@ -5189,44 +4827,6 @@
       "sourceUrl": "https://en.cppreference.com/w/cpp/memory/unique_ptr",
       "featureId": "cpp:unique-ptr-deleter",
       "featurePoints": 4
-    },
-    {
-      "id": "b08-cpp-chrono-literals",
-      "chapter": "tools",
-      "domain": "cpp",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 millisekuntia C++14:ssä?",
-      "choices": [
-        {
-          "text": "using namespace std::chrono_literals; auto t = 500ms; — tyypitetty timeout",
-          "correct": true
-        },
-        {
-          "text": "500 chrono ilman suffixia — kääntäjä deduoi millisekunnit automaattisesti",
-          "correct": false
-        },
-        {
-          "text": "sleep(500) on aina millisekunteja C++14 std::chrono API:ssa",
-          "correct": false
-        },
-        {
-          "text": "#define ms * 1 on chrono-literalin virallinen korvaaja",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "User-defined literals 500ms — cppreference chrono literals.",
-      "wrongFeedback": "chrono_literals tekee yksiköistä tyypitettyjä. Vältä taikalukuja.",
-      "sourceRef": "en.cppreference.com/chrono/literals",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/chrono/operator%22%22ms",
-      "featureId": "cpp:chrono-literals",
-      "featurePoints": 2,
-      "versions": [
-        "C++14"
-      ]
     },
     {
       "id": "b08-cpp-atomic-memory-order",
@@ -5807,76 +5407,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b09-cpp-rule-of-five-review",
-      "chapter": "style",
-      "domain": "cpp",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Luokassa on custom destructor mutta ei copy/move -operaatioita. Code review -huomio?",
-      "choices": [
-        {
-          "text": "Rule of Five — määrittele tai =default/delete kaikki viisi special memberia",
-          "correct": true
-        },
-        {
-          "text": "Destructor riittää — compiler generoi loput turvallisesti resurssiluokalle",
-          "correct": false
-        },
-        {
-          "text": "Lisää vain copy constructor — move-operaatiot generoituvat automaattisesti",
-          "correct": false
-        },
-        {
-          "text": "Siirry C:hen — ei special membereitä, ei double-free-riskiä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Custom destructor implikoi resource ownership — Rule of Zero/Five.",
-      "wrongFeedback": "Implisiittiset copy/move voivat tuplata tai vuotaa resurssin. Määrittele eksplisiittisesti.",
-      "sourceRef": "CppCoreGuidelines#Rc-five",
-      "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-five",
-      "featureId": "cpp:rule-of-five",
-      "featurePoints": 4
-    },
-    {
-      "id": "b09-cpp-vector-reserve-incident",
-      "chapter": "performance",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Profilointi näyttää tuhansia vector-reallokaatioita request-käsittelyssä. Ensimmäinen optimointi?",
-      "choices": [
-        {
-          "text": "reserve() kun alkiomäärä on arvioitavissa — vähentää reallokaatioita",
-          "correct": true
-        },
-        {
-          "text": "Korvaa vector std::list:llä aina — se poistaa reallokaatio-ongelman",
-          "correct": false
-        },
-        {
-          "text": "Poista push_back — käytä indeksointia ilman kapasiteettivarausta",
-          "correct": false
-        },
-        {
-          "text": "reserve hidastaa aina — älä käytä sitä request-käsittelyssä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "reserve vähentää reallokaatioita — cppreference vector::reserve.",
-      "wrongFeedback": "Toistuva push_back ilman reservea aiheuttaa O(n²) kopiointia. Arvioi koko.",
-      "sourceRef": "en.cppreference.com/vector/reserve",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/container/vector/reserve",
-      "featureId": "cpp:vector-reserve",
-      "featurePoints": 3
-    },
-    {
       "id": "b09-cpp-emplace-back-move",
       "chapter": "performance",
       "domain": "cpp",
@@ -5945,41 +5475,6 @@
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/05-Maintainability.md",
       "featureId": "cpp:extract-function",
       "featurePoints": 2
-    },
-    {
-      "id": "b09-cpp-switch-fallthrough",
-      "chapter": "correctness",
-      "domain": "cpp",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuotannosta. Moderni dokumentointi?",
-      "choices": [
-        {
-          "text": "[[fallthrough]] attribuutti tai break — eksplisiittinen intentti switchissä",
-          "correct": true
-        },
-        {
-          "text": "goto case2 on selkeämpi tapa dokumentoida tarkoituksellinen putoaminen",
-          "correct": false
-        },
-        {
-          "text": "Switch on deprecated — käytä if-ketjua fallthrough-ongelmien välttämiseksi",
-          "correct": false
-        },
-        {
-          "text": "Kääntäjä korjaa fallthrough automaattisesti — ei dokumentointia tarvita",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "[[fallthrough]] dokumentoi tarkoituksellisen putoamisen — cppreference.",
-      "wrongFeedback": "Epäintentionalinen fallthrough on yleinen bugi. break tai [[fallthrough]].",
-      "sourceRef": "en.cppreference.com/attributes/fallthrough",
-      "sourceUrl": "https://en.cppreference.com/w/cpp/language/attributes/fallthrough",
-      "featureId": "cpp:fallthrough",
-      "featurePoints": 3
     },
     {
       "id": "b09-cpp-narrowing-conversion",

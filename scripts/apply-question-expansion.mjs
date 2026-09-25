@@ -23,7 +23,17 @@ const FILE_MAP = {
   "git-ci": "git-ci.json",
   "backend-ops": "backend-ops.json",
   "web-security": "web-security.json",
+  "sql-query-design": "sql-query-design.json",
+  "rust": "rust.json",
+  "space-gnss": "space-gnss.json",
 };
+
+// Toistoina poistetut kysymykset (scripts/questions-dedupe.mjs) eivät palaa erien uudelleenajossa.
+function loadRemovedIds() {
+  const path = resolve(dataDir, "questions-dedupe.json");
+  if (!existsSync(path)) return new Set();
+  return new Set(Object.keys(JSON.parse(readFileSync(path, "utf8")).removed || {}));
+}
 
 function loadExistingIds() {
   const ids = new Set();
@@ -52,6 +62,7 @@ function validateQuestion(q, index) {
 async function applyBatch(batchPath) {
   const { EXPANSION } = await import(pathToFileURL(batchPath).href);
   const existing = loadExistingIds();
+  const removed = loadRemovedIds();
   let added = 0;
   const batchIds = new Set();
 
@@ -64,6 +75,7 @@ async function applyBatch(batchPath) {
     for (let i = 0; i < newQuestions.length; i += 1) {
       const q = newQuestions[i];
       validateQuestion(q, i);
+      if (removed.has(q.id)) continue;
       if (batchIds.has(q.id) || existing.has(q.id)) {
         throw new Error(`Duplicate id: ${q.id}`);
       }

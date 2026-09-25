@@ -1260,6 +1260,78 @@
       "sourceUrl": "https://owasp.org/Top10/2021/A04_2021-Insecure_Design/",
       "featureId": "security:dev-config-leak",
       "featurePoints": 4
+    },
+    {
+      "id": "sec-session-fixation",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "Sovellus käyttää kirjautumisen jälkeen samaa session-id:tä kuin ennen kirjautumista. Hyökkääjä voi asettaa uhrille tuntemansa id:n. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "Luo uusi session-id kirjautumisen yhteydessä ja mitätöi vanha",
+          "correct": true
+        },
+        {
+          "text": "Pidennä session-id:tä, jolloin hyökkääjä ei pysty arvaamaan sitä",
+          "correct": false
+        },
+        {
+          "text": "Salaa session-id cookiessa, jolloin hyökkääjän asettama arvo ei kelpaa",
+          "correct": false
+        },
+        {
+          "text": "Siirrä session-id cookiesta URL-parametriksi, jotta se näkyy lokeissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Session fixationissa hyökkääjä ei arvaa id:tä vaan asettaa sen itse. Uusi id kirjautumisessa katkaisee yhteyden hyökkääjän tuntemaan arvoon.",
+      "wrongFeedback": "Pituus tai salaus ei auta, koska hyökkääjä tuntee arvon valmiiksi. URL-parametri pahentaa vuotoriskiä.",
+      "featureId": "security:session-fixation",
+      "featurePoints": 4,
+      "sourceRef": "owasp/session-management",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#renew-the-session-id-after-any-privilege-level-change"
+    },
+    {
+      "id": "sec-jwt-alg-confusion",
+      "chapter": "sec-auth",
+      "domain": "security",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "JWT-kirjasto hyväksyy tokenin otsikossa ilmoitetun algoritmin sellaisenaan. Hyökkääjä lähettää tokenin, jossa `alg` on `none` tai RS256:n sijaan HS256. Mikä korjaus?",
+      "choices": [
+        {
+          "text": "Kiinnitä sallitut algoritmit palvelimella — älä luota tokenin alg-kenttään",
+          "correct": true
+        },
+        {
+          "text": "Tarkista, ettei tokenin alg-kenttä ole tyhjä, ja hyväksy muut arvot",
+          "correct": false
+        },
+        {
+          "text": "Pidennä allekirjoitusavainta, jolloin algoritmin vaihto ei onnistu",
+          "correct": false
+        },
+        {
+          "text": "Salaa koko token JWE:llä, jolloin alg-kenttää ei voi muuttaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tokenin otsikko on hyökkääjän hallussa. Kun palvelin päättää algoritmin itse, 'none' ja RS/HS-sekaannus (julkinen avain HMAC-avaimena) eivät toimi.",
+      "wrongFeedback": "Avaimen pituus tai salaus ei estä algoritmin vaihtoa, jos kirjasto valitsee algoritmin edelleen tokenin perusteella.",
+      "featureId": "security:jwt-alg",
+      "featurePoints": 4,
+      "sourceRef": "owasp/jwt",
+      "sourceUrl": "https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html"
     }
   ]
 }

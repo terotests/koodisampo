@@ -1,23 +1,22 @@
-# VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?
+# Taulu on vacuumoitu säännöllisesti, mutta sen indeksit ovat kasvaneet moninkertaisiksi UPDATE-kuormassa. Mitä teet?
 
 ## Tilanne
 
-Normaali VACUUM siivoaa dead tuplet heapista, mutta **indeksit voivat paisua** erikseen — erityisesti UPDATE-heavy kuormassa. Levytila ei palaudu, vaikka `VACUUM` ajetaan.
+Autovacuum pysyy ajan tasalla ja taulun dead tuplet siivotaan, mutta `pg_relation_size` näyttää indeksien kasvaneen moninkertaisiksi. UPDATE-raskas kuorma jättää indeksisivuille tyhjää tilaa, ja indeksi-scanit lukevat turhia sivuja.
 
 ## Ratkaisu
 
-1. **`vacuum index_cleanup`** (PG 14+ oletus päällä) — siivoaa indeksien dead pointerit vacuumin yhteydessä
-2. Pahasti paisuneet indeksit: **`REINDEX INDEX CONCURRENTLY`** tai `pg_repack`
+Paisunut indeksi rakennetaan uudelleen ilman pitkää kirjoituslukkoa:
 
 ```sql
-VACUUM (INDEX_CLEANUP ON) bloated_table;
-REINDEX INDEX CONCURRENTLY idx_bloated;
+REINDEX INDEX CONCURRENTLY idx_orders_status;
+-- tai koko taulu ja sen indeksit: pg_repack
 ```
 
-Indeksi-bloat voi vaatia REINDEX:in, vaikka heap-vacuum onnistuisi.
+Ennen sitä kannattaa mitata, mitkä indeksit oikeasti ovat paisuneet (esim. `pgstattuple`-laajennuksen `pgstatindex()`).
 
 ## Taustaa
 
-Heap ja indeksit bloatat erillään. Index-only scan -tehokkuus kärsii indeksibloatista.
+`VACUUM` poistaa indekseistä kuolleiden rivien osoittimet (`INDEX_CLEANUP`, oletuksena `AUTO`) ja merkitsee tyhjät sivut uudelleenkäytettäviksi, mutta **ei kutista indeksitiedostoa** eikä palauta tilaa käyttöjärjestelmälle. Tavallinen `REINDEX` lukitsee kirjoitukset koko rakennuksen ajaksi; `CONCURRENTLY` kestää pidempään mutta ei pysäytä tuotantoa. HOT-päivitykset (`fillfactor` < 100) vähentävät indeksien kasvua jatkossa.
 
-[Lue lisää](https://www.postgresql.org/docs/current/sql-vacuum.html)
+[Lue lisää](https://www.postgresql.org/docs/current/sql-reindex.html)

@@ -42,7 +42,7 @@ Tekniset lyhenteet ja akronyymit oppitunneissa. Oppitunneissa lyhenteet linkitet
 
 **Access Control List** — käyttöoikeusluettelo, joka määrittelee kuka saa tehdä mitä tietylle resurssille. Verkossa ACL rajaa liikennettä IP-osoitteiden tai porttien perusteella; Linuxissa POSIX ACL laajentaa tiedosto-oikeuksia `setfacl`-komennolla. macvlan-verkkoa käytettäessä legacy-laitteiden ACL-säännöt edellyttävät usein laitekohtaisen MAC-osoitteen.
 
-**Oppitunnit:** [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b09-linux-net-firewall-cmd`](/docs/topics/linux#b09-linux-net-firewall-cmd)
+**Oppitunnit:** [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b08-linux-network-firewalld`](/docs/topics/linux#b08-linux-network-firewalld)
 
 ### ADL {#adl}
 
@@ -60,7 +60,7 @@ Tekniset lyhenteet ja akronyymit oppitunneissa. Oppitunneissa lyhenteet linkitet
 
 **American National Standards Institute** — amerikkalainen standardointielin. ANSI SQL on tietokantojen kyselykielen pohjastandardi; ANSI-tyylinen JOIN-syntaksi (`JOIN ... ON ...`) on selkeämpi kuin vanha pilkuerotteinen FROM-lista ja erottelee join-ehdot suodatusehdoista.
 
-**Oppitunnit:** [`sqd-join-on-not-where`](/docs/topics/postgres#sqd-join-on-not-where), [`sqd-lag-mom-comparison`](/docs/topics/postgres#sqd-lag-mom-comparison)
+**Oppitunnit:** [`sqd-filter-outer-join`](/docs/topics/postgres#sqd-filter-outer-join), [`sqd-lag-mom-comparison`](/docs/topics/postgres#sqd-lag-mom-comparison)
 
 ### APN {#apn}
 
@@ -108,7 +108,7 @@ Qt CMake -buildin automaattinen MOC-ajuri (`set_target_properties(... AUTOMOC ON
 
 **Business Intelligence** — liiketoimintatiedon hallinta, analysointi ja raportointi. BI-työkalut (Metabase, Tableau, Power BI) voivat käyttää PostgreSQL-kantaa suoraan; ennen indeksin poistoa täytyy varmistaa, ettei BI-työkalu tai -kysely käytä sitä.
 
-**Oppitunnit:** [`b02-pg-vacuum-long-xact-11`](/docs/topics/postgres#b02-pg-vacuum-long-xact-11), [`exp-pg-indexes-unused-drop`](/docs/topics/postgres#exp-pg-indexes-unused-drop), [`exp-pg-vacuum-long-xact`](/docs/topics/postgres#exp-pg-vacuum-long-xact), [`sqd-case-format-output`](/docs/topics/postgres#sqd-case-format-output), [`sqd-crosstab-alternative`](/docs/topics/postgres#sqd-crosstab-alternative), [`sqd-readonly-role`](/docs/topics/postgres#sqd-readonly-role), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only), [`sqd-view-column-mask`](/docs/topics/postgres#sqd-view-column-mask)
+**Oppitunnit:** [`exp-pg-vacuum-long-xact`](/docs/topics/postgres#exp-pg-vacuum-long-xact), [`exp-pg-indexes-unused-drop`](/docs/topics/postgres#exp-pg-indexes-unused-drop), [`sqd-case-format-output`](/docs/topics/postgres#sqd-case-format-output), [`sqd-pivot-conditional-agg`](/docs/topics/postgres#sqd-pivot-conditional-agg), [`sqd-readonly-role`](/docs/topics/postgres#sqd-readonly-role), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only), [`sqd-view-column-mask`](/docs/topics/postgres#sqd-view-column-mask)
 
 ### BOM {#bom}
 
@@ -120,7 +120,7 @@ Qt CMake -buildin automaattinen MOC-ajuri (`set_target_properties(... AUTOMOC ON
 
 **Block Range INdex** — PostgreSQLin tilatehokas indeksityyppi, joka tallentaa min/max-arvot sivualueryhmille. BRIN sopii suurille fyysisesti järjestetyille tauluille, kuten aikasarjoille; ei sovi yksittäisrivien pistehakuun.
 
-**Oppitunnit:** [`b02-pg-indexes-btree-02`](/docs/topics/postgres#b02-pg-indexes-btree-02), [`b06-pg-indexes-brin-timeseries`](/docs/topics/postgres#b06-pg-indexes-brin-timeseries), [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial)
+**Oppitunnit:** [`exp-pg-indexes-btree-composite`](/docs/topics/postgres#exp-pg-indexes-btree-composite), [`b06-pg-indexes-brin-timeseries`](/docs/topics/postgres#b06-pg-indexes-brin-timeseries), [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial)
 
 ### C++ {#cpp}
 
@@ -138,7 +138,7 @@ C ja C++ — järjestelmäohjelmointikielet, joita käytetään rinnakkain erity
 
 Välimuisti, johon aiemmin laskettu tai haettu data tallennetaan nopean uudelleenkäytön vuoksi. Docker BuildKit ylläpitää build-cacheä kerrosten perusteella (`docker buildx prune` tyhjentää sen). PostgreSQLin `shared_buffers` toimii tietokantablokkien cachena; `EXPLAIN (ANALYZE, BUFFERS)` paljastaa, kuinka moni luku tuli cachesta (`shared_blks_hit`) vs. levyltä (`shared_blks_read`).
 
-**Oppitunnit:** [`b08-docker-prune-build-cache`](/docs/topics/docker#b08-docker-prune-build-cache), [`sqd-explain-before-tune`](/docs/topics/postgres#sqd-explain-before-tune)
+**Oppitunnit:** [`b08-docker-prune-build-cache`](/docs/topics/docker#b08-docker-prune-build-cache), [`pg-explain-analyze`](/docs/topics/postgres#pg-explain-analyze)
 
 ### CALLBACK {#callback}
 
@@ -150,7 +150,7 @@ Välimuisti, johon aiemmin laskettu tai haettu data tallennetaan nopean uudellee
 
 **Continuous Delivery/Deployment** — CI/CD-putken julkaisupuolisko: hyväksytyt muutokset viedään automaattisesti staging- tai tuotantoympäristöön. `systemctl enable` varmistaa palvelun käynnistymisen uudelleen CD-deployauksen jälkeen.
 
-**Oppitunnit:** [`apt-autoremove`](/docs/topics/linux#apt-autoremove), [`b02-linux-systemd-unit-01`](/docs/topics/linux#b02-linux-systemd-unit-01), [`b02-scrum-team-cross-14`](/docs/topics/scrum#b02-scrum-team-cross-14), [`b03-docker-vol-named-vs-bind`](/docs/topics/docker#b03-docker-vol-named-vs-bind), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`b08-linux-resolv-search`](/docs/topics/linux#b08-linux-resolv-search), [`b09-linux-journalctl-follow-live`](/docs/topics/linux#b09-linux-journalctl-follow-live), [`systemd-enable-boot`](/docs/topics/linux#systemd-enable-boot)
+**Oppitunnit:** [`apt-autoremove`](/docs/topics/linux#apt-autoremove), [`b02-linux-systemd-unit-01`](/docs/topics/linux#b02-linux-systemd-unit-01), [`b02-scrum-team-cross-14`](/docs/topics/scrum#b02-scrum-team-cross-14), [`b03-docker-vol-named-vs-bind`](/docs/topics/docker#b03-docker-vol-named-vs-bind), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b04-linux-journalctl-follow`](/docs/topics/linux#b04-linux-journalctl-follow), [`systemd-enable-boot`](/docs/topics/linux#systemd-enable-boot)
 
 ### CDN {#cdn}
 
@@ -174,13 +174,13 @@ Välimuisti, johon aiemmin laskettu tai haettu data tallennetaan nopean uudellee
 
 **CHECKPOINT** — PostgreSQL-komento, joka pakottaa kaikki dirty-sivut levylle ja kirjaa WAL-lokiin tarkistuspisteen. `CHECKPOINT` ei päivitä suunnittelijastatistiikkaa; bulk loadin jälkeen tarvitaan erikseen `ANALYZE` tai `VACUUM ANALYZE` ajantasaisten tilastojen saamiseksi.
 
-**Oppitunnit:** [`b07-pg-vacuum-analyze`](/docs/topics/postgres#b07-pg-vacuum-analyze)
+**Oppitunnit:** [`exp-pg-explain-stats-stale`](/docs/topics/postgres#exp-pg-explain-stats-stale)
 
 ### CI/CD {#ci-cd}
 
 **Continuous Integration / Continuous Delivery (tai Deployment)** — automaattinen build-, testaus- ja julkaisuputki. CI varmistaa jokaisen commit/PR:n laadun (testit, lint, sanitizerit); CD automatisoi hyväksyttyjen muutosten julkaisun staging- tai tuotantoympäristöön.
 
-**Oppitunnit:** [`apt-autoremove`](/docs/topics/linux#apt-autoremove), [`b02-linux-systemd-unit-01`](/docs/topics/linux#b02-linux-systemd-unit-01), [`b02-scrum-team-cross-14`](/docs/topics/scrum#b02-scrum-team-cross-14), [`b03-docker-vol-named-vs-bind`](/docs/topics/docker#b03-docker-vol-named-vs-bind), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`b08-linux-resolv-search`](/docs/topics/linux#b08-linux-resolv-search), [`b09-linux-journalctl-follow-live`](/docs/topics/linux#b09-linux-journalctl-follow-live), [`docker-inspect-network`](/docs/topics/docker#docker-inspect-network), [`systemd-enable-boot`](/docs/topics/linux#systemd-enable-boot)
+**Oppitunnit:** [`apt-autoremove`](/docs/topics/linux#apt-autoremove), [`b02-linux-systemd-unit-01`](/docs/topics/linux#b02-linux-systemd-unit-01), [`b02-scrum-team-cross-14`](/docs/topics/scrum#b02-scrum-team-cross-14), [`b03-docker-vol-named-vs-bind`](/docs/topics/docker#b03-docker-vol-named-vs-bind), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b04-linux-journalctl-follow`](/docs/topics/linux#b04-linux-journalctl-follow), [`docker-inspect-network`](/docs/topics/docker#docker-inspect-network), [`systemd-enable-boot`](/docs/topics/linux#systemd-enable-boot)
 
 ### CIDR {#cidr}
 
@@ -192,7 +192,7 @@ Välimuisti, johon aiemmin laskettu tai haettu data tallennetaan nopean uudellee
 
 **Command-Line Interface** — komentoriviympäristön tekstipohjainen käyttöliittymä. `nmcli` on NetworkManagerin CLI-työkalu; monet järjestelmätyökalut ovat saatavilla vain CLI:nä tai tarjoavat skriptattavamman hallinnan kuin graafinen vaihtoehto.
 
-**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b03-docker-prune-disk`](/docs/topics/docker#b03-docker-prune-disk), [`b05-docker-prune-disk-full`](/docs/topics/docker#b05-docker-prune-disk-full), [`b09-docker-exec-debug`](/docs/topics/docker#b09-docker-exec-debug), [`b12-linux-dbus-bluez-pair`](/docs/topics/linux#b12-linux-dbus-bluez-pair), [`b12-linux-dbus-modemmanager-signal`](/docs/topics/linux#b12-linux-dbus-modemmanager-signal), [`linux-nmcli`](/docs/topics/linux#linux-nmcli), [`rust-async-future-await`](/docs/topics/rust#rust-async-future-await), [`rust-async-tokio-runtime-flavor`](/docs/topics/rust#rust-async-tokio-runtime-flavor), [`rust-concurrency-mpsc-channel`](/docs/topics/rust#rust-concurrency-mpsc-channel), [`rust-error-option-result-convert`](/docs/topics/rust#rust-error-option-result-convert) (+2 muuta)
+**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-docker-prune-05`](/docs/topics/docker#b02-docker-prune-05), [`b07-docker-exec-debug`](/docs/topics/docker#b07-docker-exec-debug), [`b12-linux-dbus-bluez-pair`](/docs/topics/linux#b12-linux-dbus-bluez-pair), [`b12-linux-dbus-modemmanager-signal`](/docs/topics/linux#b12-linux-dbus-modemmanager-signal), [`linux-nmcli`](/docs/topics/linux#linux-nmcli), [`rust-async-future-await`](/docs/topics/rust#rust-async-future-await), [`rust-async-tokio-runtime-flavor`](/docs/topics/rust#rust-async-tokio-runtime-flavor), [`rust-concurrency-mpsc-channel`](/docs/topics/rust#rust-concurrency-mpsc-channel), [`rust-error-option-result-convert`](/docs/topics/rust#rust-error-option-result-convert) (+2 muuta)
 
 ### CLOSE {#close}
 
@@ -204,7 +204,7 @@ TCP-yhteyden `CLOSE-WAIT`-tila: etäpää on lähettänyt FIN-paketin mutta paik
 
 PostgreSQL-komento, joka järjestää taulun rivit uudelleen indeksin mukaiseen järjestykseen levyllä. `CLUSTER orders USING orders_created_idx` nopeuttaa range-skannauksia, mutta lukitsee taulun operaation ajaksi — ei korvaa puuttuvaa autovacuumia eikä `REINDEX CONCURRENTLY`-tarvetta.
 
-**Oppitunnit:** [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial), [`exp-pg-indexes-covering`](/docs/topics/postgres#exp-pg-indexes-covering), [`b02-pg-indexes-covering-04`](/docs/topics/postgres#b02-pg-indexes-covering-04), [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update), [`b06-pg-indexes-include-columns`](/docs/topics/postgres#b06-pg-indexes-include-columns)
+**Oppitunnit:** [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial), [`exp-pg-indexes-covering`](/docs/topics/postgres#exp-pg-indexes-covering), [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update)
 
 ### CMD/ENTRYPOINT {#cmd-entrypoint}
 
@@ -246,7 +246,7 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **CPU/I/O** — kaksi keskeistä suorituskykyresurssia. CPU-sidonnaiset tehtävät kuluttavat prosessoriaikaa; I/O-sidonnaiset odottavat levy- tai verkkooperaatioita. PostgreSQLin `CREATE INDEX CONCURRENTLY` kuluttaa molempia: se skannaa taulun kahdesti ja rakentaa indeksin ilman lukkoa.
 
-**Oppitunnit:** [`b04-pg-indexes-concurrent-create`](/docs/topics/postgres#b04-pg-indexes-concurrent-create)
+**Oppitunnit:** [`b03-pg-indexes-concurrent-create`](/docs/topics/postgres#b03-pg-indexes-concurrent-create)
 
 ### CRC {#crc}
 
@@ -258,7 +258,7 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **CRM** (Customer Relationship Management) — asiakkuudenhallintajärjestelmä, joka ylläpitää asiakastietoja, kontakteja ja myyntiputkia. Sivutettujen CRM-API-kutsujen läpikäyntiin JavaScript async-generaattori (`async function*`) on tehokas rakenne: se tuottaa jokaisen sivun tulokset `yield`-lausekkeella ilman kaikkien sivujen lataamista muistiin kerralla.
 
-**Oppitunnit:** [`b08-js-async-generator`](/docs/topics/javascript#b08-js-async-generator)
+**Oppitunnit:** [`b04-js-async-generator`](/docs/topics/javascript#b04-js-async-generator)
 
 ### CRUD {#crud}
 
@@ -288,7 +288,7 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Comma-Separated Values** — pilkuilla eroteltu taulukkomuoto (`.csv`). Suuren CSV-tiedoston synkroninen käsittely pääsäikeellä jäädyttää selaimen UI:n; käsittely kannattaa siirtää Web Workeriin tai pilkkoa eriin tapahtumakierrosten välillä.
 
-**Oppitunnit:** [`b02-scrum-dor-size-06`](/docs/topics/scrum#b02-scrum-dor-size-06), [`b03-cpp-perf-string-reserve`](/docs/topics/cpp#b03-cpp-perf-string-reserve), [`b04-js-async-event-loop-blocking`](/docs/topics/javascript#b04-js-async-event-loop-blocking), [`b04-js-types-array-flat`](/docs/topics/javascript#b04-js-types-array-flat), [`b04-qt-signals-block`](/docs/topics/qt#b04-qt-signals-block), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`b09-qt-signals-block-updates`](/docs/topics/qt#b09-qt-signals-block-updates), [`b12-js-async-stream-backpressure`](/docs/topics/javascript#b12-js-async-stream-backpressure), [`exp-cpp-perf-reserve-vector`](/docs/topics/cpp#exp-cpp-perf-reserve-vector), [`rf-data-driven`](/docs/topics/robotframework#rf-data-driven), [`sqd-foreign-data-wrapper`](/docs/topics/postgres#sqd-foreign-data-wrapper), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op) (+1 muuta)
+**Oppitunnit:** [`b02-scrum-dor-size-06`](/docs/topics/scrum#b02-scrum-dor-size-06), [`b03-cpp-perf-string-reserve`](/docs/topics/cpp#b03-cpp-perf-string-reserve), [`b04-js-async-event-loop-blocking`](/docs/topics/javascript#b04-js-async-event-loop-blocking), [`b04-js-types-array-flat`](/docs/topics/javascript#b04-js-types-array-flat), [`b04-qt-signals-block`](/docs/topics/qt#b04-qt-signals-block), [`b06-docker-network-mode-none`](/docs/topics/docker#b06-docker-network-mode-none), [`b03-qt-signals-block-signals`](/docs/topics/qt#b03-qt-signals-block-signals), [`b12-js-async-stream-backpressure`](/docs/topics/javascript#b12-js-async-stream-backpressure), [`exp-cpp-perf-reserve-vector`](/docs/topics/cpp#exp-cpp-perf-reserve-vector), [`rf-data-driven`](/docs/topics/robotframework#rf-data-driven), [`sqd-foreign-data-wrapper`](/docs/topics/postgres#sqd-foreign-data-wrapper), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op) (+1 muuta)
 
 ### CSV/JSON {#csv-json}
 
@@ -300,13 +300,13 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Common Table Expression** — SQL:n `WITH`-lauseke, joka nimeää alikyselyn pääkyselyä varten. PostgreSQL 12:sta alkaen CTE inlinataan oletuksena pääkyselyyn; `MATERIALIZED`-vihje pakottaa erilliseen materialisoituun välitulokseen.
 
-**Oppitunnit:** [`b04-pg-explain-parallel`](/docs/topics/postgres#b04-pg-explain-parallel), [`sqd-cte-materialized-hint`](/docs/topics/postgres#sqd-cte-materialized-hint), [`sqd-cte-readability`](/docs/topics/postgres#sqd-cte-readability), [`sqd-filter-before-join`](/docs/topics/postgres#sqd-filter-before-join), [`sqd-readable-cte-names`](/docs/topics/postgres#sqd-readable-cte-names), [`sqd-recursive-cte-hierarchy`](/docs/topics/postgres#sqd-recursive-cte-hierarchy), [`sqd-subquery-vs-cte-same`](/docs/topics/postgres#sqd-subquery-vs-cte-same)
+**Oppitunnit:** [`b04-pg-explain-parallel`](/docs/topics/postgres#b04-pg-explain-parallel), [`sqd-cte-materialized-hint`](/docs/topics/postgres#sqd-cte-materialized-hint), [`sqd-cte-readability`](/docs/topics/postgres#sqd-cte-readability), [`sqd-filter-before-join`](/docs/topics/postgres#sqd-filter-before-join), [`sqd-readable-cte-names`](/docs/topics/postgres#sqd-readable-cte-names), [`sqd-recursive-cte-hierarchy`](/docs/topics/postgres#sqd-recursive-cte-hierarchy)
 
 ### CUPS {#cups}
 
 **Common Unix Printing System** — Linux/Unix-järjestelmien tulostusarkkitehtuuri. Avahi/mDNS-selaus löytää verkkotulostimet `_ipp._tcp`-palvelutyypin avulla; löydetty URI lisätään CUPS:iin `lpadmin`-komennolla tai web-käyttöliittymällä (`http://localhost:631`).
 
-**Oppitunnit:** [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b03-linux-avahi-browse-services`](/docs/topics/linux#b03-linux-avahi-browse-services), [`b05-linux-avahi-browse`](/docs/topics/linux#b05-linux-avahi-browse), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname)
+**Oppitunnit:** [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname)
 
 ### CURSOR {#cursor}
 
@@ -318,7 +318,7 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Common Vulnerabilities and Exposures** — julkinen haavoittuvuustietokanta (NVD/MITRE). CVE-tunniste (esim. `CVE-2021-44228`) yksilöi haavoittuvuuden; `unattended-upgrades` asentaa tietoturvapäivitykset automaattisesti CVE-korjaukset mukaan lukien.
 
-**Oppitunnit:** [`apt-unattended-upgrades`](/docs/topics/linux#apt-unattended-upgrades), [`apt-update-vs-upgrade`](/docs/topics/linux#apt-update-vs-upgrade), [`b03-scrum-tech-debt-backlog`](/docs/topics/scrum#b03-scrum-tech-debt-backlog), [`b07-docker-multistage-build`](/docs/topics/docker#b07-docker-multistage-build), [`b08-docker-scan-image`](/docs/topics/docker#b08-docker-scan-image), [`b09-docker-image-tag-pin`](/docs/topics/docker#b09-docker-image-tag-pin), [`b09-docker-net-internal`](/docs/topics/docker#b09-docker-net-internal)
+**Oppitunnit:** [`apt-unattended-upgrades`](/docs/topics/linux#apt-unattended-upgrades), [`apt-update-vs-upgrade`](/docs/topics/linux#apt-update-vs-upgrade), [`b03-scrum-tech-debt-backlog`](/docs/topics/scrum#b03-scrum-tech-debt-backlog), [`docker-multistage`](/docs/topics/docker#docker-multistage), [`b08-docker-scan-image`](/docs/topics/docker#b08-docker-scan-image), [`b09-docker-image-tag-pin`](/docs/topics/docker#b09-docker-image-tag-pin), [`b09-docker-net-internal`](/docs/topics/docker#b09-docker-net-internal)
 
 ### D3D11/HLSL {#d3d11-hlsl}
 
@@ -366,13 +366,13 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Dynamic Host Configuration Protocol** — protokolla, joka jakaa IP-osoitteet, yhdyskäytävän ja nimipalvelimen automaattisesti verkkolaitteille. DHCP-lease voi ylikirjoittaa `/etc/resolv.conf`:in; NetworkManager-ylikäytäntö `dns=none` estää tämän.
 
-**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`b08-linux-systemd-requires`](/docs/topics/linux#b08-linux-systemd-requires), [`b09-linux-systemd-after-before`](/docs/topics/linux#b09-linux-systemd-after-before), [`b12-linux-arp-gratuitous-duplicate`](/docs/topics/linux#b12-linux-arp-gratuitous-duplicate), [`b12-linux-tcp-udp-handshake`](/docs/topics/linux#b12-linux-tcp-udp-handshake), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan), [`systemd-after-before`](/docs/topics/linux#systemd-after-before), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery) (+1 muuta)
+**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`b08-linux-systemd-requires`](/docs/topics/linux#b08-linux-systemd-requires), [`b12-linux-arp-gratuitous-duplicate`](/docs/topics/linux#b12-linux-arp-gratuitous-duplicate), [`b12-linux-tcp-udp-handshake`](/docs/topics/linux#b12-linux-tcp-udp-handshake), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`systemd-after-before`](/docs/topics/linux#systemd-after-before), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery) (+1 muuta)
 
 ### DHCP/NM {#dhcp-nm}
 
 **DHCP / NetworkManager** — yhdistelmäviittaus DHCP-protokollaan (Dynamic Host Configuration Protocol) ja NetworkManager-palveluun. NetworkManager hakee IP-osoitteen, reitit ja DNS-hakuosoitelistan DHCP:llä; `resolv.conf`-tiedoston `search`-lista tulee tyypillisesti DHCP/NM-konfiguraatiosta.
 
-**Oppitunnit:** [`b05-linux-network-resolv-search`](/docs/topics/linux#b05-linux-network-resolv-search), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search)
+**Oppitunnit:** [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search)
 
 ### DI {#di}
 
@@ -396,19 +396,19 @@ Git merge-konfliktin merkintä tiedostossa (`<<<<<<<`, `=======`, `>>>>>>>`). Sy
 
 **Data Manipulation Language** — SQL-komentoryhmä tietojen muokkaamiseen: `INSERT`, `UPDATE`, `DELETE` ja `MERGE`. `VACUUM FULL` pitää taulun eksklusiivisessa lukossa koko operaation ajan, jolloin kaikki DML-operaatiot blokkaantuvat; `CREATE INDEX CONCURRENTLY` välttää DML-blokkauksen.
 
-**Oppitunnit:** [`b04-pg-indexes-concurrent-create`](/docs/topics/postgres#b04-pg-indexes-concurrent-create), [`b05-pg-vacuum-full-lock`](/docs/topics/postgres#b05-pg-vacuum-full-lock), [`b09-pg-index-unused-drop`](/docs/topics/postgres#b09-pg-index-unused-drop)
+**Oppitunnit:** [`b03-pg-indexes-concurrent-create`](/docs/topics/postgres#b03-pg-indexes-concurrent-create), [`exp-pg-vacuum-full-lock`](/docs/topics/postgres#exp-pg-vacuum-full-lock), [`exp-pg-indexes-unused-drop`](/docs/topics/postgres#exp-pg-indexes-unused-drop)
 
 ### DNAT {#dnat}
 
 **Destination Network Address Translation** — verkkopakettin kohde-IP:n tai -portin muuntaminen. Docker-porttikartoitus (`-p 8080:80`) käyttää DNAT-sääntöjä `iptables`/`nftables`:ssa. Host mode -verkossa DNAT-kustannusta ei synny, mikä hyödyttää viive-herkkiä sovelluksia.
 
-**Oppitunnit:** [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08), [`b05-docker-net-host-mode`](/docs/topics/docker#b05-docker-net-host-mode), [`b07-linux-network-firewall-nft`](/docs/topics/linux#b07-linux-network-firewall-nft), [`docker-host-network`](/docs/topics/docker#docker-host-network), [`exp-linux-avahi-service-xml`](/docs/topics/linux#exp-linux-avahi-service-xml)
+**Oppitunnit:** [`docker-host-network`](/docs/topics/docker#docker-host-network), [`b07-linux-network-firewall-nft`](/docs/topics/linux#b07-linux-network-firewall-nft), [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml)
 
 ### DNS {#dns}
 
 **Domain Name System** — nimipalvelujärjestelmä, joka muuntaa isäntänimet (esim. `example.com`) IP-osoitteiksi. Lähiverkossa Avahi toteuttaa mDNS-pohjaisen hajautetun nimeämisen ilman keskitettyä DNS-palvelinta (RFC 6762).
 
-**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b02-docker-net-alias-10`](/docs/topics/docker#b02-docker-net-alias-10), [`b02-docker-net-bridge-06`](/docs/topics/docker#b02-docker-net-bridge-06), [`b02-docker-net-compose-07`](/docs/topics/docker#b02-docker-net-compose-07), [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b03-docker-net-ipv6-disable`](/docs/topics/docker#b03-docker-net-ipv6-disable), [`b03-linux-avahi-hostname-local`](/docs/topics/linux#b03-linux-avahi-hostname-local), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b03-linux-network-ip-route-table`](/docs/topics/linux#b03-linux-network-ip-route-table), [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b04-docker-network-alias`](/docs/topics/docker#b04-docker-network-alias), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub) (+45 muuta)
+**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b02-docker-net-alias-10`](/docs/topics/docker#b02-docker-net-alias-10), [`b02-docker-net-bridge-06`](/docs/topics/docker#b02-docker-net-bridge-06), [`b02-docker-net-compose-07`](/docs/topics/docker#b02-docker-net-compose-07), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b03-docker-net-ipv6-disable`](/docs/topics/docker#b03-docker-net-ipv6-disable), [`b03-linux-avahi-hostname-local`](/docs/topics/linux#b03-linux-avahi-hostname-local), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b03-linux-network-ip-route-table`](/docs/topics/linux#b03-linux-network-ip-route-table), [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`exp-docker-net-compose-alias`](/docs/topics/docker#exp-docker-net-compose-alias), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub) (+45 muuta)
 
 ### DOP {#dop}
 
@@ -492,7 +492,7 @@ Verkkorajapinnan administratiivinen tila, jossa rajapinta on kytketty pois pää
 
 **Extract, Transform, Load** — tietoprosessointimalli, jossa data haetaan lähteestä, muunnetaan ja ladataan kohdetietokantaan. Yöllisen ETL-latauksen jälkeen PostgreSQL tarvitsee `ANALYZE`-komennon, jotta query planner saa ajantasaiset tilastot raportteja varten.
 
-**Oppitunnit:** [`b05-pg-vacuum-analyze-after-bulk`](/docs/topics/postgres#b05-pg-vacuum-analyze-after-bulk), [`b12-js-async-stream-backpressure`](/docs/topics/javascript#b12-js-async-stream-backpressure), [`exp-pg-explain-stats-stale`](/docs/topics/postgres#exp-pg-explain-stats-stale), [`sqd-foreign-data-wrapper`](/docs/topics/postgres#sqd-foreign-data-wrapper)
+**Oppitunnit:** [`exp-pg-explain-stats-stale`](/docs/topics/postgres#exp-pg-explain-stats-stale), [`b12-js-async-stream-backpressure`](/docs/topics/javascript#b12-js-async-stream-backpressure), [`sqd-foreign-data-wrapper`](/docs/topics/postgres#sqd-foreign-data-wrapper)
 
 ### ETRS89 {#etrs89}
 
@@ -552,7 +552,7 @@ Linux-kernelin ARP-naapuritila, joka merkitään kun ARP-vastauksia ei saada mä
 
 PostgreSQL-taulun täyttösuhde (1–100), joka määrittää kuinka täyteen heap-sivut täytetään INSERT-operaatioissa. Matalampi `fillfactor` (esim. 70) jättää tilaa HOT-päivityksille ja vähentää taulun bloattia kirjoitusintensiivisissä tauluissa; se on storage-parametri, ei query-GUC.
 
-**Oppitunnit:** [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update), [`b06-pg-indexes-reindex-concurrently`](/docs/topics/postgres#b06-pg-indexes-reindex-concurrently), [`b09-pg-vacuum-autovacuum-tuning`](/docs/topics/postgres#b09-pg-vacuum-autovacuum-tuning)
+**Oppitunnit:** [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update), [`b06-pg-indexes-reindex-concurrently`](/docs/topics/postgres#b06-pg-indexes-reindex-concurrently), [`exp-pg-vacuum-autovacuum-tune`](/docs/topics/postgres#exp-pg-vacuum-autovacuum-tune)
 
 ### FIN {#fin}
 
@@ -576,7 +576,7 @@ TCP-yhteyden sulkemissignaali (FIN-lippu). Kun etäpää lähettää FIN:n, paik
 
 **Full Page Image** — WAL-merkintä, jossa PostgreSQL kirjoittaa koko 8 kt levyblokin lokiin ensimmäisen muutoksen yhteydessä jokaisen checkpointin jälkeen. FPI suojaa osittaisilta kirjoitusvirheiltä kaatumisessa, mutta kasvattaa WAL-volyymiä erityisesti kirjoitusintensiiviissä työkuormissa. `full_page_writes`-parametrilla ohjataan FPI-kirjoitusten käyttäytymistä.
 
-**Oppitunnit:** [`b06-pg-explain-wal-fpi`](/docs/topics/postgres#b06-pg-explain-wal-fpi)
+**Oppitunnit:** [`b06-pg-config-checkpoint-timeout`](/docs/topics/postgres#b06-pg-config-checkpoint-timeout)
 
 ### FPS {#fps}
 
@@ -588,7 +588,7 @@ TCP-yhteyden sulkemissignaali (FIN-lippu). Kun etäpää lähettää FIN:n, paik
 
 **Fully Qualified Domain Name** — täydellinen toimialuenimi, joka sisältää kaikki domeeniosat ja loppupisteen (esim. `server.example.com.`). `/etc/resolv.conf`:in `search`-asetus täydentää lyhyet nimet FQDN:ksi; DHCP tai NetworkManager voi ylikirjoittaa sen.
 
-**Oppitunnit:** [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b05-docker-net-dns-custom`](/docs/topics/docker#b05-docker-net-dns-custom), [`b05-linux-network-resolv-search`](/docs/topics/linux#b05-linux-network-resolv-search), [`b08-linux-resolv-search`](/docs/topics/linux#b08-linux-resolv-search), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`linux-resolv-search`](/docs/topics/linux#linux-resolv-search)
+**Oppitunnit:** [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b05-docker-net-dns-custom`](/docs/topics/docker#b05-docker-net-dns-custom), [`linux-resolv-search`](/docs/topics/linux#linux-resolv-search)
 
 ### FRAME {#frame}
 
@@ -600,7 +600,7 @@ TCP-yhteyden sulkemissignaali (FIN-lippu). Kun etäpää lähettää FIN:n, paik
 
 PostgreSQL-operaatio, joka merkitsee rivit jäädytetyiksi transaktioidenkehityksen ylivuodon (XID wraparound) estämiseksi. `VACUUM FREEZE` tai autovacuumin `vacuum_freeze_min_age`-parametri pitää huolen, ettei tietokanta joudu pakkosammutukseen.
 
-**Oppitunnit:** [`b02-pg-vacuum-wrap-10`](/docs/topics/postgres#b02-pg-vacuum-wrap-10), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze), [`exp-pg-vacuum-bloat-wraparound`](/docs/topics/postgres#exp-pg-vacuum-bloat-wraparound), [`b05-pg-vacuum-wraparound`](/docs/topics/postgres#b05-pg-vacuum-wraparound), [`b09-pg-vacuum-freeze-age`](/docs/topics/postgres#b09-pg-vacuum-freeze-age)
+**Oppitunnit:** [`exp-pg-vacuum-bloat-wraparound`](/docs/topics/postgres#exp-pg-vacuum-bloat-wraparound), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze)
 
 ### FS {#fs}
 
@@ -624,19 +624,19 @@ PostgreSQL-operaatio, joka merkitsee rivit jäädytetyiksi transaktioidenkehityk
 
 **Gigabyte** — 1 024 megatavua. Docker build context voi kasvaa gigatavuihin `.dockerignore`-tiedoston puuttuessa — esimerkiksi `node_modules` voi helposti ylittää 2 GB ja hidastaa buildia merkittävästi.
 
-**Oppitunnit:** [`b02-pg-config-shared-14`](/docs/topics/postgres#b02-pg-config-shared-14), [`b03-docker-dockerignore-build`](/docs/topics/docker#b03-docker-dockerignore-build), [`b03-pg-config-effective-cache`](/docs/topics/postgres#b03-pg-config-effective-cache), [`b04-pg-config-effective-cache`](/docs/topics/postgres#b04-pg-config-effective-cache), [`b04-pg-indexes-concurrent-create`](/docs/topics/postgres#b04-pg-indexes-concurrent-create), [`b05-dockerfile-multistage-size`](/docs/topics/docker#b05-dockerfile-multistage-size), [`b05-pg-config-shared-buffers`](/docs/topics/postgres#b05-pg-config-shared-buffers), [`b05-pg-vacuum-full-lock`](/docs/topics/postgres#b05-pg-vacuum-full-lock), [`b06-docker-build-context-size`](/docs/topics/docker#b06-docker-build-context-size), [`b06-docker-logging-rotation`](/docs/topics/docker#b06-docker-logging-rotation), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b06-pg-vacuum-autovacuum-scale`](/docs/topics/postgres#b06-pg-vacuum-autovacuum-scale) (+9 muuta)
+**Oppitunnit:** [`exp-pg-config-shared-buffers`](/docs/topics/postgres#exp-pg-config-shared-buffers), [`b06-docker-build-context-size`](/docs/topics/docker#b06-docker-build-context-size), [`b03-pg-config-effective-cache`](/docs/topics/postgres#b03-pg-config-effective-cache), [`b03-pg-indexes-concurrent-create`](/docs/topics/postgres#b03-pg-indexes-concurrent-create), [`docker-multistage`](/docs/topics/docker#docker-multistage), [`exp-pg-vacuum-full-lock`](/docs/topics/postgres#exp-pg-vacuum-full-lock), [`b06-docker-logging-rotation`](/docs/topics/docker#b06-docker-logging-rotation), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`exp-pg-vacuum-autovacuum-tune`](/docs/topics/postgres#exp-pg-vacuum-autovacuum-tune) (+9 muuta)
 
 ### GCC {#gcc}
 
 **GNU Compiler Collection** — avoimen lähdekoodin C/C++-kääntäjäpaketti. `g++` on C++-kääntäjä; GCC 13+ tukee C++-moduuleja. `-Wall -Wextra -Werror` -liput otetaan käyttöön CI:ssä, jotta varoitukset muuttuvat buildivioiksi.
 
-**Oppitunnit:** [`b03-cpp-cr-override-keyword`](/docs/topics/cpp#b03-cpp-cr-override-keyword), [`b08-cpp-modules-headers`](/docs/topics/cpp#b08-cpp-modules-headers), [`b09-cpp-switch-fallthrough`](/docs/topics/cpp#b09-cpp-switch-fallthrough), [`b11-cpp-braces-required`](/docs/topics/cpp#b11-cpp-braces-required), [`b11-cpp-ccache-ci`](/docs/topics/cpp#b11-cpp-ccache-ci), [`b11-cpp-std-filesystem`](/docs/topics/cpp#b11-cpp-std-filesystem), [`b11-cpp-werror-policy`](/docs/topics/cpp#b11-cpp-werror-policy), [`safety-static-cast`](/docs/topics/cpp#safety-static-cast)
+**Oppitunnit:** [`b03-cpp-cr-override-keyword`](/docs/topics/cpp#b03-cpp-cr-override-keyword), [`b08-cpp-modules-headers`](/docs/topics/cpp#b08-cpp-modules-headers), [`b06-cpp-attributes-fallthrough`](/docs/topics/cpp#b06-cpp-attributes-fallthrough), [`b11-cpp-braces-required`](/docs/topics/cpp#b11-cpp-braces-required), [`b11-cpp-ccache-ci`](/docs/topics/cpp#b11-cpp-ccache-ci), [`b11-cpp-std-filesystem`](/docs/topics/cpp#b11-cpp-std-filesystem), [`b11-cpp-werror-policy`](/docs/topics/cpp#b11-cpp-werror-policy), [`safety-static-cast`](/docs/topics/cpp#safety-static-cast)
 
 ### GCS {#gcs}
 
 **Google Cloud Storage** — Googlen objektitallennuspalvelu pilvessä. Docker-volumejen varmuuskopiot (tar-arkistot) voidaan siirtää GCS:ään `gsutil cp`-komennolla tai CI-askeleella; säilytyspolitiikka (retention) konfiguroidaan bucket-tasolla.
 
-**Oppitunnit:** [`b05-docker-vol-named-backup`](/docs/topics/docker#b05-docker-vol-named-backup), [`b10-docker-volumes-backup-01`](/docs/topics/docker#b10-docker-volumes-backup-01)
+**Oppitunnit:** [`exp-docker-vol-backup`](/docs/topics/docker#exp-docker-vol-backup), [`b10-docker-volumes-backup-01`](/docs/topics/docker#b10-docker-volumes-backup-01)
 
 ### GDPR {#gdpr}
 
@@ -666,13 +666,13 @@ HTTP-protokollan lukupyyntömetodi — hakee resurssin palvelimelta muuttamatta 
 
 **Generalized Inverted Index** — PostgreSQLin indeksityyppi moniarvoisia rakenteita varten (arrays, `jsonb`, full-text). GIN hajottaa arvon avaimiin ja rakentaa käänteisindeksin; erityisen tehokas `@>` (containment) ja `?` (key exists) -operaattoreille.
 
-**Oppitunnit:** [`b02-pg-indexes-btree-02`](/docs/topics/postgres#b02-pg-indexes-btree-02), [`b03-pg-indexes-gin-jsonb`](/docs/topics/postgres#b03-pg-indexes-gin-jsonb), [`b04-pg-indexes-gin-jsonb`](/docs/topics/postgres#b04-pg-indexes-gin-jsonb), [`b07-pg-index-btree-vs-gin`](/docs/topics/postgres#b07-pg-index-btree-vs-gin), [`sqd-json-path-query`](/docs/topics/postgres#sqd-json-path-query), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op), [`sqd-jsonb-containment`](/docs/topics/postgres#sqd-jsonb-containment), [`sqd-jsonb-gin-index`](/docs/topics/postgres#sqd-jsonb-gin-index), [`b06-pg-indexes-brin-timeseries`](/docs/topics/postgres#b06-pg-indexes-brin-timeseries)
+**Oppitunnit:** [`exp-pg-indexes-btree-composite`](/docs/topics/postgres#exp-pg-indexes-btree-composite), [`b03-pg-indexes-gin-jsonb`](/docs/topics/postgres#b03-pg-indexes-gin-jsonb), [`sqd-json-path-query`](/docs/topics/postgres#sqd-json-path-query), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op), [`sqd-jsonb-containment`](/docs/topics/postgres#sqd-jsonb-containment), [`sqd-jsonb-gin-index`](/docs/topics/postgres#sqd-jsonb-gin-index), [`b06-pg-indexes-brin-timeseries`](/docs/topics/postgres#b06-pg-indexes-brin-timeseries)
 
 ### GL {#gl}
 
 **Graphics Library** — OpenGL-rajapinnan funktioprefiksi (`gl*`, kuten `glBindBuffer`, `glDrawArrays`). Kaikki GL-kutsut on tehtävä säikeessä, jolle OpenGL-konteksti on aktivoitu; Qt:n `QOpenGLFunctions`-periytyminen kapsuloi alustakohtaiset funktio-osoittimet.
 
-**Oppitunnit:** [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`b03-qt-opengl-core-profile`](/docs/topics/qt#b03-qt-opengl-core-profile), [`b03-qt-shaders-rhi-fallback`](/docs/topics/qt#b03-qt-shaders-rhi-fallback), [`b04-qt-opengl-share-context`](/docs/topics/qt#b04-qt-opengl-share-context), [`b05-qt-opengl-context-share`](/docs/topics/qt#b05-qt-opengl-context-share), [`b05-qt-opengl-makecurrent`](/docs/topics/qt#b05-qt-opengl-makecurrent), [`b06-qt-opengl-pixel-format`](/docs/topics/qt#b06-qt-opengl-pixel-format), [`b07-qt-opengl-context`](/docs/topics/qt#b07-qt-opengl-context), [`b08-qt-opengl-context-share`](/docs/topics/qt#b08-qt-opengl-context-share), [`b08-qt-opengl-vsync`](/docs/topics/qt#b08-qt-opengl-vsync), [`b09-qt-opengl-context-share`](/docs/topics/qt#b09-qt-opengl-context-share), [`exp-qt-opengl-context-thread`](/docs/topics/qt#exp-qt-opengl-context-thread) (+4 muuta)
+**Oppitunnit:** [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`b03-qt-opengl-core-profile`](/docs/topics/qt#b03-qt-opengl-core-profile), [`b03-qt-shaders-rhi-fallback`](/docs/topics/qt#b03-qt-shaders-rhi-fallback), [`b04-qt-opengl-share-context`](/docs/topics/qt#b04-qt-opengl-share-context), [`b05-qt-opengl-makecurrent`](/docs/topics/qt#b05-qt-opengl-makecurrent), [`b06-qt-opengl-pixel-format`](/docs/topics/qt#b06-qt-opengl-pixel-format), [`b07-qt-opengl-context`](/docs/topics/qt#b07-qt-opengl-context), [`b08-qt-opengl-vsync`](/docs/topics/qt#b08-qt-opengl-vsync), [`exp-qt-opengl-context-thread`](/docs/topics/qt#exp-qt-opengl-context-thread) (+4 muuta)
 
 ### GLSL {#glsl}
 
@@ -702,7 +702,7 @@ HTTP-protokollan lukupyyntömetodi — hakee resurssin palvelimelta muuttamatta 
 
 **Graphics Processing Unit** — rinnakkaiseen laskentaan optimoitu grafiikkasuoritin. Shader-ohjelmat suoritetaan GPU:lla; attribuuttisidosten sijainti (`layout(location = ...)`) on kiinnitettävä eksplisiittisesti, koska eri GPU-ajurit voivat järjestää ne eri tavoin.
 
-**Oppitunnit:** [`b02-qt-shaders-uniform-14`](/docs/topics/qt#b02-qt-shaders-uniform-14), [`b03-qt-shaders-attribute-location`](/docs/topics/qt#b03-qt-shaders-attribute-location), [`b05-qt-opengl-context-share`](/docs/topics/qt#b05-qt-opengl-context-share), [`b06-qt-shaders-varying-interpolation`](/docs/topics/qt#b06-qt-shaders-varying-interpolation), [`b08-qt-shaders-precision`](/docs/topics/qt#b08-qt-shaders-precision), [`b09-qt-shaders-qml-graph-effect`](/docs/topics/qt#b09-qt-shaders-qml-graph-effect), [`exp-qt-opengl-vao-vbo`](/docs/topics/qt#exp-qt-opengl-vao-vbo), [`exp-qt-shaders-uniform-location`](/docs/topics/qt#exp-qt-shaders-uniform-location), [`prod-sec-password-hash`](/docs/topics/security#prod-sec-password-hash), [`qt-opengl-vbo`](/docs/topics/qt#qt-opengl-vbo), [`exp-qt-shaders-rhi-backend`](/docs/topics/qt#exp-qt-shaders-rhi-backend)
+**Oppitunnit:** [`b02-qt-shaders-uniform-14`](/docs/topics/qt#b02-qt-shaders-uniform-14), [`b03-qt-shaders-attribute-location`](/docs/topics/qt#b03-qt-shaders-attribute-location), [`b04-qt-opengl-share-context`](/docs/topics/qt#b04-qt-opengl-share-context), [`b06-qt-shaders-varying-interpolation`](/docs/topics/qt#b06-qt-shaders-varying-interpolation), [`b07-qt-shader-precision`](/docs/topics/qt#b07-qt-shader-precision), [`b09-qt-shaders-qml-graph-effect`](/docs/topics/qt#b09-qt-shaders-qml-graph-effect), [`exp-qt-opengl-vao-vbo`](/docs/topics/qt#exp-qt-opengl-vao-vbo), [`exp-qt-shaders-uniform-location`](/docs/topics/qt#exp-qt-shaders-uniform-location), [`prod-sec-password-hash`](/docs/topics/security#prod-sec-password-hash), [`qt-opengl-vbo`](/docs/topics/qt#qt-opengl-vbo), [`exp-qt-shaders-rhi-backend`](/docs/topics/qt#exp-qt-shaders-rhi-backend)
 
 ### GROUPING {#grouping}
 
@@ -726,7 +726,7 @@ SQL:n `GROUPING SETS` -ominaisuus mahdollistaa useiden aggregaatiotasojen laskem
 
 **Graphical User Interface** — graafinen käyttöliittymä. Qt-sovelluksissa GUI-threadi omistaa widgetit ja OpenGL-kontekstin; raskaat operaatiot on delegoitava worker-threadiin, jotta käyttöliittymä pysyy responsiivisena.
 
-**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`b02-qt-signals-queued-04`](/docs/topics/qt#b02-qt-signals-queued-04), [`b02-qt-thread-gui-07`](/docs/topics/qt#b02-qt-thread-gui-07), [`b02-qt-thread-worker-06`](/docs/topics/qt#b02-qt-thread-worker-06), [`b03-qt-thread-invoke-method`](/docs/topics/qt#b03-qt-thread-invoke-method), [`b04-qt-deferred-delete`](/docs/topics/qt#b04-qt-deferred-delete), [`b04-qt-thread-affinity`](/docs/topics/qt#b04-qt-thread-affinity), [`b05-qt-signals-queued-connection`](/docs/topics/qt#b05-qt-signals-queued-connection), [`b05-qt-thread-gui-touch`](/docs/topics/qt#b05-qt-thread-gui-touch), [`b05-qt-thread-movetothread`](/docs/topics/qt#b05-qt-thread-movetothread), [`b06-qt-thread-future`](/docs/topics/qt#b06-qt-thread-future) (+19 muuta)
+**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`b02-qt-signals-queued-04`](/docs/topics/qt#b02-qt-signals-queued-04), [`b02-qt-thread-gui-07`](/docs/topics/qt#b02-qt-thread-gui-07), [`exp-qt-thread-worker-object`](/docs/topics/qt#exp-qt-thread-worker-object), [`b03-qt-thread-invoke-method`](/docs/topics/qt#b03-qt-thread-invoke-method), [`b04-qt-deferred-delete`](/docs/topics/qt#b04-qt-deferred-delete), [`exp-qt-signals-queued-cross-thread`](/docs/topics/qt#exp-qt-signals-queued-cross-thread), [`b05-qt-thread-gui-touch`](/docs/topics/qt#b05-qt-thread-gui-touch), [`b06-qt-thread-future`](/docs/topics/qt#b06-qt-thread-future) (+19 muuta)
 
 ### HA {#ha}
 
@@ -744,7 +744,7 @@ SQL:n `GROUPING SETS` -ominaisuus mahdollistaa useiden aggregaatiotasojen laskem
 
 **Hard Disk Drive** — perinteinen mekaaninen kovalevy. PostgreSQLin `random_page_cost`-oletusarvo (4.0) on kalibroitu HDD:lle; SSD/NVMe-ympäristöön kannattaa laskea arvo (1.1–2.0), koska satunnainen I/O on lähes yhtä nopeaa kuin peräkkäinen.
 
-**Oppitunnit:** [`b03-pg-config-random-page-cost`](/docs/topics/postgres#b03-pg-config-random-page-cost), [`b04-pg-explain-cost-settings`](/docs/topics/postgres#b04-pg-explain-cost-settings), [`b08-pg-explain-cost-settings`](/docs/topics/postgres#b08-pg-explain-cost-settings)
+**Oppitunnit:** [`b03-pg-config-random-page-cost`](/docs/topics/postgres#b03-pg-config-random-page-cost)
 
 ### HEAD {#head}
 
@@ -756,7 +756,7 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **HFT** (High-Frequency Trading) — korkean taajuuden algoritminen kaupankäynti, joka vaatii microsekuntitason latenssit. HFT-tyyppiset reaaliaikasovellukset suosivat UDP:ta TCP:n sijaan ja Docker `--network host` -tilaa, jolloin NAT-overhead ja virtuaalinen verkkokerros poistetaan.
 
-**Oppitunnit:** [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08)
+**Oppitunnit:** [`docker-host-network`](/docs/topics/docker#docker-host-network)
 
 ### HLSL {#hlsl}
 
@@ -774,7 +774,7 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **Heap Only Tuple** — PostgreSQL-optimointi, jossa päivitetty rivi tallennetaan samalle heap-sivulle eikä indeksiä tarvitse päivittää. HOT vaatii vapaan tilan sivulla; `fillfactor`-parametrin pienentäminen (esim. 70) jättää tilaa HOT-päivityksille ja vähentää taulun bloattia.
 
-**Oppitunnit:** [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update), [`b09-pg-vacuum-autovacuum-tuning`](/docs/topics/postgres#b09-pg-vacuum-autovacuum-tuning)
+**Oppitunnit:** [`b03-pg-indexes-fillfactor-update`](/docs/topics/postgres#b03-pg-indexes-fillfactor-update), [`exp-pg-vacuum-autovacuum-tune`](/docs/topics/postgres#exp-pg-vacuum-autovacuum-tune)
 
 ### HR {#hr}
 
@@ -786,7 +786,7 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **HyperText Markup Language** — verkkosivujen rakennekuvauskieli. ESM-moduulit vaativat `type="module"`-attribuutin `<script>`-elementille; ilman sitä `import`/`export`-syntaksi ei toimi selaimessa.
 
-**Oppitunnit:** [`b05-js-modules-esm-import`](/docs/topics/javascript#b05-js-modules-esm-import), [`b07-js-runtime-closure-loop`](/docs/topics/javascript#b07-js-runtime-closure-loop), [`b08-js-runtime-dom-ready`](/docs/topics/javascript#b08-js-runtime-dom-ready), [`b12-js-runtime-domparser`](/docs/topics/javascript#b12-js-runtime-domparser), [`prod-sec-xss`](/docs/topics/security#prod-sec-xss), [`rf-run-on-failure`](/docs/topics/robotframework#rf-run-on-failure), [`rf-wait-until`](/docs/topics/robotframework#rf-wait-until), [`rust-testing-doc-tests`](/docs/topics/rust#rust-testing-doc-tests), [`b12-js-runtime-event-delegation`](/docs/topics/javascript#b12-js-runtime-event-delegation), [`b04-qt-widgets-qss`](/docs/topics/qt#b04-qt-widgets-qss)
+**Oppitunnit:** [`b05-js-modules-esm-import`](/docs/topics/javascript#b05-js-modules-esm-import), [`b02-js-runtime-closure-12`](/docs/topics/javascript#b02-js-runtime-closure-12), [`b08-js-runtime-dom-ready`](/docs/topics/javascript#b08-js-runtime-dom-ready), [`b12-js-runtime-domparser`](/docs/topics/javascript#b12-js-runtime-domparser), [`prod-sec-xss`](/docs/topics/security#prod-sec-xss), [`rf-run-on-failure`](/docs/topics/robotframework#rf-run-on-failure), [`rf-wait-until`](/docs/topics/robotframework#rf-wait-until), [`rust-testing-doc-tests`](/docs/topics/rust#rust-testing-doc-tests), [`b12-js-runtime-event-delegation`](/docs/topics/javascript#b12-js-runtime-event-delegation), [`b04-qt-widgets-qss`](/docs/topics/qt#b04-qt-widgets-qss)
 
 ### HTTP/HTTPS {#http-https}
 
@@ -804,7 +804,7 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **Internet Control Message Protocol** — verkkodiagnostiikkaprotokolla. `ping` käyttää ICMP echo request/reply -paketteja tavoitettavuuden testaamiseen; `traceroute` kartoittaa reitin TTL:ää kasvattaen. Monet palvelimet estävät ICMP:n palomuurilla — timeoutti ei aina tarkoita yhteysongelmaa.
 
-**Oppitunnit:** [`b04-linux-network-ip-addr`](/docs/topics/linux#b04-linux-network-ip-addr), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname), [`b08-linux-network-traceroute`](/docs/topics/linux#b08-linux-network-traceroute), [`b05-linux-network-ss-listen`](/docs/topics/linux#b05-linux-network-ss-listen)
+**Oppitunnit:** [`b04-linux-network-ip-addr`](/docs/topics/linux#b04-linux-network-ip-addr), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname), [`b08-linux-network-traceroute`](/docs/topics/linux#b08-linux-network-traceroute), [`linux-ss-listen`](/docs/topics/linux#linux-ss-listen)
 
 ### IDE {#ide}
 
@@ -834,7 +834,7 @@ Git:n **HEAD** on osoitin aktiiviseen committiin tai haaraan (`.git/HEAD`-tiedos
 
 **Immediately Invoked Function Expression** — heti suoritettava JavaScript-funktioilmaisu: `(function() { ... })()`. Vanhassa ES5-koodissa IIFE loi silmukan jokaiselle iteraatiolle erillisen sulkeuman; modernissa JS:ssä `let` silmukamuuttujana korvaa tarpeen.
 
-**Oppitunnit:** [`b02-js-runtime-closure-12`](/docs/topics/javascript#b02-js-runtime-closure-12), [`b05-js-runtime-closure-stale`](/docs/topics/javascript#b05-js-runtime-closure-stale), [`b07-js-runtime-closure-loop`](/docs/topics/javascript#b07-js-runtime-closure-loop), [`b08-js-modules-top-level-await`](/docs/topics/javascript#b08-js-modules-top-level-await), [`b08-js-runtime-closure-loop`](/docs/topics/javascript#b08-js-runtime-closure-loop), [`js-runtime-closure-loop`](/docs/topics/javascript#js-runtime-closure-loop), [`exp-js-modules-top-level-await`](/docs/topics/javascript#exp-js-modules-top-level-await), [`b06-js-modules-top-level-await`](/docs/topics/javascript#b06-js-modules-top-level-await)
+**Oppitunnit:** [`b02-js-runtime-closure-12`](/docs/topics/javascript#b02-js-runtime-closure-12), [`exp-js-modules-top-level-await`](/docs/topics/javascript#exp-js-modules-top-level-await), [`b08-js-runtime-closure-loop`](/docs/topics/javascript#b08-js-runtime-closure-loop), [`js-runtime-closure-loop`](/docs/topics/javascript#js-runtime-closure-loop)
 
 ### INCOMPLETE {#incomplete}
 
@@ -852,7 +852,7 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 
 **INSERT / UPDATE / DELETE / SELECT** — SQL:n neljä perus-DML-lausetta (Data Manipulation Language): lisäys, päivitys, poisto ja haku. PostgreSQLin `VACUUM FULL` lukitsee taulun koko operaation ajaksi ja blokkaa kaikki DML-lauseet; `VACUUM` ilman FULL-vaihtoehtoa toimii samanaikaisesti.
 
-**Oppitunnit:** [`b02-pg-vacuum-full-12`](/docs/topics/postgres#b02-pg-vacuum-full-12)
+**Oppitunnit:** [`exp-pg-vacuum-full-lock`](/docs/topics/postgres#exp-pg-vacuum-full-lock)
 
 ### INVEST {#invest}
 
@@ -864,13 +864,13 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 
 **Input/Output** — levy- tai verkko-operaatiot (luku/kirjoitus). PostgreSQLissä `track_io_timing = on` mahdollistaa IO-aikojen seurannan `EXPLAIN (ANALYZE, BUFFERS)` -tulosteessa; IO-piikkejä voi tutkia `checkpoint_completion_target`-asetuksen avulla.
 
-**Oppitunnit:** [`b08-pg-config-checkpoint`](/docs/topics/postgres#b08-pg-config-checkpoint), [`qt-native-deploy`](/docs/topics/qt#qt-native-deploy), [`qt-native-event-filter`](/docs/topics/qt#qt-native-event-filter), [`qt-native-high-dpi`](/docs/topics/qt#qt-native-high-dpi), [`qt-native-json`](/docs/topics/qt#qt-native-json), [`qt-native-model-view`](/docs/topics/qt#qt-native-model-view), [`qt-native-qml-binding`](/docs/topics/qt#qt-native-qml-binding), [`qt-native-qsettings`](/docs/topics/qt#qt-native-qsettings), [`qt-native-signals-slots`](/docs/topics/qt#qt-native-signals-slots), [`qt-native-threading-ui`](/docs/topics/qt#qt-native-threading-ui), [`qt-native-widgets-vs-quick`](/docs/topics/qt#qt-native-widgets-vs-quick), [`rust-async-tokio-tcp`](/docs/topics/rust#rust-async-tokio-tcp)
+**Oppitunnit:** [`b06-pg-config-checkpoint-timeout`](/docs/topics/postgres#b06-pg-config-checkpoint-timeout), [`qt-native-deploy`](/docs/topics/qt#qt-native-deploy), [`qt-native-event-filter`](/docs/topics/qt#qt-native-event-filter), [`qt-native-high-dpi`](/docs/topics/qt#qt-native-high-dpi), [`qt-native-json`](/docs/topics/qt#qt-native-json), [`qt-native-model-view`](/docs/topics/qt#qt-native-model-view), [`qt-native-qml-binding`](/docs/topics/qt#qt-native-qml-binding), [`qt-native-qsettings`](/docs/topics/qt#qt-native-qsettings), [`qt-native-signals-slots`](/docs/topics/qt#qt-native-signals-slots), [`qt-native-threading-ui`](/docs/topics/qt#qt-native-threading-ui), [`qt-native-widgets-vs-quick`](/docs/topics/qt#qt-native-widgets-vs-quick), [`rust-async-tokio-tcp`](/docs/topics/rust#rust-async-tokio-tcp)
 
 ### IP {#ip}
 
 **Internet Protocol** — verkkokerroksen protokolla, joka määrittää laitteiden osoitteistuksen (IPv4/IPv6) ja pakettien reitityksen. IP-osoite vaihtuu DHCP-leasen tai rebootin myötä; `ip addr show` ja `ip route` näyttävät koneen nykyiset osoitteet ja reittitaulun.
 
-**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml), [`b02-docker-net-bridge-06`](/docs/topics/docker#b02-docker-net-bridge-06), [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08), [`b02-docker-net-inspect-09`](/docs/topics/docker#b02-docker-net-inspect-09), [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b02-linux-avahi-publish-14`](/docs/topics/linux#b02-linux-avahi-publish-14), [`b02-linux-network-route-09`](/docs/topics/linux#b02-linux-network-route-09), [`b03-linux-avahi-browse-services`](/docs/topics/linux#b03-linux-avahi-browse-services), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b04-linux-avahi-browse`](/docs/topics/linux#b04-linux-avahi-browse), [`b04-linux-network-ip-addr`](/docs/topics/linux#b04-linux-network-ip-addr) (+39 muuta)
+**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml), [`b02-docker-net-bridge-06`](/docs/topics/docker#b02-docker-net-bridge-06), [`docker-host-network`](/docs/topics/docker#docker-host-network), [`b02-docker-net-inspect-09`](/docs/topics/docker#b02-docker-net-inspect-09), [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b02-linux-avahi-publish-14`](/docs/topics/linux#b02-linux-avahi-publish-14), [`b02-linux-network-route-09`](/docs/topics/linux#b02-linux-network-route-09), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service), [`b04-linux-network-ip-addr`](/docs/topics/linux#b04-linux-network-ip-addr) (+39 muuta)
 
 ### IPAM {#ipam}
 
@@ -912,13 +912,13 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 
 **Java Database Connectivity** — Java-standardirajapinta tietokantayhteyksille. JDBC-ajuri muuntaa yhteysstring-parametrit (esim. `sslmode=verify-full`) TLS-asetuksiksi yhteydenottovaiheessa. Prepared statement -kyselyt välitetään JDBC:ssä `PreparedStatement`-rajapinnan kautta, jolloin parametrit ovat automaattisesti SQL-injektiosuojattuja.
 
-**Oppitunnit:** [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare), [`sqd-prepared-statement-plan`](/docs/topics/postgres#sqd-prepared-statement-plan)
+**Oppitunnit:** [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare)
 
 ### JDK {#jdk}
 
 **JDK** (Java Development Kit) — Java-kehitysympäristö, joka sisältää kääntäjän (`javac`), ajoympäristön ja kehitystyökalut. Docker multistage -buildissa JDK tarvitaan vain build-stagessa; runtime-stageen riittää kevyempi JRE tai `eclipse-temurin:XX-jre` -pohjakuva, mikä pienentää tuotantoimage-kokoa merkittävästi.
 
-**Oppitunnit:** [`b05-dockerfile-multistage-size`](/docs/topics/docker#b05-dockerfile-multistage-size)
+**Oppitunnit:** [`docker-multistage`](/docs/topics/docker#docker-multistage)
 
 ### JOIN/EXISTS {#join-exists}
 
@@ -930,25 +930,25 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 
 **JavaScript** — web-selainten ja Node.js:n dynaaminen ohjelmointikieli. Modernit JS-moduulit käyttävät `import`/`export` (ESM); bundler (Vite, Webpack) yhdistää moduulit optimoiduksi tuotantobuildiksi.
 
-**Oppitunnit:** [`b06-js-modules-import-assertions`](/docs/topics/javascript#b06-js-modules-import-assertions), [`b08-js-modules-dynamic-import`](/docs/topics/javascript#b08-js-modules-dynamic-import), [`b09-js-modules-dynamic-import`](/docs/topics/javascript#b09-js-modules-dynamic-import), [`b09-js-runtime-raf-animation`](/docs/topics/javascript#b09-js-runtime-raf-animation), [`b12-js-modules-wasm-import`](/docs/topics/javascript#b12-js-modules-wasm-import), [`b12-js-runtime-error-stack-limit`](/docs/topics/javascript#b12-js-runtime-error-stack-limit), [`b12-js-runtime-tail-call`](/docs/topics/javascript#b12-js-runtime-tail-call), [`b12-js-types-json-stringify`](/docs/topics/javascript#b12-js-types-json-stringify), [`b12-js-types-parseint-radix`](/docs/topics/javascript#b12-js-types-parseint-radix), [`b12-ts-narrowing-typeof`](/docs/topics/javascript#b12-ts-narrowing-typeof), [`b12-ts-readonly-array`](/docs/topics/javascript#b12-ts-readonly-array), [`b13-qt-quick-worker-script`](/docs/topics/qt#b13-qt-quick-worker-script) (+3 muuta)
+**Oppitunnit:** [`b12-js-modules-import-attributes`](/docs/topics/javascript#b12-js-modules-import-attributes), [`exp-js-modules-dynamic-import`](/docs/topics/javascript#exp-js-modules-dynamic-import), [`b09-js-runtime-raf-animation`](/docs/topics/javascript#b09-js-runtime-raf-animation), [`b12-js-modules-wasm-import`](/docs/topics/javascript#b12-js-modules-wasm-import), [`b12-js-runtime-error-stack-limit`](/docs/topics/javascript#b12-js-runtime-error-stack-limit), [`b12-js-runtime-tail-call`](/docs/topics/javascript#b12-js-runtime-tail-call), [`b12-js-types-json-stringify`](/docs/topics/javascript#b12-js-types-json-stringify), [`b12-js-types-parseint-radix`](/docs/topics/javascript#b12-js-types-parseint-radix), [`b12-ts-narrowing-typeof`](/docs/topics/javascript#b12-ts-narrowing-typeof), [`b12-ts-readonly-array`](/docs/topics/javascript#b12-ts-readonly-array), [`b13-qt-quick-worker-script`](/docs/topics/qt#b13-qt-quick-worker-script) (+3 muuta)
 
 ### JSONB {#jsonb}
 
 **JSON Binary** — PostgreSQLin binäärimuotoinen JSON-tallennustyyppi (`jsonb`). Toisin kuin tekstimuotoinen `json`, `jsonb` hajottaa rakenteen indeksoitaviin komponentteihin; GIN-indeksi tarvitaan tehokkaaseen containment- (`@>`) ja avainkyselyihin (`?`).
 
-**Oppitunnit:** [`b02-pg-indexes-btree-02`](/docs/topics/postgres#b02-pg-indexes-btree-02), [`b03-pg-indexes-gin-jsonb`](/docs/topics/postgres#b03-pg-indexes-gin-jsonb), [`b04-pg-indexes-gin-jsonb`](/docs/topics/postgres#b04-pg-indexes-gin-jsonb), [`b07-pg-index-btree-vs-gin`](/docs/topics/postgres#b07-pg-index-btree-vs-gin), [`sqd-json-path-query`](/docs/topics/postgres#sqd-json-path-query), [`sqd-json-vs-normalize`](/docs/topics/postgres#sqd-json-vs-normalize), [`sqd-jsonb-array-elements`](/docs/topics/postgres#sqd-jsonb-array-elements), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op), [`sqd-jsonb-containment`](/docs/topics/postgres#sqd-jsonb-containment), [`sqd-jsonb-gin-index`](/docs/topics/postgres#sqd-jsonb-gin-index), [`sqd-jsonb-set-update`](/docs/topics/postgres#sqd-jsonb-set-update), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only) (+1 muuta)
+**Oppitunnit:** [`exp-pg-indexes-btree-composite`](/docs/topics/postgres#exp-pg-indexes-btree-composite), [`b03-pg-indexes-gin-jsonb`](/docs/topics/postgres#b03-pg-indexes-gin-jsonb), [`sqd-json-path-query`](/docs/topics/postgres#sqd-json-path-query), [`sqd-json-vs-normalize`](/docs/topics/postgres#sqd-json-vs-normalize), [`sqd-jsonb-array-elements`](/docs/topics/postgres#sqd-jsonb-array-elements), [`sqd-jsonb-arrow-op`](/docs/topics/postgres#sqd-jsonb-arrow-op), [`sqd-jsonb-containment`](/docs/topics/postgres#sqd-jsonb-containment), [`sqd-jsonb-gin-index`](/docs/topics/postgres#sqd-jsonb-gin-index), [`sqd-jsonb-set-update`](/docs/topics/postgres#sqd-jsonb-set-update), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only) (+1 muuta)
 
 ### JWT {#jwt}
 
 **JSON Web Token** — standardimuotoinen (RFC 7519) allekirjoitettu token käyttäjän autentikaatioon. JWT koostuu kolmesta Base64URL-osasta: header, payload (claims) ja allekirjoitus. Backend validoi allekirjoituksen sekä `iss`-, `aud`- ja `exp`-kentät — validoimatta jätetty `exp` mahdollistaa vanhentuneiden tokenien käytön.
 
-**Oppitunnit:** [`b06-js-modules-top-level-await`](/docs/topics/javascript#b06-js-modules-top-level-await), [`prod-sec-jwt-claims`](/docs/topics/security#prod-sec-jwt-claims)
+**Oppitunnit:** [`exp-js-modules-top-level-await`](/docs/topics/javascript#exp-js-modules-top-level-await), [`prod-sec-jwt-claims`](/docs/topics/security#prod-sec-jwt-claims)
 
 ### KB {#kb}
 
 **Kilobyte** — 1 KB = 1 024 tavua. PostgreSQL-konfiguraatiossa ja WAL-mittareissa koot ilmoitetaan KB/MB/GB-yksiköissä; esim. `shared_buffers = 256MB` tai huge pages -koko kilotavuina kernelin `/proc`-rajapinnassa.
 
-**Oppitunnit:** [`b04-js-modules-dynamic-import`](/docs/topics/javascript#b04-js-modules-dynamic-import), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b06-pg-explain-wal-fpi`](/docs/topics/postgres#b06-pg-explain-wal-fpi), [`b07-js-modules-dynamic`](/docs/topics/javascript#b07-js-modules-dynamic), [`b07-js-modules-tree-shake`](/docs/topics/javascript#b07-js-modules-tree-shake), [`b09-js-modules-dynamic-import`](/docs/topics/javascript#b09-js-modules-dynamic-import), [`b12-js-async-fetch-keepalive`](/docs/topics/javascript#b12-js-async-fetch-keepalive), [`b13-qt-quick-worker-script`](/docs/topics/qt#b13-qt-quick-worker-script), [`exp-js-modules-dynamic-import`](/docs/topics/javascript#exp-js-modules-dynamic-import)
+**Oppitunnit:** [`b04-js-modules-dynamic-import`](/docs/topics/javascript#b04-js-modules-dynamic-import), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b06-pg-config-checkpoint-timeout`](/docs/topics/postgres#b06-pg-config-checkpoint-timeout), [`b07-js-modules-dynamic`](/docs/topics/javascript#b07-js-modules-dynamic), [`b07-js-modules-tree-shake`](/docs/topics/javascript#b07-js-modules-tree-shake), [`exp-js-modules-dynamic-import`](/docs/topics/javascript#exp-js-modules-dynamic-import), [`b12-js-async-fetch-keepalive`](/docs/topics/javascript#b12-js-async-fetch-keepalive), [`b13-qt-quick-worker-script`](/docs/topics/qt#b13-qt-quick-worker-script)
 
 ### KPI {#kpi}
 
@@ -966,7 +966,7 @@ ARP-naapurivälimuistin tila, jossa kerneli on lähettänyt ARP-kyselyn mutta ei
 
 Dockerfile-direktiivi metatiedon lisäämiseksi image-kerroksiin (esim. `LABEL version="1.0" maintainer="dev@example.com"`). LABEL-kentät näkyvät `docker inspect`-tulosteessa eivätkä suurenna image-kokoa merkittävästi. Multistage-buildissä LABELit kannattaa lisätä vain lopulliseen vaiheeseen.
 
-**Oppitunnit:** [`b05-dockerfile-multistage-size`](/docs/topics/docker#b05-dockerfile-multistage-size)
+**Oppitunnit:** [`docker-multistage`](/docs/topics/docker#docker-multistage)
 
 ### LAG {#lag}
 
@@ -978,7 +978,7 @@ SQL-ikkunafunktio, joka palauttaa edellisen rivin arvon määritellyn järjestyk
 
 **Local Area Network** — lähiverkko, joka kattaa yleensä rakennuksen tai kampuksen. `macvlan`- ja `ipvlan`-Docker-driverit antavat konteille suoran pääsyn fyysiseen LAN-segmenttiin omalla MAC-osoitteella.
 
-**Oppitunnit:** [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan)
+**Oppitunnit:** [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`docker-macvlan`](/docs/topics/docker#docker-macvlan)
 
 ### LB {#lb}
 
@@ -1074,7 +1074,7 @@ Grafana Loki — lokien aggregaatiopalvelu, joka indeksoi ainoastaan labelit (ei
 
 **Media Access Control** -osoite — verkkosovittimen uniikki laitteistoosoite (esim. `aa:bb:cc:dd:ee:ff`). `macvlan`-Docker-driver antaa kontille oman MAC-osoitteen, jolloin kontti näkyy fyysisessä LAN-segmentissä erillisenä laitteena.
 
-**Oppitunnit:** [`b05-linux-avahi-hostname-conflict`](/docs/topics/linux#b05-linux-avahi-hostname-conflict), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state), [`b12-linux-arp-flush-migration`](/docs/topics/linux#b12-linux-arp-flush-migration), [`b12-linux-arp-static-neigh`](/docs/topics/linux#b12-linux-arp-static-neigh), [`b12-linux-network-ip-addr-secondary`](/docs/topics/linux#b12-linux-network-ip-addr-secondary), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan), [`linux-ip-route`](/docs/topics/linux#linux-ip-route), [`b12-linux-dbus-bluez-pair`](/docs/topics/linux#b12-linux-dbus-bluez-pair)
+**Oppitunnit:** [`b02-linux-avahi-conflict-13`](/docs/topics/linux#b02-linux-avahi-conflict-13), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state), [`b12-linux-arp-flush-migration`](/docs/topics/linux#b12-linux-arp-flush-migration), [`b12-linux-arp-static-neigh`](/docs/topics/linux#b12-linux-arp-static-neigh), [`b12-linux-network-ip-addr-secondary`](/docs/topics/linux#b12-linux-network-ip-addr-secondary), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`linux-ip-route`](/docs/topics/linux#linux-ip-route), [`b12-linux-dbus-bluez-pair`](/docs/topics/linux#b12-linux-dbus-bluez-pair)
 
 ### MASQUERADE {#masquerade}
 
@@ -1086,7 +1086,7 @@ iptables/nftables NAT-toiminto, joka korvaa lähtevän paketin lähde-IP:n autom
 
 **Megabyte** — 1 024 kilotavua. PostgreSQLin `shared_buffers`-oletusarvo on usein 128 MB; tuotantopalvelimella suositellaan noin 25 % käytettävissä olevasta RAM-muistista.
 
-**Oppitunnit:** [`b02-pg-config-shared-14`](/docs/topics/postgres#b02-pg-config-shared-14), [`b03-js-modules-worker-postmessage`](/docs/topics/javascript#b03-js-modules-worker-postmessage), [`b05-pg-config-shared-buffers`](/docs/topics/postgres#b05-pg-config-shared-buffers), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b08-js-modules-dynamic-import`](/docs/topics/javascript#b08-js-modules-dynamic-import), [`b09-docker-dockerignore-build`](/docs/topics/docker#b09-docker-dockerignore-build), [`b09-js-async-event-loop-block`](/docs/topics/javascript#b09-js-async-event-loop-block), [`b09-qt-thread-qthreadpool`](/docs/topics/qt#b09-qt-thread-qthreadpool), [`b11-cpp-iwyu-cleanup`](/docs/topics/cpp#b11-cpp-iwyu-cleanup), [`exp-docker-build-multistage`](/docs/topics/docker#exp-docker-build-multistage), [`exp-js-runtime-memory-detached`](/docs/topics/javascript#exp-js-runtime-memory-detached), [`exp-pg-config-shared-buffers`](/docs/topics/postgres#exp-pg-config-shared-buffers)
+**Oppitunnit:** [`exp-pg-config-shared-buffers`](/docs/topics/postgres#exp-pg-config-shared-buffers), [`b03-js-modules-worker-postmessage`](/docs/topics/javascript#b03-js-modules-worker-postmessage), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`exp-js-modules-dynamic-import`](/docs/topics/javascript#exp-js-modules-dynamic-import), [`b06-docker-build-context-size`](/docs/topics/docker#b06-docker-build-context-size), [`b09-js-async-event-loop-block`](/docs/topics/javascript#b09-js-async-event-loop-block), [`b02-qt-thread-pool-08`](/docs/topics/qt#b02-qt-thread-pool-08), [`b11-cpp-iwyu-cleanup`](/docs/topics/cpp#b11-cpp-iwyu-cleanup), [`docker-multistage`](/docs/topics/docker#docker-multistage), [`exp-js-runtime-memory-detached`](/docs/topics/javascript#exp-js-runtime-memory-detached)
 
 ### MEO {#meo}
 
@@ -1122,7 +1122,7 @@ iptables/nftables NAT-toiminto, joka korvaa lähtevän paketin lähde-IP:n autom
 
 **MQTT** (Message Queuing Telemetry Transport) — kevyt julkaisija-tilaaja-viestintäprotokolla IoT-laitteille ja reaaliaikasovelluksille (portit 1883/8883). Qt-sovelluksissa MQTT-client pyörii worker-säikeessä; signaali-slotti-mekanismi välittää viestit UI-säikeeseen thread-turvallisesti.
 
-**Oppitunnit:** [`b04-qt-thread-affinity`](/docs/topics/qt#b04-qt-thread-affinity)
+**Oppitunnit:** [`b03-qt-thread-invoke-method`](/docs/topics/qt#b03-qt-thread-invoke-method)
 
 ### MSL {#msl}
 
@@ -1164,19 +1164,19 @@ iptables/nftables NAT-toiminto, joka korvaa lähtevän paketin lähde-IP:n autom
 
 **Multi-Version Concurrency Control** — PostgreSQLin rinnakkaisuusmalli, jossa jokainen transaktio näkee konsistentin snapshot-mukaisen version taulusta ilman lukukuormia lukoilla. Poistetut ja päivitetyt rivit jättävät dead tuple -bloatia, jonka VACUUM siivoaa.
 
-**Oppitunnit:** [`b02-pg-vacuum-bloat-09`](/docs/topics/postgres#b02-pg-vacuum-bloat-09), [`b04-pg-vacuum-long-xact`](/docs/topics/postgres#b04-pg-vacuum-long-xact), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze), [`pg-vacuum-bloat`](/docs/topics/postgres#pg-vacuum-bloat), [`b02-pg-vacuum-long-xact-11`](/docs/topics/postgres#b02-pg-vacuum-long-xact-11), [`b02-pg-vacuum-full-12`](/docs/topics/postgres#b02-pg-vacuum-full-12), [`b06-pg-vacuum-index-cleanup`](/docs/topics/postgres#b06-pg-vacuum-index-cleanup), [`b07-pg-vacuum-bloat`](/docs/topics/postgres#b07-pg-vacuum-bloat)
+**Oppitunnit:** [`pg-vacuum-bloat`](/docs/topics/postgres#pg-vacuum-bloat), [`exp-pg-vacuum-long-xact`](/docs/topics/postgres#exp-pg-vacuum-long-xact), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze), [`exp-pg-vacuum-full-lock`](/docs/topics/postgres#exp-pg-vacuum-full-lock), [`b06-pg-vacuum-index-cleanup`](/docs/topics/postgres#b06-pg-vacuum-index-cleanup), [`b07-pg-vacuum-bloat`](/docs/topics/postgres#b07-pg-vacuum-bloat)
 
 ### NAS {#nas}
 
 **Network Attached Storage** — verkkoon liitetty tallennuslaite, joka tarjoaa tiedostojärjestelmän (NFS, SMB/CIFS) usean koneen käyttöön. systemd-unitissa `ConditionPathExists`-ehdolla varmistetaan, että NAS-mount on kytketty ennen varmuuskopiopalvelun käynnistystä.
 
-**Oppitunnit:** [`b05-linux-avahi-browse`](/docs/topics/linux#b05-linux-avahi-browse), [`b06-linux-systemd-ConditionPath`](/docs/topics/linux#b06-linux-systemd-ConditionPath), [`b07-linux-avahi-daemon-check`](/docs/topics/linux#b07-linux-avahi-daemon-check)
+**Oppitunnit:** [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b06-linux-systemd-ConditionPath`](/docs/topics/linux#b06-linux-systemd-ConditionPath), [`b07-linux-avahi-daemon-check`](/docs/topics/linux#b07-linux-avahi-daemon-check)
 
 ### NAT {#nat}
 
 **Network Address Translation** — verkkoosoitteiden muuntaminen reitittimessä tai palomuurissa. Docker bridge -verkko käyttää NAT:ia porttikartoituksessa (`-p host:container`); `--network host` ohittaa NAT:in kokonaan Linuxilla.
 
-**Oppitunnit:** [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08), [`b05-docker-net-host-mode`](/docs/topics/docker#b05-docker-net-host-mode), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b07-docker-network-host`](/docs/topics/docker#b07-docker-network-host), [`b07-linux-network-firewall-nft`](/docs/topics/linux#b07-linux-network-firewall-nft), [`b08-docker-network-host`](/docs/topics/docker#b08-docker-network-host), [`b09-linux-net-nat-troubleshoot`](/docs/topics/linux#b09-linux-net-nat-troubleshoot), [`b12-linux-udp-stateless-firewall`](/docs/topics/linux#b12-linux-udp-stateless-firewall), [`docker-host-network`](/docs/topics/docker#docker-host-network), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`exp-docker-net-publish-bind`](/docs/topics/docker#exp-docker-net-publish-bind), [`linux-ip-route`](/docs/topics/linux#linux-ip-route)
+**Oppitunnit:** [`docker-host-network`](/docs/topics/docker#docker-host-network), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b07-docker-network-host`](/docs/topics/docker#b07-docker-network-host), [`b07-linux-network-firewall-nft`](/docs/topics/linux#b07-linux-network-firewall-nft), [`b09-linux-net-nat-troubleshoot`](/docs/topics/linux#b09-linux-net-nat-troubleshoot), [`b12-linux-udp-stateless-firewall`](/docs/topics/linux#b12-linux-udp-stateless-firewall), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`exp-docker-net-publish-bind`](/docs/topics/docker#exp-docker-net-publish-bind), [`linux-ip-route`](/docs/topics/linux#linux-ip-route)
 
 ### NDEBUG {#ndebug}
 
@@ -1206,7 +1206,7 @@ PostgreSQL-sekvenssifunktio. `NEXTVAL('sequence_name')` palauttaa sekvenssin seu
 
 **Network Interface Card** — fyysinen tai virtuaalinen verkkokortti. `ethtool eth0` näyttää NIC:n linkin nopeuden ja duplex-tilan. Docker-verkko voi jakaa parent-NIC:n IP-osoitteen (ipvlan) tai MAC-osoitteen (macvlan) riippuen tarvittavasta eristyksestä.
 
-**Oppitunnit:** [`b03-linux-network-ethtool-link`](/docs/topics/linux#b03-linux-network-ethtool-link), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan)
+**Oppitunnit:** [`b03-linux-network-ethtool-link`](/docs/topics/linux#b03-linux-network-ethtool-link), [`b06-docker-network-ipvlan`](/docs/topics/docker#b06-docker-network-ipvlan), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`docker-macvlan`](/docs/topics/docker#docker-macvlan)
 
 ### NL {#nl}
 
@@ -1224,7 +1224,7 @@ CppCoreGuidelines NL (Naming and layout rules) -osio sisältää nimeämiskäyt�
 
 **NetworkManager** — Linuxin verkkoyhteyksien hallintadaemon. `nmcli`-komentorivityökalulla hallitaan yhteyksiä, aktivoidaan profiileja ja tarkistetaan DNS-asetuksia; `nmcli connection up <profiili>` vaihtaa aktiivisen verkkoprofiilin.
 
-**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-linux-network-resolv-10`](/docs/topics/linux#b02-linux-network-resolv-10), [`b04-linux-network-route-metric`](/docs/topics/linux#b04-linux-network-route-metric), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub), [`b05-linux-network-resolv-search`](/docs/topics/linux#b05-linux-network-resolv-search), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`exp-linux-network-nmcli-down`](/docs/topics/linux#exp-linux-network-nmcli-down), [`linux-nmcli`](/docs/topics/linux#linux-nmcli), [`b12-linux-dbus-polkit-deny`](/docs/topics/linux#b12-linux-dbus-polkit-deny)
+**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`exp-linux-network-resolv-search`](/docs/topics/linux#exp-linux-network-resolv-search), [`b04-linux-network-route-metric`](/docs/topics/linux#b04-linux-network-route-metric), [`b04-linux-resolv-stub`](/docs/topics/linux#b04-linux-resolv-stub), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`exp-linux-network-nmcli-down`](/docs/topics/linux#exp-linux-network-nmcli-down), [`linux-nmcli`](/docs/topics/linux#linux-nmcli), [`b12-linux-dbus-polkit-deny`](/docs/topics/linux#b12-linux-dbus-polkit-deny)
 
 ### NMEA {#nmea}
 
@@ -1236,31 +1236,31 @@ CppCoreGuidelines NL (Naming and layout rules) -osio sisältää nimeämiskäyt�
 
 Systemd-palveluyksikön `LimitNOFILE`-asetus määrittää prosessin avointen tiedostokuvainten (file descriptor) enimmäismäärän. Verkkopalvelimilla oletusraja (1024) on usein liian alhainen — `LimitNOFILE=65536` asetetaan yksikkökohtaisesti palvelutiedostossa, ei `/etc/security/limits.conf`-tiedostossa.
 
-**Oppitunnit:** [`b06-linux-systemd-LimitsNOFILE`](/docs/topics/linux#b06-linux-systemd-LimitsNOFILE), [`b07-linux-systemd-limit-nofile`](/docs/topics/linux#b07-linux-systemd-limit-nofile)
+**Oppitunnit:** [`b07-linux-systemd-limit-nofile`](/docs/topics/linux#b07-linux-systemd-limit-nofile)
 
 ### NRVO {#nrvo}
 
 **Named Return Value Optimization** — C++-kääntäjän optimointi, joka eliminoi paikallisen muuttujan kopion palautusarvosta. `std::move(local)` paikalliseen palautukseen *estää* NRVO:n — anna kääntäjän optimoida itse. Käytä `std::move` vain parametrien tai jäsenten palautukseen.
 
-**Oppitunnit:** [`b02-cpp-perf-move-09`](/docs/topics/cpp#b02-cpp-perf-move-09), [`b03-cpp-cr-move-semantics`](/docs/topics/cpp#b03-cpp-cr-move-semantics), [`perf-rvo`](/docs/topics/cpp#perf-rvo)
+**Oppitunnit:** [`perf-rvo`](/docs/topics/cpp#perf-rvo)
 
 ### NRVO/RVO {#nrvo-rvo}
 
 **Named Return Value Optimization / Return Value Optimization** — C++-kääntäjän optimointi, joka poistaa turhat kopioinnit palautusarvoista. NRVO koskee nimettyä paluumuuttujaa, RVO tilapäistä arvoa; `std::move` palautuksessa voi paradoksaalisesti estää optimoinnin.
 
-**Oppitunnit:** [`b02-cpp-perf-move-09`](/docs/topics/cpp#b02-cpp-perf-move-09)
+**Oppitunnit:** [`perf-rvo`](/docs/topics/cpp#perf-rvo)
 
 ### NSS {#nss}
 
 **Name Service Switch** — Linux-mekanismi, joka määrittää nimien hakujärjestyksen `/etc/nsswitch.conf`-tiedostossa. Avahi-mDNS-nimet (`*.local`) vaativat `libnss-mdns`-paketin ja `mdns4_minimal`-merkinnän NSS-konfiguraatioon.
 
-**Oppitunnit:** [`b03-linux-avahi-hostname-local`](/docs/topics/linux#b03-linux-avahi-hostname-local), [`b04-linux-avahi-browse`](/docs/topics/linux#b04-linux-avahi-browse), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname), [`b07-linux-avahi-resolve`](/docs/topics/linux#b07-linux-avahi-resolve), [`b08-linux-avahi-resolve`](/docs/topics/linux#b08-linux-avahi-resolve)
+**Oppitunnit:** [`b03-linux-avahi-hostname-local`](/docs/topics/linux#b03-linux-avahi-hostname-local), [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname), [`b08-linux-avahi-resolve`](/docs/topics/linux#b08-linux-avahi-resolve)
 
 ### NSS/DNS {#nss-dns}
 
 **Name Service Switch / Domain Name System** — Linux-nimenhakumekanismi. `/etc/nsswitch.conf` määrittää, missä järjestyksessä nimet haetaan (tiedostot, DNS, mDNS). `avahi` rekisteröityy omaksi NSS-moduulikseen, joten mDNS-resoluutio voidaan testata erillään perinteisestä DNS-ketjusta.
 
-**Oppitunnit:** [`b07-linux-avahi-resolve`](/docs/topics/linux#b07-linux-avahi-resolve)
+**Oppitunnit:** [`b06-linux-avahi-resolve-hostname`](/docs/topics/linux#b06-linux-avahi-resolve-hostname)
 
 ### NTILE {#ntile}
 
@@ -1326,7 +1326,7 @@ HTTP-metodi, jolla selain tekee CORS-preflight-pyynnön ennen ei-yksinkertaista 
 
 **Object-Relational Mapping** — ohjelmistokerros, joka muuntaa olio-rakenteet SQL-kyselyiksi automaattisesti. ORM lähettää usein uuden SQL-merkkijonon joka kutsulla ilman valmistelua, ja voi aiheuttaa N+1-ongelman; korjataan eager loadingilla tai `PREPARE`-protokollan hyödyntämisellä.
 
-**Oppitunnit:** [`b05-pg-indexes-expression`](/docs/topics/postgres#b05-pg-indexes-expression), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare), [`prod-backend-n-plus-one`](/docs/topics/backend#prod-backend-n-plus-one), [`sqd-many-to-many-bridge`](/docs/topics/postgres#sqd-many-to-many-bridge), [`sqd-parameterized-query`](/docs/topics/postgres#sqd-parameterized-query), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only)
+**Oppitunnit:** [`b04-pg-indexes-expression`](/docs/topics/postgres#b04-pg-indexes-expression), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare), [`prod-backend-n-plus-one`](/docs/topics/backend#prod-backend-n-plus-one), [`sqd-many-to-many-bridge`](/docs/topics/postgres#sqd-many-to-many-bridge), [`sqd-parameterized-query`](/docs/topics/postgres#sqd-parameterized-query), [`sqd-select-columns-only`](/docs/topics/postgres#sqd-select-columns-only)
 
 ### OUTPUT {#output}
 
@@ -1368,13 +1368,13 @@ iptables/nftables-palomuurin ketju, joka käsittelee paikallisesta koneesta läh
 
 **PostgreSQL**-lyhenne; esiintyy komentojen ja parametrien nimissä (`pg_stat_activity`, `pgBouncer`, `PG 11`). Viittaa PostgreSQL-tietokantapalvelimeen tai sen versioon.
 
-**Oppitunnit:** [`b02-pg-indexes-covering-04`](/docs/topics/postgres#b02-pg-indexes-covering-04), [`b03-pg-config-effective-cache`](/docs/topics/postgres#b03-pg-config-effective-cache), [`b04-pg-config-maintenance-work-mem`](/docs/topics/postgres#b04-pg-config-maintenance-work-mem), [`b04-pg-indexes-concurrent-create`](/docs/topics/postgres#b04-pg-indexes-concurrent-create), [`b05-pg-config-shared-buffers`](/docs/topics/postgres#b05-pg-config-shared-buffers), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b06-pg-config-parallel-workers`](/docs/topics/postgres#b06-pg-config-parallel-workers), [`b06-pg-config-track-io-timing`](/docs/topics/postgres#b06-pg-config-track-io-timing), [`b06-pg-indexes-reindex-concurrently`](/docs/topics/postgres#b06-pg-indexes-reindex-concurrently), [`b06-pg-vacuum-index-cleanup`](/docs/topics/postgres#b06-pg-vacuum-index-cleanup), [`b08-pg-config-checkpoint`](/docs/topics/postgres#b08-pg-config-checkpoint), [`b08-pg-config-max-connections`](/docs/topics/postgres#b08-pg-config-max-connections) (+9 muuta)
+**Oppitunnit:** [`exp-pg-indexes-covering`](/docs/topics/postgres#exp-pg-indexes-covering), [`b03-pg-config-effective-cache`](/docs/topics/postgres#b03-pg-config-effective-cache), [`b04-pg-config-maintenance-work-mem`](/docs/topics/postgres#b04-pg-config-maintenance-work-mem), [`b03-pg-indexes-concurrent-create`](/docs/topics/postgres#b03-pg-indexes-concurrent-create), [`exp-pg-config-shared-buffers`](/docs/topics/postgres#exp-pg-config-shared-buffers), [`b06-pg-config-huge-pages`](/docs/topics/postgres#b06-pg-config-huge-pages), [`b06-pg-config-parallel-workers`](/docs/topics/postgres#b06-pg-config-parallel-workers), [`b06-pg-config-track-io-timing`](/docs/topics/postgres#b06-pg-config-track-io-timing), [`b06-pg-indexes-reindex-concurrently`](/docs/topics/postgres#b06-pg-indexes-reindex-concurrently), [`b06-pg-vacuum-index-cleanup`](/docs/topics/postgres#b06-pg-vacuum-index-cleanup), [`b06-pg-config-checkpoint-timeout`](/docs/topics/postgres#b06-pg-config-checkpoint-timeout), [`exp-pg-config-max-connections`](/docs/topics/postgres#exp-pg-config-max-connections) (+9 muuta)
 
 ### PID {#pid}
 
 **Process ID** — käyttöjärjestelmän prosessille antama yksilöivä kokonaisluku. `ss -tulpn` näyttää kuuntelevat portit PID:eineen; PostgreSQLin `pg_stat_activity` paljastaa backend-prosessien PID:t; kontti ajaa PID 1:nä, joten `--init` tarvitaan zombie-prosessien hallintaan.
 
-**Oppitunnit:** [`b03-pg-locks-blocking-query`](/docs/topics/postgres#b03-pg-locks-blocking-query), [`b05-linux-network-ss-listen`](/docs/topics/linux#b05-linux-network-ss-listen), [`b06-docker-run-init`](/docs/topics/docker#b06-docker-run-init), [`b07-linux-journald-json`](/docs/topics/linux#b07-linux-journald-json), [`b08-linux-ss-listening`](/docs/topics/linux#b08-linux-ss-listening), [`b12-linux-tcp-close-wait-leak`](/docs/topics/linux#b12-linux-tcp-close-wait-leak), [`docker-exit-code`](/docs/topics/docker#docker-exit-code)
+**Oppitunnit:** [`b03-pg-locks-blocking-query`](/docs/topics/postgres#b03-pg-locks-blocking-query), [`linux-ss-listen`](/docs/topics/linux#linux-ss-listen), [`b06-docker-run-init`](/docs/topics/docker#b06-docker-run-init), [`b07-linux-journald-json`](/docs/topics/linux#b07-linux-journald-json), [`b12-linux-tcp-close-wait-leak`](/docs/topics/linux#b12-linux-tcp-close-wait-leak), [`docker-exit-code`](/docs/topics/docker#docker-exit-code)
 
 ### PIN {#pin}
 
@@ -1386,7 +1386,7 @@ iptables/nftables-palomuurin ketju, joka käsittelee paikallisesta koneesta läh
 
 SQL-tekniikka, joka kääntää rivejä sarakkeiksi (esim. kuukausittaiset myyntiluvut erillisiksi sarakkeiksi raportointia varten). PostgreSQL ei tue `PIVOT`-avainsanaa kuten SQL Server tai Oracle — sen sijaan käytetään `crosstab()` (tablefunc-laajennus) tai ehdollista aggregointia (`FILTER`/`CASE WHEN`).
 
-**Oppitunnit:** [`sqd-crosstab-alternative`](/docs/topics/postgres#sqd-crosstab-alternative)
+**Oppitunnit:** [`sqd-pivot-conditional-agg`](/docs/topics/postgres#sqd-pivot-conditional-agg)
 
 ### PK {#pk}
 
@@ -1404,7 +1404,7 @@ Viittaa PostgreSQLin kontekstissa **PL/pgSQL**-proseduurikieleen, joka mahdollis
 
 **Programmable Logic Controller** — teollisuuden ohjelmoitava logiikka koneiden ja prosessien ohjaukseen. PLC kommunikoi usein Modbus- tai OPC UA -protokollalla ja voi odottaa yhteyttä tietyltä MAC-osoitteelta; Docker macvlan-verkko mahdollistaa konttien saamisen suoraan tehdas-LAN-segmenttiin.
 
-**Oppitunnit:** [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan)
+**Oppitunnit:** [`docker-macvlan`](/docs/topics/docker#docker-macvlan)
 
 ### PM {#pm}
 
@@ -1440,7 +1440,7 @@ Viittaa PostgreSQLin kontekstissa **PL/pgSQL**-proseduurikieleen, joka mahdollis
 
 HTTP **POST** — pyyntömetodi, jolla lähetetään dataa palvelimelle (lomake, REST API -kirjoitusoperaatio). CORS-preflight lähettää ensin OPTIONS-pyynnön, kun mukana on `Content-Type: application/json` tai muu ei-yksinkertainen otsikko.
 
-**Oppitunnit:** [`b05-js-async-debounce`](/docs/topics/javascript#b05-js-async-debounce), [`b05-js-fetch-cors-preflight`](/docs/topics/javascript#b05-js-fetch-cors-preflight), [`prod-sec-csrf`](/docs/topics/security#prod-sec-csrf)
+**Oppitunnit:** [`b04-js-async-debounce`](/docs/topics/javascript#b04-js-async-debounce), [`b05-js-fetch-cors-preflight`](/docs/topics/javascript#b05-js-fetch-cors-preflight), [`prod-sec-csrf`](/docs/topics/security#prod-sec-csrf)
 
 ### POSTROUTING {#postrouting}
 
@@ -1482,7 +1482,7 @@ SQL-käyttöoikeudet, joita hallinnoidaan `GRANT`- ja `REVOKE`-komennoilla. `GRA
 
 **Quality Assurance** — ohjelmiston laadunvarmistus; prosessit ja testaukset, joilla varmistetaan vaatimusten täyttyminen. QA-tiimi raportoi bugeista ja löydöksistä, jotka kirjataan Product Backlogiin tarinoina tai vikoina.
 
-**Oppitunnit:** [`b04-js-types-number-precision`](/docs/topics/javascript#b04-js-types-number-precision), [`b05-qt-widgets-size-hint`](/docs/topics/qt#b05-qt-widgets-size-hint), [`b07-js-async-abort`](/docs/topics/javascript#b07-js-async-abort), [`b08-qt-widgets-tooltip-delay`](/docs/topics/qt#b08-qt-widgets-tooltip-delay), [`ci-artifact-retention`](/docs/topics/git#ci-artifact-retention), [`exp-qt-widgets-size-hint`](/docs/topics/qt#exp-qt-widgets-size-hint), [`exp-scrum-dod-regression-suite`](/docs/topics/scrum#exp-scrum-dod-regression-suite), [`scrum-dod-automated-tests`](/docs/topics/scrum#scrum-dod-automated-tests), [`scrum-dod-partial`](/docs/topics/scrum#scrum-dod-partial), [`scrum-dod-shippable`](/docs/topics/scrum#scrum-dod-shippable), [`scrum-dod-team-ownership`](/docs/topics/scrum#scrum-dod-team-ownership), [`exp-scrum-dor-acceptance-tests`](/docs/topics/scrum#exp-scrum-dor-acceptance-tests) (+1 muuta)
+**Oppitunnit:** [`b04-js-types-number-precision`](/docs/topics/javascript#b04-js-types-number-precision), [`b05-qt-widgets-size-hint`](/docs/topics/qt#b05-qt-widgets-size-hint), [`exp-js-async-fetch-abort`](/docs/topics/javascript#exp-js-async-fetch-abort), [`b08-qt-widgets-tooltip-delay`](/docs/topics/qt#b08-qt-widgets-tooltip-delay), [`ci-artifact-retention`](/docs/topics/git#ci-artifact-retention), [`exp-qt-widgets-size-hint`](/docs/topics/qt#exp-qt-widgets-size-hint), [`exp-scrum-dod-regression-suite`](/docs/topics/scrum#exp-scrum-dod-regression-suite), [`scrum-dod-automated-tests`](/docs/topics/scrum#scrum-dod-automated-tests), [`scrum-dod-partial`](/docs/topics/scrum#scrum-dod-partial), [`scrum-dod-shippable`](/docs/topics/scrum#scrum-dod-shippable), [`scrum-dod-team-ownership`](/docs/topics/scrum#scrum-dod-team-ownership), [`exp-scrum-dor-acceptance-tests`](/docs/topics/scrum#exp-scrum-dor-acceptance-tests) (+1 muuta)
 
 ### QML {#qml}
 
@@ -1560,7 +1560,7 @@ systemd-notify-protokollan viesti `READY=1`, jonka palvelu lähettää `sd_notif
 
 **Red Hat Enterprise Linux** — Red Hatin kaupallinen Linux-jakelu, jota käytetään laajasti yrityspalvelimilla. RHEL aktivoi SELinuxin oletuksena; Docker bind mount voi epäonnistua `permission denied` -virheellä Unix-oikeuksista huolimatta — SELinux vaatii `:z`-suffiksin tai `chcon`-kutsun.
 
-**Oppitunnit:** [`b08-docker-volume-bind-selinux`](/docs/topics/docker#b08-docker-volume-bind-selinux), [`b08-linux-network-firewalld`](/docs/topics/linux#b08-linux-network-firewalld), [`b09-linux-net-firewall-cmd`](/docs/topics/linux#b09-linux-net-firewall-cmd)
+**Oppitunnit:** [`b08-docker-volume-bind-selinux`](/docs/topics/docker#b08-docker-volume-bind-selinux), [`b08-linux-network-firewalld`](/docs/topics/linux#b08-linux-network-firewalld)
 
 ### RHI {#rhi}
 
@@ -1656,13 +1656,13 @@ Rust-kääntäjälle välitettävä ympäristömuuttuja lisäflaagien asettamise
 
 **Return Value Optimization** — C++-kääntäjän optimointi, joka rakentaa paluuarvon suoraan kutsujan muistipaikassa kopion välttämiseksi. C++17 teki NRVO:n (Named RVO) pakolliseksi monissa tilanteissa; `std::move` paluulausekkeessa estää RVO:n eikä ole suositeltavaa.
 
-**Oppitunnit:** [`b02-cpp-correct-dangling-15`](/docs/topics/cpp#b02-cpp-correct-dangling-15), [`b02-cpp-perf-move-09`](/docs/topics/cpp#b02-cpp-perf-move-09), [`b03-cpp-cr-move-semantics`](/docs/topics/cpp#b03-cpp-cr-move-semantics), [`b05-cpp-rvo-return-local`](/docs/topics/cpp#b05-cpp-rvo-return-local), [`perf-move`](/docs/topics/cpp#perf-move), [`perf-rvo`](/docs/topics/cpp#perf-rvo)
+**Oppitunnit:** [`b02-cpp-correct-dangling-15`](/docs/topics/cpp#b02-cpp-correct-dangling-15), [`perf-rvo`](/docs/topics/cpp#perf-rvo), [`b05-cpp-rvo-return-local`](/docs/topics/cpp#b05-cpp-rvo-return-local), [`perf-move`](/docs/topics/cpp#perf-move)
 
 ### RVO/NRVO {#rvo-nrvo}
 
 **Return Value Optimization / Named Return Value Optimization** — C++11/17-standardin mahdollistama kääntäjäoptimointi, joka eliminoi välikopiointeja palautusarvoista. C++17 takaa RVO (copy elision) useimmissa tilanteissa; `std::move` paikalliseen palautukseen voi estää optimoinnin.
 
-**Oppitunnit:** [`b05-cpp-rvo-return-local`](/docs/topics/cpp#b05-cpp-rvo-return-local), [`perf-rvo`](/docs/topics/cpp#perf-rvo), [`b03-cpp-cr-move-semantics`](/docs/topics/cpp#b03-cpp-cr-move-semantics)
+**Oppitunnit:** [`b05-cpp-rvo-return-local`](/docs/topics/cpp#b05-cpp-rvo-return-local), [`perf-rvo`](/docs/topics/cpp#perf-rvo)
 
 ### S/M/L {#s-m-l}
 
@@ -1710,7 +1710,7 @@ Tietokantaskeema — nimiavaruus, johon taulut, näkymät, funktiot ja sekvenssi
 
 **Service Discovery** — DNS-SD:ssä (DNS-based Service Discovery, RFC 6763) palvelut ilmoitetaan ja löydetään `_service._proto.local`-nimien avulla. Avahi toteuttaa DNS-SD:n lähiverkossa; `avahi-browse -a` listaa kaikki julkaistut palvelut.
 
-**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b06-linux-avahi-service-type`](/docs/topics/linux#b06-linux-avahi-service-type), [`b07-docker-network-host`](/docs/topics/docker#b07-docker-network-host), [`b08-linux-avahi-resolve`](/docs/topics/linux#b08-linux-avahi-resolve), [`b09-linux-avahi-service-discovery`](/docs/topics/linux#b09-linux-avahi-service-discovery), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery), [`exp-linux-avahi-service-xml`](/docs/topics/linux#exp-linux-avahi-service-xml), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service)
+**Oppitunnit:** [`avahi-mdns`](/docs/topics/linux#avahi-mdns), [`b06-linux-avahi-service-type`](/docs/topics/linux#b06-linux-avahi-service-type), [`b07-docker-network-host`](/docs/topics/docker#b07-docker-network-host), [`b08-linux-avahi-resolve`](/docs/topics/linux#b08-linux-avahi-resolve), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery), [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml), [`b03-linux-avahi-publish-service`](/docs/topics/linux#b03-linux-avahi-publish-service)
 
 ### SDK {#sdk}
 
@@ -1776,7 +1776,7 @@ C++ Core Guidelines -oppaan **SF (Source Files)** -osio, joka kattaa header-tied
 
 Unix-signaali numero 6 (abort). Prosessi lähettää `SIGABRT` itselleen kutsumalla `abort()`, usein kun runtime havaitsee vakavan virheen (heap-korruptio, epäonnistunut `assert`). systemd `Restart=on-failure` käynnistää prosessin uudelleen, mutta muistibugi kannattaa korjata juurisyynä.
 
-**Oppitunnit:** [`b07-linux-systemd-restart-policy`](/docs/topics/linux#b07-linux-systemd-restart-policy)
+**Oppitunnit:** [`systemd-restart-policy`](/docs/topics/linux#systemd-restart-policy)
 
 ### SIGKILL {#sigkill}
 
@@ -1806,7 +1806,7 @@ Unix-signaali 15, joka pyytää prosessia lopettamaan siististi (graceful shutdo
 
 **Service Level Agreement** — palvelutasosopimus, joka määrittelee tavoitevasteajan, saatavuusprosentin tai muun palvelulupauksen. Arkkitehtuurivalinnat (varmuuskopiointi, timeout-strategia, retry-logiikka, abort-käsittely) johdetaan suoraan SLA-vaatimuksesta.
 
-**Oppitunnit:** [`b02-docker-vol-backup-14`](/docs/topics/docker#b02-docker-vol-backup-14), [`b04-js-async-race-fetch`](/docs/topics/javascript#b04-js-async-race-fetch), [`b04-scrum-poker-consensus`](/docs/topics/scrum#b04-scrum-poker-consensus), [`b04-scrum-velocity-not-commitment`](/docs/topics/scrum#b04-scrum-velocity-not-commitment), [`b08-js-async-race-timeout`](/docs/topics/javascript#b08-js-async-race-timeout), [`exp-scrum-team-sm-impediment`](/docs/topics/scrum#exp-scrum-team-sm-impediment)
+**Oppitunnit:** [`exp-docker-vol-backup`](/docs/topics/docker#exp-docker-vol-backup), [`b04-js-async-race-fetch`](/docs/topics/javascript#b04-js-async-race-fetch), [`b04-scrum-poker-consensus`](/docs/topics/scrum#b04-scrum-poker-consensus), [`b04-scrum-velocity-not-commitment`](/docs/topics/scrum#b04-scrum-velocity-not-commitment), [`b08-js-async-race-timeout`](/docs/topics/javascript#b08-js-async-race-timeout), [`exp-scrum-team-sm-impediment`](/docs/topics/scrum#exp-scrum-team-sm-impediment)
 
 ### SMTP {#smtp}
 
@@ -1848,7 +1848,7 @@ Unix-signaali 15, joka pyytää prosessia lopettamaan siististi (graceful shutdo
 
 **Structured Query Language** — ISO-standardoitu kyselykieli relaatiotietokannoille. PostgreSQLissä kyselysuorituksia analysoidaan `EXPLAIN (ANALYZE, BUFFERS)` -komennolla; indeksit ja tilastot vaikuttavat planner-valintoihin.
 
-**Oppitunnit:** [`b02-pg-explain-nested-07`](/docs/topics/postgres#b02-pg-explain-nested-07), [`b02-qt-models-sort-09`](/docs/topics/qt#b02-qt-models-sort-09), [`b03-pg-config-random-page-cost`](/docs/topics/postgres#b03-pg-config-random-page-cost), [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode), [`b03-pg-config-statements-ext`](/docs/topics/postgres#b03-pg-config-statements-ext), [`b07-docker-volume-backup`](/docs/topics/docker#b07-docker-volume-backup), [`b07-pg-config-log-slow`](/docs/topics/postgres#b07-pg-config-log-slow), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare), [`b08-qt-signals-blocking`](/docs/topics/qt#b08-qt-signals-blocking), [`b09-qt-signals-block-updates`](/docs/topics/qt#b09-qt-signals-block-updates), [`exp-scrum-dod-security-review`](/docs/topics/scrum#exp-scrum-dod-security-review), [`prod-backend-transfer-transaction`](/docs/topics/backend#prod-backend-transfer-transaction) (+29 muuta)
+**Oppitunnit:** [`exp-pg-explain-nested-loop`](/docs/topics/postgres#exp-pg-explain-nested-loop), [`b02-qt-models-sort-09`](/docs/topics/qt#b02-qt-models-sort-09), [`b03-pg-config-random-page-cost`](/docs/topics/postgres#b03-pg-config-random-page-cost), [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode), [`b03-pg-config-statements-ext`](/docs/topics/postgres#b03-pg-config-statements-ext), [`b07-docker-volume-backup`](/docs/topics/docker#b07-docker-volume-backup), [`b04-pg-config-log-min-duration`](/docs/topics/postgres#b04-pg-config-log-min-duration), [`b07-pg-explain-prepare`](/docs/topics/postgres#b07-pg-explain-prepare), [`b03-qt-signals-block-signals`](/docs/topics/qt#b03-qt-signals-block-signals), [`exp-scrum-dod-security-review`](/docs/topics/scrum#exp-scrum-dod-security-review), [`prod-backend-transfer-transaction`](/docs/topics/backend#prod-backend-transfer-transaction) (+29 muuta)
 
 ### SRE {#sre}
 
@@ -1860,13 +1860,13 @@ Unix-signaali 15, joka pyytää prosessia lopettamaan siististi (graceful shutdo
 
 **Simple Service Discovery Protocol** — UPnP-protokollaperheen löytöprotokolla, joka käyttää UDP-multicastia (239.255.255.250:1900). Docker bridge-verkko ei reitittä multicastia oletuksena; `--network host` tai macvlan tarvitaan SSDP-liikenteelle.
 
-**Oppitunnit:** [`b08-docker-network-host`](/docs/topics/docker#b08-docker-network-host)
+**Oppitunnit:** [`b07-docker-network-host`](/docs/topics/docker#b07-docker-network-host)
 
 ### SSE {#sse}
 
 **Server-Sent Events** — W3C-standardi yksisuuntaiselle palvelin→selain-streamille HTTP:n yli (`text/event-stream`). Selain käyttää `EventSource`-API:a; `for await...of` (async-iteraattori) sopii SSE-virtojen käsittelyyn Node.js-puolella tai Fetch ReadableStream -rajapinnan kanssa.
 
-**Oppitunnit:** [`b12-js-async-iterator-for-await`](/docs/topics/javascript#b12-js-async-iterator-for-await)
+**Oppitunnit:** [`b06-js-async-iterator-forawait`](/docs/topics/javascript#b06-js-async-iterator-forawait)
 
 ### SSH {#ssh}
 
@@ -1944,19 +1944,19 @@ TCP **Synchronize** -lippu (SYN) aloittaa kolmivaiheisen kättelyn (SYN → SYN-
 
 **Transmission Control Protocol** — yhteyssuuntautunut verkkoprotokolla, joka takaa pakettijärjestyksen ja uudelleenlähetyksen. `tcpdump` suodattaa TCP-paketteja lippujen (SYN, RST, ACK) mukaan; `ss -t` näyttää yhteyksien tilan (ESTABLISHED, TIME_WAIT jne.).
 
-**Oppitunnit:** [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08), [`b03-linux-network-ss-timers`](/docs/topics/linux#b03-linux-network-ss-timers), [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b04-linux-ss-tuln`](/docs/topics/linux#b04-linux-ss-tuln), [`b05-linux-network-ss-listen`](/docs/topics/linux#b05-linux-network-ss-listen), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`b06-linux-network-ss-udp`](/docs/topics/linux#b06-linux-network-ss-udp), [`b07-linux-network-curl-debug`](/docs/topics/linux#b07-linux-network-curl-debug), [`b07-linux-network-tcpdump`](/docs/topics/linux#b07-linux-network-tcpdump), [`b09-linux-journald-forward-syslog`](/docs/topics/linux#b09-linux-journald-forward-syslog), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state), [`b12-linux-tcp-close-wait-leak`](/docs/topics/linux#b12-linux-tcp-close-wait-leak) (+12 muuta)
+**Oppitunnit:** [`docker-host-network`](/docs/topics/docker#docker-host-network), [`b03-linux-network-ss-timers`](/docs/topics/linux#b03-linux-network-ss-timers), [`b03-linux-network-tcpdump-filter`](/docs/topics/linux#b03-linux-network-tcpdump-filter), [`b04-linux-ss-tuln`](/docs/topics/linux#b04-linux-ss-tuln), [`linux-ss-listen`](/docs/topics/linux#linux-ss-listen), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`b06-linux-network-ss-udp`](/docs/topics/linux#b06-linux-network-ss-udp), [`b07-linux-network-curl-debug`](/docs/topics/linux#b07-linux-network-curl-debug), [`b07-linux-network-tcpdump`](/docs/topics/linux#b07-linux-network-tcpdump), [`b09-linux-journald-forward-syslog`](/docs/topics/linux#b09-linux-journald-forward-syslog), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state), [`b12-linux-tcp-close-wait-leak`](/docs/topics/linux#b12-linux-tcp-close-wait-leak) (+12 muuta)
 
 ### TDZ {#tdz}
 
 **Temporal Dead Zone** — JavaScript-mekanismi, jossa `let`/`const`-muuttuja on olemassa leksikaalisen näkyvyysalueen alusta, mutta käyttö ennen alustusta heittää `ReferenceError`in. ESM-syklisessä importissa binding voi jäädä TDZ:hen, jos moduuli evaluoidaan ennen kuin sen eksportti on alustettu.
 
-**Oppitunnit:** [`b08-js-modules-circular`](/docs/topics/javascript#b08-js-modules-circular), [`exp-js-modules-cycle`](/docs/topics/javascript#exp-js-modules-cycle), [`b02-js-modules-cycle-09`](/docs/topics/javascript#b02-js-modules-cycle-09), [`b07-js-modules-cycle`](/docs/topics/javascript#b07-js-modules-cycle)
+**Oppitunnit:** [`b08-js-modules-circular`](/docs/topics/javascript#b08-js-modules-circular), [`exp-js-modules-cycle`](/docs/topics/javascript#exp-js-modules-cycle)
 
 ### TLA {#tla}
 
 **Top-Level Await** — ESM-moduulien ominaisuus, joka sallii `await`-avainsanan moduulitasolla ilman `async`-funktiota. TLA blokkaa kaikki riippuvaiset importit latauksen ajaksi — sopii CLI-työkaluihin, mutta voi hidastaa web-sovelluksen LCP-metriikkaa.
 
-**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`b05-js-modules-top-level-await`](/docs/topics/javascript#b05-js-modules-top-level-await), [`b12-js-async-await-top-level`](/docs/topics/javascript#b12-js-async-await-top-level), [`exp-js-modules-top-level-await`](/docs/topics/javascript#exp-js-modules-top-level-await)
+**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`exp-js-modules-top-level-await`](/docs/topics/javascript#exp-js-modules-top-level-await)
 
 ### TODO {#todo}
 
@@ -2004,19 +2004,19 @@ SQL-komento, joka poistaa kaikki rivit taulusta nopeasti ilman rivitason lokitus
 
 **UDP/TCP** — kaksi keskeistä verkkoprotokollaa rinnakkain. **UDP** (User Datagram Protocol) on yhteydetön ja nopea mutta epäluotettava; **TCP** (Transmission Control Protocol) takaa järjestyksen ja toimituksen kolmisuuntaisella kättelyllä. Palomuurisäännöt, Docker-verkkoasetukset ja sovelluksen porttivalinta eroavat protokollan mukaan.
 
-**Oppitunnit:** [`b02-docker-net-host-08`](/docs/topics/docker#b02-docker-net-host-08), [`b09-linux-journald-forward-syslog`](/docs/topics/linux#b09-linux-journald-forward-syslog)
+**Oppitunnit:** [`docker-host-network`](/docs/topics/docker#docker-host-network), [`b09-linux-journald-forward-syslog`](/docs/topics/linux#b09-linux-journald-forward-syslog)
 
 ### UI {#ui}
 
 **User Interface** — käyttöliittymä; voi olla graafinen (GUI) tai tekstipohjainen (CLI). Qt Quick- ja QML-projekteissa UI-threadi vastaa renderöinnistä ja käyttäjätapahtumien käsittelystä.
 
-**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`b02-qt-models-sort-09`](/docs/topics/qt#b02-qt-models-sort-09), [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`b02-qt-signals-disconnect-05`](/docs/topics/qt#b02-qt-signals-disconnect-05), [`b02-qt-thread-worker-06`](/docs/topics/qt#b02-qt-thread-worker-06), [`b03-js-modules-worker-postmessage`](/docs/topics/javascript#b03-js-modules-worker-postmessage), [`b03-qt-models-sort-filter`](/docs/topics/qt#b03-qt-models-sort-filter), [`b03-qt-shaders-qopenglshader`](/docs/topics/qt#b03-qt-shaders-qopenglshader), [`b03-qt-signals-block-signals`](/docs/topics/qt#b03-qt-signals-block-signals), [`b04-js-async-event-loop-blocking`](/docs/topics/javascript#b04-js-async-event-loop-blocking), [`b04-js-runtime-structured-clone`](/docs/topics/javascript#b04-js-runtime-structured-clone), [`b04-qt-models-setData`](/docs/topics/qt#b04-qt-models-setData) (+59 muuta)
+**Oppitunnit:** [`b02-js-modules-tla-10`](/docs/topics/javascript#b02-js-modules-tla-10), [`b02-qt-models-sort-09`](/docs/topics/qt#b02-qt-models-sort-09), [`b02-qt-opengl-context-11`](/docs/topics/qt#b02-qt-opengl-context-11), [`exp-qt-signals-disconnect-lifetime`](/docs/topics/qt#exp-qt-signals-disconnect-lifetime), [`exp-qt-thread-worker-object`](/docs/topics/qt#exp-qt-thread-worker-object), [`b03-js-modules-worker-postmessage`](/docs/topics/javascript#b03-js-modules-worker-postmessage), [`b03-qt-models-sort-filter`](/docs/topics/qt#b03-qt-models-sort-filter), [`b03-qt-shaders-qopenglshader`](/docs/topics/qt#b03-qt-shaders-qopenglshader), [`b03-qt-signals-block-signals`](/docs/topics/qt#b03-qt-signals-block-signals), [`b04-js-async-event-loop-blocking`](/docs/topics/javascript#b04-js-async-event-loop-blocking), [`b03-js-runtime-structured-clone`](/docs/topics/javascript#b03-js-runtime-structured-clone), [`b03-qt-models-data-changed`](/docs/topics/qt#b03-qt-models-data-changed) (+59 muuta)
 
 ### UID/GID {#uid-gid}
 
 **User ID / Group ID** — Linuxin numeraaliset käyttäjä- ja ryhmätunnukset tiedosto-oikeuksissa. Docker bind mountissa kontin prosessin UID/GID pitää täsmätä hostin tiedostojen omistajaan; `USER 1000:1000` Dockerfilessa tai `--user`-lippu asettaa oikeat tunnukset.
 
-**Oppitunnit:** [`b05-docker-vol-bind-perms`](/docs/topics/docker#b05-docker-vol-bind-perms), [`b07-docker-copy-chown`](/docs/topics/docker#b07-docker-copy-chown), [`exp-docker-vol-bind-perms`](/docs/topics/docker#exp-docker-vol-bind-perms)
+**Oppitunnit:** [`exp-docker-vol-bind-perms`](/docs/topics/docker#exp-docker-vol-bind-perms), [`b07-docker-copy-chown`](/docs/topics/docker#b07-docker-copy-chown)
 
 ### UNBOUNDED {#unbounded}
 
@@ -2034,7 +2034,7 @@ SQL-komento, joka poistaa kaikki rivit taulusta nopeasti ilman rivitason lokitus
 
 **UNIQUE** — SQL-rajoite, joka estää saman arvon toistumisen sarakkeessa tai sarakekombinaatiossa. `UNIQUE`-rajoite luo automaattisesti indeksin, joka nopeuttaa hakuja ja estää duplikaattirivit, esimerkiksi bridge-taulun (`student_id, course_id`) -yhdistelmässä.
 
-**Oppitunnit:** [`sqd-many-to-many-bridge`](/docs/topics/postgres#sqd-many-to-many-bridge), [`b04-pg-indexes-partial-active`](/docs/topics/postgres#b04-pg-indexes-partial-active)
+**Oppitunnit:** [`sqd-many-to-many-bridge`](/docs/topics/postgres#sqd-many-to-many-bridge), [`pg-indexes-partial`](/docs/topics/postgres#pg-indexes-partial)
 
 ### UNIX {#unix}
 
@@ -2058,19 +2058,19 @@ PostgreSQL-funktio, joka muuntaa taulukon (`ARRAY`) erillisiksi riveiksi. `SELEC
 
 **INSERT ... ON CONFLICT** — operaatio, joka lisää uuden rivin tai päivittää olemassa olevan konfliktin sattuessa. PostgreSQL-syntaksi: `INSERT INTO t VALUES (...) ON CONFLICT (id) DO UPDATE SET col = EXCLUDED.col`. UPSERT tuottaa dead tuplea päivitysten yhteydessä, joten säännöllinen VACUUM on tärkeää.
 
-**Oppitunnit:** [`b07-pg-vacuum-analyze`](/docs/topics/postgres#b07-pg-vacuum-analyze)
+**Oppitunnit:** [`exp-pg-explain-stats-stale`](/docs/topics/postgres#exp-pg-explain-stats-stale)
 
 ### URI {#uri}
 
 **Uniform Resource Identifier** — yleinen tunniste resurssille verkossa tai järjestelmässä. `http://`, `postgres://` ja `ipp://` ovat URI:n erikoistapauksia. Avahi-palvelun mDNS-löytö palauttaa CUPS-tulostimen URI:n, jonka `lpadmin -v` hyväksyy suoraan konfiguraatioon.
 
-**Oppitunnit:** [`b03-linux-avahi-browse-services`](/docs/topics/linux#b03-linux-avahi-browse-services), [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode), [`b05-linux-avahi-browse`](/docs/topics/linux#b05-linux-avahi-browse)
+**Oppitunnit:** [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b03-pg-config-ssl-mode`](/docs/topics/postgres#b03-pg-config-ssl-mode)
 
 ### URL {#url}
 
 **Uniform Resource Locator** — osoite, joka yksilöi resurssin verkossa (esim. `https://example.com/api/v1`). Dockerin `ADD`-komento voi hakea URL:ista, mutta `COPY` on suositeltavampi eksplisiittisyytensä vuoksi.
 
-**Oppitunnit:** [`apt-repository-add`](/docs/topics/linux#apt-repository-add), [`b03-docker-copy-vs-add`](/docs/topics/docker#b03-docker-copy-vs-add), [`b03-js-modules-import-meta`](/docs/topics/javascript#b03-js-modules-import-meta), [`b04-js-modules-import-meta`](/docs/topics/javascript#b04-js-modules-import-meta), [`b07-js-types-strict-equality`](/docs/topics/javascript#b07-js-types-strict-equality), [`b07-linux-network-curl-debug`](/docs/topics/linux#b07-linux-network-curl-debug), [`b09-js-types-strict-equality`](/docs/topics/javascript#b09-js-types-strict-equality), [`b12-js-modules-create-require`](/docs/topics/javascript#b12-js-modules-create-require), [`b12-js-modules-import-meta-resolve`](/docs/topics/javascript#b12-js-modules-import-meta-resolve), [`b13-qt-quick-image-async`](/docs/topics/qt#b13-qt-quick-image-async), [`prod-sec-xss`](/docs/topics/security#prod-sec-xss), [`rf-variables`](/docs/topics/robotframework#rf-variables) (+1 muuta)
+**Oppitunnit:** [`apt-repository-add`](/docs/topics/linux#apt-repository-add), [`b03-docker-copy-vs-add`](/docs/topics/docker#b03-docker-copy-vs-add), [`b03-js-modules-import-meta`](/docs/topics/javascript#b03-js-modules-import-meta), [`b07-js-types-strict-equality`](/docs/topics/javascript#b07-js-types-strict-equality), [`b07-linux-network-curl-debug`](/docs/topics/linux#b07-linux-network-curl-debug), [`b09-js-types-strict-equality`](/docs/topics/javascript#b09-js-types-strict-equality), [`b12-js-modules-create-require`](/docs/topics/javascript#b12-js-modules-create-require), [`b12-js-modules-import-meta-resolve`](/docs/topics/javascript#b12-js-modules-import-meta-resolve), [`b13-qt-quick-image-async`](/docs/topics/qt#b13-qt-quick-image-async), [`prod-sec-xss`](/docs/topics/security#prod-sec-xss), [`rf-variables`](/docs/topics/robotframework#rf-variables) (+1 muuta)
 
 ### UTC {#utc}
 
@@ -2094,7 +2094,7 @@ PostgreSQL-funktio, joka muuntaa taulukon (`ARRAY`) erillisiksi riveiksi. `SELEC
 
 **Universally Unique Identifier** — 128-bittinen standardimuotoinen yksilöivä tunniste (RFC 4122, esim. `550e8400-e29b-41d4-a716-446655440000`). Provisioning-skripteissä UUID-pohjainen hostname estää Avahi-nimiristiriidat kloonatuilla laitteilla; `nmcli`-automaatiossa UUID on luotettavampi profiiliviite kuin nimi.
 
-**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b05-linux-avahi-hostname-conflict`](/docs/topics/linux#b05-linux-avahi-hostname-conflict), [`b05-linux-network-nmcli-connect`](/docs/topics/linux#b05-linux-network-nmcli-connect), [`b06-pg-indexes-hash-index`](/docs/topics/postgres#b06-pg-indexes-hash-index), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`linux-nmcli`](/docs/topics/linux#linux-nmcli)
+**Oppitunnit:** [`b02-linux-network-nmcli-11`](/docs/topics/linux#b02-linux-network-nmcli-11), [`b02-linux-avahi-conflict-13`](/docs/topics/linux#b02-linux-avahi-conflict-13), [`b05-linux-network-nmcli-connect`](/docs/topics/linux#b05-linux-network-nmcli-connect), [`b06-pg-indexes-hash-index`](/docs/topics/postgres#b06-pg-indexes-hash-index), [`b08-linux-network-nmcli`](/docs/topics/linux#b08-linux-network-nmcli), [`linux-nmcli`](/docs/topics/linux#linux-nmcli)
 
 ### UV {#uv}
 
@@ -2130,7 +2130,7 @@ PostgreSQL VACUUM huoltaa näkyvyyskartan (visibility map) ja vapauttaa dead tup
 
 **Vertex Buffer Object** — GPU-muistipuskuri vertex-datalle (koordinaatit, normaalit, UV-koordinaatit). VAO kapseloi VBO-sidoksen ja attribuuttiasettelun; attribuuttilokaalit kannattaa kiinnittää `layout(location = ...)` -direktiivillä eri GPU-ajureiden yhteensopivuuden varmistamiseksi.
 
-**Oppitunnit:** [`b02-qt-opengl-vao-12`](/docs/topics/qt#b02-qt-opengl-vao-12), [`b03-qt-shaders-attribute-location`](/docs/topics/qt#b03-qt-shaders-attribute-location), [`b04-qt-shaders-attribute-location`](/docs/topics/qt#b04-qt-shaders-attribute-location), [`b05-qt-opengl-context-share`](/docs/topics/qt#b05-qt-opengl-context-share), [`exp-qt-opengl-vao-vbo`](/docs/topics/qt#exp-qt-opengl-vao-vbo), [`qt-opengl-vbo`](/docs/topics/qt#qt-opengl-vbo), [`b06-qt-shaders-varying-interpolation`](/docs/topics/qt#b06-qt-shaders-varying-interpolation)
+**Oppitunnit:** [`b02-qt-opengl-vao-12`](/docs/topics/qt#b02-qt-opengl-vao-12), [`b03-qt-shaders-attribute-location`](/docs/topics/qt#b03-qt-shaders-attribute-location), [`b04-qt-shaders-attribute-location`](/docs/topics/qt#b04-qt-shaders-attribute-location), [`b04-qt-opengl-share-context`](/docs/topics/qt#b04-qt-opengl-share-context), [`exp-qt-opengl-vao-vbo`](/docs/topics/qt#exp-qt-opengl-vao-vbo), [`qt-opengl-vbo`](/docs/topics/qt#qt-opengl-vbo), [`b06-qt-shaders-varying-interpolation`](/docs/topics/qt#b06-qt-shaders-varying-interpolation)
 
 ### VBO/VAO {#vbo-vao}
 
@@ -2154,13 +2154,13 @@ PostgreSQL VACUUM huoltaa näkyvyyskartan (visibility map) ja vapauttaa dead tup
 
 **Virtual Local Area Network** — looginen verkkosegmentointi, joka eristää liikennettä fyysisellä kytkimellä tai ohjelmistolla. Docker macvlan/ipvlan-verkkoja käyttäessä voidaan liittyä VLAN-taggattuun segmenttiin. Huomaa: mDNS-broadcast ei kulje VLAN-rajojen yli.
 
-**Oppitunnit:** [`b04-linux-avahi-browse`](/docs/topics/linux#b04-linux-avahi-browse), [`b06-linux-network-ip-neigh`](/docs/topics/linux#b06-linux-network-ip-neigh), [`b09-linux-avahi-service-discovery`](/docs/topics/linux#b09-linux-avahi-service-discovery), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery)
+**Oppitunnit:** [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b06-linux-network-ip-neigh`](/docs/topics/linux#b06-linux-network-ip-neigh), [`exp-linux-avahi-printer-discovery`](/docs/topics/linux#exp-linux-avahi-printer-discovery), [`b12-linux-arp-failed-state`](/docs/topics/linux#b12-linux-arp-failed-state)
 
 ### VM {#vm}
 
 **Virtual Machine** — ohjelmallisesti emuloitu tietokone (VirtualBox, VMware, cloud-instanssi). Docker Desktop ajaa kontteja Linux-VM:ssä macOS/Windows-hosteilla; kloonatut VM:t voivat periyttää saman hostnamen ja aiheuttaa Avahi-nimiristiriitoja.
 
-**Oppitunnit:** [`b02-docker-vol-bind-12`](/docs/topics/docker#b02-docker-vol-bind-12), [`b02-linux-avahi-conflict-13`](/docs/topics/linux#b02-linux-avahi-conflict-13), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`b12-linux-arp-flush-migration`](/docs/topics/linux#b12-linux-arp-flush-migration), [`exp-docker-net-macvlan`](/docs/topics/docker#exp-docker-net-macvlan), [`b03-pg-explain-index-only-scan`](/docs/topics/postgres#b03-pg-explain-index-only-scan), [`b05-pg-explain-index-only-scan`](/docs/topics/postgres#b05-pg-explain-index-only-scan)
+**Oppitunnit:** [`b02-docker-vol-bind-12`](/docs/topics/docker#b02-docker-vol-bind-12), [`b02-linux-avahi-conflict-13`](/docs/topics/linux#b02-linux-avahi-conflict-13), [`b06-linux-network-ethtool-offload`](/docs/topics/linux#b06-linux-network-ethtool-offload), [`b12-linux-arp-flush-migration`](/docs/topics/linux#b12-linux-arp-flush-migration), [`docker-macvlan`](/docs/topics/docker#docker-macvlan), [`b03-pg-explain-index-only-scan`](/docs/topics/postgres#b03-pg-explain-index-only-scan)
 
 ### VOLUME {#volume}
 
@@ -2178,7 +2178,7 @@ Dockerfilen `VOLUME`-instruktio merkitsee hakemiston erityiseksi tallennus­alue
 
 **VRAM** (Video RAM) — näytönohjaimen oma muisti, johon tallennetaan tekstuurit, framebuffer ja shader-resurssit. Qt OpenGL -kontekstijaossa (`QOpenGLContext::setShareContext`) useat widgetit voivat jakaa saman VRAM-datan ilman moninkertaista latausta.
 
-**Oppitunnit:** [`b08-qt-opengl-context-share`](/docs/topics/qt#b08-qt-opengl-context-share), [`b09-qt-opengl-context-share`](/docs/topics/qt#b09-qt-opengl-context-share)
+**Oppitunnit:** [`b04-qt-opengl-share-context`](/docs/topics/qt#b04-qt-opengl-share-context)
 
 ### VT {#vt}
 
@@ -2202,13 +2202,13 @@ TCP-yhteyden odotustila; tyypillisesti `CLOSE-WAIT`, jossa etäpää on sulkenut
 
 **Write-Ahead Log / Full Page Image** — PostgreSQLin `EXPLAIN (ANALYZE, BUFFERS, WAL)` -tulosteen kenttä, joka kertoo kuinka monta täyttä levyblokkia kirjoitettiin WAL:iin. WAL/FPI-luku on korkea cold-start-tilanteissa tai massiivisten kirjoitusten yhteydessä; se kuvaa klusteritason loki-infrastruktuuria, ei yksittäisen kyselyn I/O-käyttöä.
 
-**Oppitunnit:** [`b06-pg-explain-wal-fpi`](/docs/topics/postgres#b06-pg-explain-wal-fpi)
+**Oppitunnit:** [`b06-pg-config-checkpoint-timeout`](/docs/topics/postgres#b06-pg-config-checkpoint-timeout)
 
 ### WASM {#wasm}
 
 **WebAssembly** — selainympäristön binäärimuoto raskaalle laskennalle. Rust- tai C++-koodi käännetään WASM-moduuliksi (`wasm-pack`, `emscripten`), joka importataan ESM-sovellukseen `WebAssembly.instantiateStreaming()`-API:lla tai bundlerin tuella.
 
-**Oppitunnit:** [`b04-js-modules-import-meta`](/docs/topics/javascript#b04-js-modules-import-meta), [`b12-js-modules-wasm-import`](/docs/topics/javascript#b12-js-modules-wasm-import)
+**Oppitunnit:** [`b03-js-modules-import-meta`](/docs/topics/javascript#b03-js-modules-import-meta), [`b12-js-modules-wasm-import`](/docs/topics/javascript#b12-js-modules-wasm-import)
 
 ### WCAG {#wcag}
 
@@ -2256,13 +2256,13 @@ MSVC-kääntäjäoptio `/WX` — käsittele kaikki varoitukset virheinä. GCC/Cl
 
 **Transaction ID** — PostgreSQLin 32-bittinen transaktiontunniste. XID-avaruus on rajallinen (~4 miljardia); anti-wraparound VACUUM käyttää `freeze`-operaatiota merkitsemään vanhat rivit niin, ettei XID:n kierros aiheuttaisi tietojen katoamista.
 
-**Oppitunnit:** [`b02-pg-vacuum-wrap-10`](/docs/topics/postgres#b02-pg-vacuum-wrap-10), [`b03-pg-vacuum-wraparound-warning`](/docs/topics/postgres#b03-pg-vacuum-wraparound-warning), [`b04-pg-vacuum-freeze-age`](/docs/topics/postgres#b04-pg-vacuum-freeze-age), [`b07-pg-vacuum-autovacuum`](/docs/topics/postgres#b07-pg-vacuum-autovacuum), [`b07-pg-vacuum-bloat`](/docs/topics/postgres#b07-pg-vacuum-bloat), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze), [`b09-pg-vacuum-freeze-age`](/docs/topics/postgres#b09-pg-vacuum-freeze-age), [`exp-pg-vacuum-bloat-wraparound`](/docs/topics/postgres#exp-pg-vacuum-bloat-wraparound), [`b05-pg-vacuum-wraparound`](/docs/topics/postgres#b05-pg-vacuum-wraparound), [`b08-pg-vacuum-freeze`](/docs/topics/postgres#b08-pg-vacuum-freeze)
+**Oppitunnit:** [`exp-pg-vacuum-bloat-wraparound`](/docs/topics/postgres#exp-pg-vacuum-bloat-wraparound), [`b03-pg-vacuum-wraparound-warning`](/docs/topics/postgres#b03-pg-vacuum-wraparound-warning), [`b07-pg-vacuum-bloat`](/docs/topics/postgres#b07-pg-vacuum-bloat), [`b07-pg-vacuum-freeze`](/docs/topics/postgres#b07-pg-vacuum-freeze)
 
 ### XML {#xml}
 
 **Extensible Markup Language** — hierarkkinen tekstimuotoinen merkintäkieli. Avahi lukee palvelumäärittelyt `.service`-XML-tiedostoista hakemistosta `/etc/avahi/services/`; formaatti kuvaa palvelutypin, protokollan ja portin.
 
-**Oppitunnit:** [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml), [`b02-linux-avahi-publish-14`](/docs/topics/linux#b02-linux-avahi-publish-14), [`b04-linux-avahi-browse`](/docs/topics/linux#b04-linux-avahi-browse), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-linux-avahi-daemon-restart`](/docs/topics/linux#b06-linux-avahi-daemon-restart), [`b06-linux-avahi-service-type`](/docs/topics/linux#b06-linux-avahi-service-type), [`rf-ci-integration`](/docs/topics/robotframework#rf-ci-integration), [`exp-linux-avahi-service-xml`](/docs/topics/linux#exp-linux-avahi-service-xml)
+**Oppitunnit:** [`avahi-service-xml`](/docs/topics/linux#avahi-service-xml), [`b02-linux-avahi-publish-14`](/docs/topics/linux#b02-linux-avahi-publish-14), [`b02-linux-avahi-browse-12`](/docs/topics/linux#b02-linux-avahi-browse-12), [`b05-linux-avahi-publish-service`](/docs/topics/linux#b05-linux-avahi-publish-service), [`b06-linux-avahi-daemon-restart`](/docs/topics/linux#b06-linux-avahi-daemon-restart), [`b06-linux-avahi-service-type`](/docs/topics/linux#b06-linux-avahi-service-type), [`rf-ci-integration`](/docs/topics/robotframework#rf-ci-integration)
 
 ### XMLTABLE {#xmltable}
 

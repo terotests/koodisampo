@@ -2710,6 +2710,41 @@
       "lessonRef": "rust/traits/rust-traits-dispatch-choice",
       "sourceUrl": "https://doc.rust-lang.org/book/ch17-02-trait-objects.html",
       "sourceRef": "rust-book/rust-traits-dispatch-choice"
+    },
+    {
+      "id": "rust-rc-weak-cycle",
+      "chapter": "rust-ownership",
+      "domain": "rust",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Puurakenteessa lapsi pitää `Rc`-viitteen vanhempaansa ja vanhempi `Rc`-viitteet lapsiinsa. Puu ei vapaudu koskaan. Miksi ja mikä korjaa?",
+      "choices": [
+        {
+          "text": "Rc-viitekehä pitää laskurit nollan yläpuolella — tee vanhempaviitteestä Weak<T>",
+          "correct": true
+        },
+        {
+          "text": "Rc vapautuu vasta ohjelman lopussa — vaihda Box<T>:hen molempiin suuntiin",
+          "correct": false
+        },
+        {
+          "text": "Kutsu drop() juurelle käsin, jolloin koko puu vapautuu rekursiivisesti",
+          "correct": false
+        },
+        {
+          "text": "Vaihda Arc<T>:hen, jonka atominen laskuri purkaa kehät automaattisesti",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Rc vapauttaa arvon, kun vahvoja viitteitä on nolla, mutta kehä pitää ne vähintään yhdessä. Weak ei kasvata vahvaa laskuria, joten omistus kulkee vain vanhemmasta lapseen.",
+      "wrongFeedback": "Arc on säieturvallinen Rc, mutta sekään ei pura kehiä. Box ei salli jaettua omistusta, eikä drop() juurelle pura kehää.",
+      "featureId": "rust:rc-weak",
+      "featurePoints": 4,
+      "sourceRef": "rust-book/ch15-06-reference-cycles",
+      "sourceUrl": "https://doc.rust-lang.org/book/ch15-06-reference-cycles.html"
     }
   ],
   "defaultVersions": [

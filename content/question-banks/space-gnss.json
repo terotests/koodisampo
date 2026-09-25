@@ -161,27 +161,27 @@
         "guru",
         "interview"
       ],
-      "prompt": "Kuinka kauan GPS-satelliitilla kestää tyypillisesti yksi maan kierto (sideraalinen period)?",
+      "prompt": "GPS-satelliitti kiertää maan kahdesti sideraalisen vuorokauden aikana. Mitä siitä seuraa käytännössä?",
       "choices": [
         {
-          "text": "Noin 12 tuntia (puoli sideraalista vuorokautta)",
+          "text": "Sama satelliittikuvio toistuu taivaalla joka päivä noin 4 minuuttia aiemmin",
           "correct": true
         },
         {
-          "text": "Noin 90 minuuttia kuten LEO-satelliiteilla",
+          "text": "Satelliitti pysyy koko ajan samassa kohdassa taivasta kuten geostationaarinen satelliitti",
           "correct": false
         },
         {
-          "text": "Tasan 24 tuntia kuten GEO-satelliiteilla",
+          "text": "Jokainen satelliitti näkyy Suomesta vain kerran vuodessa",
           "correct": false
         },
         {
-          "text": "Noin 7 päivää kuten geostationaarisella siirtoasemalla",
+          "text": "Kiertoaika määrää signaalin taajuuden, joten L1 ja L5 syntyvät eri ratanopeuksista",
           "correct": false
         }
       ],
-      "correctFeedback": "GPS MEO-periodi on noin 11 h 58 min — kaksi kierrosta sideraalista vuorokautta kohti.",
-      "wrongFeedback": "90 min on LEO, 24 h GEO. GPS kiertää noin kahdesti vuorokaudessa.",
+      "correctFeedback": "Kaksi kierrosta per sideraalinen vuorokausi (≈ 23 h 56 min) tarkoittaa, että maanpäällinen rata toistuu: sama satelliittikuvio palaa taivaalle noin 4 minuuttia aiemmin joka päivä. Tätä käytetään mm. multipath-virheiden vertailuun päivästä toiseen.",
+      "wrongFeedback": "GPS on MEO-radalla eikä pysy paikallaan. Puolen sideraalisen vuorokauden kiertoaika saa geometrian toistumaan päivittäin noin 4 min aiemmin.",
       "featureId": "space:gps-period",
       "featurePoints": 2,
       "lessonRef": "space/satellites/space-orbit-period-gps",
@@ -793,7 +793,7 @@
       "prompt": "Miten ionosfääri vaikuttaa GNSS-signaaliin?",
       "choices": [
         {
-          "text": "Se viivästyttää koodimittausta ja edistää kantoaaltoa — virhe voi olla metrejää",
+          "text": "Se viivästyttää koodimittausta ja edistää kantoaaltoa — virhe voi olla metrejä",
           "correct": true
         },
         {
@@ -1086,7 +1086,7 @@
         "guru",
         "interview"
       ],
-      "prompt": "Mitkä tarkoittaa baseline differentiaalisessa GNSS:ssä?",
+      "prompt": "Mitä tarkoittaa baseline differentiaalisessa GNSS:ssä?",
       "choices": [
         {
           "text": "Vektori tukiaseman ja liikkuvan vastaanottimen välillä (suhteellinen paikka)",
@@ -1345,27 +1345,27 @@
         "guru",
         "interview"
       ],
-      "prompt": "Mikä on WGS84-ellipsoidin puolisuuren akselin (a) likimääräinen pituus?",
+      "prompt": "Mihin WGS84-ellipsoidin parametreja a (puolisuuri akseli) ja f (litistyneisyys) tarvitaan?",
       "choices": [
         {
-          "text": "6 378 137 metriä",
+          "text": "Ne määrittävät ellipsoidin koon ja muodon — tarvitaan ECEF-muunnoksiin",
           "correct": true
         },
         {
-          "text": "6 356 752 metriä (tämä on pienempi akseli b likimäärin)",
+          "text": "Ne kertovat geoidin korkeuden merenpinnasta jokaisessa pisteessä",
           "correct": false
         },
         {
-          "text": "35 786 000 metriä (GEO-korkeus)",
+          "text": "Ne ovat GPS-satelliittien ratakorkeus ja inklinaatio",
           "correct": false
         },
         {
-          "text": "637,8 kilometriä (kymmenen kertaa liian pieni)",
+          "text": "Ne ovat UTM-projektion vyöhykenumero ja mittakaavakerroin",
           "correct": false
         }
       ],
-      "correctFeedback": "WGS84: a = 6 378 137 m (täsmälleen määritelty). Litistyneisyys f = 1/298.257223563.",
-      "wrongFeedback": "Muista a ≈ 6378 km, ei 637 km eikä GEO-korkeus.",
+      "correctFeedback": "a on ekvaattorisäde ja f kertoo, kuinka paljon napasäde on sitä lyhyempi. Yhdessä ne määrittävät vertailuellipsoidin, jota tarvitaan geodeettisten ja suorakulmaisten koordinaattien välisissä muunnoksissa.",
+      "wrongFeedback": "Ellipsoidin parametrit eivät kuvaa geoidia, ratoja eikä projektiota — ne määrittävät matemaattisen vertailupinnan koon ja muodon.",
       "featureId": "space:wgs84-a",
       "featurePoints": 3,
       "lessonRef": "space/datums/space-datum-wgs84-params",
@@ -1937,7 +1937,7 @@
         "guru",
         "interview"
       ],
-      "prompt": "Mitkä tarkoittaa TTFF GNSS-vastaanottimessa?",
+      "prompt": "Mitä tarkoittaa TTFF GNSS-vastaanottimessa?",
       "choices": [
         {
           "text": "Time To First Fix — aika ensimmäiseen kelvolliseen paikkaratkaisuun käynnistyksen jälkeen",
@@ -2048,7 +2048,7 @@
         "guru",
         "interview"
       ],
-      "prompt": "Mitkä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?",
+      "prompt": "Mitä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?",
       "choices": [
         {
           "text": "Apudata verkosta: aika, karkea paikka, almanakka/efemeridi — TTFF lyhenee",
@@ -2270,7 +2270,7 @@
         "guru",
         "interview"
       ],
-      "prompt": "Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakataarkkuudelle hyvissä oloissa?",
+      "prompt": "Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakatarkkuudelle hyvissä oloissa?",
       "choices": [
         {
           "text": "SPP metrit; SBAS/DGPS sub-metri…metri; RTK fixed sentit",
@@ -2296,6 +2296,76 @@
       "lessonRef": "space/applications/space-app-accuracy-classes",
       "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Accuracy",
       "sourceRef": "navipedia/accuracy"
+    },
+    {
+      "id": "space-sig-cycle-slip",
+      "chapter": "space-signals",
+      "domain": "space",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "RTK-ratkaisu putoaa hetkeksi float-tilaan, kun auto ajaa sillan ali. Mitä kantoaaltomittaukselle tapahtui?",
+      "choices": [
+        {
+          "text": "Cycle slip — vaiheseuranta katkesi, ja ambiguity ratkaistaan uudelleen",
+          "correct": true
+        },
+        {
+          "text": "Satelliitin atomikello nollautui, ja efemeridi pitää ladata uudelleen",
+          "correct": false
+        },
+        {
+          "text": "Ionosfääriviive kasvoi niin paljon, että L1 ja L5 vaihtoivat paikkaa",
+          "correct": false
+        },
+        {
+          "text": "Vastaanotin vaihtoi WGS84:stä ETRS89:ään, ja koordinaatit siirtyivät",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kun signaali katkeaa, vastaanotin menettää vaihelaskurin jatkuvuuden. Ambiguity pitää kiinnittää uudelleen ennen kuin fixed-ratkaisu palaa.",
+      "wrongFeedback": "Satelliitin kello tai datum ei muutu sillan alla — kyse on vastaanottimen vaiheseurannan katkosta.",
+      "featureId": "space:cycle-slip",
+      "featurePoints": 4,
+      "sourceRef": "navipedia/cycle-slip",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Detector_based_in_carrier_phase_data:_The_single-frequency_case"
+    },
+    {
+      "id": "space-pos-ppp-convergence",
+      "chapter": "space-positioning",
+      "domain": "space",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "PPP-ratkaisu tarvitsee käynnistyksen jälkeen kymmeniä minuutteja ennen senttitasoa, RTK vain muutamia sekunteja. Miksi?",
+      "choices": [
+        {
+          "text": "Tukiasemaa ei ole: ilmakehäviiveet ja ambiguityt estimoidaan vähitellen",
+          "correct": true
+        },
+        {
+          "text": "PPP odottaa, että satelliitit lähettävät tarkat radat broadcast-viestissä kerran tunnissa",
+          "correct": false
+        },
+        {
+          "text": "PPP-vastaanottimet käyttävät vain yhtä taajuutta, mikä hidastaa laskentaa",
+          "correct": false
+        },
+        {
+          "text": "PPP laskee sijainnin UTM-tasossa, ja projektion ratkaiseminen vie aikaa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "RTK kumoaa yhteiset virheet tukiaseman avulla. PPP mallintaa ne itse, ja ratkaisu tarkentuu satelliittigeometrian muuttuessa. PPP-RTK-korjaukset lyhentävät konvergenssia.",
+      "wrongFeedback": "Tarkat radat ja kellot tulevat korjauspalvelusta, eivät broadcastista, eikä projektio vaikuta laskentaan.",
+      "featureId": "space:ppp-convergence",
+      "featurePoints": 3,
+      "sourceRef": "navipedia/ppp",
+      "sourceUrl": "https://gssc.esa.int/navipedia/index.php/Precise_Point_Positioning"
     }
   ]
 }

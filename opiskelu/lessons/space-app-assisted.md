@@ -1,4 +1,4 @@
-# Mitkä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?
+# Mitä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?
 
 ## Tilanne
 

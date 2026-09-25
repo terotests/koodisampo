@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-08-08T18:37:12.883Z",
+  "generatedAt": "2026-09-25T13:24:44.065Z",
   "summary": {
-    "totalQuestions": 1456,
-    "readyLessons": 1444,
+    "totalQuestions": 1274,
+    "readyLessons": 1262,
     "pendingLessons": 12,
-    "percent": 99.2
+    "percent": 99.1
   },
   "domains": [
     {
       "id": "cpp",
       "label": "C++",
-      "ready": 223,
-      "total": 223,
+      "ready": 209,
+      "total": 209,
       "chapters": [
         {
           "id": "cmake",
@@ -129,8 +129,8 @@
         {
           "id": "correctness",
           "label": "oikeellisuus",
-          "ready": 20,
-          "total": 20,
+          "ready": 14,
+          "total": 14,
           "questions": [
             {
               "id": "b02-cpp-correct-dangling-15",
@@ -145,13 +145,6 @@
               "prompt": "Bugiraportti: `if (index >= 0)` on aina tosi kun `index` on `size_t`. Miksi tarkistus on hyödytön?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-correct-signed-14.md"
-            },
-            {
-              "id": "b03-cpp-correct-three-way-default",
-              "difficulty": 3,
-              "prompt": "Sorttaus comparator palauttaa `true` kun a==b — std::sort käyttäytyy oudosti. Mikä C++20 auttaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-cpp-correct-three-way-default.md"
             },
             {
               "id": "b03-cpp-prod-exception-noexcept",
@@ -175,20 +168,6 @@
               "lessonFile": "opiskelu/lessons/b04-cpp-final-override-virtual.md"
             },
             {
-              "id": "b05-cpp-explicit-constructor",
-              "difficulty": 3,
-              "prompt": "Luokka `Meters(int v)` aiheuttaa vahingossa implisiittisiä muunnoksia. Miten estät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-cpp-explicit-constructor.md"
-            },
-            {
-              "id": "b05-cpp-signed-compare-bug",
-              "difficulty": 4,
-              "prompt": "Bugi: `for (int i = 0; i < vec.size(); ++i)` — size_t vs int vertailu. Mikä on riski?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-cpp-signed-compare-bug.md"
-            },
-            {
               "id": "b06-cpp-signed-compare-bug",
               "difficulty": 4,
               "prompt": "Code review: `if (a < b)` missä a on int ja b size_t — tuotannossa väärä haara. Mikä on riski?",
@@ -196,25 +175,11 @@
               "lessonFile": "opiskelu/lessons/b06-cpp-signed-compare-bug.md"
             },
             {
-              "id": "b06-cpp-static-cast-review",
-              "difficulty": 2,
-              "prompt": "Code review: C-style `(int)x` muunnos. Miksi static_cast on parempi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-cpp-static-cast-review.md"
-            },
-            {
               "id": "b07-cpp-assert-vs-expect",
               "difficulty": 3,
               "prompt": "assert() katoaa release-buildissa — ulkoisen syötteen invariantti pitää tarkistaa runtime. Mitä käytät?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-assert-vs-expect.md"
-            },
-            {
-              "id": "b07-cpp-rule-of-five",
-              "difficulty": 4,
-              "prompt": "Luokka hallitsee dynaamista bufferia mutta määrittelee vain destructorin. Mikä puuttuu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-cpp-rule-of-five.md"
             },
             {
               "id": "b08-cpp-assert-ndebug",
@@ -229,13 +194,6 @@
               "prompt": "Laskenta `int64_t` → `int32_t` hiljaa truncaa arvon. Miten estät käännösaikana?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-narrowing-conversion.md"
-            },
-            {
-              "id": "b09-cpp-switch-fallthrough",
-              "difficulty": 3,
-              "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy vasta tuotannosta. Moderni dokumentointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-cpp-switch-fallthrough.md"
             },
             {
               "id": "correct-overflow",
@@ -532,29 +490,15 @@
         {
           "id": "performance",
           "label": "suorituskyky",
-          "ready": 25,
-          "total": 25,
+          "ready": 21,
+          "total": 21,
           "questions": [
-            {
-              "id": "b02-cpp-perf-move-09",
-              "difficulty": 3,
-              "prompt": "Iso `std::vector<int>` palautetaan funktiosta — reviewer ehdottaa `std::move(returnVec)`. Onko se oikein?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-cpp-perf-move-09.md"
-            },
             {
               "id": "b02-cpp-perf-shrink-10",
               "difficulty": 3,
               "prompt": "Vektori kasvaa miljoonaan elementtiin ja tyhjennetään — muisti ei vapaudu. Mitä kutsut?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-cpp-perf-shrink-10.md"
-            },
-            {
-              "id": "b03-cpp-cr-move-semantics",
-              "difficulty": 3,
-              "prompt": "Code reviewissa funktio palauttaa suuren `std::vector` arvona ja reviewer ehdottaa `std::move`-paluuta. Miksi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-cpp-cr-move-semantics.md"
             },
             {
               "id": "b03-cpp-perf-string-reserve",
@@ -592,13 +536,6 @@
               "lessonFile": "opiskelu/lessons/b06-cpp-alignas-cache.md"
             },
             {
-              "id": "b07-cpp-reserve-vector",
-              "difficulty": 2,
-              "prompt": "Silmukka push_backaa miljoona elementtiä — profileri näyttää toistuvia allokaatioita. Ensimmäinen optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-cpp-reserve-vector.md"
-            },
-            {
               "id": "b08-cpp-emplace-back",
               "difficulty": 2,
               "prompt": "vectoriin lisätään monimutkaisia olioita — push_back(T(...)) luo turhan kopion. Miten vältät väliaikaisen?",
@@ -618,13 +555,6 @@
               "prompt": "Rakennat isoja olioita suoraan vectoriin väliaikaisten kopioiden sijaan. Mikä metodi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-emplace-back-move.md"
-            },
-            {
-              "id": "b09-cpp-vector-reserve-incident",
-              "difficulty": 3,
-              "prompt": "Profilointi näyttää tuhansia vector-reallokaatioita request-käsittelyssä. Ensimmäinen optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-cpp-vector-reserve-incident.md"
             },
             {
               "id": "b11-cpp-bind-vs-lambda",
@@ -1060,8 +990,8 @@
         {
           "id": "style",
           "label": "C++ tyyli",
-          "ready": 30,
-          "total": 30,
+          "ready": 28,
+          "total": 28,
           "questions": [
             {
               "id": "b02-cpp-style-consteval-04",
@@ -1155,13 +1085,6 @@
               "lessonFile": "opiskelu/lessons/b07-cpp-nodiscard-error.md"
             },
             {
-              "id": "b08-cpp-enum-class-scope",
-              "difficulty": 2,
-              "prompt": "Vanha `enum Color { Red, Green }` törmää toisen headerin `Red`-vakion kanssa. Miten estät nimiristiriidat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-cpp-enum-class-scope.md"
-            },
-            {
               "id": "b09-cpp-delete-copy-semantics",
               "difficulty": 3,
               "prompt": "Luokka hallitsee yksilöllistä resurssia — kopio ei saa olla mahdollinen. Miten ilmaiset API:ssa?",
@@ -1174,13 +1097,6 @@
               "prompt": "Code review: `enum Color { RED, GREEN }` sekoittuu toisen `enum Status { RED }` kanssa. Korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-cpp-enum-class-type.md"
-            },
-            {
-              "id": "b09-cpp-rule-of-five-review",
-              "difficulty": 4,
-              "prompt": "Luokassa on custom destructor mutta ei copy/move -operaatioita. Code review -huomio?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-cpp-rule-of-five-review.md"
             },
             {
               "id": "b11-cpp-braces-required",
@@ -1412,8 +1328,8 @@
         {
           "id": "tools",
           "label": "C++ työkalut",
-          "ready": 35,
-          "total": 35,
+          "ready": 33,
+          "total": 33,
           "questions": [
             {
               "id": "b02-cpp-tools-concepts-02",
@@ -1449,13 +1365,6 @@
               "prompt": "Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virheviesteihin kun T on custom-tyyppi. Miten rajaat template-parametrin luettavaksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-cpp-concept-constraints.md"
-            },
-            {
-              "id": "b04-cpp-consteval-compile-time",
-              "difficulty": 4,
-              "prompt": "Lookup-taulukko pitää laskea käännösaikana — runtime-laskenta hidastaa bootia. C++20 tapa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-cpp-consteval-compile-time.md"
             },
             {
               "id": "b05-cpp-constexpr-config",
@@ -1519,13 +1428,6 @@
               "prompt": "RAII-wrapper hallitsee C-API:n FILE*-pointteria. Miksi std::unique_ptr custom deleter on parempi kuin raw delete?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-cpp-unique-ptr-deleter.md"
-            },
-            {
-              "id": "b08-cpp-chrono-literals",
-              "difficulty": 2,
-              "prompt": "Timeout-koodi: `sleep(500)` — yksikkö epäselvä. Miten ilmaiset 500 millisekuntia C++14:ssä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-cpp-chrono-literals.md"
             },
             {
               "id": "b08-cpp-initializer-list-trap",
@@ -1667,35 +1569,21 @@
     {
       "id": "javascript",
       "label": "JavaScript",
-      "ready": 234,
-      "total": 234,
+      "ready": 202,
+      "total": 202,
       "chapters": [
         {
           "id": "js-async",
           "label": "JavaScript async",
-          "ready": 59,
-          "total": 59,
+          "ready": 46,
+          "total": 46,
           "questions": [
-            {
-              "id": "b02-js-async-await-04",
-              "difficulty": 3,
-              "prompt": "async funktio heittää virheen — caller ei saa stack tracea. Miten käsittelet?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-js-async-await-04.md"
-            },
             {
               "id": "b02-js-async-fetch-01",
               "difficulty": 2,
               "prompt": "REST-kutsu timeout 30s — käyttäjä navigoi pois. Miten peruutat fetchin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-js-async-fetch-01.md"
-            },
-            {
-              "id": "b02-js-async-microtask-03",
-              "difficulty": 4,
-              "prompt": "console.log järjestys: sync, Promise.resolve().then, setTimeout(0). Mikä ensin microtask jonossa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-js-async-microtask-03.md"
             },
             {
               "id": "b02-js-async-promise-02",
@@ -1761,25 +1649,11 @@
               "lessonFile": "opiskelu/lessons/b04-js-async-race-fetch.md"
             },
             {
-              "id": "b05-js-async-debounce",
-              "difficulty": 3,
-              "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäimellä — palvelin ylikuormittuu. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-async-debounce.md"
-            },
-            {
               "id": "b05-js-event-loop-order",
               "difficulty": 3,
               "prompt": "console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(() => console.log('C')); Tulostusjärjestys?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-event-loop-order.md"
-            },
-            {
-              "id": "b05-js-fetch-abort-controller",
-              "difficulty": 4,
-              "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-fetch-abort-controller.md"
             },
             {
               "id": "b05-js-promise-chain-catch",
@@ -1803,13 +1677,6 @@
               "lessonFile": "opiskelu/lessons/b06-js-async-promise-finally.md"
             },
             {
-              "id": "b06-js-async-queue-microtask",
-              "difficulty": 3,
-              "prompt": "console.log järjestys: sync, setTimeout(0), promise.then. Mitä tulostuu ensin promise:n jälkeen?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-js-async-queue-microtask.md"
-            },
-            {
               "id": "b06-js-async-settimeout-zero",
               "difficulty": 2,
               "prompt": "setTimeout(fn, 0) ei suorita fn heti — miksi?",
@@ -1817,39 +1684,11 @@
               "lessonFile": "opiskelu/lessons/b06-js-async-settimeout-zero.md"
             },
             {
-              "id": "b07-js-async-abort",
-              "difficulty": 4,
-              "prompt": "Käyttäjä vaihtaa sivua ennen fetchin valmistumista — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-js-async-abort.md"
-            },
-            {
-              "id": "b07-js-async-await-error",
-              "difficulty": 3,
-              "prompt": "async funktio heittää — unhandled rejection tuotannossa. Miten käsittelet?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-js-async-await-error.md"
-            },
-            {
               "id": "b07-js-async-debounce",
               "difficulty": 4,
               "prompt": "Käyttäjä kirjoittaa hakukenttään nopeasti — vanhemmat fetch-vastaukset saapuvat myöhemmin ja ylikirjoittavat uudemman tuloksen. Korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-js-async-debounce.md"
-            },
-            {
-              "id": "b07-js-async-microtask",
-              "difficulty": 4,
-              "prompt": "console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-js-async-microtask.md"
-            },
-            {
-              "id": "b08-js-async-generator",
-              "difficulty": 4,
-              "prompt": "Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-js-async-generator.md"
             },
             {
               "id": "b08-js-async-microtask-starvation",
@@ -1880,13 +1719,6 @@
               "lessonFile": "opiskelu/lessons/b09-js-async-event-loop-block.md"
             },
             {
-              "id": "b09-js-async-fetch-abort",
-              "difficulty": 3,
-              "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — haluat peruuttaa pyynnön. API?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-js-async-fetch-abort.md"
-            },
-            {
               "id": "b09-js-async-promise-chain",
               "difficulty": 3,
               "prompt": "Callback hell API-ketjussa — kolme peräkkäistä fetch-kutsua. Moderni refaktorointi?",
@@ -1915,13 +1747,6 @@
               "lessonFile": "opiskelu/lessons/b12-js-async-async-stack.md"
             },
             {
-              "id": "b12-js-async-await-top-level",
-              "difficulty": 3,
-              "prompt": "config.mjs lataa env-tiedoston ennen muita importteja. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b12-js-async-await-top-level.md"
-            },
-            {
               "id": "b12-js-async-callback-to-promise",
               "difficulty": 2,
               "prompt": "Vanha kirjasto käyttää `readFile(path, cb)` callback-tyyliä. Miten käärit sen await-yhteensopivaksi?",
@@ -1948,13 +1773,6 @@
               "prompt": "Paginoitu REST-API palauttaa sivuja, ja haluat käyttää for...of-tyylistä silmukkaa, jossa jokainen iteraatio odottaa seuraavaa sivua. Minkä funktiomuodon täytyy tuottaa data?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b12-js-async-generator-async.md"
-            },
-            {
-              "id": "b12-js-async-iterator-for-await",
-              "difficulty": 4,
-              "prompt": "ReadableStream data async iterable. Silmukka?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b12-js-async-iterator-for-await.md"
             },
             {
               "id": "b12-js-async-microtask-starvation",
@@ -2055,13 +1873,6 @@
               "lessonFile": "opiskelu/lessons/exp-js-async-fetch-abort.md"
             },
             {
-              "id": "exp-js-async-microtask-order",
-              "difficulty": 4,
-              "prompt": "Bugiraportti: `console.log` järjestys on 1, 4, 2, 3 — setTimeout(0), Promise.resolve, sync. Miksi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-js-async-microtask-order.md"
-            },
-            {
               "id": "exp-js-async-promise-all-settled",
               "difficulty": 3,
               "prompt": "Dashboard hakee viisi API:a — yksi failaa ja koko näkymä jää tyhjäksi Promise.all:in takia. Parempi malli?",
@@ -2094,16 +1905,9 @@
         {
           "id": "js-modules",
           "label": "JS-moduulit",
-          "ready": 49,
-          "total": 49,
+          "ready": 38,
+          "total": 38,
           "questions": [
-            {
-              "id": "b02-js-modules-cycle-09",
-              "difficulty": 4,
-              "prompt": "Kaksi moduulia importtaa toisensa — toinen export undefined init aikana. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-js-modules-cycle-09.md"
-            },
             {
               "id": "b02-js-modules-dynamic-08",
               "difficulty": 3,
@@ -2161,20 +1965,6 @@
               "lessonFile": "opiskelu/lessons/b04-js-modules-export-default.md"
             },
             {
-              "id": "b04-js-modules-import-meta",
-              "difficulty": 3,
-              "prompt": "ES-moduulissa tarvitset nykyisen moduulin URL:n asset-polkuun. Standardi API?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-js-modules-import-meta.md"
-            },
-            {
-              "id": "b05-js-modules-dynamic-import",
-              "difficulty": 3,
-              "prompt": "Raskas chart-kirjasto ladataan vain kun käyttäjä avaa analytics-sivun. Miten?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-modules-dynamic-import.md"
-            },
-            {
               "id": "b05-js-modules-esm-import",
               "difficulty": 2,
               "prompt": "HTML:ssä `<script src='app.js'>` — import/export ei toimi. Korjaus?",
@@ -2182,39 +1972,11 @@
               "lessonFile": "opiskelu/lessons/b05-js-modules-esm-import.md"
             },
             {
-              "id": "b05-js-modules-top-level-await",
-              "difficulty": 4,
-              "prompt": "Moduulin init tarvitsee config-fetch ennen exportteja. Moderni tapa ilman callback-helvettiä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-modules-top-level-await.md"
-            },
-            {
-              "id": "b06-js-modules-import-assertions",
-              "difficulty": 4,
-              "prompt": "JSON config moduuli — haluat importtaa JSON ESM:ssä turvallisesti. Miten?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-js-modules-import-assertions.md"
-            },
-            {
               "id": "b06-js-modules-reexport",
               "difficulty": 3,
               "prompt": "Barrel file exporttaa utils-moduulien API yhdessä paikassa. Miten?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-js-modules-reexport.md"
-            },
-            {
-              "id": "b06-js-modules-top-level-await",
-              "difficulty": 3,
-              "prompt": "ESM moduuli tarvitsee async init ennen exporttia. Miten ilman wrapper-funktiota?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-js-modules-top-level-await.md"
-            },
-            {
-              "id": "b07-js-modules-cycle",
-              "difficulty": 4,
-              "prompt": "a.js importtaa b.js ja b.js importtaa a.js — undefined export. Miten korjaat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-js-modules-cycle.md"
             },
             {
               "id": "b07-js-modules-dynamic",
@@ -2236,34 +1998,6 @@
               "prompt": "a.js importtaa b.js ja b.js importtaa a.js — export undefined initissä. Juurisyy?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-modules-circular.md"
-            },
-            {
-              "id": "b08-js-modules-dynamic-import",
-              "difficulty": 3,
-              "prompt": "Raskas chart-kirjasto vain admin-sivulla — bundle liian iso. Latausstrategia?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-js-modules-dynamic-import.md"
-            },
-            {
-              "id": "b08-js-modules-top-level-await",
-              "difficulty": 4,
-              "prompt": "ES module init lataa config.json ennen exportteja — miten ilman async IIFE?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-js-modules-top-level-await.md"
-            },
-            {
-              "id": "b09-js-modules-circular-dep",
-              "difficulty": 4,
-              "prompt": "Moduuli A importtaa B:n ja B importtaa A:n — undefined exportit bootissa. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-js-modules-circular-dep.md"
-            },
-            {
-              "id": "b09-js-modules-dynamic-import",
-              "difficulty": 3,
-              "prompt": "Raskas chart-kirjasto tarvitaan vain admin-sivulla — haluat pienentää initial bundlea. Lataus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-js-modules-dynamic-import.md"
             },
             {
               "id": "b09-js-modules-esm-cjs-interop",
@@ -2445,8 +2179,8 @@
         {
           "id": "js-runtime",
           "label": "JS-runtime",
-          "ready": 55,
-          "total": 55,
+          "ready": 49,
+          "total": 49,
           "questions": [
             {
               "id": "b02-js-runtime-closure-12",
@@ -2498,13 +2232,6 @@
               "lessonFile": "opiskelu/lessons/b03-js-runtime-structured-clone.md"
             },
             {
-              "id": "b04-js-runtime-error-cause",
-              "difficulty": 3,
-              "prompt": "fetch wrapper heittää uuden Error('API failed') — alkuperäinen stack katoaa. ES2022 parannus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-js-runtime-error-cause.md"
-            },
-            {
               "id": "b04-js-runtime-gc-closure",
               "difficulty": 4,
               "prompt": "SPA muistin käyttö kasvaa navigoidessa — vanhat DOM-viittaukset closureissa. Miten estät?",
@@ -2512,25 +2239,11 @@
               "lessonFile": "opiskelu/lessons/b04-js-runtime-gc-closure.md"
             },
             {
-              "id": "b04-js-runtime-structured-clone",
-              "difficulty": 4,
-              "prompt": "JSON.parse(JSON.stringify(obj)) rikkoo Date-objektit ja undefined-kentät. Parempi deep clone?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-js-runtime-structured-clone.md"
-            },
-            {
               "id": "b05-js-fetch-cors-preflight",
               "difficulty": 4,
               "prompt": "POST JSON toiselle domainille — selain lähettää OPTIONS ensin. Miksi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-js-fetch-cors-preflight.md"
-            },
-            {
-              "id": "b05-js-runtime-closure-stale",
-              "difficulty": 3,
-              "prompt": "for-silmukassa 5 nappia — kaikki tulostavat 5. Klassinen bugi. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-runtime-closure-stale.md"
             },
             {
               "id": "b05-js-runtime-dom-reflow",
@@ -2575,13 +2288,6 @@
               "lessonFile": "opiskelu/lessons/b06-js-runtime-proxy-freeze.md"
             },
             {
-              "id": "b07-js-runtime-closure-loop",
-              "difficulty": 3,
-              "prompt": "for-loopissa 5 click-handleria — kaikki tulostavat 5. Klassinen bugi ja fix?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-js-runtime-closure-loop.md"
-            },
-            {
               "id": "b07-js-runtime-json-parse",
               "difficulty": 2,
               "prompt": "API palauttaa JSON-stringin — eval(data) parseen. Turvallinen tapa?",
@@ -2624,25 +2330,11 @@
               "lessonFile": "opiskelu/lessons/b08-js-runtime-prototype-chain.md"
             },
             {
-              "id": "b08-js-runtime-weakmap",
-              "difficulty": 4,
-              "prompt": "DOM-elementtiin liitetty metadata — Map aiheuttaa memory leakin kun element poistuu. Rakenne?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-js-runtime-weakmap.md"
-            },
-            {
               "id": "b09-js-runtime-closure-leak",
               "difficulty": 4,
               "prompt": "SPA:n muisti kasvaa navigoidessa — DevTools näyttää detached DOM -nodeja. Syy?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-js-runtime-closure-leak.md"
-            },
-            {
-              "id": "b09-js-runtime-debounce-search",
-              "difficulty": 2,
-              "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäinpainalluksella. Optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-js-runtime-debounce-search.md"
             },
             {
               "id": "b09-js-runtime-raf-animation",
@@ -2838,8 +2530,8 @@
         {
           "id": "js-types",
           "label": "JavaScript-tyypit",
-          "ready": 50,
-          "total": 50,
+          "ready": 48,
+          "total": 48,
           "questions": [
             {
               "id": "b02-js-types-coalesce-06",
@@ -2919,13 +2611,6 @@
               "lessonFile": "opiskelu/lessons/b05-js-types-bigint-json.md"
             },
             {
-              "id": "b05-js-types-nullish-coalescing",
-              "difficulty": 2,
-              "prompt": "Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-js-types-nullish-coalescing.md"
-            },
-            {
               "id": "b05-js-types-strict-equality",
               "difficulty": 2,
               "prompt": "Code review: `if (status == '200')` — miksi pyydetään muutosta?",
@@ -2994,13 +2679,6 @@
               "prompt": "Haluat piilottaa objektin sisäisen avaimen for-in loopilta mutta käyttää sitä metodissa. Avaintyyppi?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-js-types-symbol-key.md"
-            },
-            {
-              "id": "b09-js-types-bigint-json",
-              "difficulty": 4,
-              "prompt": "API palauttaa 64-bit ID:n — JSON.stringify heittää BigInt:illä. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-js-types-bigint-json.md"
             },
             {
               "id": "b09-js-types-null-object",
@@ -3353,29 +3031,15 @@
     {
       "id": "postgres",
       "label": "PostgreSQL",
-      "ready": 180,
-      "total": 180,
+      "ready": 121,
+      "total": 121,
       "chapters": [
         {
           "id": "pg-config",
           "label": "PostgreSQL-konfig",
-          "ready": 24,
-          "total": 24,
+          "ready": 15,
+          "total": 15,
           "questions": [
-            {
-              "id": "b02-pg-config-connections-15",
-              "difficulty": 3,
-              "prompt": "500 microservice instanssia × 10 connection = pool explosion. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-config-connections-15.md"
-            },
-            {
-              "id": "b02-pg-config-shared-14",
-              "difficulty": 3,
-              "prompt": "PostgreSQL cache hit ratio matala — ensimmäinen muistiparametri tarkistaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-config-shared-14.md"
-            },
             {
               "id": "b03-pg-config-effective-cache",
               "difficulty": 3,
@@ -3405,13 +3069,6 @@
               "lessonFile": "opiskelu/lessons/b03-pg-config-statements-ext.md"
             },
             {
-              "id": "b04-pg-config-effective-cache",
-              "difficulty": 3,
-              "prompt": "Planner aliarvioi index scan hyödyn — effective_cache_size on default 4GB mutta RAM 64GB. Vaikutus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-config-effective-cache.md"
-            },
-            {
               "id": "b04-pg-config-log-min-duration",
               "difficulty": 3,
               "prompt": "Haluat lokittaa vain > 500ms kestävät kyselyt tuotannossa ilman kaiken logitusta. Parametri?",
@@ -3424,20 +3081,6 @@
               "prompt": "CREATE INDEX kestää tunteja isolla taululla — logissa 'external sort'. Mitä parametria nostat session tasolla?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-config-maintenance-work-mem.md"
-            },
-            {
-              "id": "b05-pg-config-log-min-duration",
-              "difficulty": 3,
-              "prompt": "Haluat lokittaa vain > 500ms kestävät queryt tuotannossa. Mikä GUC?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-config-log-min-duration.md"
-            },
-            {
-              "id": "b05-pg-config-shared-buffers",
-              "difficulty": 3,
-              "prompt": "16 GB RAM palvelin — shared_buffers on 128MB oletus. Tyypillinen lähtösuositus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-config-shared-buffers.md"
             },
             {
               "id": "b06-pg-config-checkpoint-timeout",
@@ -3475,34 +3118,6 @@
               "lessonFile": "opiskelu/lessons/b06-pg-locks-advisory.md"
             },
             {
-              "id": "b07-pg-config-log-slow",
-              "difficulty": 2,
-              "prompt": "Haluat lokittaa hitaat queryt tuotannossa. postgresql.conf?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-config-log-slow.md"
-            },
-            {
-              "id": "b08-pg-config-checkpoint",
-              "difficulty": 4,
-              "prompt": "IO-spike joka 5 min — checkpoint_completion_target ja checkpoint_timeout. Tavoite?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-config-checkpoint.md"
-            },
-            {
-              "id": "b08-pg-config-max-connections",
-              "difficulty": 3,
-              "prompt": "Sovellus avaa 500 suoraa PG-yhteyttä — CPU context switch helvetti. Arkkitehtuurikorjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-config-max-connections.md"
-            },
-            {
-              "id": "b09-pg-config-pgbouncer-pool",
-              "difficulty": 3,
-              "prompt": "500 microservice-instanssia avaa oman PG-yhteyden — `too many connections`. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-config-pgbouncer-pool.md"
-            },
-            {
               "id": "exp-pg-config-max-connections",
               "difficulty": 3,
               "prompt": "App avaa 5000 connectionia microservice-arkkitehtuurissa — CPU context switch helvetti. Ratkaisu?",
@@ -3517,18 +3132,18 @@
               "lessonFile": "opiskelu/lessons/exp-pg-config-shared-buffers.md"
             },
             {
-              "id": "exp-pg-config-work-mem-sort",
-              "difficulty": 4,
-              "prompt": "EXPLAIN näyttää Sort → Disk temp file — muistisortti ei mahdu. Mikä GUC auttaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-pg-config-work-mem-sort.md"
-            },
-            {
               "id": "pg-config-work-mem",
               "difficulty": 4,
               "prompt": "Raskas ORDER BY + hash join spillaavat levylle. Mikä istuntotason asetus auttaa ensin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/pg-config-work-mem.md"
+            },
+            {
+              "id": "pg-statement-timeout-role",
+              "difficulty": 3,
+              "prompt": "BI-työkalun ad hoc -kyselyt pyörivät välillä tunteja ja vievät tuotantokannan resurssit. Miten rajaat vain niiden keston?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/pg-statement-timeout-role.md"
             }
           ]
         },
@@ -3641,37 +3256,9 @@
         {
           "id": "pg-explain",
           "label": "EXPLAIN/suunnitelmat",
-          "ready": 30,
-          "total": 30,
+          "ready": 15,
+          "total": 15,
           "questions": [
-            {
-              "id": "b02-pg-explain-analyze-05",
-              "difficulty": 3,
-              "prompt": "Query hidas tuotannossa — haluat todelliset ajat ei arvion. Komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-explain-analyze-05.md"
-            },
-            {
-              "id": "b02-pg-explain-nested-07",
-              "difficulty": 4,
-              "prompt": "Nested Loop + Seq Scan sisäpuolella miljoona kertaa — tyypillinen fix?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-explain-nested-07.md"
-            },
-            {
-              "id": "b02-pg-explain-seq-06",
-              "difficulty": 3,
-              "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa — aina huono?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-explain-seq-06.md"
-            },
-            {
-              "id": "b02-pg-explain-stats-08",
-              "difficulty": 3,
-              "prompt": "Planner arvioi 100 riviä — todellisuudessa 100000. Ensimmäinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-explain-stats-08.md"
-            },
             {
               "id": "b03-pg-explain-buffers-hit",
               "difficulty": 4,
@@ -3701,46 +3288,11 @@
               "lessonFile": "opiskelu/lessons/b03-pg-explain-isolation-level.md"
             },
             {
-              "id": "b04-pg-explain-buffers-io",
-              "difficulty": 4,
-              "prompt": "EXPLAIN ANALYZE näyttää korkean execution timen mutta ei kerro onko hitto disk I/O. Lisälippu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-explain-buffers-io.md"
-            },
-            {
-              "id": "b04-pg-explain-cost-settings",
-              "difficulty": 4,
-              "prompt": "SSD-levyllä planner suosii seq scaneja liikaa — random_page_cost oletus 4.0. Tyypillinen SSD-säätö?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-explain-cost-settings.md"
-            },
-            {
-              "id": "b04-pg-explain-index-only",
-              "difficulty": 4,
-              "prompt": "EXPLAIN näyttää Index Scan mutta ei Index Only Scan — mitä puuttuu usein?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-explain-index-only.md"
-            },
-            {
               "id": "b04-pg-explain-parallel",
               "difficulty": 4,
               "prompt": "Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-pg-explain-parallel.md"
-            },
-            {
-              "id": "b05-pg-explain-hash-join",
-              "difficulty": 3,
-              "prompt": "EXPLAIN näyttää Hash Join kahden ison taulun välillä — muisti loppuu. Vaihtoehto?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-explain-hash-join.md"
-            },
-            {
-              "id": "b05-pg-explain-index-only-scan",
-              "difficulty": 4,
-              "prompt": "EXPLAIN: Index Scan + Heap Fetches jokaiselle riville. Miten saat Index Only Scan?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-explain-index-only-scan.md"
             },
             {
               "id": "b06-pg-explain-generic-plan",
@@ -3757,39 +3309,11 @@
               "lessonFile": "opiskelu/lessons/b06-pg-explain-misestimate-rows.md"
             },
             {
-              "id": "b06-pg-explain-wal-fpi",
-              "difficulty": 5,
-              "prompt": "EXPLAIN (ANALYZE, BUFFERS) näyttää korkeat shared_blks_read. Mitä WAL/FPI tarkoittaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-pg-explain-wal-fpi.md"
-            },
-            {
-              "id": "b07-pg-explain-nested-loop",
-              "difficulty": 4,
-              "prompt": "Nested Loop cost 500000 — pieni taulu ison kanssa ilman indeksiä. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-explain-nested-loop.md"
-            },
-            {
               "id": "b07-pg-explain-prepare",
               "difficulty": 3,
               "prompt": "Sovellus ajaa saman SQL:n parametreilla miljoonia kertoja — parse overhead. Ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-explain-prepare.md"
-            },
-            {
-              "id": "b07-pg-explain-seq-vs-index",
-              "difficulty": 3,
-              "prompt": "Planner valitsee Seq Scan vaikka indeksi on olemassa. Yleisin syy pienellä taululla?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-explain-seq-vs-index.md"
-            },
-            {
-              "id": "b08-pg-explain-cost-settings",
-              "difficulty": 3,
-              "prompt": "Planner valitsee Seq Scan SSD-palvelimella vaikka indeksi näyttää halvemmalta manuaalisesti. Säädettävä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-explain-cost-settings.md"
             },
             {
               "id": "b08-pg-explain-nested-loop",
@@ -3799,25 +3323,11 @@
               "lessonFile": "opiskelu/lessons/b08-pg-explain-nested-loop.md"
             },
             {
-              "id": "b08-pg-explain-seq-scan",
-              "difficulty": 3,
-              "prompt": "Pieni taulu — planner valitsee Seq Scan vaikka indeksi on. Todennäköisin syy?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-explain-seq-scan.md"
-            },
-            {
               "id": "b09-pg-explain-nested-loop",
               "difficulty": 4,
               "prompt": "JOIN 100k × 100k riviä — Nested Loop cost 10^9. Mitä plannerin pitäisi valita?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-pg-explain-nested-loop.md"
-            },
-            {
-              "id": "b09-pg-explain-seq-scan-large",
-              "difficulty": 3,
-              "prompt": "EXPLAIN näyttää Seq Scan 5M rivin taulussa vaikka index on olemassa. Ensimmäinen tarkistus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-explain-seq-scan-large.md"
             },
             {
               "id": "exp-pg-explain-nested-loop",
@@ -3859,23 +3369,9 @@
         {
           "id": "pg-indexes",
           "label": "PostgreSQL-indeksit",
-          "ready": 30,
-          "total": 30,
+          "ready": 16,
+          "total": 16,
           "questions": [
-            {
-              "id": "b02-pg-indexes-btree-02",
-              "difficulty": 2,
-              "prompt": "WHERE status = 'active' AND created_at > '2024-01-01' — yleisin indeksityyppi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-indexes-btree-02.md"
-            },
-            {
-              "id": "b02-pg-indexes-covering-04",
-              "difficulty": 4,
-              "prompt": "Query tarvitsee id, email — index only scan halutaan. PostgreSQL 11+?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-indexes-covering-04.md"
-            },
             {
               "id": "b03-pg-indexes-concurrent-create",
               "difficulty": 3,
@@ -3905,13 +3401,6 @@
               "lessonFile": "opiskelu/lessons/b03-pg-locks-blocking-query.md"
             },
             {
-              "id": "b04-pg-indexes-concurrent-create",
-              "difficulty": 4,
-              "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset tunteiksi. Vaihtoehto?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-indexes-concurrent-create.md"
-            },
-            {
               "id": "b04-pg-indexes-expression",
               "difficulty": 4,
               "prompt": "Kysely `WHERE lower(email) = 'foo@bar.com'` — indeksi email-sarakkeella ei käytössä. Ratkaisu?",
@@ -3919,39 +3408,11 @@
               "lessonFile": "opiskelu/lessons/b04-pg-indexes-expression.md"
             },
             {
-              "id": "b04-pg-indexes-gin-jsonb",
-              "difficulty": 4,
-              "prompt": "Kysely `WHERE data @> '{\"status\":\"active\"}'` JSONB-sarakkeessa on hidas 5M rivillä. Indeksityyppi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-indexes-gin-jsonb.md"
-            },
-            {
-              "id": "b04-pg-indexes-partial-active",
-              "difficulty": 3,
-              "prompt": "90 % riveistä archived=true — kyselyt vain active=false. Indeksioptimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-indexes-partial-active.md"
-            },
-            {
-              "id": "b05-pg-indexes-concurrent-create",
-              "difficulty": 3,
-              "prompt": "Iso tuotantotaulu — CREATE INDEX lukitsee kirjoitukset. Miten luot indeksin ilman pitkää lukkoa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-indexes-concurrent-create.md"
-            },
-            {
               "id": "b05-pg-indexes-duplicate-drop",
               "difficulty": 2,
               "prompt": "Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-pg-indexes-duplicate-drop.md"
-            },
-            {
-              "id": "b05-pg-indexes-expression",
-              "difficulty": 4,
-              "prompt": "Haku: `WHERE lower(email) = 'user@example.com'`. Tavallinen btree emailille ei käytössä. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-indexes-expression.md"
             },
             {
               "id": "b06-pg-indexes-brin-timeseries",
@@ -3963,16 +3424,9 @@
             {
               "id": "b06-pg-indexes-hash-index",
               "difficulty": 3,
-              "prompt": "Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?",
+              "prompt": "Harkitset hash-indeksiä UUID-sarakkeelle, jota haetaan vain yhtäsuuruudella. Mikä rajoitus on hyvä tietää?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-hash-index.md"
-            },
-            {
-              "id": "b06-pg-indexes-include-columns",
-              "difficulty": 3,
-              "prompt": "Index-only scan ei toteudu — query tarvitsee sarakkeet jotka ei indexissä. Miten?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-pg-indexes-include-columns.md"
             },
             {
               "id": "b06-pg-indexes-reindex-concurrently",
@@ -3980,27 +3434,6 @@
               "prompt": "Bloated index tuotannossa — REINDEX lukitsee taulu. Miten ilman downtime?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-indexes-reindex-concurrently.md"
-            },
-            {
-              "id": "b07-pg-index-btree-vs-gin",
-              "difficulty": 3,
-              "prompt": "JSONB @> query on hidas seq scanilla. Mikä indeksityyppi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-index-btree-vs-gin.md"
-            },
-            {
-              "id": "b07-pg-index-partial",
-              "difficulty": 4,
-              "prompt": "Indeksi on iso mutta 80 % riveistä on deleted_at IS NOT NULL. Tehokkaampi indeksi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-index-partial.md"
-            },
-            {
-              "id": "b07-pg-index-unused",
-              "difficulty": 3,
-              "prompt": "Kirjoitus hidasta — pg_stat_user_indexes näyttää idx_scan=0 usealle indeksille. Toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-index-unused.md"
             },
             {
               "id": "b08-pg-indexes-btree-gist",
@@ -4017,20 +3450,6 @@
               "lessonFile": "opiskelu/lessons/b08-pg-indexes-multicolumn-order.md"
             },
             {
-              "id": "b09-pg-index-composite-order",
-              "difficulty": 4,
-              "prompt": "Kysely `WHERE tenant_id = ? AND created_at > ?` — index (created_at, tenant_id) ei käytetä. Miksi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-index-composite-order.md"
-            },
-            {
-              "id": "b09-pg-index-unused-drop",
-              "difficulty": 3,
-              "prompt": "pg_stat_user_indexes näyttää idx_reports_date never used — mutta INSERT hidastuu. Toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-index-unused-drop.md"
-            },
-            {
               "id": "exp-pg-indexes-btree-composite",
               "difficulty": 3,
               "prompt": "Query: WHERE tenant_id = ? AND created_at > ? ORDER BY created_at. Yksi indeksi — mikä järjestys?",
@@ -4043,13 +3462,6 @@
               "prompt": "EXPLAIN näyttää Index Scan mutta silti heap fetch jokaiselle riville SELECT listassa. Miten vältät extra I/O:n?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-pg-indexes-covering.md"
-            },
-            {
-              "id": "exp-pg-indexes-partial-active",
-              "difficulty": 3,
-              "prompt": "Taulussa 10M riviä mutta 99 % archived=true. Indeksi hakuun active riveille?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-pg-indexes-partial-active.md"
             },
             {
               "id": "exp-pg-indexes-unused-drop",
@@ -4088,13 +3500,6 @@
               "lessonFile": "opiskelu/lessons/sqd-correlated-subquery-cost.md"
             },
             {
-              "id": "sqd-exists-vs-in",
-              "difficulty": 3,
-              "prompt": "Etsi asiakkaat joilla on vähintään yksi avoin tilaus. Mikä on usein tehokkain?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-exists-vs-in.md"
-            },
-            {
               "id": "sqd-filter-outer-join",
               "difficulty": 4,
               "prompt": "LEFT JOIN orders, mutta haluat vain avoimet tilaukset — asiakkaat ilman avointa säilyvät. Missä ehto?",
@@ -4109,18 +3514,18 @@
               "lessonFile": "opiskelu/lessons/sqd-inner-vs-left.md"
             },
             {
-              "id": "sqd-join-on-not-where",
-              "difficulty": 2,
-              "prompt": "ANSI-tyylinen join: ulkoiset suodattimet vs join-ehdot. Missä `orders.status = 'open'` jos se määrittää matchin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-join-on-not-where.md"
-            },
-            {
               "id": "sqd-lateral-top-n",
               "difficulty": 4,
               "prompt": "Kolme viimeisintä tilausta per asiakas ilman window-funktiota. PostgreSQL-malli?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-lateral-top-n.md"
+            },
+            {
+              "id": "sqd-left-join-count-zero",
+              "difficulty": 3,
+              "prompt": "Raportti: tilausten määrä per asiakas, myös nollat. `LEFT JOIN orders o ... GROUP BY c.id` ja `COUNT(*)` näyttää tilauksettomille asiakkaille luvun 1. Korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-left-join-count-zero.md"
             },
             {
               "id": "sqd-many-to-many-bridge",
@@ -4142,6 +3547,13 @@
               "prompt": "Asiakkaat jotka eivät ole koskaan tilanneet. Malli?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-not-exists-anti.md"
+            },
+            {
+              "id": "sqd-not-in-null",
+              "difficulty": 4,
+              "prompt": "Kysely `WHERE customer_id NOT IN (SELECT customer_id FROM blacklist)` palauttaa yhtäkkiä nolla riviä. Blacklist-tauluun lisättiin rivi, jossa customer_id on NULL. Miksi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-not-in-null.md"
             },
             {
               "id": "sqd-null-safe-join",
@@ -4233,9 +3645,16 @@
         {
           "id": "pg-query-design",
           "label": "SQL-kyselysuunnittelu",
-          "ready": 20,
-          "total": 20,
+          "ready": 21,
+          "total": 21,
           "questions": [
+            {
+              "id": "sqd-aggregate-filter",
+              "difficulty": 3,
+              "prompt": "Raportti tarvitsee samalle riville kaikkien tilausten määrän sekä avoimet ja peruutetut erikseen. Siistein PostgreSQL-tapa yhdellä kyselyllä?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-aggregate-filter.md"
+            },
             {
               "id": "sqd-avoid-cartesian",
               "difficulty": 3,
@@ -4249,20 +3668,6 @@
               "prompt": "Raportti Exceliin: status-koodi 1/2/3 pitää näyttää teksteinä. Missä muotoilet?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-case-format-output.md"
-            },
-            {
-              "id": "sqd-covering-index-design",
-              "difficulty": 4,
-              "prompt": "Indeksi `(status)` mutta kysely hakee myös `name` ja `email`. Miten vältät tauluhaut?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-covering-index-design.md"
-            },
-            {
-              "id": "sqd-crosstab-alternative",
-              "difficulty": 4,
-              "prompt": "Kuukausittainen myynti sarakkeina (tammi…joulu). PostgreSQL-työkalu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-crosstab-alternative.md"
             },
             {
               "id": "sqd-distinct-join-duplicates",
@@ -4279,13 +3684,6 @@
               "lessonFile": "opiskelu/lessons/sqd-exists-vs-count.md"
             },
             {
-              "id": "sqd-explain-before-tune",
-              "difficulty": 3,
-              "prompt": "Kysely hidastui release:n jälkeen. Ensimmäinen askel ennen GUC-säätöä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-explain-before-tune.md"
-            },
-            {
               "id": "sqd-filter-before-join",
               "difficulty": 3,
               "prompt": "Liität `orders` (50M riviä) ja `customers` (2M). Tarvitset vain viime kuun tilaukset. Missä suodatus?",
@@ -4295,7 +3693,7 @@
             {
               "id": "sqd-group-by-discipline",
               "difficulty": 3,
-              "prompt": "Raportti: summa per alue. SELECT-listassa vain group-by-sarakkeet ja aggregaatit. Miksi?",
+              "prompt": "Raportti: summa per alue. Miksi SELECT-listassa saa olla vain GROUP BY -sarakkeita ja aggregaatteja?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-group-by-discipline.md"
             },
@@ -4305,6 +3703,13 @@
               "prompt": "Tarvitset summat alueittain, tuoteperheittäin ja grand totalin yhdellä kyselyllä.",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-grouping-sets.md"
+            },
+            {
+              "id": "sqd-half-open-date-range",
+              "difficulty": 3,
+              "prompt": "Kuukausiraportti: `WHERE created_at BETWEEN '2024-03-01' AND '2024-03-31'`, ja created_at on timestamptz. Osa 31.3. tehdyistä tilauksista puuttuu. Miksi ja miten korjaat?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-half-open-date-range.md"
             },
             {
               "id": "sqd-having-vs-where",
@@ -4328,11 +3733,18 @@
               "lessonFile": "opiskelu/lessons/sqd-limit-preview.md"
             },
             {
-              "id": "sqd-prepared-statement-plan",
-              "difficulty": 3,
-              "prompt": "Sama parametrikysely ajetaan miljoonia kertoja. Hyöty prepared statementista?",
+              "id": "sqd-null-equality",
+              "difficulty": 1,
+              "prompt": "Kysely `SELECT * FROM users WHERE deleted_at = NULL` ei palauta yhtään riviä, vaikka poistamattomia käyttäjiä on tuhansia. Miksi?",
               "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-prepared-statement-plan.md"
+              "lessonFile": "opiskelu/lessons/sqd-null-equality.md"
+            },
+            {
+              "id": "sqd-numeric-money",
+              "difficulty": 2,
+              "prompt": "Laskujen summat tallennetaan `double precision` -sarakkeeseen, ja kuukausisumma heittää sentin verran. Mikä tyyppi rahalle?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-numeric-money.md"
             },
             {
               "id": "sqd-readable-cte-names",
@@ -4363,11 +3775,11 @@
               "lessonFile": "opiskelu/lessons/sqd-semicolon-style.md"
             },
             {
-              "id": "sqd-subquery-vs-cte-same",
+              "id": "sqd-timestamptz",
               "difficulty": 3,
-              "prompt": "Sisäkkäinen subquery 5 tasoa syvänä. Refaktorointi luettavuuteen?",
+              "prompt": "Palvelimet ovat eri aikavyöhykkeillä, ja tapahtumien järjestys sekoaa raporteissa. Aikasarake on `timestamp` (without time zone). Mikä on suositus?",
               "ready": true,
-              "lessonFile": "opiskelu/lessons/sqd-subquery-vs-cte-same.md"
+              "lessonFile": "opiskelu/lessons/sqd-timestamptz.md"
             },
             {
               "id": "sqd-union-all-vs-union",
@@ -4375,6 +3787,13 @@
               "prompt": "Yhdistät kahden alueen myyntirivit; duplikaatteja ei pitäisi syntyä. Valinta?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/sqd-union-all-vs-union.md"
+            },
+            {
+              "id": "sqd-upsert-on-conflict",
+              "difficulty": 3,
+              "prompt": "Import-ajo lisää tuotteita: uusi SKU lisätään, olemassa olevan hinta päivitetään. Koodi tekee SELECTin ja sitten INSERTin tai UPDATEn, ja rinnakkaiset ajot kaatuvat unique-virheeseen. Ratkaisu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sqd-upsert-on-conflict.md"
             }
           ]
         },
@@ -4445,44 +3864,9 @@
         {
           "id": "pg-vacuum",
           "label": "VACUUM/autovacuum",
-          "ready": 34,
-          "total": 34,
+          "ready": 12,
+          "total": 12,
           "questions": [
-            {
-              "id": "b02-pg-vacuum-bloat-09",
-              "difficulty": 4,
-              "prompt": "UPDATE-heavy taulu — levy kasvaa vaikka rivimäärä sama. Syy ja toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-vacuum-bloat-09.md"
-            },
-            {
-              "id": "b02-pg-vacuum-full-12",
-              "difficulty": 3,
-              "prompt": "Disk nearly full — harkitset VACUUM FULL tuotannossa. Riski?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-vacuum-full-12.md"
-            },
-            {
-              "id": "b02-pg-vacuum-long-xact-11",
-              "difficulty": 4,
-              "prompt": "Autovacuum ei siivoa — pg_stat_activity näyttää idle in transaction 8h. Mitä teet?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-vacuum-long-xact-11.md"
-            },
-            {
-              "id": "b02-pg-vacuum-wrap-10",
-              "difficulty": 5,
-              "prompt": "Varoitus: database approaching transaction ID wraparound. Kiireellinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-pg-vacuum-wrap-10.md"
-            },
-            {
-              "id": "b03-pg-vacuum-analyze-stats",
-              "difficulty": 2,
-              "prompt": "Bulk load jälkeen planner valitsee huonon suunnitelman — stats vanhentuneet. Komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-pg-vacuum-analyze-stats.md"
-            },
             {
               "id": "b03-pg-vacuum-freeze-settings",
               "difficulty": 4,
@@ -4498,95 +3882,18 @@
               "lessonFile": "opiskelu/lessons/b03-pg-vacuum-wraparound-warning.md"
             },
             {
-              "id": "b04-pg-vacuum-analyze-stats",
-              "difficulty": 3,
-              "prompt": "Planner valitsee seq scanin vaikka indeksi on — pg_stats näyttää vanhentuneet arviot bulk-insertin jälkeen. Toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-vacuum-analyze-stats.md"
-            },
-            {
-              "id": "b04-pg-vacuum-dead-tuples",
-              "difficulty": 3,
-              "prompt": "pg_stat_user_tables näyttää n_dead_tup kasvavan nopeasti UPDATE-heavy taulussa. Ensimmäinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-vacuum-dead-tuples.md"
-            },
-            {
-              "id": "b04-pg-vacuum-freeze-age",
-              "difficulty": 5,
-              "prompt": "Varoitus: 'database must be vacuumed within 200 million transactions' — mitä uhkaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-vacuum-freeze-age.md"
-            },
-            {
-              "id": "b04-pg-vacuum-long-xact",
-              "difficulty": 4,
-              "prompt": "Autovacuum ei siivoa dead tupleja — pg_stat_activity näyttää 'idle in transaction' 12h. Syy?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-pg-vacuum-long-xact.md"
-            },
-            {
-              "id": "b05-pg-vacuum-analyze-after-bulk",
-              "difficulty": 2,
-              "prompt": "Bulk INSERT 10M riviä yöajossa — aamulla queryt hitaita. Mitä aiot bulk-operaation jälkeen?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-vacuum-analyze-after-bulk.md"
-            },
-            {
-              "id": "b05-pg-vacuum-bloat-long-xact",
-              "difficulty": 4,
-              "prompt": "Autovacuum ei vapauta tilaa — pg_stat_activity näyttää 8h vanhan idle transactionin. Juurisyy?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-vacuum-bloat-long-xact.md"
-            },
-            {
-              "id": "b05-pg-vacuum-full-lock",
-              "difficulty": 4,
-              "prompt": "DBA ehdottaa VACUUM FULL tuotantotaululle päivällä. Miksi vastustat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-vacuum-full-lock.md"
-            },
-            {
-              "id": "b05-pg-vacuum-wraparound",
-              "difficulty": 5,
-              "prompt": "PostgreSQL varoittaa: 'database is not accepting commands to avoid wraparound'. Kiireellinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-pg-vacuum-wraparound.md"
-            },
-            {
-              "id": "b06-pg-vacuum-autovacuum-scale",
-              "difficulty": 3,
-              "prompt": "Suuri taulu — autovacuum ei käynnisty tarpeeksi tiukasti. Mitä säätät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-pg-vacuum-autovacuum-scale.md"
-            },
-            {
               "id": "b06-pg-vacuum-index-cleanup",
               "difficulty": 4,
-              "prompt": "VACUUM ei vapauta levytilaa indexeistä — bloat jatkuu. Mitä parametria?",
+              "prompt": "Taulu on vacuumoitu säännöllisesti, mutta sen indeksit ovat kasvaneet moninkertaisiksi UPDATE-kuormassa. Mitä teet?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-index-cleanup.md"
             },
             {
               "id": "b06-pg-vacuum-skip-locked",
               "difficulty": 4,
-              "prompt": "DELETE job poistaa miljoona riviä — pitkä lock. Miten batch delete?",
+              "prompt": "Siivousjob poistaa miljoona vanhaa riviä yhdellä DELETE-lauseella — lukot ja bloat haittaavat tuotantoa. Miten poistat hallitusti?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b06-pg-vacuum-skip-locked.md"
-            },
-            {
-              "id": "b07-pg-vacuum-analyze",
-              "difficulty": 2,
-              "prompt": "Planner tekee huonoja arvioita bulk INSERTin jälkeen. Mikä ylläpitokomento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-vacuum-analyze.md"
-            },
-            {
-              "id": "b07-pg-vacuum-autovacuum",
-              "difficulty": 3,
-              "prompt": "autovacuum ei ehdi — transaction id wraparound varoitus. Ensimmäinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-pg-vacuum-autovacuum.md"
             },
             {
               "id": "b07-pg-vacuum-bloat",
@@ -4601,55 +3908,6 @@
               "prompt": "Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-pg-vacuum-freeze.md"
-            },
-            {
-              "id": "b08-pg-vacuum-autovacuum-threshold",
-              "difficulty": 3,
-              "prompt": "Autovacuum ei käynnisty — dead tuples kasaantuvat. Mitä parametria säädät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-vacuum-autovacuum-threshold.md"
-            },
-            {
-              "id": "b08-pg-vacuum-bloat",
-              "difficulty": 4,
-              "prompt": "Taulu 10 GB mutta 2 GB live data — UPDATE-heavy workload. Ilmiö ja toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-vacuum-bloat.md"
-            },
-            {
-              "id": "b08-pg-vacuum-freeze",
-              "difficulty": 5,
-              "prompt": "Varoitus: database must be vacuumed before anti-wraparound — mitä uhkaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-pg-vacuum-freeze.md"
-            },
-            {
-              "id": "b09-pg-vacuum-autovacuum-tuning",
-              "difficulty": 4,
-              "prompt": "Heavy UPDATE -taulu bloattaa nopeammin kuin autovacuum ehtii. Säätö?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-vacuum-autovacuum-tuning.md"
-            },
-            {
-              "id": "b09-pg-vacuum-bloat-table",
-              "difficulty": 4,
-              "prompt": "Taulu on 50 GB mutta sisältää paljon dead tupleja — pg_stat_user_tables näyttää korkean n_dead_tup. Toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-vacuum-bloat-table.md"
-            },
-            {
-              "id": "b09-pg-vacuum-freeze-age",
-              "difficulty": 5,
-              "prompt": "Varoitus: `database must be vacuumed within 200 million transactions`. Kiireellinen toimenpide?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-vacuum-freeze-age.md"
-            },
-            {
-              "id": "b09-pg-vacuum-full-lock",
-              "difficulty": 3,
-              "prompt": "DBA ehdottaa VACUUM FULL tuotantoon päivällä bloatin poistoon. Miksi tämä on riski?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-pg-vacuum-full-lock.md"
             },
             {
               "id": "exp-pg-vacuum-autovacuum-tune",
@@ -4680,6 +3938,13 @@
               "lessonFile": "opiskelu/lessons/exp-pg-vacuum-long-xact.md"
             },
             {
+              "id": "pg-partition-retention",
+              "difficulty": 4,
+              "prompt": "Lokitaulusta poistetaan joka yö yli 90 päivää vanhat rivit DELETEllä. Taulu paisuu, eikä autovacuum ehdi. Kestävämpi rakenne?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/pg-partition-retention.md"
+            },
+            {
               "id": "pg-vacuum-bloat",
               "difficulty": 4,
               "prompt": "Päivitykset ovat runsaita, taulu kasvaa mutta rivimäärä pysyy. Epäily?",
@@ -4693,22 +3958,15 @@
     {
       "id": "docker",
       "label": "Docker",
-      "ready": 146,
-      "total": 146,
+      "ready": 108,
+      "total": 108,
       "chapters": [
         {
           "id": "docker",
           "label": "Docker",
-          "ready": 79,
-          "total": 79,
+          "ready": 56,
+          "total": 56,
           "questions": [
-            {
-              "id": "b02-docker-build-copy-03",
-              "difficulty": 4,
-              "prompt": "Docker build on hidas — pienikin koodimuutos ajaa npm ci:n uudelleen. Fix?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-docker-build-copy-03.md"
-            },
             {
               "id": "b02-docker-exec-debug-04",
               "difficulty": 2,
@@ -4752,25 +4010,11 @@
               "lessonFile": "opiskelu/lessons/b03-docker-copy-vs-add.md"
             },
             {
-              "id": "b03-docker-dockerignore-build",
-              "difficulty": 2,
-              "prompt": "Docker build lähettää 2 GB node_modules build contextiin. Ensimmäinen optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-docker-dockerignore-build.md"
-            },
-            {
               "id": "b03-docker-entrypoint-cmd",
               "difficulty": 3,
               "prompt": "`docker run myimage bash` ei käynnistä bashia odotetusti, vaikka CMD Dockerfilessa on `['node','server.js']`. Mikä Dockerfile-käytäntö selittää tämän?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-docker-entrypoint-cmd.md"
-            },
-            {
-              "id": "b03-docker-prune-disk",
-              "difficulty": 2,
-              "prompt": "CI-runnerin levy täyttyy 'no space left' — satoja dangling imageja. Turvallinen siivous?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-docker-prune-disk.md"
             },
             {
               "id": "b03-docker-secrets-compose",
@@ -4780,46 +4024,11 @@
               "lessonFile": "opiskelu/lessons/b03-docker-secrets-compose.md"
             },
             {
-              "id": "b03-docker-stats-limits",
-              "difficulty": 3,
-              "prompt": "Yksi kontti syö koko hostin RAM:in — muut palvelut kaatuvat. docker stats näyttää 100%. Mitä asetat?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-docker-stats-limits.md"
-            },
-            {
-              "id": "b03-docker-user-nonroot",
-              "difficulty": 3,
-              "prompt": "Security review: Dockerfile ei määritä USER:ia — kontti ajaa rootina. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-docker-user-nonroot.md"
-            },
-            {
               "id": "b04-docker-build-arg",
               "difficulty": 3,
               "prompt": "Sama Dockerfile eri versioille — BASE_IMAGE vaihtelee CI:ssä. Miten parametrisoit?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-docker-build-arg.md"
-            },
-            {
-              "id": "b04-docker-buildkit-cache",
-              "difficulty": 3,
-              "prompt": "CI-build kopioi koko kontekstin joka kerta — cache ei hyödy package.json muutoksista. Optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-docker-buildkit-cache.md"
-            },
-            {
-              "id": "b04-docker-cgroup-limits",
-              "difficulty": 4,
-              "prompt": "Kontti syö koko hostin RAM:in — OOM killaa naapurikontteja. docker run rajoitus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-docker-cgroup-limits.md"
-            },
-            {
-              "id": "b04-docker-compose-depends-on",
-              "difficulty": 3,
-              "prompt": "Compose-sovellus kaatuu koska API käynnistyy ennen Postgresia. Mitä compose-tiedostoon?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-docker-compose-depends-on.md"
             },
             {
               "id": "b04-docker-compose-profile",
@@ -4878,13 +4087,6 @@
               "lessonFile": "opiskelu/lessons/b04-docker-security-cap-drop.md"
             },
             {
-              "id": "b05-docker-compose-depends-on",
-              "difficulty": 3,
-              "prompt": "App-kontti käynnistyy ennen Postgresia ja kaatuu connection refused -virheeseen. Compose-korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-compose-depends-on.md"
-            },
-            {
               "id": "b05-docker-healthcheck-prod",
               "difficulty": 3,
               "prompt": "Orkestraattori ei huomaa jumiutunutta Node-prosessia — kontti on 'running' mutta ei vastaa. Lisäät?",
@@ -4899,13 +4101,6 @@
               "lessonFile": "opiskelu/lessons/b05-docker-log-driver-json.md"
             },
             {
-              "id": "b05-docker-prune-disk-full",
-              "difficulty": 2,
-              "prompt": "Build-palvelimen levy täynnä — vanhoja imageja ja stopped-kontteja pinossa. Turvallisin siivous?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-prune-disk-full.md"
-            },
-            {
               "id": "b05-docker-security-cap-drop",
               "difficulty": 4,
               "prompt": "Minimoit konttioikeudet — tarvitset vain verkon, ei kernel-muutoksia. Mitä compose-asetusta käytät?",
@@ -4918,20 +4113,6 @@
               "prompt": "Security review: kontti ajaa rootina. Mikä on Dockerin suositus tuotantoon?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-docker-security-nonroot.md"
-            },
-            {
-              "id": "b05-dockerfile-layer-cache",
-              "difficulty": 3,
-              "prompt": "Docker build on hidas — jokainen koodirivin muutos invalidoi koko npm install -kerroksen. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-dockerfile-layer-cache.md"
-            },
-            {
-              "id": "b05-dockerfile-multistage-size",
-              "difficulty": 3,
-              "prompt": "Tuotantoimage on 2 GB koska build-työkalut mukana runtime-kuvassa. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-dockerfile-multistage-size.md"
             },
             {
               "id": "b06-docker-build-context-size",
@@ -4962,13 +4143,6 @@
               "lessonFile": "opiskelu/lessons/b06-docker-compose-healthcheck.md"
             },
             {
-              "id": "b06-docker-compose-restart",
-              "difficulty": 2,
-              "prompt": "Tuotantokontti pitää käynnistää automaattisesti host-rebootin jälkeen. Compose-kenttä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-docker-compose-restart.md"
-            },
-            {
               "id": "b06-docker-logging-rotation",
               "difficulty": 3,
               "prompt": "Konttilokit täyttävät levyn — json-file driver kasvaa rajatta. Miten rajoitat?",
@@ -4997,13 +4171,6 @@
               "lessonFile": "opiskelu/lessons/b07-docker-buildkit-cache.md"
             },
             {
-              "id": "b07-docker-compose-depends",
-              "difficulty": 3,
-              "prompt": "App käynnistyy ennen Postgresia — connection refused. compose.yml korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-docker-compose-depends.md"
-            },
-            {
               "id": "b07-docker-copy-chown",
               "difficulty": 4,
               "prompt": "Non-root user ei voi kirjoittaa /app/logs — permission denied tuotannossa. Dockerfile-korjaus?",
@@ -5030,20 +4197,6 @@
               "prompt": "Tuotantoon deployattiin eri image kuin testissä — tag liikkui. Miten lukitset version?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-docker-image-digest.md"
-            },
-            {
-              "id": "b07-docker-multistage-build",
-              "difficulty": 3,
-              "prompt": "Tuotanto-image sisältää koko Go toolchainin — image 1.2 GB. Miten pienennät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-docker-multistage-build.md"
-            },
-            {
-              "id": "b07-docker-run-user",
-              "difficulty": 3,
-              "prompt": "Security audit: kontti ajaa rootina. Miten korjaat Dockerfilessa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-docker-run-user.md"
             },
             {
               "id": "b08-docker-buildkit-cache",
@@ -5095,32 +4248,11 @@
               "lessonFile": "opiskelu/lessons/b08-docker-scan-image.md"
             },
             {
-              "id": "b08-docker-secrets-env",
-              "difficulty": 3,
-              "prompt": "Code review: API-avain Dockerfile ENV:ssä. Turvallisempi Compose/Swarm tapa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-docker-secrets-env.md"
-            },
-            {
               "id": "b08-dockerfile-arg-env",
               "difficulty": 3,
               "prompt": "Build-time versio build-argilla — runtime config erikseen. Ero ARG vs ENV?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-dockerfile-arg-env.md"
-            },
-            {
-              "id": "b08-dockerfile-copy-chown",
-              "difficulty": 3,
-              "prompt": "Non-root USER ei voi kirjoittaa COPY:llä tuotua hakemistoa. Dockerfile-korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-dockerfile-copy-chown.md"
-            },
-            {
-              "id": "b09-docker-buildkit-cache-mount",
-              "difficulty": 4,
-              "prompt": "Go-moduulien lataus hidastaa CI-buildia vaikka go.mod ei muutu. BuildKit-optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-buildkit-cache-mount.md"
             },
             {
               "id": "b09-docker-cmd-entrypoint",
@@ -5130,13 +4262,6 @@
               "lessonFile": "opiskelu/lessons/b09-docker-cmd-entrypoint.md"
             },
             {
-              "id": "b09-docker-dockerignore-build",
-              "difficulty": 2,
-              "prompt": "Docker build lähettää 500 MB node_modules kontekstina vaikka ne asennetaan kontissa. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-dockerignore-build.md"
-            },
-            {
               "id": "b09-docker-env-secrets-smell",
               "difficulty": 4,
               "prompt": "Code review: DATABASE_PASSWORD Dockerfile ENV:ssä. Miksi tämä on ongelma?",
@@ -5144,25 +4269,11 @@
               "lessonFile": "opiskelu/lessons/b09-docker-env-secrets-smell.md"
             },
             {
-              "id": "b09-docker-exec-debug",
-              "difficulty": 2,
-              "prompt": "Kontti pyörii mutta shelliä ei ole imageessa — tarvitset interaktiivisen debug-session. Komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-exec-debug.md"
-            },
-            {
               "id": "b09-docker-image-tag-pin",
               "difficulty": 3,
               "prompt": "Tuotanto käyttää `FROM node:latest` — eilen build rikkoutui. Korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-docker-image-tag-pin.md"
-            },
-            {
-              "id": "b09-docker-resource-limits",
-              "difficulty": 3,
-              "prompt": "Yksi kontti syö koko hostin CPU:n — muut palvelut jäätyvät. Compose-rajoitus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-resource-limits.md"
             },
             {
               "id": "b09-docker-secrets-mount",
@@ -5228,13 +4339,6 @@
               "lessonFile": "opiskelu/lessons/exp-docker-build-cache.md"
             },
             {
-              "id": "exp-docker-build-multistage",
-              "difficulty": 3,
-              "prompt": "Go-binary image on 1.2 GB koska build-työkalut mukana. Miten pienennät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-docker-build-multistage.md"
-            },
-            {
               "id": "exp-docker-prod-healthcheck",
               "difficulty": 3,
               "prompt": "Load balancer lähettää liikenteen kontille joka on jumissa. Miten Docker tunnistaa unhealthy-tilan?",
@@ -5260,8 +4364,8 @@
         {
           "id": "docker-network",
           "label": "Docker-verkot",
-          "ready": 34,
-          "total": 34,
+          "ready": 26,
+          "total": 26,
           "questions": [
             {
               "id": "b02-docker-net-alias-10",
@@ -5283,13 +4387,6 @@
               "prompt": "Compose: web ei tavoita db:ä hostname `db` — molemmat samassa projektissa. Tyypillinen syy?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-docker-net-compose-07.md"
-            },
-            {
-              "id": "b02-docker-net-host-08",
-              "difficulty": 4,
-              "prompt": "Low-latency palvelu tarvitsee suoran host-portin ilman NAT:ia. Verkko-optio?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-docker-net-host-08.md"
             },
             {
               "id": "b02-docker-net-inspect-09",
@@ -5320,32 +4417,11 @@
               "lessonFile": "opiskelu/lessons/b03-docker-net-ipv6-disable.md"
             },
             {
-              "id": "b04-docker-network-alias",
-              "difficulty": 3,
-              "prompt": "Kontti A ei löydä kontti B:tä nimellä `api` samassa user-defined networkissä. Compose-ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-docker-network-alias.md"
-            },
-            {
-              "id": "b05-docker-net-bridge-default",
-              "difficulty": 2,
-              "prompt": "Kaksi konttia samassa default bridge-verkossa — voivatko ne kommunikoida nimellä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-net-bridge-default.md"
-            },
-            {
               "id": "b05-docker-net-dns-custom",
               "difficulty": 3,
               "prompt": "Kontti ei resolvdu sisäistä DNS-nimeä corporate DNS:llä. Compose-korjaus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-docker-net-dns-custom.md"
-            },
-            {
-              "id": "b05-docker-net-host-mode",
-              "difficulty": 3,
-              "prompt": "Latency-kriittinen palvelu tarvitsee suoran pääsyn host-portteihin ilman NAT:ia. Verkko-mode?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-net-host-mode.md"
             },
             {
               "id": "b06-docker-network-ipvlan",
@@ -5388,27 +4464,6 @@
               "prompt": "Kontti kuuntelee 8080 — host ei tavoita localhost:8080. docker run?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-docker-network-publish.md"
-            },
-            {
-              "id": "b08-docker-network-bridge-dns",
-              "difficulty": 3,
-              "prompt": "Compose-palvelu `api` ei löydä `db`-hostnamea — oletusbridge-verkossa. Mikä pitää olla?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-docker-network-bridge-dns.md"
-            },
-            {
-              "id": "b08-docker-network-host",
-              "difficulty": 4,
-              "prompt": "Kontti tarvitsee suoran pääsyn hostin verkkoon (multicast). Milloin network_mode: host?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-docker-network-host.md"
-            },
-            {
-              "id": "b09-docker-net-alias",
-              "difficulty": 2,
-              "prompt": "Kontti pitää tavoittaa nimellä `database` samassa Compose-verkossa. Asetus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-net-alias.md"
             },
             {
               "id": "b09-docker-net-internal",
@@ -5488,13 +4543,6 @@
               "lessonFile": "opiskelu/lessons/exp-docker-net-inspect-dns.md"
             },
             {
-              "id": "exp-docker-net-macvlan",
-              "difficulty": 5,
-              "prompt": "Legacy-laite vaatii kontille oman MAC-osoitteen LANissa. Mikä network driver?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-docker-net-macvlan.md"
-            },
-            {
               "id": "exp-docker-net-publish-bind",
               "difficulty": 3,
               "prompt": "Palvelu kuuntelee vain localhostia kontissa mutta hostilta ei reach. Mikä publish-syntaksi?",
@@ -5556,29 +4604,15 @@
         {
           "id": "docker-volumes",
           "label": "Docker-volumet",
-          "ready": 27,
-          "total": 27,
+          "ready": 20,
+          "total": 20,
           "questions": [
-            {
-              "id": "b02-docker-vol-backup-14",
-              "difficulty": 4,
-              "prompt": "Named volume backup ilman container downtimea — suositeltu tapa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-docker-vol-backup-14.md"
-            },
             {
               "id": "b02-docker-vol-bind-12",
               "difficulty": 3,
               "prompt": "Dev: koodi bind-mountattu mutta muutokset eivät näy containerissa — macOS/Windows?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-docker-vol-bind-12.md"
-            },
-            {
-              "id": "b02-docker-vol-named-11",
-              "difficulty": 3,
-              "prompt": "PostgreSQL data katoaa containerin poiston jälkeen — mitä käytit väärin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-docker-vol-named-11.md"
             },
             {
               "id": "b02-docker-vol-ro-13",
@@ -5614,20 +4648,6 @@
               "prompt": "Postgres data katoaa `docker compose down` jälkeen. Mikä puuttui?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-docker-volume-named.md"
-            },
-            {
-              "id": "b05-docker-vol-bind-perms",
-              "difficulty": 4,
-              "prompt": "Bind mount host-kansiosta — kontti kirjoittaa permission denied. Juurisyy?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-vol-bind-perms.md"
-            },
-            {
-              "id": "b05-docker-vol-named-backup",
-              "difficulty": 3,
-              "prompt": "Postgres-data named volumessa — tarvitset varmuuskopion ilman konttia. Miten?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-docker-vol-named-backup.md"
             },
             {
               "id": "b05-docker-vol-readonly-root",
@@ -5672,13 +4692,6 @@
               "lessonFile": "opiskelu/lessons/b07-docker-volume-bind.md"
             },
             {
-              "id": "b07-docker-volume-named",
-              "difficulty": 2,
-              "prompt": "DB-data katoaa kontin poiston jälkeen. Miten säilytät datan?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-docker-volume-named.md"
-            },
-            {
               "id": "b08-docker-volume-bind-selinux",
               "difficulty": 4,
               "prompt": "RHEL-host: bind mount permission denied vaikka chmod 777. Todennäköisin syy?",
@@ -5707,13 +4720,6 @@
               "lessonFile": "opiskelu/lessons/b09-docker-vol-driver-local.md"
             },
             {
-              "id": "b09-docker-vol-mount-propagation",
-              "difficulty": 4,
-              "prompt": "Bind mount host-kansiosta ei näy muutoksia nested mountissa. Propagation-asetus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-docker-vol-mount-propagation.md"
-            },
-            {
               "id": "b10-docker-volumes-backup-01",
               "difficulty": 4,
               "prompt": "Named volume pitää varmuuskopioida ilman kontin käynnistämistä. Tyypillinen tapa?",
@@ -5735,13 +4741,6 @@
               "lessonFile": "opiskelu/lessons/exp-docker-vol-bind-perms.md"
             },
             {
-              "id": "exp-docker-vol-db-persist",
-              "difficulty": 3,
-              "prompt": "Postgres-kontti poistettiin `docker rm` — data katosi. Miten olisi pitänyt tallentaa data?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-docker-vol-db-persist.md"
-            },
-            {
               "id": "exp-docker-vol-readonly",
               "difficulty": 3,
               "prompt": "Config-volume ei saa muuttua runtime-aikana. Mikä mount-optio?",
@@ -5755,8 +4754,8 @@
     {
       "id": "linux",
       "label": "Linux",
-      "ready": 178,
-      "total": 178,
+      "ready": 151,
+      "total": 151,
       "chapters": [
         {
           "id": "apt",
@@ -5825,8 +4824,8 @@
         {
           "id": "avahi",
           "label": "Avahi/mDNS",
-          "ready": 25,
-          "total": 25,
+          "ready": 18,
+          "total": 18,
           "questions": [
             {
               "id": "avahi-mdns",
@@ -5864,13 +4863,6 @@
               "lessonFile": "opiskelu/lessons/b02-linux-avahi-publish-14.md"
             },
             {
-              "id": "b03-linux-avahi-browse-services",
-              "difficulty": 2,
-              "prompt": "Toimistossa pitää löytää paikallinen tulostin ilman IP:tä. Avahi-komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b03-linux-avahi-browse-services.md"
-            },
-            {
               "id": "b03-linux-avahi-hostname-local",
               "difficulty": 3,
               "prompt": "Kehityskone hostaa API:n osoitteessa devbox.local — toinen kone ei resolvaa. Tarkista?",
@@ -5883,27 +4875,6 @@
               "prompt": "IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista IP:tä. Ratkaisu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b03-linux-avahi-publish-service.md"
-            },
-            {
-              "id": "b04-linux-avahi-browse",
-              "difficulty": 3,
-              "prompt": "Lähiverkossa pitäisi näkyä mDNS-palvelu mutta se ei löydy. Diagnostiikkakomento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-linux-avahi-browse.md"
-            },
-            {
-              "id": "b05-linux-avahi-browse",
-              "difficulty": 2,
-              "prompt": "Toimiston tulostin pitäisi löytyä verkosta automaattisesti. Mikä työkalu listaa mDNS-palvelut?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-linux-avahi-browse.md"
-            },
-            {
-              "id": "b05-linux-avahi-hostname-conflict",
-              "difficulty": 4,
-              "prompt": "Kaksi konetta ilmoittaa saman `.local`-hostname:n — palvelut vaihtelevat. Mikä on juurisyy?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-linux-avahi-hostname-conflict.md"
             },
             {
               "id": "b05-linux-avahi-publish-service",
@@ -5948,13 +4919,6 @@
               "lessonFile": "opiskelu/lessons/b07-linux-avahi-reflector.md"
             },
             {
-              "id": "b07-linux-avahi-resolve",
-              "difficulty": 2,
-              "prompt": "Kehityskone printer.local ei resolvdu. Avahi-työkalu joka testaa nimen?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-linux-avahi-resolve.md"
-            },
-            {
               "id": "b08-linux-avahi-resolve",
               "difficulty": 3,
               "prompt": "Kehityskone ei löydä palvelua `printer.local` — mDNS pitäisi toimia. Ensimmäinen tarkistus?",
@@ -5976,13 +4940,6 @@
               "lessonFile": "opiskelu/lessons/b09-linux-avahi-mdns-troubleshoot.md"
             },
             {
-              "id": "b09-linux-avahi-service-discovery",
-              "difficulty": 3,
-              "prompt": "Lähiverkon tulostin pitäisi löytyä ilman staattista IP:tä. Protokolla?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-avahi-service-discovery.md"
-            },
-            {
               "id": "exp-linux-avahi-conflict",
               "difficulty": 3,
               "prompt": "Kaksi laitetta claimaa saman hostname.local — verkko sekoaa. Miten Avahi ratkaisee konfliktin?",
@@ -5995,21 +4952,14 @@
               "prompt": "Toimiston tulostin pitäisi löytyä automaattisesti LANissa ilman staattista IP:tä. Mikä protokolla?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-linux-avahi-printer-discovery.md"
-            },
-            {
-              "id": "exp-linux-avahi-service-xml",
-              "difficulty": 4,
-              "prompt": "Haluat julkaista koneen HTTP-palvelun Bonjour/Avahi-discoveryyn portissa 8080. Mihin konfiguraatio kuuluu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-linux-avahi-service-xml.md"
             }
           ]
         },
         {
           "id": "journald",
           "label": "journald",
-          "ready": 31,
-          "total": 31,
+          "ready": 25,
+          "total": 25,
           "questions": [
             {
               "id": "b02-linux-journalctl-boot-05",
@@ -6024,13 +4974,6 @@
               "prompt": "Haluat vain nginx-palvelun viimeiset virheet. Tehokkain komento?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-linux-journalctl-unit-06.md"
-            },
-            {
-              "id": "b02-linux-journald-persist-07",
-              "difficulty": 3,
-              "prompt": "Rebootin jälkeen vanhat lokit katoavat — forensic-tarve. journald-muutos?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-linux-journald-persist-07.md"
             },
             {
               "id": "b03-linux-journalctl-follow-unit",
@@ -6075,13 +5018,6 @@
               "lessonFile": "opiskelu/lessons/b04-linux-journalctl-priority-err.md"
             },
             {
-              "id": "b04-linux-journald-RateLimit",
-              "difficulty": 4,
-              "prompt": "Bugi tulvittaa journald:n identtisillä virheillä — diagnostiikka vaikeaa. Mitä konfiguroit?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-linux-journald-RateLimit.md"
-            },
-            {
               "id": "b05-linux-journalctl-unit-since",
               "difficulty": 2,
               "prompt": "Tuotantoincidentti — tarvitset nginx-unitin lokit viimeisen tunnin ajalta. Mikä komento?",
@@ -6094,13 +5030,6 @@
               "prompt": "Lokit tulvivat DEBUG-viestejä. Miten rajaat journalctl-tulosteen vain virheisiin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-linux-journald-priority-filter.md"
-            },
-            {
-              "id": "b05-linux-journald-storage-persist",
-              "difficulty": 3,
-              "prompt": "Rebootin jälkeen edellisen bootin lokit katoavat. Mikä journald.conf-asetus korjaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-linux-journald-storage-persist.md"
             },
             {
               "id": "b06-linux-journalctl-reverse",
@@ -6152,13 +5081,6 @@
               "lessonFile": "opiskelu/lessons/b08-linux-journalctl-since.md"
             },
             {
-              "id": "b08-linux-journalctl-unit",
-              "difficulty": 2,
-              "prompt": "Nginx kaatuu — haluat vain nginx-unitin virheet viime bootista. Komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-journalctl-unit.md"
-            },
-            {
               "id": "b08-linux-journald-storage",
               "difficulty": 3,
               "prompt": "Levy täyttyy journal-lokeista embedded-laitteessa. Mitä journald.conf-asetusta säädät?",
@@ -6166,25 +5088,11 @@
               "lessonFile": "opiskelu/lessons/b08-linux-journald-storage.md"
             },
             {
-              "id": "b09-linux-journalctl-follow-live",
-              "difficulty": 2,
-              "prompt": "Seuraat tuotantopalvelun lokia reaaliajassa deployn aikana. Komento?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-journalctl-follow-live.md"
-            },
-            {
               "id": "b09-linux-journald-forward-syslog",
               "difficulty": 3,
               "prompt": "Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-linux-journald-forward-syslog.md"
-            },
-            {
-              "id": "b09-linux-journald-priority-filter",
-              "difficulty": 3,
-              "prompt": "Incident-haku: tarvitset vain error-tason viestit viimeiseltä bootilta. Suodatin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-journald-priority-filter.md"
             },
             {
               "id": "exp-linux-journalctl-since-boot",
@@ -6327,9 +5235,16 @@
         {
           "id": "linux-incident",
           "label": "linux-incident",
-          "ready": 4,
-          "total": 4,
+          "ready": 5,
+          "total": 5,
           "questions": [
+            {
+              "id": "linux-deleted-open-file",
+              "difficulty": 3,
+              "prompt": "df näyttää levyn täyneksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/linux-deleted-open-file.md"
+            },
             {
               "id": "prod-linux-incident-slow-no-cpu",
               "difficulty": 5,
@@ -6363,8 +5278,8 @@
         {
           "id": "linux-network",
           "label": "verkko",
-          "ready": 47,
-          "total": 47,
+          "ready": 38,
+          "total": 38,
           "questions": [
             {
               "id": "b02-linux-network-nmcli-11",
@@ -6374,25 +5289,11 @@
               "lessonFile": "opiskelu/lessons/b02-linux-network-nmcli-11.md"
             },
             {
-              "id": "b02-linux-network-resolv-10",
-              "difficulty": 3,
-              "prompt": "Lyhyet hostnamet eivät resolvdu — FQDN toimii. Mikä tiedosto?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-linux-network-resolv-10.md"
-            },
-            {
               "id": "b02-linux-network-route-09",
               "difficulty": 4,
               "prompt": "VPN-yhteys toimii mutta vain internal IP:t eivät routtaudu. Diagnostiikka?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-linux-network-route-09.md"
-            },
-            {
-              "id": "b02-linux-network-ss-08",
-              "difficulty": 3,
-              "prompt": "Sovellus sanoo portti 8080 varattu — mikä komento näyttää prosessin joka kuuntelee?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-linux-network-ss-08.md"
             },
             {
               "id": "b03-linux-network-ethtool-link",
@@ -6463,20 +5364,6 @@
               "prompt": "Wi-Fi katkesi toimistossa. Miten nmcli:llä yhdistät tunnetun profiilin?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-linux-network-nmcli-connect.md"
-            },
-            {
-              "id": "b05-linux-network-resolv-search",
-              "difficulty": 3,
-              "prompt": "Sisäinen hostname `app.internal` ei resolvdu mutta FQDN toimii. Mikä resolv.conf-asetus auttaa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-linux-network-resolv-search.md"
-            },
-            {
-              "id": "b05-linux-network-ss-listen",
-              "difficulty": 2,
-              "prompt": "Portti 8080 on jo käytössä — uusi palvelu ei käynnisty. Mikä komento näyttää prosessin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-linux-network-ss-listen.md"
             },
             {
               "id": "b06-linux-network-ethtool-offload",
@@ -6556,39 +5443,11 @@
               "lessonFile": "opiskelu/lessons/b08-linux-network-traceroute.md"
             },
             {
-              "id": "b08-linux-resolv-search",
-              "difficulty": 3,
-              "prompt": "Lyhyt hostname 'db' ei resolvdu — FQDN toimii. Mitä /etc/resolv.conf search-kenttä tekee?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-resolv-search.md"
-            },
-            {
-              "id": "b08-linux-ss-listening",
-              "difficulty": 2,
-              "prompt": "Mikä prosessi kuuntelee porttia 5432? Nopein diagnostiikka?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-ss-listening.md"
-            },
-            {
-              "id": "b09-linux-net-firewall-cmd",
-              "difficulty": 3,
-              "prompt": "Uusi palvelu portissa 8443 — firewalld estää ulkoiset yhteydet. Pysyvä aukko?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-net-firewall-cmd.md"
-            },
-            {
               "id": "b09-linux-net-nat-troubleshoot",
               "difficulty": 4,
               "prompt": "Kontti saavuttaa hostin mutta ei internetiä — epäilet NAT:ia. Tarkistus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-linux-net-nat-troubleshoot.md"
-            },
-            {
-              "id": "b09-linux-net-ss-listen",
-              "difficulty": 2,
-              "prompt": "Portti 8080 on varattu mutta et tiedä mikä prosessi kuuntelee. Moderni työkalu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-net-ss-listen.md"
             },
             {
               "id": "b09-linux-net-tcpdump-incident",
@@ -6652,13 +5511,6 @@
               "prompt": "Kontti-host ei reachaa 10.20.0.0/16 VPN-verkkoa. ip route näyttää oletusyhteyden mutta ei VPN-reittiä. Mitä tarkistat?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/exp-linux-network-route-missing.md"
-            },
-            {
-              "id": "exp-linux-network-ss-listen",
-              "difficulty": 3,
-              "prompt": "Portti 8080 on jo käytössä deploy epäonnistuu. Mikä komento näyttää mikä prosessi kuuntelee?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/exp-linux-network-ss-listen.md"
             },
             {
               "id": "linux-ip-route",
@@ -6765,8 +5617,8 @@
         {
           "id": "systemd",
           "label": "systemd",
-          "ready": 43,
-          "total": 43,
+          "ready": 37,
+          "total": 37,
           "questions": [
             {
               "id": "b02-linux-systemd-env-04",
@@ -6895,13 +5747,6 @@
               "lessonFile": "opiskelu/lessons/b06-linux-systemd-ConditionPath.md"
             },
             {
-              "id": "b06-linux-systemd-LimitsNOFILE",
-              "difficulty": 4,
-              "prompt": "Palvelu saa 'too many open files' tuotannossa. Miten nostat rajan systemd-unitissa?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b06-linux-systemd-LimitsNOFILE.md"
-            },
-            {
               "id": "b06-linux-systemd-logind",
               "difficulty": 3,
               "prompt": "Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä komponentti hallinnoi?",
@@ -6930,13 +5775,6 @@
               "lessonFile": "opiskelu/lessons/b07-linux-systemd-limit-nofile.md"
             },
             {
-              "id": "b07-linux-systemd-restart-policy",
-              "difficulty": 3,
-              "prompt": "Palvelu kaatuu satunnaisesti yöllä — aamulla se on alhaalla. Mikä Restart= arvo nostaa sen automaattisesti?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-linux-systemd-restart-policy.md"
-            },
-            {
               "id": "b07-linux-systemd-wantedby",
               "difficulty": 3,
               "prompt": "Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä [Install]-osiosta puuttuu?",
@@ -6956,34 +5794,6 @@
               "prompt": "App service pitää käynnistyä vain jos network-online.target on valmis. Unit-riippuvuus?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-linux-systemd-requires.md"
-            },
-            {
-              "id": "b08-linux-systemd-restart-policy",
-              "difficulty": 3,
-              "prompt": "Palvelu kaatuu satunnaisesti — haluat systemd:n käynnistävän sen uudelleen. Mitä unit-tiedostoon?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-systemd-restart-policy.md"
-            },
-            {
-              "id": "b08-linux-systemd-timer",
-              "difficulty": 3,
-              "prompt": "Cron-korvaus: backup ajastus systemd:llä. Mitä tarvitset?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-systemd-timer.md"
-            },
-            {
-              "id": "b08-linux-systemd-wantedby",
-              "difficulty": 2,
-              "prompt": "Uusi service-unit ei käynnisty bootissa vaikka enabled. Install-osiossa puuttuu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-linux-systemd-wantedby.md"
-            },
-            {
-              "id": "b09-linux-systemd-after-before",
-              "difficulty": 3,
-              "prompt": "App käynnistyy ennen verkkoa — DNS lookup epäonnistuu bootissa. Unit-riippuvuus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-linux-systemd-after-before.md"
             },
             {
               "id": "b09-linux-systemd-kill-mode",
@@ -7105,14 +5915,14 @@
     {
       "id": "qt",
       "label": "Qt",
-      "ready": 164,
-      "total": 164,
+      "ready": 143,
+      "total": 143,
       "chapters": [
         {
           "id": "qt-models",
           "label": "Qt-mallit",
-          "ready": 19,
-          "total": 19,
+          "ready": 15,
+          "total": 15,
           "questions": [
             {
               "id": "b02-qt-models-reset-10",
@@ -7143,13 +5953,6 @@
               "lessonFile": "opiskelu/lessons/b03-qt-models-sort-filter.md"
             },
             {
-              "id": "b04-qt-models-setData",
-              "difficulty": 3,
-              "prompt": "QTableView ei päivity kun muokkaat dataa suoraan taustatallennuksessa. Mitä modelin pitää tehdä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-qt-models-setData.md"
-            },
-            {
               "id": "b04-qt-models-sort-filter",
               "difficulty": 3,
               "prompt": "QTableView tarvitsee live-haun suodatuksen ilman erillistä kopiomallia. Qt-luokka?",
@@ -7162,13 +5965,6 @@
               "prompt": "Custom delegate tarvitsee tooltip-datan eri kuin display. Mistä se tulee?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-qt-models-data-roles.md"
-            },
-            {
-              "id": "b05-qt-models-sort-filter",
-              "difficulty": 3,
-              "prompt": "QTableView tarvitsee suodatuksen ja lajittelun ilman datan duplikaatiota. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-qt-models-sort-filter.md"
             },
             {
               "id": "b06-qt-models-editable-delegate",
@@ -7199,13 +5995,6 @@
               "lessonFile": "opiskelu/lessons/b07-qt-model-view-sort.md"
             },
             {
-              "id": "b08-qt-models-data-changed",
-              "difficulty": 3,
-              "prompt": "Custom model päivittää solun — view ei päivity ennen full reset. Mitä signaalia emit?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-models-data-changed.md"
-            },
-            {
               "id": "b08-qt-models-sort-filter",
               "difficulty": 3,
               "prompt": "QTableView suodatus — haluat näyttää vain aktiiviset rivit ilman datan poistoa. Proxy?",
@@ -7218,13 +6007,6 @@
               "prompt": "Lataat koko listan uudelleen — beginResetModel on raskas ja välkkyy. Parempi vaihtoehto?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b09-qt-models-reset-vs-layout.md"
-            },
-            {
-              "id": "b09-qt-models-sort-proxy",
-              "difficulty": 3,
-              "prompt": "QTableView sorttaus rikkoo custom modelin indeksit. Ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-qt-models-sort-proxy.md"
             },
             {
               "id": "exp-qt-models-persistent-index",
@@ -7394,8 +6176,8 @@
         {
           "id": "qt-opengl",
           "label": "Qt OpenGL",
-          "ready": 21,
-          "total": 21,
+          "ready": 18,
+          "total": 18,
           "questions": [
             {
               "id": "b02-qt-opengl-context-11",
@@ -7440,13 +6222,6 @@
               "lessonFile": "opiskelu/lessons/b04-qt-opengl-share-context.md"
             },
             {
-              "id": "b05-qt-opengl-context-share",
-              "difficulty": 4,
-              "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat resurssit?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-qt-opengl-context-share.md"
-            },
-            {
               "id": "b05-qt-opengl-makecurrent",
               "difficulty": 3,
               "prompt": "OpenGL-kutsu kaatuu 'without current context'. Mitä teet ennen glDrawArrays?",
@@ -7482,25 +6257,11 @@
               "lessonFile": "opiskelu/lessons/b07-qt-opengl-vsync.md"
             },
             {
-              "id": "b08-qt-opengl-context-share",
-              "difficulty": 4,
-              "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat GL-resurssit?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-opengl-context-share.md"
-            },
-            {
               "id": "b08-qt-opengl-vsync",
               "difficulty": 3,
               "prompt": "OpenGL-demo repii — CPU 100% spin loopissa. Miten synkkaat frame rateen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-qt-opengl-vsync.md"
-            },
-            {
-              "id": "b09-qt-opengl-context-share",
-              "difficulty": 4,
-              "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-qt-opengl-context-share.md"
             },
             {
               "id": "b09-qt-opengl-vsync-tear",
@@ -7697,8 +6458,8 @@
         {
           "id": "qt-shaders",
           "label": "Qt-shaders",
-          "ready": 24,
-          "total": 24,
+          "ready": 23,
+          "total": 23,
           "questions": [
             {
               "id": "b02-qt-shaders-qsb-13",
@@ -7799,13 +6560,6 @@
               "lessonFile": "opiskelu/lessons/b07-qt-shader-uniform.md"
             },
             {
-              "id": "b08-qt-shaders-precision",
-              "difficulty": 3,
-              "prompt": "Fragment shader toimii desktopilla mutta on musta mobiilissa. Epäily?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-shaders-precision.md"
-            },
-            {
               "id": "b08-qt-shaders-uniform",
               "difficulty": 4,
               "prompt": "Shader ei näy oikein — uniform arvo ei päivity. Qt6 RHI/shader polulla?",
@@ -7873,16 +6627,9 @@
         {
           "id": "qt-signals",
           "label": "signaalit/slotit",
-          "ready": 20,
-          "total": 20,
+          "ready": 14,
+          "total": 14,
           "questions": [
-            {
-              "id": "b02-qt-signals-disconnect-05",
-              "difficulty": 3,
-              "prompt": "Dialog sulkeutuu mutta slot laukeaa edelleen destroyed senderistä. Esto?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-qt-signals-disconnect-05.md"
-            },
             {
               "id": "b02-qt-signals-queued-04",
               "difficulty": 4,
@@ -7933,13 +6680,6 @@
               "lessonFile": "opiskelu/lessons/b05-qt-signals-disconnect-lambda.md"
             },
             {
-              "id": "b05-qt-signals-queued-connection",
-              "difficulty": 4,
-              "prompt": "Worker-säie emittoi signaalin joka päivittää GUI:ta — satunnainen crash. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-qt-signals-queued-connection.md"
-            },
-            {
               "id": "b06-qt-signals-auto-connection",
               "difficulty": 3,
               "prompt": "on_pushButton_clicked() ei kutsuta — slot nimi väärä. Miten auto-connection löytää slotin?",
@@ -7961,39 +6701,11 @@
               "lessonFile": "opiskelu/lessons/b07-qt-signals-disconnect.md"
             },
             {
-              "id": "b07-qt-signals-queued",
-              "difficulty": 4,
-              "prompt": "Worker-thread emit signaalin joka päivittää GUI-widgettiä — satunnainen crash. Korjaus?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-qt-signals-queued.md"
-            },
-            {
-              "id": "b08-qt-signals-blocking",
-              "difficulty": 3,
-              "prompt": "Lataat modelin UI:hin — jokainen setData laukaisee dataChanged ja hidastaa. Miten hiljennät?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-signals-blocking.md"
-            },
-            {
               "id": "b08-qt-signals-unique-connection",
               "difficulty": 3,
               "prompt": "Sama connect() kutsutaan initissä kahdesti — slotti suoritetaan kaksinkertaisesti. Esto?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b08-qt-signals-unique-connection.md"
-            },
-            {
-              "id": "b09-qt-signals-block-updates",
-              "difficulty": 3,
-              "prompt": "Lataat 1000 riviä modeliin — jokainen setData laukaisee view-päivityksen. Optimointi?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-qt-signals-block-updates.md"
-            },
-            {
-              "id": "b09-qt-signals-unique-connection",
-              "difficulty": 3,
-              "prompt": "Sama connect() kutsutaan useasti initissä — slotti laukeaa monta kertaa. Estä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-qt-signals-unique-connection.md"
             },
             {
               "id": "exp-qt-signals-disconnect-lifetime",
@@ -8021,8 +6733,8 @@
         {
           "id": "qt-threading",
           "label": "Qt-säikeet",
-          "ready": 20,
-          "total": 20,
+          "ready": 13,
+          "total": 13,
           "questions": [
             {
               "id": "b02-qt-thread-gui-07",
@@ -8037,13 +6749,6 @@
               "prompt": "Satoja lyhyitä taustatehtäviä — QThread jokaiselle liian raskas. Vaihtoehto?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b02-qt-thread-pool-08.md"
-            },
-            {
-              "id": "b02-qt-thread-worker-06",
-              "difficulty": 3,
-              "prompt": "Pitää ajaa raskas laskenta ilman UI-jäätymistä. Qt-rakenne?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b02-qt-thread-worker-06.md"
             },
             {
               "id": "b03-qt-thread-invoke-method",
@@ -8067,25 +6772,11 @@
               "lessonFile": "opiskelu/lessons/b04-qt-deferred-delete.md"
             },
             {
-              "id": "b04-qt-thread-affinity",
-              "difficulty": 4,
-              "prompt": "Worker-säie kutsuu suoraan QLabel::setText — satunnainen crash. Oikea Qt-malli?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b04-qt-thread-affinity.md"
-            },
-            {
               "id": "b05-qt-thread-gui-touch",
               "difficulty": 4,
               "prompt": "Taustasäie kutsuu widget->setText() suoraan — intermittent crash. Sääntö?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b05-qt-thread-gui-touch.md"
-            },
-            {
-              "id": "b05-qt-thread-movetothread",
-              "difficulty": 3,
-              "prompt": "Raskas laskenta jäädyttää GUI:n. Oikea Qt-pattern?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-qt-thread-movetothread.md"
             },
             {
               "id": "b06-qt-thread-event-loop",
@@ -8107,34 +6798,6 @@
               "prompt": "Code review: QLabel::setText kutsutaan worker-threadista. Mikä sääntö rikkoutuu?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b07-qt-thread-gui-rule.md"
-            },
-            {
-              "id": "b07-qt-thread-moveToThread",
-              "difficulty": 4,
-              "prompt": "Raskas laskenta jäädyttää GUI-threadin. Qt-idiomi taustatyölle?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b07-qt-thread-moveToThread.md"
-            },
-            {
-              "id": "b08-qt-thread-invoke",
-              "difficulty": 4,
-              "prompt": "Worker-säie päivittää QLabel:ia suoraan — crash. Oikea tapa kutsua GUI-metodia toisesta säieestä?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-thread-invoke.md"
-            },
-            {
-              "id": "b08-qt-thread-qthreadpool",
-              "difficulty": 3,
-              "prompt": "Paljon lyhyitä taustatehtäviä — uusi QThread jokaiselle on raskasta. Parempi Qt-ratkaisu?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b08-qt-thread-qthreadpool.md"
-            },
-            {
-              "id": "b09-qt-thread-qthreadpool",
-              "difficulty": 3,
-              "prompt": "Satoja lyhyitä taustatehtäviä — uusi QThread jokaiselle on liian raskasta. Pattern?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b09-qt-thread-qthreadpool.md"
             },
             {
               "id": "b09-qt-thread-wait-condition",
@@ -8389,8 +7052,8 @@
     {
       "id": "scrum",
       "label": "Scrum",
-      "ready": 90,
-      "total": 90,
+      "ready": 88,
+      "total": 88,
       "chapters": [
         {
           "id": "scrum-dod",
@@ -8480,8 +7143,8 @@
         {
           "id": "scrum-dor",
           "label": "Definition of Ready",
-          "ready": 20,
-          "total": 20,
+          "ready": 18,
+          "total": 18,
           "questions": [
             {
               "id": "b02-scrum-dor-deps-05",
@@ -8545,20 +7208,6 @@
               "prompt": "Product Backlog on sekava — tiimi ei tiedä mitä refinenoida seuraavaksi. Kuka priorisoi backlog-järjestyksen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/b04-scrum-refinement-backlog-order.md"
-            },
-            {
-              "id": "b05-scrum-dor-dependency",
-              "difficulty": 4,
-              "prompt": "Tarinalla on riippuvuus ulkoiseen API:hin jota ei ole vielä saatavilla. Otetaanko sprinttiin?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-scrum-dor-dependency.md"
-            },
-            {
-              "id": "b05-scrum-dor-unclear-story",
-              "difficulty": 3,
-              "prompt": "Tarinan acceptance criteria on 'toimii hyvin'. Sprint planningissa kehittäjät arvailevat. Mitä DoR vaatii?",
-              "ready": true,
-              "lessonFile": "opiskelu/lessons/b05-scrum-dor-unclear-story.md"
             },
             {
               "id": "b07-scrum-dor-design",
@@ -9067,8 +7716,8 @@
     {
       "id": "git",
       "label": "Git",
-      "ready": 22,
-      "total": 22,
+      "ready": 24,
+      "total": 24,
       "chapters": [
         {
           "id": "git-ci",
@@ -9151,15 +7800,29 @@
         {
           "id": "git-workflow",
           "label": "Git-työnkulku",
-          "ready": 12,
-          "total": 12,
+          "ready": 14,
+          "total": 14,
           "questions": [
+            {
+              "id": "git-blame-ignore-revs",
+              "difficulty": 3,
+              "prompt": "Koko repo formatoitiin yhdellä commitilla, ja nyt git blame näyttää lähes jokaiselle riville vain formatointicommitin. Miten saat alkuperäiset tekijät näkyviin?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/git-blame-ignore-revs.md"
+            },
             {
               "id": "git-cherry-pick-conflict",
               "difficulty": 3,
               "prompt": "Haluat tuoda yksittäisen commitin toisesta branchista ilman koko haaran mergeä. Mikä komento?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/git-cherry-pick-conflict.md"
+            },
+            {
+              "id": "git-leaked-secret-history",
+              "difficulty": 4,
+              "prompt": "API-avain commitoitiin vahingossa ja pushattiin julkiseen repoon tunti sitten. Mikä on ensimmäinen toimenpide?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/git-leaked-secret-history.md"
             },
             {
               "id": "git-log-filtering",
@@ -9245,15 +7908,22 @@
     {
       "id": "backend",
       "label": "Backend",
-      "ready": 15,
-      "total": 15,
+      "ready": 19,
+      "total": 19,
       "chapters": [
         {
           "id": "backend-api",
           "label": "backend-API",
-          "ready": 3,
-          "total": 3,
+          "ready": 4,
+          "total": 4,
           "questions": [
+            {
+              "id": "backend-outbox-pattern",
+              "difficulty": 4,
+              "prompt": "Tilaus tallennetaan kantaan ja heti perään lähetetään viesti jonoon. Joskus viesti lähtee, vaikka transaktio peruttiin, ja joskus tilaus tallentuu ilman viestiä. Mikä malli?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/backend-outbox-pattern.md"
+            },
             {
               "id": "prod-backend-external-timeout",
               "difficulty": 4,
@@ -9280,9 +7950,30 @@
         {
           "id": "backend-data",
           "label": "backend-data",
-          "ready": 4,
-          "total": 4,
+          "ready": 7,
+          "total": 7,
           "questions": [
+            {
+              "id": "backend-deadlock-lock-order",
+              "difficulty": 4,
+              "prompt": "Kaksi rinnakkaista siirtoa: toinen päivittää tilit A→B, toinen B→A. Lokissa näkyy satunnaisesti 'deadlock detected'. Miten estät?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/backend-deadlock-lock-order.md"
+            },
+            {
+              "id": "backend-lost-update-atomic",
+              "difficulty": 4,
+              "prompt": "Varastosaldo luetaan sovellukseen, siitä vähennetään 1 ja arvo kirjoitetaan takaisin. Ruuhkassa saldo jää liian suureksi. Yksinkertaisin korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/backend-lost-update-atomic.md"
+            },
+            {
+              "id": "backend-migration-lock-timeout",
+              "difficulty": 4,
+              "prompt": "Migraatio `ALTER TABLE orders ADD COLUMN note text` jumittuu, ja samalla kaikki orders-kyselyt jonoutuvat ja API kaatuu. Pitkä raporttikysely oli käynnissä. Miten suojaat migraatiot?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/backend-migration-lock-timeout.md"
+            },
             {
               "id": "prod-backend-n-plus-one",
               "difficulty": 3,
@@ -9382,8 +8073,8 @@
     {
       "id": "security",
       "label": "Turvallisuus",
-      "ready": 35,
-      "total": 35,
+      "ready": 37,
+      "total": 37,
       "chapters": [
         {
           "id": "sec-api",
@@ -9438,8 +8129,8 @@
         {
           "id": "sec-auth",
           "label": "autentikaatio ja valtuutus",
-          "ready": 6,
-          "total": 6,
+          "ready": 8,
+          "total": 8,
           "questions": [
             {
               "id": "prod-sec-account-enumeration",
@@ -9482,6 +8173,20 @@
               "prompt": "Globaali role == admin ei skaalaudu: projektin omistaja saa poistaa projektinsa, org-admin vain oman organisaationsa projektit. Mikä lähestymistapa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/prod-sec-rbac-abac.md"
+            },
+            {
+              "id": "sec-jwt-alg-confusion",
+              "difficulty": 4,
+              "prompt": "JWT-kirjasto hyväksyy tokenin otsikossa ilmoitetun algoritmin sellaisenaan. Hyökkääjä lähettää tokenin, jossa `alg` on `none` tai RS256:n sijaan HS256. Mikä korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sec-jwt-alg-confusion.md"
+            },
+            {
+              "id": "sec-session-fixation",
+              "difficulty": 4,
+              "prompt": "Sovellus käyttää kirjautumisen jälkeen samaa session-id:tä kuin ennen kirjautumista. Hyökkääjä voi asettaa uhrille tuntemansa id:n. Mikä korjaus?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/sec-session-fixation.md"
             }
           ]
         },
@@ -9870,8 +8575,8 @@
     {
       "id": "rust",
       "label": "Rust",
-      "ready": 74,
-      "total": 74,
+      "ready": 75,
+      "total": 75,
       "chapters": [
         {
           "id": "rust-async",
@@ -10118,8 +8823,8 @@
         {
           "id": "rust-ownership",
           "label": "Rust omistajuus",
-          "ready": 7,
-          "total": 7,
+          "ready": 8,
+          "total": 8,
           "questions": [
             {
               "id": "rust-ownership-box-heap",
@@ -10169,6 +8874,13 @@
               "prompt": "Miksi `let r = &vec[0]; vec.push(1);` voi olla kääntäjävirhe?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/rust-ownership-vec-push-invalidate.md"
+            },
+            {
+              "id": "rust-rc-weak-cycle",
+              "difficulty": 4,
+              "prompt": "Puurakenteessa lapsi pitää `Rc`-viitteen vanhempaansa ja vanhempi `Rc`-viitteet lapsiinsa. Puu ei vapaudu koskaan. Miksi ja mikä korjaa?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/rust-rc-weak-cycle.md"
             }
           ]
         },
@@ -10476,8 +9188,8 @@
     {
       "id": "space",
       "label": "Avaruustekniikka",
-      "ready": 62,
-      "total": 62,
+      "ready": 64,
+      "total": 64,
       "chapters": [
         {
           "id": "space-applications",
@@ -10488,7 +9200,7 @@
             {
               "id": "space-app-accuracy-classes",
               "difficulty": 2,
-              "prompt": "Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakataarkkuudelle hyvissä oloissa?",
+              "prompt": "Mikä on tyypillinen suuruusluokka kuluttaja-SPP:n, SBAS/DGPS:n ja RTK fixedin vaakatarkkuudelle hyvissä oloissa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-app-accuracy-classes.md"
             },
@@ -10502,7 +9214,7 @@
             {
               "id": "space-app-assisted",
               "difficulty": 2,
-              "prompt": "Mitkä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?",
+              "prompt": "Mitä A-GNSS (assisted GNSS) tyypillisesti tuo vastaanottimelle?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-app-assisted.md"
             },
@@ -10551,7 +9263,7 @@
             {
               "id": "space-app-ttff",
               "difficulty": 2,
-              "prompt": "Mitkä tarkoittaa TTFF GNSS-vastaanottimessa?",
+              "prompt": "Mitä tarkoittaa TTFF GNSS-vastaanottimessa?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-app-ttff.md"
             }
@@ -10636,7 +9348,7 @@
             {
               "id": "space-datum-wgs84-params",
               "difficulty": 3,
-              "prompt": "Mikä on WGS84-ellipsoidin puolisuuren akselin (a) likimääräinen pituus?",
+              "prompt": "Mihin WGS84-ellipsoidin parametreja a (puolisuuri akseli) ja f (litistyneisyys) tarvitaan?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-datum-wgs84-params.md"
             }
@@ -10773,8 +9485,8 @@
         {
           "id": "space-positioning",
           "label": "Paikannusmenetelmät",
-          "ready": 8,
-          "total": 8,
+          "ready": 9,
+          "total": 9,
           "questions": [
             {
               "id": "space-pos-ambiguity",
@@ -10786,7 +9498,7 @@
             {
               "id": "space-pos-baseline",
               "difficulty": 3,
-              "prompt": "Mitkä tarkoittaa baseline differentiaalisessa GNSS:ssä?",
+              "prompt": "Mitä tarkoittaa baseline differentiaalisessa GNSS:ssä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-pos-baseline.md"
             },
@@ -10810,6 +9522,13 @@
               "prompt": "Miten PPP (Precise Point Positioning) eroaa RTK:sta?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-pos-ppp.md"
+            },
+            {
+              "id": "space-pos-ppp-convergence",
+              "difficulty": 3,
+              "prompt": "PPP-ratkaisu tarvitsee käynnistyksen jälkeen kymmeniä minuutteja ennen senttitasoa, RTK vain muutamia sekunteja. Miksi?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/space-pos-ppp-convergence.md"
             },
             {
               "id": "space-pos-rinex",
@@ -10871,7 +9590,7 @@
             {
               "id": "space-orbit-period-gps",
               "difficulty": 2,
-              "prompt": "Kuinka kauan GPS-satelliitilla kestää tyypillisesti yksi maan kierto (sideraalinen period)?",
+              "prompt": "GPS-satelliitti kiertää maan kahdesti sideraalisen vuorokauden aikana. Mitä siitä seuraa käytännössä?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-orbit-period-gps.md"
             },
@@ -10901,8 +9620,8 @@
         {
           "id": "space-signals",
           "label": "Signaalit ja vastaanotto",
-          "ready": 9,
-          "total": 9,
+          "ready": 10,
+          "total": 10,
           "questions": [
             {
               "id": "space-sig-carrier-phase",
@@ -10910,6 +9629,13 @@
               "prompt": "Miksi kantoaaltovaihe (carrier phase) mahdollistaa senttitason paikannuksen?",
               "ready": true,
               "lessonFile": "opiskelu/lessons/space-sig-carrier-phase.md"
+            },
+            {
+              "id": "space-sig-cycle-slip",
+              "difficulty": 4,
+              "prompt": "RTK-ratkaisu putoaa hetkeksi float-tilaan, kun auto ajaa sillan ali. Mitä kantoaaltomittaukselle tapahtui?",
+              "ready": true,
+              "lessonFile": "opiskelu/lessons/space-sig-cycle-slip.md"
             },
             {
               "id": "space-sig-dop",

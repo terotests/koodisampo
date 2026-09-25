@@ -23,6 +23,6 @@ for (size_t i = 0; i < std::ssize(v); ++i) { ... }
 
 ## Käytännössä
 
-Sama teema kuin `b05-cpp-signed-compare-bug` — tämä kysymys painottaa peruskysymystä "miksi vaarallinen", ei tiettyä bugitapausta.
+Kysymys painottaa peruskysymystä "miksi vaarallinen", ei tiettyä bugitapausta.
 
 [Lue lisää](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Res-mix)

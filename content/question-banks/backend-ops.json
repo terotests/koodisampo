@@ -542,6 +542,150 @@
       "sourceUrl": "https://sre.google/workbook/on-call/",
       "featureId": "backend:runbook",
       "featurePoints": 3
+    },
+    {
+      "id": "backend-lost-update-atomic",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Varastosaldo luetaan sovellukseen, siitä vähennetään 1 ja arvo kirjoitetaan takaisin. Ruuhkassa saldo jää liian suureksi. Yksinkertaisin korjaus?",
+      "choices": [
+        {
+          "text": "Atominen päivitys tietokannassa: UPDATE stock SET qty = qty - 1 WHERE id = $1 AND qty > 0",
+          "correct": true
+        },
+        {
+          "text": "Välimuisti saldolle sovelluksen muistiin, jolloin tietokantalukuja on vähemmän",
+          "correct": false
+        },
+        {
+          "text": "Transaktion isolaatio READ UNCOMMITTEDiksi, jolloin muutokset näkyvät heti",
+          "correct": false
+        },
+        {
+          "text": "Retry-logiikka, joka kirjoittaa saldon uudelleen virheen sattuessa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Luku–muutos–kirjoitus sovelluksessa häviää rinnakkaisille päivityksille (lost update). Kun laskenta tehdään UPDATEssa, rivilukko sarjallistaa päivitykset.",
+      "wrongFeedback": "Välimuisti ja retry eivät poista kilpailutilannetta, ja READ UNCOMMITTED toimii PostgreSQL:ssä kuten READ COMMITTED.",
+      "featureId": "backend:lost-update",
+      "featurePoints": 4,
+      "sourceRef": "postgresql/docs/transaction-iso",
+      "sourceUrl": "https://www.postgresql.org/docs/current/transaction-iso.html"
+    },
+    {
+      "id": "backend-deadlock-lock-order",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Kaksi rinnakkaista siirtoa: toinen päivittää tilit A→B, toinen B→A. Lokissa näkyy satunnaisesti 'deadlock detected'. Miten estät?",
+      "choices": [
+        {
+          "text": "Lukitse rivit aina samassa järjestyksessä, esim. pienin tili-id ensin",
+          "correct": true
+        },
+        {
+          "text": "Nosta deadlock_timeout minuuttiin, jolloin lukkiutuminen ehtii purkautua itsestään",
+          "correct": false
+        },
+        {
+          "text": "Poista transaktio ja tee päivitykset erillisinä autocommit-lauseina",
+          "correct": false
+        },
+        {
+          "text": "Lisää indeksi tilitaulun saldosarakkeelle lukitusten nopeuttamiseksi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Deadlock syntyy, kun kaksi transaktiota odottaa toistensa lukkoja ristiin. Yhtenäinen lukitusjärjestys poistaa kehän.",
+      "wrongFeedback": "deadlock_timeout vain viivästää tunnistusta, ja transaktion poisto rikkoo siirron eheyden.",
+      "featureId": "backend:deadlock-order",
+      "featurePoints": 4,
+      "sourceRef": "postgresql/docs/explicit-locking",
+      "sourceUrl": "https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-DEADLOCKS"
+    },
+    {
+      "id": "backend-migration-lock-timeout",
+      "chapter": "backend-data",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Migraatio `ALTER TABLE orders ADD COLUMN note text` jumittuu, ja samalla kaikki orders-kyselyt jonoutuvat ja API kaatuu. Pitkä raporttikysely oli käynnissä. Miten suojaat migraatiot?",
+      "choices": [
+        {
+          "text": "SET lock_timeout ennen ALTERia ja uusi yritys, jos lukkoa ei saada",
+          "correct": true
+        },
+        {
+          "text": "Aja migraatio aina VACUUM FULLin jälkeen, jolloin taulu ei ole lukittuna",
+          "correct": false
+        },
+        {
+          "text": "Lisää sarake DEFAULT-arvolla, jolloin ALTER ei tarvitse lukkoa lainkaan",
+          "correct": false
+        },
+        {
+          "text": "Nosta max_connections, jotta jonoutuneet kyselyt mahtuvat odottamaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ALTER TABLE tarvitsee ACCESS EXCLUSIVE -lukon. Kun se odottaa pitkää kyselyä, kaikki sen jälkeen tulevat kyselyt jäävät jonoon sen taakse. lock_timeout katkaisee odotuksen nopeasti.",
+      "wrongFeedback": "Nopeakin ALTER tarvitsee hetkeksi exclusive-lukon. Ongelma on jonoutuminen, ei yhteyksien määrä.",
+      "featureId": "backend:migration-lock-timeout",
+      "featurePoints": 4,
+      "sourceRef": "postgresql/docs/runtime-config-client",
+      "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-LOCK-TIMEOUT"
+    },
+    {
+      "id": "backend-outbox-pattern",
+      "chapter": "backend-api",
+      "domain": "backend",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Tilaus tallennetaan kantaan ja heti perään lähetetään viesti jonoon. Joskus viesti lähtee, vaikka transaktio peruttiin, ja joskus tilaus tallentuu ilman viestiä. Mikä malli?",
+      "choices": [
+        {
+          "text": "Transactional outbox: viesti samaan transaktioon, erillinen julkaisija lähettää",
+          "correct": true
+        },
+        {
+          "text": "Lähetä viesti ennen tietokantakirjoitusta, niin se ei koskaan jää lähtemättä",
+          "correct": false
+        },
+        {
+          "text": "Kasvata jonon retry-määrää, jolloin puuttuvat viestit toimitetaan lopulta",
+          "correct": false
+        },
+        {
+          "text": "Kaksi erillistä transaktiota, jotka commitoidaan mahdollisimman nopeasti peräkkäin",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Kantaa ja jonoa ei voi commitoida atomisesti. Outbox tekee viestistä osan samaa transaktiota. Julkaisu on vähintään kerran, joten kuluttajan pitää olla idempotentti.",
+      "wrongFeedback": "Järjestyksen vaihto tai retry ei tee kahdesta eri järjestelmän kirjoituksesta atomista.",
+      "featureId": "backend:outbox",
+      "featurePoints": 4,
+      "sourceRef": "microservices.io/transactional-outbox",
+      "sourceUrl": "https://microservices.io/patterns/data/transactional-outbox.html"
     }
   ]
 }
