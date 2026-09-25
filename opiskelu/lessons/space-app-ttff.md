@@ -1,4 +1,4 @@
-# Mitkä tarkoittaa TTFF GNSS-vastaanottimessa?
+# Mitä tarkoittaa TTFF GNSS-vastaanottimessa?
 
 ## Tilanne
 

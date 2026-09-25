@@ -931,75 +931,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b02-qt-signals-disconnect-05",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker"
-      ],
-      "prompt": "Dialog sulkeutuu mutta slot laukeaa edelleen destroyed senderistä. Esto?",
-      "choices": [
-        {
-          "text": "disconnect, QPointer tai destroyed-signaali estää myöhäisen slotin",
-          "correct": true
-        },
-        {
-          "text": "Toivo ettei lähettäjä emitoi enää dialogin sulkeuduttua",
-          "correct": false
-        },
-        {
-          "text": "static connect ilman receiveria sitoo slotin automaattisesti ikuiseksi",
-          "correct": false
-        },
-        {
-          "text": "Poista kaikki signaalit projektista estääksesi myöhäiset slotit",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Disconnect elinkaaren lopussa — Qt object model.",
-      "wrongFeedback": "Elävä connection dead objectiin on vaarallinen. Hallitse elinikää.",
-      "sourceRef": "qt/signalsandslots",
-      "sourceUrl": "https://doc.qt.io/qt-6/signalsandslots.html",
-      "featureId": "qt:disconnect-lifetime",
-      "featurePoints": 3
-    },
-    {
-      "id": "b02-qt-thread-worker-06",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Pitää ajaa raskas laskenta ilman UI-jäätymistä. Qt-rakenne?",
-      "choices": [
-        {
-          "text": "QObject-worker moveToThread(QThread*) — älä override QThread::run GUI:ssa",
-          "correct": true
-        },
-        {
-          "text": "Override QThread::run suoraan QWidget-luokassa raskaalle laskennalle",
-          "correct": false
-        },
-        {
-          "text": "sleep() UI-säikeessä vapauttaa CPU:n taustatehtäville",
-          "correct": false
-        },
-        {
-          "text": "fork() erillinen prosessi pitää UI:n responsiivisena laskennan aikana",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Worker object threadissä — Qt threading best practice.",
-      "wrongFeedback": "Peri QThread väärin GUI:lle. moveToThread worker-objektille.",
-      "sourceRef": "qt/threads",
-      "sourceUrl": "https://doc.qt.io/qt-6/thread-basics.html",
-      "featureId": "qt:worker-thread",
-      "featurePoints": 3
-    },
-    {
       "id": "b02-qt-thread-gui-07",
       "chapter": "qt-threading",
       "domain": "qt",
@@ -1875,75 +1806,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b04-qt-thread-affinity",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Worker-säie kutsuu suoraan QLabel::setText — satunnainen crash. Oikea Qt-malli?",
-      "choices": [
-        {
-          "text": "QueuedConnection signaalilla worker→GUI tai QMetaObject::invokeMethod Qt::QueuedConnection",
-          "correct": true
-        },
-        {
-          "text": "mutex labelin ympärillä riittää",
-          "correct": false
-        },
-        {
-          "text": "GUI-päivitys worker-threadistä on OK",
-          "correct": false
-        },
-        {
-          "text": "volatile QLabel*",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "GUI objekteilla on thread affinity — Qt Thread docs.",
-      "wrongFeedback": "Widgettejä ei kosketeta worker-threadistä. Signaalit queued connectionilla.",
-      "sourceRef": "doc.qt.io/threads-qobject",
-      "sourceUrl": "https://doc.qt.io/qt-6/threads-qobject.html",
-      "featureId": "qt:thread-affinity",
-      "featurePoints": 4
-    },
-    {
-      "id": "b04-qt-models-setData",
-      "chapter": "qt-models",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker"
-      ],
-      "prompt": "QTableView ei päivity kun muokkaat dataa suoraan taustatallennuksessa. Mitä modelin pitää tehdä?",
-      "choices": [
-        {
-          "text": "emit dataChanged(topLeft, bottomRight, roles) muutoksen jälkeen",
-          "correct": true
-        },
-        {
-          "text": "Kutsu view->update() aina riittää",
-          "correct": false
-        },
-        {
-          "text": "Model ei tarvitse ilmoittaa — view pollaa",
-          "correct": false
-        },
-        {
-          "text": "Poista model ja luo uusi",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Model/View vaatii dataChanged-signaalin — QAbstractItemModel docs.",
-      "wrongFeedback": "View ei tiedä taustamuutoksesta ilman dataChanged/rowsInserted.",
-      "sourceRef": "doc.qt.io/qabstractitemmodel",
-      "sourceUrl": "https://doc.qt.io/qt-6/qabstractitemmodel.html",
-      "featureId": "qt:data-changed",
-      "featurePoints": 3
-    },
-    {
       "id": "b04-qt-opengl-depth-buffer",
       "chapter": "qt-opengl",
       "domain": "qt",
@@ -2328,41 +2190,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b05-qt-signals-queued-connection",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Worker-säie emittoi signaalin joka päivittää GUI:ta — satunnainen crash. Korjaus?",
-      "choices": [
-        {
-          "text": "Qt::QueuedConnection — slot ajetaan GUI-säieessä",
-          "correct": true
-        },
-        {
-          "text": "DirectConnection on aina nopein ja turvallisin",
-          "correct": false
-        },
-        {
-          "text": "Poista signaalit — käytä globaalia muuttujaa",
-          "correct": false
-        },
-        {
-          "text": "BlockingQueuedConnection GUI-säieestä GUI-säieeseen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Cross-thread signals default to Queued — Qt signals/slots threading.",
-      "wrongFeedback": "DirectConnection cross-thread on UB. QueuedConnection marshals to receiver thread.",
-      "sourceRef": "signals/slots/thread",
-      "sourceUrl": "https://doc.qt.io/qt-6/threads-qobject.html#signals-and-slots-across-threads",
-      "featureId": "qt:queued-connection",
-      "featurePoints": 4
-    },
-    {
       "id": "b05-qt-signals-disconnect-lambda",
       "chapter": "qt-signals",
       "domain": "qt",
@@ -2395,41 +2222,6 @@
       "sourceRef": "qobject/connect",
       "sourceUrl": "https://doc.qt.io/qt-6/qobject.html#connect",
       "featureId": "qt:disconnect-lambda",
-      "featurePoints": 3
-    },
-    {
-      "id": "b05-qt-thread-movetothread",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Raskas laskenta jäädyttää GUI:n. Oikea Qt-pattern?",
-      "choices": [
-        {
-          "text": "Worker QObject + moveToThread(QThread) — signaalit takaisin GUI:hin",
-          "correct": true
-        },
-        {
-          "text": "QThread::run override GUI-luokassa",
-          "correct": false
-        },
-        {
-          "text": "sleep() pääsäieessä taustalla",
-          "correct": false
-        },
-        {
-          "text": "QTimer::singleShot(0) riittää raskaalle työlle",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Worker object pattern — Qt threading best practice.",
-      "wrongFeedback": "Subclass QThread::run on anti-pattern. moveToThread worker-oliolle.",
-      "sourceRef": "threads/qthread",
-      "sourceUrl": "https://doc.qt.io/qt-6/threads-technologies.html#qthread",
-      "featureId": "qt:movetothread",
       "featurePoints": 3
     },
     {
@@ -2468,41 +2260,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b05-qt-models-sort-filter",
-      "chapter": "qt-models",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "QTableView tarvitsee suodatuksen ja lajittelun ilman datan duplikaatiota. Ratkaisu?",
-      "choices": [
-        {
-          "text": "QSortFilterProxyModel source modelin päällä",
-          "correct": true
-        },
-        {
-          "text": "Kopioi data uuteen QStandardItemModel:iin suodatettuna",
-          "correct": false
-        },
-        {
-          "text": "Piilota rivit setRowHidden manuaalisesti aina",
-          "correct": false
-        },
-        {
-          "text": "SQL WHERE riittää — ei proxya",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Proxy model wraps source — Qt Model/View programming.",
-      "wrongFeedback": "Datan kopiointi on turhaa. Proxy model suodattaa/lajittelee dynaamisesti.",
-      "sourceRef": "qsortfilterproxymodel",
-      "sourceUrl": "https://doc.qt.io/qt-6/qsortfilterproxymodel.html",
-      "featureId": "qt:proxy-model",
-      "featurePoints": 3
-    },
-    {
       "id": "b05-qt-models-data-roles",
       "chapter": "qt-models",
       "domain": "qt",
@@ -2536,41 +2293,6 @@
       "sourceUrl": "https://doc.qt.io/qt-6/qt.html#ItemDataRole-enum",
       "featureId": "qt:item-roles",
       "featurePoints": 3
-    },
-    {
-      "id": "b05-qt-opengl-context-share",
-      "chapter": "qt-opengl",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat resurssit?",
-      "choices": [
-        {
-          "text": "QOpenGLWidget::setShareContext tai shared context group",
-          "correct": true
-        },
-        {
-          "text": "Kaksi erillistä QApplication:ia",
-          "correct": false
-        },
-        {
-          "text": "OpenGL ei tue resurssien jakoa",
-          "correct": false
-        },
-        {
-          "text": "VBO:t kopioidaan aina CPU:lla",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Shared OpenGL contexts — QOpenGLWidget docs.",
-      "wrongFeedback": "Ilman shared contextia jokainen widget lataa omat tekstuurit.",
-      "sourceRef": "qopenglwidget/share",
-      "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
-      "featureId": "qt:gl-context-share",
-      "featurePoints": 4
     },
     {
       "id": "b05-qt-opengl-makecurrent",
@@ -3353,41 +3075,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b07-qt-signals-queued",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Worker-thread emit signaalin joka päivittää GUI-widgettiä — satunnainen crash. Korjaus?",
-      "choices": [
-        {
-          "text": "Qt::QueuedConnection — slot ajetaan receiver-threadissa turvallisesti",
-          "correct": true
-        },
-        {
-          "text": "Qt::DirectConnection nopeuttaa — se on turvallinen cross-thread GUI-päivityksessä",
-          "correct": false
-        },
-        {
-          "text": "Kutsu widgettiä suoraan workerista — mutex riittää thread-safetyyn",
-          "correct": false
-        },
-        {
-          "text": "Poista signaalit — suora kutsu on nopein tapa päivittää GUI",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Cross-thread signals need queued connection — Qt Signals and Slots.",
-      "wrongFeedback": "GUI ei ole thread-safe. QueuedConnection marshals to main thread.",
-      "sourceRef": "qt/connections",
-      "sourceUrl": "https://doc.qt.io/qt-6/qt.html#ConnectionType-enum",
-      "featureId": "qt:queued-connection",
-      "featurePoints": 4
-    },
-    {
       "id": "b07-qt-signals-disconnect",
       "chapter": "qt-signals",
       "domain": "qt",
@@ -3421,41 +3108,6 @@
       "sourceUrl": "https://doc.qt.io/qt-6/signalsandslots.html",
       "featureId": "qt:disconnect",
       "featurePoints": 3
-    },
-    {
-      "id": "b07-qt-thread-moveToThread",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Raskas laskenta jäädyttää GUI-threadin. Qt-idiomi taustatyölle?",
-      "choices": [
-        {
-          "text": "Worker QObject moveToThread(QThread) — signaalit takaisin GUI-säikeeseen",
-          "correct": true
-        },
-        {
-          "text": "std::thread suoraan widgetistä — se on Qt:n suositeltu taustatyömalli",
-          "correct": false
-        },
-        {
-          "text": "QThread::run ilman QObjectia — se korvaa moveToThread-patternin",
-          "correct": false
-        },
-        {
-          "text": "processEvents silmukassa — se pitää GUI:n responsiivisena raskaassa työssä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "moveToThread pattern — Qt Thread Support.",
-      "wrongFeedback": "processEvents on hauras. Worker thread + queued signals on Qt-tapa.",
-      "sourceRef": "qt/threads",
-      "sourceUrl": "https://doc.qt.io/qt-6/threads-technologies.html",
-      "featureId": "qt:movetothread",
-      "featurePoints": 4
     },
     {
       "id": "b07-qt-thread-gui-rule",
@@ -3815,41 +3467,6 @@
       "featurePoints": 2
     },
     {
-      "id": "b08-qt-signals-blocking",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Lataat modelin UI:hin — jokainen setData laukaisee dataChanged ja hidastaa. Miten hiljennät?",
-      "choices": [
-        {
-          "text": "QSignalBlocker tai blockSignals(true) — palauta false batch-päivityksen jälkeen",
-          "correct": true
-        },
-        {
-          "text": "disconnect kaikki signaalit pysyvästi — se nopeuttaa model-latausta",
-          "correct": false
-        },
-        {
-          "text": "Signaaleja ei voi estää Qt:ssa — dataChanged laukeaa aina",
-          "correct": false
-        },
-        {
-          "text": "sleep() signaalien välissä — se estää liian monta dataChanged-kutsua",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "QSignalBlocker RAII blocks signals — QObject blockSignals.",
-      "wrongFeedback": "Batch-päivityksissä blokkaa signaalit. Muuten N× dataChanged.",
-      "sourceRef": "qobject/blockSignals",
-      "sourceUrl": "https://doc.qt.io/qt-6/qobject.html#blockSignals",
-      "featureId": "qt:signal-blocker",
-      "featurePoints": 3
-    },
-    {
       "id": "b08-qt-signals-unique-connection",
       "chapter": "qt-signals",
       "domain": "qt",
@@ -3885,76 +3502,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b08-qt-thread-qthreadpool",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Paljon lyhyitä taustatehtäviä — uusi QThread jokaiselle on raskasta. Parempi Qt-ratkaisu?",
-      "choices": [
-        {
-          "text": "QThreadPool + QRunnable / QtConcurrent — uudelleenkäytettävä säiepooli",
-          "correct": true
-        },
-        {
-          "text": "QThread::create jokaiselle tehtävälle — se on kevyin tapa lyhyille töille",
-          "correct": false
-        },
-        {
-          "text": "GUI-säie voi ajaa raskaat tehtävät — processEvents pitää UI:n elossa",
-          "correct": false
-        },
-        {
-          "text": "std::thread ilman Qt integraatiota aina parempi kuin QThreadPool",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "QThreadPool manages worker threads — Qt Concurrent.",
-      "wrongFeedback": "Thread pool vähentää luonti/kill overheadia. QtConcurrent mapReduce helppo.",
-      "sourceRef": "qthreadpool",
-      "sourceUrl": "https://doc.qt.io/qt-6/qthreadpool.html",
-      "featureId": "qt:thread-pool",
-      "featurePoints": 3
-    },
-    {
-      "id": "b08-qt-thread-invoke",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Worker-säie päivittää QLabel:ia suoraan — crash. Oikea tapa kutsua GUI-metodia toisesta säieestä?",
-      "choices": [
-        {
-          "text": "invokeMethod(..., Qt::QueuedConnection) tai signaali GUI-säikeeseen",
-          "correct": true
-        },
-        {
-          "text": "Direct call QLabel::setText workeristä — mutex tekee päivityksen thread-safeksi",
-          "correct": false
-        },
-        {
-          "text": "mutex riittää GUI-päivitykseen worker-threadista ilman invokeMethodia",
-          "correct": false
-        },
-        {
-          "text": "GUI ei tarvitse säieturvallisuutta — QLabel::setText on thread-safe Qt:ssa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "GUI objects live in main thread — invokeMethod queued — threads-qobject.",
-      "wrongFeedback": "QWidget ei thread-safe. Marshaling queued connectionilla.",
-      "sourceRef": "qmetaobject/invokeMethod",
-      "sourceUrl": "https://doc.qt.io/qt-6/qmetaobject.html#invokeMethod",
-      "featureId": "qt:invoke-method",
-      "featurePoints": 4
-    },
-    {
       "id": "b08-qt-models-sort-filter",
       "chapter": "qt-models",
       "domain": "qt",
@@ -3988,76 +3535,6 @@
       "sourceUrl": "https://doc.qt.io/qt-6/qsortfilterproxymodel.html",
       "featureId": "qt:sort-filter-proxy",
       "featurePoints": 3
-    },
-    {
-      "id": "b08-qt-models-data-changed",
-      "chapter": "qt-models",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Custom model päivittää solun — view ei päivity ennen full reset. Mitä signaalia emit?",
-      "choices": [
-        {
-          "text": "dataChanged(topLeft, bottomRight, roles) — targeted update yhdelle solulle",
-          "correct": true
-        },
-        {
-          "text": "layoutChanged aina yhdestä solusta — se on kevyin päivityssignaali",
-          "correct": false
-        },
-        {
-          "text": "modelReset jokaiselle muutokselle — view päivittyy ilman flickeriä",
-          "correct": false
-        },
-        {
-          "text": "View pollaa modelia timerilla — signaaleja ei tarvita solupäivitykseen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "dataChanged notifies views of cell updates — QAbstractItemModel.",
-      "wrongFeedback": "modelReset on raskas. dataChanged rajattu alueelle.",
-      "sourceRef": "qabstractitemmodel/dataChanged",
-      "sourceUrl": "https://doc.qt.io/qt-6/qabstractitemmodel.html#dataChanged",
-      "featureId": "qt:data-changed",
-      "featurePoints": 3
-    },
-    {
-      "id": "b08-qt-opengl-context-share",
-      "chapter": "qt-opengl",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Miten jaat GL-resurssit?",
-      "choices": [
-        {
-          "text": "QSurfaceFormat setShareContext — sama QOpenGLContext share group",
-          "correct": true
-        },
-        {
-          "text": "OpenGL ei tue resurssien jakoa — jokainen widget luo omat tekstuurit",
-          "correct": false
-        },
-        {
-          "text": "Piirrä kaikki yhteen widgetiin aina — share context ei ole tuettu",
-          "correct": false
-        },
-        {
-          "text": "shareContext toimii vain QML:llä — ei QOpenGLWidgetissä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Shared OpenGL contexts share textures — QOpenGLWidget docs.",
-      "wrongFeedback": "Ilman shared context jokainen widget luo omat GL-resurssit.",
-      "sourceRef": "qopenglwidget/share",
-      "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
-      "featureId": "qt:gl-share-context",
-      "featurePoints": 4
     },
     {
       "id": "b08-qt-opengl-vsync",
@@ -4131,41 +3608,6 @@
       "versions": [
         "Qt 6"
       ]
-    },
-    {
-      "id": "b08-qt-shaders-precision",
-      "chapter": "qt-shaders",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Fragment shader toimii desktopilla mutta on musta mobiilissa. Epäily?",
-      "choices": [
-        {
-          "text": "precision mediump/lowp mobiilissa — tarkista GLSL ES precision qualifierit",
-          "correct": true
-        },
-        {
-          "text": "Mobiili ei tue fragment shadereita — vain vertex shader toimii",
-          "correct": false
-        },
-        {
-          "text": "Qt ei tue OpenGL ES — shaderit toimivat vain desktopilla",
-          "correct": false
-        },
-        {
-          "text": "precision ei vaikuta väriin — musta ruutu johtuu muusta syystä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Mobile GPUs need precision qualifiers — GLSL ES spec.",
-      "wrongFeedback": "Desktop highp vs mobile mediump voi rikkoa laskennan. Testaa ES profiililla.",
-      "sourceRef": "glsl/es/precision",
-      "sourceUrl": "https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf",
-      "featureId": "qt:shader-precision",
-      "featurePoints": 3
     },
     {
       "id": "b08-qt-widgets-focus-policy",
@@ -4343,111 +3785,6 @@
       "featurePoints": 2
     },
     {
-      "id": "b09-qt-signals-unique-connection",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Sama connect() kutsutaan useasti initissä — slotti laukeaa monta kertaa. Estä?",
-      "choices": [
-        {
-          "text": "Qt::UniqueConnection — connect epäonnistuu jos yhteys on jo olemassa",
-          "correct": true
-        },
-        {
-          "text": "disconnect() ennen jokaista connectia manuaalisesti — ainoa tapa estää duplikaatti",
-          "correct": false
-        },
-        {
-          "text": "UniqueConnection ei toimi lambda-sloteilla — vain member-funktiot",
-          "correct": false
-        },
-        {
-          "text": "Signaalit eivät voi duplikoitua — Qt estää sen automaattisesti",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Qt::UniqueConnection — Qt connect docs.",
-      "wrongFeedback": "Toistuva connect tuplaa slot-kutsut. UniqueConnection tai disconnect ensin.",
-      "sourceRef": "qobject/connect/connectiontype",
-      "sourceUrl": "https://doc.qt.io/qt-6/qt.html#ConnectionType-enum",
-      "featureId": "qt:unique-connection",
-      "featurePoints": 3
-    },
-    {
-      "id": "b09-qt-signals-block-updates",
-      "chapter": "qt-signals",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Lataat 1000 riviä modeliin — jokainen setData laukaisee view-päivityksen. Optimointi?",
-      "choices": [
-        {
-          "text": "QSignalBlocker tai blockSignals(true) bulk-päivityksen ajaksi",
-          "correct": true
-        },
-        {
-          "text": "Poista view tilapäisesti — se on nopein tapa ladata 1000 riviä",
-          "correct": false
-        },
-        {
-          "text": "Signaaleja ei voi estää Qt:ssa — setData laukaisee aina päivityksen",
-          "correct": false
-        },
-        {
-          "text": "processEvents() nopeuttaa bulk-latausta — se estää UI-jumiutumisen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "blockSignals/QSignalBlocker — Qt signals batch update.",
-      "wrongFeedback": "Bulk-päivitys ilman blockia aiheuttaa N repaint. Estä signaalit.",
-      "sourceRef": "qobject/blockSignals",
-      "sourceUrl": "https://doc.qt.io/qt-6/qobject.html#blockSignals",
-      "featureId": "qt:signal-blocker",
-      "featurePoints": 3
-    },
-    {
-      "id": "b09-qt-thread-qthreadpool",
-      "chapter": "qt-threading",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Satoja lyhyitä taustatehtäviä — uusi QThread jokaiselle on liian raskasta. Pattern?",
-      "choices": [
-        {
-          "text": "QThreadPool + QRunnable — uudelleenkäytettävä säiepooli lyhyille tehtäville",
-          "correct": true
-        },
-        {
-          "text": "QThread::create jokaiselle tehtävälle — kevyin tapa satoihin töihin",
-          "correct": false
-        },
-        {
-          "text": "sleep() pääsäikeessä — se jakaa CPU-aikaa taustatehtäville",
-          "correct": false
-        },
-        {
-          "text": "QtConcurrent::run ilman poolia aina — QThreadPool ei tuo hyötyä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "QThreadPool hallitsee worker-säikeitä — Qt concurrency.",
-      "wrongFeedback": "Thread per task ei skaalaudu. QThreadPool jakaa säieet.",
-      "sourceRef": "qthreadpool",
-      "sourceUrl": "https://doc.qt.io/qt-6/qthreadpool.html",
-      "featureId": "qt:thread-pool",
-      "featurePoints": 3
-    },
-    {
       "id": "b09-qt-thread-wait-condition",
       "chapter": "qt-threading",
       "domain": "qt",
@@ -4515,76 +3852,6 @@
       "sourceRef": "qabstractitemmodel/reset",
       "sourceUrl": "https://doc.qt.io/qt-6/qabstractitemmodel.html#beginResetModel",
       "featureId": "qt:model-reset",
-      "featurePoints": 4
-    },
-    {
-      "id": "b09-qt-models-sort-proxy",
-      "chapter": "qt-models",
-      "domain": "qt",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "QTableView sorttaus rikkoo custom modelin indeksit. Ratkaisu?",
-      "choices": [
-        {
-          "text": "QSortFilterProxyModel source modelin päällä — view näkee proxyn",
-          "correct": true
-        },
-        {
-          "text": "Lajittele source data suoraan — view seuraa automaattisesti indeksejä",
-          "correct": false
-        },
-        {
-          "text": "Model ei tue sorttausta Qt:ssa — vain QTableWidget sorttaa",
-          "correct": false
-        },
-        {
-          "text": "setSortingEnabled(false) aina — sorttaus rikkoo custom modelin",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "QSortFilterProxyModel — Qt model/view sorting.",
-      "wrongFeedback": "Proxy erottaa sort/filter logiikan source modelista.",
-      "sourceRef": "qsortfilterproxymodel",
-      "sourceUrl": "https://doc.qt.io/qt-6/qsortfilterproxymodel.html",
-      "featureId": "qt:sort-proxy",
-      "featurePoints": 3
-    },
-    {
-      "id": "b09-qt-opengl-context-share",
-      "chapter": "qt-opengl",
-      "domain": "qt",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Kaksi QOpenGLWidget:ia — tekstuurit ladataan kahdesti. Optimointi?",
-      "choices": [
-        {
-          "text": "QSurfaceFormat setSharedContext — jaetut GL-resurssit widgetien välillä",
-          "correct": true
-        },
-        {
-          "text": "Kaksi erillistä QApplication:ia — se jakaa tekstuurit automaattisesti",
-          "correct": false
-        },
-        {
-          "text": "OpenGL ei tue resurssien jakoa — tekstuurit ladataan aina kahdesti",
-          "correct": false
-        },
-        {
-          "text": "QPainter korvaa OpenGL:n aina — share context ei ole tarpeen",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Shared OpenGL contexts — Qt OpenGL docs.",
-      "wrongFeedback": "Jaettu context säästää tekstuurimuistia. setShareContext.",
-      "sourceRef": "qopenglwidget/share-context",
-      "sourceUrl": "https://doc.qt.io/qt-6/qopenglwidget.html",
-      "featureId": "qt:gl-share-context",
       "featurePoints": 4
     },
     {

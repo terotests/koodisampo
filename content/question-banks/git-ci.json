@@ -783,6 +783,77 @@
       "sourceUrl": "https://sre.google/sre-book/addressing-cascading-failures/",
       "featureId": "git:ci-rollback",
       "featurePoints": 4
+    },
+    {
+      "id": "git-blame-ignore-revs",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Koko repo formatoitiin yhdellä commitilla, ja nyt git blame näyttää lähes jokaiselle riville vain formatointicommitin. Miten saat alkuperäiset tekijät näkyviin?",
+      "choices": [
+        {
+          "text": "Lisää commit .git-blame-ignore-revs-tiedostoon (blame.ignoreRevsFile)",
+          "correct": true
+        },
+        {
+          "text": "Peru formatointicommit git revertillä ja formatoi tiedostot vähitellen",
+          "correct": false
+        },
+        {
+          "text": "Aja git blame --reverse, joka ohittaa pelkät muotoilumuutokset",
+          "correct": false
+        },
+        {
+          "text": "Squashaa formatointi edelliseen committiin rebase -i:llä mainissa",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "--ignore-revs-file (tai blame.ignoreRevsFile) ohittaa luetellut commitit ja näyttää rivin edellisen merkityksellisen muutoksen. GitHub ja GitLab lukevat saman tiedoston.",
+      "wrongFeedback": "Revert tai jaetun mainin historian uudelleenkirjoitus on turhaa ja riskialtista. --reverse etsii, milloin rivi viimeksi oli olemassa.",
+      "featureId": "git:blame-ignore-revs",
+      "featurePoints": 3,
+      "sourceRef": "git-scm/docs/git-blame",
+      "sourceUrl": "https://git-scm.com/docs/git-blame#Documentation/git-blame.txt---ignore-revs-fileltfilegt"
+    },
+    {
+      "id": "git-leaked-secret-history",
+      "chapter": "git-workflow",
+      "domain": "git",
+      "difficulty": 4,
+      "audiences": [
+        "coworker",
+        "security",
+        "guru"
+      ],
+      "prompt": "API-avain commitoitiin vahingossa ja pushattiin julkiseen repoon tunti sitten. Mikä on ensimmäinen toimenpide?",
+      "choices": [
+        {
+          "text": "Mitätöi ja vaihda avain heti — historian siivous vasta sen jälkeen",
+          "correct": true
+        },
+        {
+          "text": "Poista tiedosto uudella commitilla, jolloin avain katoaa repositoriosta",
+          "correct": false
+        },
+        {
+          "text": "Tee git commit --amend ja force push, jolloin kukaan ei näe avainta",
+          "correct": false
+        },
+        {
+          "text": "Muuta repo yksityiseksi, jolloin vuotanut avain ei ole enää vaarallinen",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Julkisesta reposta avain on voitu kopioida jo — botit skannaavat julkisia repoja minuuteissa. Vain mitätöinti poistaa riskin; historian siivous estää uudet löydöt.",
+      "wrongFeedback": "Uusi commit tai amend ei poista avainta forkeista, klooneista eikä välimuisteista, eikä yksityistäminen peru jo tapahtunutta vuotoa.",
+      "featureId": "git:leaked-secret",
+      "featurePoints": 4,
+      "sourceRef": "github/removing-sensitive-data",
+      "sourceUrl": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository"
     }
   ]
 }

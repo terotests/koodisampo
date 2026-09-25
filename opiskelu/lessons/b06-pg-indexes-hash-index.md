@@ -1,4 +1,4 @@
-# Equality-haku UUID-sarakkeessa — btree on hidas suurilla tauluilla. Milloin hash index?
+# Harkitset hash-indeksiä UUID-sarakkeelle, jota haetaan vain yhtäsuuruudella. Mikä rajoitus on hyvä tietää?
 
 ## Tilanne
 
@@ -16,6 +16,6 @@ Käytännössä **btree on usein riittävä** UUID equality-haulle — hash voi 
 
 ## Taustaa
 
-"Hash on hidas suurilla tauluilla" on harhaanjohtava — ongelma on yleensä seq scan ilman indeksiä. Valitse hash vain, jos tarvitset pelkkää equalitya ja haluat minimoida indeksikoon.
+"B-tree on hidas suurilla tauluilla" on harhaanjohtava — ongelma on yleensä seq scan ilman indeksiä. Valitse hash vain, jos tarvitset pelkkää equalitya ja haluat minimoida indeksikoon.
 
 [Lue lisää](https://www.postgresql.org/docs/current/indexes-types.html#INDEXES-TYPES-HASH)

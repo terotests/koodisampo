@@ -14,7 +14,7 @@ const projectRoot = resolve(__dirname, "..");
 
 export function runStudyLessonSolutionTests() {
   const sample = readFileSync(
-    resolve(projectRoot, "opiskelu/lessons/b04-linux-avahi-browse.md"),
+    resolve(projectRoot, "opiskelu/lessons/b02-linux-avahi-browse-12.md"),
     "utf8",
   );
   const section = extractMarkdownSection(sample, "Ratkaisu");

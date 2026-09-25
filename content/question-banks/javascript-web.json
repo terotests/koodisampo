@@ -288,41 +288,6 @@
       "featurePoints": 3
     },
     {
-      "id": "exp-js-async-microtask-order",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Bugiraportti: `console.log` järjestys on 1, 4, 2, 3 — setTimeout(0), Promise.resolve, sync. Miksi?",
-      "choices": [
-        {
-          "text": "Promise microtask ajetaan ennen setTimeout-macrotaskia loopissa",
-          "correct": true
-        },
-        {
-          "text": "setTimeout ajetaan aina ennen muita asynkronisia tehtäviä",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen koodi suoritetaan uudelleen jokaisella loop-kierroksella",
-          "correct": false
-        },
-        {
-          "text": "Promise.then on macrotask samassa jonossa kuin setTimeout",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Event loop tyhjentää microtask-jonon ennen seuraavaa macrotaskia — MDN.",
-      "wrongFeedback": "Promise.then on microtask — setTimeout macrotask eri jonossa.",
-      "sourceRef": "MDN/Event_loop",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
-      "featureId": "javascript:event-loop",
-      "featurePoints": 4
-    },
-    {
       "id": "exp-js-async-await-parallel",
       "chapter": "js-async",
       "domain": "javascript",
@@ -776,74 +741,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b02-js-async-microtask-03",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru"
-      ],
-      "prompt": "console.log järjestys: sync, Promise.resolve().then, setTimeout(0). Mikä ensin microtask jonossa?",
-      "choices": [
-        {
-          "text": "Promise.then ennen setTimeout — microtask-queue macrotaskin edellä",
-          "correct": true
-        },
-        {
-          "text": "setTimeout ajetaan aina ennen microtask-jonon tyhjennystä",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen koodi ajetaan viimeisenä jokaisella event loop -kierroksella",
-          "correct": false
-        },
-        {
-          "text": "Järjestys on satunnainen kun timer ja promise ovat samassa kierroksessa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Event loop: microtasks ennen seuraavaa macrotask — MDN event loop.",
-      "wrongFeedback": "Promise callback on microtask. setTimeout on macrotask.",
-      "sourceRef": "MDN/Event_loop",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
-      "featureId": "js:event-loop",
-      "featurePoints": 4
-    },
-    {
-      "id": "b02-js-async-await-04",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker"
-      ],
-      "prompt": "async funktio heittää virheen — caller ei saa stack tracea. Miten käsittelet?",
-      "choices": [
-        {
-          "text": "try/catch awaitin ympärillä tai .catch() promisen ketjussa",
-          "correct": true
-        },
-        {
-          "text": "async-funktio ei voi heittää virhettä koskaan kutsujalle",
-          "correct": false
-        },
-        {
-          "text": "console.log on ainoa tapa nähdä async-funktion virheilmoitus",
-          "correct": false
-        },
-        {
-          "text": "Poista async — silloin throw toimii taas normaalisti callerissa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "async/await palauttaa rejected promise — MDN async function.",
-      "wrongFeedback": "Unhandled rejection jos ei catch. try/catch awaitin ympärillä.",
-      "sourceRef": "MDN/async_function",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
-      "featureId": "js:async-error",
-      "featurePoints": 3
-    },
-    {
       "id": "b02-js-types-optional-05",
       "chapter": "js-types",
       "domain": "javascript",
@@ -983,40 +880,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
       "featureId": "js:dynamic-import",
       "featurePoints": 3
-    },
-    {
-      "id": "b02-js-modules-cycle-09",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru"
-      ],
-      "prompt": "Kaksi moduulia importtaa toisensa — toinen export undefined init aikana. Ratkaisu?",
-      "choices": [
-        {
-          "text": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin tai lazy import",
-          "correct": true
-        },
-        {
-          "text": "Poista export — import riittää kun sykli on vain kahden moduulin välillä",
-          "correct": false
-        },
-        {
-          "text": "Siirry CommonJS:ään — se ratkaisee circular dependency -ongelman",
-          "correct": false
-        },
-        {
-          "text": "global variable jakaa tilan moduulien välillä init-ongelman kiertämiseksi",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Circular deps aiheuttavat TDZ-ongelmia — MDN modules guide.",
-      "wrongFeedback": "Syklit rikkovat init-järjestyksen. Jaa tai lazy load.",
-      "sourceRef": "MDN/Modules",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
-      "featureId": "js:circular-deps",
-      "featurePoints": 4
     },
     {
       "id": "b02-js-modules-tla-10",
@@ -1753,41 +1616,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b04-js-modules-import-meta",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "ES-moduulissa tarvitset nykyisen moduulin URL:n asset-polkuun. Standardi API?",
-      "choices": [
-        {
-          "text": "import.meta.url",
-          "correct": true
-        },
-        {
-          "text": "__dirname — saatavilla browsereissa",
-          "correct": false
-        },
-        {
-          "text": "window.location aina",
-          "correct": false
-        },
-        {
-          "text": "require.resolve",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "import.meta.url on ESM-moduulin canonical URL — MDN import.meta.",
-      "wrongFeedback": "__dirname on CommonJS. import.meta.url on ESM-vastine.",
-      "sourceRef": "MDN/import.meta",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta",
-      "featureId": "js:import-meta",
-      "featurePoints": 3
-    },
-    {
       "id": "b04-js-runtime-gc-closure",
       "chapter": "js-runtime",
       "domain": "javascript",
@@ -1927,44 +1755,6 @@
       "featurePoints": 2
     },
     {
-      "id": "b04-js-runtime-error-cause",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "fetch wrapper heittää uuden Error('API failed') — alkuperäinen stack katoaa. ES2022 parannus?",
-      "choices": [
-        {
-          "text": "throw new Error('API failed', { cause: originalError })",
-          "correct": true
-        },
-        {
-          "text": "console.log original — riittää",
-          "correct": false
-        },
-        {
-          "text": "Error ei tue ketjutusta",
-          "correct": false
-        },
-        {
-          "text": "String(originalError) stackissa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Error cause säilyttää juurisyyn — MDN Error constructor cause.",
-      "wrongFeedback": "Ilman cause debuggaus vaikeaa. error.cause paljastaa alkuperäisen.",
-      "sourceRef": "MDN/Error/cause",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error#options",
-      "featureId": "js:error-cause",
-      "featurePoints": 3,
-      "versions": [
-        "ES2022"
-      ]
-    },
-    {
       "id": "b04-js-async-race-fetch",
       "chapter": "js-async",
       "domain": "javascript",
@@ -2034,41 +1824,6 @@
       "versions": [
         "ES2019"
       ]
-    },
-    {
-      "id": "b04-js-runtime-structured-clone",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "JSON.parse(JSON.stringify(obj)) rikkoo Date-objektit ja undefined-kentät. Parempi deep clone?",
-      "choices": [
-        {
-          "text": "structuredClone(obj) — structured clone algorithm",
-          "correct": true
-        },
-        {
-          "text": "Object.assign riittää deep cloneen",
-          "correct": false
-        },
-        {
-          "text": "Spread {...obj} deep clone",
-          "correct": false
-        },
-        {
-          "text": "lodash ainoa vaihtoehto",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "structuredClone tukee Date, Map, ArrayBuffer jne. — MDN structuredClone.",
-      "wrongFeedback": "JSON hack menettää tyypit. structuredClone on natiivi deep clone.",
-      "sourceRef": "MDN/structuredClone",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/structuredClone",
-      "featureId": "js:structured-clone",
-      "featurePoints": 4
     },
     {
       "id": "b04-js-modules-dynamic-import",
@@ -2244,111 +1999,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b05-js-async-debounce",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "project-lead"
-      ],
-      "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäimellä — palvelin ylikuormittuu. Ratkaisu?",
-      "choices": [
-        {
-          "text": "Debounce — odota tauko ennen kutsua",
-          "correct": true
-        },
-        {
-          "text": "Synkroninen XMLHttpRequest",
-          "correct": false
-        },
-        {
-          "text": "while-loop odottaa käyttäjää",
-          "correct": false
-        },
-        {
-          "text": "Poista input-kenttä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Debounce limits call rate — common async UI pattern.",
-      "wrongFeedback": "Jokainen keypress ei tarvitse API-kutsua. Debounce tai throttle.",
-      "sourceRef": "mdn/setTimeout/debounce",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout",
-      "featureId": "javascript:debounce",
-      "featurePoints": 3
-    },
-    {
-      "id": "b05-js-fetch-abort-controller",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-      "choices": [
-        {
-          "text": "AbortController — abort edellinen pyyntö uuden alkaessa",
-          "correct": true
-        },
-        {
-          "text": "fetch ei voi peruuttaa",
-          "correct": false
-        },
-        {
-          "text": "location.reload() ennen fetchiä",
-          "correct": false
-        },
-        {
-          "text": "Global flag ilman abortia riittää",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "AbortSignal cancels fetch — MDN AbortController.",
-      "wrongFeedback": "Ilman abortia vanha pyyntö voi valmistua myöhemmin. AbortController.",
-      "sourceRef": "mdn/abortcontroller",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
-      "featureId": "javascript:abort-controller",
-      "featurePoints": 4
-    },
-    {
-      "id": "b05-js-types-nullish-coalescing",
-      "chapter": "js-types",
-      "domain": "javascript",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "secretary"
-      ],
-      "prompt": "Laskuri voi palauttaa arvon 0, joka on validi. Oletusarvon 10 pitää käyttää vain kun arvo puuttuu (null/undefined), ei kun se on nolla. Mikä operaattori eroaa `||`:sta tässä?",
-      "choices": [
-        {
-          "text": "value ?? 10 — nullish coalescing",
-          "correct": true
-        },
-        {
-          "text": "value || 10 on oikein nollalle",
-          "correct": false
-        },
-        {
-          "text": "value == 10",
-          "correct": false
-        },
-        {
-          "text": "typeof value || 10",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "?? only null/undefined — MDN nullish coalescing.",
-      "wrongFeedback": "|| käsittelee 0, '', false falsyina. ?? vain null ja undefined.",
-      "sourceRef": "mdn/nullish-coalescing",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing",
-      "featureId": "javascript:nullish-coalescing",
-      "featurePoints": 2
-    },
-    {
       "id": "b05-js-types-strict-equality",
       "chapter": "js-types",
       "domain": "javascript",
@@ -2454,111 +2104,6 @@
       "featurePoints": 2
     },
     {
-      "id": "b05-js-modules-dynamic-import",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Raskas chart-kirjasto ladataan vain kun käyttäjä avaa analytics-sivun. Miten?",
-      "choices": [
-        {
-          "text": "import('chart.js') — dynamic import code-splitting",
-          "correct": true
-        },
-        {
-          "text": "Static import tiedoston alussa aina",
-          "correct": false
-        },
-        {
-          "text": "document.write('<script>')",
-          "correct": false
-        },
-        {
-          "text": "eval('import chart')",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Dynamic import returns Promise — MDN import().",
-      "wrongFeedback": "Static import lataa heti. Dynamic import lazy-loadaa moduulin.",
-      "sourceRef": "mdn/import-dynamic",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
-      "featureId": "javascript:dynamic-import",
-      "featurePoints": 3
-    },
-    {
-      "id": "b05-js-modules-top-level-await",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Moduulin init tarvitsee config-fetch ennen exportteja. Moderni tapa ilman callback-helvettiä?",
-      "choices": [
-        {
-          "text": "Top-level await moduulissa — odottaa ennen moduulin valmistumista",
-          "correct": true
-        },
-        {
-          "text": "Sync XMLHttpRequest",
-          "correct": false
-        },
-        {
-          "text": "Global window.config setTimeout:lla",
-          "correct": false
-        },
-        {
-          "text": "Top-level await toimii vain Node:ssa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "TLA in ES modules — MDN async modules.",
-      "wrongFeedback": "Top-level await toimii module scripteissä. Odottaa async initin.",
-      "sourceRef": "mdn/top-level-await",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await",
-      "featureId": "javascript:top-level-await",
-      "featurePoints": 4
-    },
-    {
-      "id": "b05-js-runtime-closure-stale",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "for-silmukassa 5 nappia — kaikki tulostavat 5. Klassinen bugi. Korjaus?",
-      "choices": [
-        {
-          "text": "let i silmukassa tai IIFE/closure joka kaappaa arvon per iteratio",
-          "correct": true
-        },
-        {
-          "text": "var i riittää aina",
-          "correct": false
-        },
-        {
-          "text": "Poista closure — globaali i",
-          "correct": false
-        },
-        {
-          "text": "onclick ei tue closureja",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "var is function-scoped — MDN closures.",
-      "wrongFeedback": "var jakaa saman i:n. let luo uuden sidonnan per iteratio.",
-      "sourceRef": "mdn/closures",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures",
-      "featureId": "javascript:closure-loop",
-      "featurePoints": 3
-    },
-    {
       "id": "b05-js-runtime-prototype-pollution",
       "chapter": "js-runtime",
       "domain": "javascript",
@@ -2662,41 +2207,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests",
       "featureId": "javascript:cors-preflight",
       "featurePoints": 4
-    },
-    {
-      "id": "b06-js-async-queue-microtask",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "console.log järjestys: sync, setTimeout(0), promise.then. Mitä tulostuu ensin promise:n jälkeen?",
-      "choices": [
-        {
-          "text": "Promise.then ajetaan microtask-jonossa ennen setTimeout-macrotaskia",
-          "correct": true
-        },
-        {
-          "text": "setTimeout(0) saa aina etuoikeuden ennen Promise-callbackia event loopissa",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen koodi ja promise-then jakavat saman suoritusprioriteetin",
-          "correct": false
-        },
-        {
-          "text": "Tulostusjärjestys riippuu selaimen satunnaistetusta ajoituksesta",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Event loop microtask queue — MDN event loop.",
-      "wrongFeedback": "Promise.then on microtask — ennen setTimeout macrotaskia.",
-      "sourceRef": "MDN/event-loop",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
-      "featureId": "js:event-loop",
-      "featurePoints": 3
     },
     {
       "id": "b06-js-async-settimeout-zero",
@@ -2947,76 +2457,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b06-js-modules-import-assertions",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "JSON config moduuli — haluat importtaa JSON ESM:ssä turvallisesti. Miten?",
-      "choices": [
-        {
-          "text": "import config from './config.json' with { type: 'json' } — import attribute",
-          "correct": true
-        },
-        {
-          "text": "fetch config runtime aina — JSON ei kuulu moduulijärjestelmään ESM:ssä",
-          "correct": false
-        },
-        {
-          "text": "require('config.json') toimii ESM-moduulissa samalla tavalla kuin CommonJS",
-          "correct": false
-        },
-        {
-          "text": "import json ilman assertionia — bundler tunnistaa tyypin tiedostopäätteestä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Import attributes JSON — MDN import.",
-      "wrongFeedback": "Import assertions/type määrittää moduulityypin. JSON import.",
-      "sourceRef": "MDN/import",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
-      "featureId": "js:import-json",
-      "featurePoints": 4
-    },
-    {
-      "id": "b06-js-modules-top-level-await",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "ESM moduuli tarvitsee async init ennen exporttia. Miten ilman wrapper-funktiota?",
-      "choices": [
-        {
-          "text": "Top-level await moduulin juuressa — ESM sallii async init ennen exportteja",
-          "correct": true
-        },
-        {
-          "text": "await toimii vain async-funktion sisällä — moduulin juuri on aina synkroninen",
-          "correct": false
-        },
-        {
-          "text": "Async IIFE moduulin alussa korvaa top-level awaitin kaikissa bundlereissa",
-          "correct": false
-        },
-        {
-          "text": "CommonJS require tukee async initia natiivisti ilman wrapper-funktiota",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Top-level await — MDN await module.",
-      "wrongFeedback": "ESM sallii top-level await. Ei tarvitse wrapper.",
-      "sourceRef": "MDN/await",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await",
-      "featureId": "js:top-level-await",
-      "featurePoints": 3
-    },
-    {
       "id": "b06-js-runtime-finalization-registry",
       "chapter": "js-runtime",
       "domain": "javascript",
@@ -3191,111 +2631,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b07-js-async-abort",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Käyttäjä vaihtaa sivua ennen fetchin valmistumista — vanha vastaus ylikirjoittaa uuden. Korjaus?",
-      "choices": [
-        {
-          "text": "AbortController — signal fetchiin ja abort navigoinnissa peruuttaa pyynnön",
-          "correct": true
-        },
-        {
-          "text": "Ignoroi vanha vastaus flagilla — race condition ratkeaa ilman abortia",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen fetch estää vanhan vastauksen ylikirjoittamisen uuden päälle",
-          "correct": false
-        },
-        {
-          "text": "localStorage-cache kaikille vastauksille estää navigointikonfliktit",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "AbortController cancels fetch — MDN AbortController.",
-      "wrongFeedback": "Race condition ilman peruutusta. Abort uusi navigointi.",
-      "sourceRef": "MDN/AbortController",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
-      "featureId": "js:abort-controller",
-      "featurePoints": 4
-    },
-    {
-      "id": "b07-js-async-microtask",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "console.log järjestys: sync, Promise.then, setTimeout. Mikä tulostuu toisena?",
-      "choices": [
-        {
-          "text": "Promise.then (microtask) ennen setTimeout (macrotask) event loopissa",
-          "correct": true
-        },
-        {
-          "text": "setTimeout ajetaan aina ennen microtask-jonoa kun viive on nolla",
-          "correct": false
-        },
-        {
-          "text": "Kaikki console.log-kutsut suoritetaan synkronisesti samassa järjestyksessä",
-          "correct": false
-        },
-        {
-          "text": "Promise.then on macrotask samassa jonossa kuin setTimeout ja setInterval",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Microtasks run before next macrotask — MDN event loop.",
-      "wrongFeedback": "Event loop: sync → microtasks → macrotask. Promise.then on microtask.",
-      "sourceRef": "MDN/Event_loop",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
-      "featureId": "js:event-loop",
-      "featurePoints": 4
-    },
-    {
-      "id": "b07-js-async-await-error",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "async funktio heittää — unhandled rejection tuotannossa. Miten käsittelet?",
-      "choices": [
-        {
-          "text": "try/catch awaitin ympärillä tai .catch() promisessa — async heittää rejectionina",
-          "correct": true
-        },
-        {
-          "text": "async-funktio ei koskaan heitä — virheet muunnetaan automaattisesti arvoiksi",
-          "correct": false
-        },
-        {
-          "text": "console.log(error) riittää tuotannossa unhandled rejection -ongelman estoon",
-          "correct": false
-        },
-        {
-          "text": "Poista async-avainsana — synkroninen funktio estää rejection-virheet",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "async/await needs try/catch — MDN async function.",
-      "wrongFeedback": "async heittää rejected promiseina. Käsittele try/catch.",
-      "sourceRef": "MDN/async_function",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
-      "featureId": "js:async-error",
-      "featurePoints": 3
-    },
-    {
       "id": "b07-js-types-strict-equality",
       "chapter": "js-types",
       "domain": "javascript",
@@ -3439,41 +2774,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b07-js-modules-cycle",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "a.js importtaa b.js ja b.js importtaa a.js — undefined export. Miten korjaat?",
-      "choices": [
-        {
-          "text": "Refaktoroi jaettu riippuvuus kolmanteen moduuliin — rikkoo import-syklin",
-          "correct": true
-        },
-        {
-          "text": "Lisää require sync importin tilalle — sykli ratkeaa CommonJS-hoistingilla",
-          "correct": false
-        },
-        {
-          "text": "Poista export-lauseet — import riittää moduulien väliseen linkitykseen",
-          "correct": false
-        },
-        {
-          "text": "window.global väliaikaisena sidontapaikkana korjaa circular dependency -ongelman",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Circular deps cause TDZ issues — refactor shared code.",
-      "wrongFeedback": "Sykli jättää exportin uninitialized. Erottele yhteinen koodi.",
-      "sourceRef": "MDN/Modules",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
-      "featureId": "js:circular-deps",
-      "featurePoints": 4
-    },
-    {
       "id": "b07-js-modules-tree-shake",
       "chapter": "js-modules",
       "domain": "javascript",
@@ -3506,41 +2806,6 @@
       "sourceRef": "MDN/Modules",
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
       "featureId": "js:tree-shaking",
-      "featurePoints": 3
-    },
-    {
-      "id": "b07-js-runtime-closure-loop",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "for-loopissa 5 click-handleria — kaikki tulostavat 5. Klassinen bugi ja fix?",
-      "choices": [
-        {
-          "text": "let i loopissa tai IIFE — var jakaa saman sidonnan kaikille callbackeille",
-          "correct": true
-        },
-        {
-          "text": "var korjaa automaattisesti closure-ongelman loopissa click-handlereissa",
-          "correct": false
-        },
-        {
-          "text": "Poista handlerit kokonaan — loop ei tarvitse erillisiä callback-funktioita",
-          "correct": false
-        },
-        {
-          "text": "setTimeout(0) var-loopissa luo erillisen sidonnan jokaiselle iteratiolle",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "let creates per-iteration binding — MDN let.",
-      "wrongFeedback": "var closure viittaa samaan i:hin. Käytä let tai sulje arvo.",
-      "sourceRef": "MDN/let",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let",
-      "featureId": "js:closure-loop",
       "featurePoints": 3
     },
     {
@@ -3684,41 +2949,6 @@
       "featurePoints": 3
     },
     {
-      "id": "b08-js-async-generator",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Paginoitu API palauttaa sivuja yksi kerrallaan. Haluat kuluttaa ne silmukassa ilman manuaalista while(nextPage)-logiikkaa. Mikä kieliominaisuus tuottaa asynkronisen iteraattorin?",
-      "choices": [
-        {
-          "text": "async function* generator — for await...of paginoituun API-iteraatioon",
-          "correct": true
-        },
-        {
-          "text": "while(true) sync fetch — async generator ei tue awaitia yield-kutsujen välissä",
-          "correct": false
-        },
-        {
-          "text": "Generatorit eivät tue async/await-syntaksia — vain synkroninen yield",
-          "correct": false
-        },
-        {
-          "text": "Callback-pyramid on moderni tapa paginoida API-kutsuja for-loopin sijaan",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Async generators yield promises — MDN async function*.",
-      "wrongFeedback": "Async generator + for await siivoaa paginaatioketjun.",
-      "sourceRef": "mdn/async_generator",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*",
-      "featureId": "javascript:async-generator",
-      "featurePoints": 4
-    },
-    {
       "id": "b08-js-types-strict-equals",
       "chapter": "js-types",
       "domain": "javascript",
@@ -3787,111 +3017,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt",
       "featureId": "javascript:bigint",
       "featurePoints": 3
-    },
-    {
-      "id": "b08-js-modules-dynamic-import",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Raskas chart-kirjasto vain admin-sivulla — bundle liian iso. Latausstrategia?",
-      "choices": [
-        {
-          "text": "dynamic import() — code splitting route- tai komponenttitason mukaan",
-          "correct": true
-        },
-        {
-          "text": "Staattinen import chart-kirjastosta ylhäällä — bundler poistaa admin-chunkin",
-          "correct": false
-        },
-        {
-          "text": "require() on ainoa tapa lazy loadata moduuleja selaimessa ilman bundleria",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "import() returns promise — lazy load module — MDN dynamic import.",
-      "wrongFeedback": "Staattinen import bundlaa kaiken. dynamic import() splitaa.",
-      "sourceRef": "mdn/import",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
-      "featureId": "javascript:dynamic-import",
-      "featurePoints": 3
-    },
-    {
-      "id": "b08-js-modules-top-level-await",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "ES module init lataa config.json ennen exportteja — miten ilman async IIFE?",
-      "choices": [
-        {
-          "text": "Top-level await moduulissa — await fetch config ennen export-lauseita",
-          "correct": true
-        },
-        {
-          "text": "var config = sync fetch — XMLHttpRequest on synkroninen moduulin initissä",
-          "correct": false
-        },
-        {
-          "text": "Top-level await toimii vain CommonJS:ssä — ESM vaatii async IIFE:n",
-          "correct": false
-        },
-        {
-          "text": "Export ennen await aina — moduulin arvot ovat saatavilla ennen async initia",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Top-level await in ES modules — MDN.",
-      "wrongFeedback": "TLA pysäyttää module graph initin kunnes valmis. Vain ES modules.",
-      "sourceRef": "mdn/top-level-await",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await",
-      "featureId": "javascript:top-level-await",
-      "featurePoints": 4
-    },
-    {
-      "id": "b08-js-runtime-weakmap",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "DOM-elementtiin liitetty metadata — Map aiheuttaa memory leakin kun element poistuu. Rakenne?",
-      "choices": [
-        {
-          "text": "WeakMap — avaimet heikosti viitattuja, GC voi kerätä elementin",
-          "correct": true
-        },
-        {
-          "text": "Globaali object metadata-tallennukseen — ei estä elementin garbage collectionia",
-          "correct": false
-        },
-        {
-          "text": "WeakMap pitää avaimet ikuisesti elossa — vahvempi kuin tavallinen Map",
-          "correct": false
-        },
-        {
-          "text": "JSON.stringify elementtiin — metadata säilyy ilman muistivuotoriskiä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "WeakMap keys are weakly held — MDN WeakMap.",
-      "wrongFeedback": "Strong Map DOM-nodeen estää GC:n. WeakMap metadataan.",
-      "sourceRef": "mdn/weakmap",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
-      "featureId": "javascript:weakmap",
-      "featurePoints": 4
     },
     {
       "id": "b08-js-runtime-prototype-chain",
@@ -4245,41 +3370,6 @@
       "featurePoints": 4
     },
     {
-      "id": "b09-js-async-fetch-abort",
-      "chapter": "js-async",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Käyttäjä navigoi pois ennen kuin hidas fetch valmistuu — haluat peruuttaa pyynnön. API?",
-      "choices": [
-        {
-          "text": "AbortController + signal fetch-kutsussa — peruuttaa pyynnön navigoinnissa",
-          "correct": true
-        },
-        {
-          "text": "fetch.cancel() built-in — kutsu peruuttaa pyynnön ilman AbortControlleria",
-          "correct": false
-        },
-        {
-          "text": "Selaimen sulkeminen on ainoa tapa keskeyttää käynnissä oleva fetch-pyyntö",
-          "correct": false
-        },
-        {
-          "text": "Promise.race ilman abortia riittää — hidas pyyntö peruuntuu automaattisesti",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "AbortController — MDN fetch abort.",
-      "wrongFeedback": "AbortController.signal peruuttaa fetchin siististi.",
-      "sourceRef": "MDN/AbortController",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
-      "featureId": "js:abort-controller",
-      "featurePoints": 3
-    },
-    {
       "id": "b09-js-types-strict-equality",
       "chapter": "js-types",
       "domain": "javascript",
@@ -4348,111 +3438,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof",
       "featureId": "js:null-check",
       "featurePoints": 3
-    },
-    {
-      "id": "b09-js-types-bigint-json",
-      "chapter": "js-types",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "API palauttaa 64-bit ID:n — JSON.stringify heittää BigInt:illä. Ratkaisu?",
-      "choices": [
-        {
-          "text": "Custom replacer tai serialisoi stringiksi — JSON ei tue BigInt natiivisti",
-          "correct": true
-        },
-        {
-          "text": "JSON.stringify tukee BigInt automaattisesti — ei tarvitse muunnosta",
-          "correct": false
-        },
-        {
-          "text": "Muuta kaikki Number — MAX_SAFE_INTEGER kattaa 64-bit ID:t aina",
-          "correct": false
-        },
-        {
-          "text": "eval() parseen — BigInt säilyy automaattisesti JSON-merkkijonossa",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "BigInt JSON serialization — MDN BigInt, JSON.stringify.",
-      "wrongFeedback": "JSON.stringify ei tue BigInt. Replacer tai string-conversio.",
-      "sourceRef": "MDN/BigInt",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt",
-      "featureId": "js:bigint-json",
-      "featurePoints": 4
-    },
-    {
-      "id": "b09-js-modules-dynamic-import",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 3,
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "prompt": "Raskas chart-kirjasto tarvitaan vain admin-sivulla — haluat pienentää initial bundlea. Lataus?",
-      "choices": [
-        {
-          "text": "dynamic import() — code splitting lazy load pienentää initial bundlea",
-          "correct": true
-        },
-        {
-          "text": "require() top-level ESM:ssä — lazy load admin-moduuli tarvittaessa",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen script-tag headissä lataa chart-kirjaston vain admin-sivulla",
-          "correct": false
-        },
-        {
-          "text": "Staattinen import kaikille sivuille — bundler poistaa käyttämättömän koodin",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Dynamic import — MDN import expressions.",
-      "wrongFeedback": "import() lataa moduulin tarpeen mukaan — pienempi initial bundle.",
-      "sourceRef": "MDN/import",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
-      "featureId": "js:dynamic-import",
-      "featurePoints": 3
-    },
-    {
-      "id": "b09-js-modules-circular-dep",
-      "chapter": "js-modules",
-      "domain": "javascript",
-      "difficulty": 4,
-      "audiences": [
-        "guru",
-        "coworker"
-      ],
-      "prompt": "Moduuli A importtaa B:n ja B importtaa A:n — undefined exportit bootissa. Korjaus?",
-      "choices": [
-        {
-          "text": "Refaktoroi jaettu logiikka kolmanteen moduuliin — poista import-sykli",
-          "correct": true
-        },
-        {
-          "text": "Lisää delay requireen — odota että toinen moduuli on fully evaluated",
-          "correct": false
-        },
-        {
-          "text": "Circular deps toimivat aina ESM:ssä — undefined export on väliaikainen",
-          "correct": false
-        },
-        {
-          "text": "Yhdistä A ja B yhdeksi tiedostoksi aina — ainoa tapa korjata sykli",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "Circular dependencies — MDN modules, partial initialization.",
-      "wrongFeedback": "Sykliset importit aiheuttavat partial exportteja. Erottele riippuvuus.",
-      "sourceRef": "MDN/JavaScript_modules",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
-      "featureId": "js:circular-deps",
-      "featurePoints": 4
     },
     {
       "id": "b09-js-modules-esm-cjs-interop",
@@ -4558,41 +3543,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
       "featureId": "js:weakmap",
       "featurePoints": 3
-    },
-    {
-      "id": "b09-js-runtime-debounce-search",
-      "chapter": "js-runtime",
-      "domain": "javascript",
-      "difficulty": 2,
-      "audiences": [
-        "coworker",
-        "secretary"
-      ],
-      "prompt": "Hakukenttä laukaisee API-kutsun jokaisella näppäinpainalluksella. Optimointi?",
-      "choices": [
-        {
-          "text": "debounce — odota tauko ennen hakua",
-          "correct": true
-        },
-        {
-          "text": "throttle ja debounce ovat sama asia",
-          "correct": false
-        },
-        {
-          "text": "Poista input listener",
-          "correct": false
-        },
-        {
-          "text": "Synkroninen haku aina",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "debounce vs throttle — MDN patterns.",
-      "wrongFeedback": "Debounce odottaa käyttäjän pysähtymistä. Vähentää API-kutsuja.",
-      "sourceRef": "MDN/setTimeout/debounce",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout",
-      "featureId": "js:debounce",
-      "featurePoints": 2
     },
     {
       "id": "b09-js-runtime-raf-animation",
@@ -6272,41 +5222,6 @@
         "coworker",
         "guru"
       ],
-      "id": "b12-js-async-await-top-level",
-      "chapter": "js-async",
-      "difficulty": 3,
-      "prompt": "config.mjs lataa env-tiedoston ennen muita importteja. Ratkaisu?",
-      "choices": [
-        {
-          "text": "top-level await ES-moduulissa",
-          "correct": true
-        },
-        {
-          "text": "import() synkroninen",
-          "correct": false
-        },
-        {
-          "text": "require await",
-          "correct": false
-        },
-        {
-          "text": "TLA vain TypeScriptissä",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "top-level await ES-moduulissa — katso lähde.",
-      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
-      "sourceRef": "TLA moduuleissa — MDN.",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await",
-      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await",
-      "featurePoints": "js:tla"
-    },
-    {
-      "domain": "javascript",
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
       "id": "b12-js-async-promise-all-error",
       "chapter": "js-async",
       "difficulty": 3,
@@ -6370,41 +5285,6 @@
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/setTimeout",
       "featureId": "https://developer.mozilla.org/en-US/docs/Web/API/setTimeout",
       "featurePoints": "js:sleep-pattern"
-    },
-    {
-      "domain": "javascript",
-      "audiences": [
-        "coworker",
-        "guru"
-      ],
-      "id": "b12-js-async-iterator-for-await",
-      "chapter": "js-async",
-      "difficulty": 4,
-      "prompt": "ReadableStream data async iterable. Silmukka?",
-      "choices": [
-        {
-          "text": "for await (const chunk of stream)",
-          "correct": true
-        },
-        {
-          "text": "for (chunk of stream) synkroninen",
-          "correct": false
-        },
-        {
-          "text": "stream.read() kerran",
-          "correct": false
-        },
-        {
-          "text": "callback only",
-          "correct": false
-        }
-      ],
-      "correctFeedback": "for await (const chunk of stream) — katso lähde.",
-      "wrongFeedback": "Async-malli vaatii oikean Promise/stream API:n.",
-      "sourceRef": "for await of async iterable — MDN.",
-      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of",
-      "featureId": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of",
-      "featurePoints": "js:for-await-of"
     },
     {
       "domain": "javascript",

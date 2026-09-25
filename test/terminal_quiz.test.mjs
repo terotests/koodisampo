@@ -51,7 +51,8 @@ function runUntilDone(app, limit = 120000) {
   assert.equal(app.modeIndex(), 0);
   runUntilDone(app);
   assert.match(app.screenText(), /VALITSE AIHE/);
-  assert.match(app.screenText(), /\[01\] RUST \(74\)/);
+  const rustCount = JSON.parse(fs.readFileSync(path.join(root, "content/question-banks/rust.json"), "utf8")).questions.length;
+  assert.ok(app.screenText().includes(`[01] RUST (${rustCount})`), "menu lists the topic and its question count");
   app.keyDown("0");
   app.keyDown("1");
   assert.equal(app.modeIndex(), 1, "round started");

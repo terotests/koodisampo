@@ -1,16 +1,30 @@
-# Mikä on WGS84-ellipsoidin puolisuuren akselin (a) likimääräinen pituus?
+# Mihin WGS84-ellipsoidin parametreja a (puolisuuri akseli) ja f (litistyneisyys) tarvitaan?
 
 ## Tilanne
 
-Lasket ECEF↔LLH-muunnosta ja tarvitset ellipsoidin parametrit. Mitkä WGS84-luvut?
+GNSS-vastaanotin laskee sijainnin maakeskisissä suorakulmaisissa koordinaateissa (ECEF: X, Y, Z), mutta käyttäjä haluaa leveyden, pituuden ja korkeuden. Muunnos tarvitsee matemaattisen pinnan, johon leveys ja korkeus viittaavat.
 
 ## Ratkaisu
 
-WGS84-ellipsoidi: **a = 6 378 137 m** (puolisuuri / ekvatoriaalinen akseli), **f = 1/298.257223563**, jolloin b ≈ 6 356 752.314 m. Nämä ovat määriteltyjä vakioita — älä sekoita GRS80:een (hyvin lähellä, pieni ero f:ssä).
+Vertailuellipsoidi määritellään kahdella luvulla:
+
+- **a**, puolisuuri akseli, eli ekvaattorisäde
+- **f**, litistyneisyys, eli kuinka paljon napasäde b on ekvaattorisädettä lyhyempi: `f = (a − b) / a`
+
+Näillä muunnetaan geodeettiset koordinaatit (φ, λ, h) ECEF-koordinaateiksi ja takaisin. Myös ellipsoidikorkeus h mitataan tämän pinnan normaalia pitkin.
+
+```text
+N = a / sqrt(1 − e²·sin²φ)      e² = f·(2 − f)
+X = (N + h)·cos φ·cos λ
+Y = (N + h)·cos φ·sin λ
+Z = (N·(1 − e²) + h)·sin φ
+```
 
 ## Käytännössä
 
-Useimmat kirjastot (PROJ, GeographicLib) sisältävät WGS84:n. Älä kovakoodaa pyöreää 6371 km ellipsoidiin perustuvissa tarkkuuslaskuissa.
+- Käytä kirjastoa (PROJ, GeographicLib), älä kirjoita vakioita käsin. Tarkat arvot on määritelty standardissa, eikä niitä tarvitse muistaa.
+- Pallomalli (yksi säde) aiheuttaa kilometriluokan virheitä korkeuteen ja paikkaan. Ellipsoidi on välttämätön.
+- GRS80 (ETRS89:n ellipsoidi) ja WGS84 eroavat f:ssä niin vähän, että ero on käytännössä alle millimetrin.
+- Ellipsoidikorkeus h ei ole merenpinnasta mitattu korkeus. Siihen tarvitaan geoidimalli (H = h − N).
 
-
-[Lue lisää](https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84)
+[Lue lisää](https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion)

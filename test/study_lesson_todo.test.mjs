@@ -23,7 +23,15 @@ const pg = data.domains.find((d) => d.id === "postgres");
 assert.ok(pg, "postgres domain");
 const pgConfig = pg.chapters.find((c) => c.id === "pg-config");
 assert.ok(pgConfig, "pg-config chapter");
-assert.equal(pgConfig.questions.length, 24, "pg-config question count");
+// Luvun kysymysmäärä = pankkien pg-config-kysymykset (ei kiinteä luku: pankit elävät).
+const banksDir = path.join(root, "content/question-banks");
+const pgConfigInBanks = fs
+  .readdirSync(banksDir)
+  .filter((f) => f.endsWith(".json") && f !== "manifest.json")
+  .flatMap((f) => JSON.parse(fs.readFileSync(path.join(banksDir, f), "utf8")).questions || [])
+  .filter((q) => q.chapter === "pg-config").length;
+assert.ok(pgConfigInBanks > 0, "banks have pg-config questions");
+assert.equal(pgConfig.questions.length, pgConfigInBanks, "pg-config question count");
 
 const md = fs.readFileSync(mdPath, "utf8");
 assert.ok(md.includes("✅"), "markdown has ready status marks");
