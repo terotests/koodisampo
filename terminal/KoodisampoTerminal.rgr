@@ -1,0 +1,1064 @@
+; SPDX-License-Identifier: MIT
+;
+; ==============================================================================
+; KoodisampoTerminal — Koodisampon kysymykset vanhan päätteen näköisenä
+; ==============================================================================
+;
+; Pelkkä kysymyspeli, ei karttaa. Kysymys kirjoitetaan ruudulle merkki
+; kerrallaan epätasaisella "näppäinrytmillä", jätetään hetkeksi näkyviin
+; kursorin vilkkuessa, jotta sen ehtii lukea, ja vasta sitten tulostetaan
+; vastausvaihtoehdot.
+;
+; Kaikki pelilogiikka ja ulkoasu on tässä tiedostossa: tila, ajastus, puu ja
+; tyylit. Selainpuoli (web/main.js) lataa kysymyspankit, välittää näppäimet,
+; kosketukset ja kellon, ja maalaa `render()`:n palauttaman EVG-näyttölistan
+; WebGL:llä (evg-webgl.js).
+;
+;   tick(ms)      etenee kirjoitusta ja vilkutusta, palauttaa true kun ruutu muuttui
+;   keyDown(k)    näppäin (KeyboardEvent.key)
+;   tap(x, y)     kosketus / hiiren klikkaus sivun koordinaateissa
+;   render()      puu -> tyylit -> layout -> näyttölista JSONina
+; ==============================================================================
+
+Import "pkg:evg/EVGElement.rgr"
+Import "pkg:evg/EVGUnit.rgr"
+Import "pkg:evg/EVGBox.rgr"
+Import "pkg:evg/EVGLayout.rgr"
+Import "pkg:evg/EVGStyleSheet.rgr"
+Import "pkg:evg/EVGDisplayList.rgr"
+
+class KsTopic {
+    def id:string ""
+    def title:string ""
+    def count:int 0
+}
+
+class KsQuestion {
+    def topic:int 0
+    def prompt:string ""
+    def okText:string ""
+    def badText:string ""
+    def choices:[string]
+    def correct:int 0
+}
+
+; Yksi ruudun rivi (kappale). `shown` kertoo, montako merkkiä siitä on jo
+; kirjoitettu; `speed` ja `jitter` ovat merkkikohtainen viive ja sen satunnainen
+; lisä millisekunteina, `hold` tauko rivin valmistuttua. `hit` on valinnan
+; numero, jos riviä voi napauttaa (-1 = ei).
+class KsLine {
+    def cls:string "ln"
+    def text:string ""
+    def shown:int 0
+    def speed:int 30
+    def jitter:int 20
+    def hold:int 0
+    def hit:int -1
+
+    fn isDone:boolean () {
+        return (shown >= (strlen text))
+    }
+}
+
+class KoodisampoTerminal {
+
+    ; --- ruutu, jonka isäntä ilmoittaa ---------------------------------------
+    def pageW:double 1200.0
+    def pageH:double 800.0
+    def coarse:boolean false
+    def theme:int 0
+
+    ; --- sisältö ---------------------------------------------------------------
+    def topics:[KsTopic]
+    def questions:[KsQuestion]
+
+    ; --- kirjoituskone ---------------------------------------------------------
+    def lines:[KsLine]
+    def cur:int 0
+    def wait:double 0.0
+    def inHold:boolean false
+    def idleMs:double 0.0
+    def blinkMs:double 0.0
+    def cursorOn:boolean true
+    def typed:int 0
+    def dirty:boolean true
+    def scrollFrom:int 0
+
+    ; --- tila ------------------------------------------------------------------
+    ; 0 = aihevalikko, 1 = kysymys, 2 = yhteenveto
+    def mode:int 0
+    ; kysymyksessä: 0 = tulostetaan / odotetaan vastausta, 2 = palaute
+    def phase:int 0
+    def booted:boolean false
+    def menuSel:int 0
+    def numBuf:string ""
+    def promptLine:int -1
+
+    def topicSel:int -1
+    def deck:[int]
+    def roundPos:int 0
+    def roundLen:int 10
+    def score:int 0
+    def answered:int 0
+    def qIndex:int 0
+    def order:[int]
+    def choiceLines:[int]
+    def qLine:int -1
+
+    ; --- viimeisimmän layoutin napautettavat rivit -----------------------------
+    def hitY0:[double]
+    def hitY1:[double]
+    def hitV:[int]
+
+    def seed:int 1234567
+
+    ; ==========================================================================
+    ; Isännän kutsut: sisältö
+    ; ==========================================================================
+
+    fn setSeed:void (s:int) {
+        seed = ((s % 2147483646) + 1)
+        if (seed < 1) {
+            seed = (0 - seed + 1)
+        }
+    }
+
+    fn setViewport:void (w:double h:double c:boolean) {
+        pageW = w
+        pageH = h
+        coarse = c
+        dirty = true
+    }
+
+    fn addTopic:int (id:string title:string) {
+        def t (new KsTopic)
+        t.id = id
+        t.title = title
+        push topics t
+        return ((array_length topics) - 1)
+    }
+
+    fn addQuestion:int (topic:int prompt:string okText:string badText:string) {
+        def q (new KsQuestion)
+        q.topic = topic
+        q.prompt = prompt
+        q.okText = okText
+        q.badText = badText
+        push questions q
+        def t:KsTopic (itemAt topics topic)
+        t.count = (t.count + 1)
+        return ((array_length questions) - 1)
+    }
+
+    fn addChoice:void (qi:int text:string isCorrect:boolean) {
+        def q:KsQuestion (itemAt questions qi)
+        if isCorrect {
+            q.correct = (array_length q.choices)
+        }
+        push q.choices text
+    }
+
+    fn questionCount:int () {
+        return (array_length questions)
+    }
+
+    fn setTheme:void (t:int) {
+        theme = t
+        dirty = true
+    }
+
+    fn themeIndex:int () {
+        return theme
+    }
+
+    fn modeIndex:int () {
+        return mode
+    }
+
+    fn phaseIndex:int () {
+        return phase
+    }
+
+    fn scoreNow:int () {
+        return score
+    }
+
+    fn typingDone:boolean () {
+        return (cur >= (array_length lines))
+    }
+
+    ; Montako merkkiä kirjoitettiin viime kyselyn jälkeen (isännän näppäinääni).
+    fn takeTyped:int () {
+        def n:int typed
+        typed = 0
+        return n
+    }
+
+    ; ==========================================================================
+    ; Satunnaisluvut (Park–Miller, tarkka myös JavaScriptin doubleilla)
+    ; ==========================================================================
+
+    fn rnd:int (n:int) {
+        seed = ((seed * 16807) % 2147483647)
+        if (n <= 0) {
+            return 0
+        }
+        return (seed % n)
+    }
+
+    fn shuffle:void (arr:[int]) {
+        def i:int ((array_length arr) - 1)
+        while (i > 0) {
+            def j:int (this.rnd((i + 1)))
+            def a:int (itemAt arr i)
+            def b:int (itemAt arr j)
+            set arr i b
+            set arr j a
+            i = (i - 1)
+        }
+    }
+
+    ; ==========================================================================
+    ; Kirjoituskone
+    ; ==========================================================================
+
+    fn clearScreen:void () {
+        clear lines
+        cur = 0
+        wait = 0.0
+        inHold = false
+        scrollFrom = 0
+        promptLine = -1
+        dirty = true
+    }
+
+    fn emit:int (cls:string text:string speed:int jitter:int hold:int hit:int) {
+        def l (new KsLine)
+        l.cls = cls
+        l.text = text
+        l.speed = speed
+        l.jitter = jitter
+        l.hold = hold
+        l.hit = hit
+        push lines l
+        dirty = true
+        return ((array_length lines) - 1)
+    }
+
+    ; Tyhjä rivi väliin.
+    fn gap:void (hold:int) {
+        this.emit("ln" "" 0 0 hold -1)
+    }
+
+    ; Kehote "> ", johon kursori jää odottamaan.
+    fn prompt:void () {
+        promptLine = (this.emit("ln prompt" "> " 0 0 0 -1))
+    }
+
+    ; Merkin viive: välilyönti venyttää vähän, välimerkki enemmän — sama
+    ; epätasaisuus, joka erottaa ihmisen kirjoittaman tekstin tulostimesta.
+    fn charDelay:double (l:KsLine c:int) {
+        def sp:double (to_double l.speed)
+        def d:double (sp + (to_double (this.rnd((l.jitter + 1)))))
+        if (c == 32) {
+            d = (d + (sp * 0.5))
+        }
+        if ((c == 46) || (c == 44) || (c == 58) || (c == 59) || (c == 63) || (c == 33)) {
+            d = (d + (sp * 4.0))
+        }
+        return d
+    }
+
+    fn finishLine:void (l:KsLine) {
+        cur = (cur + 1)
+        if (l.hold > 0) {
+            wait = (wait + (to_double l.hold))
+            inHold = (l.hold >= 700)
+        }
+    }
+
+    fn tick:boolean (dtIn:double) {
+        def dt:double dtIn
+        if (dt > 250.0) {
+            dt = 250.0
+        }
+        def changed:boolean dirty
+        dirty = false
+        idleMs = (idleMs + dt)
+        if ((this.typingDone()) == false) {
+            wait = (wait - dt)
+            def guard:int 0
+            while ((wait <= 0.0) && (cur < (array_length lines)) && (guard < 4000)) {
+                guard = (guard + 1)
+                def l:KsLine (itemAt lines cur)
+                if (l.isDone()) {
+                    this.finishLine(l)
+                } {
+                    inHold = false
+                    if (l.speed <= 0) {
+                        l.shown = (strlen l.text)
+                    } {
+                        l.shown = (l.shown + 1)
+                        wait = (wait + (this.charDelay(l (charAt l.text (l.shown - 1)))))
+                    }
+                    typed = (typed + 1)
+                    idleMs = 0.0
+                    changed = true
+                    if (l.isDone()) {
+                        this.finishLine(l)
+                    }
+                }
+            }
+            if (wait < -250.0) {
+                wait = -250.0
+            }
+        }
+        ; Kursori palaa aina kirjoitettaessa ja vilkkuu vasta kun kone odottaa.
+        if (idleMs < 260.0) {
+            if (cursorOn == false) {
+                cursorOn = true
+                changed = true
+            }
+            blinkMs = 0.0
+        } {
+            blinkMs = (blinkMs + dt)
+            if (blinkMs >= 530.0) {
+                blinkMs = (blinkMs - 530.0)
+                cursorOn = (cursorOn == false)
+                changed = true
+            }
+        }
+        return changed
+    }
+
+    ; Ohita: ensimmäinen painallus kirjoittaa loput kysymyksestä (lukutauko
+    ; jää voimaan), toinen ohittaa lukutauon, kolmas tulostaa vaihtoehdot.
+    fn skip:void () {
+        if (this.typingDone()) {
+            return
+        }
+        if inHold {
+            wait = 0.0
+            inHold = false
+            dirty = true
+            return
+        }
+        wait = 0.0
+        while (cur < (array_length lines)) {
+            def l:KsLine (itemAt lines cur)
+            l.shown = (strlen l.text)
+            cur = (cur + 1)
+            if (l.hold >= 700) {
+                wait = (to_double l.hold)
+                inHold = true
+                dirty = true
+                return
+            }
+        }
+        dirty = true
+    }
+
+    fn skipAll:void () {
+        while (cur < (array_length lines)) {
+            def l:KsLine (itemAt lines cur)
+            l.shown = (strlen l.text)
+            cur = (cur + 1)
+        }
+        wait = 0.0
+        inHold = false
+        dirty = true
+    }
+
+    ; ==========================================================================
+    ; Näkymät
+    ; ==========================================================================
+
+    fn start:void () {
+        this.showMenu()
+    }
+
+    fn pad2:string (n:int) {
+        if (n < 10) {
+            return ("0" + (to_string n))
+        }
+        return (to_string n)
+    }
+
+    fn showMenu:void () {
+        mode = 0
+        phase = 0
+        numBuf = ""
+        this.clearScreen()
+        if (booted == false) {
+            booted = true
+            this.emit("ln dim" "KOODISAMPO OY  PÄÄTE KS-80  ROM 1.07" 18 22 250 -1)
+            this.emit("ln dim" "MUISTITESTI ........ 640K OK" 16 20 350 -1)
+            def total:int (array_length questions)
+            this.emit("ln dim" ("KYSYMYSPANKIT ...... " + (to_string (array_length topics)) + " KPL, " + (to_string total) + " KYSYMYSTÄ") 16 20 500 -1)
+            this.gap(150)
+        }
+        this.emit("ln q" "VALITSE AIHE:" 30 30 250 -1)
+        this.gap(0)
+        this.emit("ln menu" ("[00] KAIKKI AIHEET SEKAISIN (" + (to_string (array_length questions)) + ")") 3 4 40 0)
+        def i:int 0
+        def n:int (array_length topics)
+        while (i < n) {
+            def t:KsTopic (itemAt topics i)
+            this.emit("ln menu" ("[" + (this.pad2((i + 1))) + "] " + t.title + " (" + (to_string t.count) + ")") 3 4 40 (i + 1))
+            i = (i + 1)
+        }
+        this.gap(0)
+        this.prompt()
+        if (menuSel > n) {
+            menuSel = 0
+        }
+    }
+
+    fn topicName:string () {
+        if (topicSel < 0) {
+            return "KAIKKI AIHEET"
+        }
+        def t:KsTopic (itemAt topics topicSel)
+        return t.title
+    }
+
+    ; `choice` on valikon rivin numero: 0 = kaikki, 1.. = aihe.
+    fn startRound:void (choice:int) {
+        topicSel = (choice - 1)
+        clear deck
+        def i:int 0
+        def n:int (array_length questions)
+        while (i < n) {
+            def q:KsQuestion (itemAt questions i)
+            if ((topicSel < 0) || (q.topic == topicSel)) {
+                if ((array_length q.choices) > 1) {
+                    push deck i
+                }
+            }
+            i = (i + 1)
+        }
+        if ((array_length deck) == 0) {
+            return
+        }
+        this.shuffle(deck)
+        roundLen = 10
+        if ((array_length deck) < roundLen) {
+            roundLen = (array_length deck)
+        }
+        roundPos = 0
+        score = 0
+        answered = 0
+        this.showQuestion()
+    }
+
+    ; Lukuaika: sitä pidempi mitä pidempi kysymys, 1,8 – 7 sekuntia.
+    fn readingMs:int (text:string) {
+        def ms:int (1300 + ((strlen text) * 30))
+        if (ms < 1800) {
+            ms = 1800
+        }
+        if (ms > 7000) {
+            ms = 7000
+        }
+        return ms
+    }
+
+    fn showQuestion:void () {
+        mode = 1
+        phase = 0
+        this.clearScreen()
+        qIndex = (itemAt deck roundPos)
+        def q:KsQuestion (itemAt questions qIndex)
+        def t:KsTopic (itemAt topics q.topic)
+        this.emit("ln dim" ("KYSYMYS " + (this.pad2((roundPos + 1))) + "/" + (this.pad2(roundLen)) + "  ·  " + t.title) 0 0 350 -1)
+        this.gap(200)
+        qLine = (this.emit("ln q" q.prompt 34 46 (this.readingMs(q.prompt)) -1))
+        this.gap(0)
+        clear order
+        clear choiceLines
+        def i:int 0
+        def n:int (array_length q.choices)
+        while (i < n) {
+            push order i
+            i = (i + 1)
+        }
+        this.shuffle(order)
+        i = 0
+        while (i < n) {
+            def ci:int (itemAt order i)
+            def label:string ("[" + (to_string (i + 1)) + "] " + (itemAt q.choices ci))
+            push choiceLines (this.emit("ln choice" label 9 12 160 i))
+            i = (i + 1)
+        }
+        this.gap(0)
+        this.prompt()
+    }
+
+    fn answer:void (slot:int) {
+        def q:KsQuestion (itemAt questions qIndex)
+        if ((slot < 0) || (slot >= (array_length order))) {
+            return
+        }
+        phase = 2
+        answered = (answered + 1)
+        def picked:int (itemAt order slot)
+        def rightSlot:int 0
+        def i:int 0
+        while (i < (array_length order)) {
+            if ((itemAt order i) == q.correct) {
+                rightSlot = i
+            }
+            i = (i + 1)
+        }
+        if (promptLine >= 0) {
+            def p:KsLine (itemAt lines promptLine)
+            p.text = ("> " + (to_string (slot + 1)))
+            p.shown = (strlen p.text)
+        }
+        def right:KsLine (itemAt lines (itemAt choiceLines rightSlot))
+        right.cls = "ln choice right"
+        this.gap(250)
+        if (picked == q.correct) {
+            score = (score + 1)
+            this.emit("ln ok" "*** OIKEIN ***" 45 30 300 -1)
+            if ((strlen q.okText) > 0) {
+                this.emit("ln fb" q.okText 16 18 250 -1)
+            }
+        } {
+            def bad:KsLine (itemAt lines (itemAt choiceLines slot))
+            bad.cls = "ln choice bad"
+            this.emit("ln err" ("*** VÄÄRIN ***  OIKEA VASTAUS: [" + (to_string (rightSlot + 1)) + "]") 40 30 300 -1)
+            if ((strlen q.badText) > 0) {
+                this.emit("ln fb" q.badText 16 18 250 -1)
+            }
+        }
+        this.gap(0)
+        if ((roundPos + 1) < roundLen) {
+            this.emit("ln dim" "[ENTER] SEURAAVA KYSYMYS" 12 10 0 -1)
+        } {
+            this.emit("ln dim" "[ENTER] TULOKSET" 12 10 0 -1)
+        }
+        this.prompt()
+    }
+
+    fn nextQuestion:void () {
+        roundPos = (roundPos + 1)
+        if (roundPos < roundLen) {
+            this.showQuestion()
+        } {
+            this.showSummary()
+        }
+    }
+
+    fn showSummary:void () {
+        mode = 2
+        phase = 0
+        this.clearScreen()
+        this.emit("ln dim" ("KIERROS PÄÄTTYI  ·  " + (this.topicName())) 0 0 300 -1)
+        this.gap(200)
+        this.emit("ln q" ("OIKEIN " + (to_string score) + " / " + (to_string roundLen)) 60 40 300 -1)
+        def bar:string "["
+        def i:int 0
+        while (i < roundLen) {
+            if (i < score) {
+                bar = bar + "#"
+            } {
+                bar = bar + "."
+            }
+            i = (i + 1)
+        }
+        bar = bar + "]"
+        this.emit("ln" bar 40 10 300 -1)
+        this.gap(100)
+        def msg:string "HARJOITUS TEKEE MESTARIN. KOKEILE UUDESTAAN."
+        if ((score * 10) >= (roundLen * 5)) {
+            msg = "HYVÄ SUORITUS. PERUSASIAT OVAT HALLUSSA."
+        }
+        if ((score * 10) >= (roundLen * 8)) {
+            msg = "ERINOMAISTA. JÄRJESTELMÄ ON VAIKUTTUNUT."
+        }
+        if (score == roundLen) {
+            msg = "TÄYDET PISTEET. SAMPO JAUHAA SINULLE KULTAA."
+        }
+        this.emit("ln fb" msg 28 30 400 -1)
+        this.gap(0)
+        this.emit("ln dim" "[ENTER] UUSI KIERROS SAMASTA AIHEESTA" 10 8 0 -1)
+        this.emit("ln dim" "[ESC]   AIHEVALIKKO" 10 8 0 -1)
+        this.prompt()
+    }
+
+    ; ==========================================================================
+    ; Syöte
+    ; ==========================================================================
+
+    fn digitOf:int (k:string) {
+        if ((strlen k) != 1) {
+            return -1
+        }
+        def c:int (charAt k 0)
+        if ((c >= 48) && (c <= 57)) {
+            return (c - 48)
+        }
+        return -1
+    }
+
+    fn setPromptText:void (t:string) {
+        if (promptLine >= 0) {
+            def p:KsLine (itemAt lines promptLine)
+            p.text = ("> " + t)
+            p.shown = (strlen p.text)
+            dirty = true
+        }
+    }
+
+    fn pickMenu:void (v:int) {
+        if ((v < 0) || (v > (array_length topics))) {
+            numBuf = ""
+            this.setPromptText("?")
+            return
+        }
+        menuSel = v
+        this.startRound(v)
+    }
+
+    fn keyDown:boolean (k:string) {
+        dirty = true
+        idleMs = 0.0
+        if ((k == "t") || (k == "T")) {
+            theme = ((theme + 1) % 3)
+            return true
+        }
+        if (k == "Escape") {
+            if (mode != 0) {
+                this.showMenu()
+            }
+            return true
+        }
+        def isGo:boolean ((k == "Enter") || (k == " "))
+        if (mode == 0) {
+            if ((this.typingDone()) == false) {
+                if isGo {
+                    this.skipAll()
+                    return true
+                }
+                this.skipAll()
+            }
+            def d:int (this.digitOf(k))
+            if (d >= 0) {
+                numBuf = numBuf + (to_string d)
+                this.setPromptText(numBuf)
+                if ((strlen numBuf) >= 2) {
+                    def v:int (?? (str2int numBuf) -1)
+                    numBuf = ""
+                    this.pickMenu(v)
+                }
+                return true
+            }
+            if (k == "Backspace") {
+                numBuf = ""
+                this.setPromptText("")
+                return true
+            }
+            if (k == "ArrowDown") {
+                menuSel = ((menuSel + 1) % ((array_length topics) + 1))
+                return true
+            }
+            if (k == "ArrowUp") {
+                menuSel = (menuSel - 1)
+                if (menuSel < 0) {
+                    menuSel = (array_length topics)
+                }
+                return true
+            }
+            if isGo {
+                if ((strlen numBuf) > 0) {
+                    def v2:int (?? (str2int numBuf) -1)
+                    numBuf = ""
+                    this.pickMenu(v2)
+                } {
+                    this.pickMenu(menuSel)
+                }
+                return true
+            }
+            return false
+        }
+        if (mode == 1) {
+            if (phase == 0) {
+                if ((this.typingDone()) == false) {
+                    if isGo {
+                        this.skip()
+                        return true
+                    }
+                    ; Kun kysymys on jo kokonaan ruudulla, vastauksen saa
+                    ; antaa vaikka vaihtoehtoja vielä tulostetaan.
+                    def early:int (this.answerSlot(k))
+                    if (early >= 0) {
+                        def wasRead:boolean (cur > qLine)
+                        this.skipAll()
+                        if wasRead {
+                            this.answer(early)
+                        }
+                    }
+                    return true
+                }
+                def slot:int (this.answerSlot(k))
+                if (slot >= 0) {
+                    this.answer(slot)
+                    return true
+                }
+                return false
+            }
+            if isGo {
+                if ((this.typingDone()) == false) {
+                    this.skipAll()
+                } {
+                    this.nextQuestion()
+                }
+                return true
+            }
+            return false
+        }
+        if isGo {
+            if ((this.typingDone()) == false) {
+                this.skipAll()
+            } {
+                this.startRound((topicSel + 1))
+            }
+            return true
+        }
+        return false
+    }
+
+    ; 1–9 tai a–d.
+    fn answerSlot:int (k:string) {
+        def n:int (array_length order)
+        def d:int (this.digitOf(k))
+        if ((d >= 1) && (d <= n)) {
+            return (d - 1)
+        }
+        if ((strlen k) == 1) {
+            def c:int (charAt k 0)
+            if ((c >= 97) && (c < (97 + n))) {
+                return (c - 97)
+            }
+            if ((c >= 65) && (c < (65 + n))) {
+                return (c - 65)
+            }
+        }
+        return -1
+    }
+
+    ; Napautus: rivillä, jossa on valinta, se valitaan; muualla se on ENTER.
+    fn tap:boolean (x:double y:double) {
+        def hit:int -1
+        def i:int 0
+        while (i < (array_length hitV)) {
+            if ((y >= (itemAt hitY0 i)) && (y < (itemAt hitY1 i))) {
+                hit = (itemAt hitV i)
+            }
+            i = (i + 1)
+        }
+        if ((mode == 0) && (hit >= 0)) {
+            if (this.typingDone()) {
+                this.pickMenu(hit)
+                return true
+            }
+        }
+        if ((mode == 1) && (phase == 0) && (hit >= 0)) {
+            if (this.typingDone()) {
+                this.answer(hit)
+                return true
+            }
+        }
+        return (this.keyDown("Enter"))
+    }
+
+    ; ==========================================================================
+    ; Tyylit
+    ; ==========================================================================
+
+    fn fg:string () {
+        if (theme == 1) {
+            return "#ffb000"
+        }
+        if (theme == 2) {
+            return "#e6f0ff"
+        }
+        return "#41ff70"
+    }
+
+    fn dim:string () {
+        if (theme == 1) {
+            return "#a86a00"
+        }
+        if (theme == 2) {
+            return "#7f8ea8"
+        }
+        return "#1f9c45"
+    }
+
+    fn bg:string () {
+        if (theme == 1) {
+            return "#140b02"
+        }
+        if (theme == 2) {
+            return "#0a0d14"
+        }
+        return "#031207"
+    }
+
+    fn themeName:string () {
+        if (theme == 1) {
+            return "amber"
+        }
+        if (theme == 2) {
+            return "white"
+        }
+        return "green"
+    }
+
+    fn css:string () {
+        def fg:string (this.fg())
+        def dm:string (this.dim())
+        def bg:string (this.bg())
+        def s:string ""
+        s = s + ".screen { display: flex; flex-direction: column; align-items: center;"
+        s = s + " width: 100vw; height: 100vh; padding: 30px 44px;"
+        s = s + " font-family: VT323; background-color: " + bg + " }\n"
+        s = s + ".col { display: flex; flex-direction: column; width: 100%;"
+        s = s + " max-width: 1080px; height: 100%; gap: 12px }\n"
+        s = s + ".top { display: flex; flex-direction: row; width: 100%; gap: 16px }\n"
+        s = s + ".brand { font-size: 24px; color: " + fg + " }\n"
+        s = s + ".spacer { flex: 1 }\n"
+        s = s + ".status { font-size: 24px; color: " + dm + " }\n"
+        s = s + ".rule { width: 100%; height: 2px; background-color: " + dm + " }\n"
+        s = s + ".body { display: flex; flex-direction: column; width: 100%;"
+        s = s + " padding-top: 10px; gap: 2px }\n"
+        s = s + ".ln { width: 100%; font-size: 32px; line-height: 1.12; color: " + fg + " }\n"
+        s = s + ".dim { color: " + dm + " }\n"
+        s = s + ".q { color: " + fg + " }\n"
+        s = s + ".choice { padding: 2px 8px }\n"
+        s = s + ".menu { padding: 0px 8px }\n"
+        s = s + ".sel { background-color: " + fg + "; color: " + bg + " }\n"
+        s = s + ".right { background-color: " + fg + "; color: " + bg + " }\n"
+        s = s + ".bad { color: " + dm + " }\n"
+        s = s + ".ok { color: " + fg + " }\n"
+        s = s + ".err { color: " + fg + " }\n"
+        s = s + ".fb { color: " + fg + " }\n"
+        s = s + ".foot { font-size: 20px; color: " + dm + " }\n"
+        s = s + "@media (max-width: 760px) {\n"
+        s = s + "  .screen { padding: 16px 16px }\n"
+        s = s + "  .ln { font-size: 25px }\n"
+        s = s + "  .brand { font-size: 19px }\n"
+        s = s + "  .status { font-size: 19px }\n"
+        s = s + "  .foot { font-size: 17px }\n"
+        s = s + "}\n"
+        s = s + "@media (max-width: 420px) {\n"
+        s = s + "  .ln { font-size: 22px }\n"
+        s = s + "}\n"
+        s = s + "@media (max-height: 560px) {\n"
+        s = s + "  .ln { font-size: 22px }\n"
+        s = s + "  .screen { padding: 10px 20px }\n"
+        s = s + "}\n"
+        return s
+    }
+
+    ; ==========================================================================
+    ; Puu
+    ; ==========================================================================
+
+    fn div:EVGElement (cls:string) {
+        def e (EVGElement.createDiv())
+        e.className = cls
+        return e
+    }
+
+    fn span:EVGElement (cls:string text:string) {
+        def e (EVGElement.createSpan())
+        e.className = cls
+        e.textContent = text
+        return e
+    }
+
+    ; Rivi, jolla kursori on: kirjoitettavana oleva, tai lukutauolla edellinen.
+    fn cursorLine:int () {
+        def n:int (array_length lines)
+        if (n == 0) {
+            return -1
+        }
+        if (cur >= n) {
+            return (n - 1)
+        }
+        def l:KsLine (itemAt lines cur)
+        if ((l.shown > 0) || (cur == 0)) {
+            return cur
+        }
+        return (cur - 1)
+    }
+
+    fn statusText:string () {
+        if (mode == 1) {
+            return ("K " + (this.pad2((roundPos + 1))) + "/" + (this.pad2(roundLen)) + "  OIKEIN " + (to_string score))
+        }
+        if (mode == 2) {
+            return ("TULOS " + (to_string score) + "/" + (to_string roundLen))
+        }
+        return ((to_string (array_length questions)) + " KYSYMYSTÄ")
+    }
+
+    fn footText:string () {
+        if (coarse) {
+            if (mode == 0) {
+                return "NAPAUTA AIHETTA  ·  T = VÄRI"
+            }
+            return "NAPAUTA VASTAUSTA TAI JATKA  ·  T = VÄRI"
+        }
+        if (mode == 0) {
+            return "[00-" + (this.pad2((array_length topics))) + "] / NUOLET + ENTER  ·  [T] VÄRI  ·  [M] ÄÄNI"
+        }
+        if (mode == 1) {
+            return "[1-4] VASTAA  ·  [ENTER] OHITA / JATKA  ·  [ESC] VALIKKO  ·  [T] VÄRI  ·  [M] ÄÄNI"
+        }
+        return "[ENTER] UUSI KIERROS  ·  [ESC] VALIKKO  ·  [T] VÄRI"
+    }
+
+    def footEl@(optional):EVGElement
+
+    fn build:EVGElement (body:EVGElement) {
+        def page (this.div("screen"))
+        def col (this.div("col"))
+        def top (this.div("top"))
+        top.addChild((this.span("brand" "KOODISAMPO TERMINAL")))
+        top.addChild((this.div("spacer")))
+        top.addChild((this.span("status" (this.statusText()))))
+        col.addChild(top)
+        col.addChild((this.div("rule")))
+        col.addChild(body)
+        col.addChild((this.div("rule")))
+        def foot (this.span("foot" (this.footText())))
+        footEl = foot
+        col.addChild(foot)
+        page.addChild(col)
+        return page
+    }
+
+    fn fillBody:void (body:EVGElement shownEls:[EVGElement] shownIdx:[int]) {
+        def cl:int (this.cursorLine())
+        def i:int scrollFrom
+        def n:int (array_length lines)
+        while (i < n) {
+            def l:KsLine (itemAt lines i)
+            if ((i > cur) || ((i == cur) && (l.shown == 0) && (i != cl))) {
+                return
+            }
+            def txt:string (substring l.text 0 l.shown)
+            if ((i == cl) && cursorOn) {
+                txt = txt + "█"
+            }
+            if ((strlen txt) == 0) {
+                txt = " "
+            }
+            def cls:string l.cls
+            if ((mode == 0) && (l.hit >= 0) && (l.hit == menuSel) && (this.typingDone())) {
+                cls = cls + " sel"
+            }
+            def e (this.span(cls txt))
+            body.addChild(e)
+            push shownEls e
+            push shownIdx i
+            i = (i + 1)
+        }
+    }
+
+    ; Yksi kuva: puu, tyylit, layout, näyttölista. Jos rivit eivät mahdu,
+    ; vieritetään vanhimpia pois kuten päätteessä ikään.
+    fn render:string () {
+        def sheetText:string (this.css())
+        def guard:int 0
+        while true {
+            def body (this.div("body"))
+            def els:[EVGElement]
+            def idx:[int]
+            this.fillBody(body els idx)
+            def root (this.build(body))
+            def sheet (new EVGStyleSheet())
+            sheet.parse(sheetText)
+            sheet.setViewport(pageW pageH coarse)
+            sheet.applyTree(root "")
+            def lay (new EVGLayout())
+            lay.setPageSize(pageW pageH)
+            lay.layout(root)
+
+            def overflow:boolean false
+            def ne:int (array_length els)
+            ; Mahtuuko sivu ikkunaan: alapalkin alareuna ei saa mennä
+            ; ruudun alareunan (miinus sivun oma täyte) yli.
+            if ((ne > 0) && (!null? footEl)) {
+                def fe:EVGElement (unwrap footEl)
+                def rbox:EVGBox root.box
+                def bottom:double (fe.calculatedY + fe.calculatedHeight)
+                def limit:double (pageH - rbox.paddingBottomPx)
+                if ((bottom > (limit + 0.5)) && (scrollFrom < ((array_length lines) - 1)) && (guard < 60)) {
+                    overflow = true
+                }
+            }
+            if overflow {
+                scrollFrom = (scrollFrom + 1)
+                guard = (guard + 1)
+            } {
+                ; Venytä runko niin, että alapalkki painuu ruudun alareunaan.
+                if (!null? footEl) {
+                    def fe2:EVGElement (unwrap footEl)
+                    def rbox2:EVGBox root.box
+                    def free:double ((pageH - rbox2.paddingBottomPx) - (fe2.calculatedY + fe2.calculatedHeight))
+                    if (free > 0.5) {
+                        body.height = (EVGUnit.px((body.calculatedHeight + free)))
+                        lay.layout(root)
+                    }
+                }
+                clear hitY0
+                clear hitY1
+                clear hitV
+                def k:int 0
+                while (k < ne) {
+                    def li:int (itemAt idx k)
+                    def l:KsLine (itemAt lines li)
+                    if (l.hit >= 0) {
+                        def e:EVGElement (itemAt els k)
+                        push hitY0 e.calculatedY
+                        push hitY1 (e.calculatedY + e.calculatedHeight)
+                        push hitV l.hit
+                    }
+                    k = (k + 1)
+                }
+                def dl (new EVGDisplayList())
+                dl.setTextEngine((lay.getTextEngine()))
+                dl.build(root)
+                def json:string "{\"width\":"
+                json = json + (EVGDisplayList.num(pageW))
+                json = json + ",\"height\":" + (EVGDisplayList.num(pageH))
+                json = json + ",\"theme\":\"" + (this.themeName()) + "\""
+                json = json + ",\"bg\":\"" + (this.bg()) + "\""
+                json = json + ",\"cssErrors\":" + (to_string (array_length sheet.errors))
+                json = json + ",\"list\":" + (dl.toJson()) + "}"
+                return json
+            }
+        }
+        return "{}"
+    }
+
+    ; Ruudun teksti ruudunlukijalle (isäntä peilaa sen aria-live-alueeseen).
+    fn screenText:string () {
+        def s:string ""
+        def i:int 0
+        def n:int (array_length lines)
+        while ((i < n) && (i <= cur)) {
+            def l:KsLine (itemAt lines i)
+            if (l.shown > 0) {
+                s = s + (substring l.text 0 l.shown) + "\n"
+            }
+            i = (i + 1)
+        }
+        return s
+    }
+}

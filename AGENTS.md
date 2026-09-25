@@ -60,6 +60,7 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | `generated/es6/koodisampo.cjs` | Compiled runtime (committed; hosts import this) |
 | `hosts/` | Thin Node hosts (terminal, web controller) |
 | `web-game/` | Static Vite UI for browser / GitHub Pages |
+| `terminal/` | Koodisampo Terminal — quiz-only Ranger + EVG + WebGL page at `/koodisampo/terminal/` (see `terminal/README.md`) |
 | `content/` | Worlds, stories, question banks (JSON) |
 | `content/npc-behaviors/` | Data-driven NPC behavior packs (`pack.json`) |
 | `test/` | Headless tests (import `koodisampo.cjs`) |
@@ -69,6 +70,7 @@ Same npm `rgrc.js` with `-l=kotlin` → `generated/kotlin/koodisampo.kt`. Androi
 | Command | Purpose |
 |---------|---------|
 | `npm run build:ranger` | Compile Ranger → `generated/es6/koodisampo.cjs` |
+| `npm run build:terminal` | Compile `terminal/KoodisampoTerminal.rgr` → `terminal/web/koodisampo-terminal.js` (needs a Ranger checkout for EVG) |
 | `npm run test:engine` | Rebuild + run all engine tests |
 | `npm run play` | Terminal game (TTY) |
 | `npm run play:web` | Alias → `npm run dev` (sama web-game UI) |

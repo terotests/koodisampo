@@ -61,6 +61,11 @@ fs.copyFileSync(
   path.join(out, "worlds/corporate-hq-intro.json"),
 );
 
+// Koodisampo Terminal (Ranger + EVG + WebGL) → /koodisampo/terminal/
+if (fs.existsSync(path.join(root, "terminal/web/koodisampo-terminal.js"))) {
+  copyDir(path.join(root, "terminal/web"), path.join(root, "web-game/public/terminal"));
+}
+
 const lessonSolutions = buildLessonSolutionsIndex(listAllQuestions());
 fs.writeFileSync(
   path.join(out, "lesson-solutions.json"),
