@@ -2,7 +2,7 @@
 
 ## Tilanne
 
-Jaettu omistajuus `std::shared_ptr`:llä vaatii kaksi muistialuetta: itse olion ja control blockin (refcount). Kirjoitus `auto p = std::shared_ptr<Foo>(new Foo(x));` tekee kaksi erillistä allokaatiota. Jos `Foo`-konstruktori heittää poikkeuksen ennen kuin `shared_ptr` on rakennettu, voi syntyä vuoto (harvinainen, mutta mahdollinen ilman make_-factorya).
+Jaettu omistajuus `std::shared_ptr`:llä vaatii kaksi muistialuetta: itse olion ja control blockin (refcount). Kirjoitus `auto p = std::shared_ptr<Foo>(new Foo(x));` tekee kaksi erillistä allokaatiota. Ennen C++17:ää lauseke kuten `f(std::shared_ptr<Foo>(new Foo(x)), g())` saattoi vuotaa: jos `new Foo` suoritettiin ensin ja `g()` heitti ennen kuin `shared_ptr` otti olion omistukseensa, olio jäi vapauttamatta. `make_shared` sulkee tämän aukon.
 
 ## Ratkaisu
 

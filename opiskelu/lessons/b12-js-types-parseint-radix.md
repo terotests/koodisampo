@@ -1,4 +1,4 @@
-# parseInt('08') vanhassa JS:ssä — miksi radix 10 on pakollinen?
+# parseInt('08') vanhassa JS:ssä — miksi radix 10 kannattaa aina antaa?
 
 ## Tilanne
 

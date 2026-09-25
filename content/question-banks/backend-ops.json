@@ -92,7 +92,7 @@
           "correct": true
         },
         {
-          "text": "Julkaise kaikille heti — bugit löytyvät nopeammin tuotannosta",
+          "text": "Julkaise kaikille kerralla ja palaa tarvittaessa rollback-deployllä",
           "correct": false
         },
         {
@@ -267,19 +267,19 @@
       "prompt": "Käyttäjä raportoi palvelun alhaalla, mutta container healthcheck on vihreä. Mitä mittaat seuraavaksi?",
       "choices": [
         {
-          "text": "RED/USE: error rate, latency, throughput, saturation + riippuvuudet — healthcheck voi testata vain prosessia",
+          "text": "RED/USE-mittarit ja riippuvuudet — healthcheck voi testata vain prosessia",
           "correct": true
         },
         {
-          "text": "Käynnistä container uudelleen — healthcheck on aina oikeassa",
+          "text": "Container-lokit riittävät — vihreä healthcheck sulkee palvelun pois",
           "correct": false
         },
         {
-          "text": "Poista readiness-probe jotta liikenne ohjautuu nopeammin",
+          "text": "Tihennä healthcheckin intervallia, jotta vika näkyy tarkistuksessa",
           "correct": false
         },
         {
-          "text": "Oleta käyttäjävirhe — älä tutki infrastruktuuria",
+          "text": "Tarkista vain CPU ja muisti — ne kertovat käyttäjäkokemuksen",
           "correct": false
         }
       ],
@@ -524,15 +524,15 @@
           "correct": true
         },
         {
-          "text": "Soita heti kaikille kehittäjille ja aloita vapaamuotoinen debuggaus",
+          "text": "Käy läpi maksumoduulin viimeisimmät commitit ja etsi bugi koodista",
           "correct": false
         },
         {
-          "text": "Odota aamuun kun enemmän ihmisiä on paikalla",
+          "text": "Käynnistä maksupalvelu uudelleen ennen kuin katsot dashboardia",
           "correct": false
         },
         {
-          "text": "Käynnistä kaikki palvelut uudelleen ja toivo parasta",
+          "text": "Kirjoita ensin postmortem, jotta tapahtumien kulku ei unohdu",
           "correct": false
         }
       ],

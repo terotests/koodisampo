@@ -1,4 +1,4 @@
-# Dockerfile: `VOLUME /data` — data katoaa kontin poiston jälkeen. Miksi?
+# Dockerfile: `VOLUME /data` — kontti korvataan uudella, ja data näyttää kadonneen. Miksi?
 
 ## Tilanne
 
@@ -11,18 +11,18 @@ VOLUME /data
 CMD ["/app/server"]
 ```
 
-Kontti käynnistyy ja tallentaa dataa `/data`-hakemistoon. Poiston jälkeen:
+Kontti käynnistyy ja tallentaa dataa `/data`-hakemistoon. Deployssa kontti korvataan uudella:
 
 ```bash
-docker rm mycontainer
-docker volume prune
+docker rm -f mycontainer
+docker run -d --name mycontainer myapp:latest
 ```
 
-Kaikki data katosi. Kehittäjä luuli `VOLUME`-direktiivin tarkoittavan pysyvää tallennusta.
+Uuden kontin `/data` on tyhjä — data näyttää kadonneen. Kehittäjä luuli `VOLUME`-direktiivin tarkoittavan pysyvää tallennusta.
 
 ## Ratkaisu
 
-**Anonymous volume poistuu kontin mukana** — `VOLUME /data` luo anonyymin volumen, joka on sidottu tiettyyn konttiin. Kun kontti poistetaan, anonyymi volume jää "dangling"-tilaan ja `docker volume prune` poistaa sen.
+**Uusi kontti saa uuden anonyymin volumen** — `VOLUME /data` luo jokaiselle kontille oman, satunnaisesti nimetyn volumen. Vanha volume ei liity uuteen konttiin vaan jää orvoksi (dangling). Pelkkä `docker rm` ei poista sitä, mutta `docker rm -v`, `docker run --rm` ja `docker volume prune` poistavat — silloin data katoaa lopullisesti.
 
 Nimeä volume erikseen säilyttääksesi datan:
 

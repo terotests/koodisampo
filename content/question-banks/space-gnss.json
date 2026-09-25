@@ -28,7 +28,7 @@
           "correct": false
         },
         {
-          "text": "HEO (Highly Elliptical Orbit) — Molnija-tyyppinen eloisa rata",
+          "text": "HEO (Highly Elliptical Orbit) — Molnija-tyyppinen soikea rata",
           "correct": false
         }
       ],
@@ -50,27 +50,27 @@
         "guru",
         "interview"
       ],
-      "prompt": "Miksi TV- ja sääsatelliitit usein sijoitetaan GEO-radalle, mutta GNSS ei?",
+      "prompt": "Miksi TV-satelliitit sijoitetaan GEO-radalle, mutta globaalit GNSS-konstellaatiot perustuvat pääosin MEO-ratoihin?",
       "choices": [
         {
-          "text": "GEO pysyy paikallaan taivaalla yhden alueen yllä — GNSS tarvitsee liikkuvan konstellaation geometriaa",
+          "text": "GEO-satelliitit ovat kaikki päiväntasaajan yllä — globaali paikannus tarvitsee satelliitteja eri suunnista",
           "correct": true
         },
         {
-          "text": "GEO on ainoa rata jolla atomikello toimii",
+          "text": "GEO on ainoa rata, jolla atomikello ei toimi luotettavasti",
           "correct": false
         },
         {
-          "text": "GNSS-signaali ei voi kulkea GEO-korkeudesta",
+          "text": "GNSS-signaali vaimenee liikaa kulkiessaan GEO-korkeudesta",
           "correct": false
         },
         {
-          "text": "GEO-satelliitteja saa lähettää vain kaupallisiin tarkoituksiin",
+          "text": "GEO-rata on varattu vain kaupallisille tietoliikennesatelliiteille",
           "correct": false
         }
       ],
       "correctFeedback": "GEO sopii jatkuvasti samaan pisteeseen tarvitseville palveluille. Paikannus vaatii useita satelliitteja eri suunnista.",
-      "wrongFeedback": "GEO ei ole kielletty GNSS:ltä fysiikan takia — geometria ja kustannus tekevät MEO:sta paremman valinnan.",
+      "wrongFeedback": "GEO ei ole GNSS:ltä kielletty — BeiDou ja SBAS käyttävät sitä alueellisesti. Globaaliin peittoon ja hyvään geometriaan tarvitaan kuitenkin MEO-ratoja eri tasoilla.",
       "featureId": "space:orbit-geo",
       "featurePoints": 2,
       "lessonRef": "space/satellites/space-orbit-geo-comms",
@@ -201,24 +201,24 @@
       "prompt": "Miksi GNSS-satelliiteissa on atomikelloja?",
       "choices": [
         {
-          "text": "Paikannus perustuu tarkkaan ajanmittaukseen — nanosekunnin virhe on jo kymmeniä senttejä matkassa",
+          "text": "Paikannus perustuu signaalin kulkuaikaan — nanosekunnin virhe on noin 30 cm matkassa",
           "correct": true
         },
         {
-          "text": "Atomikello pitää satelliitin asennon vakaana thrusterien sijaan",
+          "text": "Atomikello tahdistaa satelliitin asennonsäädön reaktiopyörät",
           "correct": false
         },
         {
-          "text": "Atomikello korvaa aurinkopaneelit energianlähteenä",
+          "text": "Atomikello määrää kantoaallon taajuuden, mutta ei vaikuta paikkaan",
           "correct": false
         },
         {
-          "text": "Atomikelloa tarvitaan vain televisiolähetyksiin",
+          "text": "Atomikello tarvitaan vain satelliitin ja maa-aseman salaukseen",
           "correct": false
         }
       ],
       "correctFeedback": "Pseudomatka = c × Δt. Ajanvirhe suoraan matkavirheeksi — siksi atomikellot ja kellokorjaukset.",
-      "wrongFeedback": "Atomikello ei ohjaa asentoa eikä tuota energiaa — se antaa tarkan ajan signaalille.",
+      "wrongFeedback": "Kellon taajuus tosin on johdettu atomikellosta, mutta ydin on ajanmittaus: pseudomatka = c × Δt, joten ajanvirhe muuttuu suoraan matkavirheeksi.",
       "featureId": "space:atomic-clock",
       "featurePoints": 2,
       "lessonRef": "space/satellites/space-sat-atomic-clock",
@@ -501,15 +501,15 @@
           "correct": true
         },
         {
-          "text": "Ne korvaavat WGS84:n omilla ellipsoidillaan kaikkialla",
+          "text": "Ne ovat SBAS-järjestelmiä, jotka lähettävät vain GPS-korjauksia",
           "correct": false
         },
         {
-          "text": "Ne toimivat vain veden alla",
+          "text": "Ne käyttävät pelkästään LEO-ratoja nopeamman TTFF:n vuoksi",
           "correct": false
         },
         {
-          "text": "Ne ovat pelkkiä karttaprojektioita ilman satelliitteja",
+          "text": "Ne ovat GPS:n sotilasversioita omilla salatuilla signaaleilla",
           "correct": false
         }
       ],
@@ -649,20 +649,20 @@
           "correct": true
         },
         {
-          "text": "Neljäs satelliitti tarvitaan vain karttaprojektiota varten",
+          "text": "Neljäs satelliitti tarvitaan ionosfääriviiveen poistamiseen",
           "correct": false
         },
         {
-          "text": "Kolme satelliittia riittää aina kellovirheestä huolimatta",
+          "text": "Kolmella satelliitilla saadaan vain 2D-paikka, korkeuteen tarvitaan neljäs",
           "correct": false
         },
         {
-          "text": "Neljäs satelliitti mittaa vain lämpötilan",
+          "text": "Neljäs satelliitti tarvitaan efemeridin lataamiseen muille",
           "correct": false
         }
       ],
       "correctFeedback": "Tuntemattomat: x, y, z, δt_receiver. Siksi ≥ 4 pseudomatkaa.",
-      "wrongFeedback": "Kyse ei ole kartasta — kellovirhe on neljäs ratkaistava parametri.",
+      "wrongFeedback": "Kyse ei ole ionosfääristä eikä efemeridistä — kellovirhe on neljäs ratkaistava parametri x:n, y:n ja z:n lisäksi.",
       "featureId": "space:trilateration",
       "featurePoints": 2,
       "lessonRef": "space/signals/space-sig-trilateration",
@@ -846,7 +846,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Troposfääri ei riipu taajuudesta L-kaistalla samoin kuin ioni — korjataan malleilla / estimoidaan PPP:ssä.",
+      "correctFeedback": "Toisin kuin ionosfääri, troposfääri ei ole dispersiivinen L-kaistalla, joten monitaajuus ei poista sitä — viive korjataan malleilla tai estimoidaan PPP:ssä.",
       "wrongFeedback": "Troposfääriviive on ilmakehän alaosan vaikutus, ei kartta- tai thruster-ilmiö.",
       "featureId": "space:tropo",
       "featurePoints": 3,
@@ -1179,7 +1179,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "RINEX on yhteisön teksti/binääristandardi observation + nav -datoille (esim. RTKLIB, Bernese).",
+      "correctFeedback": "RINEX on tekstimuotoinen vaihtoformaatti havainto- ja navigointidatalle (esim. RTKLIB, Bernese); tiedostot pakataan usein Hatanaka-muotoon.",
       "wrongFeedback": "RINEX on havaintotiedostoformaatti jälkikäsittelyyn, ei pelimoottori- tai EPSG-työkalu.",
       "featureId": "space:rinex",
       "featurePoints": 3,
@@ -1241,20 +1241,20 @@
           "correct": true
         },
         {
-          "text": "Maan todellinen toppografinen pinta kaikkine vuorineen",
+          "text": "Maan todellinen topografinen pinta kaikkine vuorineen",
           "correct": false
         },
         {
-          "text": "Vain merenpinnan hetkellinen aaltoilu",
+          "text": "Painovoiman ekvipotentiaalipinta, joka vastaa keskimerenpintaa",
           "correct": false
         },
         {
-          "text": "Satelliitin aurinkopaneelin muoto",
+          "text": "Täydellinen pallo, jonka säde on maan keskisäde",
           "correct": false
         }
       ],
       "correctFeedback": "Ellipsoidi (a, f) on sileä matemaattinen pinta — lat/lon/height viittaavat siihen.",
-      "wrongFeedback": "Ellipsoidi ei ole toppografia eikä aaltoilu — se on laskennallinen referenssipinta.",
+      "wrongFeedback": "Ekvipotentiaalipinta on geoidi, eikä ellipsoidi ole topografia tai pallo — se on litistynyt laskennallinen referenssipinta.",
       "featureId": "space:ellipsoid",
       "featurePoints": 2,
       "lessonRef": "space/datums/space-datum-ellipsoid",
@@ -1401,7 +1401,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "H ≈ h − N. Undulaatio vaihtelee globaalisti kymmeniä metrejä (Suomessa tyypillisesti ~10–20 m luokkaa mallista riippuen).",
+      "correctFeedback": "H ≈ h − N. Undulaatio vaihtelee globaalisti noin −106…+85 m; Suomessa se on mallista riippuen noin 13–22 m.",
       "wrongFeedback": "Undulaatio N ei ole elevaatio eikä DOP — se on geoidi−ellipsoidi -ero.",
       "featureId": "space:undulation",
       "featurePoints": 3,
@@ -1533,23 +1533,23 @@
       "prompt": "Miten GRS80 liittyy WGS84-ellipsoidiin?",
       "choices": [
         {
-          "text": "Ne ovat lähes identtisiä; ETRS89 käyttää GRS80:ää, WGS84-ellipsoidi on käytännössä sama metritasolla",
+          "text": "Lähes identtiset: ETRS89 käyttää GRS80:tä, ja ero WGS84:ään on alle millimetrin",
           "correct": true
         },
         {
-          "text": "GRS80 on LEO-rata, WGS84 on GEO-rata",
+          "text": "GRS80 on vanhempi ellipsoidi, joka eroaa WGS84:stä satoja metrejä",
           "correct": false
         },
         {
-          "text": "GRS80 korvaa GNSS-signaalit Euroopassa",
+          "text": "GRS80 on geoidimalli, WGS84 on ellipsoidi",
           "correct": false
         },
         {
-          "text": "GRS80 ja WGS84 eroavat satoja kilometrejä akseleissa",
+          "text": "GRS80 on Galileon ellipsoidi, WGS84 on GPS:n oma",
           "correct": false
         }
       ],
-      "correctFeedback": "a on sama 6378137 m; f eroaa äärimmäisen vähän. Käytännön GIS-työssä usein vaihdettavissa, mutta datumi ≠ ellipsoidi.",
+      "correctFeedback": "a on sama 6378137 m; f eroaa niin vähän, että napasäteen ero on noin 0,1 mm. Datumi (ETRS89 vs WGS84) voi silti erota kymmeniä senttejä — datumi ≠ ellipsoidi.",
       "wrongFeedback": "GRS80 ei ole rata — se on ellipsoidi, hyvin lähellä WGS84:ää.",
       "featureId": "space:grs80",
       "featurePoints": 3,
@@ -1866,7 +1866,7 @@
       "prompt": "Mikä on EPSG-koodi paikkatiedossa?",
       "choices": [
         {
-          "text": "Yksikäsitteinen tunniste koordinaattijärjestelmälle (CRS), esim. 4326 = WGS84 lon/lat",
+          "text": "Yksikäsitteinen tunniste koordinaattijärjestelmälle (CRS), esim. 4326 = WGS84 lat/lon",
           "correct": true
         },
         {
@@ -1878,11 +1878,11 @@
           "correct": false
         },
         {
-          "text": "Vain kuvatiedoston DPI-asetus",
+          "text": "Rasterikuvan DPI-asetus",
           "correct": false
         }
       ],
-      "correctFeedback": "EPSG-rekisteri (nykyisin IOGP) listaa CRS:t: 4326, 3857, 3067 jne.",
+      "correctFeedback": "EPSG-rekisteri (nykyisin IOGP) listaa CRS:t: 4326, 3857, 3067 jne. Huom: EPSG:4326 määrittelee akselijärjestyksen lat, lon, vaikka moni ohjelmisto käyttää lon, lat.",
       "wrongFeedback": "EPSG ei ole PRN eikä RTCM — se tunnistaa koordinaattijärjestelmän.",
       "featureId": "space:epsg",
       "featurePoints": 2,
@@ -2125,19 +2125,19 @@
       "prompt": "Mikä ero on GPS-ajan ja UTC:n välillä?",
       "choices": [
         {
-          "text": "GPS-aika on jatkuva (ei karkaussekunteja); UTC:hen nähden on kokonaislukupoikkeama leap seconds",
+          "text": "GPS-aika on jatkuva ilman karkaussekunteja; UTC:stä se eroaa kokonaisten sekuntien verran",
           "correct": true
         },
         {
-          "text": "GPS-aika ja UTC ovat aina identtiset nanosekuntiin",
+          "text": "GPS-aika ja UTC ovat aina identtiset nanosekunnin tarkkuudella",
           "correct": false
         },
         {
-          "text": "UTC seuraa vain Galileo-konstellaatiota",
+          "text": "UTC määritellään Galileo-satelliittien kellojen keskiarvona",
           "correct": false
         },
         {
-          "text": "GPS-aika resetoituu joka keskiyö paikallisesti",
+          "text": "GPS-aika nollautuu joka keskiyö vastaanottimen aikavyöhykkeessä",
           "correct": false
         }
       ],

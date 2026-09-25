@@ -26,13 +26,13 @@ Etsi `[R.]` (RST) paketteja:
 IP firewall.443 > client.54321: Flags [R.], seq ...
 ```
 
-Vaihtoehto — tarkista yhteyden tila:
+Rajaa pelkkiin RST-paketteihin:
 
 ```bash
-ss -tanp | grep 443
+sudo tcpdump -i any -n 'tcp[tcpflags] & tcp-rst != 0 and port 443'
 ```
 
-**tcpdump tai ss porttiin — näet RST-paketit ja TCP-liikenteen.**
+**tcpdump näyttää RST-paketit ja niiden lähettäjän.** `ss` näyttää vain socketien tilan, ei yksittäisiä paketteja, joten sillä et näe kuka RST:n lähetti.
 
 ## Käytännössä
 

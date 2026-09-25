@@ -16,7 +16,7 @@ Jos toinen säie kutsuu `transfer(to, from)`, lukitusjärjestys kääntyy: säie
 
 ## Ratkaisu
 
-C++17 `std::scoped_lock` lukitsee usean mutexin **atomisesti** ja käyttää sisäistä deadlock-turvallista järjestystä:
+C++17 `std::scoped_lock` lukitsee usean mutexin kerralla ja käyttää `std::lock`in **deadlock-vapaata algoritmia** — kutsujärjestyksellä ei ole väliä:
 
 ```cpp
 void transfer(Account& from, Account& to) {
@@ -26,7 +26,7 @@ void transfer(Account& from, Account& to) {
 }
 ```
 
-Sama kuin `std::lock(m1, m2)` + `lock_guard`, mutta yhdellä RAII-ololla. Vaihtoehto vanhemmassa C++:ssa: kiinteä globaali lukitusjärjestys (esim. aina pienemmän osoitteen mutex ensin) tai refaktoroi yhdeksi mutexiksi.
+Sama kuin `std::lock(m1, m2)` + `lock_guard(adopt_lock)`, mutta yhdellä RAII-oliolla. Myös kiinteä lukitusjärjestys (esim. aina pienemmän osoitteen mutex ensin) estää deadlockin missä tahansa C++-versiossa, kunhan jokainen koodipolku noudattaa sitä. Sen sijaan `try_lock`-silmukka tai `sleep` vain muuttaa ajoitusta eikä poista ongelmaa.
 
 ## Käytännössä
 

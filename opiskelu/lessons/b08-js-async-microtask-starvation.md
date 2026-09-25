@@ -1,36 +1,45 @@
-# while(true) Promise.resolve().then(...) — UI jäätyy mutta ei 100% CPU. Miksi?
+# Funktio `pump()` ajastaa itsensä aina uudelleen: `Promise.resolve().then(pump)`. Synkronista silmukkaa ei ole, mutta UI jäätyy. Miksi?
 
 ## Tilanne
 
-Bugiraportti: sivu jäätyy, mutta CPU ei ole 100 %. Kehittäjä löytää testikoodin:
+Bugiraportti: sivu jäätyy, vaikka koodissa ei ole synkronista silmukkaa. Kehittäjä löytää pollausfunktion:
 
 ```javascript
-while (true) {
-  Promise.resolve().then(() => {
-    // "kevyt" callback
-  });
+function pump() {
+  processQueue(); // "kevyt" työ
+  Promise.resolve().then(pump); // ajasta seuraava kierros
 }
+pump();
 ```
 
-Silmukka ei ole synkroninen while(true), mutta UI ei reagoi — ei scrollausta, ei klikkauksia.
+Jokainen kierros päättyy normaalisti, mutta UI ei reagoi — ei scrollausta, ei klikkauksia, ei uudelleenpiirtoa.
 
 ## Ratkaisu
 
-**Microtask starvation — jono tyhjenee ennen macrotask/render-kierrosta.**
+**Microtask starvation — microtask-jono tyhjennetään kokonaan ennen macrotaskeja ja renderöintiä.**
 
 ```javascript
-// VÄÄRIN — infinite microtask loop
-while (true) {
-  Promise.resolve().then(() => {});
+// VÄÄRIN — jokainen kierros lisää uuden microtaskin
+function pump() {
+  processQueue();
+  Promise.resolve().then(pump);
 }
 // Event loop: microtask-jono ei koskaan tyhjene
-// → setTimeout, I/O, render jäävät odottamaan
+// → setTimeout, I/O, input ja render jäävät odottamaan
+
+// OIKEIN — seuraava kierros macrotaskina
+function pump() {
+  processQueue();
+  setTimeout(pump, 0);
+}
 ```
 
-Jokainen Promise.then lisää uuden microtaskin. Event loop tyhjentää microtask-jonon kokonaan ennen seuraavaa macrotaskia — ääretön silmukka estää renderöinnin.
+Jokainen `Promise.then` lisää uuden microtaskin. Event loop ajaa microtaskeja niin kauan kuin jonossa on niitä, ennen kuin se siirtyy seuraavaan macrotaskiin tai renderöintiin. Itseään uudelleen ajastava microtask-ketju ei siis koskaan päästä selainta eteenpäin.
+
+Huomaa ero: `while (true) { Promise.resolve().then(...) }` jäätyisi jo synkronisen silmukan takia — silloin callbackit eivät ehtisi koskaan edes ajautua.
 
 ## Käytännössä
 
-Älä rekursiivista queueMicrotask/Promise.then ilman ehtoa. Jos tarvitset jatkuvaa työtä, käytä requestAnimationFrame (UI) tai setImmediate/setTimeout (Node). Performance-ongelmat joissa CPU matala mutta UI jäätynyt → epäile microtask starvationia.
+Älä ajasta Promise.then- tai queueMicrotask-kutsua rekursiivisesti ilman lopetusehtoa. Jos tarvitset jatkuvaa työtä, anna selaimelle vuoro: `requestAnimationFrame` (UI), `setTimeout` tai Nodessa `setImmediate`. Jos UI on jäätynyt eikä synkronista silmukkaa löydy, epäile microtask-ketjua — profilerissa se näkyy yhtenä pitkänä microtask-jaksona.
 
 [Lue lisää](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)

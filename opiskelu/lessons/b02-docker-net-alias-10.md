@@ -15,7 +15,7 @@ Ilman aliaksia vain palvelun nimi `api` resolvduu.
 
 ## Ratkaisu
 
-**`network_aliases` Compose:ssa tai `--network-alias` docker run:ssa.** Network aliases lisäävät DNS-nimiä.
+**`networks.<verkko>.aliases` Composessa tai `--network-alias` docker runissa.** Aliakset lisäävät palvelulle DNS-nimiä kyseisessä verkossa. Compose-avainta `network_aliases` ei ole olemassa.
 
 Compose:
 
@@ -49,4 +49,4 @@ Testaa toisesta kontista: `docker exec client getent hosts gateway`.
 
 Aliakset ovat verkko-kohtaisia — sama alias eri verkoissa voi osoittaa eri kontteihin. Migraatioissa pidä legacy-alias väliaikaisesti, poista kun kaikki kutsujat on päivitetty. Dokumentoi aliasit README:ssä, jotta debuggaus on helpompaa.
 
-[Lue lisää](https://docs.docker.com/reference/compose-file/services/#network_aliases)
+[Lue lisää](https://docs.docker.com/reference/compose-file/services/#networks)

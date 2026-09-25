@@ -1,4 +1,4 @@
-# Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:lle?
+# Unit A: `Requires=B` ja `After=B`. B:n käynnistys epäonnistuu. Mitä A:lle tapahtuu?
 
 ## Tilanne
 
@@ -12,11 +12,11 @@ systemctl start api.service
 
 Operaattori ihmettelee, miksi API ei käynnisty ollenkaan, vaikka Redis on "vain välimuisti". Toisessa ympäristössä sama API on määritelty `Wants=redis.service`-riippuvuudella — siellä API käynnistyy silti, vaikka Redis olisi alhaalla.
 
-Ero on systemd:n riippuvuustyyppien kovuudessa. `Requires` luo kovan linkin: jos vaadittu unit ei aktivoidu onnistuneesti, riippuvainen unit ei saa jatkaa normaalisti.
+Ero on systemd:n riippuvuustyyppien kovuudessa. `Requires` luo kovan linkin: jos vaadittu unit ei aktivoidu onnistuneesti ja riippuvainen unit on järjestetty sen jälkeen (`After=`), riippuvaista unitia ei käynnistetä.
 
 ## Ratkaisu
 
-Kun unit B epäonnistuu käynnistyksessä ja unit A:lla on `Requires=B`, **Requires katkaisee A:n — A ei käynnisty tai pysähtyy, jos B epäonnistuu**.
+Kun unit B epäonnistuu käynnistyksessä ja unit A:lla on `Requires=B` ja `After=B`, **A:ta ei käynnistetä** — sen käynnistys päättyy tulokseen `dependency`.
 
 ```ini
 [Unit]
@@ -25,7 +25,9 @@ Requires=redis.service
 After=redis.service
 ```
 
-Tässä tapauksessa `api.service` jää failed-tilaan tai ei aktivoidu lainkaan, koska `redis.service` kaatui.
+Tässä tapauksessa `api.service` ei aktivoidu lainkaan, koska `redis.service` kaatui.
+
+Ilman `After=`-riviä `Requires=` ei odota B:n tulosta: A ja B käynnistetään rinnakkain, eikä A:ta estetä, vaikka B epäonnistuisi. Myöhemmin `Requires=` pysäyttää A:n vain, jos B pysäytetään tai käynnistetään uudelleen eksplisiittisesti — B:n omaan kaatumiseen reagoi vasta `BindsTo=`.
 
 **Requires = kova linkki; Wants = pehmeä.** `Wants=redis.service` yrittää käynnistää Redisin, mutta API voi silti käynnistyä ilman sitä — sovelluksen pitää itse käsitellä Redisin puuttuminen.
 

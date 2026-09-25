@@ -1,4 +1,4 @@
-# Tuotantoverkko — checksum offload aiheuttaa corrupt-paketteja virtuaalisessa NIC:ssä. Mitä työkalu?
+# Tuotantoverkko — checksum offload aiheuttaa korruptoituneita paketteja virtuaalisessa NIC:ssä. Mikä työkalu?
 
 ## Tilanne
 

@@ -1,4 +1,4 @@
-# Unit A tarvitsee verkon ennen käynnistystä mutta ei saa kaatua jos B epäonnistuu. Mikä riippuvuus?
+# Unit A tarvitsee verkon ennen käynnistystä, mutta sen ei pidä kaatua, jos verkon odotus epäonnistuu. Mikä riippuvuus?
 
 ## Tilanne
 
@@ -14,7 +14,7 @@ Haluttu käyttäytyminen: odota verkkoa jos se tulee, mutta älä kaada koko uni
 
 ## Ratkaisu
 
-Käytä **`After=network-online.target` ilman `Requires`-riippuvuutta**. Pehmeään aktivointiin riittää usein myös `Wants=`:
+Käytä **`Wants=` ja `After=network-online.target` ilman `Requires`-riippuvuutta**. Pelkkä `After=` ei riitä, koska se ei vedä targetia mukaan:
 
 ```ini
 [Unit]
@@ -26,7 +26,7 @@ Wants=network-online.target
 ExecStart=/usr/local/bin/sync.sh
 ```
 
-**After vain järjestää — Requires/Wants määrittää kovuuden.** `After=` ei aktivoi verkkoa; se sanoo vain "älä käynnistä minua ennen kuin target on käynnistetty". `Wants=` yrittää aktivoida targetin, mutta epäonnistuminen ei pysäytä sync:ia.
+**After vain järjestää — Requires/Wants määrittää kovuuden.** `After=` ei aktivoi verkkoa; se sanoo vain "älä käynnistä minua ennen kuin target on käynnistetty". Jos mikään ei vedä `network-online.target`:ia mukaan, pelkkä `After=` ei odota verkkoa lainkaan. `Wants=` aktivoi targetin, mutta sen epäonnistuminen ei pysäytä sync:ia.
 
 ## Käytännössä
 

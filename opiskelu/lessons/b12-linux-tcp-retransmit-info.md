@@ -1,4 +1,4 @@
-# Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?
+# Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. Mikä ss-lippu näyttää sisäiset TCP-tiedot (RTT, retrans)?
 
 ## Tilanne
 

@@ -298,7 +298,7 @@
           "correct": false
         },
         {
-          "text": "Lisää const metodin sulkevan lainausmerkin jälkeen",
+          "text": "Lisää const parametrilistan sulkevan sulkeen jälkeen",
           "correct": true
         },
         {
@@ -408,7 +408,7 @@
           "correct": false
         },
         {
-          "text": "float double",
+          "text": "int + kommentti // thread-safe",
           "correct": false
         }
       ],
@@ -899,7 +899,7 @@
           "correct": true
         },
         {
-          "text": "make_shared estää custom deleterin käytön kokonaan",
+          "text": "make_shared tekee kaksi erillistä allokaatiota turvallisuuden vuoksi",
           "correct": false
         },
         {
@@ -908,7 +908,7 @@
         }
       ],
       "correctFeedback": "make_shared vähentää allokaatioita ja välttää leak-riskin kahdessa vaiheessa.",
-      "wrongFeedback": "Kaksi erillistä new:ia shared_ptr:lle on hitaampaa ja riskialttiimpaa.",
+      "wrongFeedback": "Erillinen new + shared_ptr tekee kaksi allokaatiota (olio ja control block); make_shared yhdistää ne yhdeksi.",
       "sourceRef": "cpp-best-practices/04-Considering_Safety.md",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-make_shared",
       "featureId": "cpp:make-shared",
@@ -1038,7 +1038,7 @@
       "prompt": "Miksi `std::vector<int> v{1, 2, 3}` on turvallisempi kuin `vector<int>(3)` kun tarkoitus on kolme arvoa?",
       "choices": [
         {
-          "text": "Sulkeet {1,2,3} alustavat arvot — (3) luo kolme nollaa",
+          "text": "Aaltosulkeet {1,2,3} alustavat arvot — (3) luo kolme nollaa",
           "correct": true
         },
         {
@@ -1054,7 +1054,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Most vexing parse / koko vs alustus — uniform initialization auttaa.",
+      "correctFeedback": "Aaltosulkeilla annetaan alkiot, kaarisulkeilla koko — {1,2,3} tuottaa kolme arvoa.",
       "wrongFeedback": "(3) on koko, {3} on yksi alkio — {1,2,3} on kolme arvoa.",
       "sourceRef": "cpp-best-practices/03-Style.md",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/03-Style.md",
@@ -1418,7 +1418,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "nodiscard tekee ohitetusta virheestä kääntäjävirheen — C++17 työkalu.",
+      "correctFeedback": "nodiscard saa kääntäjän varoittamaan ohitetusta paluuarvosta (-Werror tekee siitä virheen) — C++17-työkalu.",
       "wrongFeedback": "Kommentti ei estä buildiä. nodiscard pakottaa käsittelemään tuloksen.",
       "sourceRef": "en.cppreference.com/nodiscard",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/attributes/nodiscard",
@@ -1650,27 +1650,27 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Sorttaus comparator palauttaa `<` ja `>` mutta unohtaa yhtäsuuruuden — epävakaa sort. C++20 ratkaisu?",
+      "prompt": "Structin käsin kirjoitetut <, == ja > ovat keskenään ristiriidassa, ja std::sort käyttäytyy oudosti. C++20-ratkaisu?",
       "choices": [
         {
-          "text": "Palauta aina -1 tai 1 — sort toimii ilman yhtäsuuruutta",
+          "text": "Palauta comparatorista -1, 0 tai 1 — std::sort tulkitsee ne oikein",
           "correct": false
         },
         {
-          "text": "default operator<=> structissa + ranges::sort (tai bool-predikaatti comparatorissa)",
+          "text": "auto operator<=>(const T&) const = default; — johdonmukaiset vertailut",
           "correct": true
         },
         {
-          "text": "memcmp kaikille tyypeille — nopea yleisratkaisu",
+          "text": "Vaihda std::stable_sortiin — se sietää ristiriitaiset vertailut",
           "correct": false
         },
         {
-          "text": "Poista sort ja käytä linked list -rakennetta",
+          "text": "memcmp kaikille tyypeille — nopea ja aina johdonmukainen vertailu",
           "correct": false
         }
       ],
-      "correctFeedback": "Default operator<=> + ranges::sort — comparator palauttaa bool, ei strong_ordering.",
-      "wrongFeedback": "return a <=> b ei kelpaa sort-comparatoriksi. Käytä < tai (a <=> b) < 0.",
+      "correctFeedback": "Defaultattu operator<=> generoi jäsenittäiset, keskenään johdonmukaiset vertailut, joita std::sort ja ranges::sort käyttävät.",
+      "wrongFeedback": "sort-comparator palauttaa boolin (strict weak ordering), ei -1/0/1. stable_sort vaatii saman johdonmukaisuuden, ja memcmp rikkoo paddingin ja ei-triviaalit jäsenet.",
       "sourceRef": "en.cppreference.com/operator<= ",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/operator_comparison",
       "featureId": "cpp:three-way-compare",
@@ -1688,7 +1688,7 @@
         "guru",
         "security"
       ],
-      "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++17+ tapa välttää manuaaliset shift-makrot?",
+      "prompt": "Verkkoprotokolla serialisoi uint32_t:n. Mikä C++20+ tapa välttää manuaaliset shift-makrot?",
       "choices": [
         {
           "text": "Kopioi sizeof(int) suoraan wireen — nopein serialisointi",
@@ -1707,16 +1707,15 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Endianness on portability-kysymys — älä oleta alustaa. standard-endian auttaa.",
+      "correctFeedback": "Endianness on portability-kysymys — älä oleta alustaa. std::endian (C++20) kertoo tavujärjestyksen, std::byteswap (C++23) kääntää sen.",
       "wrongFeedback": "Type punning unionilla on UB C++:ssa. Käytä dokumentoituja conversioneja.",
       "sourceRef": "cpp-best-practices/09-Portability.md",
       "sourceUrl": "https://en.cppreference.com/w/cpp/types/endian",
       "featureId": "cpp:endian",
       "featurePoints": 4,
       "versions": [
-        "C++23",
         "C++20",
-        "C++17"
+        "C++23"
       ]
     },
     {
@@ -1821,7 +1820,7 @@
         }
       ],
       "correctFeedback": "override estää kirjoitusvirheet periytymisessä — cpp-best-practices Style.",
-      "wrongFeedback": "Ilman overridea typo jää huomaamatta. override on pakollinen modernissa koodissa.",
+      "wrongFeedback": "Ilman overridea typo jää huomaamatta. override ei ole pakollinen, mutta se kuuluu moderniin tyyliin.",
       "sourceRef": "CppCoreGuidelines#c-override",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c-override",
       "featureId": "cpp:override",
@@ -1911,7 +1910,7 @@
       "prompt": "Tuotantokoodi käyttää `new Widget()` suoraan. Ensimmäinen turvallisuusparannus?",
       "choices": [
         {
-          "text": "make_unique<Widget>() — yksi allokaatio, exception-safe",
+          "text": "make_unique<Widget>() — omistus heti RAII:lle, exception-safe",
           "correct": true
         },
         {
@@ -2087,11 +2086,11 @@
       "prompt": "Funktio lukitsee kaksi mutexia — riski deadlockille. C++17-ratkaisu?",
       "choices": [
         {
-          "text": "lock(m1); lock(m2) manuaalisesti samassa järjestyksessä",
+          "text": "try_lock silmukassa sleepin kanssa kunnes molemmat saadaan",
           "correct": false
         },
         {
-          "text": "scoped_lock(m1, m2) — atomisesti oikeassa järjestyksessä",
+          "text": "scoped_lock(m1, m2) — lukitsee molemmat deadlock-vapaasti",
           "correct": true
         },
         {
@@ -2104,7 +2103,7 @@
         }
       ],
       "correctFeedback": "scoped_lock usealle mutexille estää deadlockin — threadability-best-practice.",
-      "wrongFeedback": "Manuaalinen kaksinkertainen lock on virhealtista. scoped_lock hoitaa järjestyksen.",
+      "wrongFeedback": "try_lock-silmukka ja sleep eivät poista deadlockia, ne vain muuttavat ajoitusta. scoped_lock käyttää std::lockin deadlock-vapaata algoritmia.",
       "sourceRef": "en.cppreference.com/scoped_lock",
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread/scoped_lock",
       "featureId": "cpp:scoped-lock",
@@ -2237,7 +2236,7 @@
           "correct": true
         },
         {
-          "text": "shared_ptr korjaa ilman virtual destructoria",
+          "text": "Lisää override johdetun luokan destructoriin — base ennallaan",
           "correct": false
         },
         {
@@ -2442,7 +2441,7 @@
         "coworker",
         "security"
       ],
-      "prompt": "Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?",
+      "prompt": "Legacy-funktio ottaa `int buf[256]`, mutta kutsuja antaa pienemmän taulukon. Miten modernisoit rajapinnan?",
       "choices": [
         {
           "text": "std::array<int,256> tai std::span<int> — koko mukana",
@@ -2466,7 +2465,10 @@
       "sourceRef": "cpp-best-practices/04-Considering_Safety",
       "sourceUrl": "https://github.com/cpp-best-practices/cppbestpractices/blob/master/04-Considering_Safety.md",
       "featureId": "cpp:std-array",
-      "featurePoints": 3
+      "featurePoints": 3,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b03-cpp-portability-fixed-width",
@@ -2693,7 +2695,7 @@
       "prompt": "Generinen funktio `template<typename T> void sort(T& c)` kaatuu outoihin virheviesteihin kun T on custom-tyyppi. Miten rajaat template-parametrin luettavaksi?",
       "choices": [
         {
-          "text": "C++20 concepts: template<std::ranges::sortable R> tai requires-lause",
+          "text": "C++20 concepts: requires std::sortable<std::ranges::iterator_t<T>>",
           "correct": true
         },
         {
@@ -2709,7 +2711,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Concepts antavat selkeän kääntäjävirheen — cppreference dokumentoi std::sortable ja requires.",
+      "correctFeedback": "Concepts antavat selkeän kääntäjävirheen — cppreference dokumentoi std::sortable-conceptin ja requires-lauseen.",
       "wrongFeedback": "static_assert(false) hylkäisi kaiken instansoinnin ehdoitta. Kommentti ei ole kääntäjän tarkistama. void* menettää tyyppiturvan kokonaan.",
       "sourceRef": "en.cppreference.com/concepts",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/constraints",
@@ -2929,7 +2931,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "override on pakollinen modernissa koodissa — CppCoreGuidelines C.128.",
+      "correctFeedback": "override on vahva suositus modernissa koodissa — CppCoreGuidelines C.128.",
       "wrongFeedback": "Ilman overridea piilotettu funktio syntyy hiljaa. override paljastaa virheen.",
       "sourceRef": "CppCoreGuidelines#C.128",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/override",
@@ -3058,7 +3060,7 @@
       "prompt": "Koodi luo väliaikaisen vectorin vain suodattaakseen ja laskeakseen count:in. C++20 ranges tapa?",
       "choices": [
         {
-          "text": "std::ranges::count_if(container, pred) — lazy, ei väliaikaista vectoria",
+          "text": "std::ranges::count_if(container, pred) — suoraan kontista, ei välivectoria",
           "correct": true
         },
         {
@@ -3201,14 +3203,14 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Code reviewissa lambda kaappaa ulkoisen muuttujan arvolla `[x]` mutta x muuttuu silmukan jälkeen. Mikä on turvallisin korjaus?",
+      "prompt": "Code reviewissa lambda kaappaa paikallisen muuttujan viittauksella `[&x]` ja ajetaan myöhemmin, kun x on jo tuhoutunut. Turvallisin korjaus?",
       "choices": [
         {
-          "text": "Kaappaa [&] vain jos elinkaari varma, muuten kopioi arvo [x] tai [=]",
+          "text": "Kaappaa arvolla [x] — viittauskaappaus vain kun elinkaari on varma",
           "correct": true
         },
         {
-          "text": "Käytä aina [=] — se on turvallisin capture-tyyli kaikissa tilanteissa",
+          "text": "Kaappaa [&] koko scope — silloin kaikki muuttujat pysyvät elossa",
           "correct": false
         },
         {
@@ -3216,12 +3218,12 @@
           "correct": false
         },
         {
-          "text": "Poista capture ja käytä globaalia muuttujaa lambda-silmukan sisällä",
+          "text": "Poista capture ja käytä globaalia muuttujaa lambdan sisällä",
           "correct": false
         }
       ],
       "correctFeedback": "Lambda capture määrittää elinkaaren — CppCoreGuidelines varoittaa dangling reference -riskeistä.",
-      "wrongFeedback": "Viittaus ulkoiseen arvoon voi vanhentua. Kopioi tai varmista elinkaari.",
+      "wrongFeedback": "Viittaus tuhoutuneeseen muuttujaan roikkuu, eikä [&] pidennä elinikää. Kopioi arvo tai varmista elinkaari.",
       "sourceRef": "CppCoreGuidelines#Res-capture",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Res-capture",
       "featureId": "cpp:lambda-capture",
@@ -3499,7 +3501,7 @@
           "correct": false
         },
         {
-          "text": "Kääntäjävirhe — sulkeet eivät toimi vectorille",
+          "text": "Kääntäjävirhe — aaltosulkeet eivät toimi vectorille",
           "correct": false
         },
         {
@@ -3508,7 +3510,7 @@
         }
       ],
       "correctFeedback": "Brace-init on initializer_list — eri semantiikka kuin (size, value).",
-      "wrongFeedback": "Sulkeet vs. sulut eroavat vectorin alustuksessa. {10,1} = kaksi elementtiä.",
+      "wrongFeedback": "Aaltosulkeet {} ja kaarisulkeet () eroavat vectorin alustuksessa. {10, 1} = kaksi alkiota.",
       "sourceRef": "en.cppreference.com/list_initialization",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/list_initialization",
       "featureId": "cpp:init-list",
@@ -3561,7 +3563,7 @@
       "prompt": "Code review ehdottaa `std::move` jokaiselle parametrille funktiossa. Milloin move on järkevä?",
       "choices": [
         {
-          "text": "Kun lähde ei enää tarvita — esim. viimeinen käyttö ennen returnia",
+          "text": "Kun lähdettä ei enää tarvita — esim. viimeinen käyttö ennen returnia",
           "correct": true
         },
         {
@@ -3569,7 +3571,7 @@
           "correct": false
         },
         {
-          "text": "Vain const-viitauksille — move ei toimi muihin parametreihin",
+          "text": "Vain const-viittauksille — move ei toimi muihin parametreihin",
           "correct": false
         },
         {
@@ -3596,7 +3598,7 @@
       "prompt": "Sprint review: sama for-silmukka toistuu viidessä tiedostossa. Mitä ehdotat refaktorointiin?",
       "choices": [
         {
-          "text": "range-for tai std::for_each — vähemmän toistoa, selkeämpi intentti",
+          "text": "Pura yhteiseksi funktioksi tai standardialgoritmiksi — ei toistoa",
           "correct": true
         },
         {
@@ -3717,8 +3719,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "deleted functions estävat käytön eksplisiittisesti — cppreference function delete.",
-      "wrongFeedback": "Private kopio ei estää member-funktiota. delete on selkeä ja turvallinen.",
+      "correctFeedback": "Deleted functions estävät käytön eksplisiittisesti — cppreference function delete.",
+      "wrongFeedback": "Private-kopio ei estä luokan omia jäsenfunktioita kopioimasta. = delete on selkeä ja turvallinen.",
       "sourceRef": "en.cppreference.com/function.delete",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/function#Deleted_functions",
       "featureId": "cpp:deleted-function",
@@ -3752,8 +3754,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "nodiscard varoittaa jos paluuarvo ei käytetään — cppreference nodiscard.",
-      "wrongFeedback": "Kommentti ei estää unohtamista. nodiscard on kääntäjätarkistettava.",
+      "correctFeedback": "nodiscard varoittaa, jos paluuarvoa ei käytetä — cppreference nodiscard.",
+      "wrongFeedback": "Kommentti ei estä unohtamista. nodiscard on kääntäjän tarkistama.",
       "sourceRef": "en.cppreference.com/attributes/nodiscard",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/attributes/nodiscard",
       "featureId": "cpp:nodiscard",
@@ -3792,7 +3794,10 @@
       "sourceRef": "CppCoreGuidelines#Ri-span",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-span",
       "featureId": "cpp:span",
-      "featurePoints": 4
+      "featurePoints": 4,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b06-cpp-weak-ptr-cycle",
@@ -3803,7 +3808,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Kaksi objekti jakaa shared_ptr toisiinsa — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?",
+      "prompt": "Kaksi oliota osoittaa toisiinsa shared_ptr:llä — muisti ei vapaudu. Mikä ratkaisu rikkoo syklin?",
       "choices": [
         {
           "text": "Yksi suunta weak_ptr — shared_ptr sykli estyy",
@@ -3818,12 +3823,12 @@
           "correct": false
         },
         {
-          "text": "Käytä unique_ptr molemmissa — sama ongelma",
+          "text": "Käytä unique_ptr:ää molempiin suuntiin",
           "correct": false
         }
       ],
       "correctFeedback": "weak_ptr ei kasvata shared count — cppreference weak_ptr.",
-      "wrongFeedback": "Kaksi shared_ptr luo sykli. weak_ptr yhdessä suunnassa rikkoo sitä.",
+      "wrongFeedback": "Kaksi shared_ptr:ää luo syklin. weak_ptr yhdessä suunnassa rikkoo sen.",
       "sourceRef": "en.cppreference.com/weak_ptr",
       "sourceUrl": "https://en.cppreference.com/w/cpp/memory/weak_ptr",
       "featureId": "cpp:weak-ptr",
@@ -3967,7 +3972,10 @@
       "sourceRef": "en.cppreference.com/ranges",
       "sourceUrl": "https://en.cppreference.com/w/cpp/ranges",
       "featureId": "cpp:ranges",
-      "featurePoints": 3
+      "featurePoints": 3,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b06-cpp-signed-compare-bug",
@@ -4054,7 +4062,7 @@
       "prompt": "Hot loop kärsii cache miss — kaksi counteria samassa cache line:ssä eri threadeilla. Mitä kokeilla?",
       "choices": [
         {
-          "text": "alignas(64) tai erilliset cache line — vähentää false sharing -ongelmaa",
+          "text": "alignas(64) tai padding — laskurit eri cache lineille",
           "correct": true
         },
         {
@@ -4062,7 +4070,7 @@
           "correct": false
         },
         {
-          "text": "Käytä float double tilalle hot loopissa vähentääksesi cache missejä",
+          "text": "Vaihda laskurit 64-bittisiksi — isompi tyyppi vähentää cache missejä",
           "correct": false
         },
         {
@@ -4121,7 +4129,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä. Miten dokumentoit tarkoituksellinen putoaminen?",
+      "prompt": "Switch-case putoaa vahingossa seuraavaan caseen — bugi löytyy viiveellä. Miten dokumentoit tarkoituksellisen putoamisen?",
       "choices": [
         {
           "text": "[[fallthrough]] attribuutti — kääntäjä ja lukija ymmärtävät tarkoituksellisen putoamisen",
@@ -4140,7 +4148,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "fallthrough attribute merkitsee tarkoituksellinen — cppreference fallthrough.",
+      "correctFeedback": "[[fallthrough]] merkitsee putoamisen tarkoitukselliseksi — cppreference fallthrough.",
       "wrongFeedback": "Ilman merkintää putoaminen näyttää virheestä. fallthrough dokumentoi intentin.",
       "sourceRef": "en.cppreference.com/attributes/fallthrough",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/attributes/fallthrough",
@@ -4253,7 +4261,10 @@
       "sourceRef": "CppCoreGuidelines#I13",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#i13",
       "featureId": "cpp:span",
-      "featurePoints": 3
+      "featurePoints": 3,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b07-cpp-perfect-forwarding",
@@ -4566,7 +4577,7 @@
           "correct": false
         },
         {
-          "text": "#ifdef DEBUG around return korvaa runtime-tarkistuksen tuotannossa",
+          "text": "#ifdef DEBUG returnin ympärillä korvaa runtime-tarkistuksen tuotannossa",
           "correct": false
         }
       ],
@@ -4586,7 +4597,7 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mitä kuvio?",
+      "prompt": "Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mikä kuvio auttaa?",
       "choices": [
         {
           "text": "Pimpl — vain impl muuttuu, julkinen header pysyy vakaana ABI:lle",
@@ -4645,7 +4656,10 @@
       "sourceRef": "en.cppreference.com/span/operator_subscript",
       "sourceUrl": "https://en.cppreference.com/w/cpp/container/span/operator_subscript",
       "featureId": "cpp:span-bounds",
-      "featurePoints": 3
+      "featurePoints": 3,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b08-cpp-emplace-back",
@@ -4691,7 +4705,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` käännyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?",
+      "prompt": "Funktio `void f(std::array<int, 3>)` — kutsu `f({1,2,3})` kääntyy, mutta `auto x = {1,2,3}; f(x);` ei. Miksi?",
       "choices": [
         {
           "text": "auto x = {1,2,3} on initializer_list — sitä ei voi välittää array-parametrille",
@@ -4748,7 +4762,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "std::sort requires random access — cppreference sort.",
+      "correctFeedback": "std::sort vaatii random access -iteraattorit — cppreference sort.",
       "wrongFeedback": "sort ei toimi list-iteratorilla. Käytä list::sort tai muuta konttia.",
       "sourceRef": "en.cppreference.com/algorithm/sort",
       "sourceUrl": "https://en.cppreference.com/w/cpp/algorithm/sort",
@@ -4764,7 +4778,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "FILE* pitää sulkea fclose:lla — unique_ptr<void> ei riitä. Miten mallinnet oikein?",
+      "prompt": "FILE* pitää sulkea fclose:lla — unique_ptr oletusdeleterillä ei riitä. Miten mallinnat sen oikein?",
       "choices": [
         {
           "text": "unique_ptr<FILE, decltype(&fclose)> fp(f, &fclose) — RAII FILE:lle",
@@ -4783,7 +4797,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "unique_ptr supports custom deleter — cppreference unique_ptr.",
+      "correctFeedback": "unique_ptr tukee custom deleteriä — cppreference unique_ptr.",
       "wrongFeedback": "Oletusdeleter kutsuu delete. C-resurssille anna fclose deleteriksi.",
       "sourceRef": "en.cppreference.com/unique_ptr",
       "sourceUrl": "https://en.cppreference.com/w/cpp/memory/unique_ptr",
@@ -4799,27 +4813,27 @@
         "guru",
         "security"
       ],
-      "prompt": "Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei näy heti toisessa CPU:ssa. Mikä voi auttaa?",
+      "prompt": "Tuottaja kirjoittaa puskuriin ja kasvattaa sitten atomic<int>-laskuria relaxed-järjestyksellä. Kuluttaja näkee uuden laskurin mutta vanhaa dataa. Mikä auttaa?",
       "choices": [
         {
-          "text": "memory_order_release/acquire tai seq_cst — ymmärrä visibility tarpeen mukaan",
+          "text": "Tuottaja käyttää release-järjestystä, kuluttaja lukee acquire-järjestyksellä",
           "correct": true
         },
         {
-          "text": "volatile int korvaa std::atomicin säieturvalliseen laskuriin",
+          "text": "volatile int korvaa std::atomicin säieturvallisessa laskurissa",
           "correct": false
         },
         {
-          "text": "memory_order_relaxed estää kaikki race conditionit laskurissa",
+          "text": "memory_order_relaxed kummallakin puolella riittää datan julkaisuun",
           "correct": false
         },
         {
-          "text": "Mutex ei koskaan tarvita std::atomic<int>:n rinnalla incrementissä",
+          "text": "sleep ennen lukemista — data ehtii näkyä toiselle ytimelle",
           "correct": false
         }
       ],
-      "correctFeedback": "Memory ordering määrittää näkyvyyden — cppreference memory_order.",
-      "wrongFeedback": "Relaxed ei takaa publish-subscribe -järjestystä. Valitse ordering tarkoituksen mukaan.",
+      "correctFeedback": "release/acquire-pari luo happens-before-suhteen: kun kuluttaja näkee laskurin arvon, se näkee myös sitä ennen kirjoitetun datan.",
+      "wrongFeedback": "Relaxed takaa vain laskurin atomisuuden, ei muun datan järjestystä. volatile ja sleep eivät synkronoi.",
       "sourceRef": "en.cppreference.com/memory_order",
       "sourceUrl": "https://en.cppreference.com/w/cpp/atomic/memory_order",
       "featureId": "cpp:memory-order",
@@ -4861,8 +4875,7 @@
       "featureId": "cpp:optional-and-then",
       "featurePoints": 3,
       "versions": [
-        "C++23",
-        "C++17"
+        "C++23"
       ]
     },
     {
@@ -4966,7 +4979,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Range views are lazy — cppreference ranges.",
+      "correctFeedback": "Range viewt ovat laiskoja — cppreference ranges.",
       "wrongFeedback": "views ketjuttavat ilman välituloksia kunnes materialisoidaan.",
       "sourceRef": "en.cppreference.com/ranges",
       "sourceUrl": "https://en.cppreference.com/w/cpp/ranges",
@@ -5004,7 +5017,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Testaa release-konfiguraatiossa — assert disabled when NDEBUG defined.",
+      "correctFeedback": "Testaa myös release-konfiguraatiossa — assert poistuu, kun NDEBUG on määritelty.",
       "wrongFeedback": "Vain debug-testaus jättää assert-poiston huomaamatta. Aja CI:ssä myös release.",
       "sourceRef": "en.cppreference.com/error/assert",
       "sourceUrl": "https://en.cppreference.com/w/cpp/error/assert",
@@ -5039,7 +5052,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "shared_mutex allows concurrent readers — cppreference shared_mutex.",
+      "correctFeedback": "shared_mutex sallii useat samanaikaiset lukijat — cppreference shared_mutex.",
       "wrongFeedback": "Reader-writer lock sopii read-heavy cacheen. Mutex serialisoi kaiken.",
       "sourceRef": "en.cppreference.com/shared_mutex",
       "sourceUrl": "https://en.cppreference.com/w/cpp/thread/shared_mutex",
@@ -5074,7 +5087,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "C++20 modules reduce recompilation — cppreference modules.",
+      "correctFeedback": "C++20-moduulit vähentävät uudelleenkäännöksiä — cppreference modules.",
       "wrongFeedback": "Modules erottavat rajapinnan toteutuksesta paremmin kuin pelkkä header.",
       "sourceRef": "en.cppreference.com/modules",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/modules",
@@ -5223,7 +5236,10 @@
       "sourceRef": "CppCoreGuidelines#Res-span",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Res-span",
       "featureId": "cpp:span",
-      "featurePoints": 4
+      "featurePoints": 4,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "b09-cpp-enable-shared-from-this",
@@ -5269,7 +5285,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypillisesti?",
+      "prompt": "API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypitetysti?",
       "choices": [
         {
           "text": "std::optional<T> — arvo tai tyhjä ilman magic sentinel -arvoja API:ssa",
@@ -5289,7 +5305,7 @@
         }
       ],
       "correctFeedback": "optional tekee puuttuvan arvon eksplisiittiseksi — CppCoreGuidelines F.60.",
-      "wrongFeedback": "nullptr/sentinel on helppo unohtaa. optional pakottaa käsittelemään tyhjän.",
+      "wrongFeedback": "nullptr/sentinel on helppo unohtaa. optional tekee tyhjän tapauksen näkyväksi jo tyypissä.",
       "sourceRef": "CppCoreGuidelines#Rf-return",
       "sourceUrl": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-return",
       "featureId": "cpp:optional",
@@ -5459,7 +5475,7 @@
           "correct": false
         },
         {
-          "text": "Muuta int32_t int64_t:ksi — narrowing ei koskaan tapahdu laajennuksessa",
+          "text": "Kopioi-alustus int32_t x = value; varoittaa aina oletusasetuksilla",
           "correct": false
         },
         {
@@ -5613,7 +5629,10 @@
       "sourceRef": "cppreference/span",
       "sourceUrl": "https://en.cppreference.com/w/cpp/container/span",
       "featureId": "cpp:span-lifetime",
-      "featurePoints": 4
+      "featurePoints": 4,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "prod-cpp-string-view-member",
@@ -5731,14 +5750,14 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Coroutine käyttää viittausta paikalliseen muuttujaan `co_await` jälkeen. Mikä riski?",
+      "prompt": "Coroutine ottaa parametrin `const std::string&` ja käyttää sitä `co_await`:n jälkeen. Kutsujan merkkijono on väliaikainen. Mikä riski?",
       "choices": [
         {
-          "text": "Viittaus voi roikkua — coroutine jatkuu myöhemmin eri elinkaaressa",
+          "text": "Viittaus voi roikkua — kutsujan olio voi tuhoutua ennen jatkamista",
           "correct": true
         },
         {
-          "text": "co_await kopioi kaiken automaattisesti coroutine frameen",
+          "text": "Coroutine frame kopioi viitatut oliot automaattisesti talteen",
           "correct": false
         },
         {
@@ -5746,16 +5765,19 @@
           "correct": false
         },
         {
-          "text": "volatile korjaa lifetime-ongelman paikallisen muuttujan viittauksessa",
+          "text": "volatile korjaa lifetime-ongelman viittausparametrissa",
           "correct": false
         }
       ],
-      "correctFeedback": "Coroutine frame elää eri aikajänteessä — älä viittaa stack-muuttujiin awaitin jälkeen.",
-      "wrongFeedback": "co_await voi suspendata ja palata kun stack-frame on jo tuhoutunut.",
+      "correctFeedback": "Coroutine frame tallentaa vain viittauksen, ei viitattua oliota — ota parametrit arvona, jos coroutine suspendoituu.",
+      "wrongFeedback": "co_await voi suspendata ja palata kun kutsujan väliaikainen olio on jo tuhoutunut.",
       "sourceRef": "cppreference/coroutine",
       "sourceUrl": "https://en.cppreference.com/w/cpp/language/coroutines",
       "featureId": "cpp:coroutine-lifetime",
-      "featurePoints": 5
+      "featurePoints": 5,
+      "versions": [
+        "C++20"
+      ]
     },
     {
       "id": "prod-cpp-jthread-stop",
@@ -6154,7 +6176,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin silmukassa. Miksi cpp-best-practices suosii `++i`?",
+      "prompt": "Code review kommentoi silmukkaa `for (auto it = c.begin(); it != c.end(); it++)`. Miksi cpp-best-practices suosii `++it`:tä?",
       "choices": [
         {
           "text": "Pre-increment ei kopioi iteratoria — semanttisesti oikea kun arvoa ei tarvita",

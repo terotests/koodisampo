@@ -1,4 +1,4 @@
-# Bugi: `if (count == '0')` menee läpi kun count on 0. Fix?
+# Bugi: `if (input == 0)` menee läpi myös, kun input on tyhjä merkkijono `''`. Fix?
 
 ## Tilanne
 

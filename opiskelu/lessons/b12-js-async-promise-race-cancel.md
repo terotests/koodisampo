@@ -1,26 +1,31 @@
-# Käyttäjä peruuttaa — haluat että hitain fetch häviää kilpajuoksussa. Metodi?
+# Käyttäjä painaa Peruuta — käynnissä olevan fetch-pyynnön pitää oikeasti keskeytyä. Mitä käytät?
 
 ## Tilanne
 
-Pitkä fetch ja käyttäjän "Peruuta"-nappi kilpailevat. Haluat, että ensimmäinen valmis voittaa — jos käyttäjä peruuttaa, fetch hylätään heti.
+Pitkä fetch ja käyttäjän "Peruuta"-nappi. Kun käyttäjä peruuttaa, pyynnön pitää oikeasti katketa verkossa — ei vain lakata odottamasta vastausta.
 
 ## Ratkaisu
 
-**Promise.race([fetch(...), abortPromise]):**
+**AbortController: signal fetchiin ja controller.abort() peruutuksessa:**
 
 ```javascript
-function fetchWithCancel(url, signal) {
-  const abortPromise = new Promise((_, reject) => {
-    signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
-  });
-  return Promise.race([fetch(url, { signal }), abortPromise]);
+const controller = new AbortController();
+
+cancelButton.addEventListener("click", () => controller.abort());
+
+try {
+  const res = await fetch(url, { signal: controller.signal });
+  render(await res.json());
+} catch (err) {
+  if (err.name === "AbortError") showMessage("Peruutettu");
+  else throw err;
 }
 ```
 
-Käytännössä AbortController fetch-signaalilla riittää useimmiten — race on explisiittinen vaihtoehto.
+`abort()` katkaisee HTTP-pyynnön ja hylkää fetchin promisen `AbortError`-virheellä.
 
 ## Käytännössä
 
-Promise.race voittaa ensimmäisen settle — huomaa "hylätty fetch jatkuu taustalla" ilman abort-signaalia. Yhdistä aina AbortController. Timeout: AbortSignal.timeout on siistimpi kuin race timeout-promisen kanssa.
+Pelkkä `Promise.race([fetch(url), abortPromise])` ei peruuta mitään: race vain lopettaa odottamisen, ja pyyntö jatkuu taustalla kuluttaen kaistaa ja palvelimen resursseja. Välitä aina signal fetchiin. Timeoutiin `AbortSignal.timeout(ms)` ja useaan peruutuslähteeseen `AbortSignal.any([...])`.
 
-[Lue lisää](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
+[Lue lisää](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)

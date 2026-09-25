@@ -4,14 +4,14 @@
 Build-palvelimen levy on täynnä. `docker images` listaa satoja `<none>`-tageja ja `docker ps -a` näyttää kymmeniä Exited-kontteja.
 
 ## Ratkaisu
-**docker system prune poistaa käyttämättömät imaget ja containerit.**
+**docker system prune -a poistaa käyttämättömät imaget ja containerit.** Ilman `-a`:ta prune poistaa pysäytetyt kontit, käyttämättömät verkot, dangling-imaget (`<none>`) ja build-cachen. `-a` poistaa lisäksi tagatut imaget, joita mikään kontti ei käytä.
 
 ```bash
 # Esikatselu
 docker system df
 
-# Turvallinen siivous (kysyy vahvistuksen)
-docker system prune
+# Siivous (kysyy vahvistuksen); -a poistaa myös vanhat tagatut imaget
+docker system prune -a
 
 # CI: automaattinen
 docker system prune -af --filter "until=168h"

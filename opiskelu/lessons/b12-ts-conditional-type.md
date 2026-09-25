@@ -13,7 +13,7 @@ Tavallinen union ei riitä — päätös pitää tehdä tyypin perusteella kää
 
 ## Ratkaisu
 
-**Exhaustiveness check — uusi variantti compile error**:
+**Conditional type — tyyppitason ehtologiikka:**
 
 ```typescript
 type IsString<T> = T extends string ? true : false;
@@ -28,7 +28,7 @@ type Ok = StringOrNever<'x'>;   // 'x'
 type Bad = StringOrNever<number>; // never
 ```
 
-Tämä on conditional type: `T extends string ? true : false` arvioi ehto type-tasolla. Sama mekanismi kuin exhaustive `never`-tarkistuksessa switchissä — jos unioniin tulee uusi jäsen, ehdollinen tyyppi voi tuottaa odottamattoman tuloksen ja paljastaa virheen.
+Tämä on conditional type: `T extends string ? true : false` arvioi ehto type-tasolla. Se ei tuota runtime-koodia — valinta tehdään kokonaan käännösaikana.
 
 ## Käytännössä
 

@@ -1,4 +1,4 @@
-# Yöllinen backup-skripti ei ajautunut cronin sijaan. Miten systemd-timer korvaa crontabin?
+# Yöllinen backup-skripti halutaan ajaa systemd:llä cronin sijaan. Miten systemd-timer korvaa crontabin?
 
 ## Tilanne
 

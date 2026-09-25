@@ -1,4 +1,4 @@
-# Node 20+ resolvaa specifierin suhteessa moduuliin?
+# ESM-tiedostossa haluat selvittää specifierin polun suhteessa nykyiseen moduuliin. Mikä API?
 
 ## Tilanne
 

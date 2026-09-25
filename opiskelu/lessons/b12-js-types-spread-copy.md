@@ -1,4 +1,4 @@
-# Haluat kopioda taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?
+# Haluat kopioida taulukon ilman että muokkaat alkuperäistä pushilla. Nopea tapa?
 
 ## Tilanne
 

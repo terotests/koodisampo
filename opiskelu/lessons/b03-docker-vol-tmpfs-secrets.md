@@ -1,4 +1,4 @@
-# Kontti kirjoittaa väliaikaista salaista tokenia levylle — se jää image layeriin. Ratkaisu?
+# Kontti kirjoittaa väliaikaisen salaisen tokenin levylle — se jää kontin writable layeriin. Ratkaisu?
 
 ## Tilanne
 

@@ -12,7 +12,7 @@ docker run -d --name sensor2 --network bridge mysensor:latest
 
 ## Ratkaisu
 
-**macvlan tai ipvlan** antaa kontille oman MAC-osoitteen fyysisessä LAN-verkossa. IPvlan/Macvlan drivers — Docker docs macvlan.
+**macvlan** antaa jokaiselle kontille oman MAC-osoitteen fyysisessä LAN-verkossa. ipvlan ei sovi tähän: se jakaa parent-rajapinnan MAC-osoitteen, ja kontit saavat vain omat IP-osoitteensa.
 
 macvlan (oma MAC per kontti):
 
@@ -26,7 +26,7 @@ docker run -d --name sensor1 --network factory mysensor:latest
 docker run -d --name sensor2 --network factory mysensor:latest
 ```
 
-ipvlan (MAC jaetaan parent-NIC:n kanssa, eri IP):
+Vertailuksi ipvlan (MAC jaetaan parent-NIC:n kanssa, vain IP on oma):
 
 ```bash
 docker network create -d ipvlan \
@@ -38,6 +38,6 @@ docker network create -d ipvlan \
 
 ## Käytännössä
 
-Valitse macvlan kun laitteet vaativat erillisen MAC:in (legacy SNMP, ACL). ipvlan kun switchin MAC-taulu on täynnä tai MAC-osoitteita on rajattu. Testaa parent-NIC promiscuous mode -tuki pilviympäristössä ennen deployausta.
+Valitse macvlan kun laitteet vaativat erillisen MAC:in (legacy SNMP, ACL). ipvlan sopii, kun omaa MAC:ia ei tarvita mutta switchin MAC-taulu on täynnä tai MAC-osoitteita on rajattu. Testaa parent-NIC promiscuous mode -tuki pilviympäristössä ennen deployausta.
 
 [Lue lisää](https://docs.docker.com/engine/network/drivers/macvlan/)

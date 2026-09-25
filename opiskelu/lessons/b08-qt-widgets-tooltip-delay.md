@@ -11,26 +11,26 @@ saveBtn->setToolTip("Tallenna (Ctrl+S)");
 
 ## Ratkaisu
 
-`QApplication` style/toolTipDuration tai platform theme — säädä showDelay:
+Tooltipin ilmestymisviive tulee tyylin style hintistä `QStyle::SH_ToolTip_WakeUpDelay`. Säädä se `QProxyStyle`-aliluokalla:
 
 ```cpp
-// Qt 5.14+ / Qt 6 — globaali tooltip-viive
-QApplication::setEffectEnabled(Qt::UIEffect::UI_AnimateTooltip, false);
+class FastTooltipStyle : public QProxyStyle {
+public:
+    using QProxyStyle::QProxyStyle;
+    int styleHint(StyleHint hint, const QStyleOption *opt = nullptr,
+                  const QWidget *w = nullptr,
+                  QStyleHintReturn *ret = nullptr) const override {
+        if (hint == QStyle::SH_ToolTip_WakeUpDelay)
+            return 200;   // ms
+        return QProxyStyle::styleHint(hint, opt, w, ret);
+    }
+};
 
-// Tyylin kautta (Fusion, jne.):
-if (auto *style = qApp->style()) {
-    style->polish(qApp);
-}
-
-// Suora asetus yksittäiselle widgetille — näytä heti:
-saveBtn->setToolTipDuration(5000);  // näkyy 5 s
-QToolTip::showText(saveBtn->mapToGlobal(QPoint(0, 0)), saveBtn->toolTip());
-
-// Tai stylesheet / platform config:
-// QT_TOOLTIP_DELAY=200 ympäristömuuttujalla (Linux)
+// main():
+app.setStyle(new FastTooltipStyle);
 ```
 
-Tool tip behavior via style/platform — QToolTip docs. `QToolTip::setFont` ja custom tooltip-widget (`setToolTip` + rich text) auttavat monimutkaisemmissa tapauksissa.
+`setToolTipDuration()` säätää vain sitä, kuinka kauan tooltip pysyy näkyvissä — ei ilmestymisviivettä. `QToolTip::showText()` näyttää tooltipin heti omasta tapahtumankäsittelijästä, jos tarvitset täyden kontrollin.
 
 ## Käytännössä
 

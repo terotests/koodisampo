@@ -1,40 +1,36 @@
-# Lomakevalidointi: `if (!value)` hylkää syötteen '0'. Parempi tarkistus tyhjälle kentälle?
+# Lomake muuntaa kentän numeroksi, ja `if (!quantity)` hylkää validin arvon 0. Parempi tarkistus puuttuvalle arvolle?
 
 ## Tilanne
 
-Rekisteröintilomake tarkistaa pakolliset kentät:
+Tilauslomake muuntaa määräkentän numeroksi ja tarkistaa pakolliset kentät:
 
 ```javascript
-function validateField(value, label) {
-  if (!value) {
-    return `${label} on pakollinen`;
-  }
+const quantity = form.quantity === '' ? null : Number(form.quantity);
+
+if (!quantity) {
+  return 'Määrä on pakollinen';
 }
 ```
 
-Käyttäjä syöttää `0` ikäkenttään tai `0` tuotemääräksi — molemmat ovat validi arvo. Falsy-tarkistus hylkää ne virheellisesti "pakollinen"-viestillä.
+Käyttäjä syöttää tuotemääräksi `0` — validi arvo (esim. tuotteen poisto tilauksesta). Numeroksi muunnettuna `0` on falsy, joten tarkistus hylkää sen virheellisesti "pakollinen"-viestillä.
 
-JavaScriptin falsy-arvot: `false`, `0`, `-0`, `0n`, `''`, `null`, `undefined`, `NaN`. Kaikki muu on truthy — mukaan lukien `'0'` merkkijonona.
+JavaScriptin falsy-arvot: `false`, `0`, `-0`, `0n`, `''`, `null`, `undefined`, `NaN`. Kaikki muu on truthy — mukaan lukien `'0'` merkkijonona. Siksi ongelma syntyy vasta, kun kentän arvo on muunnettu numeroksi.
 
 ## Ratkaisu
 
-**value === '' || value == null — älä käytä pelkkää falsy** erottaa tyhjän kentän nollasta:
+**quantity == null — hylkää vain null/undefined, ei nollaa:**
 
 ```javascript
-function validateRequired(value, label) {
-  if (value == null || value === '') {
-    return `${label} on pakollinen`;
-  }
+if (quantity == null) {
+  return 'Määrä on pakollinen';
 }
-
-// Numeeriselle kentälle erikseen:
-function validateAge(value) {
-  if (value === '' || value == null) return 'Ikä on pakollinen';
-  const age = Number(value);
-  if (Number.isNaN(age)) return 'Syötä numero';
-  return null; // OK, myös age === 0
+if (Number.isNaN(quantity)) {
+  return 'Syötä numero';
 }
+// OK, myös quantity === 0
 ```
+
+`== null` osuu täsmälleen arvoihin `null` ja `undefined`. Virheellinen syöte (`NaN`) kannattaa tarkistaa erikseen `Number.isNaN`illa.
 
 ## Käytännössä
 

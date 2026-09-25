@@ -69,7 +69,7 @@
         }
       ],
       "correctFeedback": "EXPLAIN ANALYZE kopiossa — ymmärrä suunnitelma ennen indeksi-/GUC-säätöä.",
-      "wrongFeedback": "EXPLAIN ANALYZE muuttaa tilastoja ja kuormittaa — varovasti prodissa.",
+      "wrongFeedback": "EXPLAIN ANALYZE suorittaa kyselyn oikeasti — raskas kysely kuormittaa prodia, ja INSERT/UPDATE/DELETE muuttavat dataa.",
       "sourceRef": "postgresql/sql-explain",
       "sourceUrl": "https://www.postgresql.org/docs/current/sql-explain.html",
       "featureId": "postgres:explain-analyze",
@@ -439,7 +439,7 @@
       "prompt": "Alert: taulu lähestyy transaction ID wraparoundia — autovacuum ei ehdi. Kiireellinen toimenpide?",
       "choices": [
         {
-          "text": "VACUUM (FREEZE) tai autovacuum tuning — estä shutdown trigger",
+          "text": "VACUUM (FREEZE) tai autovacuumin säätö — estä kirjoitusten pysähtyminen",
           "correct": true
         },
         {
@@ -456,7 +456,7 @@
         }
       ],
       "correctFeedback": "Freeze vacuum estää XID wraparound — routine vacuuming docs.",
-      "wrongFeedback": "Wraparound pakottaa shutdownin jos ignored — freeze vacuum kiireellinen.",
+      "wrongFeedback": "Wraparoundin lähestyessä kanta lakkaa hyväksymästä kirjoittavia transaktioita — freeze-vacuum on kiireellinen.",
       "sourceRef": "postgresql/docs/routine-vacuuming",
       "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
       "featureId": "postgres:freeze-vacuum",
@@ -649,19 +649,19 @@
       "prompt": "UPDATE jää odottamaan — pg_stat_activity näyttää wait_event lock. Ensimmäinen diagnostiikka?",
       "choices": [
         {
-          "text": "pg_locks + pg_blocking_pids() — kuka pitää lukkoa",
+          "text": "pg_locks + pg_blocking_pids() — selvitä, kuka pitää lukkoa",
           "correct": true
         },
         {
-          "text": "REINDEX DATABASE",
+          "text": "REINDEX DATABASE — rikkinäinen indeksi aiheuttaa lukko-odotuksen",
           "correct": false
         },
         {
-          "text": "restart postgres",
+          "text": "Käynnistä postgres uudelleen, jolloin kaikki lukot vapautuvat",
           "correct": false
         },
         {
-          "text": "Locks eivät vaikuta UPDATEen",
+          "text": "Nosta max_connections, jotta UPDATE saa oman lukkopaikan",
           "correct": false
         }
       ],
@@ -684,24 +684,24 @@
       "prompt": "Planner valitsee seq scanin vaikka data mahtuu muistiin — SSD-palvelin 64 GB RAM. GUC?",
       "choices": [
         {
-          "text": "effective_cache_size ≈ OS cache + shared_buffers arvio",
+          "text": "effective_cache_size ≈ shared_buffers + OS-välimuistin arvio",
           "correct": true
         },
         {
-          "text": "random_page_cost = 0",
+          "text": "random_page_cost = 0, jolloin indeksihaku on aina ilmainen",
           "correct": false
         },
         {
-          "text": "seq_page_cost = 1000",
+          "text": "shared_buffers = koko RAM, jotta planner olettaa datan muistiin",
           "correct": false
         },
         {
-          "text": "effective_cache_size = shared_buffers only",
+          "text": "effective_cache_size = pelkkä shared_buffers-arvo",
           "correct": false
         }
       ],
       "correctFeedback": "Planner käyttää effective_cache_size:a index vs seq päätökseen.",
-      "wrongFeedback": "Liian pieni arvo suosii index scania turhaan tai seq scania.",
+      "wrongFeedback": "Liian pieni effective_cache_size saa plannerin olettamaan levylukuja ja välttämään index scania.",
       "sourceRef": "postgresql/docs/runtime-config-query",
       "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE",
       "featureId": "postgres:effective-cache-size",
@@ -716,22 +716,22 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä?",
+      "prompt": "Kanta siirrettiin SSD:lle, mutta planner valitsee yhä seq scanin, vaikka index scan olisi nopeampi. Mitä säädät?",
       "choices": [
         {
-          "text": "random_page_cost alas (esim. 1.1) SSD:lle — planner realismi",
+          "text": "random_page_cost alas (esim. 1.1) — SSD:n satunnaishaku on halpa",
           "correct": true
         },
         {
-          "text": "random_page_cost = 10000",
+          "text": "random_page_cost = 10000, jotta planner arvioi levyn tarkemmin",
           "correct": false
         },
         {
-          "text": "Poista indeksit",
+          "text": "Poista indeksit, koska SSD tekee seq scanista aina nopeimman",
           "correct": false
         },
         {
-          "text": "SSD ei vaikuta planneriin",
+          "text": "Ei mitään — levytyyppi ei vaikuta plannerin kustannuksiin",
           "correct": false
         }
       ],
@@ -754,24 +754,24 @@
       "prompt": "EXPLAIN ANALYZE näyttää hitaudesta — haluat tietää cache hit vs disk read. Lippu?",
       "choices": [
         {
-          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared/local hit read",
+          "text": "EXPLAIN (ANALYZE, BUFFERS) — shared hit vs read per solmu",
           "correct": true
         },
         {
-          "text": "EXPLAIN VERBOSE only",
+          "text": "EXPLAIN (VERBOSE) — näyttää välimuistiosumat sarakkeittain",
           "correct": false
         },
         {
-          "text": "BUFFERS vaatii superuser aina",
+          "text": "BUFFERS-optio vaatii aina superuser-oikeudet toimiakseen",
           "correct": false
         },
         {
-          "text": "pg_stat_user_tables riittää query-tasolle",
+          "text": "pg_stat_user_tables näyttää osumat yksittäiselle kyselylle",
           "correct": false
         }
       ],
       "correctFeedback": "BUFFERS näyttää block access — using explain.",
-      "wrongFeedback": "Ilman BUFFERS ei erottele cache vs I/O.",
+      "wrongFeedback": "Ilman BUFFERS-tietoa cache- ja levylukuja ei näe erikseen (PG 18:sta alkaen ANALYZE sisältää ne oletuksena).",
       "sourceRef": "postgresql/docs/using-explain",
       "sourceUrl": "https://www.postgresql.org/docs/current/using-explain.html",
       "featureId": "postgres:explain-buffers",
@@ -789,19 +789,19 @@
       "prompt": "Hash Join spillaa temp tiedostoon — query hidastuu 10x. work_mem liian pieni. Mitä näet?",
       "choices": [
         {
-          "text": "EXPLAIN ANALYZE: Hash Batches > 1 tai temp file — nosta work_mem varovasti",
+          "text": "EXPLAIN ANALYZE: Batches > 1 tai temp-tiedostot — nosta work_mem varovasti",
           "correct": true
         },
         {
-          "text": "Seq Scan aina nopein",
+          "text": "Hash Join ei käytä muistia, joten syy on levyn hitaudessa",
           "correct": false
         },
         {
-          "text": "Hash join ei käytä muistia",
+          "text": "work_mem vaikuttaa vain sorttiin, ei hash-taulujen kokoon",
           "correct": false
         },
         {
-          "text": "work_mem vaikuttaa vain sort",
+          "text": "Pakota seq scan, koska se on aina nopein isoissa joineissa",
           "correct": false
         }
       ],
@@ -824,19 +824,19 @@
       "prompt": "Planner valitsee Index Scan vaikka covering index voisi riittää. Ehto Index Only Scan?",
       "choices": [
         {
-          "text": "Index sisältää kaikki tarvittavat sarakkeet + visibility map ajantasainen",
+          "text": "Indeksi kattaa kaikki sarakkeet ja visibility map on ajan tasalla",
           "correct": true
         },
         {
-          "text": "Index Only Scan ei koskaan toimi",
+          "text": "Index Only Scan toimii vain, kun taulu on CLUSTER-järjestetty",
           "correct": false
         },
         {
-          "text": "VACUUM ei vaikuta visibility map",
+          "text": "VACUUM ei vaikuta visibility mapiin, vain ANALYZE päivittää sen",
           "correct": false
         },
         {
-          "text": "Seq scan aina parempi",
+          "text": "Kysely tarvitsee LIMITin, muuten planner ei valitse Index Only Scania",
           "correct": false
         }
       ],
@@ -859,19 +859,19 @@
       "prompt": "JSONB metadata-kenttä `@> '{\"status\":\"active\"}'` query hidas seq scan. Indeksi?",
       "choices": [
         {
-          "text": "GIN index jsonb_column — containment queries",
+          "text": "GIN-indeksi jsonb-sarakkeelle — tukee @>-containmentia",
           "correct": true
         },
         {
-          "text": "B-tree jsonb_column",
+          "text": "B-tree-indeksi jsonb-sarakkeelle — tukee @>-hakua suoraan",
           "correct": false
         },
         {
-          "text": "Hash index jsonb",
+          "text": "Hash-indeksi jsonb-sarakkeelle — nopein containment-haku",
           "correct": false
         },
         {
-          "text": "JSONB ei indeksoitu",
+          "text": "JSONB-sarakkeita ei voi indeksoida, vain tavallisia sarakkeita",
           "correct": false
         }
       ],
@@ -894,19 +894,19 @@
       "prompt": "Tuotantotauluun uusi indeksi — CREATE INDEX lukitsee kirjoitukset. Online-vaihtoehto?",
       "choices": [
         {
-          "text": "CREATE INDEX CONCURRENTLY — ei exclusive lock kirjoituksille",
+          "text": "CREATE INDEX CONCURRENTLY — ei estä kirjoituksia rakennuksen aikana",
           "correct": true
         },
         {
-          "text": "REINDEX CONCURRENTLY table",
+          "text": "REINDEX CONCURRENTLY — luo uuden indeksin tauluun lukitsematta",
           "correct": false
         },
         {
-          "text": "Indeksi vain yöllä VACUUM FULL",
+          "text": "Rakenna indeksi yöllä VACUUM FULLin yhteydessä ilman lukkoa",
           "correct": false
         },
         {
-          "text": "CONCURRENTLY on nopeampi aina",
+          "text": "CREATE INDEX ... NOWAIT — ohittaa taulun lukituksen kokonaan",
           "correct": false
         }
       ],
@@ -929,24 +929,24 @@
       "prompt": "Logissa 'database must be vacuumed within 10 million transactions' — mitä uhkaa?",
       "choices": [
         {
-          "text": "Transaction ID wraparound — pakotettu shutdown jos autovacuum ei ehdi",
+          "text": "Transaction ID wraparound — kanta lakkaa antamasta uusia XID:itä",
           "correct": true
         },
         {
-          "text": "Levy täyttyy logeista",
+          "text": "Levy täyttyy WAL-lokeista, jos varoitusta ei kuitata ajoissa",
           "correct": false
         },
         {
-          "text": "Indeksit poistuvat",
+          "text": "Indeksit mitätöityvät ja ne on rakennettava uudelleen REINDEXillä",
           "correct": false
         },
         {
-          "text": "Varoitus on informatiivinen — ei toimenpiteitä",
+          "text": "Varoitus on informatiivinen — autovacuum hoitaa sen aina itse",
           "correct": false
         }
       ],
-      "correctFeedback": "XID wraparound on kriittinen — routine vacuuming varoittaa.",
-      "wrongFeedback": "Ignorointi voi pysäyttää koko klusterin.",
+      "correctFeedback": "XID wraparound on kriittinen — ilman VACUUMia kanta lopulta hylkää kaikki kirjoittavat transaktiot.",
+      "wrongFeedback": "Varoituksen ohittaminen voi pysäyttää kaikki kirjoitukset koko klusterissa.",
       "sourceRef": "postgresql/docs/routine-vacuuming",
       "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
       "featureId": "postgres:xid-wraparound",
@@ -968,15 +968,15 @@
           "correct": true
         },
         {
-          "text": "max_connections = 1",
+          "text": "max_connections = 1, jolloin XID:t kuluvat hitaammin",
           "correct": false
         },
         {
-          "text": "Poista autovacuum insert-taulusta",
+          "text": "Poista autovacuum käytöstä insert-taululta kokonaan",
           "correct": false
         },
         {
-          "text": "Freeze tapahtuu vain VACUUM FULL",
+          "text": "Freeze tapahtuu vain VACUUM FULLissa, joten aja se viikoittain",
           "correct": false
         }
       ],
@@ -1003,15 +1003,15 @@
           "correct": true
         },
         {
-          "text": "pg_stat_activity riittää historiaan",
+          "text": "pg_stat_activity — säilyttää ajettujen kyselyjen historian",
           "correct": false
         },
         {
-          "text": "EXPLAIN kaikille quereille cron",
+          "text": "Cron-ajo, joka ajaa EXPLAINin jokaiselle kyselylle öisin",
           "correct": false
         },
         {
-          "text": "Log every query ilman sampling",
+          "text": "pg_stat_user_tables — listaa kyselyt CPU-kulutuksen mukaan",
           "correct": false
         }
       ],
@@ -1034,19 +1034,19 @@
       "prompt": "Raportti lukee saman rivin kahdesti saman transactionin aikana — toinen transaction commitoi välissä. Taso?",
       "choices": [
         {
-          "text": "READ COMMITTED sallii non-repeatable read — tarvitset REPEATABLE READ jos tarpeen",
+          "text": "READ COMMITTED sallii non-repeatable readin — käytä REPEATABLE READ",
           "correct": true
         },
         {
-          "text": "SERIALIZABLE estää kaiken lukemisen",
+          "text": "SERIALIZABLE estää kaikki samanaikaiset lukuoperaatiot taulusta",
           "correct": false
         },
         {
-          "text": "READ UNCOMMITTED on Postgres default",
+          "text": "READ UNCOMMITTED on PostgreSQLin oletus, joten nosta tasoa",
           "correct": false
         },
         {
-          "text": "Isolation level ei vaikuta SELECT",
+          "text": "Eristystaso ei vaikuta SELECTeihin, vain kirjoituksiin",
           "correct": false
         }
       ],
@@ -1066,22 +1066,22 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Heavy HOT update -taulu bloataa nopeasti vaikka autovacuum päällä. Taulutason säätö?",
+      "prompt": "UPDATE-raskas taulu bloataa nopeasti, vaikka autovacuum on päällä. Taulutason säätö?",
       "choices": [
         {
-          "text": "FILLFACTOR < 100 jättää tilaa HOT updatelille — vähentää index churn",
+          "text": "FILLFACTOR < 100 jättää sivuille tilaa HOT-päivityksille",
           "correct": true
         },
         {
-          "text": "FILLFACTOR 100 aina paras",
+          "text": "FILLFACTOR 100 on aina paras, koska sivut ovat täynnä dataa",
           "correct": false
         },
         {
-          "text": "CLUSTER päivittää fillfactorin",
+          "text": "CLUSTER-komento säätää fillfactorin automaattisesti kuormaan",
           "correct": false
         },
         {
-          "text": "Fillfactor vain indekseille",
+          "text": "Fillfactor on vain indeksien asetus, eikä sitä voi asettaa taululle",
           "correct": false
         }
       ],
@@ -1104,19 +1104,19 @@
       "prompt": "App yhdistää Postgresiin internetin yli — compliance vaatii salatun yhteyden. Client-parametri?",
       "choices": [
         {
-          "text": "sslmode=verify-full (tai require minimum) connection stringissä",
+          "text": "sslmode=verify-full — salaus ja palvelimen sertifikaatin tarkistus",
           "correct": true
         },
         {
-          "text": "sslmode=disable nopeuteen",
+          "text": "sslmode=disable — salaus hidastaa yhteyttä liikaa internetissä",
           "correct": false
         },
         {
-          "text": "PostgreSQL ei tue TLS",
+          "text": "sslmode=allow — pakottaa salauksen aina, jos palvelin tukee sitä",
           "correct": false
         },
         {
-          "text": "SSH tunnel riittää aina ilman sslmode",
+          "text": "PostgreSQL ei tue TLS:ää, joten salaus vaatii aina VPN:n",
           "correct": false
         }
       ],
@@ -1143,15 +1143,15 @@
           "correct": true
         },
         {
-          "text": "work_mem — sama kuin maintenance",
+          "text": "work_mem — sama asetus koskee myös CREATE INDEXiä",
           "correct": false
         },
         {
-          "text": "shared_buffers heti 64GB",
+          "text": "temp_buffers — väliaikaistaulujen muisti nopeuttaa sorttia",
           "correct": false
         },
         {
-          "text": "max_connections 10000",
+          "text": "shared_buffers — nosta istunnossa heti 64 GB:hen",
           "correct": false
         }
       ],
@@ -1178,15 +1178,15 @@
           "correct": true
         },
         {
-          "text": "Seq scan on aina ok",
+          "text": "Tavallinen B-tree email-sarakkeella riittää funktiokutsulle",
           "correct": false
         },
         {
-          "text": "B-tree email riittää funktiokutsulle",
+          "text": "Hash-indeksi email-sarakkeelle ohittaa lower()-funktion",
           "correct": false
         },
         {
-          "text": "Trigger joka kopioi lower email",
+          "text": "ANALYZE users saa plannerin käyttämään email-indeksiä",
           "correct": false
         }
       ],
@@ -1208,19 +1208,19 @@
       "prompt": "Iso aggregation ei käytä parallel workers vaikka max_parallel_workers_per_gather > 0. Tarkista ensin?",
       "choices": [
         {
-          "text": "Onko kysely parallel safe — EXPLAIN näyttää Gather; tarkista parallel_setup_cost ja table size",
+          "text": "Onko kysely parallel safe ja taulu riittävän iso — katso EXPLAIN",
           "correct": true
         },
         {
-          "text": "Parallel on aina päällä automaattisesti",
+          "text": "Parallel query on aina päällä, joten syy on levyn hitaudessa",
           "correct": false
         },
         {
-          "text": "Vain REINDEX käyttää parallelia",
+          "text": "Vain REINDEX ja CREATE INDEX voivat käyttää parallel workereita",
           "correct": false
         },
         {
-          "text": "max_connections estää parallelin",
+          "text": "max_connections on liian pieni ja estää rinnakkaiset workerit",
           "correct": false
         }
       ],
@@ -1247,15 +1247,15 @@
           "correct": true
         },
         {
-          "text": "log_statement = all",
+          "text": "log_statement = all ja suodatus lokista jälkikäteen",
           "correct": false
         },
         {
-          "text": "log_connections = on",
+          "text": "log_duration = on — kirjaa vain yli 500 ms kyselyt",
           "correct": false
         },
         {
-          "text": "logging_collector = off",
+          "text": "log_connections = on — kirjaa jokaisen yhteyden keston",
           "correct": false
         }
       ],
@@ -1278,23 +1278,23 @@
       "prompt": "Kaksi identtistä btree-indeksiä samoille sarakkeille — kirjoitus hidasta. Toimenpide?",
       "choices": [
         {
-          "text": "DROP INDEX toinen — duplikaatti indeksi turha ylläpito",
+          "text": "DROP INDEX toinen — duplikaatti on pelkkää ylläpitokuormaa",
           "correct": true
         },
         {
-          "text": "Pidä molemmat varmuuden vuoksi",
+          "text": "Pidä molemmat — planner jakaa kuorman niiden kesken",
           "correct": false
         },
         {
-          "text": "REINDEX molemmat",
+          "text": "REINDEX molemmat, jolloin duplikaatit yhdistyvät yhdeksi",
           "correct": false
         },
         {
-          "text": "Indeksit eivät vaikuta INSERT-nopeuteen",
+          "text": "Indeksit eivät vaikuta INSERT-nopeuteen, vain hakuihin",
           "correct": false
         }
       ],
-      "correctFeedback": "Each index maintained on write — PostgreSQL indexes intro.",
+      "correctFeedback": "Jokainen indeksi päivitetään jokaisessa kirjoituksessa — duplikaatti tuplaa työn ilman hyötyä.",
       "wrongFeedback": "Duplikaatti indeksi hidastaa kirjoitusta ilman hyötyä.",
       "sourceRef": "postgresql/docs/indexes-intro",
       "sourceUrl": "https://www.postgresql.org/docs/current/indexes-intro.html",
@@ -1345,7 +1345,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Aikasarjataulu — miljardi rivi, queries aikarangeilla. Kustannustehokas index?",
+      "prompt": "Aikasarjataulussa on miljardi riviä, ja kyselyt rajaavat aikaväleillä. Kustannustehokas indeksi?",
       "choices": [
         {
           "text": "BRIN-indeksi — block range, pieni koko järjestetylle aikasarjadatalle",
@@ -1415,18 +1415,18 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Planner valitsee seq scan — rows estimate 10 mutta actual 10M. Juurisyy?",
+      "prompt": "Planner valitsee Nested Loopin — rows estimate 10, mutta actual 10M. Juurisyy?",
       "choices": [
         {
           "text": "Vanhentuneet tilastot — aja ANALYZE tai harkitse extended statistics",
           "correct": true
         },
         {
-          "text": "Seq scan valinta on aina planner-bugi kun actual rows poikkeaa arviosta",
+          "text": "Nested Loopin valinta on aina planner-bugi, kun actual rows poikkeaa arviosta",
           "correct": false
         },
         {
-          "text": "Indeksi puuttuu aina kun planner arvioi 10 riviä mutta löytää 10 miljoonaa",
+          "text": "Indeksi puuttuu aina, kun planner arvioi 10 riviä mutta löytää 10 miljoonaa",
           "correct": false
         },
         {
@@ -1453,7 +1453,7 @@
       "prompt": "Prepared statement plan on hidas eri parametreilla. Miten näet generic plan?",
       "choices": [
         {
-          "text": "EXPLAIN (GENERIC_PLAN) — näyttää suunnitelman ilman parametriarvoja",
+          "text": "EXPLAIN (GENERIC_PLAN) (PG 16+) — suunnitelma ilman parametriarvoja",
           "correct": true
         },
         {
@@ -1609,7 +1609,7 @@
         }
       ],
       "correctFeedback": "Parallel query config — PostgreSQL docs parallel query.",
-      "wrongFeedback": "Parallel workers parametrit hallitavat parallel scan.",
+      "wrongFeedback": "Parallel workers -parametrit hallitsevat rinnakkaista skannausta.",
       "sourceRef": "runtime-config-resource",
       "sourceUrl": "https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER",
       "featureId": "postgres:parallel-workers",
@@ -1694,7 +1694,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Tuotanto I/O spike joka 5 min — checkpoint aiheuttaa. Mitä säätät?",
+      "prompt": "Tuotannossa I/O-piikki joka 5. minuutti — checkpoint aiheuttaa. Mitä säädät?",
       "choices": [
         {
           "text": "checkpoint_timeout ja max_wal_size — levittävät checkpoint I/O:n tasaisemmaksi",
@@ -1783,7 +1783,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "MVCC leaves dead tuples — routine VACUUM reclaims space for reuse.",
+      "correctFeedback": "MVCC jättää kuolleet rivit — VACUUM merkitsee tilan uudelleenkäyttöön mutta ei palauta sitä levylle.",
       "wrongFeedback": "Dead tuples kasvattavat taulua. VACUUM merkitsee vapaaksi, FULL shrinkaa.",
       "sourceRef": "postgresql/routine-vacuuming",
       "sourceUrl": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
@@ -1802,7 +1802,7 @@
       "prompt": "Mitä frozen xmin tarkoittaa PostgreSQL MVCC:ssä?",
       "choices": [
         {
-          "text": "Rivi on frozen — vanhat XID:t eivät vaadi enää vacuum freeze -käsittelyä",
+          "text": "xmin on merkitty jäädytetyksi — rivi näkyy kaikille XID-iästä riippumatta",
           "correct": true
         },
         {
@@ -1853,7 +1853,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Multicolumn btree left-prefix — indexes multicolumn.",
+      "correctFeedback": "B-tree hyödyntää tehokkaimmin vasemmanpuoleista prefiksiä. PG 18:n skip scan auttaa vain, kun a:lla on vähän eri arvoja.",
       "wrongFeedback": "Indeksi (b,a) tai erillinen b-indeksi jos vain b-filtteri.",
       "sourceRef": "postgresql/docs/indexes-multicolumn",
       "sourceUrl": "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
@@ -1888,7 +1888,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Nested loop good for small outer + indexed inner — planner.",
+      "correctFeedback": "Nested Loop sopii, kun ulompi joukko on pieni ja sisempi haetaan indeksillä.",
       "wrongFeedback": "Iso outer × seq scan inner = katastrofi. Indeksi innerille tai hash join.",
       "sourceRef": "postgresql/docs/planner-join",
       "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",
@@ -1923,7 +1923,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "GiST for geometric/range — index types docs.",
+      "correctFeedback": "GiST tukee geometrisia ja range-operaattoreita, kuten &&-päällekkäisyyttä.",
       "wrongFeedback": "B-tree ei tue overlap-operaattoreita. PostGIS/GiST tai GIN riippuen tyypistä.",
       "sourceRef": "postgresql/docs/indexes-types",
       "sourceUrl": "https://www.postgresql.org/docs/current/indexes-types.html",
@@ -1958,7 +1958,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Join algorithms — PostgreSQL planner.",
+      "correctFeedback": "Isoissa joineissa Hash Join tai Merge Join on yleensä halvempi kuin Nested Loop.",
       "wrongFeedback": "Nested loop sopii pieniin ulkoisiin. Isoille dataseteille hash/merge join.",
       "sourceRef": "postgresql/planner-optimizer",
       "sourceUrl": "https://www.postgresql.org/docs/current/planner-optimizer.html",

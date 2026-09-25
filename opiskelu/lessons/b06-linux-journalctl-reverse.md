@@ -1,17 +1,17 @@
-# Incidentti — tarvitset vanhimmat lokit ensin aikajärjestyksessä. Mitä journalctl-optiota?
+# Incidentti — haluat nähdä uusimmat lokimerkinnät ensin. Mitä journalctl-optiota käytät?
 
 ## Tilanne
 
-Tuotantoincidentti alkoi tunti sitten. Analysoit tapahtumaketjua ja tarvitset lokin **kronologisessa järjestyksessä** vanhimmasta uusimpaan — oletusjärjestys näyttää uusimmat ensin:
+Tuotantoincidentti alkoi tunti sitten. Haluat nähdä heti viimeisimmät tapahtumat, mutta oletusjärjestys näyttää **vanhimmat ensin** — tuoreet virheet ovat tulosteen lopussa:
 
 ```bash
 journalctl -u myapp.service --since "1 hour ago" | head
-# Mar 15 15:00:01 ... (uusin)
-# Mar 15 14:59:58 ...
-# Mar 15 14:59:55 ...
+# Mar 15 14:00:02 ... (vanhin)
+# Mar 15 14:00:05 ...
+# Mar 15 14:00:09 ...
 ```
 
-Syy-seuraus-analyysissä haluat nähdä ensimmäisen virheen ja mitä tapahtui sen jälkeen aikajärjestyksessä.
+Incidentin aikana haluat nähdä ensin viimeisimmät virheet selaamatta koko tunnin lokia läpi.
 
 ## Ratkaisu
 
@@ -22,7 +22,7 @@ journalctl -r
 journalctl -u myapp.service --since "1 hour ago" -r
 ```
 
-`-r` kääntää järjestyksen — vanhin lokimerkintä ensin. journalctl output order — journalctl man.
+`-r` (`--reverse`) kääntää järjestyksen — uusin lokimerkintä ensin. journalctl output order — journalctl man.
 
 Incident-analyysi:
 
@@ -30,10 +30,10 @@ Incident-analyysi:
 journalctl -u myapp.service -b -p err -r --no-pager
 ```
 
-Huom: ilman `-r` uusimmat rivit tulevat ensin (kuten `tail`).
+Huom: ilman `-r` vanhimmat rivit tulevat ensin; journalctl käyttää oletuksena pageria ja alkaa tulosteen alusta.
 
 ## Käytännössä
 
-`-r` on erityisen hyödyllinen kun viet lokit tiedostoon ja luet ne editorissa alusta — ensimmäinen rivi on tapahtumaketjun alku. Yhdistä `-r` ja `-n` harkiten: `-n 100 -r` näyttää 100 vanhinta riviä (ei uusinta). Dokumentoi tämä runbookiin — moni sekoittaa `-r` ja `-f`.
+`-r` on erityisen hyödyllinen kun selaat tuoretta incidenttiä — ensimmäinen rivi on viimeisin tapahtuma. `-n 100 -r` näyttää 100 uusinta riviä uusin ensin; ilman `-r`:ää `-n 100` näyttää samat rivit vanhin ensin. Dokumentoi tämä runbookiin — moni sekoittaa `-r` ja `-f`.
 
 [Lue lisää](https://www.freedesktop.org/software/systemd/man/journalctl.html)

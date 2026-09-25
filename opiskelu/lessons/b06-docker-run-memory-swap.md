@@ -14,9 +14,9 @@ docker run --memory 512m --memory-swap 512m myapp
 docker run --memory 512m --memory-swap 1g myapp
 ```
 
-Resource constraints memory-swap — Docker docs run memory.
+`--memory-swap` on RAM:n ja swapin **yhteisraja**, ei erillinen swap-raja: swapia on käytettävissä `memory-swap − memory`.
 
 ## Käytännössä
-`--memory-swap -1` (oletus) = unlimited swap. Tuotannossa tyypillisesti estetään swap (`memory-swap == memory`) latencyn vuoksi.
+Jos `--memory-swap` jätetään pois, kontti saa swapia saman verran kuin `--memory` (yhteisraja 2 × memory). `--memory-swap -1` sallii rajattoman swapin. Tuotannossa tyypillisesti estetään swap (`memory-swap == memory`) latencyn vuoksi.
 
 [Lue lisää](https://docs.docker.com/reference/cli/docker/container/run/#memory-swap)

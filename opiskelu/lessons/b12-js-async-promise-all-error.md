@@ -21,7 +21,7 @@ try {
 }
 ```
 
-Koko `all` hylätään ensimmäisestä virheestä — et saa muiden tuloksia.
+Koko `all` hylätään heti ensimmäisen rejectin syyllä — et saa muiden tuloksia. Huomaa, että Promise.all ei peruuta muita promiseja: kutsut jatkuvat taustalla, mutta niiden tulokset jäävät käyttämättä.
 
 ## Käytännössä
 

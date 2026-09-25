@@ -484,19 +484,19 @@
       "prompt": "Login käyttää Argon2id:tä, mutta hyökkääjä yrittää miljoonia salasanoja eri IP:istä. Mitä hashingin lisäksi tarvitaan?",
       "choices": [
         {
-          "text": "Rate limit IP:llä ja käyttäjätunnuksella, lockout, MFA, credential stuffing -havainto ja yhtenäinen virheilmoitus",
+          "text": "Yrityskertojen rajoitus IP:n ja tunnuksen mukaan, MFA ja credential stuffing -havainnointi",
           "correct": true
         },
         {
-          "text": "Vaihda MD5:een — nopeampi hash nopeuttaa kirjautumista",
+          "text": "Hitaampi Argon2id-parametrointi riittää yksin estämään hyökkäyksen",
           "correct": false
         },
         {
-          "text": "Poista salasanakenttä — OAuth2 on ainoa turvallinen tapa",
+          "text": "Captcha jokaiselle sivulataukselle riittää ilman kirjautumiskohtaista rajaa",
           "correct": false
         },
         {
-          "text": "Captcha jokaisella sivulatauksella riittää — ei tarvita kirjautumiskohtaista rajaa",
+          "text": "Pelkkä IP-pohjainen esto riittää, koska hyökkäys tulee botnetistä",
           "correct": false
         }
       ],
@@ -589,27 +589,27 @@
         "security",
         "guru"
       ],
-      "prompt": "API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?",
+      "prompt": "API kopioi pyynnön Origin-headerin sellaisenaan Access-Control-Allow-Origin-arvoksi ja palauttaa Access-Control-Allow-Credentials: true. Mikä ongelma?",
       "choices": [
         {
-          "text": "CORS ei ole palvelinpuolen authz — credentials + villi origin on vaarallinen; salli vain tunnetut originit",
+          "text": "Mikä tahansa sivusto voi lukea kirjautuneen käyttäjän dataa — salli vain tunnetut originit",
           "correct": true
         },
         {
-          "text": "CORS estää curl-pyynnöt — API on turvallinen vain selaimesta",
+          "text": "CORS estää curl-pyynnöt — API on turvallinen muualta kuin selaimesta",
           "correct": false
         },
         {
-          "text": "Wildcard origin nopeuttaa kehitystä — tuotannossa sama on ok",
+          "text": "Origin-heijastus on turvallinen, koska selain tarkistaa originin aina itse",
           "correct": false
         },
         {
-          "text": "CSRF-token korvaa CORS-headerit kokonaan",
+          "text": "CSRF-token korvaa CORS-headerit, joten asetuksella ei ole merkitystä",
           "correct": false
         }
       ],
-      "correctFeedback": "CORS on selainrajoite, ei authorization. Credentials vaatii eksplisiittisen originin — MDN CORS.",
-      "wrongFeedback": "CORS ei suojaa API:a curlilta. Älä sekoita CORS:ia ja CSRF:ää.",
+      "correctFeedback": "Heijastettu Origin + credentials = mikä tahansa sivu voi lukea vastaukset käyttäjän evästeillä. Huom: selain hylkää yhdistelmän * + credentials, joten virhe syntyy usein juuri kun sitä 'korjataan' heijastamalla Origin.",
+      "wrongFeedback": "CORS on selaimen lukurajoite, ei palvelimen authz. curl ohittaa CORS:n kokonaan, ja CSRF-token ei estä cross-origin-lukemista.",
       "sourceRef": "mdn/cors",
       "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS",
       "featureId": "security:cors",

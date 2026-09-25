@@ -8,7 +8,7 @@ Rust-testeissä paniikin testaus tapahtuu usein `#[should_panic]`-attribuutilla 
 
 ## Tilanne
 
-Testaat funktiota, joka panikoi virheellisellä syötteellä. Lisäksi haluat varmistaa, että paniikki tapahtuu **ennen** kuin jaettu tila muuttuu — eli rollback toimii. `#[should_panic]` kaataisi koko testin eikä antaisi tarkistaa mitään paniikin jälkeen.
+Testaat funktiota, joka panikoi virheellisellä syötteellä. Lisäksi haluat tarkistaa, missä tilassa jaettu laskuri on paniikin jälkeen. `#[should_panic]` päättää testin paniikkiin eikä anna tarkistaa mitään sen jälkeen.
 
 ```rust
 fn risky_op(input: i32, counter: &mut i32) {

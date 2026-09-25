@@ -1,4 +1,4 @@
-# Tekninen velka kasaaantuu — PO sanoo 'ei aikaa'. Miten tuot backlogiin?
+# Tekninen velka kasautuu — PO sanoo 'ei aikaa'. Miten tuot sen backlogiin?
 
 ## Tilanne
 

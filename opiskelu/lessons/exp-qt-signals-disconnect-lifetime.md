@@ -1,45 +1,43 @@
-# Dialog sulkeutuu mutta background-worker emitoi edelleen vanhaan slottiin — use-after-free. Miten estät?
+# Dialog sulkeutuu ja tuhoutuu, mutta background-worker emitoi edelleen lambdaan, joka käyttää dialogin osoitinta — use-after-free. Miten estät?
 
 ## Tilanne
 
-Modalinen `ImportDialog` käynnistää taustatyön ja kuuntelee valmistumista:
+Modalinen `ImportDialog` käynnistää taustatyön ja kuuntelee valmistumista lambdalla:
 
 ```cpp
 ImportDialog::ImportDialog(ImportWorker *worker, QWidget *parent)
     : QDialog(parent), m_worker(worker)
 {
-    connect(m_worker, &ImportWorker::finished,
-            this, &ImportDialog::onImportDone);
+    connect(m_worker, &ImportWorker::finished, [this] {
+        m_statusLabel->setText(tr("Valmis"));   // käyttää dialogia
+    });
     show();
 }
 ```
 
-Käyttäjä sulkee dialogin ennen valmistumista — `ImportDialog` tuhoutuu. Minuutin kuluttua worker emitoi `finished()` ja Qt kutsuu slottia tuhoutuneeseen dialogiin. Valgrind raportoi use-after-free -virheen.
+Käyttäjä sulkee dialogin ennen valmistumista — `ImportDialog` tuhoutuu. Minuutin kuluttua worker emitoi `finished()` ja lambda käyttää tuhoutuneen dialogin osoitinta. Valgrind raportoi use-after-free -virheen.
 
-Qt ei automaattisesti irrota kaikkia yhteyksiä — elinkaari pitää hallita itse.
+Qt katkaisee yhteyden automaattisesti, kun vastaanottaja tai yhteyden context-olio tuhoutuu. Tässä lambdalla ei ole context-oliota, joten yhteys elää niin kauan kuin worker.
 
 ## Ratkaisu
 
-Irrota yhteys dialogin sulkeutuessa tai käytä `QPointer` vastaanottajalle:
+Anna dialogi connectille context-olioksi tai katkaise yhteys itse:
 
 ```cpp
-ImportDialog::~ImportDialog() {
-    disconnect(m_worker, &ImportWorker::finished,
-               this, &ImportDialog::onImportDone);
-}
+// context-olio: yhteys katkeaa, kun dialogi tuhoutuu
+connect(m_worker, &ImportWorker::finished, this, [this] {
+    m_statusLabel->setText(tr("Valmis"));
+});
 
-// tai slottiin:
-void ImportDialog::onImportDone() {
-    QPointer<ImportDialog> guard(this);
-    if (!guard) return;
-    // ...
-}
+// tai tallenna yhteys ja katkaise se itse:
+m_conn = connect(m_worker, &ImportWorker::finished, [this] { /* ... */ });
+ImportDialog::~ImportDialog() { disconnect(m_conn); }
 ```
 
-`disconnect` tai `QPointer` receiverille estää slotin kuolleeseen objektiin. Vaihtoehto: anna workerille context-objekti connectissa — yhteys katkeaa automaattisesti kun dialog tuhoutuu.
+Context-olion tuhoutuessa Qt katkaisee lambda-yhteyden automaattisesti. Sama pätee tavalliseen jäsenfunktio-slottiin: `connect(worker, &W::finished, this, &ImportDialog::onImportDone)` katkeaa itsestään, kun `this` tuhoutuu.
 
 ## Käytännössä
 
-Long-running -tehtävissä yhdistä aina `destroyed`-signaali tai käytä `connect(..., this, ...)` niin että `this` toimii contextina. Code reviewissä etsi connectit, joissa vastaanottaja voi tuhoutua ennen senderiä.
+Anna lambda-connectille aina context-olio (yleensä `this`). Code reviewissä etsi `connect`-kutsut, joissa lambda kaappaa osoittimen mutta context-olio puuttuu. Säikeiden välillä context-olio määrää myös, missä säikeessä lambda ajetaan.
 
 [Lue lisää](https://doc.qt.io/qt-6/signalsandslots.html)

@@ -382,23 +382,23 @@
       "prompt": "Miksi `let b = a;` toimii `i32`:lle mutta ei `String`:lle ilman `.clone()`?",
       "choices": [
         {
-          "text": "i32 toteuttaa Copy-traitin — pienet arvot kopioituvat, String siirtyy (move)",
+          "text": "i32 on Copy-tyyppi — String ei ole, joten se siirtyy (move)",
           "correct": true
         },
         {
-          "text": "Copy on oletus kaikille tyypeille",
+          "text": "Copy on oletus kaikille tyypeille, myös Stringille",
           "correct": false
         },
         {
-          "text": "String on stack-tyyppi kuten i32",
+          "text": "String on pinossa kuten i32, mutta sen koko vaihtelee",
           "correct": false
         },
         {
-          "text": "Kääntäjä kopioi aina heap-tyypit automaattisesti",
+          "text": "Kääntäjä kopioi heap-tyypit vain release-buildissa",
           "correct": false
         }
       ],
-      "correctFeedback": "Copy vs Move: primitiivit kopioituvat, omistajuus vaativat tyypit siirtyvät.",
+      "correctFeedback": "Copy vs move: Copy-tyypit kopioituvat, heap-dataa omistavat tyypit siirtyvät.",
       "wrongFeedback": "Kaikki tyypit eivät ole Copy. String siirtyy oletuksena.",
       "featureId": "rust:copy-trait",
       "featurePoints": 3,
@@ -778,22 +778,22 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?",
+      "prompt": "API-kutsu palauttaa joko onnistuneen vastauksen bodyn tai virheen statuskoodin. Miten mallinnat tämän yhdellä tyypillä?",
       "choices": [
         {
-          "text": "Enum variantit datalla: Ok(String) / Err(StatusCode) — algebraic data type",
+          "text": "Enum, jonka varianteilla on omaa dataa: Ok(String) / Err(StatusCode)",
           "correct": true
         },
         {
-          "text": "Struct + bool flag — Rustin suositeltu tapa",
+          "text": "Struct, jossa body, status ja bool-lippu onnistumiselle",
           "correct": false
         },
         {
-          "text": "Union kuten C — oletus Rustissa",
+          "text": "C-tyylinen union, jonka kenttä valitaan lipun perusteella",
           "correct": false
         },
         {
-          "text": "HashMap<String, Value> aina",
+          "text": "HashMap<String, String>, jossa avaimina body ja status",
           "correct": false
         }
       ],
@@ -857,20 +857,20 @@
           "correct": true
         },
         {
-          "text": "self aina — muokkaus vaatii omistajuuden siirron",
+          "text": "self aina — muokkaus vaatii aina omistajuuden siirron",
           "correct": false
         },
         {
-          "text": "&self riittää aina mut-kentille",
+          "text": "&self riittää, kunhan kentät on merkitty mut-avainsanalla",
           "correct": false
         },
         {
-          "text": "mut self ilman & — validi Rust 2021",
+          "text": "mut self — muokkaa alkuperäistä arvoa kutsujan puolella",
           "correct": false
         }
       ],
       "correctFeedback": "&mut self = metodi lainaa muokattavasti. self = kuluttaa arvon.",
-      "wrongFeedback": "&self ei muokkaa. `mut self` ei ole validi receiver-syntaksi.",
+      "wrongFeedback": "&self ei salli muokkausta. `mut self` on validi, mutta se kuluttaa arvon: muutokset kohdistuvat siirrettyyn kopioon, eivät kutsujan muuttujaan.",
       "featureId": "rust:method-receiver",
       "featurePoints": 3,
       "lessonRef": "rust/types/rust-types-method-receiver",
@@ -1002,23 +1002,23 @@
       "prompt": "Milloin `panic!` on perusteltu recoverable-virheen sijaan?",
       "choices": [
         {
-          "text": "Ohjelmarikko / invariantti rikki — tilanne josta ei voi jatk turvallisesti",
+          "text": "Ohjelmointivirhe tai rikkoutunut invariantti — tilanteesta ei voi jatkaa turvallisesti",
           "correct": true
         },
         {
-          "text": "Aina kun tiedosto puuttuu",
+          "text": "Aina kun luettava tiedosto puuttuu levyltä",
           "correct": false
         },
         {
-          "text": "Käyttäjän syöttövirhe",
+          "text": "Kun käyttäjä syöttää virheellisen arvon lomakkeeseen",
           "correct": false
         },
         {
-          "text": "Verkko timeout — aina panic",
+          "text": "Kun verkkopyyntö aikakatkaistaan palvelimelta",
           "correct": false
         }
       ],
-      "correctFeedback": "panic = bug or unrecoverable. Käyttäjävirheet → Result.",
+      "correctFeedback": "panic on bugeille ja tilanteille, joista ei voi toipua. Käyttäjävirheet → Result.",
       "wrongFeedback": "Puuttuva tiedosto on recoverable. panic! on viimeinen keino.",
       "featureId": "rust:panic",
       "featurePoints": 3,
@@ -1107,27 +1107,27 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?",
+      "prompt": "Funktio palauttaa aina saman konkreettisen tyypin, mutta haluat piilottaa sen kutsujalta ja luvata vain traitin. Mikä paluutyyppi?",
       "choices": [
         {
-          "text": "impl Trait — staattinen dispatch palautuksessa (opaque return type)",
+          "text": "impl Trait — staattinen dispatch, konkreettinen tyyppi pysyy piilossa",
           "correct": true
         },
         {
-          "text": "concrete struct aina — impl Trait kielletty",
+          "text": "Box<dyn Trait> — ainoa tapa piilottaa paluutyyppi",
           "correct": false
         },
         {
-          "text": "Box<dyn Trait> ainoa tapa",
+          "text": "Konkreettinen struct aina — impl Trait kielletty paluuarvossa",
           "correct": false
         },
         {
-          "text": "enum EveryVariant — pakollinen",
+          "text": "enum, jossa jokainen mahdollinen tyyppi on varianttina",
           "correct": false
         }
       ],
-      "correctFeedback": "impl Summary palauttaa jokin Summary-toteuttaja ilman dyn-allokaatiota.",
-      "wrongFeedback": "dyn Trait toimii heapissä. impl Trait on compile-time polymorfismi paluuarvoissa.",
+      "correctFeedback": "impl Summary palauttaa jonkin yksittäisen Summary-toteuttajan ilman dyn-allokaatiota.",
+      "wrongFeedback": "Box<dyn Trait> toimii, mutta vaatii heap-allokaation ja dynaamisen dispatchin. Yhdelle tyypille impl Trait riittää; eri tyyppejä palautettaessa tarvitaan dyn Trait.",
       "featureId": "rust:impl-trait",
       "featurePoints": 4,
       "lessonRef": "rust/traits/rust-traits-impl-trait-return",
@@ -1216,7 +1216,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?",
+      "prompt": "Geneerinen funktio `fn largest<T>(list: &[T]) -> &T` vaatii alkioiden vertailua. Miten rajaat T:n?",
       "choices": [
         {
           "text": "where T: PartialOrd — trait bound geneeriselle tyypille",
@@ -1511,19 +1511,19 @@
       "prompt": "Mitä `async fn` palauttaa Rustissa?",
       "choices": [
         {
-          "text": "Implementoinnin Future-traitille — lazy, poll-kontrolloidusti ajettava",
+          "text": "Tyypin, joka toteuttaa Future-traitin — laiska, ajetaan pollaamalla",
           "correct": true
         },
         {
-          "text": "Os-säie heti kun funktio kutsutaan",
+          "text": "Uuden OS-säikeen heti kun funktiota kutsutaan",
           "correct": false
         },
         {
-          "text": "Blocking thread pool entry",
+          "text": "Blokkaavan säiepoolin tehtävän, joka alkaa heti",
           "correct": false
         },
         {
-          "text": "Promise<T> JavaScript-objekti",
+          "text": "JavaScript-tyylisen Promisen, joka käynnistyy heti",
           "correct": false
         }
       ],
@@ -1694,19 +1694,19 @@
       "prompt": "Haluat valinnaisen JSON-tuen riippuvuudessa ilman pakottamaan kaikille. Miten?",
       "choices": [
         {
-          "text": "Cargo features — [features] default = [] optional json = [\"serde_json\"]",
+          "text": "Cargo feature: [features] json = [\"dep:serde_json\"] ja optional = true",
           "correct": true
         },
         {
-          "text": "#[cfg(json)] runtime flag only",
+          "text": "#[cfg(json)] -ajonaikainen lippu ilman Cargo-muutoksia",
           "correct": false
         },
         {
-          "text": "Erillinen crate aina",
+          "text": "Erillinen crate aina — featureja ei voi käyttää",
           "correct": false
         },
         {
-          "text": "Cargo.toml ei tue valinnaisia deps",
+          "text": "Cargo.toml ei tue valinnaisia riippuvuuksia",
           "correct": false
         }
       ],
@@ -1803,19 +1803,19 @@
       "prompt": "Funktio odottaa `&str` mutta saat `&String`. Miksi koodi kääntyy?",
       "choices": [
         {
-          "text": "Deref coercion — String dereferoi &str:ksi automaattisesti",
+          "text": "Deref coercion — &String muuttuu automaattisesti &str:ksi",
           "correct": true
         },
         {
-          "text": "String perii str Rustissa",
+          "text": "String perii str-tyypin kuten aliluokka Javassa",
           "correct": false
         },
         {
-          "text": "Implisiittinen clone merkkijonoon",
+          "text": "Kääntäjä kloonaa Stringin implisiittisesti &str:ksi",
           "correct": false
         },
         {
-          "text": "Kääntäjäbugi",
+          "text": "&str ja &String ovat saman tyypin aliaksia",
           "correct": false
         }
       ],
@@ -2190,7 +2190,7 @@
       "sourceUrl": "https://doc.rust-lang.org/book/ch11-01-writing-tests.html#checking-for-panics-with-should-panic",
       "sourceRef": "rust-book/rust-testing-should-panic",
       "versions": [
-        "Edition 2024"
+        "Edition 2021"
       ]
     },
     {
@@ -2412,7 +2412,7 @@
       "sourceUrl": "https://doc.rust-lang.org/std/panic/fn.catch_unwind.html",
       "sourceRef": "rust-book/rust-testing-catch-unwind",
       "versions": [
-        "Edition 2024"
+        "Edition 2021"
       ]
     },
     {

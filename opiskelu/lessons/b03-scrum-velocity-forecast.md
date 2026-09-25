@@ -6,13 +6,13 @@ HR ja linjajohto pyytävät kuukausiraporttia: kuka kehittäjä "tuottaa" eniten
 
 Velocityn käyttö henkilövertailuun johtaa pelotteluun: arviot inflaatioon (isommat pisteet helpommille tehtäville), tiedon jakamisen vähenemiseen ja Scrum-arvojen rapautumiseen. Tiimi alkaa optimoida mittaria, ei arvoa.
 
-Scrum Guide korostaa empirismiä ja tiimiä — velocity on työkalu suunnitteluun, ei suorituskykyrankingiin.
+Scrum Guide ei mainitse velocityä lainkaan, mutta se korostaa empirismiä ja tiimiä — velocity on tiimien käyttämä työkalu suunnitteluun, ei suorituskykyrankingiin.
 
 ## Ratkaisu
 
 **Tiimitason ennuste seuraaville sprinteille — ei yksilövertailuun.**
 
-Velocity on empiiristä dataa suunnitteluun — Scrum Guide varoittaa väärinkäytöstä. Se kertoo, kuinka paljon valmista työtä tiimi on historiallisesti saanut valmiiksi sprinteissä, jotta seuraava sprint goal ja release-ennuste voidaan tehdä realistisesti. Se ei mittaa yksittäisen kehittäjän tehokkuutta.
+Velocity on tiimin empiiristä dataa suunnitteluun, ei Scrum Guiden määrittelemä mittari. Se kertoo, kuinka paljon valmista työtä tiimi on historiallisesti saanut valmiiksi sprinteissä, jotta seuraava sprint goal ja release-ennuste voidaan tehdä realistisesti. Se ei mittaa yksittäisen kehittäjän tehokkuutta.
 
 ## Käytännössä
 

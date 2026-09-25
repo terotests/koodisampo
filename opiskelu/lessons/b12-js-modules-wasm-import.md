@@ -1,4 +1,4 @@
-# WebAssembly moduuli ESM:ssä?
+# Selaimessa: miten lataat ja instansioit .wasm-moduulin tehokkaasti suoraan verkosta?
 
 ## Tilanne
 

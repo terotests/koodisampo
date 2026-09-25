@@ -1,4 +1,4 @@
-# Postgres volume pitää varmuuskopioida ilman konttia samassa verkossa. Käytännöllinen tapa?
+# Postgres-volume pitää varmuuskopioida johdonmukaisesti. Käytännöllinen tapa?
 
 ## Tilanne
 
@@ -8,7 +8,7 @@ Et halua kopioida suoraan `/var/lib/docker/volumes/`-polusta — PostgreSQL vaat
 
 ## Ratkaisu
 
-**Apukontti mounttaa saman volumen ja ajaa pg_dump tai käyttää `--volumes-from`:**
+**pg_dump apukontista käynnissä olevaa tietokantaa vasten tai volumen tar-pakkaus, kun tietokanta on pysäytetty:**
 
 ```bash
 # pg_dump samassa verkossa (suositeltu tietokannoille)
@@ -17,14 +17,14 @@ docker run --rm --network myapp_default \
   postgres:16 \
   pg_dump -h db -U postgres mydb > backup.sql
 
-# Tai sidecar tar-kuvio volumelle
+# Tai tar-pakkaus volumesta — vain kun db-kontti on pysäytetty
 docker run --rm \
   -v pgdata:/data:ro \
   -v $(pwd)/backups:/backup \
   alpine tar czf /backup/pgdata.tar.gz -C /data .
 ```
 
-Sidecar or temp container for volume backup — molemmat ovat Dockerin dokumentoituja kuvioita. `pg_dump` on turvallisempi käynnissä olevalle tietokannalle.
+Molemmat ovat dokumentoituja kuvioita, mutta raakakopio volumesta on johdonmukainen vain, kun PostgreSQL ei ole käynnissä. Käynnissä olevalle tietokannalle käytä `pg_dump`ia.
 
 ## Käytännössä
 

@@ -51,24 +51,24 @@
       "prompt": "Liität `orders` (50M riviä) ja `customers` (2M). Tarvitset vain viime kuun tilaukset. Missä suodatus?",
       "choices": [
         {
-          "text": "Suodata orders aikarajalla ennen JOINia — pienennä joukkoa mahdollisimman aikaisin",
+          "text": "WHERE o.created_at >= kuun alku — planner rajaa orders-rivit ennen joinia",
           "correct": true
         },
         {
-          "text": "JOIN ensin, WHERE vasta lopussa — optimointi hoitaa järjestyksen aina",
+          "text": "Hae kaikki tilaukset sovellukseen ja suodata viime kuun rivit siellä",
           "correct": false
         },
         {
-          "text": "Hae molemmat taulut kokonaan CTE:hen ja suodata siellä",
+          "text": "Käytä CROSS JOINia ja rajaa rivit lopuksi HAVING-ehdolla",
           "correct": false
         },
         {
-          "text": "Käytä CROSS JOIN ja suodata lopuksi HAVING:lla",
+          "text": "Suodata vain customers-taulu, koska pienempi taulu rajaa joinin aina",
           "correct": false
         }
       ],
-      "correctFeedback": "Early filtering pienentää joinin syötettä — query design best practice.",
-      "wrongFeedback": "Planner voi järjestää uudelleen, mutta selkeä suodatus ennen joinia auttaa lukijaa ja usein suorituskykyä.",
+      "correctFeedback": "Rajaus WHERE-ehdossa riittää: planner soveltaa sen orders-tauluun ennen joinia, ja aikasarakkeen indeksi pienentää joukon heti.",
+      "wrongFeedback": "Suodatus kannan ulkopuolella tai vasta HAVINGissa siirtää turhaa dataa. Rajaa orders heti WHERE-ehdolla.",
       "sourceRef": "packt/sql-query-design#pg-query-design",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:filter-early",
@@ -83,7 +83,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Kehität uutta analytiikkakyselyä tuotantataululle. Miten testaat turvallisesti?",
+      "prompt": "Kehität uutta analytiikkakyselyä tuotantotaululle. Miten testaat turvallisesti?",
       "choices": [
         {
           "text": "LIMIT 100 tai vastaava otos + WHERE rajaus — älä aja täyttä skannausta toistuvasti",
@@ -102,7 +102,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Pienennä testijoukkoa — sama periaate kuin TOP(3) kirjassa.",
+      "correctFeedback": "Pienennä testijoukkoa LIMITillä ja rajaavalla WHERE-ehdolla ennen täyttä ajoa.",
       "wrongFeedback": "Raskas kysely ilman rajauksia kuormittaa turhaan.",
       "sourceRef": "packt/sql-query-design#pg-query-design",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -192,19 +192,19 @@
       "prompt": "JOIN palauttaa saman asiakkaan viidesti. Raportti tarvitsee yhden rivin per asiakas. Ensimmäinen korjaus?",
       "choices": [
         {
-          "text": "Tarkista join-ehto ja tarvittaessa DISTINCT ON (customer_id) tai deduplikointi ikkunafunktiolla",
+          "text": "Tarkista join-ehto — puuttuva ehto tai 1:N-liitos monistaa rivit",
           "correct": true
         },
         {
-          "text": "Lisää SELECT DISTINCT * — se korjaa aina join-ongelman",
+          "text": "Lisää SELECT DISTINCT * — se korjaa join-ongelman aina",
           "correct": false
         },
         {
-          "text": "Kasvata work_mem — duplikaatit katoavat",
+          "text": "Kasvata work_mem, jolloin hash join ei tuota duplikaatteja",
           "correct": false
         },
         {
-          "text": "Käytä CROSS JOIN nopeampaan tulokseen",
+          "text": "Vaihda LEFT JOINiin, joka palauttaa aina yhden rivin per asiakas",
           "correct": false
         }
       ],
@@ -682,27 +682,27 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Jokaiselle tilaukselle tarvitset asiakkaan nimen ilman GROUP BY:ä. Mikä toimii?",
+      "prompt": "Jokaiselle tilausriville tarvitset saman asiakkaan ensimmäisen tilauksen päivämäärän ilman GROUP BY:tä. Mikä toimii?",
       "choices": [
         {
-          "text": "FIRST_VALUE(customer_name) OVER (PARTITION BY customer_id ORDER BY ...)",
+          "text": "FIRST_VALUE(order_date) OVER (PARTITION BY customer_id ORDER BY order_date)",
           "correct": true
         },
         {
-          "text": "MAX(customer_name) — aina oikea nimi",
+          "text": "LAG(order_date) OVER (ORDER BY order_date) — edellinen tilaus koko taulusta",
           "correct": false
         },
         {
-          "text": "MIN(customer_name) nopeampi",
+          "text": "MIN(order_date) SELECT-listassa ilman GROUP BY:tä tai OVER-lauseketta",
           "correct": false
         },
         {
-          "text": "STRING_AGG kaikista nimistä",
+          "text": "ROW_NUMBER() OVER (PARTITION BY customer_id) palauttaa ensimmäisen päivän",
           "correct": false
         }
       ],
-      "correctFeedback": "FIRST_VALUE valitsee määritellyn järjestyksen mukaisen arvon ryhmässä.",
-      "wrongFeedback": "Aggregaatit eivät välttämättä palauta haluttua riviä.",
+      "correctFeedback": "FIRST_VALUE poimii ikkunan ensimmäisen arvon määritellyssä järjestyksessä, ja kaikki rivit säilyvät.",
+      "wrongFeedback": "Aggregaatti ilman GROUP BY:tä tai OVERia on virhe, LAG katsoo vain edellistä riviä ja ROW_NUMBER palauttaa järjestysnumeron.",
       "sourceRef": "packt/sql-query-design#pg-cte-window",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:first-value",
@@ -736,7 +736,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "ROWS laskee fyysiset rivit; RANGE voi tarkoittaa arvoaluetta.",
+      "correctFeedback": "ROWS laskee fyysiset rivit, joten se vastaa 7 päivää vain, kun jokaiselle päivälle on tasan yksi rivi. Aukkoiselle datalle: RANGE BETWEEN INTERVAL '6 days' PRECEDING AND CURRENT ROW.",
       "wrongFeedback": "Viikoittainen GROUP BY ei anna 7 päivän liukuvaa.",
       "sourceRef": "packt/sql-query-design#pg-cte-window",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -823,27 +823,27 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "Myyjän prosenttiosuus top-myynnistä raportissa. Ikkunafunktio?",
+      "prompt": "Raporttiin tarvitaan jokaisen myyjän suhteellinen sijoitus (0–1) kaikkien myyjien joukossa. Ikkunafunktio?",
       "choices": [
         {
-          "text": "PERCENT_RANK() OVER (ORDER BY sales DESC) tai vastaava suhteellinen sijoitus",
+          "text": "PERCENT_RANK() OVER (ORDER BY sales DESC)",
           "correct": true
         },
         {
-          "text": "COUNT(*) / SUM(*) — sama kuin percent rank",
+          "text": "ROW_NUMBER() OVER (ORDER BY sales DESC)",
           "correct": false
         },
         {
-          "text": "RANDOM() prosenttiosuuteen",
+          "text": "COUNT(*) OVER () — myyjien kokonaismäärä",
           "correct": false
         },
         {
-          "text": "MOD(sales, 100)",
+          "text": "RANK() OVER () ilman ORDER BY:tä",
           "correct": false
         }
       ],
-      "correctFeedback": "PERCENT_RANK on window-funktio suhteelliseen sijoitukseen.",
-      "wrongFeedback": "COUNT/SUM ei anna samaa semantiikkaa.",
+      "correctFeedback": "PERCENT_RANK antaa arvon (sija − 1) / (rivejä − 1) välillä 0–1.",
+      "wrongFeedback": "ROW_NUMBER antaa absoluuttisen sijan ja COUNT(*) OVER () vain rivimäärän. RANK ilman ORDER BY:tä antaa kaikille saman sijan.",
       "sourceRef": "packt/sql-query-design#pg-cte-window",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:percent-rank",
@@ -936,7 +936,7 @@
           "correct": true
         },
         {
-          "text": "CROSS JOIN orders ilman rajaus",
+          "text": "CROSS JOIN orders ilman rajausta",
           "correct": false
         },
         {
@@ -949,7 +949,7 @@
         }
       ],
       "correctFeedback": "LATERAL mahdollistaa correlated top-N per parent.",
-      "wrongFeedback": "CROSS JOIN bez rajaus räjähtää.",
+      "wrongFeedback": "CROSS JOIN ilman rajausta räjäyttää rivimäärän.",
       "sourceRef": "packt/sql-query-design#pg-joins",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:lateral-topn",
@@ -964,27 +964,27 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Tarvitset asiakkaat joilla on tilaus — ei tarvitse tilausrivejä. Vältä?",
+      "prompt": "Tarvitset asiakkaat, joilla on vähintään yksi tilaus — tilausrivejä ei tarvita. Paras kuvio?",
       "choices": [
         {
-          "text": "SELECT DISTINCT customers.* JOIN orders — turha duplikointi; käytä EXISTS tai DISTINCT customer_id",
+          "text": "WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id)",
           "correct": true
         },
         {
-          "text": "JOIN ja DISTINCT aina pakollinen",
+          "text": "JOIN orders ja SELECT DISTINCT customers.* poistaa duplikaatit halvimmin",
           "correct": false
         },
         {
-          "text": "CROSS JOIN nopein",
+          "text": "CROSS JOIN orders ja rajaa asiakkaat lopuksi HAVING-ehdolla",
           "correct": false
         },
         {
-          "text": "UNION customers ja orders",
+          "text": "UNION customers ja orders, jolloin tilaukselliset jäävät tulokseen",
           "correct": false
         }
       ],
-      "correctFeedback": "Semi-join: älä moninkertaista rivejä turhaan.",
-      "wrongFeedback": "DISTINCT joinin jälkeen on hidas oire.",
+      "correctFeedback": "EXISTS on semi-join: jokainen asiakas palautuu kerran, eikä rivejä monisteta.",
+      "wrongFeedback": "JOIN + DISTINCT monistaa ensin rivit ja poistaa ne sitten kalliisti.",
       "sourceRef": "packt/sql-query-design#pg-joins",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:semi-join",
@@ -1003,19 +1003,19 @@
       "prompt": "Correlated subquery jokaiselle riville on hidas. Ensimmäinen refaktorointi?",
       "choices": [
         {
-          "text": "JOIN tai window-funktio tai EXISTS — vertaa EXPLAINilla",
+          "text": "JOIN, ikkunafunktio tai EXISTS — vertaa suunnitelmat EXPLAINilla",
           "correct": true
         },
         {
-          "text": "Lisää DISTINCT subqueryyn",
+          "text": "Lisää DISTINCT alikyselyyn, jolloin se ajetaan vain kerran",
           "correct": false
         },
         {
-          "text": "Kasvata seq_page_cost",
+          "text": "Kasvata seq_page_cost, jotta planner välimuistittaa alikyselyn",
           "correct": false
         },
         {
-          "text": "Poista indeksit",
+          "text": "Poista indeksit, jotta alikysely lukee taulun kerralla",
           "correct": false
         }
       ],
@@ -1324,20 +1324,20 @@
           "correct": true
         },
         {
-          "text": "payload = jsonb_build_object('status','closed') — säilyttää muut avaimet aina",
+          "text": "payload = jsonb_build_object('status', 'closed')",
           "correct": false
         },
         {
-          "text": "payload::text replace",
+          "text": "replace(payload::text, 'open', 'closed')::jsonb",
           "correct": false
         },
         {
-          "text": "DELETE payload",
+          "text": "payload - 'status' ilman uutta arvoa",
           "correct": false
         }
       ],
       "correctFeedback": "jsonb_set päivittää polun säilyttäen muun dokumentin.",
-      "wrongFeedback": "build_object korvaa vain jos rakennat koko objektin uudelleen.",
+      "wrongFeedback": "jsonb_build_object-sijoitus korvaa koko dokumentin, joten muut avaimet katoavat. Tekstikorvaus voi osua vääriin kohtiin.",
       "sourceRef": "packt/sql-query-design#pg-json",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:jsonb-set",
@@ -1478,7 +1478,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Dynainen ORDER BY vaatii whitelistin — klassinen injektiovektori.",
+      "correctFeedback": "Dynaaminen ORDER BY vaatii whitelistin — klassinen injektiovektori.",
       "wrongFeedback": "Prepared ei kata tunnistimia (sarakkeiden nimiä).",
       "sourceRef": "packt/sql-query-design#pg-sql-security",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -1534,19 +1534,19 @@
       "prompt": "Sama taulu, käyttäjä näkee vain oman tiiminsä rivit. PostgreSQL-ominaisuus?",
       "choices": [
         {
-          "text": "ROW LEVEL SECURITY + policy (esim. team_id = current_setting(...))",
+          "text": "ROW LEVEL SECURITY + policy, esim. team_id = current_setting(...)",
           "correct": true
         },
         {
-          "text": "WHERE team_id sovelluksessa aina riittää",
+          "text": "WHERE team_id sovelluksessa riittää aina, kanta ei tarvitse rajausta",
           "correct": false
         },
         {
-          "text": "Erillinen taulu per tiimi",
+          "text": "Erillinen taulu jokaiselle tiimille ja UNION ALL raportteihin",
           "correct": false
         },
         {
-          "text": "Salaus sarakkeessa",
+          "text": "Sarakkeen salaus estää muita tiimejä näkemästä rivejä",
           "correct": false
         }
       ],
@@ -1569,19 +1569,19 @@
       "prompt": "Analyytikot eivät saa nähdä henkilötunnuksia. Ensimmäinen kerros?",
       "choices": [
         {
-          "text": "Näkymä joka palauttaa maskattu sarakkeen (esim. substring) tai poistaa sen",
+          "text": "Näkymä, joka maskaa sarakkeen (esim. substring) tai jättää sen pois",
           "correct": true
         },
         {
-          "text": "Anna kaikille SELECT * tauluun",
+          "text": "SELECT-oikeus koko tauluun ja ohje olla katsomatta saraketta",
           "correct": false
         },
         {
-          "text": "Salaa koko tietokanta levylle",
+          "text": "Levysalaus koko tietokannalle, jolloin sarake ei näy kyselyissä",
           "correct": false
         },
         {
-          "text": "Piilota sarake vain UI:ssa",
+          "text": "Sarakkeen piilotus vain raportointityökalun käyttöliittymässä",
           "correct": false
         }
       ],
@@ -1601,26 +1601,26 @@
         "guru",
         "security"
       ],
-      "prompt": "Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski?",
+      "prompt": "SECURITY DEFINER -funktio kutsuu `normalize_email()` ilman skeemaa, eikä funktiolle ole asetettu search_pathia. Mikä on riski?",
       "choices": [
         {
-          "text": "Hyökkääjä voi luoda omia funktioita etusijalle — kutsu väärää koodia",
+          "text": "Hyökkääjä luo samannimisen funktion aiempaan skeemaan — väärä koodi ajetaan",
           "correct": true
         },
         {
-          "text": "search_path vaikuttaa vain indekseihin",
+          "text": "search_path vaikuttaa vain indeksien valintaan, ei funktiokutsuihin",
           "correct": false
         },
         {
-          "text": "PostgreSQL ei salli schemaa funktioissa",
+          "text": "SECURITY DEFINER estää search_pathin käytön funktion sisällä",
           "correct": false
         },
         {
-          "text": "search_path on vain psql-ominaisuus",
+          "text": "search_path on vain psql-asiakkaan asetus, ei palvelimen",
           "correct": false
         }
       ],
-      "correctFeedback": "Kiinnitä search_path tai käytä schema-qualified nimiä.",
+      "correctFeedback": "Kiinnitä funktion search_path (SET search_path = ...) tai käytä skeemalla määriteltyjä nimiä.",
       "wrongFeedback": "Epäluotettava search_path on tunnettu vektori.",
       "sourceRef": "packt/sql-query-design#pg-sql-security",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -1639,19 +1639,19 @@
       "prompt": "API palauttaa virheessä koko PostgreSQL-virheilmoituksen asiakkaalle. Ongelma?",
       "choices": [
         {
-          "text": "Vuotaa skeemaa ja kyselyrakennetta — palauta geneerinen viesti, lokita serverille",
+          "text": "Vuotaa skeeman ja kyselyrakenteen — geneerinen viesti, yksityiskohdat lokiin",
           "correct": true
         },
         {
-          "text": "Auttaa käyttäjää korjaamaan SQL:ää nopeammin",
+          "text": "Ei ongelmaa — virheilmoitus auttaa käyttäjää korjaamaan syötteensä",
           "correct": false
         },
         {
-          "text": "Parantaa turvallisuutta",
+          "text": "Ongelma on vain suorituskyky — pitkä viesti hidastaa API-vastausta",
           "correct": false
         },
         {
-          "text": "PostgreSQL vaatii tämän",
+          "text": "Ei ongelmaa, kunhan virhe palautetaan HTTP 500 -tilakoodilla",
           "correct": false
         }
       ],
@@ -1675,19 +1675,19 @@
       "prompt": "BI-työkalu tarvitsee vain luku-oikeuden. Rooli?",
       "choices": [
         {
-          "text": "CREATE ROLE bi_reader; GRANT SELECT ...; älä anna INSERT/UPDATE/DELETE",
+          "text": "Erillinen rooli: GRANT SELECT tarvittaviin tauluihin, ei kirjoitusoikeuksia",
           "correct": true
         },
         {
-          "text": "Anna sama rooli kuin sovellukselle",
+          "text": "Sama rooli kuin sovelluksella, jotta oikeudet pysyvät yhtenäisinä",
           "correct": false
         },
         {
-          "text": "SUPERUSER helpottaa oikeuksia",
+          "text": "SUPERUSER-rooli, jotta BI-työkalu näkee kaikki skeemat helposti",
           "correct": false
         },
         {
-          "text": "GRANT ALL ON DATABASE",
+          "text": "GRANT ALL ON DATABASE, ja kirjoitukset estetään BI-työkalun asetuksista",
           "correct": false
         }
       ],
@@ -1762,7 +1762,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Format results at query for consumption — kirjan teema.",
+      "correctFeedback": "Muotoile tulos valmiiksi kyselyssä raportin käyttäjää varten.",
       "wrongFeedback": "Raporttikysely voi tuottaa valmiin näytettävän arvon.",
       "sourceRef": "packt/sql-query-design#pg-query-design",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
@@ -1813,27 +1813,27 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Myynti riveinä (product, Q1, Q2, Q3). Ilman crosstab-laajennusta?",
+      "prompt": "Myynti on riveinä (product, quarter, amount). Raporttiin tarvitaan sarakkeet Q1–Q4 tuotteittain ilman crosstab-laajennusta. Miten?",
       "choices": [
         {
           "text": "SUM(CASE WHEN quarter = 1 THEN amount END) AS q1, ... GROUP BY product",
           "correct": true
         },
         {
-          "text": "MAX(amount) per quarter riittää",
+          "text": "MAX(amount) GROUP BY product — neljännekset erottuvat itsestään",
           "correct": false
         },
         {
-          "text": "WINDOW FUNKTIO pivotoi automaattisesti",
+          "text": "Ikkunafunktio OVER (PARTITION BY quarter) pivotoi rivit sarakkeiksi",
           "correct": false
         },
         {
-          "text": "SELF JOIN product 3 kertaa ilman ehtoja",
+          "text": "Self-join product-sarakkeella neljä kertaa ilman quarter-ehtoja",
           "correct": false
         }
       ],
       "correctFeedback": "Conditional aggregation on klassinen pivot-kuvio SQL:ssä.",
-      "wrongFeedback": "MAX ei summaa oikein ilman ehtoa.",
+      "wrongFeedback": "Ilman neljännesehtoa aggregaatti tai self-join sekoittaa neljännekset keskenään.",
       "sourceRef": "packt/sql-query-design#pg-cte-window",
       "sourceUrl": "https://github.com/PacktPublishing/SQL-Query-Design-Best-Practices",
       "featureId": "postgres:conditional-pivot",

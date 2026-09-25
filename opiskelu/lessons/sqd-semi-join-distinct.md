@@ -1,4 +1,4 @@
-# Tarvitset asiakkaat joilla on tilaus — ei tarvitse tilausrivejä. Vältä?
+# Tarvitset asiakkaat, joilla on vähintään yksi tilaus — tilausrivejä ei tarvita. Paras kuvio?
 
 ## Tilanne
 

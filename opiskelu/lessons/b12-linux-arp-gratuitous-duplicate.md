@@ -12,7 +12,7 @@ IP-konflikti näkyy usein vasta ARP-tasolla — ping ei aina paljasta duplikaatt
 arping -D -I eth0 10.0.0.50
 ```
 
-`-D` (duplicate address detection) lähettää **gratuitous ARP** -kyselyn. Jos toinen laite omistaa osoitteen, se vastaa ja `-D` raportoi konfliktin.
+`-D` (Duplicate Address Detection) lähettää **ARP-proben**, jonka lähettäjän IP on 0.0.0.0. Jos toinen laite omistaa osoitteen, se vastaa ja `-D` raportoi konfliktin. (Gratuitous ARP on eri asia: `-U`/`-A` ilmoittaa omasta osoitteesta muille.)
 
 Vaihtoehto kaappaus:
 
@@ -20,7 +20,7 @@ Vaihtoehto kaappaus:
 sudo tcpdump -i eth0 arp and host 10.0.0.50
 ```
 
-**gratuitous ARP paljastaa duplikaatti-IP:n** lähiverkossa.
+**ARP-probe (DAD) paljastaa duplikaatti-IP:n** lähiverkossa.
 
 ## Käytännössä
 

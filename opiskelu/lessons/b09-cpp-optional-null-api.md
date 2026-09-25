@@ -1,4 +1,4 @@
-# API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistuksen. Parempi tyyppi?
+# API palauttaa `nullptr` kun arvoa ei löydy — kutsujat unohtavat tarkistaa. Miten ilmaiset puuttuvan arvon tyypitetysti?
 
 ## Tilanne
 
@@ -14,7 +14,7 @@ Null pointer on helppo unohtaa tarkistaa — erillinen virhe vs validi data ei e
 
 ## Ratkaisu
 
-**`std::optional<User>`** (tai `optional<User&>` pattern):
+**`std::optional<User>`** (C++17). Huom: `std::optional<User&>` ei ole sallittu ennen C++26:ta — viittauksille käytä esim. `std::optional<std::reference_wrapper<User>>` tai palauta arvo:
 
 ```cpp
 std::optional<User> findUser(int id) {
@@ -28,7 +28,7 @@ if (auto u = findUser(42)) {
 }
 ```
 
-Ei magic sentinel — tyhjä optional on eksplisiittinen.
+Ei magic sentinel — tyhjä tapaus näkyy jo tyypissä. Optional ei kuitenkaan pakota tarkistusta: `*opt` tyhjälle optionalille on UB, joten käytä `if (opt)`, `value_or()` tai `value()` (heittää `bad_optional_access`).
 
 ## Käytännössä
 

@@ -1,4 +1,4 @@
-# Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Miten?
+# Jaettu kirjasto muuttuu usein — headerin muutos pakottaa koko projektin uudelleenkäännön. Mikä kuvio auttaa?
 
 ## Tilanne
 

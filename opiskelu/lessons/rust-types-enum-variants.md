@@ -1,4 +1,4 @@
-# Mikä enum-malli mallintaa HTTP-vastauksen statuskoodin ja bodyn yhdessä tyypissä?
+# API-kutsu palauttaa joko onnistuneen vastauksen bodyn tai virheen statuskoodin. Miten mallinnat tämän yhdellä tyypillä?
 
 ## Taustaa
 

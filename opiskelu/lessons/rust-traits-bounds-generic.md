@@ -1,4 +1,4 @@
-# Geneerinen funktio `fn largest<T>(list: &[T]) -> T` vaatii vertailun. Miten rajaat T:n?
+# Geneerinen funktio `fn largest<T>(list: &[T]) -> &T` vaatii alkioiden vertailua. Miten rajaat T:n?
 
 ## Taustaa
 

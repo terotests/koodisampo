@@ -1,52 +1,54 @@
-# Funktio kutsuu `now()` ilman schemaa. Miksi `SET search_path` on riski?
+# SECURITY DEFINER -funktio kutsuu `normalize_email()` ilman skeemaa, eikä funktiolle ole asetettu search_pathia. Mikä on riski?
 
 ## Tilanne
 
-Turvallisuuskriittinen funktio kirjaa aikaleiman:
+Rekisteröintifunktio ajetaan omistajansa oikeuksin (`SECURITY DEFINER`) ja normalisoi sähköpostin apufunktiolla:
 
 ```sql
-CREATE FUNCTION audit.log_event(msg text)
+CREATE FUNCTION app.register_user(p_email text)
 RETURNS void
 LANGUAGE plpgsql
+SECURITY DEFINER
 AS $$
 BEGIN
-  INSERT INTO audit.events (logged_at, message)
-  VALUES (now(), msg);
+  INSERT INTO app.users (email) VALUES (normalize_email(p_email));
 END;
 $$;
 ```
 
-Funktio kutsuu `now()` ilman `pg_catalog`-etuliitettä. PostgreSQL etsii nimiä **`search_path`**-järjestyksessä — oletus `public` ensin. Hyökkääjä, jolla on oikeus luoda objekteja johonkin polun skeemaan, voi luoda oman `now()`-funktion:
+Funktio kutsuu `normalize_email()` ilman skeemaa. PostgreSQL etsii nimiä kutsujan **`search_path`**-järjestyksessä, eikä funktiolle ole kiinnitetty omaa polkua. Hyökkääjä, jolla on oikeus luoda objekteja johonkin skeemaan, voi luoda samannimisen funktion ja asettaa skeemansa polun alkuun:
 
 ```sql
 CREATE SCHEMA evil;
-CREATE FUNCTION evil.now() RETURNS timestamptz
-  LANGUAGE sql AS $$ SELECT '1970-01-01'::timestamptz $$;
+CREATE FUNCTION evil.normalize_email(text) RETURNS text
+  LANGUAGE sql AS $$ SELECT ... $$;  -- hyökkääjän koodi
 
-SET search_path = evil, public;
-SELECT audit.log_event('test');  -- kutsuu evil.now(), ei pg_catalog.now()
+SET search_path = evil, app, public;
+SELECT app.register_user('x@example.com');  -- kutsuu evil.normalize_email() omistajan oikeuksin
 ```
 
-Funktio suorittaa hyökkääjän koodia — **search path injection**.
+Funktio suorittaa hyökkääjän koodia funktion omistajan oikeuksilla — **search path injection**.
+
+Sisäänrakennetut funktiot, kuten `now()`, ovat `pg_catalog`-skeemassa, jota haetaan oletuksena ennen muita skeemoja. Niitä ei siksi voi kaapata näin, ellei `pg_catalog` ole erikseen sijoitettu polussa myöhemmäksi. Riski koskee omia funktioita, tauluja ja operaattoreita.
 
 ## Ratkaisu
 
-Kiinnitä `search_path` funktion luonnissa tai käytä schema-qualified nimiä:
+Kiinnitä `search_path` funktion luonnissa tai käytä skeemalla määriteltyjä nimiä:
 
 ```sql
-CREATE FUNCTION audit.log_event(msg text)
+CREATE FUNCTION app.register_user(p_email text)
 RETURNS void
 LANGUAGE plpgsql
-SET search_path = audit, pg_catalog
+SECURITY DEFINER
+SET search_path = app, pg_temp
 AS $$
 BEGIN
-  INSERT INTO audit.events (logged_at, message)
-  VALUES (pg_catalog.now(), msg);
+  INSERT INTO app.users (email) VALUES (app.normalize_email(p_email));
 END;
 $$;
 ```
 
-`SET search_path` funktion attribuutissa pakottaa turvallisen polun jokaisella kutsulla. `pg_catalog`-etuliite varmistaa oikean built-in-funktion.
+`SET search_path` funktion attribuutissa pakottaa turvallisen polun jokaisella kutsulla. `pg_temp` kannattaa sijoittaa viimeiseksi, jotta väliaikaisskeeman objektit eivät mene muiden edelle. Skeemalla määritelty nimi (`app.normalize_email`) varmistaa, että kutsutaan oikeaa funktiota.
 
 ## Käytännössä
 

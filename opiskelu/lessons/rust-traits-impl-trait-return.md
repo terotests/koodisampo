@@ -1,14 +1,14 @@
-# Funktio palauttaa eri konkreettisia tyyppejä samasta traitista. Mikä paluutyyppi piilottaa konkreettisen tyypin?
+# Funktio palauttaa aina saman konkreettisen tyypin, mutta haluat piilottaa sen kutsujalta ja luvata vain traitin. Mikä paluutyyppi?
 
 ## Taustaa
 
 Funktion paluutyyppi on usein tarkka struct (`NewsArticle`), mutta joskus haluat palauttaa "jotain, joka toteuttaa traitin" ilman, että kutsuja tietää tarkkaa tyyppiä. **`impl Trait` paluupaikassa** on Rustin tapa ilmaista staattinen polymorfia: kääntäjä tietää tarkan tyypin, mutta API piilottaa sen.
 
-Tämä eroaa `Box<dyn Trait>` -tyypistä: `impl Trait` ei käytä trait object -allokaatiota eikä vtable-kutsuja. Se sopii, kun funktio palauttaa **yhden konkreettisen tyypin** kerrallaan, vaikka eri kutsuissa tyyppi voisi teoriassa vaihdella eri funktioissa.
+Tämä eroaa `Box<dyn Trait>` -tyypistä: `impl Trait` ei käytä trait object -allokaatiota eikä vtable-kutsuja. Se sopii, kun funktio palauttaa aina **yhden ja saman konkreettisen tyypin**. Jos sama funktio palauttaisi eri haaroissa eri tyyppejä, `impl Trait` ei käy — silloin tarvitaan `Box<dyn Trait>` tai enum.
 
 ## Tilanne
 
-Factory-funktio palauttaa joko uutisartikkelin tai twiitin — molemmat toteuttavat `Summary`-traitin:
+Kirjaston funktio luo uutisartikkelin, joka toteuttaa `Summary`-traitin. Et halua sitoa API:a `NewsArticle`-tyyppiin, koska sisäinen toteutus voi myöhemmin vaihtua:
 
 ```rust
 trait Summary {
@@ -16,19 +16,14 @@ trait Summary {
 }
 
 struct NewsArticle { headline: String }
-struct Tweet { author: String, content: String }
 
-// Palautustyyppi? NewsArticle ja Tweet ovat eri structeja
-fn make_content(flag: bool) -> ??? {
-    if flag {
-        NewsArticle { headline: "Uutinen".into() }
-    } else {
-        Tweet { author: "Ada".into(), content: "Hei!".into() }
-    }
+// Paluutyyppi? Kutsujan pitäisi nähdä vain, että arvo toteuttaa Summaryn
+fn make_content() -> ??? {
+    NewsArticle { headline: "Uutinen".into() }
 }
 ```
 
-Sama funktio ei voi palauttaa kahta eri struct-tyyppiä suoraan — Rust vaatii yhden paluutyyppin. Trait auttaa abstraktiotasolla.
+Konkreettinen tyyppi on aina sama, mutta sen nimi ei kuulu julkiseen API:in. Kutsujalle riittää lupaus traitista.
 
 ## Ratkaisu
 
@@ -44,7 +39,7 @@ fn returns_tweet() -> impl Summary {
 }
 ```
 
-Jos **sama funktio** palauttaa eri tyyppejä eri haaroissa, tarvitset `enum`-kääreen tai `Box<dyn Summary>`:
+Jos **sama funktio** palauttaa eri tyyppejä eri haaroissa (esim. artikkelin tai twiitin), `impl Summary` ei käänny — tarvitset `enum`-kääreen tai `Box<dyn Summary>`:
 
 ```rust
 enum Content {

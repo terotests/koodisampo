@@ -1,8 +1,8 @@
-# Migrated DB SSD:lle — index scan suunnitelmat ovat hitaita. Säädä?
+# Kanta siirrettiin SSD:lle, mutta planner valitsee yhä seq scanin, vaikka index scan olisi nopeampi. Mitä säädät?
 
 ## Tilanne
 
-Tietokanta siirrettiin HDD-palvelimelta NVMe/SSD-levylle. Odotit nopeutumista, mutta monet kyselyt käyttävät edelleen index scan -suunnitelmia, jotka tuntuvat hitailta — tai planner valitsee suunnitelmia, jotka eivät vastaa uutta levyn profiilia.
+Tietokanta siirrettiin HDD-palvelimelta NVMe/SSD-levylle. Odotit nopeutumista, mutta planner valitsee edelleen seq scanin kyselyihin, joissa index scan olisi SSD:llä selvästi nopeampi — suunnitelmat eivät vastaa uutta levyn profiilia.
 
 PostgreSQLin oletus `random_page_cost = 4.0` on historiallinen HDD-arvio: satunnainen 8K-sivun luku on kallis verrattuna peräkkäiseen seq scan -lukuun. SSD:llä satunnaisen sivun luku on lähes yhtä halpaa kuin peräkkäinen — cost-malli on vanhentunut.
 

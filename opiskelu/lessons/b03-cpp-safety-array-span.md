@@ -1,4 +1,4 @@
-# Legacy-funktio ottaa `int buf[256]` ja kutsuja antaa pienemmän pinon. Miten modernisoit rajapinnan?
+# Legacy-funktio ottaa `int buf[256]`, mutta kutsuja antaa pienemmän taulukon. Miten modernisoit rajapinnan?
 
 ## Tilanne
 

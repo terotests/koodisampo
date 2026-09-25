@@ -1,8 +1,8 @@
-# Laskuri kasvaa useassa säikeessä — atomic<int> riittää, mutta luku ei näy heti toisessa CPU:ssa. Mikä voi auttaa?
+# Tuottaja kirjoittaa puskuriin ja kasvattaa sitten atomic<int>-laskuria relaxed-järjestyksellä. Kuluttaja näkee uuden laskurin mutta vanhaa dataa. Mikä auttaa?
 
 ## Tilanne
 
-Flag + data ilman orderingia — consumer näkee flagin ennen dataa tai vanhaa dataa. Pelkkä `atomic` oletus ei aina riitä **visibility**-synkronointiin.
+Tuottaja kirjoittaa tavalliseen puskuriin ja kasvattaa sitten laskuria `fetch_add(1, std::memory_order_relaxed)`. Relaxed takaa vain, että laskurin päivitys on atominen — se **ei järjestä** muita muistioperaatioita laskurin ympärillä. Kuluttaja voi siis nähdä uuden laskurin arvon mutta vielä vanhan puskuridatan. Memory order ei nopeuta arvon näkymistä toiselle CPU:lle; se määrää, mitä muuta näkyy samalla.
 
 ## Ratkaisu
 
@@ -13,9 +13,17 @@ Valitse **memory order** tarpeen mukaan:
 - **`relaxed`** — pelkkä laskuri, ei synkronoi muuta
 
 ```cpp
-flag.store(true, std::memory_order_release);
-if (flag.load(std::memory_order_acquire)) { /* data visible */ }
+// tuottaja
+buffer[n] = value;
+count.fetch_add(1, std::memory_order_release);
+
+// kuluttaja
+if (count.load(std::memory_order_acquire) > n) {
+    use(buffer[n]);  // release/acquire: data näkyy
+}
 ```
+
+Kun acquire-lataus näkee release-kirjoituksen arvon, syntyy happens-before-suhde: kaikki ennen releasea kirjoitettu on näkyvissä. Pelkkä laskuri ilman muuta dataa pärjää `relaxed`-järjestyksellä.
 
 ## Käytännössä
 

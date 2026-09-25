@@ -1,15 +1,15 @@
-# Konsolissa: `TypeError: Cannot read properties of undefined (reading 'name')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?
+# Konsolissa: `TypeError: Cannot read properties of null (reading 'profile')` rivillä `response.data.user.profile.name`. API palauttaa joskus `{ user: null }`. Mikä ES2020-operaattori lyhentää null check -ketjua?
 
 ## Tilanne
 
 Graafinen virheilmoitus konsolissa:
 
 ```
-TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of null (reading 'profile')
     at renderUser (app.js:42)
 ```
 
-Rivi 42 on `response.data.user.profile.name`. API palauttaa joskus `{ data: { user: null } }` poistetun käyttäjän tapauksessa. Jokainen taso tarvitsee null-tarkistuksen, ja koodi paisuu:
+Rivi 42 on `response.data.user.profile.name`. API palauttaa joskus `{ data: { user: null } }` poistetun käyttäjän tapauksessa — `user` on `null`, joten `.profile`-luku kaatuu. Jokainen taso tarvitsee null-tarkistuksen, ja koodi paisuu:
 
 ```javascript
 const name = response &&
@@ -21,7 +21,7 @@ const name = response &&
 
 ## Ratkaisu
 
-**Optional chaining — user?.profile?.name katkaisee polun undefined-kohdassa:**
+**Optional chaining — user?.profile?.name katkaisee polun null- tai undefined-kohdassa:**
 
 ```javascript
 const name = response?.data?.user?.profile?.name;

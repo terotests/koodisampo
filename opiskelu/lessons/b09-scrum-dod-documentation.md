@@ -1,8 +1,8 @@
-# Feature on testattu mutta API-dokumentaatio puuttuu — tiimi haluaa merkitä Done. DoD?
+# Tiimin DoD vaatii päivitetyn API-dokumentaation. Feature on testattu, mutta dokumentaatio puuttuu, ja tiimi haluaa merkitä sen valmiiksi. Mitä teette?
 
 ## Tilanne
 
-Sprintin lopussa tarina on koodattu ja unit-testit vihreät. API-dokumentaatio (OpenAPI, käyttöohje, changelog) puuttuu. Tuoteomistaja painostaa merkitsemään tarinan Done, jotta burndown näyttää hyvältä.
+Sprintin lopussa tarina on koodattu ja unit-testit vihreät. Tiimin DoD:ssa on kohta "API-dokumentaatio päivitetty", mutta dokumentaatio (OpenAPI, käyttöohje, changelog) puuttuu. Tuoteomistaja painostaa merkitsemään tarinan Done, jotta burndown näyttää hyvältä.
 
 Ilman dokumentaatiota seuraava tiimi, integraatiokumppani tai tuki ei tiedä miten rajapintaa käytetään — "valmis" tarkoittaa vain kehittäjän mielessä valmista.
 
@@ -22,7 +22,7 @@ DoD on sopimus koko tiimin kanssa — ei yksittäisen kehittäjän päätös.
 
 ## DoD vs DoR
 
-- **DoR (Ready):** valmis *aloittamaan* sprintissä.
+- **DoR (Ready):** valmis *aloittamaan* sprintissä. DoR ei ole Scrum Guiden käsite, vaan monien tiimien lisäkäytäntö.
 - **DoD (Done):** valmis *julkaistavaksi* sprintin jälkeen.
 
 Dokumentaatio kuuluu yleensä DoD:hen, ei DoR:ään.

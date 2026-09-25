@@ -4,7 +4,7 @@
 
 Tuotantokysely hidastui yllättäen. Tiimi ehdottaa heti `work_mem`-nostoa, uutta indeksiä tai `shared_buffers`-säätöä — mutta kukaan ei ole mitannut, mikä solmu suunnitelmassa on kallisin tai paljonko rivejä todella palautuu.
 
-Pelkkä `EXPLAIN` ilman `ANALYZE`-lippua näyttää vain plannerin *arvion* (`rows`, `cost`), ei todellisia aikoja. `EXPLAIN ANALYZE` tuotannossa puolestaan suorittaa kyselyn oikeasti: se muuttaa cache-tilaa, lisää kuormaa ja voi lukita rivejä pitkään kestävissä transaktioissa.
+Pelkkä `EXPLAIN` ilman `ANALYZE`-lippua näyttää vain plannerin *arvion* (`rows`, `cost`), ei todellisia aikoja. `EXPLAIN ANALYZE` tuotannossa puolestaan suorittaa kyselyn oikeasti: se lisää kuormaa, muuttaa cache-tilaa ja voi lukita rivejä pitkään kestävissä transaktioissa. INSERT-, UPDATE- ja DELETE-lauseet muuttavat myös dataa, ellei niitä aja transaktiossa, joka perutaan ROLLBACKilla. Tilastoja (`pg_statistic`) se ei muuta — niitä päivittää ANALYZE-komento.
 
 ## Ratkaisu
 

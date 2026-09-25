@@ -6,7 +6,7 @@ ETRS89-dokumentti mainitsee GRS80:n, GPS WGS84:n. Pitääkö muunnella metrejä?
 
 ## Ratkaisu
 
-**GRS80** ja **WGS84-ellipsoidi** jakavat saman a:n; litistyneisyysero on mitättömän pieni tavallisessa GIS:ssä. Tärkeämpi ero on **datumi/epoch** (ETRS89 vs ITRF/WGS84-realisaatio), ei ellipsoidin millimetrit.
+**GRS80** ja **WGS84-ellipsoidi** jakavat saman a:n; litistyneisyys eroaa niin vähän, että napasäteiden ero on vain noin 0,1 mm. Tärkeämpi ero on **datumi/epoch** (ETRS89 vs ITRF/WGS84-realisaatio), ei ellipsoidin millimetrit.
 
 ## Käytännössä
 

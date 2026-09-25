@@ -27,7 +27,7 @@ struct Base {
 };
 ```
 
-Nyt `delete ptr` kutsuu `~Derived()` → `~Base()` oikeassa järjestyksessä. Prefer smart pointerit: `std::unique_ptr<Base>` kutsuu virtual destruktorin automaattisesti.
+Nyt `delete ptr` kutsuu `~Derived()` → `~Base()` oikeassa järjestyksessä. Smart pointerit eivät korvaa tätä: `std::unique_ptr<Base>` tekee saman `delete`n base-osoittimella ja tarvitsee virtual destruktorin. (`std::shared_ptr`, joka on luotu `make_shared<Derived>`:lla, tallentaa oikean deleterin — mutta siihen ei kannata nojata.) `override` johdetun luokan destructorissa ei auta, jos base-destruktori ei ole virtual — se on silloin käännösvirhe.
 
 ## Käytännössä
 

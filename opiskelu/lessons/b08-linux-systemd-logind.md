@@ -1,4 +1,4 @@
-# SSH-istunto katkeaa mutta prosessi tapetaan logoutissa — haluat pitää jobin elossa. Mitä?
+# SSH:lla käynnistetty pitkä job tapetaan uloskirjautuessa (logind KillUserProcesses=yes). Miten pidät sen elossa?
 
 ## Tilanne
 
@@ -11,27 +11,28 @@ logout
 # job killed — "Hangup" or "Terminated"
 ```
 
-`systemd-logind` oletuksena tappaa käyttäjän prosessit logoutissa (`KillUserProcesses=yes`). Taustaprosessi ei selviä ilman erillistä mekanismia.
+Tällä palvelimella `logind.conf` asettaa `KillUserProcesses=yes` (monen jakelun oletus on `no`), joten `systemd-logind` tappaa koko session scopen logoutissa. Taustaprosessi ei selviä ilman erillistä mekanismia — `nohup` tai tmux eivät auta, koska ne jäävät samaan session scopeen.
 
 ## Ratkaisu
 
-Käytä **`systemd-run --user scope`** tai **tmux** — **logind KillUserProcesses**.
+Käytä **`loginctl enable-linger` + `systemd-run --user`** — job siirtyy session scopen ulkopuolelle, ja linger pitää user-managerin käynnissä logoutin jälkeen.
 
-Vaihtoehto 1 — transient scope:
+Vaihtoehto 1 — linger + transient scope tai palvelu:
 
 ```bash
+loginctl enable-linger $USER
 systemd-run --user --scope --unit=long-job ./long-job.sh
 # tai interaktiivisesti:
 systemd-run --user --scope bash -c './long-job.sh; echo done > /tmp/result'
 ```
 
-Scope erottaa prosessin logout-taposta (linger/session riippuen).
+Scope tai palvelu elää user-managerin alla eikä kirjautumissession scopessa, joten logind ei tapa sitä sessiota siivotessaan. Ilman lingeriä user-manager pysähtyy viimeisen session päättyessä ja vie jobin mukanaan.
 
-Vaihtoehto 2 — tmux/screen:
+Vaihtoehto 2 — tmux oman scopen sisällä:
 
 ```bash
-tmux new -s job './long-job.sh'
-# detach, logout — tmux server säilyy jos KillUserProcesses=no tai linger
+systemd-run --user --scope tmux new -s job './long-job.sh'
+# detach, logout — pelkkä tmux tapettaisiin session mukana
 ```
 
 Vaihtoehto 3 — `/etc/systemd/logind.conf`:

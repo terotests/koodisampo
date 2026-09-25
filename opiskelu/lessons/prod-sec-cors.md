@@ -1,14 +1,15 @@
-# API palauttaa Access-Control-Allow-Origin: * ja Access-Control-Allow-Credentials: true. Mikä ongelma?
+# API kopioi pyynnön Origin-headerin sellaisenaan Access-Control-Allow-Origin-arvoksi ja palauttaa Access-Control-Allow-Credentials: true. Mikä ongelma?
 
 ## Tilanne
 
-`Access-Control-Allow-Origin: *` + `Access-Control-Allow-Credentials: true`
+Palvelin kopioi pyynnön `Origin`-headerin vastaukseen `Access-Control-Allow-Origin`-arvoksi ja lisää `Access-Control-Allow-Credentials: true`. Usein näin "korjataan" tilanne, jossa selain hylkäsi yhdistelmän `*` + credentials.
 
 ## Ratkaisu
 
 CORS ei ole palvelinpuolen authorization-mekanismi — se on selaimen käytäntö.
 
-- Credentials + villi origin on vaarallinen
+- Heijastettu Origin + credentials antaa minkä tahansa sivuston lukea kirjautuneen käyttäjän vastaukset
+- Selain hylkää yhdistelmän `*` + credentials, mutta Originin heijastus ohittaa tämän suojan
 - Salli vain tunnetut originit
 - Tee varsinainen authz aina palvelimella
 

@@ -1,22 +1,22 @@
-# Konttilokit katoavat rebootissa. Miten varmistat lokien keräyksen?
+# Konttilokit katoavat, kun kontti poistetaan ja luodaan uudelleen deployssa. Miten varmistat lokien keräyksen?
 
 ## Tilanne
-Host-reboot tyhjentää konttilokit tai `/var/lib/docker` kasvaa gigatavuiksi ilman rotaatiota.
+Oletus-json-file-driver tallentaa lokit kontin hakemistoon `/var/lib/docker/containers/`. Ne säilyvät rebootin yli, mutta poistuvat kontin mukana — kun deploy korvaa kontin uudella, vanhat lokit katoavat.
 
-Dev-ympäristössä `docker logs` riittää, mutta tuotannossa lokit katoavat rebootissa.
+Dev-ympäristössä `docker logs` riittää, mutta tuotannossa lokit pitää kerätä kontin ulkopuolelle.
 
 ## Ratkaisu
-**Logging driver (json-file + log rotation) tai ulkoinen driver kuten fluentd.**
+**Ulkoinen logging driver (esim. fluentd, gelf) tai hostin lokiagentti.**
 
 ```yaml
 logging:
-  driver: json-file
+  driver: fluentd
   options:
-    max-size: "50m"
-    max-file: "10"
+    fluentd-address: localhost:24224
+    tag: "{{.Name}}"
 ```
 
-Configure logging drivers — Docker logging docs.
+json-file-rotaatio (`max-size`, `max-file`) rajaa levynkäytön, mutta ei säilytä lokeja kontin poiston yli. Keskitetty keräys säilyttää ne kontin elinkaaresta riippumatta.
 
 ## Käytännössä
 Tuotannossa lähetä lokit keskusjärjestelmään. `docker logs` riittää devissä, ei compliance-tason auditointiin.

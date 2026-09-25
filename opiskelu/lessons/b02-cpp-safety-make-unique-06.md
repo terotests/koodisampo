@@ -2,7 +2,7 @@
 
 ## Tilanne
 
-Widget luodaan suoraan pinossa:
+Widget luodaan keosta raa'alla `new`:llä:
 
 ```cpp
 void setup() {
@@ -27,7 +27,7 @@ void setup() {
 }
 ```
 
-`make_unique` on **exception-safe**: jos konstruktio tai myöhempi kutsu heittää, destruktori vapauttaa jo luodun osan. Yksi allokaatio, ei erillistä `new`/`delete`-paria. Omistus siirtyy selkeästi `unique_ptr`:llä.
+`make_unique` (C++14) on **exception-safe**: olio on `unique_ptr`:n omistuksessa heti luonnin jälkeen, joten jos myöhempi kutsu heittää, `unique_ptr`:n destruktori vapauttaa sen. Allokaatioiden määrä ei muutu (sekä `new` että `make_unique` tekevät yhden) — hyöty on RAII-omistuksessa, ei erillistä `delete`ä. Omistus siirtyy selkeästi `unique_ptr`:llä.
 
 ## Käytännössä
 

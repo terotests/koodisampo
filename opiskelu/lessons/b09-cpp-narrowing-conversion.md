@@ -8,11 +8,17 @@ API rajaa arvon 32-bittiseen tunnisteeseen, mutta lähdedata on `int64_t` (tieto
 int32_t id = static_cast<int32_t>(big_id);
 ```
 
-truncaa yläbitit ilman virhettä — väärä tunniste tuotannossa, vaikea jäljittää.
+truncaa yläbitit ilman virhettä — väärä tunniste tuotannossa, vaikea jäljittää. Myös kopio-alustus `int32_t id = big_id;` kääntyy yleensä hiljaa; varoitus tulee vain esim. `-Wconversion`-lipulla.
 
 ## Ratkaisu
 
-Tarkista range ennen kavennusta:
+**Brace-init** tekee kavennuksesta käännösaikaisen virheen:
+
+```cpp
+int32_t id{big_id};  // virhe (tai vähintään varoitus): narrowing int64_t → int32_t
+```
+
+List initialization kieltää supistavat muunnokset, joten hiljainen truncaus jää kiinni jo käännöksessä. Kun kavennus on oikeasti tarkoitus, tee se eksplisiittisesti ja tarkista arvoalue:
 
 ```cpp
 #include <utility>  // C++20

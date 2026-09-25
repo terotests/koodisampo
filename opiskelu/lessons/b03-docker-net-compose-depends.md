@@ -22,7 +22,7 @@ Error: connect ECONNREFUSED db:5432
 
 ## Ratkaisu
 
-**`depends_on` + healthcheck db:lle tai odota retry-logiikka appissa.** depends_on odottaa käynnistystä, ei readinessia — healthcheck + retry.
+**`depends_on` + `condition: service_healthy` ja healthcheck db:lle, lisäksi retry appissa.** Lyhyt `depends_on: [db]` odottaa vain kontin käynnistystä; `condition: service_healthy` odottaa, että db:n healthcheck menee läpi.
 
 ```yaml
 services:

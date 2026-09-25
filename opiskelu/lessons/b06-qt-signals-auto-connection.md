@@ -25,7 +25,7 @@ void MainWindow::on_saveButton_clicked() {
 }
 ```
 
-`on_<objectName>_<signal>()` — moc auto-connect pattern Designerissä. `connectSlotsByName()` etsii slotit metanimen perusteella — objectName:n on täsmättävä UI-tiedostoon.
+Yhdistämisen tekee ajonaikaisesti `QMetaObject::connectSlotsByName()`, jota uic:n generoima `setupUi()` kutsuu — ei moc. Se etsii slotit nimen perusteella, joten `objectName`:n on täsmättävä UI-tiedostoon.
 
 ## Käytännössä
 

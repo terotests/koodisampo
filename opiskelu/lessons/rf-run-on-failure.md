@@ -4,7 +4,7 @@
 
 CI:ssä web-testi epäonnistuu yöllä. Lokissa lukee "Element not found", mutta et tiedä oliko kyseessä login-virhe, tyhjä sivu vai overlay-dialogi. Kehittäjä lisää manuaalisesti `Capture Page Screenshot` jokaisen testin `[Teardown]`-osioon — se toimii, mutta unohtuu uusiin testeihin ja tuottaa turhia kuvia onnistuneista ajoista.
 
-SeleniumLibrary ja Browser Library tarjoavat globaalin koukun joka ajaa valitun avainsanan automaattisesti vain kun testi epäonnistuu.
+SeleniumLibrary ja Browser Library tarjoavat globaalin koukun, joka ajaa valitun avainsanan automaattisesti vain, kun kirjaston avainsana epäonnistuu. SeleniumLibraryn oletusavainsana on jo `Capture Page Screenshot` — rekisteröinnillä valitset sen eksplisiittisesti tai palautat sen, jos oletus on muutettu (esim. `run_on_failure=Nothing`).
 
 ## Ratkaisu
 
@@ -14,12 +14,16 @@ SeleniumLibrary:
 
 ```robot
 *** Settings ***
-Library    SeleniumLibrary
+Library        SeleniumLibrary
+Suite Setup    Avaa Selain Ja Rekisteröi Failikoukku
 
-Suite Setup
+*** Keywords ***
+Avaa Selain Ja Rekisteröi Failikoukku
     Register Keyword To Run On Failure    Capture Page Screenshot
     Open Browser    ${URL}    chrome
 ```
+
+Saman voi asettaa myös importissa: `Library    SeleniumLibrary    run_on_failure=Capture Page Screenshot`.
 
 Browser Library:
 
@@ -27,7 +31,7 @@ Browser Library:
 Register Keyword To Run On Failure    Take Screenshot    filename=FAIL-{index}
 ```
 
-Kun testi failaa, RF kutsuu rekisteröityä avainsanaa ennen teardownia. Kuva liitetään `log.html`-raporttiin.
+Kun kirjaston avainsana epäonnistuu, kirjasto kutsuu rekisteröityä avainsanaa heti — ennen teardownia. Kuva liitetään `log.html`-raporttiin.
 
 ## Käytännössä
 

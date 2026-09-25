@@ -1,4 +1,4 @@
-# Legacy-sovellus hajoaa IPv6-osoitteeseen DNS:ssä — kontissa toimii IPv4-only hostilla. Diagnostiikka?
+# Legacy-sovellus kaatuu, kun DNS palauttaa kontissa IPv6-osoitteen, vaikka verkossa toimii vain IPv4. Diagnostiikka?
 
 ## Tilanne
 

@@ -13,14 +13,14 @@
         "security",
         "guru"
       ],
-      "prompt": "Unit A: `Requires=B`, unit B kaatuu käynnistyksessä. Mitä tapahtuu A:lle?",
+      "prompt": "Unit A: `Requires=B` ja `After=B`. B:n käynnistys epäonnistuu. Mitä A:lle tapahtuu?",
       "choices": [
         {
-          "text": "Requires katkaisee A:n kun B epäonnistuu käynnistyksessä",
+          "text": "A:ta ei käynnistetä, koska sen kova riippuvuus B epäonnistui",
           "correct": true
         },
         {
-          "text": "Wants ja Requires käyttäytyvät samoin riippuvuuden epäonnistuessa",
+          "text": "A käynnistyy normaalisti, koska Requires vain järjestää käynnistyksen",
           "correct": false
         },
         {
@@ -32,8 +32,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "Requires = kova linkki; Wants = pehmeä.",
-      "wrongFeedback": "Requires katkaisee riippuvaisen unitin jos vaatimus pettää.",
+      "correctFeedback": "Requires + After: kun B epäonnistuu, A:n käynnistys päättyy tilaan 'dependency failed'. Ilman After-riviä A ja B käynnistetään rinnakkain eikä A:ta estetä.",
+      "wrongFeedback": "Requires on kova riippuvuus ja Wants pehmeä, mutta vasta After=B saa A:n odottamaan B:n käynnistyksen tulosta.",
       "featureId": "linux:systemd-deps",
       "featurePoints": 4,
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.unit.html",
@@ -91,11 +91,11 @@
           "correct": true
         },
         {
-          "text": "ForwardToSyslog=no estää lokien kopiointi syslog-palveluun",
+          "text": "ForwardToSyslog=no estää lokien katoamisen rebootissa",
           "correct": false
         },
         {
-          "text": "SystemMaxUse=1K asettaa journalin levykiintiön megatavuiksi",
+          "text": "SystemMaxUse=1G säilyttää journalin levyllä rebootin yli",
           "correct": false
         },
         {
@@ -126,7 +126,7 @@
           "correct": true
         },
         {
-          "text": "cat /var/log/messages | grep nginx viime yön ajoalalta",
+          "text": "cat /var/log/messages | grep nginx viime yön aikaväliltä",
           "correct": false
         },
         {
@@ -333,27 +333,27 @@
         "guru",
         "security"
       ],
-      "prompt": "Unit A tarvitsee verkon ennen käynnistystä mutta ei saa kaatua jos B epäonnistuu. Mikä riippuvuus?",
+      "prompt": "Unit A tarvitsee verkon ennen käynnistystä, mutta sen ei pidä kaatua, jos verkon odotus epäonnistuu. Mikä riippuvuus?",
       "choices": [
         {
-          "text": "After=network-online.target ilman Requires-riippuvuutta",
+          "text": "Wants= ja After=network-online.target ilman Requires-riippuvuutta",
           "correct": true
         },
         {
-          "text": "Requires=B varmistaa verkon ennen A:n käynnistystä",
+          "text": "Requires=network.target varmistaa verkon ennen A:n käynnistystä",
           "correct": false
         },
         {
-          "text": "Before=B riittää odottamaan verkkoa ennen käynnistystä",
+          "text": "Before=network-online.target riittää odottamaan verkkoa",
           "correct": false
         },
         {
-          "text": "Ei tarvita riippuvuuksia — ExecStartPre odottaa verkkoa",
+          "text": "After=network.target yksin odottaa, että verkko on käytettävissä",
           "correct": false
         }
       ],
-      "correctFeedback": "After vain järjestää — Requires/Wants määrittää kovuuden.",
-      "wrongFeedback": "After ≠ Requires; pehmeään järjestykseen After/Wants.",
+      "correctFeedback": "Wants vetää targetin mukaan ja After odottaa sitä. Wants on pehmeä, joten A käynnistyy vaikka verkon odotus epäonnistuisi.",
+      "wrongFeedback": "After yksin vain järjestää eikä vedä targetia mukaan; Requires tekisi riippuvuudesta kovan.",
       "sourceRef": "systemd/unit.md",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.unit.html",
       "featureId": "linux:systemd-ordering",
@@ -582,24 +582,24 @@
       "prompt": "App.service riippuu tietokannasta. DB kaatuu — haluat appin pysähtyvän. Mikä riippuvuus?",
       "choices": [
         {
-          "text": "Requires=db.service — kova riippuvuus",
+          "text": "BindsTo=db.service + After=db.service — app pysähtyy kun DB kaatuu",
           "correct": true
         },
         {
-          "text": "Wants=db.service — app jatkaa vaikka DB kuolee",
+          "text": "Requires=db.service yksin — pysäyttää appin kun DB-prosessi kaatuu",
           "correct": false
         },
         {
-          "text": "After=db.service riittää aina",
+          "text": "Wants=db.service — app pysähtyy heti kun DB kaatuu",
           "correct": false
         },
         {
-          "text": "Ei riippuvuuksia — systemd arvailee",
+          "text": "After=db.service yksin sitoo appin DB:n elinkaareen",
           "correct": false
         }
       ],
-      "correctFeedback": "Requires pysäyttää riippuvaisen yksikön jos vaatimus kaatuu.",
-      "wrongFeedback": "Wants on pehmeä — After vain järjestää käynnistyksen.",
+      "correctFeedback": "BindsTo pysäyttää appin myös, kun DB päätyy yllättäen inactive- tai failed-tilaan. Requires pysäyttää appin vain, kun DB pysäytetään tai käynnistetään uudelleen eksplisiittisesti.",
+      "wrongFeedback": "Requires ei reagoi DB-prosessin omaan kaatumiseen, Wants on pehmeä riippuvuus ja After vain järjestää käynnistyksen.",
       "sourceRef": "systemd.unit(5)#Requires=",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Requires=",
       "featureId": "linux:systemd-requires",
@@ -614,7 +614,7 @@
         "coworker",
         "project-lead"
       ],
-      "prompt": "Yöllinen backup-skripti ei ajautunut cronin sijaan. Miten systemd-timer korvaa crontabin?",
+      "prompt": "Yöllinen backup-skripti halutaan ajaa systemd:llä cronin sijaan. Miten systemd-timer korvaa crontabin?",
       "choices": [
         {
           "text": "timer.unit + service.unit pari OnCalendar-ajastuksella",
@@ -695,7 +695,7 @@
           "correct": false
         },
         {
-          "text": "dmesg --follow näyttää vain nykyisen boot-session lokit",
+          "text": "dmesg --follow näyttää nykyisen bootin palvelulokit",
           "correct": false
         },
         {
@@ -1274,7 +1274,7 @@
       "prompt": "Kehität paikallista HTTP-palvelua — haluat sen löytyvän `_http._tcp`. Miten?",
       "choices": [
         {
-          "text": "Avahi service XML / avahi-publish-service tai systemd service with Avahi",
+          "text": "Avahi service XML -tiedosto tai avahi-publish-service julkaisee _http._tcp-palvelun",
           "correct": true
         },
         {
@@ -1313,15 +1313,15 @@
           "correct": true
         },
         {
-          "text": "systemctl restart --all — käynnistää kaikki unitit uudelleen paljastamatta viiveitä",
+          "text": "systemctl list-units --all — näyttää unitien käynnistysajat",
           "correct": false
         },
         {
-          "text": "journalctl -k rajoittuu kernel-viesteihin eikä näytä unit-kohtaisia käynnistysaikoja",
+          "text": "journalctl -k — listaa unit-kohtaiset käynnistysviiveet",
           "correct": false
         },
         {
-          "text": "kill -9 init pakottaa koko järjestelmän uudelleenkäynnistyksen ilman diagnostiikkaa",
+          "text": "systemctl status --boot — järjestää unitit käynnistysajan mukaan",
           "correct": false
         }
       ],
@@ -1341,22 +1341,22 @@
         "guru",
         "coworker"
       ],
-      "prompt": "CI merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?",
+      "prompt": "systemd merkitsee palvelun valmiiksi heti kun prosessi käynnistyy, mutta se kuuntelee porttia vasta 30 s myöhemmin. Unit-tyyppi?",
       "choices": [
         {
           "text": "Type=notify — palvelu ilmoittaa sd_notify:llä kun valmis",
           "correct": true
         },
         {
-          "text": "Type=simple riittää aina — simple merkitsee palvelun valmiiksi heti exec-kutsun jälkeen",
+          "text": "Type=simple — systemd odottaa, kunnes palvelu avaa portin",
           "correct": false
         },
         {
-          "text": "Type=idle nopeuttaa bootia viivästämällä käynnistystä, ei liity valmiussignalointiin",
+          "text": "Type=idle — käynnistys viivästyy, kunnes palvelu on valmis",
           "correct": false
         },
         {
-          "text": "Type=forking pakollinen kaikille — forking sopii vain daemonisoituville prosesseille",
+          "text": "Type=oneshot — valmis vasta kun pääprosessi kuuntelee porttia",
           "correct": false
         }
       ],
@@ -1418,15 +1418,15 @@
           "correct": true
         },
         {
-          "text": "Restart=always ilman StartLimitBurst-rajoitusta — palvelu yrittää loputtomasti uudelleen",
+          "text": "Restart=always — systemd tasaa uudelleenkäynnistykset itsestään",
           "correct": false
         },
         {
-          "text": "Poista Restart-rivi kokonaan ja anna palvelun jäädä pysyvästi kaatuneeksi tilaan",
+          "text": "KillMode=none — estää palvelua käynnistymästä liian usein",
           "correct": false
         },
         {
-          "text": "KillMode=none joka jättää lapsiprosessit henkiin eikä vaikuta restart-tiheyteen mitenkään",
+          "text": "TimeoutStartSec=0 — rajoittaa uudelleenkäynnistysten määrää",
           "correct": false
         }
       ],
@@ -1488,20 +1488,20 @@
           "correct": true
         },
         {
-          "text": "Poista journald kokonaan ja korvaa se pelkällä syslogilla ilman rate limiting -ratkaisua",
+          "text": "SystemMaxUse=0 journald.conf:ssa rajoittaa viestien tulotahtia",
           "correct": false
         },
         {
-          "text": "SystemMaxUse=0 — asettaa levykiintiön nollaan mikä ei rajoita viestien tulotahtia",
+          "text": "MaxLevelStore=debug journald.conf:ssa pudottaa toistuvat viestit",
           "correct": false
         },
         {
-          "text": "Journal ei tue rate limitingiä lainkaan — kaikki viestit kirjoitetaan aina levylle",
+          "text": "Storage=auto journald.conf:ssa suodattaa identtiset virheet",
           "correct": false
         }
       ],
       "correctFeedback": "journald rate limit leikkaa floodia — journald.conf dokumentaatio.",
-      "wrongFeedback": "Rajoittamaton logitus voi täyttää levyn hyökkauksessa.",
+      "wrongFeedback": "Rajoittamaton lokitus voi täyttää levyn hyökkäyksessä.",
       "sourceRef": "systemd/journald.conf",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/journald.conf.html",
       "featureId": "linux:journald-ratelimit",
@@ -1558,19 +1558,19 @@
           "correct": true
         },
         {
-          "text": "ping api.example.com",
+          "text": "traceroute -n api.example.com",
           "correct": false
         },
         {
-          "text": "ifconfig up",
+          "text": "ping -p 443 api.example.com",
           "correct": false
         },
         {
-          "text": "route add default gw 0.0.0.0",
+          "text": "nslookup api.example.com",
           "correct": false
         }
       ],
-      "correctFeedback": "tcpdump suodattaa liikennettä — vianetsintä ennen/so jälkeen firewallin.",
+      "correctFeedback": "tcpdump näyttää SYN-paketit ja niiden vastaukset — vianetsintä ennen ja jälkeen palomuurin.",
       "wrongFeedback": "Ping ei näytä TCP-yhteyksiä eikä porttisuodatuksen vaikutusta.",
       "sourceRef": "man7/tcpdump",
       "sourceUrl": "https://man7.org/linux/man-pages/man8/tcpdump.8.html",
@@ -1624,19 +1624,19 @@
       "prompt": "Palvelin jää odottamaan CLOSE_WAIT-yhteyksiä — muisti kuluu. Diagnostiikka?",
       "choices": [
         {
-          "text": "ss -tanp — näyttää socket-tilat ja timerit",
+          "text": "ss -tanpo — näyttää socket-tilat, prosessit ja timerit",
           "correct": true
         },
         {
-          "text": "lsof -i poistaa yhteydet",
+          "text": "ss -ulnp — listaa jumittuneet CLOSE_WAIT-yhteydet",
           "correct": false
         },
         {
-          "text": "ifdown eth0",
+          "text": "ip neigh show — näyttää CLOSE_WAIT-tilaiset yhteydet",
           "correct": false
         },
         {
-          "text": "CLOSE_WAIT on normaali — ei toimenpiteitä",
+          "text": "CLOSE_WAIT on normaali tila — ei toimenpiteitä",
           "correct": false
         }
       ],
@@ -1663,15 +1663,15 @@
           "correct": true
         },
         {
-          "text": "ping -f flood",
+          "text": "ip -br link — link speed/duplex",
           "correct": false
         },
         {
-          "text": "chmod 777 /etc/resolv.conf",
+          "text": "ss -s — linkin nopeus ja duplex",
           "correct": false
         },
         {
-          "text": "reboot riittää aina",
+          "text": "iftop -i eth0 — neuvoteltu nopeus",
           "correct": false
         }
       ],
@@ -1729,19 +1729,19 @@
       "prompt": "IoT-gateway pitää ilmoittaa HTTP-palvelu lähiverkkoon ilman staattista IP:tä. Ratkaisu?",
       "choices": [
         {
-          "text": "Avahi service file / avahi-publish-service — mDNS ilmoitus",
+          "text": "Avahi service file / avahi-publish-service — mDNS-ilmoitus",
           "correct": true
         },
         {
-          "text": "Kovakoodaa IP-osoite sovellukseen — rikkoutuu heti kun DHCP vaihtaa gatewayn osoitteen",
+          "text": "Staattinen DHCP-varaus — asiakkaat löytävät palvelun itsestään",
           "correct": false
         },
         {
-          "text": "Broadcast UDP kaikille porteille — ei noudata mDNS/DNS-SD-protokollan service-tyyppiä",
+          "text": "Palvelun nimi gatewayn /etc/hosts-tiedostoon riittää",
           "correct": false
         },
         {
-          "text": "Avahi toimii vain clientinä eikä pysty julkaisemaan omia palveluita lähiverkkoon",
+          "text": "avahi-browse -a gatewayssa julkaisee sen palvelut verkkoon",
           "correct": false
         }
       ],
@@ -1768,15 +1768,15 @@
           "correct": true
         },
         {
-          "text": "Restart=on-failure ilman riippuvuutta — yrittää uudestaan mutta ei odota tietokannan valmistumista ensin",
+          "text": "Type=oneshot ja RemainAfterExit=yes — palvelu odottaa tietokantaa automaattisesti",
           "correct": false
         },
         {
-          "text": "Type=oneshot ja RemainAfterExit=yes — merkitsee palvelun valmiiksi heti prosessin päätyttyä",
+          "text": "ExecStartPost=/bin/sh -c 'until pg_isready; do sleep 1; done' ennen pääprosessia",
           "correct": false
         },
         {
-          "text": "Poista ExecStart kokonaan ja korvaa se ExecStartPost-komennolla joka odottaa tietokantaa",
+          "text": "WantedBy=postgresql.service — palvelu odottaa, että tietokanta hyväksyy yhteydet",
           "correct": false
         }
       ],
@@ -1803,15 +1803,15 @@
           "correct": true
         },
         {
-          "text": "Wants= riittää aina samaan — Wants määrittää vain käynnistysjärjestyksen, ei pysäytystä",
+          "text": "Wants=web.target — worker pysähtyy kun target pysähtyy",
           "correct": false
         },
         {
-          "text": "KillMode=none jättää lapsiprosessit hengissä eikä sido elinkaarta targetiin mitenkään",
+          "text": "After=web.target — worker pysähtyy targetin jälkeen itsestään",
           "correct": false
         },
         {
-          "text": "Ignore target ja pidä unitit täysin erillisinä — worker jää silti roikkumaan targetin pysähtyessä",
+          "text": "KillMode=control-group targetissa pysäyttää myös workerit",
           "correct": false
         }
       ],
@@ -1969,22 +1969,22 @@
         "guru",
         "coworker"
       ],
-      "prompt": "resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Todennäköisin syy?",
+      "prompt": "resolv.conf näyttää 127.0.0.53 — DNS-kyselyt epäonnistuvat satunnaisesti. Mistä jatkat vianetsintää?",
       "choices": [
         {
-          "text": "systemd-resolved stub resolver — tarkista resolvectl status",
+          "text": "127.0.0.53 on systemd-resolvedin stub — tarkista upstream: resolvectl status",
           "correct": true
         },
         {
-          "text": "127.0.0.53 on aina virheellinen konfiguraatio joka pitää korjata osoittamaan suoraan ISP:n nameserveriin",
+          "text": "127.0.0.53 on virheellinen osoite — vaihda tilalle ISP:n nameserver",
           "correct": false
         },
         {
-          "text": "Poista resolv.conf kokonaan — kernel osaa silti resolvoida nimiä ilman mitään resolver-konfiguraatiota",
+          "text": "Poista resolv.conf — glibc resolvoi nimet ilman konfiguraatiota",
           "correct": false
         },
         {
-          "text": "Vain /etc/hosts on käytössä — systemd-resolved ei voi koskaan olla stub-osoitteen takana",
+          "text": "127.0.0.53 tarkoittaa, että vain /etc/hosts-tiedosto on käytössä",
           "correct": false
         }
       ],
@@ -2011,15 +2011,15 @@
           "correct": true
         },
         {
-          "text": "chmod 000 unit-tiedostoon riittää — systemd voi silti ladata unitin oikeuksista huolimatta",
+          "text": "chmod 000 unit-tiedostoon — systemd ei voi enää ladata unitia",
           "correct": false
         },
         {
-          "text": "disable ja reboot riittää aina — toinen paketti voi palauttaa symlinkin päivityksen yhteydessä",
+          "text": "systemctl disable --now — pakettipäivitys ei voi palauttaa symlinkkiä",
           "correct": false
         },
         {
-          "text": "Poista binary levyltä — systemd yrittää silti käynnistää unitin ja jää failed-tilaan",
+          "text": "systemctl stop palvelu.service — estää käynnistyksen myös rebootin jälkeen",
           "correct": false
         }
       ],
@@ -2046,15 +2046,15 @@
           "correct": true
         },
         {
-          "text": "/etc/systemd/system/ aina — system-wide-hakemisto vaatii silti root-oikeudet käyttöön",
+          "text": "/etc/systemd/system/palvelu.service + systemctl enable ilman sudoa",
           "correct": false
         },
         {
-          "text": "crontab @reboot riittää — cron ei tue systemd-user-instanssin resurssienhallintaa",
+          "text": "/usr/lib/systemd/user/palvelu.service + systemctl enable ilman --user",
           "correct": false
         },
         {
-          "text": "/etc/init.d/ vanha SysV-tapa — vaatii myös root-oikeudet eikä toimi user-sessiossa",
+          "text": "~/.config/systemd/system/palvelu.service + systemctl daemon-reload",
           "correct": false
         }
       ],
@@ -2080,15 +2080,15 @@
           "correct": true
         },
         {
-          "text": "journalctl --all-time näyttää kaikkien boottien lokit sekaisin ilman rajausta",
+          "text": "journalctl --since boot näyttää vain viime bootin lokit",
           "correct": false
         },
         {
-          "text": "dmesg riittää aina — kernel-rengaspuskuri tyhjenee eikä sisällä sovelluslokeja",
+          "text": "dmesg -T näyttää edellisen bootin sovelluslokit aikaleimoilla",
           "correct": false
         },
         {
-          "text": "cat /var/log/boot.log — tiedostoa ei oletuksena ole systemd-journald-pohjaisissa jakeluissa",
+          "text": "cat /var/log/boot.log sisältää viime bootin journal-merkinnät",
           "correct": false
         }
       ],
@@ -2115,15 +2115,15 @@
           "correct": true
         },
         {
-          "text": "journalctl | grep ERROR — riittää vaikka ohittaa priority-metadatan ja muunkieliset viestit",
+          "text": "journalctl -p warning --since '1 hour ago' — vain err ja crit",
           "correct": false
         },
         {
-          "text": "journalctl -q hiljentää varoitukset lokitiedostoista, ei suodata priority-tason mukaan",
+          "text": "journalctl -q --since '1 hour ago' — piilottaa alle err-tason viestit",
           "correct": false
         },
         {
-          "text": "Vain dmesg — kernel-rengaspuskuri ei sisällä sovellusten err-tason journal-viestejä",
+          "text": "journalctl --grep ERROR --since '1 hour ago' — lukee priority-kentän",
           "correct": false
         }
       ],
@@ -2185,15 +2185,15 @@
           "correct": true
         },
         {
-          "text": "Type=oneshot aina — sopii kertaluontoisiin skripteihin, ei jatkuvasti käynnissä oleviin palveluihin",
+          "text": "Type=oneshot — systemd odottaa, että palvelu avaa portin",
           "correct": false
         },
         {
-          "text": "Type=simple estää riippuvuudet — simple ei tue riippuvuuksia lainkaan systemd-unitissa",
+          "text": "Type=simple — riippuvat unitit odottavat portin avautumista",
           "correct": false
         },
         {
-          "text": "Type=idle riittää tuotantoon — idle vain viivästää käynnistystä bootissa, ei odota valmiussignaalia",
+          "text": "Type=idle — riippuvat unitit odottavat palvelun valmiussignaalia",
           "correct": false
         }
       ],
@@ -2395,15 +2395,15 @@
           "correct": true
         },
         {
-          "text": "Muokkaa vain /etc/hosts-tiedostoa lisäämällä sisäverkon osoitteet käsin sinne",
+          "text": "/etc/hosts — lisää sisäverkon nimet, jolloin reitti syntyy",
           "correct": false
         },
         {
-          "text": "Aja chmod +x reitittimen konfiguraatiotiedostoon jotta reititys aktivoituu",
+          "text": "resolvectl status — DNS-palvelin määrittää sisäverkon reitin",
           "correct": false
         },
         {
-          "text": "Käynnistä avahi-daemon uudelleen — mDNS ei liity VPN:n sisäverkon reitityksen tavoitettavuuteen",
+          "text": "ss -tulpn — näyttää puuttuuko reitti sisäverkon aliverkkoon",
           "correct": false
         }
       ],
@@ -2493,10 +2493,10 @@
         "coworker",
         "guru"
       ],
-      "prompt": "App unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestys?",
+      "prompt": "App-unit käynnistyy ennen tietokantaa — yhteys epäonnistuu. Miten pakotat järjestyksen?",
       "choices": [
         {
-          "text": "After=db.service app-unitissa pakottaa käynnistyksen järjestyksen",
+          "text": "Requires=db.service ja After=db.service app-unitissa",
           "correct": true
         },
         {
@@ -2504,7 +2504,7 @@
           "correct": false
         },
         {
-          "text": "Type=simple määrittää käynnistyksen riippuvuuden automaattisesti",
+          "text": "Type=simple määrittää käynnistyksen riippuvuuden itsestään",
           "correct": false
         },
         {
@@ -2528,7 +2528,7 @@
         "guru",
         "coworker"
       ],
-      "prompt": "Backup-skripti ajetaan vain jos mount on käytettävissä. Miten unit ehto?",
+      "prompt": "Backup-skripti saa ajautua vain, jos /backup on mountattu. Miten määrität ehdon unitiin?",
       "choices": [
         {
           "text": "ConditionPathIsMountPoint=/backup estää ajon ilman mountia",
@@ -2563,7 +2563,7 @@
         "coworker",
         "security"
       ],
-      "prompt": "Palvelu tarvitsee pysyvän session ilman interaktiivista loginia. Mitä komponentti hallinnoi?",
+      "prompt": "Käyttäjän palveluiden pitää jatkua ilman interaktiivista loginia. Mikä systemd-komponentti hallinnoi sessioita?",
       "choices": [
         {
           "text": "systemd-logind hallinnoi sessioneja ja seat-konfiguraatiota",
@@ -2598,18 +2598,18 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Incidentti — tarvitset vanhimmat lokit ensin aikajärjestyksessä. Mitä journalctl-optiota?",
+      "prompt": "Incidentti — haluat nähdä uusimmat lokimerkinnät ensin. Mitä journalctl-optiota käytät?",
       "choices": [
         {
-          "text": "journalctl -r — kääntää järjestyksen, vanhin lokimerkintä ensin",
+          "text": "journalctl -r — kääntää järjestyksen, uusin lokimerkintä ensin",
           "correct": true
         },
         {
-          "text": "journalctl --boot=0 tulostaa vanhimmat lokit ensin oletuksena",
+          "text": "journalctl --boot=0 tulostaa uusimmat lokit ensin oletuksena",
           "correct": false
         },
         {
-          "text": "tail -f /var/log/syslog näyttää journalin vanhimmasta uusimpaan",
+          "text": "tail -f /var/log/syslog näyttää journalin uusimmasta vanhimpaan",
           "correct": false
         },
         {
@@ -2617,8 +2617,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "journalctl output order — journalctl man.",
-      "wrongFeedback": "Oletus on uusin ensin. Poista -r tai käytä sopiva sort.",
+      "correctFeedback": "journalctl tulostaa oletuksena vanhimmat merkinnät ensin; -r (--reverse) kääntää järjestyksen niin, että uusin on ensin.",
+      "wrongFeedback": "Oletusjärjestys on vanhin ensin. -r kääntää sen, -f taas seuraa uusia rivejä reaaliajassa.",
       "sourceRef": "journalctl",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/journalctl.html",
       "featureId": "linux:journalctl",
@@ -2703,7 +2703,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Yhteys toimii pingillä mutta ARP-taulu näyttää incomplete. Mitä komento tarkistaa?",
+      "prompt": "Yhteys samassa aliverkossa olevaan koneeseen ei toimi — epäilet, ettei ARP-selvitys onnistu. Millä komennolla tarkistat?",
       "choices": [
         {
           "text": "ip neigh show — näyttää ARP- ja neighbor cache -taulun",
@@ -2723,7 +2723,7 @@
         }
       ],
       "correctFeedback": "ip neigh shows neighbor table — ip-route man ip-neighbour.",
-      "wrongFeedback": "ARP-ongelma ei näkyy ss:ssä. ip neigh on oikea työkalu.",
+      "wrongFeedback": "ARP-ongelma ei näy ss:ssä. ip neigh on oikea työkalu.",
       "sourceRef": "ip-neighbour",
       "sourceUrl": "https://man7.org/linux/man-pages/man8/ip-neighbour.8.html",
       "featureId": "linux:ip-neigh",
@@ -2807,7 +2807,7 @@
       "audiences": [
         "guru"
       ],
-      "prompt": "Tuotantoverkko — checksum offload aiheuttaa corrupt-paketteja virtuaalisessa NIC:ssä. Mitä työkalu?",
+      "prompt": "Tuotantoverkko — checksum offload aiheuttaa korruptoituneita paketteja virtuaalisessa NIC:ssä. Mikä työkalu?",
       "choices": [
         {
           "text": "ethtool -K eth0 tx off rx off — checksum offload kytketään pois",
@@ -2912,7 +2912,7 @@
         "coworker",
         "secretary"
       ],
-      "prompt": "Uusi .service-tiedosto lisätty — palvelu ei näkyy verkossa. Mitä teet ensin?",
+      "prompt": "Uusi .service-tiedosto lisätty, mutta palvelu ei näy verkossa. Mitä teet ensin?",
       "choices": [
         {
           "text": "systemctl reload avahi-daemon — lataa uudet service definitionit",
@@ -2947,7 +2947,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Uusi service unit ei käynnisty bootissa vaikka enabled näyttää ok. Mitä [Install]-osiosta puuttuu?",
+      "prompt": "`systemctl enable` varoittaa, ettei unitissa ole asennusohjeita, eikä palvelu käynnisty bootissa. Mitä [Install]-osiosta puuttuu?",
       "choices": [
         {
           "text": "WantedBy=multi-user.target — enable luo symlinkin boot-targetiin",
@@ -3037,7 +3037,7 @@
         }
       ],
       "correctFeedback": "systemd captures stdout/stderr by default for services — journal.",
-      "wrongFeedback": "systemd-palveluiden stdout menee journaliin. Tarkista unit ja how started.",
+      "wrongFeedback": "systemd-palveluiden stdout menee journaliin. Tarkista unit ja miten prosessi käynnistettiin.",
       "sourceRef": "systemd.service/StandardOutput",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.service.html#StandardOutput=",
       "featureId": "linux:systemd-journal",
@@ -3090,7 +3090,7 @@
       "prompt": "Palvelin reboottasi — haluat edellisen bootin virhelokit. journalctl?",
       "choices": [
         {
-          "text": "journalctl -b -1 — edellisen bootin journal ja virhelokit",
+          "text": "journalctl -b -1 -p err — edellisen bootin virhelokit",
           "correct": true
         },
         {
@@ -3102,11 +3102,11 @@
           "correct": false
         },
         {
-          "text": "journald ei säilytä edellisten boottien merkintöjä levylle",
+          "text": "journalctl -b 0 -p err näyttää edellisen bootin virheet",
           "correct": false
         }
       ],
-      "correctFeedback": "journalctl -b -1 shows previous boot — journalctl man.",
+      "correctFeedback": "-b -1 valitsee edellisen bootin ja -p err rajaa virheisiin. Edelliset bootit ovat tallessa, kun journal on persistentti.",
       "wrongFeedback": "Journal tallentaa boot-id:t. -b -1 on edellinen boot.",
       "sourceRef": "journalctl/boot",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/journalctl.html#-b%20--boot=",
@@ -3160,7 +3160,7 @@
       "prompt": "API-kutsu epäonnistuu TLS:n jälkeen — epäilet palomuurin RST-paketteja. Nopein diagnostiikka?",
       "choices": [
         {
-          "text": "tcpdump tai ss porttiin — näet RST-paketit ja TCP-liikenteen",
+          "text": "tcpdump 'tcp[tcpflags] & tcp-rst != 0' — näet RST-paketit ja lähettäjän",
           "correct": true
         },
         {
@@ -3168,16 +3168,16 @@
           "correct": false
         },
         {
-          "text": "ifconfig up korjaa palomuurin lähettämät RST-vastaukset API:lle",
+          "text": "ss -s näyttää yksittäiset RST-paketit ja niiden lähettäjän",
           "correct": false
         },
         {
-          "text": "reboot palomuuri poistaa RST-paketit ja palauttaa API-yhteyden",
+          "text": "curl -I näyttää palomuurin lähettämät RST-paketit otsakkeina",
           "correct": false
         }
       ],
       "correctFeedback": "Packet capture reveals RST/FIN — tcpdump man.",
-      "wrongFeedback": "ping ei näytä TCP-tason ongelmia. tcpdump/ss näyttää liikenteen.",
+      "wrongFeedback": "ping ei näytä TCP-tason ongelmia eikä ss näytä paketteja. tcpdump näyttää RST-paketit ja niiden lähteen.",
       "sourceRef": "tcpdump(8)",
       "sourceUrl": "https://man7.org/linux/man-pages/man8/tcpdump.8.html",
       "featureId": "linux:tcpdump",
@@ -3265,11 +3265,11 @@
       "prompt": "Portti 443 auki ulkoapäin vaikka palvelu kuuntelee vain localhostia. Mitä tarkistat?",
       "choices": [
         {
-          "text": "nftables/iptables säännöt — palomuuri ohjaa liikennettä eri kuin bind",
+          "text": "nftables/iptables DNAT-säännöt voivat ohjata porttiin ohi bind-osoitteen",
           "correct": true
         },
         {
-          "text": "Vain ss -tlnp riittää kun palvelu kuuntelee localhostia",
+          "text": "hostname -I paljastaa miksi localhost-bind näkyy ulospäin",
           "correct": false
         },
         {
@@ -3510,7 +3510,7 @@
       "prompt": "Kehityskone ei löydä palvelua `printer.local` — mDNS pitäisi toimia. Ensimmäinen tarkistus?",
       "choices": [
         {
-          "text": "avahi-browse -a tai resolve .local — onko palvelu ilmoitettu?",
+          "text": "avahi-browse -a tai avahi-resolve -n printer.local — onko palvelu ilmoitettu?",
           "correct": true
         },
         {
@@ -3518,11 +3518,11 @@
           "correct": false
         },
         {
-          "text": "ping printer.local toimii ilman Avahia kun mDNS on päällä",
+          "text": "nslookup printer.local kysyy nimeä mDNS:n kautta suoraan",
           "correct": false
         },
         {
-          "text": "mDNS toimii vain Windowsissa, ei Linux-kehityskoneella",
+          "text": "Lisää printer.local yrityksen DNS-palvelimelle A-tietueeksi",
           "correct": false
         }
       ],
@@ -3542,27 +3542,27 @@
         "guru",
         "security"
       ],
-      "prompt": "SSH-istunto katkeaa mutta prosessi tapetaan logoutissa — haluat pitää jobin elossa. Mitä?",
+      "prompt": "SSH:lla käynnistetty pitkä job tapetaan uloskirjautuessa (logind KillUserProcesses=yes). Miten pidät sen elossa?",
       "choices": [
         {
-          "text": "systemd-run --user scope tai tmux — logind KillUserProcesses",
+          "text": "loginctl enable-linger + systemd-run --user — job session scopen ulkopuolelle",
           "correct": true
         },
         {
-          "text": "nohup riittää pitämään jobin elossa systemd-logind logoutissa",
+          "text": "nohup riittää — logind ei tapa SIGHUPin ohittavia prosesseja",
           "correct": false
         },
         {
-          "text": "logind ei voi tappaa prosesseja kun SSH-istunto katkeaa",
+          "text": "Pelkkä tmux-istunto säilyy aina logindin siivouksesta huolimatta",
           "correct": false
         },
         {
-          "text": "Disable systemd-logind on suositeltu tapa säilyttää taustajobit",
+          "text": "systemctl disable systemd-logind säilyttää taustajobit turvallisesti",
           "correct": false
         }
       ],
-      "correctFeedback": "logind may kill user processes on logout — logind.conf KillUserProcesses.",
-      "wrongFeedback": "User session scope tai persistent session (tmux) estää yllättävän killin.",
+      "correctFeedback": "KillUserProcesses tappaa koko session scopen, myös nohup- ja tmux-prosessit. Oma user-scope tai user-palvelu elää session ulkopuolella, ja linger pitää user-managerin käynnissä uloskirjautumisen jälkeen.",
+      "wrongFeedback": "nohup ja tmux jäävät session scopeen, joten logind tappaa ne. Siirrä job omaan scopeen tai user-palveluksi ja salli linger.",
       "sourceRef": "logind.conf",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/latest/logind.conf.html",
       "featureId": "linux:logind-session",
@@ -3752,7 +3752,7 @@
         "coworker",
         "security"
       ],
-      "prompt": "Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?",
+      "prompt": "Keskitetty lokipalvelin vaatii syslog-formaatin. journald-konfiguraatio?",
       "choices": [
         {
           "text": "ForwardToSyslog=yes journald.conf:ssa + rsyslog konfiguroitu",
@@ -4077,11 +4077,11 @@
           "correct": true
         },
         {
-          "text": "dpkg -l | grep json näyttää vain asennetut paketit, ei saatavilla olevia",
+          "text": "dpkg -l | grep json listaa myös asentamattomat paketit reposta",
           "correct": false
         },
         {
-          "text": "apt list json listaa kaikki paketit joiden nimi on tasan 'json'",
+          "text": "apt list --installed json etsii kaikista saatavilla olevista paketeista",
           "correct": false
         },
         {
@@ -4108,11 +4108,11 @@
       "prompt": "Ladattu .deb-paketti ei asennu koska riippuvuudet puuttuvat. Miten korjaat?",
       "choices": [
         {
-          "text": "dpkg -i paketti.deb && apt install -f korjaa puuttuvat riippuvuudet jälkikäteen",
+          "text": "apt install ./paketti.deb asentaa paketin ja hakee riippuvuudet reposta",
           "correct": true
         },
         {
-          "text": "apt install paketti.deb asentaa suoraan ja ratkaisee riippuvuudet — ei tarvita dpkg:ta",
+          "text": "dpkg -i paketti.deb hakee puuttuvat riippuvuudet reposta automaattisesti",
           "correct": false
         },
         {
@@ -4124,8 +4124,8 @@
           "correct": false
         }
       ],
-      "correctFeedback": "dpkg asentaa paketin ja apt install -f täyttää puuttuvat riippuvuudet reposta.",
-      "wrongFeedback": "--force-depends jättää systeemin rikkinäiseen tilaan. apt -f korjaa oikein.",
+      "correctFeedback": "apt install ./paketti.deb (huomaa ./) ratkaisee riippuvuudet reposta. Vanhempi tapa: dpkg -i ja sen jälkeen erikseen apt install -f — ei &&-ketjuna, koska dpkg palauttaa virheen.",
+      "wrongFeedback": "dpkg ei hae mitään reposta, ja --force-depends jättää järjestelmän rikkinäiseen tilaan. apt osaa asentaa paikallisen .deb-tiedoston riippuvuuksineen.",
       "sourceRef": "man/dpkg(1)",
       "sourceUrl": "https://manpages.debian.org/bookworm/dpkg/dpkg.1.en.html",
       "featureId": "linux:dpkg-fix",
@@ -4214,19 +4214,19 @@
       "prompt": "NetworkManager ei näytä uusia Wi-Fi-verkkoja GUI:ssa, vaikka radio on päällä. Miten pakotat skannauksen D-Bus-kautta?",
       "choices": [
         {
-          "text": "busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager/Devices/3 org.freedesktop.NetworkManager.Device.Wireless RequestScan a{sv} 0",
+          "text": "Device.Wireless-rajapinnan RequestScan system busilla (busctl call ... a{sv} 0)",
           "correct": true
         },
         {
-          "text": "systemctl restart NetworkManager poistaa Wi-Fi-välimuistin ja käynnistää skannauksen automaattisesti taustalla",
+          "text": "NetworkManager-rajapinnan Scan-metodi session busilla (dbus-send --session)",
           "correct": false
         },
         {
-          "text": "echo scan > /proc/net/wireless — tiedosto on vain luku -tilastoraportti, ei ohjausrajapinta skannaukselle",
+          "text": "echo scan > /proc/net/wireless — kernel käynnistää skannauksen heti",
           "correct": false
         },
         {
-          "text": "dbus-send --session org.freedesktop.NetworkManager /Scan — väärä bus, väärä polku eikä metodia/rajapintaa ole määritelty",
+          "text": "Settings-rajapinnan ReloadConnections system busilla — hakee myös Wi-Fi-listan",
           "correct": false
         }
       ],
@@ -4253,15 +4253,15 @@
           "correct": true
         },
         {
-          "text": "dbus-launch --list-services | grep Network — dbus-launch käynnistää session-busin, ei listaa system-bus-palveluita",
+          "text": "dbus-launch --list-services | grep Network listaa NM:n metodit",
           "correct": false
         },
         {
-          "text": "systemctl cat NetworkManager.service näyttää unit-tiedoston sisällön, ei D-Bus-rajapintaa",
+          "text": "systemctl cat NetworkManager.service listaa NM:n D-Bus-metodit",
           "correct": false
         },
         {
-          "text": "nmcli general permissions listaa polkit-oikeudet, ei D-Bus-metodeja tai propertyja",
+          "text": "nmcli general permissions listaa NM:n D-Bus-metodit ja propertyt",
           "correct": false
         }
       ],
@@ -4288,15 +4288,15 @@
           "correct": true
         },
         {
-          "text": "modprobe btusb reset — ajurin uudelleenlataus ei korjaa laitteen untrusted-tilaa",
+          "text": "modprobe -r btusb && modprobe btusb — nollaa laitteen untrusted-tilan",
           "correct": false
         },
         {
-          "text": "rfkill block bluetooth — sammuttaa radion kokonaan eikä ratkaise parituksen luottamusongelmaa",
+          "text": "rfkill unblock bluetooth — merkitsee paritetut laitteet luotetuiksi",
           "correct": false
         },
         {
-          "text": "systemctl stop org.bluez — pysäyttää koko BlueZ-palvelun eikä ole edes validi unit-nimi",
+          "text": "hciconfig hci0 reset — lisää laitteen BlueZin trusted-listaan",
           "correct": false
         }
       ],
@@ -4355,19 +4355,19 @@
       "prompt": "Skripti kutsuu NetworkManageria dbus-send:llä ja saa `Access denied`. Todennäköisin syy?",
       "choices": [
         {
-          "text": "Polkit estää — käyttäjällä ei ole oikeuksia NM-asetuksiin ilman auth_admin",
+          "text": "Polkit estää — käyttäjällä ei ole oikeutta muuttaa NM-asetuksia",
           "correct": true
         },
         {
-          "text": "Väärä journald-priority-asetus estää dbus-send-kutsun näkymisen lokissa, ei itse kutsua",
+          "text": "dbus-send ei tue system busia — vain session bus on sallittu",
           "correct": false
         },
         {
-          "text": "D-Bus daemon on kaatunut — reboot auttaa aina, vaikka daemon on selvästi käynnissä ja vastaa muille",
+          "text": "journald hylkää kutsun, koska lokitaso on asetettu liian matalaksi",
           "correct": false
         },
         {
-          "text": "dbus-send vaatii aina rootin — nmcli käyttää samaa D-Bus-rajapintaa samoilla polkit-säännöillä",
+          "text": "NetworkManager hyväksyy D-Bus-kutsut vain nmcli-binääriltä",
           "correct": false
         }
       ],
@@ -4394,15 +4394,15 @@
           "correct": true
         },
         {
-          "text": "arp -s 192.168.1.1 eth0 — legacy-komento vaatii MAC-osoitteen parametrina, pelkkä interface ei riitä",
+          "text": "ip route add 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 permanent",
           "correct": false
         },
         {
-          "text": "echo aa:bb > /proc/net/arp — ARP-taulua ei voi muokata suoraan kirjoittamalla /proc-tiedostoon",
+          "text": "ip neigh replace 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 nud stale",
           "correct": false
         },
         {
-          "text": "ip route add 192.168.1.1 dev eth0 — tämä lisää reitin, ei kiinteää MAC-osoitetta ARP-tauluun",
+          "text": "echo '192.168.1.1 aa:bb:cc:dd:ee:ff' >> /proc/net/arp",
           "correct": false
         }
       ],
@@ -4426,23 +4426,23 @@
       "prompt": "Kaksi konetta väittää omistavansa saman IP:n — epäilet ARP-konfliktia. Nopein varmistus lähiverkossa?",
       "choices": [
         {
-          "text": "arping -D -I eth0 10.0.0.50 — gratuitous ARP paljastaa duplikaatin",
+          "text": "arping -D -I eth0 10.0.0.50 — ARP-probe (DAD) paljastaa duplikaatin",
           "correct": true
         },
         {
-          "text": "ip route flush table main — tyhjentää reititystaulun mutta ei paljasta ARP-tason duplikaattia",
+          "text": "ip route flush table main paljastaa ARP-tason IP-duplikaatin",
           "correct": false
         },
         {
-          "text": "ping -f 10.0.0.50 riittää aina — flood-ping testaa vain saavutettavuutta, ei kerro kumpi kone vastaa",
+          "text": "ping -f 10.0.0.50 kertoo kumpi kone vastaa osoitteeseen",
           "correct": false
         },
         {
-          "text": "ss -tan | grep 10.0.0.50 — näyttää TCP-socketit, ei ARP-tason osoitekonfliktia",
+          "text": "ss -tan | grep 10.0.0.50 näyttää kilpailevat MAC-osoitteet",
           "correct": false
         }
       ],
-      "correctFeedback": "arping -D lähettää gratuitous ARP:n — toinen laite vastaa jos IP on jo käytössä.",
+      "correctFeedback": "arping -D (Duplicate Address Detection) lähettää ARP-proben; jos joku vastaa, toinen laite käyttää jo osoitetta.",
       "wrongFeedback": "Ping ei paljasta duplikaattia luotettavasti. ARP-tason työkalu tarvitaan.",
       "sourceRef": "man8/arping",
       "sourceUrl": "https://man7.org/linux/man-pages/man8/arping.8.html",
@@ -4496,19 +4496,19 @@
       "prompt": "`ip neigh show` näyttää gatewaylle tilan FAILED — ping ulospäin ei mene. Ensimmäinen toimenpide?",
       "choices": [
         {
-          "text": "Tarkista L2: kaapeli, VLAN, kytkinportti — sitten ip neigh del + uusi ARP-yritys",
+          "text": "Tarkista L2 (kaapeli, VLAN, kytkinportti), sitten ip neigh del ja uusi yritys",
           "correct": true
         },
         {
-          "text": "Lisää staattinen ip route ilman gateway-MAC:ia — reititystaulu ei korjaa puuttuvaa ARP-vastausta",
+          "text": "Lisää staattinen reitti gatewayhin — reititys korjaa ARP-vastauksen",
           "correct": false
         },
         {
-          "text": "Muuta TCP keepalive-asetuksia — kuljetuskerroksen aikakatkaisut eivät vaikuta ARP-tason FAILED-tilaan",
+          "text": "Nosta TCP keepalive -aikaa, jotta ARP-yritykset ehtivät onnistua",
           "correct": false
         },
         {
-          "text": "Ota UDP pois käytöstä palomuurista — protokollakohtainen sääntö ei liity naapuritaulun ongelmaan",
+          "text": "Salli UDP palomuurissa — ARP-kyselyt kulkevat UDP-porttien kautta",
           "correct": false
         }
       ],
@@ -4773,7 +4773,7 @@
         "coworker",
         "guru"
       ],
-      "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. ss-lippu sisäisiin timer-tietoihin?",
+      "prompt": "Korkea latenssi tuotannossa — epäilet TCP-uudelleenlähetyksiä. Mikä ss-lippu näyttää sisäiset TCP-tiedot (RTT, retrans)?",
       "choices": [
         {
           "text": "ss -ti — TCP info: rtt, retrans, cwnd",
@@ -4824,7 +4824,7 @@
           "correct": false
         },
         {
-          "text": "ss -ltn näyttää UDP-vastaukset — -t ja -l rajaavat näkymän pelkkiin TCP LISTEN-socketeihin",
+          "text": "UDP-vastaus vaatii LISTEN-tilaisen socketin myös asiakkaalla, muuten palomuuri pudottaa sen",
           "correct": false
         }
       ],
@@ -4886,15 +4886,15 @@
           "correct": true
         },
         {
-          "text": "ss -uln dport = :443 — näyttää UDP-kuuntelijat, ei TCP-yhteyksien tilaa",
+          "text": "ss -uln dport = :443 — aktiiviset TCP-yhteydet porttiin",
           "correct": false
         },
         {
-          "text": "ss -ltn state established — -l rajaa pelkkiin LISTEN-socketeihin, joten established-suodatin ei toimi",
+          "text": "ss -ltn state established — aktiiviset yhteydet porttiin",
           "correct": false
         },
         {
-          "text": "ip route get :443 — reititystyökalu ei tunne porttinumeroita eikä listaa socketeja",
+          "text": "ip route get :443 — listaa porttiin 443 avoimet yhteydet",
           "correct": false
         }
       ],
@@ -4934,7 +4934,7 @@
           "correct": false
         }
       ],
-      "correctFeedback": "ProtectSystem=strict tekee /usr, /boot ja /etc read-only — ReadWritePaths avaa vain tarvittavat polut.",
+      "correctFeedback": "ProtectSystem=strict tekee koko tiedostojärjestelmän read-onlyksi (paitsi /dev, /proc ja /sys) — ReadWritePaths= tai StateDirectory= avaa vain tarvittavat polut.",
       "wrongFeedback": "ProtectSystem=strict estää kirjoituksen /var/lib:iin ilman poikkeusta. ReadWritePaths on tarkoitettu tähän.",
       "sourceRef": "systemd.exec/ProtectSystem",
       "sourceUrl": "https://www.freedesktop.org/software/systemd/man/systemd.exec.html#ProtectSystem=",
@@ -5167,7 +5167,7 @@
       "prompt": "Pääsy tuotantoon vain bastionin kautta ja tarvitset paikallisen portin 5432 tietokantaan. SSH-komennot?",
       "choices": [
         {
-          "text": "ssh -J bastion prod ja ssh -L 5432:db.internal:5432 prod (tai ProxyJump + LocalForward ssh_configissa)",
+          "text": "ssh -J bastion -L 5432:db.internal:5432 prod — hyppy ja paikallinen tunneli",
           "correct": true
         },
         {
@@ -5175,11 +5175,11 @@
           "correct": false
         },
         {
-          "text": "scp db.internal:/data . — kopioi koko tietokannan paikallisesti",
+          "text": "ssh -R 5432:db.internal:5432 bastion — avaa paikallisen portin",
           "correct": false
         },
         {
-          "text": "telnet bastion 22 avaa tunnelin automaattisesti",
+          "text": "ssh -D 5432 bastion — ohjaa paikallisen portin suoraan tietokantaan",
           "correct": false
         }
       ],
@@ -5270,7 +5270,7 @@
         "guru",
         "project-lead"
       ],
-      "prompt": "df näyttää levyn täyneksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?",
+      "prompt": "df näyttää levyn täydeksi, mutta du löytää vain puolet käytöstä. Iso lokitiedosto poistettiin rm:llä, mutta palvelu on yhä käynnissä. Mitä tapahtuu?",
       "choices": [
         {
           "text": "Prosessi pitää poistettua tiedostoa yhä auki (lsof +L1 näyttää sen)",

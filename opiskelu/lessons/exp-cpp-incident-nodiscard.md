@@ -15,7 +15,7 @@ Kutsuja unohtaa tarkistaa onnistumisen — bugi näkyy vasta tuotannossa kun ase
 
 ## Ratkaisu
 
-`[[nodiscard]]` pakottaa kääntäjän varoittamaan:
+`[[nodiscard]]` saa kääntäjän varoittamaan, jos paluuarvo ohitetaan:
 
 ```cpp
 [[nodiscard]] bool parseConfig(const std::string& path);
@@ -24,7 +24,7 @@ startup();
 parseConfig("app.conf");  // varoitus: result discarded
 ```
 
-C++17 attribuutti. Voi käyttää myös `[[nodiscard]]`-structia tai enum class -virhekoodeja. Parempi API: `std::expected<Config, Error>` — virheellinen tila ei käännä ilman käsittelyä.
+C++17-attribuutti. Se tuottaa **varoituksen**, ei käännösvirhettä — CI:ssä `-Werror` (tai `/WX`) tekee siitä virheen. Voi käyttää myös `[[nodiscard]]`-structia tai enum class -virhekoodeja. Parempi API: `std::expected<Config, Error>` (C++23) — virhe kulkee tyypissä, ja `[[nodiscard]]` varoittaa, jos tulos ohitetaan.
 
 ## Käytännössä
 

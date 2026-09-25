@@ -2,11 +2,11 @@
 
 ## Tilanne
 
-Sovellus käyttää `QtQuick.Controls`-nappeja, mutta tiimi haluaa yhtenäisen teeman kaikilla alustoilla tai päinvastoin natiivin lookin.
+Sovellus käyttää `QtQuick.Controls`-nappeja, mutta koodissa on pakotettu alustariippumaton tyyli (esim. `Basic` tai `Fusion`), joten napit eivät näytä natiiveilta.
 
 ## Ratkaisu
 
-Valitse tyyli ennen QML-latausta:
+Qt 6:ssa `import QtQuick.Controls` käyttää oletuksena alustan natiivia tyyliä (Windowsilla `Windows`, macOS:llä `macOS`). Poista pakotettu tyyli tai valitse natiivi tyyli ennen QML-latausta:
 
 ```cpp
 #include <QQuickStyle>
@@ -14,17 +14,21 @@ Valitse tyyli ennen QML-latausta:
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QQuickStyle::setStyle("Fusion");  // tai "Material", "Basic", ...
+#ifdef Q_OS_MACOS
+    QQuickStyle::setStyle("macOS");
+#elif defined(Q_OS_WIN)
+    QQuickStyle::setStyle("Windows");
+#endif
     QQmlApplicationEngine engine;
     engine.loadFromModule("MyApp", "Main");
     return app.exec();
 }
 ```
 
-Ympäristömuuttuja: `QT_QUICK_CONTROLS_STYLE=Fusion`.
+Ympäristömuuttuja: `QT_QUICK_CONTROLS_STYLE=Windows`.
 
 ## Käytännössä
 
-`Basic` on kevyt oletus. `Fusion`/`Material`/`Universal` ovat cross-platform-teemoja. Alustakohtainen natiivi tyyli riippuu Qt-versiosta ja alustasta.
+`Basic`, `Fusion`, `Material` ja `Universal` ovat alustariippumattomia teemoja — ne näyttävät samalta kaikkialla, eivät natiiveilta. Natiivit tyylit `macOS` ja `Windows` toimivat vain omalla alustallaan.
 
 [Lue lisää](https://doc.qt.io/qt-6/qtquickcontrols2-styles.html)

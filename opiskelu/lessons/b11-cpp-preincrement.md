@@ -1,16 +1,8 @@
-# Code review kommentoi `for (int i = 0; i < n; i++)` iterator-tyypin sijaan. Miksi pre-increment?
+# Code review kommentoi silmukkaa `for (auto it = c.begin(); it != c.end(); it++)`. Miksi cpp-best-practices suosii `++it`:tä?
 
 ## Tilanne
 
-Silmukka käyttää indeksiä:
-
-```cpp
-for (int i = 0; i < n; ++i) {
-    process(data[i]);
-}
-```
-
-Review-kommentti koskee usein iterator-silmukoita:
+Review-kommentti koskee iterator-silmukkaa:
 
 ```cpp
 for (auto it = v.begin(); it != v.end(); it++) {  // post-increment
@@ -18,7 +10,7 @@ for (auto it = v.begin(); it != v.end(); it++) {  // post-increment
 }
 ```
 
-Post-increment (`it++`) luo **väliaikaisen kopion** iteratorista ennen kasvatusta. Pre-increment (`++it`) kasvattaa suoraan — halvempi monimutkaisille iteratoreille (esim. `std::list`).
+Post-increment (`it++`) palauttaa **väliaikaisen kopion** iteratorin vanhasta arvosta, vaikka sitä ei käytetä. Pre-increment (`++it`) kasvattaa suoraan — ero on todellinen raskaille tai käyttäjän määrittelemille iteraattoreille, joita kääntäjä ei välttämättä optimoi.
 
 ## Ratkaisu
 

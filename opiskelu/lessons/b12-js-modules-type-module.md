@@ -1,4 +1,4 @@
-# Node-projekti käyttää `import` ilman Babelia. package.json-asetus?
+# Node-projektin .js-tiedostot käyttävät `import`-syntaksia. Mikä package.json-asetus kertoo Nodelle eksplisiittisesti, että ne ovat ES-moduuleja?
 
 ## Tilanne
 
@@ -10,13 +10,13 @@ import { createServer } from 'node:http';
 export function start() { /* ... */ }
 ```
 
-Node kaatuu:
+Vanhemmissa Node-versioissa tämä kaatuu:
 
 ```text
 SyntaxError: Cannot use import statement outside a module
 ```
 
-Ilman `"type": "module"` Node tulkitsee `.js`-tiedostot CommonJS:ksi — `import`/`export` eivät kelpaa.
+Ilman `"type"`-kenttää `.js`-tiedostot ovat oletuksena CommonJS:ää. Node 22.7:stä (ja 20.19:stä) alkaen syntaksintunnistus ajaa tiedoston silti ESM:nä, mutta tulostaa varoituksen ja joutuu jäsentämään tiedoston kahdesti. Eksplisiittinen asetus on selkeämpi ja nopeampi.
 
 ## Ratkaisu
 

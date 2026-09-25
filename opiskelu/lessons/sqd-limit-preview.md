@@ -1,4 +1,4 @@
-# Kehität uutta analytiikkakyselyä tuotantataululle. Miten testaat turvallisesti?
+# Kehität uutta analytiikkakyselyä tuotantotaululle. Miten testaat turvallisesti?
 
 ## Tilanne
 

@@ -1,43 +1,41 @@
-# Dialogi sulkeutuu mutta slot kutsutaan yhä — use-after-free. Mitä teit väärin?
+# Dialogi tuhoutuu, mutta sen osoitinta käyttävä lambda-slot kutsutaan yhä — use-after-free. Mitä teit väärin?
 
 ## Tilanne
 
-Asetusdialogi kuuntelee pitkää taustatehtävää:
+Asetusdialogi kuuntelee pitkää taustatehtävää lambdalla:
 
 ```cpp
 void ConfigDialog::apply() {
     m_engine->startMigration();
-    connect(m_engine, &Engine::migrationDone,
-            this, &ConfigDialog::onMigrationDone);
+    connect(m_engine, &Engine::migrationDone, [this] {
+        m_resultLabel->setText(tr("Migraatio valmis"));
+    });
     accept();  // dialog sulkeutuu heti
 }
 ```
 
-`accept()` tuhoaa dialogin (`WA_DeleteOnClose`). Migration valmistuu minuutin päästä ja `onMigrationDone()` kutsutaan tuhoutuneeseen objektiin.
+`accept()` tuhoaa dialogin (`WA_DeleteOnClose`). Migraatio valmistuu minuutin päästä ja lambda käyttää tuhoutuneen dialogin osoitinta.
 
-Kehittäjä oletti parent-child -suhteen suojaavan automaattisesti — mutta `Engine` ei ole dialogin lapsi.
+Kehittäjä oletti Qt:n katkaisevan yhteyden dialogin tuhoutuessa — mutta lambdalla ei ole context-oliota, joten yhteys on sidottu vain `Engine`n elinikään.
 
 ## Ratkaisu
 
-Irrota yhteys tai varmista elinkaari — QObject elinikä hallitsee signaaliyhteyksiä:
+Anna dialogi connectille context-olioksi:
 
 ```cpp
 void ConfigDialog::apply() {
-    connect(m_engine, &Engine::migrationDone,
-            this, &ConfigDialog::onMigrationDone);
-    // älä accept() ennen valmistumista TAI:
-}
-
-ConfigDialog::~ConfigDialog() {
-    disconnect(m_engine, &Engine::migrationDone,
-               this, &ConfigDialog::onMigrationDone);
+    m_engine->startMigration();
+    connect(m_engine, &Engine::migrationDone, this, [this] {
+        m_resultLabel->setText(tr("Migraatio valmis"));
+    });
+    accept();
 }
 ```
 
-Ei disconnect tai parent — QObject elinikä hallitsee signaaliyhteyksiä. Disconnect or destroy receiver — Qt object lifetime. Vaihtoehto: `connect(..., this, slot)` contextina.
+Qt katkaisee yhteydet automaattisesti, kun vastaanottaja tai context-olio tuhoutuu — myös jäsenfunktio-slotit (`connect(..., this, &ConfigDialog::onMigrationDone)`). Ilman context-oliota lambda-yhteys pitää katkaista itse tallentamalla `QMetaObject::Connection` ja kutsumalla `disconnect()`.
 
 ## Käytännössä
 
-Modalinen flow: odota tehtävän valmistumista ennen `accept()`:ia tai siirrä callback vastaanottavaan ikkunaan, joka elää pidempään. `QPointer<ConfigDialog>` workerin puolella on toinen turvakerros.
+Modalinen flow: odota tehtävän valmistumista ennen `accept()`:ia tai siirrä callback ikkunaan, joka elää pidempään. Code reviewissä kolmen argumentin `connect(sender, signal, lambda)` on varoitusmerkki, jos lambda kaappaa osoittimia.
 
 [Lue lisää](https://doc.qt.io/qt-6/signalsandslots.html)

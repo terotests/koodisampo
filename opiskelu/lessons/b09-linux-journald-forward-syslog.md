@@ -1,4 +1,4 @@
-# Keskus-LOKIp palvelin vaatii syslog-formaatin. journald-konfiguraatio?
+# Keskitetty lokipalvelin vaatii syslog-formaatin. journald-konfiguraatio?
 
 ## Tilanne
 

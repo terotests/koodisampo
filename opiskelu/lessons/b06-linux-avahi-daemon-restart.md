@@ -1,4 +1,4 @@
-# Uusi .service-tiedosto lisätty — palvelu ei näy verkossa. Mitä teet ensin?
+# Uusi .service-tiedosto lisätty, mutta palvelu ei näy verkossa. Mitä teet ensin?
 
 ## Tilanne
 

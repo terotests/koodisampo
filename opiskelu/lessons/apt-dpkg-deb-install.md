@@ -24,22 +24,22 @@ sudo dpkg -i myapp_1.2.0_amd64.deb
 
 ## Ratkaisu
 
-Asenna `.deb` ensin `dpkg`:llä, korjaa riippuvuudet sitten APT:llä:
-
-```bash
-sudo dpkg -i myapp_1.2.0_amd64.deb
-sudo apt install -f
-```
-
-`-f` (--fix-broken) täyttää puuttuvat riippuvuudet reposta ja viimeistelee kesken jääneen konfiguroinnin. APT ratkaisee riippuvuuspuut puolestasi — sinun ei tarvitse arvailla pakettinimiä.
-
-Vaihtoehto yhdellä komennolla (suositeltu, jos riippuvuudet ovat repossa):
+Asenna paketti APT:llä, joka hakee riippuvuudet reposta:
 
 ```bash
 sudo apt install ./myapp_1.2.0_amd64.deb
 ```
 
-`apt install ./paketti.deb` hoitaa sekä asennuksen että riippuvuuksien ratkaisun automaattisesti. `dpkg -i` + `apt install -f` on kuitenkin klassinen malli, joka toimii myös vanhemmissa ympäristöissä.
+Huomaa `./` — ilman polkua APT tulkitsee argumentin pakettinimeksi. APT ratkaisee riippuvuuspuut puolestasi, eikä sinun tarvitse arvailla pakettinimiä.
+
+Klassinen kaksivaiheinen malli toimii myös vanhemmissa ympäristöissä, ja sillä korjaat tilanteen, jossa `dpkg -i` on jo jättänyt paketin kesken:
+
+```bash
+sudo dpkg -i myapp_1.2.0_amd64.deb   # päättyy virheeseen
+sudo apt install -f
+```
+
+`-f` (--fix-broken) täyttää puuttuvat riippuvuudet reposta ja viimeistelee kesken jääneen konfiguroinnin. Aja komennot erikseen, älä `&&`-ketjuna: `dpkg -i` palauttaa virhekoodin puuttuvista riippuvuuksista, jolloin `apt install -f` jäisi ajamatta.
 
 ## Käytännössä
 
