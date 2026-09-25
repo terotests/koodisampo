@@ -9,6 +9,7 @@ Ensimmäinen aihealue: **moderni C++** vanhoille C++-konkareille, pohjautuen [C+
 **Corporate NetHack** (ASCII-kartta, NPC-kohtaamiset) julkaistaan GitHub Pagesiin automaattisesti kun `main` päivittyy.
 
 - **Osoite:** https://terotests.github.io/koodisampo/
+- **Koodisampo Terminal:** https://terotests.github.io/koodisampo/terminal/ — pelkät kysymykset vanhan päätteen tyyliin (Ranger + EVG + WebGL, ks. [`terminal/README.md`](terminal/README.md))
 - **Opiskelumateriaali:** https://terotests.github.io/koodisampo/opiskelu/docs/intro/ (Docusaurus, aihepiireittäin)
 - Staattinen build (`web-game/`) — ei Node-backendia; tallennus IndexedDB:hen
 - Erillinen tarinakokeilu: `web/` (React-tarinavalitsin), `npm run dev:stories`
