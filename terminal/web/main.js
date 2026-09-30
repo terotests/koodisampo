@@ -30,6 +30,8 @@ const TITLES = {
   "rust.json": "RUST",
   "scrum-best-practices.json": "SCRUM",
   "space-gnss.json": "AVARUUS JA GNSS",
+  "ai-harness.json": "AI-HARNESSIT",
+  "hot-topics.json": "KUUMAT AIHEET",
   "sql-query-design.json": "SQL-KYSELYT",
   "web-security.json": "WEB-TIETOTURVA",
 };

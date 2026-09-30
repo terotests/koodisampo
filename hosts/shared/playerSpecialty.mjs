@@ -14,6 +14,8 @@ export const PLAYER_SPECIALTY_OPTIONS = [
   { id: "security", label: "Turvallisuus" },
   { id: "robotframework", label: "Robot Framework" },
   { id: "space", label: "Avaruustekniikka / GNSS" },
+  { id: "ai", label: "AI-agentit / harnessit" },
+  { id: "trends", label: "Kuumat aiheet" },
 ];
 
 export function specialtyLabel(id) {

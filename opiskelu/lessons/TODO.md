@@ -2,7 +2,7 @@
 
 > Päivitä: `npm run study:todo` — lukee `content/question-banks/*.json`, merkitsee valmiiksi jos `opiskelu/lessons/{id}.md` on olemassa.
 
-**1261 / 1273** valmis (**99.1 %**).
+**1328 / 1340** valmis (**99.1 %**).
 
 ## Domain-yhteenveto
 
@@ -21,6 +21,8 @@
 | Robot Framework | 21 | 21 | 100 |
 | Rust | 75 | 75 | 100 |
 | Avaruustekniikka | 64 | 64 | 100 |
+| AI-harnessit | 50 | 50 | 100 |
+| Kuumat aiheet | 17 | 17 | 100 |
 | kids | 0 | 12 | 0 |
 
 ## Kaikki aiheet
@@ -1781,6 +1783,127 @@
 | ✅ | 2 | `space-sig-pseudorange` | Mitä tarkoittaa pseudomatka (pseudorange) GNSS:ssä? |
 | ✅ | 2 | `space-sig-trilateration` | Miksi 3D-GNSS-paikkaan tarvitaan vähintään neljä satelliittia, ei kolme? |
 | ✅ | 3 | `space-sig-tropo` | Mikä on troposfääriviive GNSS:ssä? |
+
+### AI-harnessit (50/50)
+
+#### Kontekstin hallinta `ai-context` (9/9)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `ai-context-caching` | Miksi agentin työkalumäärityksiä tai system promptia ei kannata muuttaa… |
+| ✅ | 3 | `ai-context-clear-results` | Mikä on turvallisin tapa vapauttaa kontekstia pitkässä agenttisessiossa? |
+| ✅ | 3 | `ai-context-compaction` | Pitkä agenttisessio lähestyy kontekstiikkunan rajaa. Mitä compaction ta… |
+| ✅ | 2 | `ai-context-jit` | Koodausagentti työskentelee isossa repossa. Mikä on toimiva kontekstist… |
+| ✅ | 1 | `ai-context-memory-file` | Mikä on AGENTS.md- tai CLAUDE.md-tiedoston tarkoitus repossa? |
+| ✅ | 2 | `ai-context-rag` | Mitä RAG (retrieval-augmented generation) tarkoittaa? |
+| ✅ | 2 | `ai-context-rot` | Miksi agentin kontekstia ei kannata täyttää kaikella mahdollisella tied… |
+| ✅ | 3 | `ai-context-skills` | Agent Skills -mallissa agentilla on kymmeniä taitoja. Miten ne pidetään… |
+| ✅ | 3 | `ai-context-system-prompt` | Millainen system prompt toimii agentille yleensä parhaiten? |
+
+#### Evaluointi ja observability `ai-evals` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `ai-evals-cost` | Mitkä mittarit kertovat parhaiten agentin kustannustehokkuudesta tuotan… |
+| ✅ | 3 | `ai-evals-end-state` | Miten koodausagentin suoritusta kannattaa ensisijaisesti arvioida? |
+| ✅ | 3 | `ai-evals-llm-judge` | Käytät LLM:ää arvioimaan agentin vastauksia (LLM-as-judge). Mikä parant… |
+| ✅ | 3 | `ai-evals-overfit` | Tiimi on viilannut promptia kuukauden, kunnes kaikki 30 eval-tapausta m… |
+| ✅ | 4 | `ai-evals-pass-k` | Agentti ratkaisee tehtävän 70 % yrityksistä. Mitä pass^k (kaikki k yrit… |
+| ✅ | 2 | `ai-evals-swebench` | Mitä SWE-bench mittaa? |
+| ✅ | 2 | `ai-evals-tracing` | Tuotannossa agentti epäonnistuu satunnaisesti. Mitä harnessin pitäisi t… |
+| ✅ | 2 | `ai-evals-why` | Miksi agentille rakennetaan evaluaatiojoukko (evals) ennen promptien vi… |
+
+#### Agenttisilmukka `ai-loop` (9/9)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `ai-loop-basic` | Mikä on agenttisilmukan (agent loop) perusrakenne? |
+| ✅ | 3 | `ai-loop-code-vs-model` | Mikä kannattaa toteuttaa harnessissa koodina eikä jättää mallin ohjeide… |
+| ✅ | 1 | `ai-loop-harness-def` | Mitä 'harness' tarkoittaa AI-agentin yhteydessä? |
+| ✅ | 3 | `ai-loop-max-tokens` | Vastaus katkesi stop_reason = max_tokens kesken työkalukutsun syötteen.… |
+| ✅ | 3 | `ai-loop-parallel-results` | Malli pyysi samassa vastauksessa kahta työkalukutsua. Miten tulokset pa… |
+| ✅ | 2 | `ai-loop-retry` | API palauttaa 429- tai 529-virheen (rate limit / ylikuorma). Mikä on oi… |
+| ✅ | 2 | `ai-loop-runaway` | Agentti yrittää samaa epäonnistuvaa komentoa kymmeniä kertoja. Mikä suo… |
+| ✅ | 3 | `ai-loop-streaming` | Harness striimaa mallin vastauksen. Milloin työkalukutsun voi suorittaa? |
+| ✅ | 2 | `ai-loop-tool-error` | Työkalu kaatuu poikkeukseen (tiedostoa ei löydy). Miten harnessin kanna… |
+
+#### Subagentit ja orkestrointi `ai-orchestration` (7/7)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `ai-orch-evaluator` | Mitä evaluator–optimizer-malli tarkoittaa? |
+| ✅ | 2 | `ai-orch-handoff` | Pääagentti delegoi tehtävän subagentille viestillä 'korjaa se bugi jost… |
+| ✅ | 3 | `ai-orch-isolation` | Kolme rinnakkaista koodausagenttia muokkaa samaa repoa ja sotkee toiste… |
+| ✅ | 3 | `ai-orch-long-running` | Agentti tekee usean tunnin tehtävää, joka ei mahdu yhteen kontekstiin. … |
+| ✅ | 2 | `ai-orch-subagent` | Mikä on subagentin tärkein hyöty harnessissa? |
+| ✅ | 3 | `ai-orch-when-multi` | Milloin moniagenttiarkkitehtuuri (orkestroija + rinnakkaiset työntekijä… |
+| ✅ | 2 | `ai-orch-workflow-vs-agent` | Mikä ero on 'workflowlla' ja 'agentilla' Anthropicin Building effective… |
+
+#### Turvallisuus ja oikeudet `ai-safety` (8/8)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `ai-safety-hooks` | Miksi hook (esim. PreToolUse) on parempi kuin promptin ohje 'aja format… |
+| ✅ | 3 | `ai-safety-mcp-trust` | Tiimi haluaa asentaa netistä löytyneen MCP-palvelimen agentilleen. Mitä… |
+| ✅ | 3 | `ai-safety-output-handling` | Sovellus ajaa mallin generoiman SQL-kyselyn suoraan tuotantokantaan. Mi… |
+| ✅ | 2 | `ai-safety-permissions` | Miten agentin shell-komentojen oikeudet kannattaa järjestää? |
+| ✅ | 3 | `ai-safety-prompt-injection` | Agentti lukee verkkosivun, jossa lukee 'ohita aiemmat ohjeet ja lähetä … |
+| ✅ | 3 | `ai-safety-sandbox` | Agentti ajaa itse kirjoittamaansa koodia. Missä se kannattaa ajaa? |
+| ✅ | 3 | `ai-safety-secrets` | Agentin pitää kutsua API:a, joka vaatii salaisen avaimen. Mikä on turva… |
+| ✅ | 4 | `ai-safety-trifecta` | Mitkä kolme ominaisuutta yhdessä tekevät agentista alttiin tietovuodoll… |
+
+#### Työkalut ja MCP `ai-tools` (9/9)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `ai-tools-consolidate` | Agentilla on 40 pientä API-kääretyökalua ja se valitsee usein väärin. M… |
+| ✅ | 2 | `ai-tools-description` | Mikä tekee työkalun kuvauksesta (description) hyvän agentin kannalta? |
+| ✅ | 3 | `ai-tools-mcp-primitives` | MCP-palvelin tarjoaa tools-, resources- ja prompts-primitiivejä. Mikä e… |
+| ✅ | 3 | `ai-tools-mcp-transport` | Mitkä ovat MCP:n standardit kuljetuskerrokset (transports)? |
+| ✅ | 1 | `ai-tools-mcp-what` | Mikä on MCP (Model Context Protocol)? |
+| ✅ | 2 | `ai-tools-output-size` | Hakutyökalu palauttaa 200 000 merkkiä lokia yhdellä kutsulla. Mikä on p… |
+| ✅ | 2 | `ai-tools-schema` | Miten työkalun parametrit määritellään Messages API:ssa, ja mitä harnes… |
+| ✅ | 3 | `ai-tools-side-effects` | Agentilla on send_invoice-työkalu. Mikä on tärkein suunnitteluperiaate? |
+| ✅ | 3 | `ai-tools-structured` | Miten varmistetaan parhaiten, että malli tuottaa skeeman mukaista JSONi… |
+
+### Kuumat aiheet (17/17)
+
+#### Infra ja data `trends-infra` (5/5)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `trend-ebpf` | Mikä tekee eBPF:stä turvallisen tavan ajaa omaa koodia Linux-ytimessä? |
+| ✅ | 3 | `trend-gateway-api` | Mikä on Kubernetesin Gateway API suhteessa vanhaan Ingress-resurssiin? |
+| ✅ | 2 | `trend-otel` | Mikä on OpenTelemetryn tarkoitus? |
+| ✅ | 3 | `trend-uuidv7` | PostgreSQL 18 toi uuidv7()-funktion. Miksi UUIDv7 on B-tree-pääavaimena… |
+| ✅ | 2 | `trend-valkey` | Miksi Valkey syntyi Redisin haarana vuonna 2024? |
+
+#### Kielet ja työkalut `trends-languages` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 4 | `trend-cpp26-reflection` | Mitä C++26:een hyväksytty staattinen reflektio (P2996) mahdollistaa? |
+| ✅ | 3 | `trend-python-nogil` | Mitä Pythonin free-threaded-käännös (PEP 703) muuttaa? |
+| ✅ | 2 | `trend-rust-kernel` | Miksi Linux-ytimeen hyväksytään nykyään Rustilla kirjoitettuja ajureita? |
+| ✅ | 1 | `trend-uv` | Mikä on uv Python-kehityksessä? |
+
+#### Tietoturvan uudet käytännöt `trends-security` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 2 | `trend-passkeys` | Miksi passkeyt (WebAuthn/FIDO2) kestävät kalastelua paremmin kuin salas… |
+| ✅ | 4 | `trend-pqc-mlkem` | Miksi TLS-yhteyksissä otetaan jo nyt käyttöön hybridiavaintenvaihto X25… |
+| ✅ | 3 | `trend-sbom-cra` | EU:n Cyber Resilience Act velvoittaa digitaalisten tuotteiden valmistaj… |
+| ✅ | 3 | `trend-sigstore` | Miten Sigstoren 'keyless'-allekirjoitus toimii ilman pitkäikäistä yksit… |
+
+#### Web ja JavaScript `trends-web` (4/4)
+
+| | diff | id | kysymys |
+|---|------|-----|---------|
+| ✅ | 3 | `trend-crdt` | Local-first-sovelluksessa kaksi käyttäjää muokkaa samaa dokumenttia off… |
+| ✅ | 2 | `trend-node-ts` | Node.js osaa nykyään ajaa .ts-tiedostoja suoraan. Mitä se käytännössä t… |
+| ✅ | 2 | `trend-temporal` | Mitä JavaScriptin Temporal-API korjaa verrattuna Date-olioon? |
+| ✅ | 4 | `trend-wasm-component` | Mitä WebAssemblyn Component Model ja WIT tuovat pelkkiin Wasm-moduuleih… |
 
 ### kids (0/12)
 

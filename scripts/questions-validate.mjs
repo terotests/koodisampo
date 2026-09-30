@@ -39,6 +39,10 @@ const TOPIC_DOMAINS = {
   "space-satellites": "space", "space-gnss": "space", "space-signals": "space",
   "space-positioning": "space", "space-datums": "space", "space-maps": "space",
   "space-applications": "space",
+  "ai-loop": "ai", "ai-tools": "ai", "ai-context": "ai",
+  "ai-safety": "ai", "ai-evals": "ai", "ai-orchestration": "ai",
+  "trends-security": "trends", "trends-web": "trends", "trends-infra": "trends",
+  "trends-languages": "trends",
 };
 
 const ids = new Set();
