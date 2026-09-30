@@ -1,0 +1,603 @@
+{
+  "id": "hot-topics",
+  "domain": "trends",
+  "source": "https://github.com/terotests/koodisampo",
+  "questions": [
+    {
+      "id": "trend-passkeys",
+      "chapter": "trends-security",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "security",
+        "ceo"
+      ],
+      "prompt": "Miksi passkeyt (WebAuthn/FIDO2) kestävät kalastelua paremmin kuin salasana + SMS-koodi?",
+      "choices": [
+        {
+          "text": "Avain on sidottu sivuston domainiin, eikä se toimi väärennetyllä sivulla",
+          "correct": true
+        },
+        {
+          "text": "Passkey on pidempi salasana, joka tallennetaan salattuna selaimen välimuistiin",
+          "correct": false
+        },
+        {
+          "text": "Palvelin lähettää passkeyn sähköpostilla jokaisen kirjautumisen yhteydessä",
+          "correct": false
+        },
+        {
+          "text": "Passkey vaihtuu 30 sekunnin välein samalla tavalla kuin TOTP-koodi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Yksityinen avain ei poistu laitteelta, ja selain sitoo allekirjoituksen oikeaan origin-osoitteeseen (RP ID).",
+      "wrongFeedback": "Passkey ei ole salasana eikä aikakoodi. Kalastelusivulle käyttäjä voi syöttää koodin, mutta passkey ei toimi väärällä domainilla.",
+      "featureId": "trends:passkeys",
+      "featurePoints": 2,
+      "sourceUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API",
+      "sourceRef": "trends/passkeys"
+    },
+    {
+      "id": "trend-pqc-mlkem",
+      "chapter": "trends-security",
+      "domain": "trends",
+      "difficulty": 4,
+      "audiences": [
+        "security",
+        "guru"
+      ],
+      "prompt": "Miksi TLS-yhteyksissä otetaan jo nyt käyttöön hybridiavaintenvaihto X25519 + ML-KEM?",
+      "choices": [
+        {
+          "text": "ML-KEM on nopeampi kuin AES, joten se nopeuttaa sivujen latausta mobiilissa",
+          "correct": false
+        },
+        {
+          "text": "Tallennettu liikenne voidaan murtaa myöhemmin kvanttitietokoneella",
+          "correct": true
+        },
+        {
+          "text": "X25519 on jo murrettu tavallisilla tietokoneilla, joten se korvataan heti",
+          "correct": false
+        },
+        {
+          "text": "Selaimet vaativat ML-KEM:n, jotta HTTP/3 toimii UDP:n yli",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "ML-KEM (NIST FIPS 203, 2024) on kvanttiturvallinen avainkapselointi. Hybridi pitää turvan, vaikka toinen osa pettäisi.",
+      "wrongFeedback": "X25519 on edelleen turvallinen klassisia hyökkäyksiä vastaan. Syy on tulevaisuuden uhka tallennetulle liikenteelle.",
+      "featureId": "trends:pqc",
+      "featurePoints": 4,
+      "sourceUrl": "https://csrc.nist.gov/pubs/fips/203/final",
+      "sourceRef": "trends/pqc"
+    },
+    {
+      "id": "trend-sbom-cra",
+      "chapter": "trends-security",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "security",
+        "project-lead",
+        "ceo"
+      ],
+      "prompt": "EU:n Cyber Resilience Act velvoittaa digitaalisten tuotteiden valmistajat hallitsemaan komponenttejaan. Mikä on SBOM?",
+      "choices": [
+        {
+          "text": "Tietoturvasertifikaatti, jonka EU myöntää hyväksytylle ohjelmistolle",
+          "correct": false
+        },
+        {
+          "text": "Lähdekoodin salausmenetelmä, joka estää komponenttien kopioinnin",
+          "correct": false
+        },
+        {
+          "text": "Koneluettava luettelo ohjelmiston komponenteista ja versioista",
+          "correct": true
+        },
+        {
+          "text": "Kuukausittainen raportti tuotteen käyttäjämääristä viranomaisille",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "SBOMin avulla nähdään heti, mitkä tuotteet käyttävät haavoittuvaa kirjastoa (vrt. Log4Shell).",
+      "wrongFeedback": "SBOM ei ole sertifikaatti eikä salaus. Se on komponenttiluettelo, jonka työkalut osaavat lukea.",
+      "featureId": "trends:sbom",
+      "featurePoints": 3,
+      "sourceUrl": "https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act",
+      "sourceRef": "trends/sbom"
+    },
+    {
+      "id": "trend-sigstore",
+      "chapter": "trends-security",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "security",
+        "coworker"
+      ],
+      "prompt": "Miten Sigstoren 'keyless'-allekirjoitus toimii ilman pitkäikäistä yksityistä avainta?",
+      "choices": [
+        {
+          "text": "Allekirjoitus tehdään ilman kryptografiaa pelkällä commitin SHA-tiivisteellä",
+          "correct": false
+        },
+        {
+          "text": "Avain tallennetaan GitHubiin salaisuutena, ja palvelu allekirjoittaa sillä automaattisesti",
+          "correct": false
+        },
+        {
+          "text": "Paketit allekirjoitetaan käsin PGP:llä, mutta avainta ei tarvitse julkaista",
+          "correct": false
+        },
+        {
+          "text": "OIDC-identiteetti antaa lyhytikäisen sertifikaatin, merkintä julkiseen lokiin",
+          "correct": true
+        }
+      ],
+      "correctFeedback": "Fulcio myöntää minuuttien ikäisen sertifikaatin identiteetille (esim. CI-työnkulku), Rekor tallentaa merkinnän.",
+      "wrongFeedback": "Keyless ei tarkoita, ettei kryptografiaa ole. Ideana on, ettei pitkäikäistä avainta tarvitse suojata tai vuotaa.",
+      "featureId": "trends:sigstore",
+      "featurePoints": 3,
+      "sourceUrl": "https://docs.sigstore.dev/",
+      "sourceRef": "trends/sigstore"
+    },
+    {
+      "id": "trend-temporal",
+      "chapter": "trends-web",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mitä JavaScriptin Temporal-API korjaa verrattuna Date-olioon?",
+      "choices": [
+        {
+          "text": "Muuttumattomat tyypit ja eksplisiittiset aikavyöhykkeet",
+          "correct": true
+        },
+        {
+          "text": "Temporal on Date-olion uusi nimi, ja API on muuten täysin sama",
+          "correct": false
+        },
+        {
+          "text": "Temporal lisää Date-olioon millisekuntia tarkemman ajan, mutta ei muuta muuta",
+          "correct": false
+        },
+        {
+          "text": "Temporal toimii vain Node.js:ssä, koska selaimissa ei ole aikavyöhyketietoja",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Date on muuttuva ja sekoittaa paikallisen ajan ja UTC:n. Temporal erottaa kalenteripäivän, hetken ja vyöhykeajan omiksi tyypeikseen.",
+      "wrongFeedback": "Temporal on uusi API eikä nimenvaihto. Se sisältää myös nanosekuntitarkkuuden ja kalenterituen, ja se toimii selaimissa.",
+      "featureId": "trends:temporal",
+      "featurePoints": 2,
+      "sourceUrl": "https://tc39.es/proposal-temporal/docs/",
+      "sourceRef": "trends/temporal"
+    },
+    {
+      "id": "trend-node-ts",
+      "chapter": "trends-web",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Node.js osaa nykyään ajaa .ts-tiedostoja suoraan. Mitä se käytännössä tekee?",
+      "choices": [
+        {
+          "text": "Ajaa koko tsc-kääntäjän taustalla ja kieltäytyy ajamasta, jos tyyppivirheitä on",
+          "correct": false
+        },
+        {
+          "text": "Poistaa tyyppimerkinnät ja ajaa JavaScriptin ilman tyyppitarkistusta",
+          "correct": true
+        },
+        {
+          "text": "Kääntää TypeScriptin suoraan konekieleksi, joten koodi on nopeampaa kuin JS",
+          "correct": false
+        },
+        {
+          "text": "Muuntaa tiedostot CommonJS-muotoon ja tallentaa ne .js-tiedostoiksi levylle",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Tyyppitarkistus jää edelleen tsc:lle (esim. CI:ssä). Node vain ohittaa tyypit.",
+      "wrongFeedback": "Node ei tarkista tyyppejä eikä käännä konekieleksi. Tyypit poistetaan ennen suoritusta.",
+      "featureId": "trends:node-ts",
+      "featurePoints": 2,
+      "sourceUrl": "https://nodejs.org/api/typescript.html",
+      "sourceRef": "trends/node-ts"
+    },
+    {
+      "id": "trend-wasm-component",
+      "chapter": "trends-web",
+      "domain": "trends",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Mitä WebAssemblyn Component Model ja WIT tuovat pelkkiin Wasm-moduuleihin verrattuna?",
+      "choices": [
+        {
+          "text": "Mahdollisuuden ajaa Wasmia ilman virtuaalikonetta suoraan prosessorilla",
+          "correct": false
+        },
+        {
+          "text": "DOM-rajapinnan suoraan Wasmiin, jolloin JavaScriptiä ei tarvita selaimessa",
+          "correct": false
+        },
+        {
+          "text": "Kieliriippumattomat WIT-rajapinnat komponenttien välille rikkain tyypein",
+          "correct": true
+        },
+        {
+          "text": "Automaattisen roskienkeräyksen, joka puuttui kaikista Wasm-toteutuksista",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Ydinwasm tuntee vain numerot ja lineaarisen muistin. WIT kuvaa merkkijonot, listat, recordit ja resurssit.",
+      "wrongFeedback": "Component Model ei poista ajoympäristöä eikä tuo DOMia. GC on erillinen Wasm-laajennus.",
+      "featureId": "trends:wasm-component",
+      "featurePoints": 4,
+      "sourceUrl": "https://component-model.bytecodealliance.org/",
+      "sourceRef": "trends/wasm-component"
+    },
+    {
+      "id": "trend-crdt",
+      "chapter": "trends-web",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Local-first-sovelluksessa kaksi käyttäjää muokkaa samaa dokumenttia offline-tilassa. Mitä CRDT:t ratkaisevat?",
+      "choices": [
+        {
+          "text": "Ne estävät offline-muokkauksen, kunnes palvelinyhteys palaa",
+          "correct": false
+        },
+        {
+          "text": "Ne valitsevat aina uusimman aikaleiman ja hylkäävät toisen käyttäjän muutoksen kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Ne salaavat dokumentin niin, ettei kukaan muu näe keskeneräisiä muutoksia",
+          "correct": false
+        },
+        {
+          "text": "Samanaikaiset muutokset yhdistyvät samaan tilaan ilman lukitusta",
+          "correct": true
+        }
+      ],
+      "correctFeedback": "Conflict-free Replicated Data Type: yhdistämisoperaatio on kommutatiivinen, joten järjestyksellä ei ole väliä.",
+      "wrongFeedback": "Last-writer-wins koko dokumentille hukkaa työtä. CRDT yhdistää muutokset hienojakoisesti.",
+      "featureId": "trends:crdt",
+      "featurePoints": 3,
+      "sourceUrl": "https://crdt.tech/",
+      "sourceRef": "trends/crdt"
+    },
+    {
+      "id": "trend-ebpf",
+      "chapter": "trends-infra",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Mikä tekee eBPF:stä turvallisen tavan ajaa omaa koodia Linux-ytimessä?",
+      "choices": [
+        {
+          "text": "Verifier todistaa ohjelman päättyväksi ja muistiturvalliseksi",
+          "correct": true
+        },
+        {
+          "text": "eBPF-ohjelmat ajetaan käyttäjätilassa, joten ne eivät koske ytimeen",
+          "correct": false
+        },
+        {
+          "text": "Ohjelmat on aina allekirjoitettava Linuxin ylläpitäjien avaimella",
+          "correct": false
+        },
+        {
+          "text": "eBPF on ytimen moduuli, joka käännetään uudelleen jokaiseen kerneliversioon",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Verifier + JIT: ohjelma todistetaan päättyväksi ja muistiturvalliseksi, sitten se käännetään natiivikoodiksi.",
+      "wrongFeedback": "eBPF ajetaan ytimessä mutta eristetysti. Toisin kuin moduulit, se ei voi kaataa ydintä.",
+      "featureId": "trends:ebpf",
+      "featurePoints": 3,
+      "sourceUrl": "https://ebpf.io/what-is-ebpf/",
+      "sourceRef": "trends/ebpf"
+    },
+    {
+      "id": "trend-otel",
+      "chapter": "trends-infra",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru",
+        "project-lead"
+      ],
+      "prompt": "Mikä on OpenTelemetryn tarkoitus?",
+      "choices": [
+        {
+          "text": "Kaupallinen APM-palvelu, joka korvaa Prometheuksen ja Grafanan",
+          "correct": false
+        },
+        {
+          "text": "Avoin standardi jälkien, metriikoiden ja lokien keräämiseen",
+          "correct": true
+        },
+        {
+          "text": "Linuxin ytimen moduuli, joka mittaa verkkoliikenteen viiveitä",
+          "correct": false
+        },
+        {
+          "text": "Tietokanta, johon kaikki lokit tallennetaan pysyvästi",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Instrumentoi kerran OTel-SDK:lla ja lähetä data mihin tahansa taustajärjestelmään OTLP:llä.",
+      "wrongFeedback": "OpenTelemetry ei ole tallennus- tai visualisointipalvelu. Se on keruu- ja siirtostandardi.",
+      "featureId": "trends:otel",
+      "featurePoints": 2,
+      "sourceUrl": "https://opentelemetry.io/docs/what-is-opentelemetry/",
+      "sourceRef": "trends/otel"
+    },
+    {
+      "id": "trend-uuidv7",
+      "chapter": "trends-infra",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "PostgreSQL 18 toi uuidv7()-funktion. Miksi UUIDv7 on B-tree-pääavaimena parempi kuin satunnainen UUIDv4?",
+      "choices": [
+        {
+          "text": "UUIDv7 on 64-bittinen, joten se vie puolet vähemmän tilaa kuin v4",
+          "correct": false
+        },
+        {
+          "text": "UUIDv7 on salattu, joten se ei paljasta mitään luontihetkestä",
+          "correct": false
+        },
+        {
+          "text": "Aikaleima alussa: uudet avaimet menevät indeksin loppuun",
+          "correct": true
+        },
+        {
+          "text": "UUIDv7 on taattu peräkkäinen kokonaisluku kuten SERIAL-sarake",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Aikajärjestetyt avaimet parantavat välimuistin osumia ja vähentävät sivujakoja sekä WAL-kuormaa.",
+      "wrongFeedback": "UUIDv7 on 128-bittinen kuten muutkin UUIDit, ja sen aikaleima on luettavissa. Se ei ole peräkkäinen luku.",
+      "featureId": "trends:uuidv7",
+      "featurePoints": 3,
+      "sourceUrl": "https://www.postgresql.org/docs/current/functions-uuid.html",
+      "sourceRef": "trends/uuidv7"
+    },
+    {
+      "id": "trend-gateway-api",
+      "chapter": "trends-infra",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Mikä on Kubernetesin Gateway API suhteessa vanhaan Ingress-resurssiin?",
+      "choices": [
+        {
+          "text": "Pilvipalvelun maksullinen lisäosa, joka korvaa Servicet kokonaan",
+          "correct": false
+        },
+        {
+          "text": "Uusi nimi kube-proxylle, joka hoitaa podien välisen liikenteen",
+          "correct": false
+        },
+        {
+          "text": "Ingressin vanhentunut edeltäjä, jota ei enää kehitetä",
+          "correct": false
+        },
+        {
+          "text": "Ingressin seuraaja: roolipohjaiset resurssit, parempi reititys",
+          "correct": true
+        }
+      ],
+      "correctFeedback": "Gateway API erottaa infraston (Gateway) ja sovellustiimien reitit (HTTPRoute) sekä tukee otsakepohjaista reititystä ja painotuksia ilman annotaatiosotkua.",
+      "wrongFeedback": "Gateway API on Kubernetesin virallinen, uudempi API eikä kube-proxy tai pilvipalvelu.",
+      "featureId": "trends:gateway-api",
+      "featurePoints": 3,
+      "sourceUrl": "https://gateway-api.sigs.k8s.io/",
+      "sourceRef": "trends/gateway-api"
+    },
+    {
+      "id": "trend-valkey",
+      "chapter": "trends-infra",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "project-lead"
+      ],
+      "prompt": "Miksi Valkey syntyi Redisin haarana vuonna 2024?",
+      "choices": [
+        {
+          "text": "Redis vaihtoi rajoittavaan lisenssiin, ja yhteisö jatkoi avointa versiota",
+          "correct": true
+        },
+        {
+          "text": "Redis lopetti kehityksen kokonaan, ja Valkey on sen virallinen jatko",
+          "correct": false
+        },
+        {
+          "text": "Valkey on Redisin uudelleenkirjoitus Rustilla suorituskyvyn parantamiseksi",
+          "correct": false
+        },
+        {
+          "text": "Redis ei tukenut klusterointia, joten Valkey tehtiin sitä varten",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Lisenssimuutos (RSAL/SSPL) sai pilvitoimittajat ja ylläpitäjiä perustamaan Valkeyn Redis 7.2.4:n pohjalta.",
+      "wrongFeedback": "Redis jatkoi kehitystä, ja myöhemmin se lisäsi AGPL-vaihtoehdon. Valkey on C:llä kirjoitettu haara, ei uudelleenkirjoitus.",
+      "featureId": "trends:valkey",
+      "featurePoints": 2,
+      "sourceUrl": "https://valkey.io/",
+      "sourceRef": "trends/valkey"
+    },
+    {
+      "id": "trend-python-nogil",
+      "chapter": "trends-languages",
+      "domain": "trends",
+      "difficulty": 3,
+      "audiences": [
+        "guru",
+        "coworker"
+      ],
+      "prompt": "Mitä Pythonin free-threaded-käännös (PEP 703) muuttaa?",
+      "choices": [
+        {
+          "text": "Python-koodi käännetään automaattisesti Rustiksi rinnakkaisuuden takia",
+          "correct": false
+        },
+        {
+          "text": "GIL voidaan poistaa, jolloin säikeet ajavat Pythonia rinnakkain",
+          "correct": true
+        },
+        {
+          "text": "asyncio korvaa säikeet kokonaan, ja threading-moduuli poistetaan",
+          "correct": false
+        },
+        {
+          "text": "Jokainen säie ajetaan omassa prosessissaan multiprocessingin tapaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Python 3.13 toi kokeellisen version, ja 3.14:ssä free-threaded-käännös on virallisesti tuettu (PEP 779).",
+      "wrongFeedback": "Säikeet pysyvät säikeinä samassa prosessissa, eikä threadingia tai asyncioita poisteta.",
+      "featureId": "trends:python-nogil",
+      "featurePoints": 3,
+      "sourceUrl": "https://peps.python.org/pep-0703/",
+      "sourceRef": "trends/python-nogil"
+    },
+    {
+      "id": "trend-uv",
+      "chapter": "trends-languages",
+      "domain": "trends",
+      "difficulty": 1,
+      "audiences": [
+        "coworker",
+        "secretary"
+      ],
+      "prompt": "Mikä on uv Python-kehityksessä?",
+      "choices": [
+        {
+          "text": "Pythonin uusi virallinen tulkki, joka korvaa CPythonin",
+          "correct": false
+        },
+        {
+          "text": "Web-palvelin, joka ajaa Python-sovelluksia UV-valolla kovetetussa kontissa",
+          "correct": false
+        },
+        {
+          "text": "Rustilla tehty nopea paketin- ja projektinhallintatyökalu",
+          "correct": true
+        },
+        {
+          "text": "Linter, joka tarkistaa koodin tyylin PEP 8:n mukaan",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "uv (Astral) asentaa paketit, hallitsee virtuaaliympäristöt, Python-versiot ja lukkotiedoston yhdellä työkalulla.",
+      "wrongFeedback": "uv ei ole tulkki eikä linter (Astralin linter on Ruff). Se on paketinhallinta.",
+      "featureId": "trends:uv",
+      "featurePoints": 1,
+      "sourceUrl": "https://docs.astral.sh/uv/",
+      "sourceRef": "trends/uv"
+    },
+    {
+      "id": "trend-rust-kernel",
+      "chapter": "trends-languages",
+      "domain": "trends",
+      "difficulty": 2,
+      "audiences": [
+        "coworker",
+        "guru"
+      ],
+      "prompt": "Miksi Linux-ytimeen hyväksytään nykyään Rustilla kirjoitettuja ajureita?",
+      "choices": [
+        {
+          "text": "Rust-koodi on aina nopeampaa kuin C, joten ydin nopeutuu merkittävästi",
+          "correct": false
+        },
+        {
+          "text": "C-kääntäjien tuki loppuu, joten koko ydin kirjoitetaan uudelleen Rustilla",
+          "correct": false
+        },
+        {
+          "text": "Rust poistaa tarpeen testata ajureita, koska kääntäjä takaa oikeellisuuden",
+          "correct": false
+        },
+        {
+          "text": "Muistiturvallisuus: Rust estää C:n yleisiä muistivirheitä käännösaikana",
+          "correct": true
+        }
+      ],
+      "correctFeedback": "Use-after-free ja puskurien ylivuodot ovat yleisimpiä ydinhaavoittuvuuksia. Rustin omistajuusmalli estää niitä.",
+      "wrongFeedback": "Ydintä ei kirjoiteta uudelleen, ja Rust ei poista logiikkavirheitä eikä testauksen tarvetta.",
+      "featureId": "trends:rust-kernel",
+      "featurePoints": 2,
+      "sourceUrl": "https://docs.kernel.org/rust/index.html",
+      "sourceRef": "trends/rust-kernel"
+    },
+    {
+      "id": "trend-cpp26-reflection",
+      "chapter": "trends-languages",
+      "domain": "trends",
+      "difficulty": 4,
+      "audiences": [
+        "guru"
+      ],
+      "prompt": "Mitä C++26:een hyväksytty staattinen reflektio (P2996) mahdollistaa?",
+      "choices": [
+        {
+          "text": "Tyyppien tutkimisen käännösaikana (^^T) ja koodin generoinnin",
+          "correct": true
+        },
+        {
+          "text": "Ajonaikaisen tyyppitiedon lisäämisen jokaiseen olioon Javan tapaan",
+          "correct": false
+        },
+        {
+          "text": "Luokkien jäsenten muuttamisen ajon aikana ilman uudelleenkäännöstä",
+          "correct": false
+        },
+        {
+          "text": "Automaattisen roskienkeräyksen reflektoimalla osoittimia ajon aikana",
+          "correct": false
+        }
+      ],
+      "correctFeedback": "Reflektio on käännösaikaista (consteval), joten ajonaikaista hintaa ei ole.",
+      "wrongFeedback": "P2996 ei tuo RTTI:n laajennusta eikä ajonaikaista muokkausta. Kaikki tapahtuu kääntäjässä.",
+      "featureId": "trends:cpp26-reflection",
+      "featurePoints": 4,
+      "sourceUrl": "https://wg21.link/p2996",
+      "sourceRef": "trends/cpp26-reflection"
+    }
+  ]
+}

@@ -21,6 +21,8 @@ export const DOMAIN_LABELS = {
   robotframework: "Robot Framework",
   rust: "Rust",
   space: "Avaruustekniikka",
+  ai: "AI-harnessit",
+  trends: "Kuumat aiheet",
 };
 
 export const CHAPTER_LABELS = {
@@ -103,6 +105,16 @@ export const CHAPTER_LABELS = {
   "space-datums": "Geoidit, ellipsoidit ja WGS84",
   "space-maps": "Kartat ja projektiot",
   "space-applications": "Sovellukset ja rajapinnat",
+  "ai-loop": "Agenttisilmukka",
+  "ai-tools": "Työkalut ja MCP",
+  "ai-context": "Kontekstin hallinta",
+  "ai-safety": "Turvallisuus ja oikeudet",
+  "ai-evals": "Evaluointi ja observability",
+  "ai-orchestration": "Subagentit ja orkestrointi",
+  "trends-security": "Tietoturvan uudet käytännöt",
+  "trends-web": "Web ja JavaScript",
+  "trends-infra": "Infra ja data",
+  "trends-languages": "Kielet ja työkalut",
 };
 
 /** Repo/dokumentaatioviite: domain/chapter/id */

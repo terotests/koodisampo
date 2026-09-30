@@ -161,6 +161,16 @@ const TOPIC_DOMAINS = {
   "space-datums": "space",
   "space-maps": "space",
   "space-applications": "space",
+  "ai-loop": "ai",
+  "ai-tools": "ai",
+  "ai-context": "ai",
+  "ai-safety": "ai",
+  "ai-evals": "ai",
+  "ai-orchestration": "ai",
+  "trends-security": "trends",
+  "trends-web": "trends",
+  "trends-infra": "trends",
+  "trends-languages": "trends",
 };
 
 /** Luvut domainin mukaan (haastattelu/guru-kierros). */
